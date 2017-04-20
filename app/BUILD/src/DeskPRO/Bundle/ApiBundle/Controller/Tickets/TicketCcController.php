@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,6 +44,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  * @Rest\Route("/tickets/{parentId}/cc")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TicketParticipant",
+ *          "owner"="Application\DeskPRO\Entity\Ticket",
+ *          "agent_interface"=true
+ *      }
+ *     }
+ * )
  */
 class TicketCcController extends CrudSubController
 {

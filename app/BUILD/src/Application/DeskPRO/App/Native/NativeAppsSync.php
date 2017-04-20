@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -101,7 +101,7 @@ class NativeAppsSync
     {
         $em = $this->container->get('doctrine.orm.default_entity_manager');
         foreach ($this->manager->getAllPackages() as $package) {
-            if (strpos($package->name, 'deskpro_') === 0 && !$this->manager->getAppPath($package->name, true)) {
+            if ($package->native_name && strpos($package->name, 'deskpro_') === 0 && !$this->manager->getAppPath($package->name, true)) {
                 $this->manager->removePackage($package);
                 $em->remove($package);
                 $this->logger->debug(sprintf('Removing application %s.', $package->name));
@@ -136,8 +136,9 @@ class NativeAppsSync
         $this->logger->debug("Updating {$package->native_name}");
 
         // Updates the resources
-        $app_package = new Package($this->manager->getAppPath($package->name, true));
+        $app_package = null;
         try {
+            $app_package = new Package($this->manager->getAppPath($package->name, true));
             $this->package_installer->installPackage($app_package, $package);
         } catch (\Exception $e) {
             $this->logger->error("EXCEPTION: {$e->getMessage()}");
@@ -204,7 +205,18 @@ class NativeAppsSync
                 continue;
             }
 
-            $app_package = new Package($f_path);
+            try {
+                $app_package = new Package($f_path);
+            } catch (\Exception $e) {
+                $this->logger->error("EXCEPTION: {$e->getMessage()}");
+                if ($this->exception_handler) {
+                    call_user_func($this->exception_handler, $e, ['mode' => 'install', 'manager' => $this->manager]);
+                    continue;
+                } else {
+                    throw $e;
+                }
+            }
+
             if ($this->manager->hasPackage($app_package->getManifest()->getPackageName())) {
                 // already installed (will have been updated)
                 continue;
@@ -228,6 +240,7 @@ class NativeAppsSync
                 $this->logger->error("EXCEPTION: {$e->getMessage()}");
                 if ($this->exception_handler) {
                     call_user_func($this->exception_handler, $e, ['mode' => 'install', 'package' => $app_package, 'manager' => $this->manager]);
+                    continue;
                 } else {
                     throw $e;
                 }

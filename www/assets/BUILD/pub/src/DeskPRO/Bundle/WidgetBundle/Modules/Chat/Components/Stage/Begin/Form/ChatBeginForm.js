@@ -1,49 +1,79 @@
 import React, { PropTypes } from 'react';
-import { FormItem } from './FormItem';
-import { CustomFieldTemplate } from './CustomFieldTemplate';
+import { Field } from 'react-forms';
+import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
-import { Field, Input } from 'react-forms';
-import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
+import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFieldSingleChoice';
+import { FormItem } from './FormItem';
+import { CustomFieldTemplate } from './CustomFieldTemplate';
 import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
+import { ChatBeginContainer } from '../ChatBeginContainer';
 
 export class ChatBeginForm extends React.Component {
 
   static propTypes = {
-    submit:             PropTypes.bool,
-    errors:             PropTypes.object,
-    onChange:           PropTypes.func,
-    onSubmit:           PropTypes.func,
-    customFields:       PropTypes.object,
-    customFieldsLoaded: PropTypes.bool
+    submit:                   PropTypes.bool,
+    errors:                   PropTypes.object,
+    onSubmit:                 PropTypes.func,
+    customFields:             PropTypes.object,
+    allowDepartmentSelection: PropTypes.bool,
+    chatDepartments:          PropTypes.object,
+    widgetLanguage:           PropTypes.number,
+    loggedIn:                 PropTypes.bool,
+    chatRequiredName:         PropTypes.bool,
+    chatRequiredEmail:        PropTypes.bool
   };
 
-  render() {
-    const { customFields, customFieldsLoaded, submit, errors, onSubmit } = this.props;
 
-    if (!customFieldsLoaded) {
-      return <ChatBeginLoadingSpinner />;
-    }
+  renderDepartmentSelect() {
+    const { errors, chatDepartments } = this.props;
+
+    return (
+      <FormItem label={portalPhrases.get('portal.chat.label-department')} field="chat_department" errors={errors}>
+        <CustomFieldSingleChoice
+          name="chat_department"
+          {...ChatBeginContainer.getWidgetConfig(chatDepartments)}
+        />
+      </FormItem>
+    );
+  }
+
+  render() {
+    const { customFields, allowDepartmentSelection, chatRequiredName, chatRequiredEmail } = this.props;
+    const { submit, errors, onSubmit, widgetLanguage, loggedIn } = this.props;
 
     return (
       <WidgetBodyScrollAreaContainer>
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
-            <FormItem label={portalPhrases.get('portal.chat.label-name')} field="name" errors={errors}>
-              <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
-                <Input type="text" />
-              </Field>
-            </FormItem>
-            <FormItem label={portalPhrases.get('portal.chat.label-email')} field="email" errors={errors}>
-              <Field select="email" placeholder="email@example.com">
-                <Input type="email" />
-              </Field>
-            </FormItem>
-
+            {!loggedIn &&
+              <FormItem
+                label={portalPhrases.get('portal.chat.label-name')}
+                field="name"
+                errors={errors}
+                required={chatRequiredName}
+              >
+                <Field select="name" placeholder={portalPhrases.get('portal.chat.details-placeholder')}>
+                  <Input type="text" />
+                </Field>
+              </FormItem>}
+            {!loggedIn &&
+              <FormItem
+                label={portalPhrases.get('portal.chat.label-email')}
+                field="email"
+                errors={errors}
+                required={chatRequiredEmail}
+              >
+                <Field select="email" placeholder="email@example.com">
+                  <Input type="email" />
+                </Field>
+              </FormItem>}
+            {allowDepartmentSelection && this.renderDepartmentSelect()}
             {customFields.valueSeq().map((customField, index) =>
               <CustomField
                 key={index}
                 config={customField}
+                language={widgetLanguage}
                 formErrors={errors}
                 widgetOptions={{
                   context:       [parent.document, window.widgetFrame.document],
@@ -58,8 +88,7 @@ export class ChatBeginForm extends React.Component {
             <div className="button-label">
               {submit
                 ? <div className="spinner"><i /></div>
-                :
-                <button className="dpdesignportal-button dpdesignportal-button-wide">
+                : <button className="dpdesignportal-button dpdesignportal-button-wide">
                   {portalPhrases.get('portal.chat.start')}
                 </button>
               }
@@ -70,3 +99,5 @@ export class ChatBeginForm extends React.Component {
     );
   }
 }
+
+export default ChatBeginForm;

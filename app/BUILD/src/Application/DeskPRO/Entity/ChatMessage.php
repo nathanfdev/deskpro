@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -361,6 +361,14 @@ class ChatMessage extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isHtml()
+    {
+        return $this->is_html;
+    }
+
+    /**
      * @param bool $is_sys
      *
      * @return $this
@@ -528,6 +536,14 @@ class ChatMessage extends DomainObject
         $content = nl2br($content);
 
         return $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
     }
 
     /**

@@ -5,6 +5,7 @@ import $ from 'jquery';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
 import * as Tours from '../Tours';
@@ -34,6 +35,45 @@ export class AgentOnboardingContainer extends SeparateComponent {
     this.props.dispatch(actions.updateCurrentStep(onboardingId, onboarding));
   };
 
+  checkTimezone = () => {
+    if (window.DESKPRO_TIME_OUT_OF_SYNC) {
+      window.DESKPRO_TIME_OUT_OF_SYNC = false;
+      window.$.ajax({
+        url:      `${window.BASE_URL}agent/misc/get-server-time`,
+        dataType: 'json',
+        success(data) {
+          window.$('#time_outofsync').find('.server_time').text(data.time_formatted);
+
+          const nowTs = ((new Date()).getTime() / 1000) - (new Date().getTimezoneOffset() * 60);
+          const diff = Math.abs(nowTs - data.timestamp);
+
+          if (diff > 1200) {
+            window.DESKPRO_TIME_OUT_OF_SYNC = diff;
+            console.log('(Recheck) Time is off by %s seconds', diff);
+
+            if (window.DESKPRO_TIME_OUT_OF_SYNC_IGNORE
+              && Math.abs(diff - window.DESKPRO_TIME_OUT_OF_SYNC_IGNORE) < 480) {
+              window.DESKPRO_TIME_OUT_OF_SYNC = null;
+              console.log('(Recheck) Time offset is ignored');
+            }
+          }
+
+          console.log(window.DESKPRO_TIME_OUT_OF_SYNC);
+          if (window.DESKPRO_TIME_OUT_OF_SYNC) {
+            window.$('#time_outofsync').trigger('dp_open');
+          }
+        }
+      });
+    }
+  };
+
+  componentDidMount() {
+    if (!this.props.onboardings.size || this.props.onboardings.first().get('status') > 0) {
+      this.checkTimezone();
+    }
+  }
+
+
   render() {
     let result = <div />;
     const props = {
@@ -44,7 +84,7 @@ export class AgentOnboardingContainer extends SeparateComponent {
 
     if (this.props.onboardings.size) {
       this.props.onboardings.map((onboarding) => {
-        result = <AgentOnboarding onboarding={onboarding} {...props} />;
+        result = <AgentOnboarding onboarding={onboarding} {...props} postOnboardingCallback={this.checkTimezone} />;
         return true;
       });
     }
@@ -54,10 +94,14 @@ export class AgentOnboardingContainer extends SeparateComponent {
 
 export class AgentOnboarding extends React.Component {
   static propTypes = {
-    onboarding:        PropTypes.object.isRequired,
-    pauseOnboarding:   PropTypes.func.isRequired,
-    resumeOnboarding:  PropTypes.func.isRequired,
-    updateCurrentStep: PropTypes.func.isRequired
+    onboarding:             PropTypes.object.isRequired,
+    pauseOnboarding:        PropTypes.func.isRequired,
+    resumeOnboarding:       PropTypes.func.isRequired,
+    updateCurrentStep:      PropTypes.func.isRequired,
+    postOnboardingCallback: PropTypes.func.isRequired
+  };
+  static defaultProps = {
+    postOnboardingCallback() {}
   };
 
   constructor(props) {
@@ -68,31 +112,30 @@ export class AgentOnboarding extends React.Component {
       type:         'continuous',
       force:        false,
       currentStep:  0,
-      intro:        false
+      intro:        false,
+      status:       0
     };
+    this.interval = null;
+    this.retries = 0;
   }
 
   componentDidMount() {
     const { onboarding, pauseOnboarding } = this.props;
 
-    const object = onboarding.get('onboarding_class');
-    let config = null;
-    if (Tours[object]) {
-      config = Tours[object];
-      config.onboardingId = onboarding.get('id');
-    } else {
-      config = onboarding.get('config');
-    }
+    const config = this.getConfig();
+
     if (config) {
       this.addSteps(config.steps);
       delete config.steps;
       if (config) {
         this.loadConfig(config);
       }
-      if (!onboarding.get('status')) {
-        this.startOnboarding(!config.intro);
+      const status = onboarding.get('status');
+      if (!status) {
+        this.startOnboarding(!config.intro, config.waitFor);
       } else {
-        this.setStep(onboarding.get('current_step'));
+        this.setStep(onboarding.get('current_step'), config.waitFor);
+        this.setStatus(status);
         this.startOnboarding();
         pauseOnboarding(this.resumeOnboarding);
       }
@@ -106,13 +149,32 @@ export class AgentOnboarding extends React.Component {
     }
   }
 
+  getConfig() {
+    const { onboarding } = this.props;
+    const object = onboarding.get('onboarding_class');
+
+    let config = null;
+    if (Tours[object]) {
+      config = Tours[object];
+      config.onboardingId = onboarding.get('id');
+    } else {
+      config = onboarding.get('config');
+    }
+
+    return config;
+  }
+
   setStep = (step) => {
     this.setState({ currentStep: step });
   };
 
+  setStatus = (status) => {
+    this.setState({ status });
+  };
+
   getIntro = () => {
-    const { intro, currentStep } = this.state;
-    if (!intro || currentStep > 0) {
+    const { intro, status } = this.state;
+    if (!intro || status) {
       return null;
     }
 
@@ -125,9 +187,11 @@ export class AgentOnboarding extends React.Component {
           <div className="joyride-hole" />
           <div className="joyride-intro" style={style}>
             <img src={intro.img} role="presentation" />
-            <h3>{intro.title}</h3>
-            <p>{intro.text}</p>
-            <footer><button className="ui button" onClick={this.closeIntro}>{intro.action}</button></footer>
+            <h3>{agentPhrases.get(intro.title)}</h3>
+            <p>{agentPhrases.get(intro.text)}</p>
+            <footer>
+              <button className="ui button" onClick={this.closeIntro}>{agentPhrases.get(intro.action)}</button>
+            </footer>
           </div>
         </div>
       </div>
@@ -146,6 +210,13 @@ export class AgentOnboarding extends React.Component {
     if (!Array.isArray(stepsArray)) {
       stepsArray = [steps];
     }
+
+    stepsArray = stepsArray.map((step) => {
+      const newStep = step;
+      newStep.title = agentPhrases.get(step.title);
+      newStep.text = agentPhrases.get(step.text);
+      return newStep;
+    });
 
     if (!stepsArray.length) {
       return false;
@@ -167,47 +238,68 @@ export class AgentOnboarding extends React.Component {
     this.joyride.toggleTooltip(true, this.state.currentStep);
   };
 
-  startOnboarding = (open) => {
-    this.joyride.start(open);
+  waitFor = (waitFor, open) => {
+    this.retries = this.retries + 1;
+    if ($(waitFor).length) {
+      this.joyride.start(open);
+      clearInterval(this.interval);
+    } else if (this.retries > 4) {
+      // stop trying to start onboarding
+      clearInterval(this.interval);
+    }
+  };
+
+  startOnboarding = (open, waitFor = false) => {
+    if (waitFor) {
+      this.interval = setInterval(() => this.waitFor(waitFor, open), (this.retries + 1) * 1000);
+    } else {
+      this.joyride.start(open);
+    }
   };
 
   callback = (data) => {
-    const joyride = this.joyride;
-    const progress = joyride.getProgress();
-    let onboarding;
+    let index = data.index;
+    if (data.action === 'autostart' || data.type === 'step:after') {
+      if (data.type === 'step:after') {
+        index += 1;
+      }
+      const percentageComplete = Math.round((index / this.state.steps.length) * 100);
+      let onboarding;
 
-    switch (data.action) {
-      case 'close':
-        if (progress.percentageComplete < 100) {
-          this.props.pauseOnboarding(this.resumeOnboarding);
-        } else {
-          this.finishOnboarding(progress.index);
-        }
-        break;
-      case 'next':
-      case 'back':
-        onboarding = {
-          current_step: progress.index
-        };
-        this.setState({ currentStep: progress.index, intro: false });
-        if (progress.percentageComplete === 0) {
-          onboarding.status = 0;
-        } else if (progress.percentageComplete === 100) {
-          onboarding.status = 2;
-          onboarding.date_completion = moment().format();
-        } else {
-          onboarding.status = 1;
-        }
-        this.props.updateCurrentStep(this.state.onboardingId, onboarding);
-        break;
-      case 'beacon':
-        this.props.resumeOnboarding();
-        break;
-      case 'finished':
-        this.finishOnboarding(progress.index);
-        break;
-      default:
-        break;
+      switch (data.action) {
+        case 'close':
+          if (percentageComplete < 100) {
+            this.props.pauseOnboarding(this.resumeOnboarding);
+          } else {
+            this.finishOnboarding(index);
+          }
+          break;
+        case 'autostart':
+        case 'next':
+        case 'back':
+          onboarding = {
+            current_step: index
+          };
+          this.setState({ currentStep: index, intro: false });
+          if (percentageComplete === 100) {
+            onboarding.status = 2;
+            onboarding.date_completion = moment().format();
+            this.finishOnboarding(index);
+            break;
+          } else {
+            onboarding.status = 1;
+          }
+          this.props.updateCurrentStep(this.state.onboardingId, onboarding);
+          break;
+        case 'beacon':
+          this.props.resumeOnboarding();
+          break;
+        case 'finished':
+          this.finishOnboarding(index);
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -218,6 +310,7 @@ export class AgentOnboarding extends React.Component {
       date_completion: moment().format()
     };
     this.props.updateCurrentStep(this.state.onboardingId, onboarding);
+    this.props.postOnboardingCallback();
   };
 
   render() {
@@ -226,6 +319,7 @@ export class AgentOnboarding extends React.Component {
       type,
       disableOverlay: force
     };
+    const back = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`;
     return (<div>
       <Joyride
         ref={(c) => { this.joyride = c; }}
@@ -234,7 +328,7 @@ export class AgentOnboarding extends React.Component {
         locale={{
           back: (
             <Isvg
-              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/back-arrow.svg`}
+              src={back}
             />
            ),
           close: (<span>Close</span>),

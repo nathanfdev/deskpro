@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -79,6 +79,7 @@ final class ErrorsCodes
     const TOO_FEW_ELEMENTS            = 'too_few_elements';
     const TOO_MANY_ELEMENTS           = 'too_many_elements';
     const TOO_LOW                     = 'too_low';
+    const TOO_HIGH                    = 'too_high';
     const EMAIL_ALREADY_VALIDATED     = 'email_already_validated';
     const EMAIL_WRONG_VALIDATION_CODE = 'email_wrong_validation_code';
     const NO_PERSON                   = 'person_not_found';
@@ -89,6 +90,7 @@ final class ErrorsCodes
     const REGEX                       = 'regex';
     const NO_UPLOADED_FILE            = 'no_uploaded_file';
     const NOT_AN_IMAGE                = 'not_an_image';
+    const MISMATCH_VALUES             = 'mismatch_values';
 
     /** Term Engine Specific */
     const TERM_TYPE_DOES_NOT_EXIST = 'term_type_does_not_exist';

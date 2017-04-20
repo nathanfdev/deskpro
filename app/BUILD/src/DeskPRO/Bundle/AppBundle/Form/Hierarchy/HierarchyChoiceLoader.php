@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
+use DeskPRO\Component\Hierarchy\HierarchyNode;
 use Symfony\Component\Form\ChoiceList\ArrayChoiceList;
 use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
@@ -37,18 +38,23 @@ use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 class HierarchyChoiceLoader implements ChoiceLoaderInterface
 {
     /**
-     * @var HierarchyNode[]
+     * @var Hierarchy
      */
-    private $nodes;
+    private $hierarchy;
 
     /**
-     * Constructor.
-     *
-     * @param HierarchyNode[] $nodes
+     * @var ArrayChoiceList|null
      */
-    public function __construct(array $nodes)
+    private $list;
+
+    /**
+     * HierarchyChoiceLoader constructor.
+     *
+     * @param Hierarchy $hierarchy
+     */
+    public function __construct(Hierarchy $hierarchy)
     {
-        $this->nodes = $nodes;
+        $this->hierarchy = $hierarchy;
     }
 
     /**
@@ -56,9 +62,16 @@ class HierarchyChoiceLoader implements ChoiceLoaderInterface
      */
     public function loadChoiceList($value = null)
     {
-        return new ArrayChoiceList($this->nodes, function ($choice) {
-            return $choice instanceof HierarchyNode ? (string) $choice->getHierarchy()->getNodeId($choice) : '0';
-        });
+        if (!$this->list) {
+            $nodes      = $this->hierarchy->getFlattened()->toArray();
+            $this->list = new ArrayChoiceList($nodes, function ($value) {
+                $value = $value instanceof HierarchyNode ? (string) $this->hierarchy->getNodeId($value) : $value;
+
+                return $value;
+            });
+        }
+
+        return $this->list;
     }
 
     /**

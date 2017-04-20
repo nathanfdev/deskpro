@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,6 +49,11 @@ class SearchContext implements SearchContextInterface
      * @var array
      */
     private $feedback_category_ids = [];
+
+    /**
+     * @var array
+     */
+    private $guide_ids = [];
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -117,11 +122,11 @@ class SearchContext implements SearchContextInterface
     }
 
     /**
-     * @param array $download_categyr_ids
+     * @param array $download_category_ids
      */
-    public function setDownloadCategoryIds($download_categyr_ids)
+    public function setDownloadCategoryIds($download_category_ids)
     {
-        $this->download_category_ids = $download_categyr_ids;
+        $this->download_category_ids = $download_category_ids;
     }
 
     /**
@@ -154,5 +159,21 @@ class SearchContext implements SearchContextInterface
     public function setNewsCategoryIds($news_category_ids)
     {
         $this->news_category_ids = $news_category_ids;
+    }
+
+    /**
+     * @return array
+     */
+    public function getGuideIds()
+    {
+        return $this->guide_ids;
+    }
+
+    /**
+     * @param array $guide_ids
+     */
+    public function setGuideIds($guide_ids)
+    {
+        $this->guide_ids = $guide_ids;
     }
 }

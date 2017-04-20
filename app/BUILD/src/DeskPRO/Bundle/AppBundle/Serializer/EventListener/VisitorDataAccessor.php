@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
 use JMS\Serializer\GenericSerializationVisitor;
+use JMS\Serializer\VisitorInterface;
 
 /**
  * Class VisitorAccessor.
@@ -36,11 +37,11 @@ use JMS\Serializer\GenericSerializationVisitor;
 class VisitorDataAccessor
 {
     /**
-     * @param GenericSerializationVisitor $visitor
+     * @param VisitorInterface $visitor
      *
      * @return mixed
      */
-    public static function getData(GenericSerializationVisitor $visitor)
+    public static function getData(VisitorInterface $visitor)
     {
         $property = self::getReflectionProperty();
         $data     = $property->getValue($visitor);
@@ -50,10 +51,10 @@ class VisitorDataAccessor
     }
 
     /**
-     * @param GenericSerializationVisitor $visitor
-     * @param mixed                       $data
+     * @param VisitorInterface $visitor
+     * @param mixed            $data
      */
-    public static function setData(GenericSerializationVisitor $visitor, $data)
+    public static function setData(VisitorInterface $visitor, $data)
     {
         $property = self::getReflectionProperty();
         $property->setValue($visitor, $data);

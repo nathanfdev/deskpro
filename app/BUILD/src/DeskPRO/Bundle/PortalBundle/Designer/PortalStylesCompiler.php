@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -187,10 +187,8 @@ class PortalStylesCompiler
 
         $this->em->persist($asset);
 
-        // we dont delete the blob because it might still be required in old
-        // cached pages. Mark it as temp so it'll be auto-removed in 6 hours
         if ($oldBlob) {
-            $oldBlob->is_temp      = true;
+            $oldBlob->is_temp      = false;
             $oldBlob->date_created = new \DateTime();
             $this->em->persist($oldBlob);
         }

@@ -128,6 +128,7 @@ define([
   'Admin/Server/Ctrl/ServerErrorLogsView',
   'Admin/Server/Ctrl/ServerIncidents',
   'Admin/Server/Ctrl/ServerIncidentsView',
+  'Admin/Server/Ctrl/ServerIncidentsEvent',
   'Admin/Server/Ctrl/ServerTaskQueue',
   'Admin/Server/Ctrl/ServerCronList',
   'Admin/Server/Ctrl/ServerCronLogs',
@@ -173,6 +174,7 @@ define([
   'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
   'Admin/NewsSettings/Ctrl/NewsSettings',
   'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+  'Admin/GuidesSettings/Ctrl/GuidesSettings',
   'Admin/RoundRobin/Ctrl/List',
   'Admin/RoundRobin/Ctrl/Edit',
   'Admin/Icons/Ctrl/List',
@@ -180,8 +182,11 @@ define([
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
+  'Admin/VoiceChannel/Ctrl/ReactComponent',
+  'Admin/Main/Ctrl/Features',
 
-  'CloudAdminLoad'
+  'CloudAdminLoad',
+  window.DP_ADMIN_BUNDLE_PATH
 
 ], function(angular) {
 
@@ -221,6 +226,12 @@ define([
         o.opener = null;
       });
 
+      // Add special 'bare-page' class to indicate
+      // that we aren't in agent wrapper
+      if (!window.parent || !window.parent.DP_SPA_PAGE_ID || window.parent.DP_SPA_PAGE_ID !== 'agent') {
+        $('body').addClass('bare-page');
+      }
+
       angular.element().ready(function () {
         $html.addClass('ng-app');
 
@@ -232,6 +243,8 @@ define([
         }
 
         angular.bootstrap($html, ['Admin_App']);
+
+        $('#admin_loading').remove();
       });
     }
   };

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -104,6 +104,9 @@ class DepartmentPermission extends AbstractEntityRepository
         if ($person_id && !empty($this->cache_by_agent[$person_id])) {
             if ($name) {
                 $found = !empty($this->cache_by_agent[$person_id][$name]) ? $this->cache_by_agent[$person_id][$name] : [];
+                if (!$found) {
+                    $found = !empty($this->cache_by_agent[$person_id]['full']) ? $this->cache_by_agent[$person_id]['full'] : [];
+                }
             } else {
                 $found = !empty($this->cache_by_agent[$person_id]['ANY']) ? $this->cache_by_agent[$person_id]['ANY'] : [];
             }
@@ -113,6 +116,9 @@ class DepartmentPermission extends AbstractEntityRepository
             foreach ($ug_ids as $ug_id) {
                 if ($name) {
                     $ug_found = !empty($this->cache_by_group[$ug_id][$name]) ? $this->cache_by_group[$ug_id][$name] : [];
+                    if (!$ug_found) {
+                        $ug_found = !empty($this->cache_by_group[$ug_id]['full']) ? $this->cache_by_group[$ug_id]['full'] : [];
+                    }
                 } else {
                     $ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : [];
                 }

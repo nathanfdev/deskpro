@@ -1,8 +1,7 @@
 # This is the "main" file for the portal kernel. No other kernel imports this.
 # 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
 api_routes:
-    resource: "@ApiBundle/Resources/config/routing_api.yml"
-    prefix: /api/v2
+  resource: "@ApiBundle/Resources/config/routing_api.yml"
 
 system_routes:
     resource: "@SystemBundle/Resources/config/routing.yml"

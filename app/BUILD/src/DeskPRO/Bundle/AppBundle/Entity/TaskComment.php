@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_comments_new")
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskComment implements EntityInterface, NotifyPropertyChanged
 {
@@ -73,7 +74,6 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull
-     * @Assert\Valid()
      *
      * @var Person
      */
@@ -134,7 +134,7 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->attachments = new ArrayCollection();
+        $this->setModelField('attachments', new ArrayCollection());
         $this->setDateCreated(new \DateTime());
     }
 
@@ -156,10 +156,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -172,10 +176,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_created
+     *
+     * @return $this
      */
     public function setDateCreated(\DateTime $date_created)
     {
         $this->setModelField('date_created', $date_created);
+
+        return $this;
     }
 
     /**
@@ -188,10 +196,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $comment
+     *
+     * @return $this
      */
     public function setComment($comment)
     {
         $this->setModelField('comment', $comment);
+
+        return $this;
     }
 
     /**
@@ -204,10 +216,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
         $this->setModelField('task', $task);
+
+        return $this;
     }
 
     /**
@@ -220,10 +236,14 @@ class TaskComment implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TaskAttachment $attachment
+     *
+     * @return $this
      */
     public function addAttachment(TaskAttachment $attachment)
     {
         $this->attachments->add($attachment);
         $this->setModelField('attachment', $attachment);
+
+        return $this;
     }
 }

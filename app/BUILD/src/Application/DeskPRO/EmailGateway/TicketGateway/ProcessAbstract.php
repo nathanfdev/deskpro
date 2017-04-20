@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\File\MimeType\ExtensionGuesser;
 
 abstract class ProcessAbstract
 {
@@ -268,9 +269,19 @@ abstract class ProcessAbstract
                 continue;
             }
 
+            $currentFilename = $attach->getFileName();
+            $guesser         = ExtensionGuesser::getInstance();
+            $guessedExt      = $guesser->guess($attach->getMimeType());
+            $parts           = explode('.', $currentFilename, 2);
+            if (!isset($parts[1]) && $guessedExt) {
+                $filename = $currentFilename.'.'.$guessedExt;
+            } else {
+                $filename = $currentFilename;
+            }
+
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $attach->getFileContents(),
-                $attach->getFileName(),
+                $filename,
                 $attach->getMimeType()
             );
 

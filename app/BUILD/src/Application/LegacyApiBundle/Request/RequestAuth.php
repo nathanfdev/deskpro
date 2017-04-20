@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ namespace Application\LegacyApiBundle\Request;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiKeyLog;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\LegacyApiBundle\ApiUser;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,18 +62,25 @@ class RequestAuth
     private $request;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var \Application\DeskPRO\Entity\ApiKeyLog
      */
     protected $log_entry;
 
     /**
-     * @param EntityManager $em
-     * @param Request       $request
+     * @param EntityManager    $em
+     * @param Request          $request
+     * @param SettingsResolver $settingsResolver
      */
-    public function __construct(EntityManager $em, Request $request)
+    public function __construct(EntityManager $em, Request $request, SettingsResolver $settingsResolver)
     {
-        $this->em      = $em;
-        $this->request = $request;
+        $this->em               = $em;
+        $this->request          = $request;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -216,17 +224,30 @@ class RequestAuth
             return;
         }
 
-        $log          = new ApiKeyLog();
-        $log->key     = $key;
-        $log->request = [
+        $settings = $this->settingsResolver->getGlobalSettings();
+
+        // api log is disabled
+        if (!$settings->get('api_log.enabled')) {
+            return;
+        }
+
+        // api log is disabled for api keys
+        $modes = $settings->getSerializedArray('api_log.modes', []);
+        if (!in_array('key', $modes)) {
+            return;
+        }
+
+        $log = new ApiKeyLog();
+        $log->setKey($key);
+        $log->setRequest([
             'path'    => $this->request->getPathInfo(),
             'method'  => $this->request->getMethod(),
             'payload' => $this->request->request->all(),
-        ];
-        $log->response = [
+        ]);
+        $log->setResponse([
             'status'  => null,
             'content' => null, // parse json to array?
-        ];
+        ]);
 
         $this->em->persist($log);
         $this->em->flush($log);

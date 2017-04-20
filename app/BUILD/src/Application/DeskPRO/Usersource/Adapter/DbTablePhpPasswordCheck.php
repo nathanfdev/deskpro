@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -94,29 +94,6 @@ class DbTablePhpPasswordCheck extends AbstractAdapter
         return function () use ($me) {
             return $me->getDb();
         };
-    }
-
-    /**
-     * @param int $offset skip x users and return the rest
-     *
-     * @return array
-     */
-    public function findAllIdentities($offset = 0)
-    {
-        /** @var $adapter \Orb\Auth\Adapter\DbTable.php */
-        $adapter = $this->getAuthAdapter();
-
-        $user_infos = $adapter->getAllUserInfo($offset);
-
-        $identities = [];
-        foreach ($user_infos as $info) {
-            // CHECK FILTER
-            if ($adapter->doesRawInfoPassFilter($info)) {
-                $identities[] = $adapter->getIdentityFromUserInfo($info);
-            }
-        }
-
-        return $identities;
     }
 
     /**

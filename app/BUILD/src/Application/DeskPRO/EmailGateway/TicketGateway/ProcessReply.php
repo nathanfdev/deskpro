@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use Orb\Types\NoValue;
 
 class ProcessReply extends ProcessAbstract
@@ -179,6 +180,21 @@ class ProcessReply extends ProcessAbstract
 
         $message               = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
+        if ($this->reader->isSigned() !== null) {
+            $signed = new TicketMessageAttribute('signed');
+            $signed->setValue($this->reader->isSigned());
+            $message->addAttribute($signed);
+        }
+        if ($this->reader->getDecryptedMail() !== null) {
+            $decrypted = new TicketMessageAttribute('decrypted');
+            $decrypted->setValue(true);
+            $message->addAttribute($decrypted);
+        }
+        if ($this->reader->getDecryptionError() !== null) {
+            $decryptionError = new TicketMessageAttribute('decryption_error');
+            $decryptionError->setValue($this->reader->getDecryptionError());
+            $message->addAttribute($decryptionError);
+        }
         if ($this->reader->hasProperty('email_source')) {
             $message['email_source'] = $this->reader->getProperty('email_source');
         }

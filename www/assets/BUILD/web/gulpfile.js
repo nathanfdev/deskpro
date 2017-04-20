@@ -72,11 +72,11 @@ deskpro.watches = [
 //------------------------------
 
 deskpro.util.sourceMapRoot = function (file) {
-  var path = file.path.replace(/\\/g, '/');
+  var path = file.path.replace(/\\/g, '/').replace(new RegExp(__dirname), '');
   var rel = path.replace(/^.*?\/web\/app\-build\//, '');
 
   // Counts slashes the relative path to decide how many levels up we need to go
-  var depth = (rel.match(/(\/|\\)/g) || []).length + 1;
+  var depth = (rel.match(/(\/|\\)/g) || []).length - 1;
 
   // The sub-dir that the file is under
   var ns = rel.split('/')[0];
@@ -84,7 +84,7 @@ deskpro.util.sourceMapRoot = function (file) {
   var up = "";
   for (var i = 0; i < depth; i++) up += "../";
 
-  return up + 'web/app/' + ns;
+  return up + 'app/' + ns;
 };
 
 deskpro.util.coffeeError = function (e) {
@@ -281,7 +281,7 @@ gulp.task('semantic-watch', function () {
 gulp.task('semantic-copy', ['clean'], function () {
   gulp.src('./stylesheets-less/semantic-ui/semantic.css')
     .pipe(postcss([
-      autoprefixer({ browsers: ['last 2 versions'] }),
+      autoprefixer(),
       comments({})
     ]))
     .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
@@ -292,7 +292,7 @@ gulp.task('semantic-copy', ['clean'], function () {
 gulp.task('semantic-copy-prod', ['clean'], function () {
   gulp.src('./stylesheets-less/semantic-ui/semantic.css')
     .pipe(postcss([
-      autoprefixer({ browsers: ['last 2 versions'] }),
+      autoprefixer(),
       comments({}),
       cssnano()
     ]))

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -54,7 +54,12 @@ class DbWriter implements WriterInterface
      */
     public function write(ApiLog $log)
     {
+        $key = $log->getKey();
+        $log->setKey(null);
         $this->em->persist($log);
         $this->em->flush($log);
+        if ($key && $key->getId()) {
+            $this->em->getConnection()->update('api_log', ['api_key_id' => $key->getId()], ['id' => $log->getId()]);
+        }
     }
 }

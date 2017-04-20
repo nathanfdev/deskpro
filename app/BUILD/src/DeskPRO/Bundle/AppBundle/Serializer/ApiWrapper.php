@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,11 +64,12 @@ class ApiWrapper
     /**
      * ApiWrapper constructor.
      *
-     * @param $data
+     * @param mixed $data
+     * @param array $meta
      */
-    public function __construct($data)
+    public function __construct($data, array $meta = [])
     {
-        $this->meta = new \ArrayObject();
+        $this->meta = new \ArrayObject($meta);
         if (!$this->checkPagination($data)) {
             $this->data = $data;
         }

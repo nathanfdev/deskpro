@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,10 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\EntityRepository\Ticket;
+use Elastica\Response;
+use FOS\ElasticaBundle\Manager\RepositoryManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
@@ -59,6 +62,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
         'download'          => 'DeskPRO:Download',
         'feedback'          => 'DeskPRO:Feedback',
         'news'              => 'DeskPRO:News',
+        'topic'             => 'DeskPRO:Topic',
         'ticket'            => 'DeskPRO:Ticket',
         'person'            => 'DeskPRO:Person',
         'organization'      => 'DeskPRO:Organization',
@@ -93,6 +97,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
             $sort = 'score';
         }
 
+        /** @var RepositoryManager $repositoryManager */
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         foreach ($this->objects as $object => $model) {
@@ -207,5 +212,23 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
     public function setPersonContext($person)
     {
         $this->person = $person;
+    }
+
+    public function testVersion($url = '')
+    {
+        if (!$url) {
+            $url = $this->container->get('deskpro.core.settings')->get('elastica.clients.default.url');
+        }
+        $config        = ClientFactory::createConfigFromUrl($url);
+        $clientFactory = $this->container->get('deskpro.elastica.client_factory');
+        $client        = $clientFactory->createClientByConfig($config);
+        $res           = $client->request('/');
+        if ($res instanceof Response) {
+            $res = $res->getData();
+            if (version_compare(@$res['version']['number'], '2.0.0') < 0) {
+                throw new \Exception('DeskPRO is not compatible with your ElasticSearch '.@$res['version']['number']
+                    .' server. Please use DeskPRO with an ElasticSearch 2.x or 5.x server.');
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Widget;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -118,7 +119,9 @@ class WidgetLiveDemoController extends BaseController
         $chat->addMessage(UserChatMessages::createUserTextMessage($chat, 'Sample question'));
         $chat->addMessage(UserChatMessages::createAgentTextMessage($chat, 'Sample answer'));
 
-        return new View($this->wrap(new WidgetLiveDemoState($people['agent'], $people['user'], $chat)));
+        $departments = $this->getRepository(Department::class)->findBy(['is_chat_enabled' => true]);
+
+        return new View($this->wrap(new WidgetLiveDemoState($people['agent'], $people['user'], $chat, $departments)));
     }
 
     /**

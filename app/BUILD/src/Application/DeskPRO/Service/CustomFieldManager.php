@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -143,7 +143,7 @@ class CustomFieldManager
      * @param DomainObject $context add contextual fields to form if context provided
      * @param Layout       $layout
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface
      */
     public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = [])
     {
@@ -211,7 +211,7 @@ class CustomFieldManager
      * @param DomainObject          $owner
      * @param DomainObject          $context
      *
-     * @return \Symfony\Component\Form\FormBuilderInterface
+     * @return \Symfony\Component\Form\FormInterface
      */
     public function createFieldForm(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, $options = [])
     {
@@ -284,7 +284,7 @@ class CustomFieldManager
      *
      * @param DomainObject $context
      *
-     * @return \Symfony\Component\Form\Form
+     * @return \Symfony\Component\Form\FormInterface
      */
     public function createDefinitionsFormForContext(DomainObject $context)
     {

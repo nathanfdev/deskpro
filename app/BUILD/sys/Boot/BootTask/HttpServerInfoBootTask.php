@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -374,9 +374,17 @@ class HttpServerInfoBootTask implements BootTaskInterface
             return;
         }
 
+        $dir          = $this->env->getAppDir();
+        $filelistFile = $dir.'/sys/Resources/serverinfo/warmupit.php';
+
+        // warmupit.php is generated at build time in the 'build-prod' script
+        // devs wont have this, so we need to skip
+        if (!is_file($filelistFile)) {
+            return;
+        }
+
         $included = array_flip(get_included_files());
-        $dir      = $this->env->getAppDir();
-        foreach (require($dir.'/sys/Resources/serverinfo/warmupit.php') as $file) {
+        foreach (require($filelistFile) as $file) {
             if (is_file($dir.$file) && !isset($included[$dir.DIRECTORY_SEPARATOR.$file])) {
                 opcache_compile_file($dir.DIRECTORY_SEPARATOR.$file);
             }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,6 +46,7 @@ use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @ApiModes("all")
@@ -146,6 +147,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         $data = $this->getSaveFormData($account);
 
+        if ($data instanceof Response) {
+            return $data;
+        }
+
         // Copy gmail config into the transport
         if ($data['incoming_type'] == 'gmail') {
             $data['outgoing_type']     = 'gmail';
@@ -224,7 +229,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $data = $this->in->getAll('post');
         $form->submit($data);
 
-        $tester = new IncomingAccountTester(EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')));
+        $tester = new IncomingAccountTester(
+            EmailAccountUtil::decryptIncomingAccount($edit_account->getIncomingAccountConfig(), $this->container->get('dp_enc')),
+            $this->get('settings_resolver')->getGlobalSettings()
+        );
         $tester->test();
 
         return $this->createApiResponse([
@@ -257,7 +265,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
                 'log'        => 'Invalid TO email address',
             ]);
         }
-        if (!StringEmail::isValueValid($this->in->getString('test_email.from'))) {
+        if (!StringEmail::isValueValid($this->in->getString('test_email.from')) || !$this->validateCustomEmailAddress($this->in->getString('test_email.from'))) {
             return $this->createApiResponse([
                 'is_success' => false,
                 'log'        => 'Invalid FROM email address',
@@ -273,11 +281,15 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         try {
-            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')));
+            $raw_tr = $this->container->get('email.raw_transport_factory')->createTransport(
+                EmailAccountUtil::decryptOutgoingAccount($out_account, $this->container->get('dp_enc')),
+                $this->get('settings_resolver')->getGlobalSettings()
+            );
         } catch (\Exception $e) {
             return $this->createApiResponse([
                 'is_success' => false,
                 'log'        => $e->getMessage(),
+                'trace'      => $e->getTraceAsString(),
             ]);
         }
 
@@ -360,5 +372,17 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $this->emailSettings->fromArray($data);
 
         return $this->getSettingsAction();
+    }
+
+    /**
+     * Hook to validate a custom email address. Overriden on cloud to ensure safe email address.
+     *
+     * @param string $email
+     *
+     * @return bool
+     */
+    protected function validateCustomEmailAddress($email)
+    {
+        return true;
     }
 }

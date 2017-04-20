@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,12 +50,12 @@ $CONFIG = [];
 
 $CONFIG['OPTIONS'] = [
     'java_path'      => defined('DP_JAVA_PATH') ? DP_JAVA_PATH : '/usr/bin/java',
-    'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : '/usr/local/bin/yuicompressor.jar',
+    'yui_compressor' => defined('DP_YUI_COMPRESSOR_PATH') ? DP_YUI_COMPRESSOR_PATH : (DP_ROOT.'/vendor-src/yuicompressor/yuicompressor.jar'),
     'nodejs'         => defined('DP_NODEJS_PATH') ? DP_NODEJS_PATH : '/usr/bin/nodejs',
-    'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : '/usr/local/bin/lessc',
+    'less'           => defined('DP_LESSC_PATH') ? DP_LESSC_PATH : (DP_ROOT.'/../../www/assets/BUILD/web/node_modules/less/bin/lessc'),
     'smartsprites'   => defined(
         'DP_SMARTSPRITES_PATH'
-    ) ? DP_SMARTSPRITES_PATH : '/opt/smartsprites-0.2.8/smartsprites.sh',
+    ) ? DP_SMARTSPRITES_PATH : (DP_ROOT.'/../../www/assets/BUILD/web/node_modules/gulp-smartsprites/smartsprites-0.2.9/smartsprites.sh'),
 ];
 
 //##############################################################################
@@ -115,7 +115,7 @@ $CONFIG['agent_vendors'] = [
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
         'vendor/jquery/qtip/jquery.qtip.min.js',
         'vendor/mootools/mootools-core.min.js',
-        'bower_components/tinycon/tinycon.min.js',
+        'javascripts/DeskPRO/tinycon.js',
         'vendor/select2/select2.js',
         'vendor/ZeroClipboard/ZeroClipboard.min.js',
         'vendor/idbstore/idbstore.min.js',
@@ -126,8 +126,13 @@ $CONFIG['agent_vendors'] = [
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-        'bower_components/react/react.js',
-        'bower_components/react/react-dom.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.js',
+        'bower_components/kbw-calendars/dist/js/jquery.plugin.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.plus.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.picker.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.picker-ar.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic.js',
+        'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic-ar.js',
     ],
 ];
 
@@ -161,7 +166,6 @@ $CONFIG['agent_window_sections'] = [
         'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Feedback.js',
         'javascripts/DeskPRO/Agent/WindowElement/Section/Tasks.js',
-        'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
     ],
 ];
 
@@ -187,6 +191,7 @@ $CONFIG['agent_pages_lists'] = [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/UserChatFilter.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackFilter.js',
+        'javascripts/DeskPRO/Agent/PageFragment/ListPane/GuideList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
@@ -200,24 +205,18 @@ $CONFIG['agent_pages_lists'] = [
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/FeedbackContentValidating.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/TaskList.js',
         'javascripts/DeskPRO/Agent/PageFragment/ListPane/Search.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterFollowers.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
-        'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterSearch.js',
         'javascripts/DeskPRO/Agent/PageFragment/List/TicketList.js',
+        'javascripts/DeskPRO/Agent/PageFragment/List/Helper/TicketMassActions.js',
     ],
 ];
 
 $CONFIG['agent_pages'] = [
     'out'   => 'js/agent-pages.js',
     'files' => [
-        'javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js',
-        'javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js',
-        'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketFields.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketFieldDisplay.js',
         'javascripts/DeskPRO/Agent/PageHelper/ChatFields.js',
         'javascripts/DeskPRO/Agent/PageHelper/ChatFieldDisplay.js',
-        'javascripts/DeskPRO/Agent/PageHelper/ListSearchForm.js',
         'javascripts/DeskPRO/Agent/PageHelper/CategoryEdit.js',
         'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',
         'javascripts/DeskPRO/Agent/PageHelper/SelectionBar.js',
@@ -229,7 +228,6 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageHelper/Comments.js',
         'javascripts/DeskPRO/Agent/PageHelper/MiscContent.js',
         'javascripts/DeskPRO/Agent/PageHelper/ListNav.js',
-        'javascripts/DeskPRO/Agent/PageHelper/AutoSave.js',
         'javascripts/DeskPRO/Agent/PageHelper/StateSaver.js',
         'javascripts/DeskPRO/Agent/PageHelper/Results.js',
         'javascripts/DeskPRO/Agent/PageHelper/MassActions.js',
@@ -238,44 +236,40 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageHelper/EditTitle.js',
         'javascripts/DeskPRO/Agent/PageHelper/TaskListControl.js',
         'javascripts/DeskPRO/Agent/PageHelper/TicketBilling.js',
-        'javascripts/DeskPRO/Agent/PageHelper/Twitter.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadVcard.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadFile.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/AgentChatTranscript.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Content/DeleteControl.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Content/StickyWords.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/FeedbackView.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/TopicView.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewArticle.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewPerson.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewOrganization.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewDownload.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/NewNews.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/PublishNewCat.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/NewFeedback.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/NewNews.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTopic.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonSession.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/Visitor.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ChangePic.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadVcard.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/UploadFile.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonHelper/ContactEditor.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/AgentChatTranscript.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/PersonSession.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/PublishNewCat.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/FeedbackView.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/DpNews.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTask.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/NewTweet.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/Visitor.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
-        'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterStatusOverlay.js',
-
     ],
 ];
 
@@ -291,14 +285,12 @@ $CONFIG['agent_element_handlers'] = [
         'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TicketSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
-        'javascripts/DeskPRO/Agent/ElementHandler/QuickSearch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
         'javascripts/DeskPRO/Agent/ElementHandler/GoToBilling.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
         'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
-        'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
         'javascripts/DeskPRO/Agent/SourcePane/SearchForm.js',
     ],
 ];
@@ -353,7 +345,6 @@ $CONFIG['agent_agent_ui'] = [
         'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/UserChat.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBar.js',
         'javascripts/DeskPRO/Agent/WindowElement/TabBarOverflow.js',
-        'javascripts/DeskPRO/Agent/TextSnippetClientDbDriver.js',
         'javascripts/DeskPRO/Agent/TextSnippetAjaxDriver.js',
     ],
 ];
@@ -385,9 +376,6 @@ $CONFIG['agent_misc'] = [
         'javascripts/DeskPRO/Form/InlineEdit.js',
         'javascripts/DeskPRO/Form/RuleBuilder.js',
         'javascripts/DeskPRO/FaviconBadge.js',
-        'javascripts/DeskPRO/Agent/InterfaceEffects.js',
-        'javascripts/DeskPRO/Agent/Widget/FindPerson.js',
-        'javascripts/DeskPRO/Agent/Widget/AgentSelector.js',
         'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
         'javascripts/DeskPRO/Agent/Widget/TicketChangeUser.js',
         'javascripts/DeskPRO/Agent/Widget/Merge.js',
@@ -584,5 +572,7 @@ $CONFIG['agent_vendors_css'] = [
         'vendor/bootstrap/css/table.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         'vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-patch.css',
+        'stylesheets/user/content-editor.css',
+        'bower_components/kbw-calendars/dist/css/smoothness.calendars.picker.css',
     ],
 ];

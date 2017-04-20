@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -61,24 +62,10 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
         // Default
         //------------------------------
         $fields   = [];
-        $fields[] = $this->createField(
-            'select',
-            'Countries',
-            ['GB', 'USA', 'USSR']
-        );
+        $fields[] = $this->createField('select', 'Countries', ['choices' => ['GB', 'USA', 'USSR']]);
 
         self::$fields['default'] = $fields;
-
-        //------------------------------
-        // Widgets
-        //------------------------------
-        $fields   = [];
-        $fields[] = $this->createField('text', 'Widget Type');
-        $fields[] = $this->createField('textarea', 'Widget Description');
-        $fields[] = $this->createField('checkbox', 'Desired Sizes', ['Small', 'Medium', 'Large']);
-        $fields[] = $this->createField('date', 'Manufacture Date');
-
-        self::$fields['widgets'] = $fields;
+        self::$fields['widgets'] = $this->getWidgetsFields();
 
         //------------------------------
         // Regulation and Control of Magical Creatures [both]
@@ -87,13 +74,13 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
         $fields[] = $this->createField(
             'radio',
             'Branches',
-            ['London', 'Paris', 'Moscow', 'Madrid', 'Tokyo', 'Other']
+            ['choices' => ['London', 'Paris', 'Moscow', 'Madrid', 'Tokyo', 'Other']]
         );
 
         $fields[] = $this->createField(
             'select',
             'Official position',
-            ['CEO', 'Finance Director', 'Senior Developer', 'Useless Man']
+            ['choices' => ['CEO', 'Finance Director', 'Senior Developer', 'Useless Man']]
         );
 
         self::$fields['regulation'] = $fields;
@@ -107,16 +94,30 @@ class OrganizationFieldsFixture extends AbstractCustomDefFixture
             'select',
             'Product',
             [
-                'Book',
-                ['Smartphone', ['Apple', ['Samsung', ['Galaxy A5', 'Galaxy Ace']]]],
-                ['Car', ['Toyota', 'Honda', ['Infinity', ['Q50', 'QX70']]]],
-                'Airplane',
+                'choices' => [
+                    'Book',
+                    ['Smartphone', ['Apple', ['Samsung', ['Galaxy A5', 'Galaxy Ace']]]],
+                    ['Car', ['Toyota', 'Honda', ['Infinity', ['Q50', 'QX70']]]],
+                    'Airplane',
+                ],
             ]
         );
 
-        $fields[] = $this->createField('textarea', 'Comment');
+        $fields[] = $this->createField('textarea', 'Comment', ['default_value' => $this->faker->paragraph]);
 
         self::$fields['hotdogs'] = $fields;
+
+        $customData = $this->createCustomDataOrganization();
+        foreach ($this->customOrgChoiceFields as $ref) {
+            /** @var CustomDefAbstract $customOrgChoiceField */
+            $customOrgChoiceField = $this->getReference($ref);
+            $this->setUpCustomChoiceData(
+                $customOrgChoiceField->getParent(),
+                $customData,
+                $customOrgChoiceField
+            );
+        }
+        $this->manager->flush();
     }
 
     /**

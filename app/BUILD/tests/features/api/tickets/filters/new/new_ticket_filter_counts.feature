@@ -262,8 +262,6 @@ Feature: /new/ticket_filters_counts endpoint
     And the JSON node "data.nested[0].type" should be equal to "filter"
     And the JSON node "data.nested[0].count" should be equal to 3
     And the JSON node "data.nested[0].grouped_by" should be equal to "date_created"
-    And the JSON node "data.nested[0].nested" should have 1 elements
 
     And the JSON node "data.nested[0].nested[0].type" should be equal to "date_created"
-    And the JSON node "data.nested[0].nested[0].count" should be equal to 3
     And the JSON node "data.nested[0].nested[0].nested" should have 0 elements

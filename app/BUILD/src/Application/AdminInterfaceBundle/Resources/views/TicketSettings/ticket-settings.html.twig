@@ -190,8 +190,14 @@
 											ui-select2
 											ng-model="settings.lock_timeout"
 											style="min-width: 240px"
-											ng-options="time.id as time.label for time in lock_timeouts"
 											>
+										<option value="900">15 minutes</option>
+										<option value="1800">30 minutes</option>
+										<option value="3600">1 hour</option>
+										<option value="7200">2 hours</option>
+										<option value="14400">4 hours</option>
+										<option value="28000">8 hours</option>
+										<option value="86400">1 day</option>
 									</select>
 								</label>
 										<span class="help-block">

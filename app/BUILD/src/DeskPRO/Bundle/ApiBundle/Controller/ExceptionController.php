@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,10 +32,12 @@ use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 
 /**
  * Class ExceptionController.
@@ -43,11 +45,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class ExceptionController extends BaseController
 {
     /**
-     * @param \Exception $exception
+     * @param \Exception|FlattenException $exception
      *
      * @return View|Response
      */
-    public function showAction(\Exception $exception)
+    public function showAction($exception)
     {
         $parameters = [];
         if ($exception instanceof WrappedApiErrorException) {
@@ -63,19 +65,28 @@ class ExceptionController extends BaseController
         }
 
         // Log exceptions if in production
-        if (!$exception instanceof FormExceptionInterface && !$exception instanceof HttpException) {
+        if (!$exception instanceof FormExceptionInterface
+            && !$exception instanceof HttpException
+            && !$exception instanceof AuthenticationCredentialsNotFoundException) {
             if (!$this->container->getParameter('kernel.debug')) {
                 $this->logException($exception);
             }
         }
 
-        if ($exception instanceof AccessDeniedException) {
+        if ($exception instanceof AccessDeniedException || $exception instanceof AuthenticationCredentialsNotFoundException) {
             $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
 
-        $status  = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
-        $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
-        $message = $this->get('form_error.message_factory.api')->createMessage($code, $parameters);
+        $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+
+        if ($exception instanceof \Exception) {
+            $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
+            $message = $this->get('form_error.message_factory.api')->createMessage($code, $parameters);
+        } else {
+            // this is a quick stub for dev mode.
+            $code    = $exception->getCode();
+            $message = $exception->getMessage();
+        }
 
         // $exception has "getHeaders()" that we are interested in using
 
@@ -97,12 +108,12 @@ class ExceptionController extends BaseController
     }
 
     /**
-     * @param \Exception $exception
-     * @param array      $representation
+     * @param \Exception|FlattenException $exception
+     * @param array                       $representation
      *
      * @return array
      */
-    private function addExceptionInfo(\Exception $exception, array $representation)
+    private function addExceptionInfo($exception, array $representation)
     {
         // in dev environment, display a stack trace, dont show if we have a test.client
         if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {

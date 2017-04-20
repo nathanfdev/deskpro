@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -140,8 +140,11 @@ class SyncerHelper
         }
 
         if (!empty($user_info['phone'])) {
-            if ($number = PhoneNumber::createEntity($user_info['phone'])) {
-                $person->setPrimaryPhoneNumber($number);
+            $newNumber = PhoneNumber::createEntity($user_info['phone']);
+            $oldNumber = $person->getPrimaryPhoneNumber();
+
+            if ($newNumber && (!$oldNumber || $oldNumber->getFullFormatted() !== $newNumber->getFullFormatted())) {
+                $person->setPrimaryPhoneNumber($newNumber);
             }
         }
 
@@ -185,7 +188,7 @@ class SyncerHelper
     public function persistAndFlushEntity($entity)
     {
         $this->em->persist($entity);
-        $this->em->flush($entity);
+        $this->em->flush();
     }
 
     /**
@@ -254,7 +257,7 @@ class SyncerHelper
         $this->log(Logger::DEBUG, 'saving person');
         $this->em->persist($person);
         if ($flush) {
-            $this->em->flush($person);
+            $this->em->flush();
         }
     }
 
@@ -268,7 +271,7 @@ class SyncerHelper
         $this->log(Logger::DEBUG, 'saving association');
         $this->em->persist($association);
         if ($flush) {
-            $this->em->flush($association);
+            $this->em->flush();
         }
     }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -253,7 +253,7 @@ class TicketMerge implements PersonContextInterface
             'product'       => 'title',
             'workflow'      => 'title',
             'priority'      => 'title',
-            'parent_ticket' => 'parent_ticket',
+            'parent_ticket' => 'id',
         ];
         foreach ($standard_prop_names as $prop_name => $title_field) {
             if ($this->ticket[$prop_name] && $this->other_ticket[$prop_name]) {

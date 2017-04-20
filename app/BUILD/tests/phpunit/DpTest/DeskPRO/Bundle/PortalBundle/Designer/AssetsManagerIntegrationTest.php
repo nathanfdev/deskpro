@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -115,7 +115,14 @@ class AssetsManagerIntegrationTest extends PortalTestCase
     public function it_should_save_uploaded_file_as_an_asset()
     {
         $this->cleanThemeSetAssets($this->edit_theme_set);
-        $file = new UploadedFile(__DIR__.'/file/asset.txt', 'asset.txt');
+        $file = new UploadedFile(
+            __DIR__.'/file/asset.txt',
+            'asset.txt',
+            null,
+            null,
+            null,
+            true
+        );
 
         $this->service->uploadEditThemeSetAsset($file);
 
@@ -129,7 +136,14 @@ class AssetsManagerIntegrationTest extends PortalTestCase
     public function it_should_save_uploaded_file_content_as_a_BlobStorage()
     {
         $this->cleanThemeSetAssets($this->edit_theme_set);
-        $file = new UploadedFile($path = __DIR__.'/file/asset.txt', 'asset.txt');
+        $file = new UploadedFile(
+            $path = __DIR__.'/file/asset.txt',
+            'asset.txt',
+            null,
+            null,
+            null,
+            true
+        );
 
         $this->service->uploadEditThemeSetAsset($file);
 
@@ -143,7 +157,14 @@ class AssetsManagerIntegrationTest extends PortalTestCase
     public function it_should_replace_whitespaces_in_uploaded_file_name()
     {
         $this->cleanThemeSetAssets($this->edit_theme_set);
-        $file = new UploadedFile($path = __DIR__.'/file/asset.txt', 'test asset.txt');
+        $file = new UploadedFile(
+            $path = __DIR__.'/file/asset.txt',
+            'test asset.txt',
+            null,
+            null,
+            null,
+            true
+        );
 
         $this->service->uploadEditThemeSetAsset($file);
 
@@ -157,7 +178,14 @@ class AssetsManagerIntegrationTest extends PortalTestCase
     public function it_should_find_blob_storage_by_asset_name()
     {
         $this->cleanThemeSetAssets($this->edit_theme_set);
-        $file = new UploadedFile($path = __DIR__.'/file/asset.txt', 'asset.txt');
+        $file = new UploadedFile(
+            $path = __DIR__.'/file/asset.txt',
+            'asset.txt',
+            null,
+            null,
+            null,
+            true
+        );
         $this->service->uploadEditThemeSetAsset($file);
         $blob = $this->service->getEditThemeSetAssets()[0]->getBlob();
 

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import { AgentAvatars } from '../AgentAvatars';
 import Immutable from 'immutable';
 import classNames from 'classnames';
-import { ChatPopup } from '../ChatPopup';
+import { AgentAvatars } from '../AgentAvatars';
+import ChatPopup from '../ChatPopup';
 
 export class AgentMessagePopup extends React.Component {
 

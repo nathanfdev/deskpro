@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,7 +27,8 @@
  */
 
 return [
-    'agent.publish.helpful'         => 'Hjälpsam',
-    'agent.publish.view_count'      => 'Visa Antal',
-    'agent.tickets.send_reply_as_x' => 'Skicka Svar som {{status}}',
+    'agent.prefs.inbox_all_email_created' => 'Skicka epost till mig när ett ärende skapats',
+    'agent.publish.helpful'               => 'Hjälpsam',
+    'agent.publish.view_count'            => 'Visa antal',
+    'agent.tickets.send_reply_as_x'       => 'Skicka svar som {{status}}',
 ];

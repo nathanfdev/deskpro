@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -554,6 +554,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         if ($this->container->getSystemService('org_fields_manager')->count()) {
             $object_groups[] = ['id' => 'org_fields',          'title' => 'Organization Fields'];
         }
+        if ($this->container->getSystemService('chat_fields_manager')->count()) {
+            $object_groups[] = ['id' => 'chat_fields',         'title' => 'Chat Fields'];
+        }
 
         //------------------------------
         // Phrase groups
@@ -674,6 +677,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
             case 'org_fields':
                 $phrases = $phrase_data->getFieldPhrases(
                     $this->container->getSystemService('org_fields_manager'),
+                    $lang
+                );
+                break;
+
+            case 'chat_fields':
+                $phrases = $phrase_data->getFieldPhrases(
+                    $this->container->getSystemService('chat_fields_manager'),
                     $lang
                 );
                 break;

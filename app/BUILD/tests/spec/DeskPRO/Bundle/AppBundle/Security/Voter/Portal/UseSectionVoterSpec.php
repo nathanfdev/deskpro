@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -89,6 +89,7 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(false);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(false);
+        $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(false);
 
         $this->verifyDeniedVote(
             [
@@ -97,6 +98,7 @@ class UseSectionVoterSpec extends ObjectBehavior
                 UseSectionVoter::USE_CHAT,
                 UseSectionVoter::USE_DOWNLOADS,
                 UseSectionVoter::USE_NEWS,
+                UseSectionVoter::USE_GUIDES,
             ],
             $token
         );
@@ -140,9 +142,11 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('chat.use')->willReturn(true);
+        $person_permission_bag->getAllowedChatDepartmentIds()->willReturn(1);
         $this->verifyGrantedVote(UseSectionVoter::USE_CHAT, $token);
 
         $guest_permission_bag->get('chat.use')->willReturn(true);
+        $guest_permission_bag->getAllowedChatDepartmentIds()->willReturn(1);
         $this->verifyGrantedVote(UseSectionVoter::USE_CHAT, $guest_token);
     }
 
@@ -173,26 +177,31 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('articles.use')->willReturn(false);
         $person_permission_bag->get('feedback.use')->willReturn(false);
         $person_permission_bag->get('downloads.use')->willReturn(false);
         $person_permission_bag->get('news.use')->willReturn(false);
+        $person_permission_bag->get('guides.use')->willReturn(false);
 
         $guest_permission_bag->get('articles.use')->willReturn(false);
         $guest_permission_bag->get('feedback.use')->willReturn(false);
         $guest_permission_bag->get('downloads.use')->willReturn(false);
         $guest_permission_bag->get('news.use')->willReturn(false);
+        $guest_permission_bag->get('guides.use')->willReturn(false);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $token);
+        $this->verifyDeniedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyDeniedVote(UseSectionVoter::USE_NEWS, $guest_token);
+        $this->verifyDeniedVote(UseSectionVoter::USE_GUIDES, $guest_token);
     }
 
     public function it_grants_content_if_token_user_has_permission(
@@ -206,26 +215,31 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
         $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('articles.use')->willReturn(true);
         $person_permission_bag->get('feedback.use')->willReturn(true);
         $person_permission_bag->get('downloads.use')->willReturn(true);
         $person_permission_bag->get('news.use')->willReturn(true);
+        $person_permission_bag->get('guides.use')->willReturn(true);
 
         $guest_permission_bag->get('articles.use')->willReturn(true);
         $guest_permission_bag->get('feedback.use')->willReturn(true);
         $guest_permission_bag->get('downloads.use')->willReturn(true);
         $guest_permission_bag->get('news.use')->willReturn(true);
+        $guest_permission_bag->get('guides.use')->willReturn(true);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $token);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
         $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $guest_token);
     }
 
     public function verifyGrantedVote($attribute, $token)

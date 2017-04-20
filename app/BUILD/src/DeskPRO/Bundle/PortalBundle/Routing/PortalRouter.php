@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -280,7 +280,15 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
                 $url .= '?'.http_build_query($queryParams);
             }
 
-            throw new RedirectToUrlException($url);
+            if (($this->isMultiLanguage() && !$requestInfo->getLanguageUrlCode())) {
+                $message = 'MultiLanguage and missing lang code';
+            } else {
+                $message = 'Not MultiLanguage but have lang code';
+            }
+
+            $message .= ' (lang code: '.($requestInfo->getLanguageUrlCode() ?: 'unset').')';
+
+            throw new RedirectToUrlException($url, $message);
         }
 
         $routablePath = $requestInfo->getRoutablePath();

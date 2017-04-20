@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\NewFilters;
@@ -50,6 +46,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Rest\Route("/new/ticket_filters")
  * @ApiDoc(target="all", section="Ticket filters", output="DeskPRO\Bundle\AppBundle\Entity\TicketFilter")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TicketFilter"
+ *      }
+ *     }
+ * )
  */
 class TicketFiltersController extends CrudController
 {

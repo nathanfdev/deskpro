@@ -21,6 +21,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.enabled_on_portal = false
       @$scope.widgetLoaded = false
       @$scope.departments = []
+      @$scope.chat_departments = []
       @$scope.languages = []
       @$scope.saving_code = false
       @$scope.applying_to_portal = false
@@ -110,6 +111,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promise = @Api2.sendGet('/ticket_departments?selectable=1')
       promise.then (res) =>
         @$scope.departments = res.data.data
+      promises.push(promise)
+
+      promise = @Api2.sendGet('/chat_departments?selectable=1')
+      promise.then (res) =>
+        @$scope.chat_departments = res.data.data
       promises.push(promise)
 
       promise = @Api2.sendGet('/widget/live_demo/sample_state')
@@ -225,14 +231,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
     changeRights: (group) ->
       everyone = @$scope.everyone_group.id
       reg = @$scope.reg_group.id
-      if group.id == everyone && !@$scope.user_group_permission[group.id]
+      if group.id == everyone
         for own id,g of @$scope.user_group_permission
-          if id != everyone
+          if parseInt(id) != everyone && !@$scope.user_group_permission[group.id]
             @$scope.user_group_permission[id] = true
         return true
-      if group.id == reg && !@$scope.user_group_permission[group.id]
+      else if group.id == reg
         for own id,g of @$scope.user_group_permission
-          if id != everyone && id != reg
+          if parseInt(id) != everyone && parseInt(id) != reg && !@$scope.user_group_permission[group.id]
             @$scope.user_group_permission[id] = true
         return true
       return true
@@ -334,7 +340,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     updateLiveDemo: () ->
       @$scope.flag_has_changed = @hasChanged()
-      localStorage.setItem 'dpWidgetSettings'+@$scope.brand_id, JSON.stringify(@getWidgetSaveData())
+      try
+        localStorage.setItem 'dpWidgetSettings'+@$scope.brand_id, JSON.stringify(@getWidgetSaveData())
+      catch
+        console.log('dpWidgetSettings were not saved in local storage')
+
       if (@getDpWidget())
         @getDpWidget().dispatchCustomEvent('reloadLiveDemoOptions', @getOptions(true))
         @getDpWidget().dispatchCustomEvent('reloadLiveDemoSettings', @$scope.global_settings)

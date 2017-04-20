@@ -63,16 +63,30 @@
       }
     ],
     "valid-jsdoc": 0,
-    "import/no-extraneous-dependencies": [
-      "error",
-      {"devDependencies": true}
-    ],
+    "import/no-extraneous-dependencies": ["off"],
     "jsx-a11y/no-static-element-interactions": 0,
     "react/forbid-prop-types": [
       "error",
       {"forbid": ["any"]}
     ],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
+    "class-methods-use-this": [
+      "error",
+      { "exceptMethods": [
+        "renderWidget",
+        "render",
+        "componentWillReceiveProps",
+        "componentDidMount"
+      ] }
+    ],
+    "jsx-a11y/tabindex-no-positive": 0,
+    "strict": 0,
+    "no-param-reassign": [
+      "error",
+      {"props": false}
+    ],
+    "no-mixed-operators": "off"
   },
   "plugins": [
     "react",
@@ -80,7 +94,7 @@
   ],
   "settings": {
     "import/resolver": {
-      "babel-namespace": {}
+      "babel-namespace": {  }
     },
     "react": {
       "version": "15.1.0"

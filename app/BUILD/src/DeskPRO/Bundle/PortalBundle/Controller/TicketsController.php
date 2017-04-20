@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -148,12 +148,12 @@ class TicketsController extends AbstractController
     {
         $ticket = $this->getTicketForViewPage($ticket_ref, $auth, $_route);
 
-        if ($_route === 'portal_tickets_view' && $this->cannotAccessViewPageOfTicket($ticket)) {
-            throw new AccessDeniedException();
+        if ($_route === 'portal_tickets_view') {
+            $this->denyAccessUnlessGranted(TicketsVoter::TICKET_VIEW, $ticket);
         }
 
-        if ($_route === 'portal_tickets_guest_view' && $this->cannotAccessGuestViewPageOfTicket($ticket)) {
-            throw new AccessDeniedException();
+        if ($_route === 'portal_tickets_guest_view') {
+            $this->denyAccessUnlessGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket);
         }
 
         $form_data = [
@@ -171,11 +171,12 @@ class TicketsController extends AbstractController
             'settings'       => $this->getBrandContainer()->getSettings(),
         ]);
 
+        $form->setData(['ticket' => $ticket]);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
-            if ($form->getClickedButton() && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+            if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 $this->addCurrentUserAsParticipantIfTheyAreNot($ticket);
 
                 $this->saveNewReply($ticket, $message);
@@ -201,23 +202,20 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        return $this->renderThemeView(
-            'Theme:Tickets:view.html.twig',
-            [
-                'ticket'                     => $ticket,
-                'ticket_view'                => $ticket_view,
-                'timeline_pager'             => $pager,
-                'timeline'                   => $timeline,
-                'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
-                'form'                       => $form->createView(),
-                'breadcrumbs'                => $breadcrumbs,
-                'page_title'                 => $this->createPageTitle()->tickets($ticket),
-                'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
-                'created_in_seconds'         => $created_in_seconds,
-                'edit_page'                  => false,
-                'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
-            ]
-        );
+        return $this->renderThemeView('Theme:Tickets:view.html.twig', [
+            'ticket'                     => $ticket,
+            'ticket_view'                => $ticket_view,
+            'timeline_pager'             => $pager,
+            'timeline'                   => $timeline,
+            'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
+            'form'                       => $form->createView(),
+            'breadcrumbs'                => $breadcrumbs,
+            'page_title'                 => $this->createPageTitle()->tickets($ticket),
+            'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
+            'created_in_seconds'         => $created_in_seconds,
+            'edit_page'                  => false,
+            'form_errors'                => $form->isSubmitted() ? $form->getErrors() : [],
+        ]);
     }
 
     /**
@@ -232,12 +230,10 @@ class TicketsController extends AbstractController
     public function editAction(Request $request, $ticket_ref)
     {
         if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
-            throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+            throw $this->createNotFoundException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
         }
 
-        if (!$this->isGranted(TicketsVoter::TICKET_EDIT, $ticket)) {
-            throw new AccessDeniedException();
-        }
+        $this->denyAccessUnlessGranted(TicketsVoter::TICKET_EDIT, $ticket);
 
         $person = $this->getUser();
         $form   = $this->createForm(TicketWithLayoutsWebType::class, $ticket, [
@@ -277,23 +273,20 @@ class TicketsController extends AbstractController
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);
         $ticket_display_js = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
-        return $this->renderThemeView(
-            'Theme:Tickets:edit.html.twig',
-            [
-                'ticket'                     => $ticket,
-                'form'                       => $form->createView(),
-                'rerendering'                => $rerendering,
-                'breadcrumbs'                => $breadcrumbs,
-                'page_title'                 => $this->createPageTitle()->tickets($ticket),
-                'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
-                'created_in_seconds'         => $created_in_seconds,
-                'edit_page'                  => true,
-                'can_edit'                   => $this->isGranted('TICKET_EDIT', $ticket),
-                'ticket_view'                => $ticket_view,
-                'ticket_display_js'          => $ticket_display_js,
-                'form_full'                  => $form_full->createView(),
-            ]
-        );
+        return $this->renderThemeView('Theme:Tickets:edit.html.twig', [
+            'ticket'                     => $ticket,
+            'form'                       => $form->createView(),
+            'rerendering'                => $rerendering,
+            'breadcrumbs'                => $breadcrumbs,
+            'page_title'                 => $this->createPageTitle()->tickets($ticket),
+            'last_user_reply_in_seconds' => $last_user_reply_in_seconds,
+            'created_in_seconds'         => $created_in_seconds,
+            'edit_page'                  => true,
+            'can_edit'                   => $this->isGranted(TicketsVoter::TICKET_EDIT, $ticket),
+            'ticket_view'                => $ticket_view,
+            'ticket_display_js'          => $ticket_display_js,
+            'form_full'                  => $form_full->createView(),
+        ]);
     }
 
     /**
@@ -491,8 +484,7 @@ class TicketsController extends AbstractController
         }
         if (null !== $request->get('setrating', null)) {
             // email links use "setrating" to signify we should record the feedback on the GET request, and ask for a comment
-            $rating             = $request->get('setrating');
-            $set_rating_via_get = true;
+            $rating = $request->get('setrating');
         }
 
         if ($rating !== null) {
@@ -799,26 +791,6 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * @param $ticket
-     *
-     * @return bool
-     */
-    protected function cannotAccessViewPageOfTicket($ticket)
-    {
-        return !$this->isGranted(TicketsVoter::TICKET_VIEW, $ticket);
-    }
-
-    /**
-     * @param $ticket
-     *
-     * @return bool
-     */
-    protected function cannotAccessGuestViewPageOfTicket($ticket)
-    {
-        return !$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket);
-    }
-
-    /**
      * @param $ticket_ref
      * @param $auth
      * @param $_route
@@ -827,7 +799,6 @@ class TicketsController extends AbstractController
      */
     protected function getTicketForViewPage($ticket_ref, $auth, $_route)
     {
-
         // If a ticket is being viewed with "auth" then it uses different security. Anyone that is authenticated
         // can view a ticket with the /ticket-view/$auth route.
 
@@ -835,18 +806,18 @@ class TicketsController extends AbstractController
 
         if ($_route === 'portal_tickets_guest_view') {
             if (!$ticket = $this->getTicketByAuthIfGrantedAccess($auth)) {
-                throw new NotFoundHttpException(sprintf('no ticket with auth "%s" found', $auth));
-            }
-
-            return $ticket;
-        } else {
-            // normal route, normal security
-            if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
-                throw new NotFoundHttpException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+                throw $this->createNotFoundException(sprintf('no ticket with auth "%s" found', $auth));
             }
 
             return $ticket;
         }
+
+        // normal route, normal security
+        if (!$ticket = $this->getTicketByRefOrId($ticket_ref)) {
+            throw $this->createNotFoundException(sprintf('no ticket with ref or id "%s" found', $ticket_ref));
+        }
+
+        return $ticket;
     }
 
     /**

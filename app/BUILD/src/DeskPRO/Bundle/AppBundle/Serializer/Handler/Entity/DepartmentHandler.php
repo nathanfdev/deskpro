@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Department as DepartmentModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
@@ -44,13 +47,20 @@ class DepartmentHandler extends AbstractEntityHandler
     protected $resolver;
 
     /**
+     * @var DepartmentDataService
+     */
+    protected $departmentsData;
+
+    /**
      * Constructor.
      *
-     * @param AvatarResolver $resolver
+     * @param AvatarResolver        $resolver
+     * @param DepartmentDataService $departmentsData
      */
-    public function __construct(AvatarResolver $resolver)
+    public function __construct(AvatarResolver $resolver, DepartmentDataService $departmentsData)
     {
-        $this->resolver = $resolver;
+        $this->resolver        = $resolver;
+        $this->departmentsData = $departmentsData;
     }
 
     /**
@@ -62,6 +72,18 @@ class DepartmentHandler extends AbstractEntityHandler
     }
 
     /**
+     * @internal
+     *
+     * @param Department $department
+     *
+     * @return Person[]
+     */
+    public function getAgents(Department $department)
+    {
+        return $this->departmentsData->getDepartmentAgents($department);
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @param Department $entity
@@ -69,7 +91,16 @@ class DepartmentHandler extends AbstractEntityHandler
     protected function createModel($entity, SideloadSerializationContext $context)
     {
         $avatar = $this->resolver->getAvatarModel($entity);
+        $model  = new DepartmentModel($entity, $avatar);
 
-        return new DepartmentModel($entity, $avatar);
+        $sideloads = $context->getSideloadStore();
+        $sideloads->addCustomSideload(
+            'department_agent_ids',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getAgents'], [$entity]),
+            $model
+        );
+
+        return $model;
     }
 }

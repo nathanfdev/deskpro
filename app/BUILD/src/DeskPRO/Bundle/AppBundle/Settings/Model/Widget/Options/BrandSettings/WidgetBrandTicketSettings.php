@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
 {
     const SELECT_DEFAULT = 'default';
     const SELECT_CUSTOM  = 'custom';
+    const SELECT_MESSAGE = 'message';
 
     /**
      * @var string
@@ -57,6 +58,20 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
      * @Assert\NotNull(groups={"DefaultDepartment"})
      */
     private $defaultDepartment;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $selectSubject = self::SELECT_CUSTOM;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $defaultSubject;
 
     /**
      * @return string
@@ -96,6 +111,38 @@ class WidgetBrandTicketSettings implements GroupSequenceProviderInterface
         $this->defaultDepartment = $defaultDepartment;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultSubject()
+    {
+        return $this->defaultSubject;
+    }
+
+    /**
+     * @param string $defaultSubject
+     */
+    public function setDefaultSubject($defaultSubject)
+    {
+        $this->defaultSubject = $defaultSubject;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectSubject()
+    {
+        return $this->selectSubject;
+    }
+
+    /**
+     * @param string $selectSubject
+     */
+    public function setSelectSubject($selectSubject)
+    {
+        $this->selectSubject = $selectSubject;
     }
 
     /**

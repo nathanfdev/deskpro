@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Web;
@@ -102,14 +103,15 @@ class NewDownload
         $download->category = $cat;
 
         if ($this->attach) {
-            $blob           = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
-            $download->blob = $blob;
+            /** @var Blob $blob */
+            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+            $download->setBlob($blob);
+            $download->setFilename($blob->getFilename());
 
-            if (!$download->title) {
-                $download->title = $blob->filename;
+            if (!$download->getTitle()) {
+                $download->setTitle($blob->getFilename());
             }
 
-            $blob->filename = $download->title;
             $this->_em->persist($blob);
         } else {
             $fileurl  = $this->fileurl;

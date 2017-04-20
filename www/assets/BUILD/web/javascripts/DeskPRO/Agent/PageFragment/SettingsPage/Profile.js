@@ -16,7 +16,9 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 		var form = $('form', this.el);
 
 		if (this.el.find('.dp-form-row.new-picture')[0]) {
-			DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'));
+			DeskPRO_Window.util.fileupload(this.el.find('.dp-form-row.new-picture'), {
+				url: BASE_URL + 'agent/misc/accept-upload?is_image=1'
+			});
 			this.el.find('.dp-form-row.new-picture').bind('fileuploadadd', function() {
 				$('.files', form).empty();
 			});
@@ -248,7 +250,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 
 	getDeviceToken: function(el) {
 		jQuery.get(
-			'/api/v2/me/device-setup-token',
+      window.DP_BASE_API_URL + '/v2/me/device-setup-token',
 			function(data){
 				var tokenContainer = el.find('.dp-device-qr-code');
 				tokenContainer.html('');

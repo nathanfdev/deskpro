@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,9 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
+use Application\AgentBundle\Form\Model\NewNews;
+use Application\AgentBundle\Form\Type\NewNews as NewNewsType;
+use Application\AgentBundle\Validator\NewNewsValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Brand;
@@ -40,6 +43,7 @@ use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DateTime;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -144,7 +148,7 @@ class NewsController extends AbstractController
         $comment->person         = $this->person;
         $comment['content']      = $this->in->getString('content');
         $comment['status']       = 'visible';
-        $comment['date_created'] = new \DateTime();
+        $comment['date_created'] = new DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
             $comment->is_reviewed = true;
@@ -434,9 +438,9 @@ class NewsController extends AbstractController
 
     public function newNewsSaveAction(Request $request)
     {
-        $newNews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
+        $newNews = new NewNews($this->person);
 
-        $formType = new \Application\AgentBundle\Form\Type\NewNews();
+        $formType = new NewNewsType();
         $form     = $this->get('form.factory')->create($formType, $newNews);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newnews' AND person_id = ?", [$this->person->id]);
@@ -445,7 +449,7 @@ class NewsController extends AbstractController
             $form->handleRequest($request);
             $form->isValid();
 
-            $validator = new \Application\AgentBundle\Validator\NewNewsValidator();
+            $validator = new NewNewsValidator();
             if (!$validator->isValid($newNews)) {
                 return $this->createJsonResponse([
                     'error'       => true,

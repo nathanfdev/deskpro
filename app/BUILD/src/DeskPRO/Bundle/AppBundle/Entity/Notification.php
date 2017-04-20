@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,9 +39,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class Event.
  *
+ * @todo process it same as ActionAlert with JMS
  * @ORM\Entity
  * @ORM\Table(name="notify_notifications")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
  * @category Entities
@@ -115,7 +116,9 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setType($type)
     {
-        $this->type = $type;
+        $this->setModelField('type', $type);
+
+        return $this;
     }
 
     /**
@@ -133,7 +136,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setModelField('id', $id);
 
         return $this;
     }
@@ -153,7 +156,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setTargetId($target_id)
     {
-        $this->target_id = $target_id;
+        $this->setModelField('target_id', $target_id);
 
         return $this;
     }
@@ -173,7 +176,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setUuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->setModelField('uuid', $uuid);
 
         return $this;
     }
@@ -193,7 +196,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setDateCreated($date_created)
     {
-        $this->date_created = $date_created;
+        $this->setModelField('date_created', $date_created);
 
         return $this;
     }
@@ -213,7 +216,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setIsDismissed($is_dismissed)
     {
-        $this->is_dismissed = $is_dismissed;
+        $this->setModelField('is_dismissed', $is_dismissed);
 
         return $this;
     }
@@ -233,7 +236,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
      */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->setModelField('data', $data);
 
         return $this;
     }

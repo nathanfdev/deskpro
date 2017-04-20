@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -93,6 +93,7 @@ abstract class TermIntegrationTest extends ApiTestCase
         if (!$this->get(self::LOG_SERVICE) instanceof TermEngineBufferHandler) {
             $this->getContainer()->set(self::LOG_SERVICE, new TermEngineBufferHandler());
         }
+
         $this->em = $this->get('doctrine.orm.entity_manager');
     }
 
@@ -116,7 +117,8 @@ abstract class TermIntegrationTest extends ApiTestCase
      */
     protected function dummyTicket($data = [])
     {
-        $ticket          = new Ticket();
+        $ticket = new Ticket();
+        $ticket->disableAutoTicketProcess();
         $ticket->subject = $this->faker->text();
         foreach ($data as $prop => $value) {
             if ($prop === 'problems' && !$value instanceof ArrayCollection) {

@@ -8,6 +8,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 		var openForEl = null;
 		var menuVis   = options.menuVis;
 		var completeCountEl = options.completeCountEl;
+		this.el = el;
 
 		var updateCount = function(op, row) {
 			var els = [];
@@ -73,7 +74,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			});
 		};
 
-		var statusMenu = new DeskPRO.UI.Menu({
+		var statusMenu = this.statusMenu = new DeskPRO.UI.Menu({
 			menuElement: menuVis,
 			onItemClicked: function(info) {
 				sendUpdate(openForEl, 'visibility', $(info.itemEl).data('vis'));
@@ -400,5 +401,13 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			$(this).children().hide();
 			$(this).next().show().focus();
 		});
+	},
+
+	destroy: function() {
+		this.el.off();
+		this.el = null;
+		this.statusMenu.destroy();
+		this.statusMenu = null;
+		this.destroyEvents();
 	}
 });

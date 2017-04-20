@@ -136,4 +136,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@applyErrorResponseToView(info)
 			)
 
+		checkUrl: ->
+			if @$scope.settings.deskpro_url.match(/^https:/)
+				@$scope.https_url = true
+			else
+				@$scope.https_url = false
+				@$scope.settings.deskpro_url_autocorrect = false
+
 	Admin_Settings_Ctrl_GeneralSettings.EXPORT_CTRL()

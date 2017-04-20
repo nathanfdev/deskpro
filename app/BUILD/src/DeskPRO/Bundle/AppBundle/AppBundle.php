@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,11 +34,13 @@ namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\ExportBlobCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RecompileTemplatesCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FeaturesCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\MongoConnectionPass;
@@ -79,6 +81,7 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new DbalConnectionPass());
         $container->addCompilerPass(new MongoConnectionPass());
         $container->addCompilerPass(new PermissionGroupsCompilerPass());
+        $container->addCompilerPass(new FeaturesCompilerPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');
@@ -95,6 +98,7 @@ class AppBundle extends Bundle
         $application->add(new WebServerInfoCommand());
         $application->add(new ConfigElasticCommand());
         $application->add(new RecompileTemplatesCommand());
+        $application->add(new ExportBlobCommand());
     }
 
     /**

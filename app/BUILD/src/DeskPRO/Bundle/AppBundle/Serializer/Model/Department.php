@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\Entity\Department as DepartmentEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
@@ -116,7 +116,7 @@ class Department
      *
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\Brand>>")
      *
-     * @var Brand[]
+     * @var BrandEntity[]
      */
     protected $brands;
 

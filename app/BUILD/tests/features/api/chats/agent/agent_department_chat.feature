@@ -4,6 +4,7 @@ Feature: /agent_chats endpoint
 
   Background:
     Given I'm authenticated as admin
+    And the setting "beta_features.agent_chat" is set to 1
     And I have only default brand
     And only the following Department records exist:
       | # | Title      | Brands           | Is Tickets Enabled |

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,10 +92,11 @@ class PersonHelper
 
     /**
      * @param string $personOidOrEmail
+     * @param bool   $isAgent
      *
      * @return Entity\Person|null
      */
-    public function findOrCreatePerson($personOidOrEmail)
+    public function findOrCreatePerson($personOidOrEmail, $isAgent = false)
     {
         if (!$personOidOrEmail) {
             return;
@@ -136,7 +137,10 @@ class PersonHelper
 
         // try to find person by auto generated email
         if (!$entity) {
-            $personEmail = "imported.user.$personOidOrEmail@example.com";
+            $emailPart = strtolower($personOidOrEmail);
+            $emailPart = preg_replace('#[^\w\d\.]#', '', $emailPart);
+
+            $personEmail = "imported.user.$emailPart@example.com";
             $entity      = $this->personMapper->findOneByEmail($personEmail);
 
             if (!$entity) {
@@ -147,6 +151,12 @@ class PersonHelper
 
         if (!$entity->getId()) {
             $entity->setName($entity->getDisplayName());
+            $this->persister->persistAndFlush($entity, $model);
+        }
+
+        // force set person as agent
+        if ($isAgent && !$entity->isAgent()) {
+            $entity->setIsAgent(true);
             $this->persister->persistAndFlush($entity, $model);
         }
 

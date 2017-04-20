@@ -1,23 +1,73 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 
 class Button extends React.Component {
   static propTypes = {
     children:  PropTypes.node,
     className: PropTypes.string,
-    onClick:   PropTypes.func
+    onClick:   PropTypes.func,
+    disabled:  PropTypes.bool,
+    confirm:   PropTypes.bool,
+  };
+  static defaultProps = {
+    disabled: false,
+    confirm:  false,
+    onClick() {}
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      confirm: false
+    };
+  }
+
+  getLabel = () => {
+    if (this.state.confirm) {
+      return 'Are you sure?';
+    }
+    return this.props.children;
+  };
+
+  cancelConfirm = () => {
+    this.setState({
+      confirm: false
+    });
+  };
+
+  handleClick = (e) => {
+    e.preventDefault();
+    if (!this.props.disabled) {
+      if (!this.props.confirm || this.state.confirm) {
+        this.props.onClick();
+        this.setState({
+          confirm: false
+        });
+      } else if (this.props.confirm) {
+        this.setState({
+          confirm: true
+        });
+      }
+    }
   };
 
   render() {
-    const { children, className } = this.props;
-    return (
+    const { className } = this.props;
+    const button = (
       <button
-        className={classNames('ui button', className)}
-        onClick={this.props.onClick}
+        className={classNames('ui button', className, { disabled: this.props.disabled })}
+        onClick={this.handleClick}
       >
-        {children}
+        {this.getLabel()}
       </button>
     );
+    if (this.state.confirm) {
+      return (
+        <ClickOut onClickOut={this.cancelConfirm} className={className}>{button}</ClickOut>
+      );
+    }
+    return button;
   }
 }
 export default Button;

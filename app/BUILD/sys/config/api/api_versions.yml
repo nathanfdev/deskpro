@@ -1,0 +1,6 @@
+# Define available api versions
+api:
+  default_version: "latest"
+  versions:
+    - 20170401
+    - 20160101

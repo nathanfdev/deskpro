@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,7 +38,6 @@ use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\OrganizationDataService;
 use Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService;
 use Application\DeskPRO\Entity\AgentTeam;
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -50,10 +49,10 @@ use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\TextSnippetCategory as TextSnippetCategoryRepository;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
+use Application\DeskPRO\NewSearch\Manager\Doctrine;
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use Application\DeskPRO\People\PrefNoticeSet;
-use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\Connection;
 use DpSys\License;
@@ -191,7 +190,8 @@ class MainController extends AbstractController
             $is_first_login_name = $this->person->getPref('agent.first_login_name');
         }
 
-        if ($this->container->get('settings_resolver')->getGlobalSettings()->get('raw_assets')) {
+        if ($this->container->get('deskpro.app_env')->getConfig('settings.raw_assets')
+            || $this->container->get('deskpro.app_env')->getConfig('paths.raw_assets')) {
             $has_raw_assets = true;
         } else {
             $has_raw_assets = false;
@@ -224,6 +224,7 @@ class MainController extends AbstractController
             'agents'              => $agents,
             'agent_teams'         => $agent_teams,
             'agent_chat_depmap'   => $agent_chat_depmap,
+            'chat_dep_ids'        => $this->person->getHelper('AgentPermissions')->getAllowedDepartments('chat'),
             'ticket_snippet_cats' => $ticket_snippet_cats,
             'chat_snippet_cats'   => $chat_snippet_cats,
             'brand_app_settings'  => $this->getBrandAppSettings(),
@@ -390,18 +391,19 @@ class MainController extends AbstractController
             'organization'         => [],
             'organization_related' => [],
             'chat'                 => [],
+            'topic'                => [],
         ];
 
-        $result_meta = [];
-        $people_top  = false;
+        $resultMeta = [];
+        $peopleTop  = false;
 
         if (!$q) {
             return $this->render('AgentBundle:Main:quicksearch.json.jsonphp', [
                 'q'           => $q,
                 'router'      => App::getRouter(),
                 'results'     => $results,
-                'result_meta' => $result_meta,
-                'people_top'  => $people_top,
+                'result_meta' => $resultMeta,
+                'people_top'  => $peopleTop,
             ]);
         }
 
@@ -427,49 +429,56 @@ class MainController extends AbstractController
      */
     private function searchInElasticsearch($q, $sort = null)
     {
+        /** @var Elasticsearch $elasticsearch */
         $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
         $elasticsearch->setPersonContext($this->person);
 
-        list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, $sort);
+        try {
+            list($results, $resultMeta, $peopleTop) = $elasticsearch->quickSearch($q, $sort);
 
-        $return_results = [];
+            $returnResults = [];
 
-        if ($results) {
-            foreach ($results as $type => $raw_rows) {
-                $rows = [];
-                foreach ($raw_rows as $r) {
-                    $rows[] = $r;
+            if ($results) {
+                foreach ($results as $type => $rawRows) {
+                    $rows = [];
+                    foreach ($rawRows as $r) {
+                        $rows[] = $r;
+                    }
+
+                    $returnResults[] = [
+                        'type'    => $type,
+                        'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
+                        'results' => $rows,
+                    ];
                 }
-
-                $return_results[] = [
-                    'type'    => $type,
-                    'title'   => $this->container->getTranslator()->phrase('agent.search.type_'.$type),
-                    'results' => $rows,
-                ];
             }
+
+            foreach ($returnResults as &$group) {
+                $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
+            }
+
+            /** @var DataStoreRepository $dataStoryRepository */
+            $dataStoryRepository = $this->em->getRepository(DataStore::class);
+            $esStatus            = $dataStoryRepository->getByName('sys.es_indexer', false);
+            $timecut             = new \DateTime('-10 minutes');
+            if ($esStatus && $esStatus->getData('status') == 'running' && $esStatus->getData('date_last') && $esStatus->getData('date_last') > $timecut) {
+                $indexRunning = true;
+            } else {
+                $indexRunning = false;
+            }
+
+            $returnResults[] = $this->getDeletedTicketResults($q);
+
+            return $this->createJsonResponse([
+                'grouped_results' => $returnResults,
+                'index_running'   => $indexRunning,
+                'is_elastic'      => true,
+            ]);
+        } catch (\Exception $e) {
+            $elasticsearch->testVersion();
+
+            throw $e;
         }
-
-        foreach ($return_results as &$group) {
-            $group['results'] = $this->renderSearchResults($group['type'], $group['results']);
-        }
-
-        /** @var DataStoreRepository $dataStoryRepository */
-        $dataStoryRepository = $this->em->getRepository(DataStore::class);
-        $es_status           = $dataStoryRepository->getByName('sys.es_indexer', false);
-        $timecut             = new \DateTime('-10 minutes');
-        if ($es_status && $es_status->getData('status') == 'running' && $es_status->getData('date_last') && $es_status->getData('date_last') > $timecut) {
-            $index_running = true;
-        } else {
-            $index_running = false;
-        }
-
-        $return_results[] = $this->getDeletedTicketResults($q);
-
-        return $this->createJsonResponse([
-            'grouped_results' => $return_results,
-            'index_running'   => $index_running,
-            'is_elastic'      => true,
-        ]);
     }
 
     /**
@@ -479,6 +488,7 @@ class MainController extends AbstractController
      */
     private function searchInDB($q)
     {
+        /** @var Doctrine $doctrine */
         $doctrine = $this->container->get('deskpro.search_manager.doctrine');
         $doctrine->setPersonContext($this->person);
 
@@ -688,6 +698,7 @@ class MainController extends AbstractController
             case 'news':
             case 'feedback':
             case 'download':
+            case 'topic':
                 foreach ($results as $r) {
                     $rows[] = [
                         'id'    => $r->id,
@@ -746,6 +757,9 @@ class MainController extends AbstractController
         ]);
     }
 
+    /**
+     * @return array
+     */
     protected function getBrandAppSettings()
     {
         $appSettings = [
@@ -753,24 +767,13 @@ class MainController extends AbstractController
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
             PortalSettingsResolver::APPS_FEEDBACK  => false,
+            PortalSettingsResolver::APPS_GUIDES    => false,
             'core.apps_tasks'                      => false,
         ];
 
-        /** @var Brand[] $brands */
-        $brands = $this->em->getRepository(Brand::class)->findAll();
-
-        /** @var BrandStack $brandStack */
-        $brandStack = $this->get('brand_stack');
-
-        /** @var BrandAwareSettingsResolver $brandSettingsResolver */
         $brandSettingsResolver = $this->get('brand_aware_settings_resolver');
-
-        foreach ($brands as $brand) {
-            $brandStack->push($brand);
-            foreach ($appSettings as $key => &$setting) {
-                $setting = $setting || $brandSettingsResolver->getSetting($key);
-            }
-            $brandStack->pop();
+        foreach ($appSettings as $name => $default) {
+            $appSettings[$name] = (bool) $brandSettingsResolver->getAnyBrandSetting($name, $default);
         }
 
         return $appSettings;

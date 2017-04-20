@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,10 @@ class VisitorIdentificationProvider
      */
     private $logger;
 
-    private $_cached_id = null;
+    /**
+     * @var string
+     */
+    private $generatedIdentifier = null;
 
     /**
      * VisitorIdentificationProvider constructor.
@@ -76,38 +79,32 @@ class VisitorIdentificationProvider
     }
 
     /**
-     * @param string $str
+     * @param bool $acceptFromQuery True to accept COOKIE_NAME from the query string as well (e.g. used in PageHitController, chat AuthController)
      *
-     * @return int
-     */
-    private function isValidFormat($str)
-    {
-        return preg_match('#^\d{8}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$#', $str);
-    }
-
-    /**
      * @return string
      */
-    public function getVisitorIdentifier()
+    public function getVisitorIdentifier($acceptFromQuery = false)
     {
-        if ($this->_cached_id) {
-            return $this->_cached_id;
-        }
+        if ($request = $this->request_stack->getMasterRequest()) {
+            foreach ([
+                $acceptFromQuery ? $request->query->get(static::COOKIE_NAME) : null,
+                $request->cookies->get(static::COOKIE_NAME),
+                $request->attributes->get(static::ATTRIBUTE_NAME),
+            ] as $identifier) {
+                if ($identifier && preg_match('#^\d{8,9}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$#', $identifier)) {
+                    $this->logger->info(sprintf('found visitor identifier in request: %s', $identifier));
 
-        if ($this->request_stack->getMasterRequest()) {
-            $identifier = $this->request_stack->getMasterRequest()->cookies->get(static::COOKIE_NAME);
-            if ($identifier && $this->isValidFormat($identifier)) {
-                $this->logger->info(sprintf('found visitor identifier in cookie "%s"', static::COOKIE_NAME));
-
-                return $identifier;
+                    return $identifier;
+                }
             }
         }
 
-        $identifier = static::generateRandomIdentifier();
-        $this->logger->info(sprintf('no visitor identifier in request, created one: %s', $identifier));
+        if (!$this->generatedIdentifier) {
+            $identifier = static::generateRandomIdentifier();
+            $this->logger->info(sprintf('no visitor identifier in request, created one: %s', $identifier));
+            $this->generatedIdentifier = $identifier;
+        }
 
-        $this->_cached_id = $identifier;
-
-        return $identifier;
+        return $this->generatedIdentifier;
     }
 }

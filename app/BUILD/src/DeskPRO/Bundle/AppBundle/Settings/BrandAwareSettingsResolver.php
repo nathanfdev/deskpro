@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,6 +61,11 @@ class BrandAwareSettingsResolver
     private $settings_resolver;
 
     /**
+     * @var Brand[]
+     */
+    private $brands;
+
+    /**
      * Constructor.
      *
      * @param SettingsResolver $settings_resolver
@@ -95,6 +100,34 @@ class BrandAwareSettingsResolver
         }
 
         return $this->getGlobalSetting($name, $default);
+    }
+
+    /**
+     * Allows to check if a setting is enabled on any brand.
+     *
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getAnyBrandSetting($name, $default = null)
+    {
+        foreach ($this->getBrands() as $brand) {
+            $setting = $this->getBrandSetting($name, $brand, $default);
+            if ($setting) {
+                return $setting;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function isChatAvailable()
+    {
+        return $this->getAnyBrandSetting(WidgetSettingsResolver::CHAT_ENABLED, false);
     }
 
     /**
@@ -175,5 +208,17 @@ class BrandAwareSettingsResolver
     protected function getGlobalSetting($name, $default = null)
     {
         return $this->settings_resolver->getGlobalSettings()->get($name, $default);
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\Brand[]|array
+     */
+    protected function getBrands()
+    {
+        if (!$this->brands) {
+            $this->brands = $this->em->getRepository(Brand::class)->findAll();
+        }
+
+        return $this->brands;
     }
 }

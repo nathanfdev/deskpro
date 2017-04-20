@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,6 @@ namespace Application\DeskPRO\HttpFoundation;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Orb\Util\Arrays;
 
 /**
  * Session is able to load up a user, their language etc.
@@ -104,7 +103,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
         } elseif (DP_INTERFACE == 'user') {
             $allow_rememberme = (bool) App::getSetting('core.enable_user_rememberme');
         }
-
         if ((empty($_SESSION['_sf2_attributes']['auth_person_id']) || (!isset($_SESSION['_sf2_attributes']['auth_person_id']) || !$_SESSION['_sf2_attributes']['auth_person_id']))) {
             // See if we should carry an agent session
             if (!empty($_COOKIE['dpsid-agent']) && (DP_INTERFACE == 'user' || DP_INTERFACE == 'reports' || DP_INTERFACE == 'billing' || DP_INTERFACE == 'admin')) {
@@ -133,7 +131,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                         }
                     }
                 }
-            } elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false && $allow_rememberme) {
+            } elseif (!empty($_COOKIE['dpreme']) && is_string($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false && $allow_rememberme) {
                 list($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
                 /** @var Entity\Person $person */
@@ -177,22 +175,12 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                             $sid,
                         ]
                     );
-                    $agent_sess_data = $agent_session['sess_data'];
-                    $agent_sess_data = base64_decode($agent_session['sess_data']);
+                    $agentSessData = base64_decode($agent_session['sess_data']);
+                    $personId      = preg_replace('/^.+s:14:"auth_person_id";i:(\d+);.+$/', '\\1', $agentSessData);
 
-                    // a hack to maintain the original session data, while still decoding the
-                    // stored portal session
-                    $orig = $_SESSION;
-                    session_decode($agent_sess_data);
-                    $agent_sess_data = $_SESSION;
-                    $_SESSION        = $orig;
-
-                    // end session hack
-
-                    if ($agent_sess_data && $person_id = Arrays::findPropertyPath($agent_sess_data, '[_sf2_attributes][auth_person_id]')) {
-                        $person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+                    if ($personId) {
+                        $person = App::getEntityRepository('DeskPRO:Person')->find($personId);
                         if ($person && $person->is_agent) {
-                            $person_id = $person->id;
                             $this->_setCurrentPerson($person);
                         }
                     }

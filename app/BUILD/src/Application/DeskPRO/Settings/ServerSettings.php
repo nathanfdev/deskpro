@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,6 +43,8 @@ class ServerSettings
     public $cookie_path = '/';
     /** @var string */
     public $cookie_domain = '';
+    /** @var bool */
+    public $disable_csp_headers;
 
     /**
      * @param Settings $settings
@@ -67,6 +69,11 @@ class ServerSettings
         if ($this->cookie_domain === null) {
             $this->cookie_domain = '';
         }
+
+        $this->disable_csp_headers = $this->settings->get('core.disable_csp_headers');
+        if ($this->disable_csp_headers === null) {
+            $this->disable_csp_headers = false;
+        }
     }
 
     /**
@@ -74,12 +81,13 @@ class ServerSettings
      */
     public function toArray()
     {
-        $export_settings = [
-            'cookie_path'   => $this->cookie_path,
-            'cookie_domain' => $this->cookie_domain,
+        $exportSettings = [
+            'cookie_path'         => $this->cookie_path,
+            'cookie_domain'       => $this->cookie_domain,
+            'disable_csp_headers' => (bool) $this->disable_csp_headers,
         ];
 
-        return $export_settings;
+        return $exportSettings;
     }
 
     /**
@@ -101,5 +109,6 @@ class ServerSettings
     {
         $this->settings->setSetting('core.cookie_path', $this->cookie_path);
         $this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
+        $this->settings->setSetting('core.disable_csp_headers', $this->disable_csp_headers);
     }
 }

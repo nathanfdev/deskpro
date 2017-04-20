@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,10 +92,6 @@ class TicketChecker extends AbstractChecker
      */
     public function canView(Ticket $ticket)
     {
-        if (!$this->person->hasPerm('agent_tickets.use')) {
-            return false;
-        }
-
         //------------------------------
         // If the user is part of the ticket
         // then we know right away they can view
@@ -113,6 +109,10 @@ class TicketChecker extends AbstractChecker
 
         if ($ticket->hasParticipantPerson($this->person)) {
             return true;
+        }
+
+        if (!$this->person->hasPerm('agent_tickets.use')) {
+            return false;
         }
 
         //------------------------------

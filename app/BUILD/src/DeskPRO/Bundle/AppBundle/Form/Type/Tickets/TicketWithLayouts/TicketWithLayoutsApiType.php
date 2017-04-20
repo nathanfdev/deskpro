@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -95,9 +95,10 @@ class TicketWithLayoutsApiType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'field_resolver' => $this->fieldResolver,
-            'field_renderer' => $this->fieldRenderer,
-            'layout_factory' => function ($department) {
+            'field_resolver'  => $this->fieldResolver,
+            'field_renderer'  => $this->fieldRenderer,
+            'full_type_class' => TicketWithLayoutsApiFullType::class,
+            'layout_factory'  => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, true);
             },
         ]);
@@ -115,19 +116,20 @@ class TicketWithLayoutsApiType extends AbstractType
     {
         $ticket = $event->getForm()->getData();
         $data   = $event->getData();
+        $form   = $event->getForm();
 
         // should applied for new tickets only
         if (!$ticket instanceof Ticket || $ticket->getId()) {
             return;
         }
 
-        if (!isset($data[FormFields::DEPARTMENT])) {
+        if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
             $data[FormFields::DEPARTMENT] = '';
         }
-        if (!isset($data[FormFields::SUBJECT])) {
+        if ($form->has(FormFields::SUBJECT) && !isset($data[FormFields::SUBJECT])) {
             $data[FormFields::SUBJECT] = '';
         }
-        if (!isset($data[FormFields::MESSAGE])) {
+        if ($form->has(FormFields::MESSAGE) && !isset($data[FormFields::MESSAGE])) {
             $data[FormFields::MESSAGE] = ['message' => ''];
         }
 

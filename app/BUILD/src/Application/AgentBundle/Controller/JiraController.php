@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,7 +84,15 @@ class JiraController extends AbstractController
      */
     public function getCreateMetaAction(Request $request)
     {
-        return $this->createJsonResponse($this->service()->getCreateMeta($request->get('project_id')));
+        try {
+            return $this->createJsonResponse($this->service()->getCreateMeta($request->get('project_id')));
+        } catch (\Exception $e) {
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
+            } else {
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+            }
+        }
     }
 
     /**
@@ -146,7 +154,15 @@ class JiraController extends AbstractController
      */
     public function issuesAction($ticketId)
     {
-        return $this->createJsonResponse($this->service()->issues($ticketId));
+        try {
+            return $this->createJsonResponse($this->service()->issues($ticketId));
+        } catch (\Exception $e) {
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
+            } else {
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+            }
+        }
     }
 
     /**
@@ -160,7 +176,15 @@ class JiraController extends AbstractController
      */
     public function addCommentAction(Request $request, $ticketId, $issueId)
     {
-        $response = $this->service()->addComment($request->getContent(), $ticketId, $this->person, $issueId);
+        try {
+            $response = $this->service()->addComment($request->getContent(), $ticketId, $this->person, $issueId);
+        } catch (\Exception $e) {
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
+            } else {
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+            }
+        }
 
         return $this->createJsonResponse($response);
     }
@@ -174,7 +198,15 @@ class JiraController extends AbstractController
      */
     public function searchAction(Request $request)
     {
-        return $this->createJsonResponse($this->service()->searchIssues($request->get('q')));
+        try {
+            return $this->createJsonResponse($this->service()->searchIssues($request->get('q')));
+        } catch (\Exception $e) {
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
+            } else {
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+            }
+        }
     }
 
     /**
@@ -194,7 +226,15 @@ class JiraController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        return $this->createJsonResponse($this->service()->link($ticket, $issueId, $this->person));
+        try {
+            return $this->createJsonResponse($this->service()->link($ticket, $issueId, $this->person));
+        } catch (\Exception $e) {
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
+            } else {
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+            }
+        }
     }
 
     /**
@@ -213,8 +253,16 @@ class JiraController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        return $this->service()->unlink($ticket, $issueId)
-            ? $this->createJsonResponse('success')
-            : $this->createJsonResponse(null, 404);
+        try {
+            return $this->service()->unlink($ticket, $issueId)
+                ? $this->createJsonResponse('success')
+                : $this->createJsonResponse(null, 404);
+        } catch (\Exception $e) {
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(['errors' => $e->errors], 400);
+            } else {
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+            }
+        }
     }
 }

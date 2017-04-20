@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\CacheVersionRepository")
  * @ORM\Table(name="cache_versions")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
 class CacheVersion implements EntityInterface, NotifyPropertyChanged
@@ -84,7 +84,7 @@ class CacheVersion implements EntityInterface, NotifyPropertyChanged
      */
     public function setResourceId($resource_id)
     {
-        $this->resource_id = $resource_id;
+        $this->setModelField('resource_id', $resource_id);
 
         return $this;
     }
@@ -104,7 +104,7 @@ class CacheVersion implements EntityInterface, NotifyPropertyChanged
      */
     public function setVersionId($version_id)
     {
-        $this->version_id = $version_id;
+        $this->setModelField('version_id', $version_id);
 
         return $this;
     }

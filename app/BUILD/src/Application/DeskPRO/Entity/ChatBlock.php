@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,6 +72,38 @@ class ChatBlock extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->date_created = new \DateTime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip
+     */
+    public function setIpAddress($ip)
+    {
+        $this->setModelField('ip_address', $ip);
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param $id
+     */
+    public function setVisitorId($id)
+    {
+        $this->setModelField('visitor_id', $id);
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

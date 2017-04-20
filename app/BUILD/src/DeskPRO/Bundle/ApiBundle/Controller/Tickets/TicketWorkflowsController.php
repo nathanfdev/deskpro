@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketWorkflow;
@@ -47,7 +43,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class TicketWorkflowsController extends CrudController
 {
-    public static $exposeOnly   = ['list'];
+    public static $exposeOnly   = ['get', 'list', 'count'];
     public static $entity       = TicketWorkflow::class;
     public static $listPaginate = false;
 }

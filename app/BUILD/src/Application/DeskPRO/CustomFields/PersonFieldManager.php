@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Orb\Auth\Identity;
@@ -43,7 +44,7 @@ class PersonFieldManager extends FieldManager
     /**
      * Get an array of all defined fields (by doing a query).
      *
-     * @return array
+     * @return CustomDefPerson[]
      */
     public function getDefinedFields()
     {

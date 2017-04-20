@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,19 +55,25 @@ class DefaultApiFixtures extends DeskProAbstractFixture implements OrderedFixtur
     {
         $global_hourly_limit = new ApiKeyLimit();
         $limit               = $this->container->get('settings_resolver')->getGlobalSettings()->get('api_limits.global.hour');
-        $global_hourly_limit->setLimit($limit)
-            ->setCurrent($limit)
-            ->setInterval(3600)
-            ->setType(AbstractLimit::TYPE_GLOBAL);
-        $manager->persist($global_hourly_limit);
+
+        if ($limit != -1) {
+            $global_hourly_limit->setLimit($limit)
+                ->setCurrent($limit)
+                ->setInterval(3600)
+                ->setType(AbstractLimit::TYPE_GLOBAL);
+            $manager->persist($global_hourly_limit);
+        }
 
         $global_daily_limit = new ApiKeyLimit();
         $limit              = $this->container->get('settings_resolver')->getGlobalSettings()->get('api_limits.global.day');
-        $global_daily_limit->setLimit($limit)
-                            ->setCurrent($limit)
-                            ->setInterval(86400)
-                            ->setType(AbstractLimit::TYPE_GLOBAL);
-        $manager->persist($global_daily_limit);
+
+        if ($limit != -1) {
+            $global_daily_limit->setLimit($limit)
+                ->setCurrent($limit)
+                ->setInterval(86400)
+                ->setType(AbstractLimit::TYPE_GLOBAL);
+            $manager->persist($global_daily_limit);
+        }
 
         $manager->flush();
     }

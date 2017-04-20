@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,9 +38,11 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
@@ -229,6 +231,39 @@ class BreadcrumbGenerator
     {
         return $this->createDownloadsCategoryBuilder($a->getCategory())
             ->addDownloadView($a)
+            ->done();
+    }
+
+    //####################################################################################################################
+    // Guides
+    //####################################################################################################################
+
+    public function buildGuides()
+    {
+        return $this->createBuilder()->addTopics()->done();
+    }
+
+    public function buildGuide(Guide $guide)
+    {
+        return $this->createGuideBuilder($guide)->done();
+    }
+
+    protected function createGuideBuilder(Topic $topic)
+    {
+        $b = $this->createBuilder()->addTopic($topic);
+
+        foreach ($topic->getTreeParents() as $c) {
+            $b->addTopic($c);
+        }
+
+        $b->addGuide($topic->getGuide());
+
+        return $b;
+    }
+
+    public function buildTopicsFile(Topic $a)
+    {
+        return $this->createGuideBuilder($a)
             ->done();
     }
 

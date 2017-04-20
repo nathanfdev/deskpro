@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,9 +38,11 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
+use Application\DeskPRO\Entity\Topic;
 
 /**
  * The PermissionsBag acts like an immutable array, and also offers an API with methods like has('key') and get('key', 'default').
@@ -91,6 +93,11 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     protected $downloadCategories;
 
     /**
+     * @var array allow guides
+     */
+    protected $guides;
+
+    /**
      * Constructor.
      *
      * @param Permission[] $permissions
@@ -100,6 +107,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      * @param array        $newsCategoryIds
      * @param array        $articleCategoryIds
      * @param array        $downloadCategoryIds
+     * @param array        $guides
      */
     public function __construct(
         array $permissions = [],
@@ -108,7 +116,8 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         array $feedbackCategoryIds = [],
         array $newsCategoryIds = [],
         array $articleCategoryIds = [],
-        array $downloadCategoryIds = []
+        array $downloadCategoryIds = [],
+        array $guides = []
     ) {
         $this->setArray($permissions);
         $this->setAllowedTicketDepartmentIds($departmentTicketIds);
@@ -118,6 +127,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->setAllowedNewsCategories($newsCategoryIds);
         $this->setAllowedArticleCategories($articleCategoryIds);
         $this->setAllowedDownloadCategories($downloadCategoryIds);
+        $this->setAllowedGuides($guides);
     }
 
     /**
@@ -193,6 +203,17 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
             return false;
         } elseif ($contentOrCategory instanceof NewsCategory) {
             return in_array($contentOrCategory->getId(), $this->getAllowedNewsCategories());
+
+            // GUIDES
+        } elseif ($contentOrCategory instanceof Topic) {
+            $guideId = $contentOrCategory->getGuide()->getId();
+            if ($guideId) {
+                return in_array($guideId, $this->getAllowedGuides());
+            }
+
+            return false;
+        } elseif ($contentOrCategory instanceof Guide) {
+            return in_array($contentOrCategory->getId(), $this->getAllowedGuides());
         }
 
         return false;
@@ -349,6 +370,26 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     public function setAllowedArticleCategories($allowedArticleCategories)
     {
         $this->articleCategories = $allowedArticleCategories;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedGuides()
+    {
+        return $this->guides;
+    }
+
+    /**
+     * @param array $guides
+     *
+     * @return $this
+     */
+    public function setAllowedGuides($guides)
+    {
+        $this->guides = $guides;
 
         return $this;
     }

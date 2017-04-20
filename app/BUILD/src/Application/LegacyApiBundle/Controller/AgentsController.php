@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,6 +55,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -602,13 +603,15 @@ class AgentsController extends AbstractController implements ProtectedController
             $error_info = ['existing' => []];
 
             foreach ($existPersons as $person) {
+                /** @var $person Person */
                 if ((int) $person['id'] === (int) $id) {
                     continue;
                 }
 
                 $error_info['existing'][] = [
-                    'person_id'   => $person['id'],
-                    'person_name' => $person['display_name'],
+                    'person_id'   => $person->getId(),
+                    'person_name' => $person->getDisplayName(),
+                    'is_deleted'  => $person->isDeleted(),
                     'email'       => implode(', ', $person->getEmailAddresses()),
                 ];
             }
@@ -1069,8 +1072,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
      *
-     * @return JsonResponse
-     *
+     * @return JsonResponse|Response
      *
      * SWG\Api(
      * 	path="/agents/{id}/delete",
@@ -1090,7 +1092,6 @@ class AgentsController extends AbstractController implements ProtectedController
      *      )
      *  )
      * )
-
      * SWG\Api(
      * 	path="/agents/{id}/delete/to-user",
      * 	SWG\Operation(
@@ -1112,7 +1113,8 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     public function deleteAgentAction($id, $mode)
     {
-        $agent = $this->em->find('DeskPRO:Person', $id);
+        /** @var Person $agent */
+        $agent = $this->em->find(Person::class, $id);
 
         if (!$agent || !$agent->is_agent) {
             throw $this->createNotFoundException();
@@ -1122,7 +1124,7 @@ class AgentsController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('no_delete_self', 'You cannot delete yourself');
         }
 
-        $deleter = new AgentDelete($agent, $this->em);
+        $deleter = new AgentDelete($agent, $this->em, $this->get('audit_log.service'));
 
         switch ($mode) {
             case 'user':
@@ -1370,7 +1372,7 @@ class AgentsController extends AbstractController implements ProtectedController
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function bulkLicenseCheckAction()
     {

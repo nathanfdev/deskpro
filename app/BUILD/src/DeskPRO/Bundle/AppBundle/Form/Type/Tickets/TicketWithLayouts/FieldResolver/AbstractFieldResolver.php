@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,9 +39,7 @@ use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketCategoryType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketPriorityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketProductType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -49,6 +47,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWorkflowType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -123,7 +122,7 @@ abstract class AbstractFieldResolver
     {
         switch ($field->getFieldType()) {
             case FormFields::SUBJECT:
-                return $this->createSubject();
+                return $this->createSubject($context);
             case FormFields::MESSAGE:
                 return $this->createMessage($context);
             case FormFields::PERSON:
@@ -166,18 +165,7 @@ abstract class AbstractFieldResolver
      *
      * @return FormField
      */
-    protected function createDepartment(TicketWithLayoutsContext $context)
-    {
-        return new FormField(TicketDepartmentChoiceType::class, [
-            'label'       => $this->phrase('portal.forms.label_department'),
-            'person'      => $context->getPerson(),
-            'ticket'      => $context->getTicket(),
-            'placeholder' => '',
-            'constraints' => [
-                new Assert\NotNull(),
-            ],
-        ]);
-    }
+    abstract protected function createDepartment(TicketWithLayoutsContext $context);
 
     /**
      * @return FormField
@@ -302,17 +290,16 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_ticket_cat');
-        if ($default) {
-            if (!$context->getTicket()->getCategoryId()) {
-                $context->getTicket()->setCategoryId($default);
-            }
-        }
-
+        $default     = $this->settingsResolver->getSetting('core.default_ticket_cat');
         $isRequired  = $this->fieldSettings->isCategoryRequired($context->isAgentView());
         $constraints = [];
         if ($isRequired) {
             $constraints[] = new Assert\NotBlank();
+        }
+
+        // tmp until portal validator annotations are disabled
+        if ($this instanceof WebFieldResolver) {
+            $constraints[] = new AppAssert\Ticket\TicketLeafCategory();
         }
 
         return new FormField(TicketCategoryType::class, [
@@ -320,6 +307,7 @@ abstract class AbstractFieldResolver
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
+            'empty_data'  => $default > 0 ? $default : '',
         ]);
     }
 
@@ -334,13 +322,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_ticket_pri');
-        if ($default) {
-            if (!$context->getTicket()->getPriorityId()) {
-                $context->getTicket()->setPriorityId($default);
-            }
-        }
-
+        $default     = $this->settingsResolver->getSetting('core.default_ticket_pri');
         $isRequired  = $this->fieldSettings->isPriorityRequired($context->isAgentView());
         $constraints = [];
         if ($isRequired) {
@@ -352,6 +334,7 @@ abstract class AbstractFieldResolver
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
+            'empty_data'  => $default > 0 ? $default : '',
         ]);
     }
 
@@ -370,13 +353,7 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_ticket_work');
-        if ($default) {
-            if (!$context->getTicket()->getWorkflowId()) {
-                $context->getTicket()->setWorkflowId($default);
-            }
-        }
-
+        $default     = $this->settingsResolver->getSetting('core.default_ticket_work');
         $isRequired  = $this->fieldSettings->isWorkflowRequired($context->isAgentView());
         $constraints = [];
         if ($isRequired) {
@@ -387,6 +364,7 @@ abstract class AbstractFieldResolver
             'label'       => $this->phrase('portal.forms.label_workflow'),
             'required'    => $isRequired,
             'constraints' => $constraints,
+            'empty_data'  => $default > 0 ? $default : '',
         ]);
     }
 
@@ -401,23 +379,24 @@ abstract class AbstractFieldResolver
             return false;
         }
 
-        $default = $this->settingsResolver->getSetting('core.default_prod_id');
-        if ($default) {
-            if (!$context->getTicket()->getProductId()) {
-                $context->getTicket()->setProductId($default);
-            }
-        }
-
+        $default     = $this->settingsResolver->getSetting('core.default_prod_id');
         $isRequired  = $this->fieldSettings->isProductRequired($context->isAgentView());
         $constraints = [];
         if ($isRequired) {
             $constraints[] = new Assert\NotBlank();
         }
 
+        // tmp until portal validator annotations are disabled
+        if ($this instanceof WebFieldResolver) {
+            $constraints[] = new AppAssert\Ticket\TicketLeafProduct();
+        }
+
         return new FormField(TicketProductType::class, [
+            'label'       => $this->phrase('portal.forms.label_product'),
             'placeholder' => '',
             'required'    => $isRequired,
             'constraints' => $constraints,
+            'empty_data'  => $default > 0 ? $default : '',
         ]);
     }
 
@@ -426,24 +405,14 @@ abstract class AbstractFieldResolver
      *
      * @return FormField
      */
-    protected function createAttach(TicketWithLayoutsContext $context)
-    {
-        if (!$context->getMessage()) {
-            return false;
-        }
-
-        return new FormField(TicketMessageAttachmentCollectionType::class, [
-            'property_path'  => 'messages[0].attachments',
-            'required'       => false,
-            'person'         => $context->getPerson(),
-            'ticket_message' => $context->getMessage(),
-        ]);
-    }
+    abstract protected function createAttach(TicketWithLayoutsContext $context);
 
     /**
+     * @param TicketWithLayoutsContext $context
+     *
      * @return FormField
      */
-    abstract protected function createSubject();
+    abstract protected function createSubject(TicketWithLayoutsContext $context);
 
     /**
      * @param TicketWithLayoutsContext $context
@@ -519,13 +488,17 @@ abstract class AbstractFieldResolver
     }
 
     /**
-     * @param CustomDefAbstract|null $def
+     * @param CustomDefAbstract|null   $def
+     * @param TicketWithLayoutsContext $context
      *
      * @return bool
      */
-    protected function canRenderCustomDef(CustomDefAbstract $def = null)
+    protected function canRenderCustomDef(CustomDefAbstract $def = null, TicketWithLayoutsContext $context)
     {
-        return $def && $def->isEnabled() && $def->getType();
+        return $def
+            && $def->isEnabled()
+            && $def->getType()
+            && (!$def->isAgentField() || ($def->isAgentField() && $context->isAgentView()));
     }
 
     /**

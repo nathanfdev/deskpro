@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,8 +36,12 @@ namespace Application\DeskPRO\TicketLayout;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface;
+use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
 
+/**
+ * Class LayoutFieldCriteria.
+ */
 class LayoutFieldCriteria implements \Serializable, \Countable
 {
     const CRIT_ALL = 'all';
@@ -128,32 +132,6 @@ class LayoutFieldCriteria implements \Serializable, \Countable
     }
 
     /**
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function isSubmittedDataMatch(array $data)
-    {
-        if ($this->mode == self::CRIT_ALL) {
-            foreach ($this->terms as $t) {
-                if (!$t->isSubmittedDataMatch($data)) {
-                    return false;
-                }
-            }
-
-            return true;
-        } else {
-            foreach ($this->terms as $t) {
-                if ($t->isSubmittedDataMatch($data)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function compileJsCheck()
@@ -206,10 +184,14 @@ class LayoutFieldCriteria implements \Serializable, \Countable
         $data['terms']   = [];
 
         foreach ($this->terms as $t) {
+            if (($options = $t->getTermOptions()) instanceof CheckedOptionsArray) {
+                /** @var CheckedOptionsArray $options */
+                $options = $options->all();
+            }
             $data['terms'][] = [
                 'type'    => $t->getTermType(),
                 'op'      => $t->getTermOperator(),
-                'options' => $t->getTermOptions(),
+                'options' => $options,
             ];
         }
 

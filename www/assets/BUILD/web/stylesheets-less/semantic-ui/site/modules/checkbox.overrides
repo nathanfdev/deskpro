@@ -15,12 +15,12 @@
 }
 .ui.toggle.checkbox input ~ .box:after,
 .ui.toggle.checkbox input ~ label:after {
-  background: #fff url('images/x.svg') center no-repeat;
+  background: #fff url('../../../../images/admin/semantic/x.svg') center no-repeat;
   background-size: 14px 14px;
 }
 .ui.toggle.checkbox input:checked ~ .box:after,
 .ui.toggle.checkbox input:checked ~ label:after {
-  background: #fff url('images/tick.svg') center no-repeat;
+  background: #fff url('../../../../images/admin/semantic/tick.svg') center no-repeat;
   background-size: 14px 14px;
 }
 

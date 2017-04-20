@@ -11,6 +11,7 @@ parameters:
   twig.class: DeskPRO\Bundle\PortalBundle\Twig\Environment
   templating.name_parser.class: DeskPRO\Bundle\AppBundle\Templating\TemplateNameParser
   jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
+  twig.exception_listener.class: DeskPRO\Bundle\PortalBundle\EventListener\ExceptionListener
 
 services:
   # legacy ext is required by some ticket functions (e.g. rendering notifications)
@@ -179,7 +180,7 @@ fos_rest:
             forms: false
     format_listener:
         rules:
-            - { path: '^/(brand-[0-9]+/)?(\w+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, exception_fallback_format: json, prefer_extension: true }
+            - { path: '^/(brand-[0-9]+/)?(\w+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, prefer_extension: true }
             - { path: '^/', stop: true }
     exception:
         # disabled because this is portal and we want to use portal exception handler
@@ -193,7 +194,6 @@ fos_rest:
         jsonp_handler:
             callback_param: callback
         failed_validation: HTTP_BAD_REQUEST
-        exception_wrapper_handler: DeskPRO\Bundle\ApiBundle\Fos\ExceptionWrapperHandler
     routing_loader:
         default_format: json
 

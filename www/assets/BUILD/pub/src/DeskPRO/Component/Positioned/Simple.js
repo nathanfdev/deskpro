@@ -9,7 +9,7 @@ export class Simple extends Abstract {
    */
   static propTypes = {
     isOpen:   PropTypes.bool.isRequired,
-    children: PropTypes.any
+    children: PropTypes.any  // eslint-disable-line react/forbid-prop-types
   };
 
   /**

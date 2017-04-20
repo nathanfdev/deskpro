@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Component\Hierarchy;
 
+use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Traversable;
 
 /**
  * Class Hierarchy.
@@ -57,14 +57,25 @@ class Hierarchy implements \Countable, \IteratorAggregate
     protected $accessor;
 
     /**
+     * @var [id => node]
+     */
+    protected $map = [];
+
+    /**
      * @param HierarchyNode[]             $root_nodes
      * @param HierarchyFormatterInterface $formatter
      * @param string|null                 $node_id_path
      */
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
-        $this->formatter  = $formatter ?: new Formatter\FlatListFormatter();
-        $this->root_nodes = $root_nodes;
+        $this->formatter    = $formatter ?: new Formatter\FlatListFormatter();
+        $this->root_nodes   = $root_nodes;
+        $this->node_id_path = $node_id_path;
+        $this->accessor     = PropertyAccess::createPropertyAccessor();
+
+        foreach ($root_nodes as $node) {
+            $this->addNode($node);
+        }
 
         // suppress the bug in php in some versions for modifying an array in usort
         @uksort($root_nodes, function ($a, $b) {
@@ -79,12 +90,6 @@ class Hierarchy implements \Countable, \IteratorAggregate
         });
 
         $this->root_nodes = array_values($root_nodes);
-        foreach ($root_nodes as $root_node) {
-            $root_node->setHierarchy($this);
-        }
-
-        $this->node_id_path = $node_id_path;
-        $this->accessor     = PropertyAccess::createPropertyAccessor();
     }
 
     /**
@@ -112,13 +117,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator.
-     *
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     *
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     *                     <b>Traversable</b>
+     * {@inheritdoc}
      */
     public function getIterator()
     {
@@ -126,15 +125,7 @@ class Hierarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object.
-     *
-     * @link http://php.net/manual/en/countable.count.php
-     *
-     * @return int The custom count as an integer.
-     *             </p>
-     *             <p>
-     *             The return value is cast to an integer
+     * {@inheritdoc}
      */
     public function count()
     {
@@ -161,20 +152,26 @@ class Hierarchy implements \Countable, \IteratorAggregate
      */
     public function findNodeById($node_id, $recursive = true)
     {
-        foreach ($this->root_nodes as $node) {
-            if ($node_id == $this->getNodeId($node)) {
-                return $node;
-            }
+        return isset($this->map[$node_id]) ? $this->map[$node_id] : null;
+    }
+
+    /**
+     * @param HierarchyNode $node
+     *
+     * @throws \Exception
+     */
+    public function addNode(HierarchyNode $node)
+    {
+        try {
+            $id = $this->getNodeId($node);
+        } catch (UnexpectedTypeException $e) {
+            throw new \Exception('HierarchyNode data should have an identifier');
+        }
+        if (isset($this->map[$id])) {
+            return;
         }
 
-        if ($recursive) {
-            foreach ($this->root_nodes as $node) {
-                if ($result = $node->findChildById($node_id)) {
-                    return $result;
-                }
-            }
-        }
-
-        return;
+        $node->setHierarchy($this);
+        $this->map[$id] = $node;
     }
 }

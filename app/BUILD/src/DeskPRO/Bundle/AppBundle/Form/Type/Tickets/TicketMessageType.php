@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,8 +36,9 @@ use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageInlineAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
@@ -47,6 +48,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -89,6 +91,12 @@ class TicketMessageType extends AbstractType
             'constraints'   => $options['message_constraints'],
         ]);
 
+        if ($options['allow_set_person']) {
+            $builder->add('person', PersonAssignType::class, [
+                'mapped' => false,
+            ]);
+        }
+
         if ($options['format']) {
             $builder->add('format', DpHiddenType::class, [
                 'empty_data' => 'hidden',
@@ -109,20 +117,23 @@ class TicketMessageType extends AbstractType
                 'property_path' => 'is_agent_note',
             ]);
         }
+
         if ($options['has_attachments']) {
-            $builder->add('attachments', TicketMessageAttachmentCollectionType::class, [
+            // api
+            $builder->add('attachments', ApiTicketMessageAttachmentCollectionType::class, [
                 'required'       => false,
                 'person'         => $options['person'],
                 'ticket_message' => $ticketMessage,
             ]);
+        } else {
+            // web portal
+            $builder->add('inline_attachments', WebTicketMessageInlineAttachmentCollectionType::class, [
+                'required'       => false,
+                'person'         => $options['person'],
+                'ticket_message' => $ticketMessage,
+                'mapped'         => false,
+            ]);
         }
-
-        $builder->add('inline_attachments', TicketMessageInlineAttachmentCollectionType::class, [
-            'required'       => false,
-            'person'         => $options['person'],
-            'ticket_message' => $ticketMessage,
-            'mapped'         => false,
-        ]);
 
         if ($options['with_ticket_validation']) {
             $builder->add('ticket', TicketWithLayoutsApiType::class, [
@@ -159,9 +170,14 @@ class TicketMessageType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'             => TicketMessage::class,
-                'message_label'          => $this->languageManager->phrase('portal.forms.label_message'),
-                'attr'                   => ['data-rte' => '1'],
+                'data_class'    => TicketMessage::class,
+                'message_label' => $this->languageManager->phrase('portal.forms.label_message'),
+                'attr'          => function (Options $options) {
+                    return [
+                        'data-rte'               => '1',
+                        'data-ctrl-enter-submit' => (int) $options['ctrl_enter_submit'],
+                    ];
+                },
                 'error_bubbling'         => false,
                 'ticket'                 => null,
                 'person'                 => null,
@@ -170,11 +186,17 @@ class TicketMessageType extends AbstractType
                 'has_attachments'        => false,
                 'format'                 => '',
                 'with_ticket_validation' => false,
+                'ctrl_enter_submit'      => false,
+                'allow_set_person'       => false,
                 'message_constraints'    => [],
                 'error_mapping'          => [
                     // we use custom setters to modify message,
                     // so we need to map entity property with the form field
                     'message' => 'message',
+                ],
+                'constraints' => [
+                    // check message directly via the form to prevent checking all ticket messages collection
+                    new Assert\Valid(),
                 ],
             ])
             ->setRequired([
@@ -185,6 +207,8 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('ticket', Ticket::class)
             ->setAllowedTypes('ticket_message', ['null', TicketMessage::class])
             ->setAllowedValues('format', ['', 'html', 'text'])
+            ->setAllowedTypes('ctrl_enter_submit', 'bool')
+            ->setAllowedTypes('allow_set_person', 'bool')
         ;
     }
 
@@ -239,8 +263,9 @@ class TicketMessageType extends AbstractType
      */
     public function onSetRelations(FormEvent $event)
     {
+        $form   = $event->getForm();
         $data   = $event->getData();
-        $config = $event->getForm()->getConfig();
+        $config = $form->getConfig();
 
         /** @var Ticket $ticket */
         $ticket = $config->getOption('ticket');
@@ -250,9 +275,16 @@ class TicketMessageType extends AbstractType
                 $ticket->addMessage($data);
             }
 
-            $person = $config->getOption('person');
-            if ($person) {
-                $data->setPerson($person);
+            $optionPerson = $config->getOption('person');
+            if ($optionPerson) {
+                $data->setPerson($optionPerson);
+            }
+
+            if ($form->has('person')) {
+                $formPerson = $form->get('person')->getData();
+                if ($formPerson) {
+                    $data->setPerson($formPerson);
+                }
             }
         }
     }

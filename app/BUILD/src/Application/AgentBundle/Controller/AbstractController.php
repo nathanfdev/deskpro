@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -135,7 +136,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
     }
 
     /**
-     * Create a reponse that indicates a permissions error.
+     * Create a response that indicates a permissions error.
      *
      * @param string $message The message to show the user
      *

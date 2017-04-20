@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,10 +32,13 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentMarkMessageType;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkAllMessagesEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
@@ -57,7 +60,28 @@ use Symfony\Component\HttpFoundation\Response;
  *          {"name"="order", "dataType"="string", "pattern"="date_created"}
  *      }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatMessageType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "chat"="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+ *      }
+ *     }
+ * )
+ * @ApiDoc(
+ *     target="markMessagesAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentMarkMessageType",
+ *      "options"={
+ *          "chat"="DeskPRO\Bundle\AppBundle\Entity\AgentChat"
+ *      }
+ *     }
+ * )
  * @ApiUnstable()
+ * @Feature("agent_chat")
  */
 class AgentChatMessagesController extends CrudSubController
 {
@@ -106,7 +130,7 @@ class AgentChatMessagesController extends CrudSubController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupContext($request));
 
         $form = $this->createForm(AgentMarkMessageType::class, null, ['chat' => $this->findParentOr404()]);
-        $form->submit($this->getRequestContent($request));
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -132,6 +156,84 @@ class AgentChatMessagesController extends CrudSubController
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Mark message with given id as sent/read.
+     *
+     * @ApiDoc(
+     *      description="mark message as sent/read",
+     *      statusCodes={
+     *          204="Returned if success",
+     *          400={
+     *              "Returned if given status was wrong",
+     *              "Returned if ids list was wrong formed"
+     *          }
+     *      },
+     *     noInput=true
+     * )
+     * @Rest\Put("/mark_all")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function markAllMessagesAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupContext($request));
+
+        /** @var AgentChat $chat */
+        $chat = $this->findParentOr404();
+        $qb   = $this->getManager()->createQueryBuilder();
+        $qb
+            ->update(static::$entity, 'e')
+            ->set('e.status', ':status')
+            ->where('e.status != :status2')
+            ->andWhere('e.person != :user')
+            ->orWhere('e.person IS NULL')
+            ->setParameter('status', 2)
+            ->setParameter('status2', 2)
+            ->setParameter('user', $this->getUser())
+        ;
+
+        $qb->getQuery()->execute();
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch(MarkAllMessagesEvent::EVENT_NAME, new MarkAllMessagesEvent($chat->getId(), 2));
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="get page where this message is",
+     *     statusCodes={
+     *         204="Returned if success",
+     *         400={
+     *             "Returned if given status was wrong",
+     *             "Returned if ids list was wrong formed"
+     *         }
+     *     },
+     *     output="integer"
+     * )
+     * @Rest\Get("/{id}/page")
+     *
+     * @param $id
+     * @param $request
+     *
+     * @return View
+     */
+    public function findMessagePageAction($id, Request $request)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->from(static::$entity, 'e');
+        $this->applyListFilters($qb, 'e', $request);
+        $this->applySorting($qb, 'e', $request);
+        $qb->andWhere('e.id > :id')->setParameter('id', $id);
+        $qb->select('count(e.id) as value');
+        $count = $qb->getQuery()->getSingleScalarResult();
+
+        return $this->wrap(ceil($count / static::$listPerPage) ?: 1);
     }
 
     /**

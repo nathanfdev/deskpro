@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\PortalBundle\Model\WidgetPhrases;
 use DeskPRO\Component\Util\MapUtils;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -73,6 +70,7 @@ class LanguageController extends AbstractApiController
             'portal.account.login-btn',
             'portal.account.login-email',
             'portal.account.login-invalid',
+            'portal.account.login-disabled',
             'portal.account.login-password',
             'portal.account.login-password-reminder',
             'portal.account.login-stay-logged-in',
@@ -86,12 +84,18 @@ class LanguageController extends AbstractApiController
             'portal.tickets.thank_you_desc',
             'portal.tickets.new-title',
             'portal.tickets.new-intro',
+            'portal.general.add-comment',
+            'portal.general.comment_btn_save',
+            'portal.general.comments-title',
             'portal.general.nav-newticket',
             'portal.general.nav-tickets',
             'portal.general.nav-kb',
             'portal.general.nav-downloads',
             'portal.general.nav-news',
             'portal.general.nav-feedback',
+            'portal.general.nav-guides',
+            'portal.general.nav-chat',
+            'portal.general.published',
             'portal.general.submit-feedback',
             'portal.general.start-chat',
             'portal.general.agents-available',
@@ -99,8 +103,10 @@ class LanguageController extends AbstractApiController
             'portal.general.share-this',
             'portal.general.toggle_on',
             'portal.general.toggle_off',
+            'portal.general.updated',
             'portal.forms.error_upload_file',
             'portal.forms.error_upload_html_size',
+            'portal.forms.label_comment',
             'portal.forms.label_choose',
             'portal.forms.label_drag',
             'portal.forms.label_drag_overlay',
@@ -126,6 +132,7 @@ class LanguageController extends AbstractApiController
             'portal.chat.not_helpful',
             'portal.chat.label-name',
             'portal.chat.label-email',
+            'portal.chat.label-department',
             'portal.chat.message_type',
             'portal.chat.message_wait-pending',
             'portal.chat.message_wait-long',
@@ -138,7 +145,6 @@ class LanguageController extends AbstractApiController
             'portal.chat.reply_to',
             'portal.chat.screen_share',
             'portal.chat.start',
-            'portal.chat.start_conversation',
             'portal.chat.support_powered_by',
             'portal.chat.transcript_desc',
             'portal.chat.transcript_title',
@@ -158,6 +164,9 @@ class LanguageController extends AbstractApiController
             'portal.chat.looking_for_another_agent',
             'portal.chat.attached_photo',
             'portal.chat.see_full_image',
+            'portal.widget.new-ticket-title',
+            'portal.widget.label_add_attachment',
+            'portal.widget.online_agents',
             'user.chat.email',
             'user.chat.ended-no-agent',
             'user.chat.error',
@@ -231,26 +240,28 @@ class LanguageController extends AbstractApiController
         $translate = $this->container->get('deskpro.core.translate');
         $language  = $this->container->get('language_stack')->getActiveOrDefault();
 
-        if ($request->get('language')) {
-            $language = $this->getManager()->getRepository(Language::class)->find($request->get('language'));
+        $languageId = $request->query->getInt('language');
+        if ($languageId) {
+            $language = $this->getManager()->getRepository(Language::class)->find($languageId);
         }
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
+        $translatedPhrases = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
             return [$id, $translate->phrase($id, [], $language)];
         });
 
-        $res = new JsonResponse($output);
+        $serialized = $this->get('serializer')->toArray(new WidgetPhrases($translatedPhrases, $language));
+        $response   = new JsonResponse($serialized);
 
         if ($request->getRequestFormat('json') === 'js') {
-            $res->headers->set('Content-Type', 'application/javascript');
+            $response->headers->set('Content-Type', 'application/javascript');
             $cb = $request->request->get('callback', 'DP_SET_PHRASES');
-            $res->setCallback($cb);
+            $response->setCallback($cb);
         }
 
         // TODO proper caching headers here, phrases should reload:
         // - new version
         // - when langs are updated (need some global uid that changes when admin edits phrase)
 
-        return $res;
+        return $response;
     }
 }

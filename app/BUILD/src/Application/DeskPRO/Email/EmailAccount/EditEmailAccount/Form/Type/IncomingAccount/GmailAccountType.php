@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,10 +43,13 @@ class GmailAccountType extends AbstractType
     {
         $builder->add('user', 'email', ['required' => false]);
         $builder->add('password', 'dp_enc_password', ['required' => false]);
+        $builder->add('type', 'choice', [
+            'required'          => true,
+            'choices'           => [GmailConfig::TYPE_POP3, GmailConfig::TYPE_OAUTH],
+            'choices_as_values' => true,
+        ]);
         $builder->add('token', 'text', ['required' => true]);
         $builder->add('refreshToken', 'text', ['required' => true]);
-        $builder->add('clientId', 'text', ['required' => true]);
-        $builder->add('clientSecret', 'text', ['required' => true]);
         $builder->add('mode', 'choice', [
             'required' => true,
             'choices'  => ['read' => 'read', 'delete' => 'delete', 'archive' => 'archive'],

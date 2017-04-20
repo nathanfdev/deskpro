@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -118,7 +118,7 @@ class AppAsset extends DomainObject
 
         if ($this->package->native_name && $this->tag && in_array($this->tag, ['js', 'css', 'html', 'res'])) {
             $data['blob']['download_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_URL);
-            $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_URL);
+            $data['blob']['relative_url'] = App::get('router')->generate('serve_blob_app_asset', ['app_name' => $this->package->name, 'type' => $this->tag, 'path' => $this->name], UrlGeneratorInterface::ABSOLUTE_PATH);
         } else {
             $data['blob']['download_url'] = $this->blob->getDownloadUrl(true, false);
             $data['blob']['relative_url'] = $this->blob->getDownloadUrl(false, false);

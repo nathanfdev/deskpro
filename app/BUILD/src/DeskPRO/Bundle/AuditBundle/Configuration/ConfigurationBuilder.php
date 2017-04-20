@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,8 +28,12 @@
 
 namespace DeskPRO\Bundle\AuditBundle\Configuration;
 
+use DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\DefaultNamingStrategy;
+use DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\ExpressionNamingStrategy;
+use DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\NamingStrategyInterface;
 use DeskPRO\Bundle\AuditBundle\EventListener\AuditListener;
 use DeskPRO\Bundle\AuditBundle\Log\FieldFilter\FieldFilterService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 
 /**
@@ -48,13 +52,20 @@ class ConfigurationBuilder
     private $fieldFilterService;
 
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
      * ConfigurationBuilder constructor.
      *
      * @param FieldFilterService $fieldFilterService
+     * @param ContainerInterface $container
      */
-    public function __construct(FieldFilterService $fieldFilterService)
+    public function __construct(FieldFilterService $fieldFilterService, ContainerInterface $container)
     {
         $this->fieldFilterService = $fieldFilterService;
+        $this->container          = $container;
         $this->language           = new ExpressionLanguage();
     }
 
@@ -107,6 +118,7 @@ class ConfigurationBuilder
         $this->processConditions($configuration, $configEntry);
         $this->processFields($configuration, $configEntry);
         $this->processFieldFilters($configuration, $action, $configEntry);
+        $this->processNamingStrategy($configuration, $configEntry);
 
         return $configuration;
     }
@@ -125,8 +137,8 @@ class ConfigurationBuilder
                 } else {
                     $conditionObject = new Condition(
                         $preconditions,
-                        $condition['expression'],
-                        $condition['variables'],
+                        isset($condition['expression']) ? $condition['expression'] : '',
+                        isset($condition['variables']) ? $condition['variables'] : [],
                         $this->language
                     );
                 }
@@ -165,5 +177,34 @@ class ConfigurationBuilder
                 );
             }
         }
+    }
+
+    private function processNamingStrategy(Configuration $configuration, array $configEntry)
+    {
+        $namingStrategy = null;
+        if (isset($configEntry['naming']) && isset($configEntry['naming']['type'])) {
+            switch ($configEntry['naming']['type']) {
+                case 'expression':
+                    $namingStrategy = new ExpressionNamingStrategy($configEntry['naming']['expression']);
+                    break;
+                case 'service':
+                    $namingStrategy = $this->container->get($configEntry['naming']['id']);
+                    if (!$namingStrategy instanceof NamingStrategyInterface) {
+                        throw new \InvalidArgumentException(
+                            sprintf(
+                                'Service [ %s ] should implement NamingStrategyInterface',
+                                $configEntry['naming']['id']
+                            )
+                        );
+                    }
+                    break;
+            }
+        }
+
+        if (!$namingStrategy) {
+            $namingStrategy = new DefaultNamingStrategy();
+        }
+
+        $configuration->setNamingStrategy($namingStrategy);
     }
 }

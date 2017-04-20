@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\NewSettings\SettingsBag;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -69,15 +69,17 @@ class TicketReplyType extends AbstractType
     {
         $builder
             ->add('ticket_message', TicketMessageType::class, [
-                'ticket'         => $options['ticket'],
-                'person'         => $options['person'],
-                'ticket_message' => $options['ticket_message'],
-                'message_label'  => $options['message_label'],
-                'label'          => false,
-                'render_is_note' => false,
-                'format'         => 'html',
-                'constraints'    => [
+                'ticket'            => $options['ticket'],
+                'person'            => $options['person'],
+                'ticket_message'    => $options['ticket_message'],
+                'message_label'     => $options['message_label'],
+                'label'             => false,
+                'render_is_note'    => false,
+                'ctrl_enter_submit' => true,
+                'format'            => 'html',
+                'constraints'       => [
                     new AppAssert\Ticket\TicketDupeMessage(),
+                    new AppAssert\Ticket\TicketOpenedMessage(),
                 ],
                 'message_constraints' => [
                     new NotBlank(),
@@ -86,7 +88,7 @@ class TicketReplyType extends AbstractType
                     '.' => 'message',
                 ],
             ])
-            ->add('attachments', TicketMessageAttachmentCollectionType::class, [
+            ->add('attachments', WebTicketMessageAttachmentCollectionType::class, [
                 'ticket_message' => $options['ticket_message'],
                 'person'         => $options['person'],
                 'label'          => false,

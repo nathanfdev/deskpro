@@ -1,6 +1,12 @@
 .widget-editor {
   $inline-label-width: 250px;
   padding: 20px;
+  height: inherit;
+  min-height: 850px;
+
+  > div {
+    height: inherit;
+  }
 
   .right {
     float: right;
@@ -101,41 +107,70 @@
     margin-bottom: 15px;
   }
 
-  .widget-editor-live-demo-container {
-    margin-bottom: 10px;
-    z-index: 1000;
-    height: 520px;
-    background: url('../../../../images/admin/chat-widget/screenshot.png') bottom right no-repeat;
-    border: 1px solid #000000;
+  .preview {
+    position: absolute;
+    top: 100px;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    padding: 1rem;
 
-    .widget-editor-live-demo-loader {
-      width: inherit;
-      height: inherit;
+    .widget-editor-live-demo-container {
       position: absolute;
-      top: 0;
+      top: 50px;
+      bottom: 0;
       left: 0;
+      right: 0;
+      margin: 1rem;
+      z-index: 1000;
+      background: url('../../../../images/admin/chat-widget/screenshot.png') top right no-repeat;
+      background-color: #fff;
+      border: 1px solid #000000;
 
-      i {
-        display: block;
-        background: url('../../../../images/spinners/loading-big-circle.gif') no-repeat 50% 50%;
+      @media screen and (max-width: 1280px) {
+        background: url('../../../../images/admin/chat-widget/screenshot_small.png') top right no-repeat;
+      }
+
+      .widget-editor-live-demo-loader {
         width: inherit;
         height: inherit;
-      }
-    }
+        position: absolute;
+        top: 0;
+        left: 0;
 
-    iframe {
-      width: 100%;
-      height: inherit;
-      border: 0;
-      top: 0;
-      left: 0;
+        i {
+          display: block;
+          background: url('../../../../images/spinners/loading-big-circle.gif') no-repeat 50% 50%;
+          width: inherit;
+          height: inherit;
+        }
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        top: 0;
+        left: 0;
+      }
     }
   }
 
-  .pending_changes {
-    margin-top: 10px;
-    color: #8c9295;
-    font-size: 12px;
+  .widget-editor-save-buttons {
+    &.preview-opened {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      padding: 1rem;
+    }
+
+    .pending_changes {
+      position: absolute;
+      margin-top: 10px;
+      color: #8c9295;
+      font-size: 12px;
+    }
   }
 }
 .sp-input {

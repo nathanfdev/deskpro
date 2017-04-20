@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\Entity\PersonList;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -57,7 +56,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  * @property Department[]|ArrayCollection $children
  * @property Brand[]|ArrayCollection      $brands
  */
-class Department extends DomainObject implements HasPhraseName, PersonList, AvatarOwner, Hierarchical
+class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hierarchical
 {
     /**
      * @var int
@@ -483,50 +482,6 @@ class Department extends DomainObject implements HasPhraseName, PersonList, Avat
     public function __toString()
     {
         return $this->getFullTitle();
-    }
-
-    /**
-     * @return Person[]|null
-     */
-    public function getPersonList()
-    {
-        // OMG this should be refactored somehow, but right now it works
-        if (!$this->_people) {
-
-            /** @var \Application\DeskPRO\EntityRepository\Department $repository */
-            $repository  = $this->getRepository();
-            $permissions = $repository->getPermissionsInfo($this);
-            $db          = App::getDb();
-            $ids         = [];
-            foreach ($permissions['usergroups'] as $usergroup) {
-                if ($usergroup['perm_name'] === 'full') {
-                    $ids[] = $usergroup['usergroup_id'];
-                }
-            }
-            foreach ($permissions['agentgroups'] as $usergroup) {
-                if ($usergroup['perm_name'] === 'full') {
-                    $ids[] = $usergroup['usergroup_id'];
-                }
-            }
-
-            if ($ids) {
-                $usergroups = implode(',', $ids);
-                $sql        = "SELECT DISTINCT(person_id) FROM person2usergroups WHERE usergroup_id IN ({$usergroups})";
-                $personIds  = $db->fetchColumn($sql);
-            } else {
-                $personIds = [];
-            }
-
-            foreach ($permissions['agents'] as $agent) {
-                if ($agent['perm_name'] === 'full') {
-                    $personIds[] = $agent['agent_id'];
-                }
-            }
-
-            $this->_people = App::getOrm()->getRepository(Person::class)->findBy(['id' => $personIds]);
-        }
-
-        return $this->_people;
     }
 
     /**

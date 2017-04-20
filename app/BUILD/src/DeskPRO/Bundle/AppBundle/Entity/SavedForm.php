@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -206,11 +206,16 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
         return 'form';
     }
 
+    /**
+     * @return $this
+     */
     public function incrementSentReminders()
     {
         $new_num = $this->num_sent_reminders + 1;
         $this->setModelField('num_sent_reminders', $new_num);
         $this->setModelField('date_last_reminded', new \DateTime());
+
+        return $this;
     }
 
     public function getDateLastReminded()
@@ -245,18 +250,28 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
     /**
      * @param string $key
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setMetaDataValue($key, $value)
     {
-        $this->meta_data[$key] = $value;
+        $metaData       = $this->meta_data;
+        $metaData[$key] = $value;
+        $this->setModelField('meta_data', $metaData);
+
+        return $this;
     }
 
     /**
      * @param array $meta_data
+     *
+     * @return $this
      */
     public function setMetaData($meta_data)
     {
         $this->setModelField('meta_data', $meta_data);
+
+        return $this;
     }
 
     /**
@@ -269,10 +284,14 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $form_data
+     *
+     * @return $this
      */
     public function setFormData($form_data)
     {
         $this->setModelField('form_data', $form_data);
+
+        return $this;
     }
 
     /**
@@ -285,10 +304,14 @@ class SavedForm implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $date_expires
+     *
+     * @return $this
      */
     public function setDateExpires($date_expires)
     {
         $this->setModelField('date_expires', $date_expires);
+
+        return $this;
     }
 
     /**

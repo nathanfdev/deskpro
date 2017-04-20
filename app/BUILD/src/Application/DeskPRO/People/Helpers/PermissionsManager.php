@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -370,6 +370,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             'downloads.use' => true,
             'news.use'      => true,
             'chat.use'      => true,
+            'guides.use'    => true,
         ];
 
         $crossBrandAppSettings = $this->getBrandAppSettings();
@@ -396,11 +397,10 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         if ($name === 'news.use' && !$crossBrandAppSettings['core.apps_news']) {
             return false;
         }
+        if ($name === 'guides.use' && !$crossBrandAppSettings['core.apps_guides']) {
+            return false;
+        }
         if ($name === 'chat.use' || $name === 'agent_chat.use') {
-            if (!App::getSetting('core.apps_chat')) {
-                return false;
-            }
-
             if (!$this->get('Departments')->getAllowed('chat')) {
                 return false;
             }
@@ -490,6 +490,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             PortalSettingsResolver::APPS_DOWNLOADS   => false,
             PortalSettingsResolver::APPS_NEWS        => false,
             PortalSettingsResolver::APPS_FEEDBACK    => false,
+            PortalSettingsResolver::APPS_GUIDES      => false,
             PortalSettingsResolver::PUBLISH_COMMENTS => false,
         ];
 
@@ -503,7 +504,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
         $brandSettingsResolver = App::get('brand_aware_settings_resolver');
 
         foreach ($brands as $brand) {
-            $brandStack->push($brand);
+            $brandStack->push($brand, true);
             foreach ($appSettings as $key => &$setting) {
                 $setting = $setting || $brandSettingsResolver->getSetting($key);
             }

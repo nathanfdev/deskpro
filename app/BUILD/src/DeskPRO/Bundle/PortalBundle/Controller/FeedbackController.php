@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
@@ -250,7 +251,8 @@ class FeedbackController extends AbstractController
      */
     protected function acceptNewFeedback(Feedback $newFeedback, Person $person, Request $request)
     {
-        $this->persistAndFlushEntity($newFeedback);
+        $this->getEm()->persist($newFeedback);
+        $this->getEm()->flush();
 
         if ($newFeedback->isVisibleOnPortal()) {
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_posted'));
@@ -465,6 +467,11 @@ class FeedbackController extends AbstractController
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
+
+        // REGISTERED PAGE VIEW LOG
+        if ($person = $this->getUser()) {
+            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_FEEDBACK, $item->getId());
+        }
 
         // RENDER THEME
 

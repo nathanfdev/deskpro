@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ class LogEventHandler extends DBHandler
      */
     public function isHandling(array $record)
     {
-        return isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent;
+        return true;
     }
 
     /**
@@ -45,6 +45,10 @@ class LogEventHandler extends DBHandler
      */
     protected function write(array $record)
     {
+        if (!(isset($record['context']['_entity']) && $record['context']['_entity'] instanceof LogEvent)) {
+            return;
+        }
+
         /** @var LogEvent $entity */
         $entity = $record['context']['_entity'];
         $entity->prepare();

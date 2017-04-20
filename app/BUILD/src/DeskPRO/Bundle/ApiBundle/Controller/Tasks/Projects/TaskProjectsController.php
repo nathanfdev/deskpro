@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,7 +43,16 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/task_projects")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
+ * @ApiDoc(target="all", section="Task Projects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\TaskProject")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskProjectType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskProject"
+ *      }
+ *     }
+ * )
  */
 class TaskProjectsController extends CrudController
 {
@@ -56,7 +65,7 @@ class TaskProjectsController extends CrudController
      * Fetch task list associated with the project specified by id.
      *
      * @ApiDoc(
-     *     section="TaskProjects",
+     *     section="Task Projects",
      *     resourceDescription="Operations about task projects",
      *     description="get tasks for the project with specified id",
      *     requirements={
@@ -85,7 +94,7 @@ class TaskProjectsController extends CrudController
 
     /**
      * @ApiDoc(
-     *     section="TaskProjects",
+     *     section="Task Projects",
      *     resourceDescription="Operations about task projects",
      *     description="get lists for a project",
      *     requirements={

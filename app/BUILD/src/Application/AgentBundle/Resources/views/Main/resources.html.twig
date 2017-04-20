@@ -1,3 +1,15 @@
+<script>
+  (function() {
+    var link = document.createElement('link');
+    link.rel = "stylesheet";
+      {% if not app.isCloud() %}
+    link.href = "{{ asset('fonts/OpenSans.css') }}";
+      {%  else %}
+    link.href = "//fonts.googleapis.com/css?family=Open Sans:300,400,600,700,400italic,700italic&subset=latin";
+      {%  endif %}
+    document.querySelector("head").appendChild(link);
+  })();
+</script>
 <link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}" type="text/css" />
 {% if not in_body %}
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
@@ -58,6 +70,10 @@
 	// our dynamically added paths
 	window.DP_RJS_PATHS_IGNORE = ['AgentApp', 'AppPlatform', 'AppPlatformConfig'];
 </script>
+{% if app.hasVoice() %}
+<script type="text/javascript" src="//media.twiliocdn.com/sdk/js/client/v1.3/twilio.min.js"></script>
+<script type="text/javascript" src="//media.twiliocdn.com/taskrouter/js/v1.7.1/taskrouter.min.js"></script>
+{% endif %}
 <script	type="text/javascript" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script	type="text/javascript" src="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}"></script>
 <script	type="text/javascript">
@@ -75,3 +91,4 @@
 {#<script type="text/javascript" src="{{ asset('DeskPRO_AgentBundle.js', 'app_assets') }}"></script>#}
 <link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_AgentLegacyBundle_style.css', 'app_assets') }}" />
 <script type="text/javascript" src="{{ asset('DeskPRO_AgentLegacyBundle.js', 'app_assets') }}"></script>
+

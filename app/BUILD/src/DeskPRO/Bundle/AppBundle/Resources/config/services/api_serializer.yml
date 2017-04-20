@@ -1,6 +1,19 @@
 services:
 
+  fos_rest.serializer.jms:
+    class: DeskPRO\Bundle\AppBundle\Serializer\JMSSerializerAdapter
+    arguments:
+      - "@jms_serializer.serializer"
+      - "@service_container"
+    public: false
+    lazy: true
+
   # common
+  api_serializer.handler.raw:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\RawHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.entity:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Common\EntityHandler
     tags:
@@ -27,6 +40,19 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   # entities
+  api_serializer.handler.label:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\LabelHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.custom_def:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDefHandler
+    arguments: ["@deskpro.core.translate"]
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.custom_data:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
     tags:
@@ -84,6 +110,20 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.topic:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\TopicHandler
+    arguments:
+      - "@twig.helpers.deskpro_templating"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.topic_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TopicCommentHandler
+    arguments:
+          - "@avatar_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.chat:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatConversationHandler
     tags:
@@ -93,6 +133,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\DepartmentHandler
     arguments:
       - "@avatar_resolver"
+      - "@data.departments"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -176,6 +217,13 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.brand:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BrandHandler
+    arguments:
+          - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.text_snippet:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
     arguments:
@@ -204,16 +252,18 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  # listeners and subscribers
-  api_serializer.sideload_listener:
-    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadListener
+  api_serializer.handler.voice_phone_call:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Voice\VoicePhoneCallHandler
     arguments:
       - "@doctrine.orm.default_entity_manager"
     tags:
-      - { name: "jms_serializer.event_subscriber" }
+      - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.deferred_listener:
-    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\DeferredPropertiesListener
+  # listeners and subscribers
+  api_serializer.sideload_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadAndDeferredListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
@@ -250,6 +300,3 @@ services:
     arguments: ["@jms_serializer.metadata_factory"]
     tags:
       - { name: 'kernel.cache_warmer' }
-
-parameters:
-  fos_rest.view_handler.default.class: "DeskPRO\Bundle\AppBundle\Serializer\ViewHandler"

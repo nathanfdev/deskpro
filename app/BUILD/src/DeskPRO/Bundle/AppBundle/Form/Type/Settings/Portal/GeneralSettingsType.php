@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,6 +49,7 @@ class GeneralSettingsType extends AbstractType
     {
         $builder
             ->add('site_name', TextType::class)
+            ->add('brand_name', TextType::class)
             ->add('site_url', UrlType::class)
             ->add('deskpro_name', TextType::class)
             ->add('deskpro_url', UrlType::class)
@@ -56,6 +57,7 @@ class GeneralSettingsType extends AbstractType
             ->add('apps_kb', ApiBooleanType::class)
             ->add('apps_news', ApiBooleanType::class)
             ->add('apps_downloads', ApiBooleanType::class)
+            ->add('apps_guides', ApiBooleanType::class)
             ->add('iface_portal', ApiBooleanType::class)
             ->add('iface_widget', ApiBooleanType::class)
             ->add('show_ratings', ApiBooleanType::class)

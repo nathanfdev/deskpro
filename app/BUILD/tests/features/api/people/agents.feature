@@ -4,6 +4,9 @@ Feature: /agents endpoint
   As an API user
   I want an API endpoint
 
+  Background:
+    Given no Person records exist
+
   Scenario: I get list of all agents
     Given I'm authenticated as "agent"
     And I've just created a new agent with name "Alfred Zero"
@@ -97,7 +100,7 @@ Feature: /agents endpoint
     Given I'm authenticated as "admin"
     And I've just created a new person with name "Alfred Eight"
     When I send a GET request to the last created person resource via agents endpoint
-    Then the response status code should be 405
+    Then the response status code should be 404
 
   Scenario: I give agent permissions to an existing user
     Given I'm authenticated as "admin"

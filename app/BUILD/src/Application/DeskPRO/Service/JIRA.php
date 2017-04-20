@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -282,14 +282,19 @@ class JIRA
 
     public function getCreateMeta($projectId = null)
     {
-        if ($api = $this->getApi()) {
-            $projectId = (int) $projectId;
-            $params    = ['expand' => 'projects.issuetypes.fields'];
-            if ($projectId) {
-                $params['projectIds'] = $projectId;
-            }
+        try {
+            if ($api = $this->getApi()) {
+                $projectId = (int) $projectId;
+                $params    = ['expand' => 'projects.issuetypes.fields'];
+                if ($projectId) {
+                    $params['projectIds'] = $projectId;
+                }
 
-            return $api->get('/issue/createmeta', $params);
+                return $api->get('/issue/createmeta', $params);
+            }
+        } catch (\Exception $e) {
+            $this->logException($e);
+            throw $e;
         }
 
         return [];
@@ -335,7 +340,7 @@ class JIRA
 
             return $this->getApi()->searchIssues($query, array_merge($meta->getAllFields(), $meta->getSystemFields()));
         } catch (\Exception $e) {
-            return;
+            $this->logException($e);
         }
     }
 
@@ -349,6 +354,7 @@ class JIRA
         try {
             return $this->getApi()->searchIssues(sprintf('id IN (%s)', implode(',', $ids)), $this->getMeta()->getAllFields());
         } catch (\Exception $e) {
+            $this->logException($e);
         }
     }
 

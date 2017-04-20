@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,17 +91,23 @@ class TicketsResolved extends AbstractTableOverviewStat
         $d1 = $this->date_start->format('Y-m-d H:i:s');
         $d2 = $this->date_end->format('Y-m-d H:i:s');
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = "
             SELECT {$group_field['select']}, COUNT(*)
             FROM tickets
             {$group_field['join']}
             WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2' {$group_field['where']}
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
             GROUP BY {$group_field['group_by']}
         ";
 
         $this->logger->logDebug("[TicketsResolved] $sql");
         $this->logger->startTimer('TicketsResolved');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketsResolved');
 
         return $this->values;

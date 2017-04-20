@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,11 @@
 namespace Application\DeskPRO\Email\EmailAccount\EditEmailAccount\Form\Type\OutgoingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
+use Application\DeskPRO\Encryption\Form\Type\DpEncPasswordType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -41,22 +45,30 @@ class SmtpAccountType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('user', 'text', ['required' => false]);
-        $builder->add('password', 'dp_enc_password', ['required' => false]);
-        $builder->add('host', 'text', ['required' => true]);
-        $builder->add('port', 'text', ['required' => true]);
-        $builder->add('secure_mode', 'choice', [
-            'required'    => false,
-            'choices'     => ['ssl' => 'ssl', 'tls' => 'tls'],
-            'empty_value' => true,
-        ]);
+        $builder
+            ->add('user', TextType::class, ['required' => false])
+            ->add('password', DpEncPasswordType::class, ['required' => false])
+            ->add('host', TextType::class, ['required' => true])
+            ->add('port', TextType::class, ['required' => true])
+            ->add(
+                'secure_mode',
+                ChoiceType::class,
+                [
+                    'required'    => false,
+                    'choices'     => ['ssl' => 'ssl', 'tls' => 'tls'],
+                    'empty_value' => true,
+                ]
+            )
+            ->add('disable_cert_validation', CheckboxType::class, ['required' => false]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => SmtpConfig::class,
-        ]);
+        $resolver->setDefaults(
+            [
+                'data_class' => SmtpConfig::class,
+            ]
+        );
     }
 
     public function getName()

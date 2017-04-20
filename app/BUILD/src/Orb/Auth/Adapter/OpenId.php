@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,34 +36,42 @@ namespace Orb\Auth\Adapter;
 
 use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
-use Orb\Util\Arrays;
 
 class OpenId extends AbstractCallbackAdatper
 {
-    /** @var string */
-    protected $openid_identifier = '';
+    const OPTION_IDENTITY = 'identity';
+    const OPTION_REALM    = 'realm';
 
     /**
-     * Sets the data got from a form.
-     *
-     * @param string $url The URL
+     * @var \Orb\Util\OptionsArray
      */
-    public function setFormData(array $form_data)
+    protected $options;
+
+    public function __construct(array $options)
     {
-        if (!empty($form_data['openid_identifier'])) {
-            $this->openid_identifier = $form_data['openid_identifier'];
-        }
+        $this->initOptions();
+        $this->options->setArray($options);
+    }
+
+    protected function initOptions()
+    {
+        $this->options = new \Orb\Util\OptionsArray(
+            [
+                self::OPTION_IDENTITY => '',
+                self::OPTION_REALM    => '',
+            ]
+        );
     }
 
     /**
      * Initialize the auth process by setting state, and returning a redirect result.
      *
-     * @return Orb\Auth\Result
+     * @return \Orb\Auth\Result
      */
     protected function authenticateInitialize(StateHandlerInterface $state)
     {
-        $openid            = new \LightOpenID();
-        $openid->identity  = $this->openid_identifier;
+        $openid            = new \LightOpenID($this->options->get(self::OPTION_REALM));
+        $openid->identity  = $this->options->get(self::OPTION_IDENTITY);
         $openid->returnUrl = $this->getCallbackUrl();
         $openid->optional  = [
             'namePerson/friendly', 'contact/email', 'namePerson',
@@ -84,7 +92,7 @@ class OpenId extends AbstractCallbackAdatper
 
     protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
     {
-        $openid = new \LightOpenID();
+        $openid = new \LightOpenID($this->options->get(self::OPTION_REALM));
 
         if (!$openid->validate()) {
             return new Result(Result::FAILURE, null, ['error_code' => 'invalid_validate', 'error_message' => 'Could not validate']);
@@ -92,16 +100,15 @@ class OpenId extends AbstractCallbackAdatper
 
         $attributes = $openid->getAttributes();
         $userinfo   = [
-            'nickname' => !empty($attributes['namePerson/friendly']) ? $attributes['namePerson/friendly'] : null,
-            'email'    => !empty($attributes['email']) ? $attributes['email'] : null,
-            'fullname' => !empty($attributes['namePerson']) ? $attributes['namePerson'] : null,
-            'birthday' => !empty($attributes['birthDate']) ? $attributes['birthDate'] : null,
-            'gender'   => !empty($attributes['person/gender']) ? $attributes['person/gender'] : null,
-            'country'  => !empty($attributes['contact/country/home']) ? $attributes['contact/country/home'] : null,
-            'language' => !empty($attributes['pref/language']) ? $attributes['pref/language'] : null,
-            'timezone' => !empty($attributes['pref/timezone']) ? $attributes['pref/timezone'] : null,
+            'first_name' => !empty($attributes['namePerson/friendly']) ? $attributes['namePerson/friendly'] : null,
+            'email'      => !empty($attributes['contact/email']) ? $attributes['contact/email'] : null,
+            'name'       => !empty($attributes['namePerson']) ? $attributes['namePerson'] : null,
+            'birthday'   => !empty($attributes['birthDate']) ? $attributes['birthDate'] : null,
+            'gender'     => !empty($attributes['person/gender']) ? $attributes['person/gender'] : null,
+            'country'    => !empty($attributes['contact/country/home']) ? $attributes['contact/country/home'] : null,
+            'language'   => !empty($attributes['pref/language']) ? $attributes['pref/language'] : null,
+            'timezone'   => !empty($attributes['pref/timezone']) ? $attributes['pref/timezone'] : null,
         ];
-        $userinfo = Arrays::removeFalsey($userinfo);
 
         $identity = new \Orb\Auth\Identity($openid->identity, $userinfo);
 

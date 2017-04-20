@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
@@ -153,10 +152,10 @@ class CustomDataType extends AbstractType
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
-            $data = $form->get('data')->getNormData();
+            $data = $form->get('data')->getData();
             $data = is_array($data) ? $data : ($data ? [$data] : []);
-            $data = array_map(function (HierarchyNode $choiceCustomDef) {
-                return $choiceCustomDef->getData()->getId();
+            $data = array_map(function (CustomDefAbstract $choiceCustomDef) {
+                return $choiceCustomDef->getId();
             }, $data);
 
             $exist = $customDefData
@@ -289,7 +288,8 @@ class CustomDataType extends AbstractType
                     return $options['custom_def']->getType() === CustomDefAbstract::TYPE_HIDDEN;
                 },
                 'required' => function (Options $options) {
-                    return $options['custom_def']->isRequired($options['agent_interface']);
+                    return $options['custom_def']->isRequired($options['agent_interface'])
+                        || $options['custom_def']->isRegexRequired($options['agent_interface']);
                 },
                 'inline'         => false,
                 'error_bubbling' => false,
@@ -330,7 +330,9 @@ class CustomDataType extends AbstractType
                     ->toArray()
                 ;
 
-                $formFieldData = implode(',', $formFieldData);
+                if (!$customDef->isMulti()) {
+                    $formFieldData = reset($formFieldData);
+                }
             } elseif ($customDef->isDateType()) {
                 // cast to null
                 if (!$formFieldData) {
@@ -348,29 +350,17 @@ class CustomDataType extends AbstractType
      * @param Collection        $allCustomData
      * @param CustomDefAbstract $customDef
      *
-     * @return CustomDataAbstract[]|ArrayCollection
+     * @return CustomDataAbstract[]|ArrayCollection|Collection
      */
     protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
     {
+        $defaultValue  = $this->getDefaultValue($customDef);
         $customDefData = $allCustomData->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
             return $custom_data->root_field === $customDef && null !== $custom_data->field;
         });
 
         if (!$customDefData->count()) {
             if (!$customDef->isChoiceType()) {
-                $defaultValue = $customDef->getDefaultValue();
-
-                // datetime default value stored as string, convert to timestamp
-                if ($customDef->isDateType()) {
-                    if ($defaultValue) {
-                        try {
-                            $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
-                        } catch (\Exception $e) {
-                            $defaultValue = null;
-                        }
-                    }
-                }
-
                 if ($defaultValue) {
                     $defaultCustomData = $customDef->createCustomData();
                     $defaultCustomData
@@ -382,8 +372,7 @@ class CustomDataType extends AbstractType
                     $customDefData->add($defaultCustomData);
                 }
             } else {
-                $defaultIds = (array) $customDef->getDefaultValue();
-                foreach ($defaultIds as $defaultId) {
+                foreach ($defaultValue as $defaultId) {
                     $choiceDef = $customDef->getChildById($defaultId);
                     if (!$choiceDef) {
                         continue;
@@ -402,6 +391,33 @@ class CustomDataType extends AbstractType
         }
 
         return $customDefData;
+    }
+
+    /**
+     * @param CustomDefAbstract $customDef
+     *
+     * @return mixed
+     */
+    protected function getDefaultValue(CustomDefAbstract $customDef)
+    {
+        if (!$customDef->isChoiceType()) {
+            $defaultValue = $customDef->getDefaultValue();
+
+            // datetime default value stored as string, convert to timestamp
+            if ($customDef->isDateType()) {
+                if ($defaultValue) {
+                    try {
+                        $defaultValue = (new \DateTime($defaultValue))->getTimestamp();
+                    } catch (\Exception $e) {
+                        $defaultValue = null;
+                    }
+                }
+            }
+        } else {
+            $defaultValue = (array) $customDef->getDefaultValue();
+        }
+
+        return $defaultValue;
     }
 
     /**
@@ -467,6 +483,7 @@ class CustomDataType extends AbstractType
                     $options = [
                         'input'    => 'timestamp',
                         'widget'   => 'choice',
+                        'calendar' => $def->getOption('calendar'),
                         'weekdays' => $def->getOption('date_valid_dow'),
                         'min_date' => $def->getDateMinFormat(),
                         'max_date' => $def->getDateMaxFormat(),

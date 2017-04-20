@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
@@ -50,7 +51,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @JMS\ExclusionPolicy("all")
  */
-class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, Hierarchical
+class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchical
 {
     /**
      * The unique id of the category.
@@ -76,6 +77,11 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     protected $title;
 
     /**
+     * Category`s slug.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $slug;

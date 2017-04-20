@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Attachments;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -80,7 +81,13 @@ class RestrictionSet
         $ext  = Strings::getExtension($file->getFilename());
 
         if ($file instanceof UploadedFile) {
-            $ext = Strings::getExtension($file->getClientOriginalName());
+            if ($file->getClientOriginalName() === 'blob') {
+                //workaround for images pasted directly from clipboard
+                $guesser = new MimeTypeExtensionGuesser();
+                $ext     = $guesser->guess($file->getClientMimeType());
+            } else {
+                $ext = Strings::getExtension($file->getClientOriginalName());
+            }
         }
 
         return $this->getErrorForProperties([

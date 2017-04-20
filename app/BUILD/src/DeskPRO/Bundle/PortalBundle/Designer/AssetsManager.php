@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -216,6 +216,10 @@ class AssetsManager
      */
     private function upload(UploadedFile $file, $tag)
     {
+        if (!$file->isValid()) {
+            throw new \RuntimeException($file->getErrorMessage());
+        }
+
         $context = new UploadFileContext($file, $this->edit_theme_set, $tag);
         $name    = uniqid().'_'.$file->getClientOriginalName();
         $name    = preg_replace('/\s+/', '_', $name);
@@ -253,6 +257,10 @@ class AssetsManager
      */
     private function uploadFavicon(UploadedFile $file, $tag)
     {
+        if (!$file->isValid()) {
+            throw new \RuntimeException($file->getErrorMessage());
+        }
+
         $context   = new UploadFileContext($file, $this->edit_theme_set, $tag);
         $extension = ContentTypes::findExtensionForContentType($context->getMimeType());
 

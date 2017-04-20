@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,9 +86,9 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
             $client->authenticate($_GET['code']);
 
             if ($access_token = $client->getAccessToken()) {
-                $attrs = $client->verifyIdToken()->getAttributes();
+                $attrs = $client->verifyIdToken();
 
-                if ($this->domain && !Urls::verifyEmailDomain($attrs['payload']['email'], $this->domain)) {
+                if ($this->domain && !Urls::verifyEmailDomain($attrs['email'], $this->domain)) {
                     return new Result(
                         Result::FAILURE, null,
                         [
@@ -98,19 +98,19 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
                     );
                 }
 
-                if (empty($attrs['payload']) || empty($attrs['payload']['sub'])) {
+                if (empty($attrs['sub'])) {
                     throw new \Exception('Google API payload was changed.');
                 }
 
                 $identity = new Identity(
-                    $attrs['payload']['sub'],
+                    $attrs['sub'],
                     [
-                        'email'          => $attrs['payload']['email'],
-                        'email_verified' => $attrs['payload']['email_verified'],
-                        'sub'            => $attrs['payload']['sub'],
+                        'email'          => $attrs['email'],
+                        'email_verified' => $attrs['email_verified'],
+                        'sub'            => $attrs['sub'],
                     ]
                 );
-                $identity->setFriendlyIdentity($attrs['payload']['email']);
+                $identity->setFriendlyIdentity($attrs['email']);
 
                 return new Result(Result::SUCCESS, $identity);
             } else {

@@ -12,8 +12,13 @@
                 <div class="panel panel-innertable">
                     <div class="panel-help inhelp-body">
                         <p>
-                            Use these functions to remove test data from your  helpdesk. All data you select will be permanently deleted.
-                            This function is only available for new helpdesks that are less than 90 days old and contain fewer than 500 tickets.
+                            Use these functions to remove test data from your helpdesk. All data you select will be permanently deleted.
+                            This function is only available for new helpdesks that are less than 90 days old.
+                        </p>
+                        <p>
+                            <strong>NOTE:</strong><br/>
+                            For security reasons, this feature is disabled 90 days after your account was created.<br/>
+                            Your last chance to reset the database will be {{ app.formatDaysToResetLeft() }}.
                         </p>
                     </div>
                     <div class="form-group">

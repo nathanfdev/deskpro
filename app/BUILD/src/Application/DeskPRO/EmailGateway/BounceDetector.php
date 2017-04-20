@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
+use Application\DeskPRO\Config\UserFileConfig;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Doctrine\ORM\EntityManager;
 use Orb\Log\Logger;
@@ -62,12 +63,12 @@ class BounceDetector
     /**
      * @var string
      */
-    protected $original_subject;
+    protected $originalSubject;
 
     /**
      * @var string[]
      */
-    protected $guessed_email_addresses;
+    protected $guessedEmailAddresses;
 
     public function __construct(AbstractReader $reader, EntityManager $em)
     {
@@ -92,8 +93,8 @@ class BounceDetector
             return $this->patterns;
         }
 
-        $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('bounce-subject-patterns');
-        $this->patterns = $pattern_config->all();
+        $patternConfig  = new UserFileConfig('bounce-subject-patterns');
+        $this->patterns = $patternConfig->all();
 
         return $this->patterns;
     }
@@ -112,7 +113,7 @@ class BounceDetector
             $m = null;
             if (preg_match($pattern, $subject, $m)) {
                 if (isset($m['subject'])) {
-                    $this->original_subject = $m['subject'];
+                    $this->originalSubject = $m['subject'];
                 }
                 if ($this->logger) {
                     $this->logger->logDebug('Is bounced based on subject match: '.$pattern);
@@ -150,9 +151,9 @@ class BounceDetector
             return true;
         }
 
-        $from              = $this->reader->getFromAddress();
-        $postmaster_config = new \Application\DeskPRO\Config\UserFileConfig('postmaster-emails');
-        foreach ($postmaster_config as $pattern) {
+        $from             = $this->reader->getFromAddress();
+        $postmasterConfig = new UserFileConfig('postmaster-emails');
+        foreach ($postmasterConfig as $pattern) {
             if (preg_match($pattern, $from->email)) {
                 if ($this->logger) {
                     $this->logger->logDebug('Is bounced based on postmaster pattern #$k $pattern matching from address '.$from->email);
@@ -176,18 +177,18 @@ class BounceDetector
      */
     public function getGuessedEmailAddresses()
     {
-        if ($this->guessed_email_addresses !== null) {
-            return $this->guessed_email_addresses;
+        if ($this->guessedEmailAddresses !== null) {
+            return $this->guessedEmailAddresses;
         }
 
-        $this->guessed_email_addresses = [];
+        $this->guessedEmailAddresses = [];
 
         // The actual From address should be tried too
-        $this->guessed_email_addresses[] = $this->reader->getFromAddress()->getEmail();
+        $this->guessedEmailAddresses[] = $this->reader->getFromAddress()->getEmail();
 
         if ($failed = $this->reader->getHeader('X-Failed-Recipients')) {
             foreach ($failed->getAllParts() as $email) {
-                $this->guessed_email_addresses[] = strtolower($email);
+                $this->guessedEmailAddresses[] = strtolower($email);
                 if ($this->logger) {
                     $this->logger->logDebug('Found email via X-Failed-Recipients: '.$email);
                 }
@@ -204,7 +205,7 @@ class BounceDetector
                 }
 
                 if ($email) {
-                    $this->guessed_email_addresses[] = strtolower($email);
+                    $this->guessedEmailAddresses[] = strtolower($email);
                     if ($this->logger) {
                         $this->logger->logDebug('Found email via body: '.$email);
                     }
@@ -212,8 +213,8 @@ class BounceDetector
             }
         }
 
-        $this->guessed_email_addresses = array_unique($this->guessed_email_addresses);
+        $this->guessedEmailAddresses = array_unique($this->guessedEmailAddresses);
 
-        return $this->guessed_email_addresses;
+        return $this->guessedEmailAddresses;
     }
 }

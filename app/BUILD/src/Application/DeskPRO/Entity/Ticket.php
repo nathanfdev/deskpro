@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -231,12 +231,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @var \Application\DeskPRO\Entity\Department
      *
-     * @AppAssert\Ticket\LeafDepartment()
+     * @AppAssert\LeafDepartment()
      */
     protected $department = null;
 
     /**
      * @var \Application\DeskPRO\Entity\TicketCategory
+     *
+     * @AppAssert\Ticket\TicketLeafCategory()
      */
     protected $category = null;
 
@@ -252,6 +254,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Product
+     *
+     * @AppAssert\Ticket\TicketLeafProduct()
      */
     protected $product = null;
 
@@ -301,8 +305,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var ArrayCollection
-     *
-     * @Assert\Valid()
      */
     protected $messages;
 
@@ -677,6 +679,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function disableAutoTicketProcess()
     {
         $this->__dp_auto_ticket_process = false;
+
+        // prevent auto ticket process of parent ticket while saving as well
+        // e.g. it's called in snippet formatter of reply action
+
+        $parentTicket = $this->getParentTicket();
+        if ($parentTicket && $parentTicket->__dp_auto_ticket_process) {
+            $parentTicket->disableAutoTicketProcess();
+        }
 
         return $this;
     }
@@ -1479,7 +1489,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function addSla(Sla $sla)
     {
         foreach ($this->ticket_slas as $ticket_sla) {
-            if ($ticket_sla->sla->id == $sla->id) {
+            if ($ticket_sla->sla === $sla) {
                 return $ticket_sla;
             }
         }
@@ -1501,17 +1511,21 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeSla(Sla $sla)
     {
+        $found = null;
         foreach ($this->ticket_slas as $k => $ticket_sla) {
-            if ($ticket_sla->sla->id == $sla->id) {
+            if ($ticket_sla->sla === $sla) {
                 $this->ticket_slas->remove($k);
-                $this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
-                $this->updateWorstSlaStatus();
 
-                return $ticket_sla;
+                // already found a dupe, dont double log
+                if (!$found) {
+                    $this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
+                }
+                $this->updateWorstSlaStatus();
+                $found = $ticket_sla;
             }
         }
 
-        return;
+        return $found;
     }
 
     /**
@@ -1533,7 +1547,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function hasSla(Sla $sla)
     {
         foreach ($this->ticket_slas as $ticket_sla) {
-            if ($ticket_sla->sla->id == $sla->id) {
+            if ($ticket_sla->sla === $sla) {
                 return $ticket_sla;
             }
         }
@@ -1629,7 +1643,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             }
         }
 
-        $this->_onPropertyChanged('messages', null, $this->messages, true);
+        $this->_onPropertyChanged('messages', null, $message, true);
         $this->getStateChangeRecorder()->record('message', null, $message);
 
         if (!$message->is_agent_note) {
@@ -1676,6 +1690,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->getStateChangeRecorder()->record('message', $message, null);
 
         return $this;
+    }
+
+    /**
+     * @return TicketAttachment[]|ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
     }
 
     /**
@@ -2501,7 +2523,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             return 0;
         }
 
-        return $this->agent['id'];
+        return $this->getAgent()->getId();
     }
 
     /**
@@ -3570,8 +3592,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         sort($hashes, \SORT_STRING);
 
-        $this->ticket_hash = sha1(implode('', $hashes));
-        $this->_onPropertyChanged('ticket_hash', '', $this->ticket_hash);
+        $ticket_hash = sha1(implode('', $hashes));
+        $this->setModelField('ticket_hash', $ticket_hash);
     }
 
     public function initHashCode()
@@ -4594,8 +4616,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postPersist');
         $metadata->addLifecycleCallback('_autoProcessTicket', 'postUpdate');
-        $metadata->addLifecycleCallback('recomputeHash', 'postPersist');
-        $metadata->addLifecycleCallback('recomputeHash', 'postUpdate');
         $metadata->setPrimaryTable(
             [
                 'name'    => 'tickets',

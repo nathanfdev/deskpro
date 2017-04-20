@@ -16,10 +16,6 @@
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
   "angularScrollGlue":               "bower_components/angular-scroll-glue/src/scrollglue",
 
-  "react":                           "bower_components/react/react",
-  "react-dom":                        "bower_components/react/react-dom",
-  "ngReact":                         "bower_components/ngReact/ngReact.min",
-
   "bootstrapDatetime":               "bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
@@ -89,5 +85,12 @@
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing",
   "semanticAccordion":               "node_modules/semantic-ui-less/definitions/modules/accordion",
-  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill"
+  "customEventPolyfill":             "node_modules/custom-event-polyfill/custom-event-polyfill",
+
+
+  "jquery.calendars":                "bower_components/kbw-calendars/dist/js/jquery.calendars",
+  "jquery.plugin":                   "bower_components/kbw-calendars/dist/js/jquery.plugin",
+  "jquery.calendars.plus":           "bower_components/kbw-calendars/dist/js/jquery.calendars.plus",
+  "jquery.calendars.picker":         "bower_components/kbw-calendars/dist/js/jquery.calendars.picker",
+  "jquery.calendars.islamic":        "bower_components/kbw-calendars/dist/js/jquery.calendars.islamic"
 }

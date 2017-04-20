@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\EntityRepository\Usergroup as UsergroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -133,11 +134,19 @@ class Usergroup extends DomainObject
     protected $permissions;
 
     /**
+     * Usergroup members.
+     *
+     * @var ArrayCollection|Person[]
+     */
+    protected $people;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->permissions = new ArrayCollection();
+        $this->people      = new ArrayCollection();
     }
 
     /**
@@ -276,6 +285,11 @@ class Usergroup extends DomainObject
         return $this->is_enabled;
     }
 
+    public function getPeople()
+    {
+        return $this->people;
+    }
+
     /**
      * Generate a key for a set of usergroups. These same usergroups
      * will always generate the same key.
@@ -324,7 +338,7 @@ class Usergroup extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usergroup';
+        $metadata->customRepositoryClassName = UsergroupRepository::class;
         $metadata->setPrimaryTable(['name' => 'usergroups']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
@@ -393,13 +407,22 @@ class Usergroup extends DomainObject
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'permissions',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Permission',
+                'targetEntity' => Permission::class,
                 'mappedBy'     => 'usergroup',
                 'cascade'      => [
                     'persist',
                     'remove',
                 ],
                 'orphanRemoval' => true,
+            ]
+        );
+
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'people',
+                'targetEntity' => Person::class,
+                'mappedBy'     => 'usergroups',
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

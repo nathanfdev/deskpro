@@ -4,24 +4,35 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from '../../Positioned/Detached';
 
 class PopUp extends React.Component {
+
   static propTypes = {
     opened:     PropTypes.bool,
-    onOpen:     PropTypes.func,
     elementId:  PropTypes.string,
     positionAt: PropTypes.string,
-    content:    PropTypes.oneOfType([
+
+    content: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.node
     ]).isRequired,
-    id:        PropTypes.number.isRequired,
-    children:  PropTypes.any,
-    autoClose: PropTypes.bool,
-    autoOpen:  PropTypes.bool
+
+    children:       PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    autoClose:      PropTypes.bool,
+    autoOpen:       PropTypes.bool,
+    className:      PropTypes.string,
+    innerClassName: PropTypes.string,
+    id:             PropTypes.number.isRequired,         // eslint-disable-line react/no-unused-prop-types
+    classes:        PropTypes.arrayOf(PropTypes.string), // eslint-disable-line react/no-unused-prop-types
+    innerClasses:   PropTypes.arrayOf(PropTypes.string)  // eslint-disable-line react/no-unused-prop-types
   };
+
   static defaultProps = {
     onOpen() {},
-    autoClose: true,
-    autoOpen:  true
+    className:      '',
+    innerClassName: '',
+    innerClasses:   [],
+    classes:        [],
+    autoClose:      false,
+    autoOpen:       false
   };
 
   constructor(props) {
@@ -29,6 +40,7 @@ class PopUp extends React.Component {
     this.state = {
       isOpen: !!this.props.opened
     };
+
     if (this.props.autoClose) {
       window.document.addEventListener('dpPopupOpen', () => {
         this.closePopup();
@@ -44,13 +56,13 @@ class PopUp extends React.Component {
   };
 
   onMouseLeave = () => {
-    if (this.props.opened) {
+    const { opened, autoClose } = this.props;
+
+    if (opened || !autoClose) {
       return;
     }
-    const self = this;
-    this.timeout = setTimeout(() => {
-      self.closePopup();
-    }, 500);
+
+    this.timeout = setTimeout(() => this.closePopup(), 100);
   };
 
   openPopup = () => {
@@ -82,28 +94,29 @@ class PopUp extends React.Component {
   };
 
   renderBody() {
-    const { content, positionAt, elementId } = this.props;
+    const { content, positionAt, elementId, innerClassName } = this.props;
 
     return (
-      <ClickOut onClickOut={this.closePopup}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen })}>
+      <ClickOut onClickOut={this.closePopup} additionalNodes={['.ReactModalPortal']}>
+        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
           {content}
         </div>
       </ClickOut>
-      );
+    );
   }
 
   render() {
     const { isOpen } = this.state;
-    const { children } = this.props;
+    const { children, className } = this.props;
 
     return (
       <div
         style={{ display: 'inline-block' }}
-        className={classNames({ active: isOpen })}
-        ref={c => { this.button = c; }}
+        className={classNames({ active: isOpen }, className)}
+        ref={(c) => { this.button = c; }}
         onClick={this.openPopup}
         onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
       >
         {children}
         <Detached
@@ -117,4 +130,5 @@ class PopUp extends React.Component {
     );
   }
 }
+
 export default PopUp;

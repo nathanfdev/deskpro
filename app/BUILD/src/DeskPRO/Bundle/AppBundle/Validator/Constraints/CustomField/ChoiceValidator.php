@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,6 +81,11 @@ class ChoiceValidator extends AbstractCustomDefConstraintValidator
             $validators[] = new Assert\Count($count_options);
         }
 
+        // Leaf nodes
+        $validators[] = new LeafChoice([
+            'customDef' => $constraint->custom_def,
+        ]);
+
         return $validators;
     }
 
@@ -93,7 +98,7 @@ class ChoiceValidator extends AbstractCustomDefConstraintValidator
 
         /** @var CustomDataAbstract $choice */
         foreach ($value as $choice) {
-            $choices[] = $choice->field ? $choice->field->getId() : 0;
+            $choices[] = $choice->getField() ? $choice->getField()->getId() : 0;
         }
 
         if (!$constraint->getCustomDefOption('multiple', false)) {

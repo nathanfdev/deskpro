@@ -1,12 +1,9 @@
-import * as actions from '../Actions/messagesActions';
-import { newActionAlerts } from '../../Application/Actions/notificationActions';
+import Immutable from 'immutable';
 import { createReducer } from 'Ampliflux';
 import { async } from 'Ampliflux/reducers/handlers';
-import Immutable from 'immutable';
+import * as actions from '../Actions/messagesActions';
+import { newActionAlerts } from '../../Application/Actions/notificationActions';
 import { MessagesHelper } from '../../../Services/Helpers/MessagesHelper';
-
-const messagesHelper = new MessagesHelper();
-
 
 const initialState = {
   me:               {},
@@ -16,7 +13,8 @@ const initialState = {
   loadingMessages:  true,
   loadingCounts:    true,
   updatingMessages: false,
-  searching:        false
+  searching:        false,
+  drafts:           {}
 };
 
 export default createReducer(initialState, {
@@ -24,49 +22,67 @@ export default createReducer(initialState, {
 
   [actions.loadMessages]: async(
     {
-      start:   (state) => state.set('loadingMessages', true),
+      start:   state => state.set('loadingMessages', true),
       success: (state, payloadArgument) => {
         const payload  = payloadArgument;
         const newState = state.set('searching', Boolean(payload.searchQuery));
-        const chat     = messagesHelper.getChat(newState, payload.chat);
-        const path     = messagesHelper.getPath(newState, payload.chat);
+        const chat     = MessagesHelper.getChat(newState, payload.chat);
+        const path     = MessagesHelper.getPath(newState, payload.chat);
 
         if (!chat || (payload.searchQuery && chat.searchQuery !== payload.searchQuery)) {
           const messages = {};
           payload.messages.map((message) => {
+            message.page = payload.page;
             messages[message.uuid] = message;
             return messages;
           });
           payload.messages = Immutable.Map(messages);
+          payload.pagesLoaded = { 1: true };
           return newState.setIn(path, payload);
         }
 
         payload.messages.map((message) => {
+          message.page = payload.page;
           chat.messages = chat.messages.set(message.uuid, message);
           return chat.messages;
         });
         chat.page = Math.max(chat.page, payload.page);
+        if (!chat.pagesLoaded) {
+          chat.pagesLoaded = {};
+        }
+        chat.pagesLoaded[payload.page] = true;
 
         return newState.setIn(path, { ...chat });
       },
-      done: (state) => state.set('loadingMessages', false)
+      done: state => state.set('loadingMessages', false)
     }
   ),
 
-  [actions.addMessageOptimistic]:   messagesHelper.addMessageOptimistic.bind(messagesHelper),
-  [actions.markMessagesOptimistic]: messagesHelper.markMessagesOptimistic.bind(messagesHelper),
+  [actions.addMessageOptimistic]:      MessagesHelper.addMessageOptimistic,
+  [actions.markMessagesOptimistic]:    MessagesHelper.markMessagesOptimistic,
+  [actions.markAllMessagesOptimistic]: MessagesHelper.markAllMessagesOptimistic,
 
   [actions.markMessages]: async({
-    success: messagesHelper.markMessages.bind(messagesHelper),
+    success: MessagesHelper.markMessages,
+    done:    state => state.set('updatingMessages', false)
+  }),
+
+  [actions.markAllMessagesAsRead]: async({
+    success: MessagesHelper.markAllMessagesAsRead,
     done:    state => state.set('updatingMessages', false)
   }),
 
   [actions.refreshCounts]: async(
     {
-      success: (state, payload) => state.set('counts', payload),
-      done:    (state) => state.set('loadingCounts', false)
+      success: (state, payload) => {
+        DeskPRO_Window.notifications.fireEvent('modCount', { count: payload.count }); // eslint-disable-line no-undef
+        return state.set('counts', payload);
+      },
+      done: state => state.set('loadingCounts', false)
     }
   ),
+  [actions.saveDraft]:  (state, payload) => state.set('drafts', payload),
+  [actions.loadDrafts]: (state, payload) => state.set('drafts', payload),
 
-  [newActionAlerts]: messagesHelper.handleActionAlerts.bind(messagesHelper)
+  [newActionAlerts]: MessagesHelper.handleActionAlerts
 });

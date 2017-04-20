@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,12 +71,12 @@ class TicketsDataService extends AbstractDataService
      * @param Person       $person
      * @param TicketFilter $filter
      * @param int          $page
-     * @param int          $max_per_page
-     * @param bool         $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
+     * @param int          $maxPerPage
+     * @param bool         $ignoreOnlyNotes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return Pagerfanta
      */
-    public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page, $ignore_only_notes = true)
+    public function getPager(Person $person, TicketFilter $filter, $page, $maxPerPage, $ignoreOnlyNotes = true)
     {
         $em = $this->em;
 
@@ -87,12 +87,12 @@ class TicketsDataService extends AbstractDataService
                 'getPager',
                 $person,
                 $filter,
-                $page,
-                $max_per_page,
-                $ignore_only_notes,
+                (int) $page,
+                (int) $maxPerPage,
+                (bool) $ignoreOnlyNotes,
                 $brand,
             ],
-            function () use ($em, $person, $filter, $page, $max_per_page, $ignore_only_notes, $brand) {
+            function () use ($em, $person, $filter, $page, $maxPerPage, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
 
                 $qb->select('t')
@@ -101,7 +101,7 @@ class TicketsDataService extends AbstractDataService
                     ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
                     ->andWhere('t.brand = :brand')->setParameter('brand', $brand);
 
-                if ($ignore_only_notes) {
+                if ($ignoreOnlyNotes) {
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
@@ -112,15 +112,28 @@ class TicketsDataService extends AbstractDataService
                         $qb->andWhere('t.person = :person')->setParameter('person', $person);
                     } else {
                         if (!$person->organization || !$person->organization_manager) {
-                            //  show non-agents the tickets they participate in
-                            $qb->leftJoin('t.participants', 'part');
-                            $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                            $ids = [];
+                            $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
+                            $params[] = $person->id;
+
+                            if (!$person->is_agent) {
+                                $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
+                                $params[] = $person->id;
+                            }
+
+                            $partsUnion = implode("\nUNION\n", $parts);
+
+                            $ids = $em->getConnection()->fetchAllCol(
+                                "SELECT DISTINCT id FROM ($partsUnion) AS t",
+                                $params
+                            );
+                            $qb->andWhere('t.id IN (:ids)');
+                            $qb->setParameter('ids', $ids);
                         } else {
                             // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
                             $qb->leftJoin('t.participants', 'part');
                             $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
                             $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
-                            $sql = $qb->getQuery()->getDQL();
                         }
                     }
                 } else {
@@ -150,7 +163,10 @@ class TicketsDataService extends AbstractDataService
                 // search query
                 if ($q = $filter->getSearchQuery()) {
                     $qb->join('t.messages', 'm');
-                    $qb->andWhere('(t.subject LIKE :query OR (m.message LIKE :query AND m.is_agent_note = 0))')->setParameter('query', '%'.$q.'%');
+                    $qb->andWhere('(t.ref = :ref OR t.id = :ref OR t.subject LIKE :query OR (m.message LIKE :query AND m.is_agent_note = 0))')
+                        ->setParameter('query', '%'.$q.'%')
+                        ->setParameter('ref', $q)
+                    ;
                 }
 
                 // sort
@@ -192,7 +208,7 @@ class TicketsDataService extends AbstractDataService
                 }
 
                 $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-                $pager->setMaxPerPage($max_per_page);
+                $pager->setMaxPerPage($maxPerPage);
                 $pager->setCurrentPage($page);
 
                 return $pager;
@@ -204,12 +220,12 @@ class TicketsDataService extends AbstractDataService
      * Returns the count of tickets that can be seen by the user by default. You can optionally provide a status to count on.
      *
      * @param Person $person
-     * @param string $status            "open" [awaiting user or agent], "all" [open + resolved], or a specific status
-     * @param bool   $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
+     * @param string $status          "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param bool   $ignoreOnlyNotes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return int|null
      */
-    public function getTicketCount(Person $person, $status = 'all', $ignore_only_notes = true)
+    public function getTicketCount(Person $person, $status = 'all', $ignoreOnlyNotes = true)
     {
         $em = $this->em;
 
@@ -220,21 +236,21 @@ class TicketsDataService extends AbstractDataService
                 'getTicketCount',
                 $person,
                 $status,
-                $ignore_only_notes,
+                $ignoreOnlyNotes,
                 $brand,
             ],
-            function () use ($em, $person, $status, $ignore_only_notes, $brand) {
+            function () use ($em, $person, $status, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
 
                 if ('open' === $status) {
-                    $status_list = [
+                    $statusList = [
                         Ticket::STATUS_AWAITING_AGENT,
                         Ticket::STATUS_AWAITING_USER,
                     ];
                 } elseif ('all' !== $status) {
-                    $status_list = [$status];
+                    $statusList = [$status];
                 } else {
-                    $status_list = [
+                    $statusList = [
                         Ticket::STATUS_AWAITING_AGENT,
                         Ticket::STATUS_RESOLVED,
                         Ticket::STATUS_ARCHIVED,
@@ -244,10 +260,10 @@ class TicketsDataService extends AbstractDataService
 
                 $qb->select($qb->expr()->countDistinct('t.id'))
                     ->from(Ticket::class, 't')
-                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list)
+                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $statusList)
                     ->andWhere('t.brand = :brand')->setParameter('brand', $brand);
 
-                if ($ignore_only_notes) {
+                if ($ignoreOnlyNotes) {
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
@@ -278,12 +294,12 @@ class TicketsDataService extends AbstractDataService
      * if they clicked "Switch to Organization" in the ticket list).
      *
      * @param Person $person
-     * @param string $status            "open" [awaiting user or agent], "all" [open + resolved], or a specific status
-     * @param bool   $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
+     * @param string $status          "open" [awaiting user or agent], "all" [open + resolved], or a specific status
+     * @param bool   $ignoreOnlyNotes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return int|null
      */
-    public function getOrganizationTicketCount(Person $person, $status = 'all', $ignore_only_notes = true)
+    public function getOrganizationTicketCount(Person $person, $status = 'all', $ignoreOnlyNotes = true)
     {
         $em = $this->em;
 
@@ -294,21 +310,21 @@ class TicketsDataService extends AbstractDataService
                 'getOrganizationTicketCount',
                 $person,
                 $status,
-                $ignore_only_notes,
+                $ignoreOnlyNotes,
                 $brand,
             ],
-            function () use ($em, $person, $status, $ignore_only_notes, $brand) {
+            function () use ($em, $person, $status, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
 
                 if ('open' === $status) {
-                    $status_list = [
+                    $statusList = [
                         Ticket::STATUS_AWAITING_AGENT,
                         Ticket::STATUS_AWAITING_USER,
                     ];
                 } elseif ('all' !== $status) {
-                    $status_list = [$status];
+                    $statusList = [$status];
                 } else {
-                    $status_list = [
+                    $statusList = [
                         Ticket::STATUS_AWAITING_AGENT,
                         Ticket::STATUS_RESOLVED,
                         Ticket::STATUS_AWAITING_USER,
@@ -317,10 +333,10 @@ class TicketsDataService extends AbstractDataService
 
                 $qb->select($qb->expr()->countDistinct('t.id'))
                     ->from(Ticket::class, 't')
-                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list)
+                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $statusList)
                     ->andWhere('t.brand = :brand')->setParameter('brand', $brand);
 
-                if ($ignore_only_notes) {
+                if ($ignoreOnlyNotes) {
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
@@ -339,11 +355,11 @@ class TicketsDataService extends AbstractDataService
      * Returns the $count number of most recent resolved tickets.
      *
      * @param int  $count
-     * @param bool $ignore_only_notes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
+     * @param bool $ignoreOnlyNotes if true, we ignore tickets that only have agent messages (USE IN PORTAL)
      *
      * @return Ticket[]
      */
-    public function getLatestResolvedTickets($count = 20, $ignore_only_notes = true)
+    public function getLatestResolvedTickets($count = 20, $ignoreOnlyNotes = true)
     {
         $em = $this->em;
 
@@ -351,18 +367,18 @@ class TicketsDataService extends AbstractDataService
             [
                 'getLatestResolvedTickets',
                 $count,
-                $ignore_only_notes,
+                $ignoreOnlyNotes,
             ],
-            function () use ($em, $count, $ignore_only_notes) {
+            function () use ($em, $count, $ignoreOnlyNotes) {
                 $qb = $em->createQueryBuilder();
 
-                $status_list = [Ticket::STATUS_RESOLVED];
+                $statusList = [Ticket::STATUS_RESOLVED];
 
                 $qb->select('t')
                     ->from(Ticket::class, 't')
-                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $status_list);
+                    ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $statusList);
 
-                if ($ignore_only_notes) {
+                if ($ignoreOnlyNotes) {
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 

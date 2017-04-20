@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,6 @@ namespace Application\ImportBundle\Model;
 use Application\ImportBundle\Model\ContactData\ContactData;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Exporting person entity.
@@ -42,7 +41,8 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
 {
     use PrimaryImportModelTrait, LabelAwareTrait, CustomDataAwareTrait;
 
-    const INITIAL_PASSWORD = 'password';
+    const PASSWORD_SCHEME_PLAIN  = 'plain';
+    const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
     /**
      * @var bool
@@ -412,6 +412,26 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     }
 
     /**
+     * @return string
+     */
+    public function getTitlePrefix()
+    {
+        return $this->titlePrefix;
+    }
+
+    /**
+     * @param string $titlePrefix
+     *
+     * @return $this
+     */
+    public function setTitlePrefix($titlePrefix)
+    {
+        $this->titlePrefix = $titlePrefix;
+
+        return $this;
+    }
+
+    /**
      * Returns custom display name.
      *
      * @return string
@@ -436,33 +456,13 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     }
 
     /**
-     * @return string
-     */
-    public function getTitlePrefix()
-    {
-        return $this->titlePrefix;
-    }
-
-    /**
-     * @param string $titlePrefix
-     *
-     * @return $this
-     */
-    public function setTitlePrefix($titlePrefix)
-    {
-        $this->titlePrefix = $titlePrefix;
-
-        return $this;
-    }
-
-    /**
      * Returns password.
      *
      * @return string
      */
     public function getPassword()
     {
-        return $this->password ?: self::INITIAL_PASSWORD;
+        return $this->password;
     }
 
     /**
@@ -756,25 +756,5 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     public function getContactData()
     {
         return $this->contact_data;
-    }
-
-    /**
-     * @Assert\Callback()
-     *
-     * @internal
-     *
-     * @param ExecutionContextInterface $context
-     */
-    public function validate(ExecutionContextInterface $context)
-    {
-        // validate name
-        if (!$this->name && !$this->first_name && !$this->last_name) {
-            $context
-                ->buildViolation('This value should not be blank.')
-                ->setCode(Assert\NotBlank::IS_BLANK_ERROR)
-                ->atPath('name')
-                ->addViolation()
-            ;
-        }
     }
 }

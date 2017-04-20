@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,17 +50,18 @@ class PeopleVoter implements PermissionGroupEntityVoterInterface
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        if (!$user->hasPerm('agent_people.use')) {
-            return false;
-        }
+        $peopleUse = $user->hasPerm('agent_people.use');
 
         switch ($attribute) {
             case PermissionGroupVoter::CREATE:
-                return $user->hasPerm('agent_people.create');
+                return $peopleUse && $user->hasPerm('agent_people.create');
             case PermissionGroupVoter::MODIFY:
-                return $user->hasPerm('agent_people.edit');
+                return $peopleUse && $user->hasPerm('agent_people.edit');
             case PermissionGroupVoter::DELETE:
-                return $user->hasPerm('agent_people.delete');
+                return $peopleUse && $user->hasPerm('agent_people.delete');
+            case PermissionGroupVoter::VIEW_LIST:
+            case PermissionGroupVoter::VIEW:
+                return $peopleUse || ($user->getAgentData() && $user->getAgentData()->isVoiceEnabled());
         }
 
         return true;

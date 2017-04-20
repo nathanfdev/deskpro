@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -295,6 +295,7 @@ return [
     'user.email_subjects.comment-deleted'            => 'Su comentario se ha revisado por nuestros agentes',
     'user.email_subjects.email-too-big'              => 'Tu correo {{subject}} no fue aceptado',
     'user.email_subjects.email_new-confirm'          => 'Validar su dirección de correo electrónico',
+    'user.email_subjects.email_primary-confirm'      => 'Validar su dirección de correo electrónico',
     'user.email_subjects.feedback_new'               => 'Gracias por enviar sus comentarios',
     'user.email_subjects.feedback_new-approved'      => 'Su comentario ha sido aprobado',
     'user.email_subjects.feedback_new-comment'       => 'Hay un nuevo comentario sobre "{{title}}"',
@@ -307,6 +308,7 @@ return [
     'user.email_subjects.password_reset'             => 'Reinicializar contraseña',
     'user.email_subjects.register-welcome'           => 'Gracias por Registrarse',
     'user.email_subjects.ticket-rate'                => 'Valore la experiencia del soporte en su ticket "{{ticket.subject}}"',
+    'user.email_subjects.ticket_new-participant'     => 'Una nueva persona ha sido añadida a su ticket',
     'user.emails.auto-close'                         => 'Su ticket "{{ticket.subject}}" no cerrará automáticamente porque no lo ha actualizado recientemente. Si no quiere que su ticket sea cerrado, puede enviar una respuesta para que nuestros agentes continuen ayudándole.',
     'user.emails.chat_transcript'                    => 'Gracias por conversar con nosotros. Aquí tiene su transcripción',
     'user.emails.comment_approved'                   => 'Su comentario ha sido publicado.',

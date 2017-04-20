@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,11 +56,6 @@ abstract class AbstractBuild
     protected $schema_helper;
 
     /**
-     * @var bool
-     */
-    protected $rerun = false;
-
-    /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
@@ -78,108 +73,117 @@ abstract class AbstractBuild
         $this->logger = $logger;
 
         $this->container = $container;
-        $this->init();
     }
 
     /**
-     * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
-     *
-     * @param string       $tag
-     * @param string       $name
-     * @param string|array $data Array data will be json_encoded, string data will be written as-is
-     *
-     * @return string|false Filename written when successful, or false if failed to write
+     * @param $buildId
+     * @param $name
+     * @param $data
      */
-    public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
+    public function setInstallData($buildId, $name, $data)
     {
-        if (is_array($data)) {
-            $fname = 'updata-'.$tag.'.'.$name.'.json';
-            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data  = json_encode($data);
-            if (file_put_contents($path, $data) === false) {
-                if ($throw_exception) {
-                    throw new \RuntimeException("Failed to write upgrade data file to: $path");
-                }
-
-                return false;
-            }
+        if (is_scalar($data)) {
+            $saveData = ['@DATA' => $data];
         } else {
-            $fname = 'updata-'.$tag.'.'.$name.'.dat';
-            $path  = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$fname;
-            $data  = (string) $data;
-            if (file_put_contents($path, $data) === false) {
-                if ($throw_exception) {
-                    throw new \RuntimeException("Failed to write upgrade data file to: $path");
-                }
-
-                return false;
-            }
+            $saveData = $data;
         }
 
-        @chmod($path, 0777);
+        $db = $this->getDbConnection();
+        $db->delete('install_data', ['build' => $buildId, 'name' => $name]);
 
-        return $path;
-    }
-
-    /**
-     * Read previously saved upgrade data.
-     *
-     * @param string $tag
-     * @param string $name
-     *
-     * @return array|null|string Array for JSON-encoded array data, string for string data or null if file could not be found
-     */
-    public function getUpgradeData($tag, $name)
-    {
-        $name_part = 'updata-'.$tag.'.'.$name.'.';
-        $path_part = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$name_part;
-
-        if (file_exists($path_part.'json')) {
-            $data = file_get_contents($path_part.'json');
-            $data = json_decode($data, true);
-
-            return $data;
-        } elseif (file_exists($path_part.'dat')) {
-            $data = file_get_contents($path_part.'dat');
-
-            return $data;
-        } else {
-            return;
+        if ($data !== null) {
+            $db->insert('install_data', [
+                'build' => $buildId,
+                'name'  => $name,
+                'data'  => json_encode($saveData, \JSON_PRETTY_PRINT),
+            ]);
         }
     }
 
     /**
-     * Empty hook into the constructor.
+     * @param $buildId
+     * @param $name
+     * @param $item
      */
-    protected function init()
+    public function addInstallDataCollection($buildId, $name, $item)
     {
+        if (is_scalar($item)) {
+            $itemData = ['@DATA' => $item];
+        } else {
+            $itemData = $item;
+        }
+
+        $db         = $this->getDbConnection();
+        $recordData = $db->fetchColumn('
+          SELECT data
+          FROM install_data
+          WHERE build = ? AND name = ?
+         ', [$buildId, $name]);
+
+        $recordData = @json_decode($recordData, true);
+        if (!$recordData || empty($recordData['@ITEMS'])) {
+            $recordData = ['@ITEMS' => []];
+        }
+
+        $db->delete('install_data', ['build' => $buildId, 'name' => $name]);
+
+        $saveData           = $recordData;
+        $saveData['@ITEMS'] = $itemData;
+
+        $db->insert('install_data', [
+            'build' => $buildId,
+            'name'  => $name,
+            'data'  => json_encode($saveData, \JSON_PRETTY_PRINT),
+        ]);
+    }
+
+    /**
+     * @param $buildId
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function getInstallData($buildId, $name)
+    {
+        $db         = $this->getDbConnection();
+        $recordData = $db->fetchColumn('
+          SELECT data
+          FROM install_data
+          WHERE build = ? AND name = ?
+         ', [$buildId, $name]);
+
+        if (!$recordData) {
+            return null;
+        }
+
+        $recordData = @json_decode($recordData, true);
+        if (!$recordData) {
+            return null;
+        }
+
+        if (isset($recordData['@ITEMS'])) {
+            return array_map(function ($v) {
+                return isset($v['@DATA']) ? $v['@DATA'] : $v['@DATA'];
+            }, $recordData['@ITEMS']);
+        }
+
+        return isset($recordData['@DATA']) ? $recordData['@DATA'] : $recordData['@DATA'];
+    }
+
+    /**
+     * @param $buildId
+     * @param $name
+     */
+    public function deleteInstallData($buildId, $name)
+    {
+        $this->setInstallData($buildId, $name);
     }
 
     /**
      * Run through the upgrade.
      */
-    abstract public function run();
-
-    /**
-     * Set this build handler to run again.
-     * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
-     * incremented automatically.
-     *
-     * @param bool $rerun
-     *
-     * @return bool
-     */
-    public function setRerun($rerun = true)
+    public function run()
     {
-        return $this->rerun = (bool) $rerun;
-    }
-
-    /**
-     * @return bool
-     */
-    public function shouldRerun()
-    {
-        return $this->rerun;
     }
 
     /**
@@ -195,6 +199,8 @@ abstract class AbstractBuild
     /**
      * @param string $sql
      * @param bool   $ignore_err
+     *
+     * @deprecated Use execDbQuery(), or execDbQueryQuiet if you want to suppress errors
      *
      * @throws \Exception
      */
@@ -411,52 +417,6 @@ abstract class AbstractBuild
             $db = $this->container->get('doctrine')->getConnection('default');
             $db->fetchColumn("SELECT 'val' AS test FROM `$table` LIMIT 1");
         }
-    }
-
-    /**
-     * Save status data (ex. steps completed etc).
-     *
-     * @param $key
-     * @param $val
-     */
-    public function saveStatus($key, $val)
-    {
-        $this->container->getDb()->replace('import_datastore', [
-            'typename' => 'up.'.$this->getBuildId().'.'.$key,
-            'data'     => $val,
-        ]);
-    }
-
-    /**
-     * @param string $key
-     * @param mixed  $default
-     *
-     * @return mixed
-     */
-    public function getStatus($key, $default = null)
-    {
-        $val = $this->container->getDb()->fetchArray('
-            SELECT data
-            FROM import_datastore
-            WHERE typename = ?
-        ', ['up.'.$this->getBuildId().'.'.$key]);
-
-        if (!$val) {
-            return $default;
-        }
-
-        return $val[0];
-    }
-
-    public function getDefaultCollation()
-    {
-        try {
-            $collation = \Application\DeskPRO\App::getSetting('core.db_collation');
-        } catch (\Exception $e) {
-            $collation = null;
-        }
-
-        return $collation ?: 'utf8_general_ci';
     }
 
     /**

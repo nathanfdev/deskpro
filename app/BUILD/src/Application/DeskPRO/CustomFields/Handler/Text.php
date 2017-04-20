@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,7 +74,7 @@ class Text extends HandlerAbstract
         }
 
         $options = [];
-        foreach (['required', 'min_length', 'max_length', 'regex'] as $k) {
+        foreach (['required', 'min_length', 'max_length', 'regex', 'regex_required'] as $k) {
             $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
@@ -82,7 +82,7 @@ class Text extends HandlerAbstract
             $len = Strings::utf8_strlen($data);
 
             if ($options['min_length'] && $len < $options['min_length']) {
-                if ($options['min_length'] == 1) {
+                if ($options['min_length'] == 1 || $len === 0) {
                     return $this->makeErrorArray(['required']);
                 } else {
                     return $this->makeErrorArray(['min_length']);
@@ -95,8 +95,14 @@ class Text extends HandlerAbstract
         }
 
         if ($options['regex']) {
+            if ($options['regex_required']) {
+                if (!Strings::utf8_strlen($data)) {
+                    return $this->makeErrorArray(['required']);
+                }
+            }
+
             $regex = Strings::getInputRegexPattern($options['regex']);
-            if ($regex && !preg_match($regex, $data)) {
+            if ($regex && $data && !preg_match($regex, $data)) {
                 return $this->makeErrorArray(['regex_fail']);
             }
         }

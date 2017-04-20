@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,7 +82,6 @@ $loader->addClassMap([
     'Akismet'                                         => DP_APP_DIR.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
     'Browser'                                         => DP_APP_DIR.'/vendor-src/Browser/Browser.php',
     'CssMin'                                          => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
-    'LightOpenID'                                     => DP_APP_DIR.'/vendor-src/lightopenid/openid.php',
     'MimeMailParser'                                  => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/MimeMailParser.php',
     'MimeMailParser_attachment'                       => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/attachment.class.php',
     'Phirehose'                                       => DP_APP_DIR.'/vendor-src/phirehose/Phirehose.php',
@@ -121,6 +120,8 @@ foreach ([
     'DpTestSrc\\' => DP_APP_DIR.'/tests/src/',
     'DpSys\\' => DP_APP_DIR.'/sys/',
     'DpRun\\' => DP_DIR.'/app/run/lib/DpRun',
+    'DpScripts\\Agent\\' => DP_DIR.'/app/scripts/agent',
+    'DpScripts\\User\\' => DP_DIR.'/app/scripts/user',
     'DeskPRO\\Services\\' => DP_APP_DIR.'/bin/tools/services/src',
 ] as $prefix => $path) {
     $loader->addPsr4($prefix, $path);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity()
  * @ORM\Table(name="api_key_limits")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
 class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
@@ -105,7 +105,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setModelField('id', $id);
 
         return $this;
     }
@@ -125,7 +125,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setApiKey($api_key)
     {
-        $this->api_key = $api_key;
+        $this->setModelField('api_key', $api_key);
 
         return $this;
     }
@@ -145,7 +145,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setLimit($limit)
     {
-        $this->hit_limit = $limit;
+        $this->setModelField('hit_limit', $limit);
 
         return $this;
     }
@@ -165,7 +165,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setCurrent($current)
     {
-        $this->current = $current;
+        $this->setModelField('current', $current);
 
         return $this;
     }
@@ -185,7 +185,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setStartTime($start_time)
     {
-        $this->start_time = $start_time;
+        $this->setModelField('start_time', $start_time);
 
         return $this;
     }
@@ -205,7 +205,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setInterval($interval)
     {
-        $this->time_interval = $interval;
+        $this->setModelField('time_interval', $interval);
 
         return $this;
     }
@@ -225,7 +225,7 @@ class ApiKeyLimit implements EntityInterface, NotifyPropertyChanged
      */
     public function setType($type)
     {
-        $this->limit_type = $type;
+        $this->setModelField('limit_type', $type);
 
         return $this;
     }

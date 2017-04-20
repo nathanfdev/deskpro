@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -546,6 +546,16 @@ class FieldManager
      */
     public function saveFormToObject(array $form, $object, $only_set = false, $flushChanges = true)
     {
+        $this->setFormToObject($form, $object, $only_set);
+
+        // BC: $em should be flushed outside this method
+        if ($flushChanges) {
+            $this->em->flush();
+        }
+    }
+
+    public function setFormToObject(array $form, $object, $only_set = false)
+    {
         $fields = $this->getFields();
 
         // When setting specific values, always operate on all enabled
@@ -595,11 +605,6 @@ class FieldManager
         }
 
         $this->_orig_display = null;
-
-        // BC: $em should be flushed outside this method
-        if ($flushChanges) {
-            $this->em->flush();
-        }
     }
 
     /**

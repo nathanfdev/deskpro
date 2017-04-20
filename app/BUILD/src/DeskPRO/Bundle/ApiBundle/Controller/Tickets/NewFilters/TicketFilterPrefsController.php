@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/new/ticket_filters/{parentId}/prefs")
  * @ApiDoc(target="all", section="Ticket filter preferences", output="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFilterPreferenceType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference",
+ *          "filter"="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
+ *          "agent"="Application\DeskPRO\Entity\Person",
+ *      }
+ *     }
+ * )
  */
 class TicketFilterPrefsController extends CrudSubController
 {
@@ -54,10 +65,10 @@ class TicketFilterPrefsController extends CrudSubController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $options = array_merge(
-            $options,
-            ['filter' => $this->findParentOr404(), 'agent' => $this->getUser()]
-        );
+        $options = array_merge($options, [
+            'filter' => $this->findParentOr404(),
+            'agent'  => $this->getUser(),
+        ]);
 
         return parent::handleForm($model, $request, $options);
     }

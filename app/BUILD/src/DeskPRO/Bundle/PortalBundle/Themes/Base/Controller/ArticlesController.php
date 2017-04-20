@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -96,7 +96,7 @@ class ArticlesController extends AbstractController
         $category_pager           = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, $options['with_tree']);
         $category_children_pagers = [];
         foreach ($category_children as $child_cat) {
-            $category_children_pagers[$child_cat->getId()] = $this->getArticlesDataService()->getArticlesPager($child_cat, 1, 1, $person, $options['with_tree']);
+            $category_children_pagers[$child_cat->getId()] = $this->getArticlesDataService()->getArticlesPager($child_cat, 1, 5, $person, $options['with_tree']);
         }
 
         return $this->renderThemeView(
@@ -144,7 +144,13 @@ class ArticlesController extends AbstractController
     public function listAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
         $person = $this->getCurrentPerson();
-        $pager  = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count'], $person, $options['with_tree']);
+        $pager  = $this->getArticlesDataService()->getArticlesPager(
+            $category,
+            (int) $options['page'],
+            (int) $options['count'],
+            $person,
+            $options['with_tree']
+        );
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:ArticleList/%s.html.twig', $options['style']),

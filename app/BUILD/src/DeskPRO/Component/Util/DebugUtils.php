@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -111,7 +111,9 @@ class DebugUtils
     }
 
     /**
-     * @param mixed $var
+     * @param mixed $var      The var to dump
+     * @param int   $maxDepth Max depth to descend to within arrays
+     * @param int   $_depth   Internal. Current depth
      *
      * @return string
      */
@@ -144,12 +146,12 @@ class DebugUtils
                     }
                 } else {
                     if ($is_array) {
-                        $a[] = self::varToString($v, $_depth + 1);
+                        $a[] = self::varToString($v, $maxDepth, $_depth + 1);
                     } else {
                         if (!is_numeric($k)) {
                             $k = "'$k'";
                         }
-                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $_depth + 1));
+                        $a[] = sprintf('%s => %s', $k, self::varToString($v, $maxDepth, $_depth + 1));
                     }
                 }
             }

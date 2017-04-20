@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,17 +85,19 @@ class TextSnippetHandler extends AbstractEntityHandler
         /** @var Person $user */
         $user  = $context->getUser();
         $title = $entity->getObjectPropLanguageTranslationValue('title', $user->getLanguage());
+        $model = new TextSnippetModel($entity, $title);
 
         if ($entity->getCategory()) {
             $sideloads = $context->getSideloadStore();
             $sideloads->addCustomSideload(
                 'text_snippet_content',
                 $entity->getId(),
-                new CallbackDeferredProperty([$this, 'getSnippetContent'], [$entity, $context])
+                new CallbackDeferredProperty([$this, 'getSnippetContent'], [$entity, $context]),
+                $model
             );
         }
 
-        return new TextSnippetModel($entity, $title);
+        return $model;
     }
 
     /**

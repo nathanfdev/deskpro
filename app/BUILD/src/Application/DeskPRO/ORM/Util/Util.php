@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,7 +82,7 @@ class Util
         $arr   = $tool->getUpdateSchemaSql($metadata, true);
         $lines = [];
         foreach ($arr as $a) {
-            // Doctrine doesnt seem to detect this properly and always thinks this is needed
+            // Doctrine doesn't seem to detect this properly and always thinks this is needed
             if ($a != 'ALTER TABLE email_uids CHANGE id id VARCHAR(100) NOT NULL') {
                 if (strpos($a, 'CREATE TABLE') !== false) {
                     $a .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';

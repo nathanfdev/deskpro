@@ -1,15 +1,18 @@
 import React, { PropTypes } from 'react';
 import { connect, Provider } from 'react-redux';
+import { Frame } from 'Ampliflux/common/components/Frame';
+import $ from 'jquery';
 import { widgetResize } from '../../Actions/dpWindowActions';
 import {
   windowDimensionsSelector,
   widgetOpenedSelector,
   widgetPositionSelector,
   isBubbleSelector,
-  helpButtonSizeSelector
+  helpButtonSizeSelector,
+  isFullScreenSelector,
+  isLandscapeModeSelector
 } from '../../Selectors/dpWindow';
 import { widgetLoadedSelector } from '../../Selectors/bootstrap';
-import { Frame } from 'Ampliflux/common/components/Frame';
 import { store } from '../../../../Services/store';
 
 @connect(state => ({
@@ -18,38 +21,78 @@ import { store } from '../../../../Services/store';
   widgetLoaded:     widgetLoadedSelector(state),
   widgetPosition:   widgetPositionSelector(state),
   isBubble:         isBubbleSelector(state),
-  size:             helpButtonSizeSelector(state)
+  size:             helpButtonSizeSelector(state),
+  fullScreen:       isFullScreenSelector(state),
+  landscapeMode:    isLandscapeModeSelector(state)
 }))
-export class WidgetFrameContainer extends React.Component {
+export default class WidgetFrameContainer extends React.Component {
 
   static propTypes = {
-    dispatch:       PropTypes.func,
-    widgetOpened:   PropTypes.bool,
-    widgetLoaded:   PropTypes.bool,
-    widgetPosition: PropTypes.string,
-    isBubble:       PropTypes.bool,
-    children:       PropTypes.any,
-    size:           PropTypes.string
+    dispatch:         PropTypes.func,
+    windowDimensions: PropTypes.object,
+    widgetOpened:     PropTypes.bool,
+    widgetLoaded:     PropTypes.bool,
+    widgetPosition:   PropTypes.string,
+    isBubble:         PropTypes.bool,
+    children:         PropTypes.any, // eslint-disable-line react/forbid-prop-types
+    size:             PropTypes.string,
+    fullScreen:       PropTypes.bool,
+    landscapeMode:    PropTypes.bool
   };
 
   componentDidMount() {
+    this.toggleParentWindowScroll();
     this.triggerResize();
   }
 
   componentDidUpdate() {
-    this.triggerResize();
+    this.toggleParentWindowScroll();
+    setTimeout(() => this.triggerResize(), 0);
   }
 
   triggerResize() {
-    this.refs.frame.autoFrameDimensions();
+    this.refFrame.autoFrameDimensions();
     this.props.dispatch(widgetResize());
   }
 
+  toggleParentWindowScroll = () => {
+    const { widgetOpened, fullScreen, landscapeMode } = this.props;
+    const $body = $('html, body', parent.window.document);
+
+    // for mobile only
+    if (!fullScreen && !landscapeMode) {
+      return;
+    }
+
+    if (widgetOpened) {
+      $body.css({
+        overflow: 'hidden',
+        position: 'fixed'
+      });
+    } else {
+      $body.css({
+        overflow: '',
+        position: ''
+      });
+    }
+  };
+
   render() {
+    const { windowDimensions, fullScreen, landscapeMode } = this.props;
     const { widgetOpened, widgetLoaded, widgetPosition, isBubble, children, size } = this.props;
     const childProps = children.props;
+    const windowWidth = windowDimensions.get('width');
 
-    const frameStyles = {};
+    let width;
+    if (fullScreen) {
+      width = windowWidth;
+    } else if (isBubble) {
+      width = 350;
+    } else {
+      width = 345;
+    }
+
+    const frameStyles = { width };
     const containerStyles = {};
     if (isBubble) {
       if (size === 'small') {
@@ -72,7 +115,7 @@ export class WidgetFrameContainer extends React.Component {
 
     return (
       <Frame
-        ref="frame"
+        ref={(node) => { this.refFrame = node; }}
         name="widget_iframe"
         frameStyles={frameStyles}
         containerStyles={containerStyles}
@@ -85,7 +128,8 @@ export class WidgetFrameContainer extends React.Component {
 
             widgetPosition,
             isBubble,
-            triggerResize: () => this.triggerResize()
+            fullScreen,
+            landscapeMode
           })}
         </Provider>
       </Frame>

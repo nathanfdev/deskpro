@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,50 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpBehat;
 
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Languages\LangPackInfo;
 use Behat\Gherkin\Node\TableNode;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use Doctrine\ORM\EntityManager;
 
-class LanguageContext extends BaseContext implements RebootableContextInterface
+/**
+ * Class LanguageContext.
+ */
+class LanguageContext extends BaseContext
 {
-    /**
-     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
-     */
-    private $language_manager;
-    /**
-     * @var EntityManager
-     */
-    private $em;
-    /**
-     * @var LanguageRepo
-     */
-    private $lang_repo;
-    /**
-     * @var LanguageStack
-     */
-    private $lang_stack;
-
-    public function rebootContext()
-    {
-        $this->resetLanguageContext();
-    }
-
-    public function resetLanguageContext()
-    {
-        $this->language_manager = $this->get('language_manager');
-        $this->em               = $this->get('doctrine.orm.default_entity_manager');
-        $this->lang_repo        = $this->get('language_repository');
-        $this->lang_stack       = $this->get('language_stack');
-    }
-
     /**
      * @Given the following languages are enabled:
      */
@@ -81,24 +48,24 @@ class LanguageContext extends BaseContext implements RebootableContextInterface
         }
 
         // remove existing if not listed
-        $existing_langs = $this->lang_repo->findAll();
+        $existing_langs = $this->get('language_repository')->findAll();
         /** @var \Application\DeskPRO\Entity\Language $existing */
         foreach ($existing_langs as $existing) {
             if (!in_array($existing->getSystemName(), $langs)) {
-                $this->em->remove($existing);
+                $this->em()->remove($existing);
             }
         }
 
         // add new if not existing
         $langpacks = new LangPackInfo();
         foreach ($langs as $lang) {
-            if (!$this->language_manager->getLanguageBySystemName($lang)) {
+            if (!$this->getLanguageManager()->getLanguageBySystemName($lang)) {
                 $new_lang = $langpacks->newLanguageEntity($lang);
-                $this->em->persist($new_lang);
+                $this->em()->persist($new_lang);
             }
         }
 
-        $this->em->flush();
+        $this->em()->flush();
     }
 
     /**
@@ -107,7 +74,7 @@ class LanguageContext extends BaseContext implements RebootableContextInterface
     public function shouldBeTheActiveLanguage($lang_code)
     {
         if (!$lang = $this->getLanguageStack()->getActive()) {
-            var_dump($this->lang_stack);
+            var_dump($this->getLanguageStack());
             throw new \Exception('no active lang');
         }
 

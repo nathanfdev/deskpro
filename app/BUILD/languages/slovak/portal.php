@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -303,6 +303,7 @@ return [
     'user.email_subjects.comment-deleted'            => 'Váš komentár bol prečítaný našimi operátormi',
     'user.email_subjects.email-too-big'              => 'Váš e-mail "{{subject}}" nebol prijatý',
     'user.email_subjects.email_new-confirm'          => 'Potvrďte Vašu e-mailovú adresu',
+    'user.email_subjects.email_primary-confirm'      => 'Potvrďte Vašu e-mailovú adresu',
     'user.email_subjects.feedback_new'               => 'Ďakujeme za podanie Vašej spätnej väzby',
     'user.email_subjects.feedback_new-approved'      => 'Vaša spätná väzba bol prijatá',
     'user.email_subjects.feedback_new-comment'       => 'Nový komentár v "{{title}}"',
@@ -315,6 +316,7 @@ return [
     'user.email_subjects.password_reset'             => 'Reset hesla',
     'user.email_subjects.register-welcome'           => 'Ďakujeme za Vašu registráci',
     'user.email_subjects.ticket-rate'                => 'Ohodnoťte Vaše skúsenosti s podporou na tikete "{{ticket.subject}}"',
+    'user.email_subjects.ticket_new-participant'     => 'Nová osoba bola pridaná do Vášho tiketu',
     'user.emails.auto-close'                         => 'Váš tiket "{{ticket.subject}}" bude automatický uzavretý, pretože ste ho už istú dobu neaktualizovali. Ak nechcete, aby Váš tiket bol uzavretý, môžete pridať novú odpoveď a naši agenti Vám pomôžu ďalej.',
     'user.emails.chat_transcript'                    => 'Ďakujeme za Vašu konverzáciu s nami. Tu je Váš odpis konverzácie.',
     'user.emails.comment_approved'                   => 'Váš komentár bol uverejnený.',

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,8 @@ use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -60,6 +62,7 @@ class BlobAuthType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addViewTransformer(new BlobAuthTransformer($this->em));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInline']);
     }
 
     /**
@@ -70,5 +73,18 @@ class BlobAuthType extends AbstractType
         $resolver->setDefaults([
             'compound' => false,
         ]);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetInline(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (is_array($data)) {
+            $event->setData(isset($data['blob_auth']) ? $data['blob_auth'] : null);
+        }
     }
 }

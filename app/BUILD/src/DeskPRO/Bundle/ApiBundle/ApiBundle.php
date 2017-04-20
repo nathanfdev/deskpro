@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,36 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle;
 
-use DeskPRO\Bundle\ApiBundle\Command\ReplayLogCommand;
 use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\ApiDocPass;
-use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Class ApiBundle.
+ */
 class ApiBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ApiDocPass());
         parent::build($container);
     }
 
-    public function registerCommands(Application $application)
-    {
-        $application->add(new ReplayLogCommand());
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function getNamespace()
     {
         return __NAMESPACE__;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPath()
     {
         return __DIR__;

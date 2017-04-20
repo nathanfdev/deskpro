@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -134,7 +134,7 @@ class SystemErrorHandler
 
         self::$isHandlingException = false;
 
-        $message = 'An server error occurred.';
+        $message = 'A server error occurred.';
         $info    = 'Refer to the error log for full details (var/logs/error.log inside of the root DeskPRO directory).';
 
         if ($exception instanceof \PDOException) {
@@ -178,43 +178,44 @@ class SystemErrorHandler
     }
 
     /**
-     * @param \Exception $exception The exception to log
-     * @param bool       $send      True to send a report to deskpro
-     * @param string     $unique_id An error ID. if this error has been reported before, it will not be reported again
+     * @param \Exception $exception    The exception to log
+     * @param bool       $send         True to send a report to deskpro
+     * @param string     $unique_id    An error ID. if this error has been reported before, it will not be reported again
+     * @param bool       $noShowErrors Don't show errors override
      */
-    public static function logException(\Exception $exception, $send = false, $unique_id = null)
+    public static function logException(\Exception $exception, $send = false, $unique_id = null, $noShowErrors = false)
     {
         if (!self::shouldLog($exception)) {
             return;
         }
 
-        static $got_unique_ids = [];
+        static $gotUniqueIds = [];
 
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
         if ($unique_id && defined('DP_BUILD_TIME') && !defined('DP_BUILDING')) {
-            if (isset($got_unique_ids[$unique_id])) {
+            if (isset($gotUniqueIds[$unique_id])) {
                 return;
             }
-            $got_unique_ids[$unique_id] = true;
+            $gotUniqueIds[$unique_id] = true;
 
             try {
-                $unique_exceptions = $DP_ENV->getDatManager()->readDatFile('unique_exceptions', []);
-                $found             = false;
-                $save_new          = [];
-                foreach ($unique_exceptions as $hash => $info) {
+                $uniqueExceptions = $DP_ENV->getDatManager()->readDatFile('unique_exceptions', []);
+                $found            = false;
+                $saveNew          = [];
+                foreach ($uniqueExceptions as $hash => $info) {
                     if ($info['ts'] > (time() - 604800)) {
-                        $save_new[$hash] = $info;
+                        $saveNew[$hash] = $info;
                         if ($hash === $unique_id) {
                             $found = true;
                         }
                     }
                 }
                 if (!$found) {
-                    $save_new[$unique_id] = ['ts' => time(), 'message' => $exception->getMessage()];
+                    $saveNew[$unique_id] = ['ts' => time(), 'message' => $exception->getMessage()];
                 }
-                if ($found || count($save_new) != $unique_exceptions) {
+                if ($found || count($saveNew) != $uniqueExceptions) {
                 }
             } catch (\Exception $e) {
             }
@@ -224,7 +225,12 @@ class SystemErrorHandler
         if (!$send) {
             $einfo['no_send_error'] = true;
         }
+
+        $curNoShowErrors = self::$noShowErrors;
+
+        self::$noShowErrors = $noShowErrors;
         self::logErrorInfo($einfo);
+        self::$noShowErrors = $curNoShowErrors;
     }
 
     private static function shouldLog(/* Throwable */
@@ -236,6 +242,7 @@ class SystemErrorHandler
             || $exception instanceof MethodNotAllowedException
             || $exception instanceof AccessDeniedException
             || $exception instanceof LogoutException
+            || self::isProxyException($exception)
         ) {
             return false;
         }
@@ -243,7 +250,18 @@ class SystemErrorHandler
         return true;
     }
 
-    public static function logExceptionIfUniqueBacktrace(/*Throwable*/ $e, $send = false)
+    /**
+     * @param $exception
+     *
+     * @return bool
+     */
+    public static function isProxyException($exception)
+    {
+        return $exception instanceof \UnexpectedValueException && strpos($exception->getMessage(), 'Invalid Host') === 0;
+    }
+
+    public static function logExceptionIfUniqueBacktrace(/*Throwable*/
+        $e, $send = false)
     {
         $hashable_trace      = '';
         $formatted_backtrace = debug_backtrace();
@@ -270,29 +288,30 @@ class SystemErrorHandler
      *
      * @return array
      */
-    public static function getExceptionInfo(/*Throwable*/ $exception)
+    public static function getExceptionInfo(/*Throwable*/
+        $exception)
     {
         $errno   = $exception->getCode();
         $errstr  = self::stripPathPrefix($exception->getMessage());
         $errfile = self::stripPathPrefix($exception->getFile());
         $errline = $exception->getLine();
 
-        $backtrace    = $exception->getTrace();
-        $trace        = self::formatBacktrace($backtrace);
-        $context_data = '';
+        $backtrace   = $exception->getTrace();
+        $trace       = self::formatBacktrace($backtrace);
+        $contextData = '';
 
         if (isset($exception->_dp_query)) {
             $errstr .= ' -- Query: '.substr($exception->_dp_query, 0, 2000);
 
-            $context_data .= 'Query: '.substr($exception->_dp_query, 0, 2000);
+            $contextData .= 'Query: '.substr($exception->_dp_query, 0, 2000);
 
             if (!empty($exception->_dp_query_params)) {
-                $context_data .= "\n\n".self::varToString($exception->_dp_query_params);
+                $contextData .= "\n\n".self::varToString($exception->_dp_query_params);
             }
         }
 
-        if (!$context_data && isset($exception->_dp_context_data)) {
-            $context_data = $exception->_dp_context_data;
+        if (!$contextData && isset($exception->_dp_context_data)) {
+            $contextData = $exception->_dp_context_data;
         }
 
         $type    = get_class($exception);
@@ -320,10 +339,12 @@ class SystemErrorHandler
             'errline'           => $errline,
             'build'             => self::getDpEnv()->getAppName(),
             'process_log'       => implode("\n", self::$processLog),
-            'context_data'      => $context_data,
+            'context_data'      => $contextData,
             'error_time'        => microtime(true),
             'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+            'request_id'        => self::getRequestId(),
+            'request_method'    => self::getRequestMethod(),
         ];
 
         $url = '';
@@ -582,6 +603,8 @@ class SystemErrorHandler
             'no_send_error'     => $no_send_error,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'url'               => $url,
+            'request_id'        => self::getRequestId(),
+            'request_method'    => self::getRequestMethod(),
         ];
     }
 
@@ -645,6 +668,12 @@ class SystemErrorHandler
             $str[] = sprintf("\tBuild: %s\n", @$errinfo['build']);
             if (!empty($errinfo['url'])) {
                 $str[] = sprintf("\tURL: %s\n", $errinfo['url']);
+            }
+            if (!empty($errinfo['request_id'])) {
+                $str[] = sprintf("\tRequestID: %s\n", $errinfo['request_id']);
+            }
+            if (!empty($errinfo['request_method'])) {
+                $str[] = sprintf("\tRequestMethod: %s\n", $errinfo['request_method']);
             }
             if (!empty($errinfo['client_user_agent'])) {
                 $str[] = sprintf("\tUserAgent: %s\n", $errinfo['client_user_agent']);
@@ -721,16 +750,7 @@ class SystemErrorHandler
 
         foreach ($logFiles as $errorLogFile) {
             if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
-                $written = @fwrite($fh, $str);
-
-                if ($written) {
-                    // Max 30MB
-                    $stat = @fstat($fh);
-                    if ($stat && $stat['size'] && $stat['size'] > 31457280) {
-                        @ftruncate($fh, 31457280);
-                    }
-                }
-
+                @fwrite($fh, $str);
                 @fclose($fh);
                 @chmod($errorLogFile, 0777);
             }
@@ -837,7 +857,7 @@ class SystemErrorHandler
             self::$bugsnagClient->setProjectRoot(self::getDpEnv()->getDpRoot());
             self::$bugsnagClient->setAutoNotify(false);
             if (isset(self::$bugsnagConfig['metadata']) && is_array(self::$bugsnagConfig['metadata'])) {
-                self::$bugsnagClient->setMetaData(['deskpro' => self::$bugsnagConfig['metadata']]);
+                self::$bugsnagClient->setMetaData(['deskpro' => self::$bugsnagConfig['metadata'], 'deskpro_env' => ['RequestID' => self::getRequestId()]]);
             }
 
             if (self::$bugsnagConfig['app_version']) {
@@ -1066,6 +1086,32 @@ class SystemErrorHandler
     //###################################################################################################################
 
     /**
+     * @return string|null
+     */
+    private static function getRequestId()
+    {
+        /** @var \Symfony\Component\HttpFoundation\Request $req */
+        if ($req = self::getDpEnv()->getRuntimeVar('request', null)) {
+            return $req->attributes->get('request_id', null);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return null|string
+     */
+    private static function getRequestMethod()
+    {
+        /** @var \Symfony\Component\HttpFoundation\Request $req */
+        if ($req = self::getDpEnv()->getRuntimeVar('request', null)) {
+            return $req->getMethod();
+        }
+
+        return null;
+    }
+
+    /**
      * Used with formatBacktrace to format an array (usually parameters) to a string, being sure not to recurse
      * too deep.
      *
@@ -1077,7 +1123,11 @@ class SystemErrorHandler
     public static function varToString($var, $_depth = 0)
     {
         if (is_object($var)) {
-            return sprintf('<%s>', get_class($var));
+            if ($var instanceof \Symfony\Component\EventDispatcher\Debug\WrappedListener) {
+                return sprintf('<%s<%s>>', get_class($var), self::varToString($var->getWrappedListener()));
+            } else {
+                return sprintf('<%s>', get_class($var));
+            }
         }
         if (is_array($var)) {
             $a        = [];

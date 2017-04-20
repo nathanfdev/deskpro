@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -577,5 +577,36 @@ class Web
         }
 
         return false;
+    }
+
+    /**
+     * @see http://php.net/manual/ru/function.session-decode.php#108037
+     *
+     * @param $sessionData
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    public static function unserializeSesisonData($sessionData)
+    {
+        $return_data = [];
+        $offset      = 0;
+
+        while ($offset < strlen($sessionData)) {
+            if (!strstr(substr($sessionData, $offset), '|')) {
+                throw new \Exception('invalid data, remaining: '.substr($sessionData, $offset));
+            }
+
+            $pos     = strpos($sessionData, '|', $offset);
+            $num     = $pos - $offset;
+            $varname = substr($sessionData, $offset, $num);
+            $offset += $num + 1;
+            $data                  = unserialize(substr($sessionData, $offset));
+            $return_data[$varname] = $data;
+            $offset += strlen(serialize($data));
+        }
+
+        return $return_data;
     }
 }

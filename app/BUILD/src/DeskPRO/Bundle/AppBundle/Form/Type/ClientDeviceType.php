@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,6 +58,7 @@ class ClientDeviceType extends AbstractType
                 ],
             ]);
         }
+
         $builder
             ->add('device_type', ChoiceType::class, [
                 'required'          => true,
@@ -67,6 +68,9 @@ class ClientDeviceType extends AbstractType
                     ClientDevice::TYPE_IOS_GENERIC,
                     ClientDevice::TYPE_IOS_IPAD,
                     ClientDevice::TYPE_IOS_IPHONE,
+                    ClientDevice::TYPE_ANDROID,
+                    ClientDevice::TYPE_ANDROID_PHONE,
+                    ClientDevice::TYPE_ANDROID_TABLET,
                 ],
                 'constraints' => [
                     new Assert\NotNull(),
@@ -90,7 +94,7 @@ class ClientDeviceType extends AbstractType
             /* @var ClientDevice $data */
             $cd = $event->getData();
 
-            if ($cd->canNotify()) {
+            if ($cd && $cd->canNotify()) {
                 $form->get('notification_token')->setData($cd->getNotifyToken());
             } else {
                 $form->get('notification_token')->setData('');

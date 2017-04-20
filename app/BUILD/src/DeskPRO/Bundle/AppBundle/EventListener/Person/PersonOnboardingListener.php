@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,24 +30,20 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Person;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 
+/**
+ * Class PersonOnboardingListener.
+ */
 class PersonOnboardingListener
 {
-    /** @var ArrayCollection */
-    private $newEntities;
-
-    public function __construct()
-    {
-        $this->newEntities = new ArrayCollection();
-    }
-
     protected static $onboardings = [
         'topbar',
     ];
 
+    /**
+     * @param Person $person
+     */
     public function prePersist(Person $person)
     {
         if ($person->isAgent()) {
@@ -55,6 +51,10 @@ class PersonOnboardingListener
         }
     }
 
+    /**
+     * @param Person             $person
+     * @param PreUpdateEventArgs $event
+     */
     public function preUpdate(Person $person, PreUpdateEventArgs $event)
     {
         if (!$event->hasChangedField('is_agent') || !$event->getNewValue('is_agent')) {
@@ -64,32 +64,17 @@ class PersonOnboardingListener
         $this->addOnboardings($person);
     }
 
+    /**
+     * @param Person $person
+     */
     protected function addOnboardings(Person $person)
     {
         foreach (self::$onboardings as $class) {
-            if ($this->newEntities->containsKey($class.$person->getId())) {
-                continue;
-            }
             $onboarding = new PersonOnboarding();
-            $onboarding->setPerson($person);
             $onboarding->setOnboardingClass($class);
             $onboarding->setApplication(PersonOnboarding::APPLICATION_AGENT);
-            $this->newEntities->set($class.$person->getId(), $onboarding);
-        }
-    }
 
-    public function preFlush(Person $person, PreFlushEventArgs $args)
-    {
-        if ($this->newEntities->count() > 0) {
-            $em  = $args->getEntityManager();
-            $uow = $em->getUnitOfWork();
-
-            foreach ($this->newEntities as $entity) {
-                $em->persist($entity);
-                $uow->computeChangeSet($em->getClassMetadata(get_class($entity)), $entity);
-            }
-
-            $this->newEntities = new ArrayCollection(); // clear this to prevent recursive flushing
+            $person->addOnboarding($onboarding);
         }
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -214,11 +214,15 @@ class PersonEditProfileType extends AbstractType
             $form->add('upload_picture', FileType::class, [
                 'required' => false,
                 'mapped'   => false,
+                'label'    => $this->phrase('portal.forms.label_upload_picture'),
             ]);
         }
 
         foreach ($this->fieldManager->getAvailablePersonDefs() as $def) {
             if (!$def->isEnabled()) {
+                continue;
+            }
+            if ($def->isAgentField()) {
                 continue;
             }
 

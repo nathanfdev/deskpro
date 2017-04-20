@@ -16,6 +16,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\ChoiceType' }
 
+  form.force_null_extension:
+    class: DeskPRO\Bundle\AppBundle\Form\Extension\ForceNullExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
   # helpers
   form_hierarchy_generator:
     class: DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator
@@ -79,6 +84,20 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType
     arguments:
       - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.dp_date:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DpDateType
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: form.type }
+
+  form.dp_datetime:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType
+    arguments:
+      - "@security.token_storage"
     tags:
       - { name: form.type }
 
@@ -166,15 +185,15 @@ services:
     arguments:
       - "@term_to_json_converter"
 
-  form.ticket_message_attachment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageAttachmentType
-    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+  form.attachment_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\BaseAttachmentType
+    arguments: ["@blob_repository"]
     tags:
       - { name: form.type }
 
-  form.ticket_message_inline_attachment:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\TicketMessageInlineAttachmentType
-    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
+  form.web_attachment_accepter:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\WebAcceptAttachmentType
+    arguments: ["@blob.storage", "@attachment_accepter"]
     tags:
       - { name: form.type }
 
@@ -203,6 +222,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsManipulatorType
     arguments:
       - "@form_hierarchy_generator"
+      - "@form.factory"
     tags:
       - { name: form.type }
 
@@ -233,9 +253,25 @@ services:
     tags:
       - { name: form.type }
 
+  form.api_full_ticket_with_layouts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiFullType
+    arguments:
+      - "@ticket_layout_factory"
+      - "@ticket_with_layouts_api_field_resolver"
+      - "@ticket_with_layouts_api_field_renderer"
+    tags:
+      - { name: form.type }
+
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
     arguments: ["@language_manager", "@?api_client_info"]
+    tags:
+      - { name: form.type }
+
+  form.widget_brand_chat_settings:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }
 
@@ -275,5 +311,31 @@ services:
   form.recaptcha:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
     arguments: ["@settings_resolver", "@language_manager"]
+    tags:
+      - { name: form.type }
+
+  form.user_chat.chat_conversation_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType
+    arguments: ["@custom_field_manager"]
+    tags:
+      - { name: form.type }
+
+  form.voice_account:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }
+
+  form.voice_asset_auth:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.manual:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType
+    arguments:
+      - "@brand_form_helper"
     tags:
       - { name: form.type }

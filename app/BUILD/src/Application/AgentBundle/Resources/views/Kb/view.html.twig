@@ -27,14 +27,30 @@ pageMeta.baseId = '{{ baseId }}';
 
 <header class="page-header">
 	<h4 class="id-number">#{{ article.id }}</h4>
-	<div style="float:left; padding-left: 8px;">
-		<select id="{{ baseId }}_status">
-			<option {% if article.status == 'published' %}selected="selected"{% endif %} value="published">{{ phrase('agent.publish.status_published') }}</option>
-			<option {% if article.getStatusCode() == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">{{ phrase('agent.publish.status_hidden_unpublished') }}</option>
-			<option {% if article.status == 'archived' %}selected="selected"{% endif %} value="archived">{{ phrase('agent.publish.status_archived') }}</option>
-			<option {% if article.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">{{ phrase('agent.publish.status_hidden_draft') }}</option>
-		</select>
-	</div>
+		<div style="float:left; padding-left: 8px;">
+			<select id="{{ baseId }}_status">
+				{% if app.user.hasPerm('agent_publish.validate') %}
+					<option {% if article.status == 'published' %}selected="selected"{% endif %} value="published">
+						{{ phrase('agent.publish.status_published') }}
+					</option>
+					<option {% if article.getStatusCode() == 'hidden.unpublished' %}selected="selected"{% endif %} value="hidden.unpublished">
+						{{ phrase('agent.publish.status_hidden_unpublished') }}
+					</option>
+					<option {% if article.status == 'archived' %}selected="selected"{% endif %} value="archived">
+						{{ phrase('agent.publish.status_archived') }}
+					</option>
+				{% endif %}
+				{% if app.user.hasPerm('agent_publish.validate') or app.user.getId() == article.person.getId() %}
+					<option {% if article.getStatusCode() == 'hidden.draft' %}selected="selected"{% endif %} value="hidden.draft">
+						{{ phrase('agent.publish.status_hidden_draft') }}
+					</option>
+				{% endif %}
+				<option {% if article.getStatusCode() == 'hidden.pending' %}selected="selected"{% endif %} value="hidden.pending">
+					{{ phrase('agent.publish.status_hidden_pending') }}
+				</option>
+			</select>
+		</div>
+
 	<h1>
 		<span id="{{baseId}}_showname">{{ article.real_title }}</span>
 		<span id="{{baseId}}_editname" style="display: none"><input type="text" name="name" value="{{ article.real_title }}" /></span>
@@ -207,7 +223,7 @@ pageMeta.baseId = '{{ baseId }}';
 						{% if user_view_count %}
 							<dt></dt>
 							<dd>
-								{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {object_type: 1, object_id: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
+								{{ phrase('agent.general.registered_views') }}: <a href="{{ path('agent_publish_whoviewed', {objectType: 1, objectId: article.id}) }}" class="open-who-viewed">{{ user_view_count }}</a>
 							</dd>
 						{% endif %}
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -182,6 +182,22 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
+     * @return ChatConversation
+     */
+    protected function getLastChat()
+    {
+        $storedChatId = $this->getWidgetOption('chat_id');
+        if ($storedChatId) {
+            $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($storedChatId);
+            if ($conversation && !$conversation->getDateEnded()) {
+                return $conversation;
+            }
+        }
+
+        return;
+    }
+
+    /**
      * @return int|null
      */
     protected function getLastChatId()
@@ -195,5 +211,13 @@ abstract class AbstractApiController extends FOSRestController
         }
 
         return;
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Person
+     */
+    protected function getPersonRepository()
+    {
+        return $this->getDoctrine()->getRepository(Person::class);
     }
 }

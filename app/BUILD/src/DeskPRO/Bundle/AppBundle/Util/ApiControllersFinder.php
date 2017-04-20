@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,9 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Util;
 
-use Gnugat\NomoSpaco\File\FileRepository;
-use Gnugat\NomoSpaco\FqcnRepository;
-use Gnugat\NomoSpaco\Token\ParserFactory;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Class ApiControllersFinder.
@@ -43,28 +41,30 @@ class ApiControllersFinder
     protected $classes = [];
 
     /**
-     * @var FqcnRepository
-     */
-    protected $fqcn_repo;
-
-    /**
-     * ApiControllersFinder constructor.
-     */
-    public function __construct()
-    {
-        $this->fqcn_repo = new FqcnRepository(new FileRepository(), new ParserFactory());
-    }
-
-    /**
      * @return array
      */
     public function getClasses()
     {
         if (!$this->classes) {
-            $this->classes = array_merge(
-                @$this->fqcn_repo->findIn(DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller'),
-                @$this->fqcn_repo->findIn(DP_ROOT.'/src/Application/LegacyApiBundle/Controller')
-            );
+            $finder = Finder::create()
+                ->in([
+                    DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller',
+                    DP_ROOT.'/src/Application/LegacyApiBundle/Controller',
+                ])
+                ->name('*.php')
+            ;
+
+            foreach ($finder as $f) {
+                require_once $f->getRealPath();
+            }
+
+            foreach (get_declared_classes() as $class) {
+                if (0 === strpos($class, 'DeskPRO/Bundle/ApiBundle/Controller')) {
+                    $this->classes[] = $class;
+                } elseif (0 === strpos($class, 'Application/LegacyApiBundle/Controller')) {
+                    $this->classes[] = $class;
+                }
+            }
         }
 
         return $this->classes;

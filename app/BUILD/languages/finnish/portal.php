@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -302,6 +302,7 @@ return [
     'user.email_subjects.comment-deleted'            => 'Edustajamme on lukenut kommenttisi',
     'user.email_subjects.email-too-big'              => 'Sähköpostiosoitteesi "{{subject}}" hylättiin',
     'user.email_subjects.email_new-confirm'          => 'Vahvista sähköpostiosoitteesi',
+    'user.email_subjects.email_primary-confirm'      => 'Vahvista sähköpostiosoitteesi',
     'user.email_subjects.feedback_new'               => 'Kiitos lähettämästäsi palautteesta',
     'user.email_subjects.feedback_new-approved'      => 'Palautteesi hyväskyttiin',
     'user.email_subjects.feedback_new-comment'       => 'Uusi kommentti ketjussa "{{title}}"',
@@ -315,6 +316,7 @@ return [
     'user.email_subjects.re'                         => 'VS: {{subject}}',
     'user.email_subjects.register-welcome'           => 'Kiitos rekisteröitymisestä',
     'user.email_subjects.ticket-rate'                => 'Arvioi saamsi palvelu tukipyynnössä "{{ticket.subject}}"',
+    'user.email_subjects.ticket_new-participant'     => 'Uusi henkilö lisätty tukipyyntöösi',
     'user.email_subjects.tickets_re'                 => 'VS: {{ticket.subject}}',
     'user.emails.auto-close'                         => 'Tukipyyntösi "{{ticket.subject}}" suljetaan automaattisesti, koska et ole päivittänyt sitä vähään aikaan. Jos et halua että tukipyyntö sulkeutuu, lisää kommentti niin voimme edelleen auttaa sinua tässä asiassa.',
     'user.emails.chat_transcript'                    => 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.',

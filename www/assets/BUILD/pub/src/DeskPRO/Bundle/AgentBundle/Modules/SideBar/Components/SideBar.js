@@ -25,6 +25,9 @@ export class SideBarContainer extends SeparateComponent {
     this.state = {
       sectionsBadges: []
     };
+  }
+
+  componentWillMount = () => {
     if (window.IS_BILLING_ERROR) {
       this.state.sectionsBadges.push('billing_section');
     }
@@ -58,21 +61,21 @@ export class SideBarContainer extends SeparateComponent {
         }
       }
     });
-  }
+    window.document.addEventListener('dpChangeSection', () => {
+      this.changeSection();
+    });
+    window.document.addEventListener('dpCloseOverlayFrame', () => {
+      this.changeSection();
+    });
+    window.document.addEventListener('dpHashChange', (e) => {
+      SideBarContainer.closeIframes();
+      setTimeout(() => {
+        window.DeskPRO_Window.loadHashPath(e.detail.hash);
+      }, 5);
+    });
 
-  componentWillMount = () => {
-    if (window.DP_FRAME_OVERLAYS) {
-      if (window.DP_FRAME_OVERLAYS.reports.opened) {
-        this.changeSection('menu_reports');
-      }
-      if (window.DP_FRAME_OVERLAYS.admin.opened) {
-        if (window.DP_FRAME_OVERLAYS.admin.frame[0].baseURI.match(/#admin:\/license$/)) {
-          this.changeSection('menu_billing');
-        } else {
-          this.changeSection('menu_admin');
-        }
-      }
-    }
+    // set current section on mount
+    this.changeSection();
   };
 
   static getType() {
@@ -84,7 +87,7 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseChat() {
-    return window.DESKPRO_PERSON_PERMS['agent_chat.use'] && window.DESKPRO_APP_SETTINGS['core.apps_chat'];
+    return window.DESKPRO_PERSON_PERMS['agent_chat.use'];
   }
 
   static canUsePeople() {
@@ -92,18 +95,15 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseFeedback() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_feedback'];
+    return true;
   }
 
   static canUsePublish() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_kb']
-      || window.DESKPRO_APP_SETTINGS['core.apps_news']
-      || window.DESKPRO_APP_SETTINGS['core.apps_downloads'];
+    return true;
   }
 
   static canUseTasks() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_tasks']
-      && window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
+    return window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
   }
 
   static canUseReports() {
@@ -146,8 +146,27 @@ export class SideBarContainer extends SeparateComponent {
     window.DP_FRAME_OVERLAYS.admin.open('/license');
   };
 
-  changeSection = (section) => {
-    this.props.dispatch(actions.changeSection({ section }));
+  changeSection = () => {
+    const { dispatch } = this.props;
+    const reportsFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports;
+    const adminFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.admin;
+
+    if (reportsFrame && reportsFrame.opened) {
+      dispatch(actions.changeSection({ section: 'menu_reports' }));
+    } else if (adminFrame && adminFrame.opened) {
+      if (adminFrame.getFrameWindow().location.hash === '#/license') {
+        dispatch(actions.changeSection({ section: 'menu_billing' }));
+      } else {
+        dispatch(actions.changeSection({ section: 'menu_admin' }));
+      }
+    } else {
+      const section = window.DeskPRO_Window.getOpenSection();
+      if (section && section.section_id) {
+        const sectionId = section.section_id.replace(/_section/, '');
+
+        dispatch(actions.changeSection({ section: `menu_${sectionId}` }));
+      }
+    }
   };
 
   resumeOnboarding = () => {
@@ -206,12 +225,20 @@ export class SideBar extends React.Component {
     window.open('http://deskpro.com', '_blank');
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      ready: true
+    };
+  }
+
   getMenus = () => {
     const menus = [];
     if (this.props.canUseTicket()) {
       menus.push({
         className: 'tickets',
         label:     'Tickets',
+        link:      '/agent/#app.tickets',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tickets_section');
@@ -221,8 +248,9 @@ export class SideBar extends React.Component {
     }
     if (this.props.canUseChat()) {
       menus.push({
-        className: 'chats',
+        className: 'chat',
         label:     'Chats',
+        link:      '/agent/#app.userchat',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('chat_section');
@@ -232,8 +260,9 @@ export class SideBar extends React.Component {
     }
     if (this.props.canUsePeople()) {
       menus.push({
-        className: 'crm',
+        className: 'people',
         label:     'CRM',
+        link:      '/agent/#app.people',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('people_section');
@@ -245,6 +274,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'feedback',
         label:     'Feedback',
+        link:      '/agent/#app.feedback',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('feedback_section');
@@ -256,6 +286,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'publish',
         label:     'Publish',
+        link:      '/agent/#app.publish',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('publish_section');
@@ -267,6 +298,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'tasks',
         label:     'Tasks',
+        link:      '/agent/#app.tasks',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tasks_section');
@@ -278,6 +310,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'reports',
         label:     'Reports',
+        link:      '/agent/#reports:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
         callback:  () => {
           this.props.openReports();
@@ -288,6 +321,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'admin',
         label:     'Admin',
+        link:      '/agent/#admin:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/settings.svg`,
         callback:  () => {
           this.props.openAdmin();
@@ -298,6 +332,7 @@ export class SideBar extends React.Component {
       menus.push({
         className: 'billing',
         label:     'Billing',
+        link:      '/agent/#admin:/license',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/billing.svg`,
         callback:  () => {
           this.props.openBilling();
@@ -309,7 +344,8 @@ export class SideBar extends React.Component {
         className: 'portal',
         label:     <span>Portal <i className="icon external" /></span>,
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg`,
-        href:      window.DESKPRO_PORTAL_HOME
+        href:      window.DESKPRO_PORTAL_HOME,
+        link:      window.DESKPRO_PORTAL_HOME
       });
     }
     return menus;
@@ -324,6 +360,7 @@ export class SideBar extends React.Component {
       const badge = sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
       menus.push(
         <MenuItem
+          link={menuItem.link}
           key={menuItem.key}
           className={classNames(menuItem.className, { active: currentSection === menuItem.key, badge })}
           onClick={() => this.clickMenu(menuItem)}
@@ -340,6 +377,7 @@ export class SideBar extends React.Component {
   };
 
   clickMenu = (item) => {
+    this.setState({ ready: false });
     if (item.callback) {
       this.props.changeSection(item.key);
       item.callback();
@@ -361,7 +399,8 @@ export class SideBar extends React.Component {
     const { logoActive } = this.props;
     return (
       <div
-        className={classNames('sidebar-menu', 'ui', 'vertical', 'menu')}
+        className={classNames('sidebar-menu ui vertical menu', { ready: this.state.ready })}
+        onMouseMove={() => { this.setState({ ready: true }); }}
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />

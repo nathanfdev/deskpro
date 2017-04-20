@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -69,17 +69,17 @@ class CustomDataChangeListener
 
     /**
      * @param CustomDataAbstract $entity
-     * @param string             $oldData
-     * @param string             $newData
+     * @param CustomDataAbstract $oldEntity
+     * @param CustomDataAbstract $newEntity
      */
-    protected function recordStateChange(CustomDataAbstract $entity, $oldData, $newData)
+    protected function recordStateChange(CustomDataAbstract $entity, CustomDataAbstract $oldEntity = null, CustomDataAbstract $newEntity = null)
     {
         if (!$entity->root_field) {
             return;
         }
 
         $defId = $entity->root_field->getId();
-        $entity->getOwner()->getStateChangeRecorder()->record('custom_data.'.$defId, $oldData, $newData, true);
+        $entity->getOwner()->getStateChangeRecorder()->record('custom_data.'.$defId, $oldEntity, $newEntity, true);
     }
 
     /**

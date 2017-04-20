@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,21 +35,27 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
+use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * @property int       $id
- * @property string    $account_type
+ * @property int $id
+ * @property string $account_type
  * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $incoming_account
  * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $outgoing_account
- * @property bool      $is_enabled
- * @property string    $address
- * @property array     $other_addresses
- * @property array     $options
+ * @property bool $is_enabled
+ * @property string $address
+ * @property array $other_addresses
+ * @property array $options
  * @property \DateTime $date_created
  * @property \DateTime $date_read_start
  * @property \DateTime $date_last_incoming
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class EmailAccount extends DomainObject
 {
@@ -131,6 +137,27 @@ class EmailAccount extends DomainObject
     protected $is_read_active = false;
 
     /**
+     * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     */
+    protected $cert_blob = null;
+
+    /**
+     * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     */
+    protected $key_blob = null;
+
+    /**
+     * @var string
+     */
+    protected $key_pass_phrase = null;
+
+    /**
      * @param string $account_type
      */
     public function __construct($account_type)
@@ -144,6 +171,8 @@ class EmailAccount extends DomainObject
      * @param string $account_type
      *
      * @throws \InvalidArgumentException
+     *
+     * @return $this
      */
     public function setAccountType($account_type)
     {
@@ -151,11 +180,14 @@ class EmailAccount extends DomainObject
             self::TYPE_OUT,
             self::TYPE_TICKETS,
             self::TYPE_ARTICLES,
-        ])) {
+        ])
+        ) {
             throw new \InvalidArgumentException();
         }
 
         $this->setModelField('account_type', $account_type);
+
+        return $this;
     }
 
     /**
@@ -164,7 +196,7 @@ class EmailAccount extends DomainObject
     public function getIncomingAccountType()
     {
         if (!$this->incoming_account) {
-            return;
+            return null;
         }
 
         return $this->incoming_account->getType();
@@ -176,10 +208,35 @@ class EmailAccount extends DomainObject
     public function getOutgoingAccountType()
     {
         if (!$this->outgoing_account) {
-            return;
+            return null;
         }
 
-        return $this->outgoing_account->getType();
+        return $this->getOutgoingAccount()->getType();
+    }
+
+    /**
+     * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     */
+    public function getOutgoingAccount()
+    {
+        $account = $this->outgoing_account;
+
+        // On cloud, should never be a local host so re-write these as using the mailer
+        if (defined('DPC_IS_CLOUD')) {
+            if ($account instanceof SmtpConfig && IpUtils::guessIsLocalNetworkHost($account->host)) {
+                $account = new PhpMailConfig();
+            }
+        }
+
+        return $account;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     */
+    public function getRealOutgoingAccount()
+    {
+        return $this->outgoing_account;
     }
 
     /**
@@ -243,7 +300,7 @@ class EmailAccount extends DomainObject
             }
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -280,6 +337,8 @@ class EmailAccount extends DomainObject
     /**
      * @param string $name
      * @param mixed  $value
+     *
+     * @return $this
      */
     public function setOption($name, $value)
     {
@@ -287,7 +346,7 @@ class EmailAccount extends DomainObject
 
         if ($value === null) {
             if (!$new) {
-                return;
+                return $this;
             }
 
             unset($new[$name]);
@@ -302,10 +361,14 @@ class EmailAccount extends DomainObject
         }
 
         $this->setModelField('options', $new);
+
+        return $this;
     }
 
     /**
      * @param string $options
+     *
+     * @return $this
      */
     public function setOptions($options)
     {
@@ -314,6 +377,68 @@ class EmailAccount extends DomainObject
         }
 
         $this->setModelField('options', $options);
+
+        return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getCertBlob()
+    {
+        return $this->cert_blob;
+    }
+
+    /**
+     * @param Blob $certBlob
+     *
+     * @return $this
+     */
+    public function setCertBlob($certBlob)
+    {
+        $this->setModelField('cert_blob', $certBlob);
+
+        return $this;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getKeyBlob()
+    {
+        return $this->key_blob;
+    }
+
+    /**
+     * @param Blob $keyBlob
+     *
+     * @return $this
+     */
+    public function setKeyBlob($keyBlob)
+    {
+        $this->setModelField('key_blob', $keyBlob);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKeyPassPhrase()
+    {
+        return $this->key_pass_phrase;
+    }
+
+    /**
+     * @param string $keyPassPhrase
+     *
+     * @return EmailAccount
+     */
+    public function setKeyPassPhrase($keyPassPhrase)
+    {
+        $this->setModelField('key_pass_phrase', $keyPassPhrase);
+
+        return $this;
     }
 
     //###########################################################################
@@ -327,7 +452,7 @@ class EmailAccount extends DomainObject
         $data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : [];
         $data['incoming_account_type'] = $this->getIncomingAccountType();
         $data['outgoing_account_type'] = $this->getOutgoingAccountType();
-        $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : [];
+        $data['outgoing_account']      = $this->outgoing_account ? $this->getOutgoingAccount()->serializeJsonArray() : [];
         $data['use_email_address']     = $this->getUseEmailAddress();
 
         return $data;
@@ -427,6 +552,41 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'is_read_active',
             'type'       => 'boolean',
             'nullable'   => false,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'cert_blob',
+            'targetEntity' => Blob::class,
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'cert_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'key_blob',
+            'targetEntity' => Blob::class,
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'key_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapField([
+            'columnName' => 'key_pass_phrase',
+            'fieldName'  => 'key_pass_phrase',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => true,
         ]);
     }
 }

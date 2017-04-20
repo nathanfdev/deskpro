@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,9 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -56,9 +58,12 @@ use JMS\Serializer\Annotation as JMS;
  *     "article" = "TaskLinkedArticle",
  *     "chat" = "TaskLinkedChat"
  * })
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-abstract class AbstractTaskLinkedItem implements EntityInterface
+abstract class AbstractTaskLinkedItem implements EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * The unique ID.
      *
@@ -101,9 +106,9 @@ abstract class AbstractTaskLinkedItem implements EntityInterface
      *
      * @return $this
      */
-    public function setTask(Task $task)
+    public function setTask(Task $task = null)
     {
-        $this->task = $task;
+        $this->setModelField('task', $task);
 
         return $this;
     }

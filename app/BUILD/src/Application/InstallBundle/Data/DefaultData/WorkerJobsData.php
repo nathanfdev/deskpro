@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -350,6 +350,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Process new system alert events to raise new and update existing incidents',
             'job_class'    => Job\ProcessSystemAlertEvents::class,
             'run_interval' => Job\ProcessSystemAlertEvents::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'twilio_sync',
+            'worker_group' => 'twilio_sync',
+            'title'        => 'Twilio sync',
+            'description'  => 'Sync twilio account',
+            'job_class'    => Job\TwilioSync::class,
+            'run_interval' => Job\TwilioSync::DEFAULT_INTERVAL,
         ];
 
         //------------------------------

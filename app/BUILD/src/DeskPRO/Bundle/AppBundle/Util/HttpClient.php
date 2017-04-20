@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,16 @@ use Composer\CaBundle\CaBundle;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
 
+/**
+ * Class HttpClient.
+ */
 class HttpClient extends Client
 {
+    /**
+     * Constructor.
+     *
+     * @param array $config
+     */
     public function __construct($config = [])
     {
         global $DP_ENV;
@@ -48,6 +56,7 @@ class HttpClient extends Client
         if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
             $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
         }
+
         parent::__construct($config);
     }
 }

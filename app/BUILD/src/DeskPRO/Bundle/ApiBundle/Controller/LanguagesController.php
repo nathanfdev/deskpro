@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
@@ -51,16 +47,17 @@ class LanguagesController extends CrudController
 {
     public static $entity     = Language::class;
     public static $listOrder  = 'asc';
-    public static $exposeOnly = ['list', 'get'];
+    public static $exposeOnly = ['list', 'get', 'count'];
 
     /**
      * @ApiDoc(
-     *      section="Languages",
-     *      description="provide agent phrases for frontend",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     section="Languages",
+     *     description="provide agent phrases for frontend",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/agent_phrases")
      *
@@ -78,6 +75,10 @@ class LanguagesController extends CrudController
             'agent.chrome.link_logout',
             'agent.chrome.link_preferences',
             'agent.chrome.nav_search',
+            'agent.chrome.notification_tooltip',
+            'agent.chrome.recent_tooltip',
+            'agent.chrome.user_tooltip',
+            'agent.chrome.view_tooltip',
             'agent.general.article',
             'agent.general.chat',
             'agent.general.download',
@@ -89,8 +90,97 @@ class LanguagesController extends CrudController
             'agent.general.person',
             'agent.general.task',
             'agent.general.ticket',
+            'agent.general.topic',
             'agent.general.your_profile',
+            'agent.onboarding.topbar_search_title',
+            'agent.onboarding.topbar_search_text',
+            'agent.onboarding.topbar_history_title',
+            'agent.onboarding.topbar_history_text',
+            'agent.onboarding.topbar_create_title',
+            'agent.onboarding.topbar_create_text',
+            'agent.onboarding.topbar_views_title',
+            'agent.onboarding.topbar_views_text',
+            'agent.onboarding.topbar_notifications_title',
+            'agent.onboarding.topbar_notifications_text',
+            'agent.onboarding.topbar_chat_title',
+            'agent.onboarding.topbar_chat_text',
+            'agent.onboarding.topbar_profile_title',
+            'agent.onboarding.topbar_profile_text',
+            'agent.onboarding.topbar_intro_title',
+            'agent.onboarding.topbar_intro_text',
+            'agent.onboarding.topbar_intro_button',
+            'agent.onboarding.topbar_changes_intro_title',
+            'agent.onboarding.topbar_changes_intro_text',
+            'agent.onboarding.new_im_position_title',
+            'agent.onboarding.new_im_position_text',
+            'agent.onboarding.new_im_start_new_title',
+            'agent.onboarding.new_im_start_new_text',
             'agent.tickets.count_agents',
+            'agent.voice.incoming_call_title',
+            'agent.voice.call_new_incoming',
+            'agent.voice.call_new_outgoing',
+            'agent.voice.call_answered',
+            'agent.voice.call_participant_muted',
+            'agent.voice.call_participant_unmuted',
+            'agent.voice.call_participant_hold',
+            'agent.voice.call_participant_unhold',
+            'agent.voice.call_agent_invited',
+            'agent.voice.call_agent_transfer',
+            'agent.voice.call_user_joined',
+            'agent.voice.call_agent_joined',
+            'agent.voice.call_agent_cancel_invite',
+            'agent.voice.call_agent_ignore_invite',
+            'agent.voice.call_agent_left',
+            'agent.voice.call_user_left',
+            'agent.voice.call_user_disconnected',
+            'agent.voice.call_agent_disconnected',
+            'agent.voice.call_agent_hangup',
+            'agent.voice.call_started',
+            'agent.voice.call_ended',
+        ];
+
+        return $this->getPhrasesResponse($request, $phrases);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Languages",
+     *     description="provide admin phrases for frontend",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     noOutput="array"
+     * )
+     * @Rest\Get("/admin_phrases")
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     */
+    public function adminPhrasesAction(Request $request)
+    {
+        $phrases = [
+            'agent.voice.call_new_incoming',
+            'agent.voice.call_new_outgoing',
+            'agent.voice.call_answered',
+            'agent.voice.call_participant_muted',
+            'agent.voice.call_participant_unmuted',
+            'agent.voice.call_participant_hold',
+            'agent.voice.call_participant_unhold',
+            'agent.voice.call_agent_invited',
+            'agent.voice.call_agent_transfer',
+            'agent.voice.call_user_joined',
+            'agent.voice.call_agent_joined',
+            'agent.voice.call_agent_cancel_invite',
+            'agent.voice.call_agent_ignore_invite',
+            'agent.voice.call_agent_left',
+            'agent.voice.call_user_left',
+            'agent.voice.call_user_disconnected',
+            'agent.voice.call_agent_disconnected',
+            'agent.voice.call_agent_hangup',
+            'agent.voice.call_started',
+            'agent.voice.call_ended',
         ];
 
         return $this->getPhrasesResponse($request, $phrases);

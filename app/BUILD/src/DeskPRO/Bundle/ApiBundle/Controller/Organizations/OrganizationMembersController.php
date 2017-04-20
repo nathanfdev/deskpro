@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\Person;
@@ -47,6 +43,16 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/organizations/{parentId}/members")
  * @ApiDoc(target="all", section="Organizations", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationMemberType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Person",
+ *          "organization"="Application\DeskPRO\Entity\Organization"
+ *      }
+ *     }
+ * )
  */
 class OrganizationMembersController extends CrudSubController
 {
@@ -60,9 +66,7 @@ class OrganizationMembersController extends CrudSubController
      */
     protected function instantiateEntity(Request $request)
     {
-        $person_id = $request->request->getInt('person');
-
-        return $entity = $this->getRepository(Person::class)->find($person_id);
+        return $this->getRepository(Person::class)->find($request->request->getInt('person'));
     }
 
     /**
@@ -70,9 +74,9 @@ class OrganizationMembersController extends CrudSubController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
-        $person_id = $request->request->getInt('person');
-        if ($person_id) {
-            $model = $this->getRepository('DeskPRO:Person')->find($person_id);
+        $personId = $request->request->getInt('person');
+        if ($personId) {
+            $model = $this->getRepository(Person::class)->find($personId);
         }
 
         $options = array_merge($options, [

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -178,10 +178,18 @@ class AppsController extends AbstractController
         $appManager   = $this->container->getAppManager();
         $data['apps'] = [];
         foreach ($manager->getPackageApps($package->name) as $app) {
-            $app = $app->toApiData(false);
+            $app             = $app->toApiData(false);
+            $userUsersource  = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_USER);
+            $agentUsersource = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_AGENT);
+            if ($userUsersource) {
+                $userUsersource = $userUsersource->toApiData();
+            }
+            if ($agentUsersource) {
+                $agentUsersource = $agentUsersource->toApiData();
+            }
             if ($package->isUsersource()) {
-                $app['user_usersource']  = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_USER);
-                $app['agent_usersource'] = $appManager->getUsersourceForApp($app['id'], Usersource::TYPE_AGENT);
+                $app['user_usersource']  = $userUsersource;
+                $app['agent_usersource'] = $agentUsersource;
             }
             $data['apps'][] = $app;
         }
@@ -242,12 +250,12 @@ class AppsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $package         = $manager->getPackage($name);
-        $inputTitle      = $this->in->getString('settings.dp_app.title');
-        $settings        = $this->in->getCleanValueArray('settings');
-        $usersource_type = $this->in->getString('usersource_type');
+        $package        = $manager->getPackage($name);
+        $inputTitle     = $this->in->getString('settings.dp_app.title');
+        $settings       = $this->in->getCleanValueArray('settings');
+        $usersourceType = $this->in->getString('usersource_type');
 
-        if ($package->isUsersource() && !$usersource_type) {
+        if ($package->isUsersource() && !$usersourceType) {
             return $this->createApiErrorResponse(
                 'invalid_argument', "$name is a usersource app and therefore you must provide the 'usersource_type' param in your request"
             );
@@ -258,7 +266,7 @@ class AppsController extends AbstractController
         }
 
         $context = new AppManipulatorContext($settings, $inputTitle);
-        $context->setUsersourceType($usersource_type);
+        $context->setUsersourceType($usersourceType);
 
         $app = $this->getAppManipulator()->installInstance($package, $context);
 
@@ -857,10 +865,10 @@ class AppsController extends AbstractController
      */
     protected function getAppManipulator()
     {
-        /** @var \Application\Deskpro\App\AppManipulator $app_manipulator */
-        $app_manipulator = $this->container->getSystemService('app_manipulator');
+        /** @var \Application\Deskpro\App\AppManipulator $appManipulator */
+        $appManipulator = $this->container->getSystemService('app_manipulator');
 
-        return $app_manipulator;
+        return $appManipulator;
     }
 
     public function jiraSettingsAction()

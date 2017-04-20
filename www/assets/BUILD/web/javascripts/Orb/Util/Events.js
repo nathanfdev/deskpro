@@ -81,18 +81,22 @@ Orb.Util.Events = {
 
 		defaultContext = this.__events_default_context || this;
 
-		args = Array.from(args || []);
+		var argsArr = Array.from(args || []);
+		if (argsArr.length < 1 && typeof args === 'object') {
+			argsArr = [args];
+		}
+
 		for (var i = 0; i < this.__events[type].length; i++) {
 			fn_info = this.__events[type][i];
 			if (delay) {
 				try {
-					fn_info[0].delay(delay, fn_info[1] || defaultContext, args);
+					fn_info[0].delay(delay, fn_info[1] || defaultContext, argsArr);
 				} catch (e) {
 					console.error("Event Error %s: %o %s", type, e, e.stack || '');
 				}
 			} else {
 				try {
-					fn_info[0].apply(fn_info[1] || defaultContext, args);
+					fn_info[0].apply(fn_info[1] || defaultContext, argsArr);
 				} catch (e) {
 					console.error("Event Error %s: %o %s", type, e, e.stack || '');
 				}
@@ -135,20 +139,27 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	removeEvents: function(events, context){
+	removeEvents: function(events){
 		var type;
+		var self = this;
+		if (!events) {
+			events = [];
+		}
+		if (events.length === undefined) {
+			events = [events];
+		}
 
 		this.__initEventsObj();
 
 		this.__preventCleanupTagged = true;
 
-		for (type in this.__events){
-			if (events && events != type) continue;
-			var fns = this.__events[type];
-			for (var i = fns.length; i--;) if (i in fns){
-				this.removeEvent(type, fns[i], context);
-			}
-		}
+		events.forEach(function(type) {
+      var fns = self.__events[type];
+      if (!fns) return;
+      for (var i = 0; i < fns.length; i++) {
+        self.removeEvent(type, fns[i][0], fns[i][1]);
+      }
+		});
 
 		this.__preventCleanupTagged = false;
 		this.__cleanupTaggedEvents();
@@ -169,26 +180,13 @@ Orb.Util.Events = {
 	},
 
 	__cleanupTaggedEvents: function() {
-		return;
 		Object.each(this.__events_tagged, function(tag_fns, tag) {
-			var newTaggedFns = [], hasChange = false;
-			Array.each(tag_fns, function(tag_fn) {
-				if (fn != tag_fn) {
-					newTaggedFns.push(fn);
-				} else {
-					hasChange = true;
-				}
-			});
-
-			if (hasChange) {
-				if (newTaggedFns.length) {
-					this.__events_tagged[tag] = newTaggedFns;
-				} else {
-					delete this.__events_tagged[tag];
-				}
-			} else {
-				newTaggedFns = null;
-			}
+			var newTaggedFns = [];
+      this.__events_tagged[tag] = newTaggedFns;
 		}, this);
+	},
+
+	destroyEvents: function() {
+    this.__events && this.removeEvents(Object.keys(this.__events));
 	}
 };

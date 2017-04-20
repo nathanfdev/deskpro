@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -240,12 +240,9 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
-
         foreach ($brands as $brand) {
-            if ($brand->hasDepartment($dep) && !$dep_edit->department->hasBrand($brand)) {
-                if (count($brand->getDepartments()) == 1) {
-                    return $this->createApiErrorResponse(500, 'Brand '.$brand.' needs at least one department');
-                }
+            if (!count($brand->getTicketDepartments())) {
+                return $this->createApiErrorResponse('validation_error', 'Brand '.$brand.' needs at least one department');
             }
         }
 
@@ -299,12 +296,9 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
-
         foreach ($brands as $brand) {
-            if ($brand->hasDepartment($dep)) {
-                if (count($brand->getDepartments()) == 1) {
-                    return $this->createApiErrorResponse(500, 'Brand '.$brand.' needs at least one department');
-                }
+            if (count($brand->getTicketDepartments()) === 1 && $brand->hasDepartment($dep)) {
+                return $this->createApiErrorResponse('validation_error', 'Brand '.$brand.' needs at least one department');
             }
         }
 

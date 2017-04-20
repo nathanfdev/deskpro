@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -122,6 +122,11 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 
         $field = TimeTitles::makeTimeFieldSelect('tickets.total_to_first_reply');
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         if ($this->grouping_field) {
             $group_field = $this->grouping_field->getFieldInfo();
             $sql         = "
@@ -129,13 +134,14 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
                 FROM tickets
                 {$group_field['join']}
                 WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0 {$group_field['where']}
+                ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
                 GROUP BY {$group_field['group_by']}, time_group
                 ORDER BY time_group ASC
             ";
 
             $this->logger->logDebug("[TicketsResponseTime (Grouped)] $sql");
             $this->logger->startTimer('TicketsResponseTime');
-            $q = App::getDb()->executeQuery($sql);
+            $q = App::getDb()->executeQuery($sql, $params);
             $this->logger->logTotalTime('TicketsResponseTime');
 
             $this->logger->startTimer('TicketsResponseTime.collecting');
@@ -162,12 +168,13 @@ class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
                 SELECT $field, COUNT(*)
                 FROM tickets
                 WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0
+                ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '').'
                 GROUP BY time_group
-            ";
+            ';
 
             $this->logger->logDebug("[TicketsResponseTime] $sql");
             $this->logger->startTimer('TicketsResponseTime');
-            $this->values = App::getDb()->fetchAllKeyValue($sql);
+            $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
             $this->logger->logTotalTime('TicketsResponseTime');
         }
 

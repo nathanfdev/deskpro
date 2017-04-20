@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\Chat\UserChat\GroupingCounter;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -47,7 +48,10 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserChatController extends AbstractController
 {
@@ -132,6 +136,23 @@ class UserChatController extends AbstractController
             'custom_fields'             => $customFields,
             'has_joined'                => $hasJoined,
         ]);
+    }
+
+    public function deleteAction(Request $request, $conversation_id)
+    {
+        if (!$this->person->hasPerm('agent_chat.delete')) {
+            throw new AccessDeniedHttpException();
+        }
+
+        /** @var ChatConversation $convo */
+        if (!$convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->em->remove($convo);
+        $this->em->flush();
+
+        return $this->createJsonResponse(['success' => true]);
     }
 
     public function joinChatAction($conversation_id)
@@ -600,10 +621,16 @@ class UserChatController extends AbstractController
      */
     public function leaveChatAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
+        // agent is not participant of the chat, skipping
+        if ($convo->getAgent() !== $this->person && !$convo->hasParticipant($this->person)) {
+            return $this->createJsonCmResponse();
         }
 
         $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
@@ -1017,6 +1044,7 @@ class UserChatController extends AbstractController
 
     public function blockUserAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
@@ -1025,6 +1053,20 @@ class UserChatController extends AbstractController
 
         /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
+
+        if ($session = $convo->getSession()) {
+            $block = new ChatBlock();
+            $block->setVisitorId($session->getVisitorId());
+            $block->by_person = $this->person;
+            $block->reason    = $this->in->getString('reason');
+
+            if ($this->in->getBool('block_ip') && $session->getIpAddress()) {
+                $block->setIpAddress($session->getIpAddress());
+            }
+
+            $this->em->persist($block);
+            $this->em->flush();
+        }
 
         if ($convo->status == 'open') {
             $chatManager->endChat($convo, $this->person, '');
@@ -1035,10 +1077,21 @@ class UserChatController extends AbstractController
 
     public function unblockUserAction($conversation_id)
     {
+        /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
 
         if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
+
+        $session = $convo->getSession();
+        if ($session && $session->getVisitorId()) {
+            /** @var \Application\DeskPRO\EntityRepository\ChatBlock $rep */
+            $rep = $this->em->getRepository('DeskPRO:ChatBlock');
+            if ($block = $rep->getBlockForVisitor($session->getVisitorId())) {
+                $this->em->remove($block);
+                $this->em->flush();
+            }
         }
 
         return $this->createJsonResponse(['success' => true]);

@@ -1,0 +1,145 @@
+import React, { PropTypes } from 'react';
+import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
+import Settings from './Settings/Settings';
+import DialpadContainer from './Dialpad/DialpadContainer';
+import IncomingCall from './IncomingCall/IncomingCall';
+import OutgoingCallContainer from './OutgoingCall/OutgoingCallContainer';
+import VoicemailListContainer from './Voicemail/VoicemailListContainer';
+
+class VoiceMenu extends React.Component {
+
+  static propTypes = {
+    me:                   PropTypes.object,
+    agents:               PropTypes.object,
+    people:               PropTypes.object,
+    incomingCall:         PropTypes.object,
+    onAcceptCall:         PropTypes.func,
+    onDeclineCall:        PropTypes.func,
+    onHangup:             PropTypes.func,
+    outboundCallsEnabled: PropTypes.bool,
+    outboundNumber:       PropTypes.string,
+    outgoingCall:         PropTypes.object,
+    ringingVolume:        PropTypes.number
+  };
+
+  constructor(props) {
+    super(props);
+
+    const { incomingCall, outgoingCall, outboundNumber } = this.props;
+    this.state = {
+      tabName: incomingCall || outgoingCall || outboundNumber ? 'phone' : 'settings'
+    };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.incomingCall || newProps.outgoingCall || newProps.outboundNumber) {
+      this.setState({
+        tabName: 'phone'
+      });
+    }
+  }
+
+  onChangeTab = (tabName) => {
+    this.setState({ tabName });
+  };
+
+  getPhoneTabName() {
+    const { incomingCall, outgoingCall } = this.props;
+
+    if (incomingCall) {
+      return 'Incoming call ...';
+    } else if (outgoingCall) {
+      return 'Outgoing call ...';
+    }
+
+    return 'Dialpad';
+  }
+
+  getPhoneTabIcon() {
+    const { incomingCall, outgoingCall } = this.props;
+
+    return incomingCall || outgoingCall ? 'fa-phone' : 'fa-th';
+  }
+
+  renderPhoneTab() {
+    const { me, agents, people, incomingCall, ringingVolume } = this.props;
+    const { outgoingCall, onAcceptCall, onDeclineCall, onHangup } = this.props;
+
+    if (incomingCall) {
+      return (
+        <IncomingCall
+          me={me}
+          agents={agents}
+          people={people}
+          incomingCall={incomingCall}
+          ringingVolume={ringingVolume}
+          onAccept={onAcceptCall}
+          onDecline={onDeclineCall}
+        />
+      );
+    } else if (outgoingCall) {
+      return (
+        <OutgoingCallContainer
+          me={me}
+          outgoingCall={outgoingCall}
+          onHangup={onHangup}
+        />
+      );
+    }
+
+    return <DialpadContainer />;
+  }
+
+  render() {
+    const { outboundCallsEnabled, incomingCall, outgoingCall } = this.props;
+    const { tabName } = this.state;
+    const hasPhoneTab = incomingCall || outboundCallsEnabled;
+    const pendingCall = incomingCall || outgoingCall;
+
+    return (
+      <div className="voice-menu">
+        <div className="voice-header">
+          Calls
+        </div>
+        <div className="tab-menu">
+          {!pendingCall &&
+          <TabButton
+            tabName="voicemail"
+            title="Voicemail"
+            iconClass="fa-play-circle"
+            onClick={this.onChangeTab}
+            active={tabName === 'voicemail'}
+          />}
+          {!pendingCall &&
+          <TabButton
+            tabName="settings"
+            title="Settings"
+            iconClass="fa-gear"
+            onClick={this.onChangeTab}
+            active={tabName === 'settings'}
+          />}
+          {hasPhoneTab &&
+          <TabButton
+            tabName="phone"
+            title={this.getPhoneTabName()}
+            iconClass={this.getPhoneTabIcon()}
+            onClick={this.onChangeTab}
+            active={tabName === 'phone'}
+          />}
+        </div>
+        <Tab active={tabName === 'voicemail'}>
+          <VoicemailListContainer />
+        </Tab>
+        <Tab active={tabName === 'settings'}>
+          <Settings />
+        </Tab>
+        {hasPhoneTab &&
+        <Tab active={tabName === 'phone'}>
+          {this.renderPhoneTab()}
+        </Tab>}
+      </div>
+    );
+  }
+}
+
+export default VoiceMenu;

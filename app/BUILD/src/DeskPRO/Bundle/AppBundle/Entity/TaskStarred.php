@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      @ORM\UniqueConstraint(name="starred_unique", columns={"task_id", "person_id"})
  *  }
  * )
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskStarred implements EntityInterface, NotifyPropertyChanged
 {
@@ -63,7 +64,6 @@ class TaskStarred implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Task")
      * @ORM\JoinColumn(name="task_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $task;
 
@@ -72,7 +72,6 @@ class TaskStarred implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
      * @Assert\NotNull()
-     * @Assert\Valid()
      */
     protected $person;
 
@@ -94,10 +93,14 @@ class TaskStarred implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
     public function setTask(Task $task)
     {
         $this->setModelField('task', $task);
+
+        return $this;
     }
 
     /**
@@ -110,9 +113,13 @@ class TaskStarred implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $person
+     *
+     * @return $this
      */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
+
+        return $this;
     }
 }

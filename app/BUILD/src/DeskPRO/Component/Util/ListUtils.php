@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,25 +47,20 @@ class ListUtils
     }
 
     /**
-     * Similar with array_filter, but you can use array_keys AND by default it not preserves keys.
+     * Similar with array_filter, but you can use indexes. Use MapUtils::filter if you need to preserve indexes.
      *
      * @param \Traversable|array $array
-     * @param callable           $fn           Your function is passed: $fn($value, $index)
-     * @param bool               $preserveKeys
+     * @param callable           $fn    Your function is passed: $fn($value, $index)
      *
      * @return array
      */
-    public static function filter($array, $fn, $preserveKeys = false)
+    public static function filter($array, $fn)
     {
         $new = [];
 
         foreach ($array as $k => $v) {
             if ($fn($v, $k)) {
-                if (!$preserveKeys) {
-                    $new[] = $v;
-                } else {
-                    $new[$k] = $v;
-                }
+                $new[] = $v;
             }
         }
 

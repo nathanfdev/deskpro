@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,7 +57,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'ticket_slas.sla_id IN :input0');
+        $this->assertWhere($query_part, '{ticket_slas}.sla_id IN (:input0)');
         $this->assertParameters(
             $query_part,
             [
@@ -69,7 +69,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
             [
                 'ticket_slas' => [
                     'table' => 'ticket_slas',
-                    'on'    => 'tickets.id = ticket_slas.ticket_id',
+                    'on'    => 'ticket.id = {ticket_slas}.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ],
             ]
@@ -84,7 +84,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'ticket_slas.sla_status IN :input0');
+        $this->assertWhere($query_part, '{ticket_slas}.sla_status IN (:input0)');
         $this->assertParameters(
             $query_part,
             [
@@ -96,7 +96,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
             [
                 'ticket_slas' => [
                     'table' => 'ticket_slas',
-                    'on'    => 'tickets.id = ticket_slas.ticket_id',
+                    'on'    => 'ticket.id = {ticket_slas}.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ],
             ]
@@ -114,7 +114,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'ticket_slas.sla_id IN :input0 AND ticket_slas.sla_status IN :input1');
+        $this->assertWhere($query_part, '{ticket_slas}.sla_id IN (:input0) AND {ticket_slas}.sla_status IN (:input1)');
         $this->assertParameters(
             $query_part,
             [
@@ -127,7 +127,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
             [
                 'ticket_slas' => [
                     'table' => 'ticket_slas',
-                    'on'    => 'tickets.id = ticket_slas.ticket_id',
+                    'on'    => 'ticket.id = {ticket_slas}.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ],
             ]
@@ -143,7 +143,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'ticket_slas.sla_id != :input0');
+        $this->assertWhere($query_part, '{ticket_slas}.sla_id != :input0');
         $this->assertParameters(
             $query_part,
             [
@@ -155,7 +155,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
             [
                 'ticket_slas' => [
                     'table' => 'ticket_slas',
-                    'on'    => 'tickets.id = ticket_slas.ticket_id',
+                    'on'    => 'ticket.id = {ticket_slas}.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ],
             ]
@@ -171,7 +171,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'ticket_slas.sla_status NOT IN :input0');
+        $this->assertWhere($query_part, '{ticket_slas}.sla_status NOT IN (:input0)');
         $this->assertParameters(
             $query_part,
             [
@@ -183,7 +183,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
             [
                 'ticket_slas' => [
                     'table' => 'ticket_slas',
-                    'on'    => 'tickets.id = ticket_slas.ticket_id',
+                    'on'    => 'ticket.id = {ticket_slas}.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ],
             ]
@@ -202,7 +202,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
 
         $query_part = $this->term_compiler->compile($term);
 
-        $this->assertWhere($query_part, 'ticket_slas.sla_id NOT IN :input0 AND ticket_slas.sla_status NOT IN :input1');
+        $this->assertWhere($query_part, '{ticket_slas}.sla_id NOT IN (:input0) AND {ticket_slas}.sla_status NOT IN (:input1)');
         $this->assertParameters(
             $query_part,
             [
@@ -215,7 +215,7 @@ class DbalTicketSlaTermCompilerTest extends AbstractDbalTicketFilterTermCompiler
             [
                 'ticket_slas' => [
                     'table' => 'ticket_slas',
-                    'on'    => 'tickets.id = ticket_slas.ticket_id',
+                    'on'    => 'ticket.id = {ticket_slas}.ticket_id',
                     'type'  => DbalQuery::JOIN_LEFT,
                 ],
             ]

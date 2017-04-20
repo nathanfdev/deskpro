@@ -14,21 +14,20 @@ export class LoginForm extends React.Component {
       failed:             false,
       captcha:            '',
       captcha_public_key: '6LcWL8YSAAAAAJu1CrtS9RdOJyKd_NbArNgUFWV9',
-      reset_path:         portalUrlGenerator.path('/login/reset-password')
+      reset_path:         portalUrlGenerator.path('/login/reset-password'),
+      reason:             null
     };
   }
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
 
-    const $username = $(this.refs.username);
-    const $password = $(this.refs.password);
-    const $rememberMe = $(this.refs.remember_me);
+    const $username = $(this.refUsername);
+    const $password = $(this.refPassword);
+    const $rememberMe = $(this.refRememberMe);
     const loginUrl = portalUrlGenerator.path('/login/authenticate-password');
 
-    this.setState({
-      failed: false
-    });
+    this.onResetFailed();
 
     portalHttp.sendPost(
       loginUrl,
@@ -49,7 +48,8 @@ export class LoginForm extends React.Component {
         }
       } else {
         this.setState({
-          failed: true
+          failed: true,
+          reason: r.data.reason
         });
         $username.focus();
         this.addCaptchaIfNecessary();
@@ -58,9 +58,9 @@ export class LoginForm extends React.Component {
   };
 
   onEmailBlur = () => {
-    const $username = $(this.refs.username);
+    const $username = $(this.refUsername);
 
-    if (this.refs.username && $username.val()) {
+    if (this.refUsername && $username.val()) {
       this.setState({
         reset_path: `${portalUrlGenerator.path('/login/reset-password')}?email=${$username.val()}`
       });
@@ -73,7 +73,8 @@ export class LoginForm extends React.Component {
 
   onResetFailed = () => {
     this.setState({
-      failed: false
+      failed: false,
+      reason: null
     });
   };
 
@@ -90,60 +91,69 @@ export class LoginForm extends React.Component {
     });
   }
 
+  renderFailedReason() {
+    if (!this.state.failed) {
+      return null;
+    }
+    const phrase = this.state.reason || 'portal.account.login-invalid';
+    return <div className="message">{portalPhrases.get(phrase)}</div>;
+  }
+
   render() {
     const failurePath = portalUrlGenerator.path('/login?retry=auth');
 
     return (
       <form method="post" id="login-sidebar" onSubmit={this.onSubmit}>
         <input type="hidden" name="_failure_path" value={failurePath} />
-        <label className={classNames({ error: this.state.failed })}>
+        <label className={classNames({ error: this.state.failed })} htmlFor="login-form-username">
           <span>{portalPhrases.get('portal.account.login-email')}</span>
           <input
-            ref="username"
+            ref={(node) => { this.refUsername = node; }}
             type="text"
-            tabIndex="2"
             placeholder="email@example.com"
             name="username"
             onBlur={this.onEmailBlur}
             onChange={this.onResetFailed}
+            id="login-form-username"
+            tabIndex="21"
           />
         </label>
 
-        <label className={classNames({ error: this.state.failed })}>
-          {this.state.failed && <div className="message">{portalPhrases.get('portal.account.login-invalid')}</div>}
+        <label className={classNames({ error: this.state.failed })} htmlFor="login-form-password">
+          {this.renderFailedReason()}
           <span>{portalPhrases.get('portal.account.login-password')}</span>
           <input
-            ref="password"
+            ref={(node) => { this.refPassword = node; }}
             type="password"
-            tabIndex="2"
             placeholder={portalPhrases.get('portal.account.login-password')}
             name="password"
             onChange={this.onResetFailed}
+            id="login-form-password"
+            tabIndex="22"
           />
         </label>
 
         <div className="permanent-login">
-          <label>
+          <label htmlFor="login-form-remember-me">
             <input
-              ref="remember_me"
-              tabIndex="2"
+              ref={(node) => { this.refRememberMe = node; }}
               type="checkbox"
               name="remember_me"
+              id="login-form-remember-me"
+              tabIndex="23"
             />
             {portalPhrases.get('portal.account.login-stay-logged-in')}
           </label>
         </div>
 
-        <button type="submit" tabIndex="2">{portalPhrases.get('portal.account.login-btn')}</button>
+        <button type="submit" tabIndex="24">{portalPhrases.get('portal.account.login-btn')}</button>
 
-        {
-          window.IS_FORGOT_PASSWORD_VISIBLE &&
-            <div className="secondary-action">
-              <a href={this.state.reset_path}>
-                {portalPhrases.get('portal.account.login-password-reminder')}
-              </a>
-            </div>
-        }
+        {window.DESKPRO_IS_FORGOT_PASSWORD_VISIBLE &&
+          <div className="secondary-action">
+            <a href={this.state.reset_path} tabIndex="25">
+              {portalPhrases.get('portal.account.login-password-reminder')}
+            </a>
+          </div>}
       </form>
     );
   }

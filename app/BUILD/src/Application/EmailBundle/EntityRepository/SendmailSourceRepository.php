@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,50 +63,53 @@ class SendmailSourceRepository extends AbstractEntityRepository
     }
 
     /**
-     * @param \DateTime      $start
-     * @param \DateTime|null $end
+     * @param \DateTime      $start      Start of the date range to check in
+     * @param \DateTime|null $end        End of the date range to check in
+     * @param array|null     $inAccounts Specific accounts to look at
      *
-     * @return int
+     * @return int|mixed
      */
-    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $in_accounts = null)
+    public function countSendingBetween(\DateTime $start, \DateTime $end = null, array $inAccounts = null)
     {
         if (!$end) {
             $end = new \DateTime();
         }
 
-        if ($in_accounts) {
-            return $this->getEntityManager()->getConnection()->fetchColumn("
-                SELECT COUNT(*)
-                FROM sendmail_sources
-                WHERE
-                  status IN ('complete', 'pending', 'processing', 'retry')
-                  AND date_created > ?
-                  AND date_status BETWEEN ? AND ?
-            ", [
+        if (!$inAccounts) {
+            $result = $this->getEntityManager()->getConnection()->fetchColumn("
+                    SELECT SUM(num_targets)
+                    FROM sendmail_sources
+                    WHERE
+                      status IN ('complete', 'pending', 'processing', 'retry')
+                      AND date_created > ?
+                      AND date_status BETWEEN ? AND ?
+                ", [
                 $start->format('Y-m-d H:i:s'),
                 $start->format('Y-m-d H:i:s'),
                 $end->format('Y-m-d H:i:s'),
             ]);
         } else {
-            $in_accounts = array_map('intval', $in_accounts);
-            if (!$in_accounts) {
-                $in_accounts = [0];
+            $inAccounts = array_map('intval', $inAccounts);
+            if (!$inAccounts) {
+                $inAccounts = [0];
             }
-            $in_accounts = implode(',', $in_accounts);
 
-            return $this->getEntityManager()->getConnection()->fetchColumn("
-                SELECT COUNT(*)
-                FROM sendmail_sources
-                WHERE
-                  status IN ('complete', 'pending', 'processing', 'retry')
-                  AND date_created > ?
-                  AND date_status BETWEEN ? AND ?
-                  AND account_id IN ($in_accounts)
-            ", [
+            $result = $this->getEntityManager()->getConnection()->fetchColumn("
+                    SELECT SUM(num_targets)
+                    FROM sendmail_sources
+                    WHERE
+                      status IN ('complete', 'pending', 'processing', 'retry')
+                      AND date_created > ?
+                      AND date_status BETWEEN ? AND ?
+                      AND email_account_id IN (?)
+                ", [
                 $start->format('Y-m-d H:i:s'),
                 $start->format('Y-m-d H:i:s'),
                 $end->format('Y-m-d H:i:s'),
-            ]);
+                $inAccounts,
+            ], 0, [\PDO::PARAM_STR, \PDO::PARAM_STR, \PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
         }
+
+        return $result;
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,8 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
@@ -45,6 +47,7 @@ use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Asset\Packages;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -56,7 +59,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
     const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
     const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
-    const CHAT_ENABLED          = 'portal.chat.enabled';
+    const CHAT_ENABLED          = 'core.apps_chat';
     const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
     const ENABLED               = 'widget.enabled';
 
@@ -91,9 +94,14 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $portalModeStorage;
 
     /**
-     * @var string
+     * @var UrlCorrectorFactory
      */
-    private $basePath;
+    private $urlCorrectorFactory;
+
+    /**
+     * @var LanguageManager
+     */
+    private $languageManager;
 
     /**
      * Constructor.
@@ -105,7 +113,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
      * @param PortalModeStorage          $portalModeStorage
-     * @param string                     $basePath
+     * @param UrlCorrectorFactory        $urlCorrectorFactory
+     * @param LanguageManager            $languageManager
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
@@ -115,16 +124,18 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         TokenStorageInterface      $tokenStorage,
         PortalPermissionsManager   $permissionsManager,
         PortalModeStorage          $portalModeStorage,
-        $basePath
+        UrlCorrectorFactory        $urlCorrectorFactory,
+        LanguageManager            $languageManager
     ) {
         parent::__construct($settingsResolver);
 
-        $this->em                 = $em;
-        $this->assetPackages      = $assetPackages;
-        $this->tokenStorage       = $tokenStorage;
-        $this->permissionsManager = $permissionsManager;
-        $this->portalModeStorage  = $portalModeStorage;
-        $this->basePath           = $basePath;
+        $this->em                  = $em;
+        $this->assetPackages       = $assetPackages;
+        $this->tokenStorage        = $tokenStorage;
+        $this->permissionsManager  = $permissionsManager;
+        $this->portalModeStorage   = $portalModeStorage;
+        $this->urlCorrectorFactory = $urlCorrectorFactory;
+        $this->languageManager     = $languageManager;
 
         if ($router instanceof PortalRouter) {
             $this->router = $router->getBaseRouter();
@@ -158,11 +169,13 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return bool
      */
-    public function isEnabledOnPortal()
+    public function isEnabledOnPortal(Brand $brand = null)
     {
-        return (bool) $this->getSetting(self::ENABLED_ON_PORTAL);
+        return (bool) $this->getSetting(self::ENABLED_ON_PORTAL, $brand);
     }
 
     /**
@@ -176,7 +189,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setUrl($this->getWidgetUrlSettings($brand))
             ->setSettings($this->getWidgetOptions($brand))
-            ->setEnabledOnPortal($this->isEnabledOnPortal())
+            ->setEnabledOnPortal($this->isEnabledOnPortal($brand))
             ->setBrand($brand)
         ;
 
@@ -184,11 +197,12 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
-     * @param Brand $brand
+     * @param Brand   $brand
+     * @param Request $request
      *
      * @return WidgetUrlSettings
      */
-    public function getWidgetUrlSettings(Brand $brand)
+    public function getWidgetUrlSettings(Brand $brand, Request $request = null)
     {
         $portalMode = $this->portalModeStorage->getMode();
 
@@ -200,14 +214,22 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             $helpdeskUrl = $baseUrl;
         }
 
+        if ($request) {
+            $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
+
+            $baseUrl     = $urlCorrector->correctUrlScheme($baseUrl, $request);
+            $helpdeskUrl = $urlCorrector->correctUrlScheme($helpdeskUrl, $request);
+        }
+
         $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
+        $basePath  = $request ? $request->getBasePath() : '';
 
         if (!preg_match('#^https?://#i', $loaderUrl)) {
-            $loaderUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$loaderUrl;
+            $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
         }
         if (!preg_match('#^https?://#i', $widgetUrl)) {
-            $widgetUrl = rtrim(str_replace($this->basePath, '', $baseUrl), '/').$widgetUrl;
+            $widgetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$widgetUrl;
         }
 
         $model = new WidgetUrlSettings();
@@ -276,17 +298,54 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             $model = new WidgetBrandSettings();
         }
 
-        $popupTranslations  = $model->getChat()->getPopup()->getTranslations();
-        $buttonTranslations = $model->getButton()->getTranslations();
-
-        // filter deleted language translations
+        // filter translations
         $languages    = $this->em->getRepository(Language::class)->findAll();
         $languagesIds = array_map(function (Language $language) {
             return $language->getId();
         }, $languages);
 
-        /** @var AbstractTranslationModel[]|ArrayCollection $propTranslations */
-        foreach ([$popupTranslations, $buttonTranslations] as $propTranslations) {
+        $buttonSettings = $model->getButton();
+        foreach ($languages as $language) {
+            $translation = $buttonSettings->getTranslation($language->getId());
+            if (!$translation) {
+                $translation = new WidgetBrandButtonTranslation();
+                $translation->setLanguage($language->getId());
+
+                $buttonSettings->getTranslations()->add($translation);
+            }
+            if (!$translation->getName()) {
+                $translation->setName($this->languageManager->phrase('portal.widget.help_button', [], $language));
+            }
+        }
+
+        $popupSettings = $model->getChat()->getPopup();
+        foreach ($languages as $language) {
+            $translation = $popupSettings->getTranslation($language->getId());
+            if (!$translation) {
+                $translation = new WidgetBrandChatPopupTranslation();
+                $translation->setLanguage($language->getId());
+
+                $popupSettings->getTranslations()->add($translation);
+            }
+            if (!$translation->getTitle()) {
+                $translation->setTitle($this->languageManager->phrase('portal.widget.popup_title', [], $language));
+            }
+            if (!$translation->getMessage()) {
+                $translation->setMessage($this->languageManager->phrase('portal.widget.popup_message', [], $language));
+            }
+            if (!$translation->getHeading()) {
+                $translation->setHeading($this->languageManager->phrase('portal.widget.popup_heading', [], $language));
+            }
+            if (!$translation->getSubheading()) {
+                $translation->setSubheading($this->languageManager->phrase('portal.widget.popup_subheading', [], $language));
+            }
+            if (!$translation->getStartButton()) {
+                $translation->setStartButton($this->languageManager->phrase('portal.widget.popup_start_button', [], $language));
+            }
+        }
+
+        foreach ([$buttonSettings->getTranslations(), $popupSettings->getTranslations()] as $propTranslations) {
+            /** @var AbstractTranslationModel[]|ArrayCollection $propTranslations */
             foreach ($propTranslations as $translation) {
                 if (!in_array($translation->getLanguage(), $languagesIds)) {
                     $propTranslations->removeElement($translation);
@@ -294,26 +353,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             }
         }
 
-        // set default translations
-        $defaultLanguage = $this->em->getRepository(Language::class)->findOneBy([]);
-        if ($defaultLanguage) {
-            if (!count($popupTranslations)) {
-                $defaultTranslation = new WidgetBrandChatPopupTranslation();
-                $defaultTranslation->setLanguage($defaultLanguage->getId());
-                $popupTranslations->add($defaultTranslation);
-            }
-
-            if (!count($buttonTranslations)) {
-                $defaultTranslation = new WidgetBrandButtonTranslation();
-                $defaultTranslation->setLanguage($defaultLanguage->getId());
-
-                $buttonTranslations->add($defaultTranslation);
-            }
-        }
-
-        // reset translation collection keys
-        $model->getChat()->getPopup()->setTranslations(new ArrayCollection($popupTranslations->getValues()));
-        $model->getButton()->setTranslations(new ArrayCollection($buttonTranslations->getValues()));
+        $buttonSettings->setTranslations(new ArrayCollection($buttonSettings->getTranslations()->getValues()));
+        $popupSettings->setTranslations(new ArrayCollection($popupSettings->getTranslations()->getValues()));
 
         return $model;
     }

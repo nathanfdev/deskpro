@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,6 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="task_lists")
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TaskList implements EntityInterface, NotifyPropertyChanged
 {
@@ -109,7 +110,7 @@ class TaskList implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->tasks = new ArrayCollection();
+        $this->setModelField('tasks', new ArrayCollection());
     }
 
     /**
@@ -154,45 +155,63 @@ class TaskList implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Project $project
+     *
+     * @return $this
      */
-    public function setProject(Project $project)
+    public function setProject(Project $project = null)
     {
-        $this->project = $project;
         $this->setModelField('project', $project);
+
+        return $this;
     }
 
     /**
      * @param string $title
+     *
+     * @return $this
      */
     public function setTitle($title)
     {
-        $this->title = $title;
         $this->setModelField('title', $title);
+
+        return $this;
     }
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
     public function addTask(Task $task)
     {
         $this->tasks->add($task);
-        $this->setModelField('task', $task);
+        $task->setList($this);
+
+        return $this;
     }
 
     /**
      * @param Task $task
+     *
+     * @return $this
      */
     public function removeTask(Task $task)
     {
         $this->tasks->remove($task);
+        $task->setList(null);
+
+        return $this;
     }
 
     /**
      * @param $displayOrder
+     *
+     * @return $this
      */
     public function setDisplayOrder($displayOrder)
     {
-        $this->display_order = $displayOrder;
         $this->setModelField('display_order', $displayOrder);
+
+        return $this;
     }
 }

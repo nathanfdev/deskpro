@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\Common\Proxy\Proxy;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class SideloadStore.
@@ -60,7 +61,7 @@ class SideloadStore
     private $notLoaded = [];
 
     /**
-     * @var array
+     * @var CustomSideload[][]
      */
     private $customs = [];
 
@@ -93,6 +94,10 @@ class SideloadStore
         $this->addSideloadString($fqcn, $entity->getId());
     }
 
+    /**
+     * @param mixed $class
+     * @param mixed $id
+     */
     public function addSideloadString($class, $id)
     {
         $snake = TypeUtils::getSnakeCaseBaseTypeName($class);
@@ -112,8 +117,9 @@ class SideloadStore
      * @param string                   $interest
      * @param int                      $id
      * @param CallbackDeferredProperty $deferred
+     * @param mixed                    $model
      */
-    public function addCustomSideload($interest, $id, CallbackDeferredProperty $deferred)
+    public function addCustomSideload($interest, $id, CallbackDeferredProperty $deferred, $model = null)
     {
         if (!isset($this->customs[$interest])) {
             $this->customs[$interest] = [];
@@ -122,6 +128,11 @@ class SideloadStore
         $this->updateNotLoaded($interest);
 
         $this->customs[$interest][$id] = new CustomSideload($id, $deferred);
+
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        if ($model && $propertyAccessor->isWritable($model, $interest)) {
+            $propertyAccessor->setValue($model, $interest, new InlineCustomSideload($interest, $id));
+        }
     }
 
     /**
@@ -184,8 +195,9 @@ class SideloadStore
         }
         $return = [];
         foreach ($this->customs[$interest] as $custom) {
-            if (false === array_search((int) $custom->getId(), $this->loaded[$interest])) {
-                $this->loaded[$interest][] = (int) $custom->getId();
+            $id = is_numeric($custom->getId()) ? (int) $custom->getId() : $custom->getId();
+            if (false === array_search($id, $this->loaded[$interest])) {
+                $this->loaded[$interest][] = $id;
                 $return[]                  = $custom;
             }
         }
@@ -193,6 +205,9 @@ class SideloadStore
         return $return;
     }
 
+    /**
+     * @return array
+     */
     public function getAvailableTypes()
     {
         return array_merge(array_keys($this->classmap), array_keys($this->customs));

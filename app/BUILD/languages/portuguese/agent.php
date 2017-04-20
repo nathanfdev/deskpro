@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -65,12 +65,9 @@ return [
     'agent.chat.no_online_agents'                           => 'Não existe nenhum agente online',
     'agent.chat.no_open_chats'                              => 'Não existe nenhuma chat em aberto',
     'agent.chat.no_others'                                  => 'Nenhum outro',
-    'agent.chat.offline'                                    => 'Offline',
-    'agent.chat.online'                                     => 'Online',
     'agent.chat.open_chat'                                  => 'Conversa Aberta',
     'agent.chat.other_agents'                               => 'Outros Agentes',
     'agent.chat.show_offline'                               => 'Mostrar Offline',
-    'agent.chat.snippets'                                   => 'Snippets',
     'agent.chat.take_chat'                                  => 'Responder Chat',
     'agent.chat.team_chats'                                 => 'Conversas de Equipa',
     'agent.chat.title_active_chats'                         => 'Todas as Conversas Abertas',
@@ -119,19 +116,14 @@ return [
     'agent.people.user_will_be_perm_deleted'                => 'O utilizador será apagado permanentemente.',
     'agent.people.user_will_be_perm_deleted_banned'         => 'O utilizador será apagado permanentemente e o seu email banido.',
     'agent.people.view_profile'                             => 'Ver Perfil',
-    'agent.people.website'                                  => 'Website',
-    'agent.people.website_url_placeholder'                  => 'Website URL',
     'agent.publish.add_new_search_word'                     => 'Pressione enter para adicionar uma nova palavra de busca',
-    'agent.publish.slug'                                    => 'URL Slug',
     'agent.publish.slug_edit'                               => 'Editar Slug',
     'agent.report.agent_activity'                           => 'Actividade do Agente',
     'agent.report.agent_hours'                              => 'Horas do Agente',
     'agent.report.clone'                                    => 'Clonar',
     'agent.report.clone_bracket'                            => '[Clonar]',
     'agent.report.current'                                  => 'Actual',
-    'agent.report.overview'                                 => 'Overview',
     'agent.report.report_builder'                           => 'Constructor de Report',
-    'agent.report.updates'                                  => 'Updates',
     'agent.settings.add_additional_emails'                  => 'Adicionar emails adicionais',
     'agent.settings.add_another_email'                      => 'Adicionar outro email',
     'agent.settings.additional_emails'                      => 'Adicionar Emails',
@@ -222,7 +214,6 @@ return [
     'agent.tickets.real_time_updates'                       => 'Update em tempo real estão activados',
     'agent.tickets.status_archived'                         => 'Aqruivado',
     'agent.tickets.status_archived_deleted'                 => 'Apagado',
-    'agent.tickets.status_archived_spam'                    => 'Spam',
     'agent.tickets.status_archived_temp'                    => 'Temporário',
     'agent.tickets.status_archived_validating'              => 'Aguardando Validação',
     'agent.time.group_6_to_7_days'                          => '6 - 7 dias',

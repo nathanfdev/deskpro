@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,8 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackSlugHistory;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsSlugHistory;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicSlugHistory;
 use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
@@ -83,7 +85,7 @@ class ContentSlugManager
      *
      * @throws \Exception
      *
-     * @return null|void
+     * @return null|object
      */
     public function ensureValidSlug(ContentAbstract $content)
     {
@@ -95,7 +97,7 @@ class ContentSlugManager
         }
 
         if ($existingSlug === $expectedSlug) {
-            return; // already valid and set, no need to do more here
+            return null; // already valid and set, no need to do more here
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
@@ -138,12 +140,15 @@ class ContentSlugManager
             return $content;
         }
 
-        $historyRepo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
-        if ($content_history = $historyRepo->findOneBy(['slug' => $slug])) {
-            return $content_history->getContent();
+        $historyClass = sprintf('%sSlugHistory', $content_class_name);
+        if (class_exists($historyClass)) {
+            $historyRepo = $this->getEm()->getRepository($historyClass);
+            if ($contentHistory = $historyRepo->findOneBy(['slug' => $slug])) {
+                return $contentHistory->getContent();
+            }
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -205,6 +210,8 @@ class ContentSlugManager
                 return $this->getEm()->getRepository(Feedback::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(Download::class);
+            case Topic::CONTENT_TYPE:
+                return $this->getEm()->getRepository(Topic::class);
             default:
                 throw new \InvalidArgumentException('no content type provided');
         }
@@ -226,6 +233,8 @@ class ContentSlugManager
                 return $this->getEm()->getRepository(FeedbackSlugHistory::class);
             case Download::CONTENT_TYPE:
                 return $this->getEm()->getRepository(DownloadSlugHistory::class);
+            case Topic::CONTENT_TYPE:
+                return $this->getEm()->getRepository(TopicSlugHistory::class);
             default:
                 throw new \InvalidArgumentException('no content type provided');
         }

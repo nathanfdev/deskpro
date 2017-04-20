@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,6 +72,9 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
 
         if (isset($options['is_agent'])) {
             $mainFilter->addMust(new Query\Term(['is_agent' => (bool) $options['is_agent']]));
+        }
+        if (isset($options['with_phone_number']) && $options['with_phone_number']) {
+            $mainFilter->addMust(new Query\Exists('phone_numbers'));
         }
 
         return $mainFilter->toArray();

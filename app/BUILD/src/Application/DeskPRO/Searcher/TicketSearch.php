@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -718,7 +718,7 @@ class TicketSearch extends SearcherAbstract
             if (is_array($j)) {
                 $sql_joins .= $j[1].' ';
             } else {
-                $sql_joins .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
+                throw new \RuntimeException('array expected');
             }
         }
 
@@ -954,7 +954,7 @@ class TicketSearch extends SearcherAbstract
             if (is_array($j)) {
                 $sql_joins .= $j[1].' ';
             } else {
-                $sql_joins .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
+                throw new \RuntimeException('array expected');
             }
         }
 
@@ -1893,8 +1893,11 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_PARTICIPANT:
                         $this->affected_fields[] = 'ticket.participants';
-                        $joins[]                 = 'tickets_participants';
-                        $field                   = 'tickets_participants.person_id';
+                        $joins[]                 = [
+                            'tickets_participants',
+                            "LEFT JOIN tickets_participants AS $join_name ON $join_name.ticket_id = tickets.id ",
+                        ];
+                        $field = $join_name.'.person_id';
 
                         $choice_info = $this->_normalizeAgentChoice($choice);
                         if (!empty($choice_info['agent_ids'])) {
@@ -2008,15 +2011,18 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_FLAGGED:
 
                         $this->affected_fields[] = 'tickets_flagged';
-                        $joins[]                 = 'tickets_flagged';
+                        $joins[]                 = [
+                            'tickets_flagged',
+                            "LEFT JOIN tickets_flagged AS $join_name ON $join_name.ticket_id = tickets.id ",
+                        ];
 
                         ++$this->used_person_context;
 
                         $color = $choice;
                         if ($color == 'any') {
-                            $wheres[] = 'tickets_flagged.person_id = '.$this->person->id;
+                            $wheres[] = $join_name.'.person_id = '.$this->person->id;
                         } else {
-                            $wheres[] = '(tickets_flagged.person_id = '.$this->person->id.' AND '.$this->_stringMatch('tickets_flagged.color', $op, $color).')';
+                            $wheres[] = '('.$join_name.'.person_id = '.$this->person->id.' AND '.$this->_stringMatch($join_name.'.color', $op, $color).')';
                         }
 
                         break;
@@ -2980,6 +2986,14 @@ class TicketSearch extends SearcherAbstract
     public function addRawWhere($where)
     {
         $this->add_raw_wheres[] = $where;
+    }
+
+    /**
+     * @param string $select
+     */
+    public function addRawSelect($select)
+    {
+        $this->add_raw_selects[] = $select;
     }
 
     /**

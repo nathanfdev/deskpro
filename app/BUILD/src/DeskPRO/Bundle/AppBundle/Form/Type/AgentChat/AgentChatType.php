@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,11 +34,13 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -82,6 +84,7 @@ class AgentChatType extends AbstractType
                 AgentChat::TYPE_AGENT,
                 AgentChat::TYPE_TEAM,
                 AgentChat::TYPE_DEPARTMENT,
+                AgentChat::TYPE_GROUP,
                 AgentChat::TYPE_EVERYONE,
             ],
             'choices_as_values' => true,
@@ -120,10 +123,21 @@ class AgentChatType extends AbstractType
         $data   = $event->getData();
         $type   = isset($data['type']) ? $data['type'] : null;
 
+        $multiple = false;
         switch ($type) {
+            case AgentChat::TYPE_GROUP:
+                $form->add('name', TextType::class, [
+                    'required'    => true,
+                    'constraints' => [
+                        new Assert\NotNull(),
+                        new Assert\NotBlank(),
+                    ],
+                ]);
+                $multiple = true;
             case AgentChat::TYPE_AGENT:
                 $form->add('participant', EntityType::class, [
                     'mapped'      => false,
+                    'multiple'    => $multiple,
                     'class'       => Person::class,
                     'constraints' => [
                         new Assert\NotNull(),
@@ -204,14 +218,30 @@ class AgentChatType extends AbstractType
         /** @var AgentChat $agentChat */
         $agentChat   = $event->getData();
         $participant = $this->getFormParticipant($event);
+        $person      = $this->getPerson($event);
 
-        if ($participant) {
-            if (!$agentChat->containsParticipant($participant)) {
-                $agentChat->addParticipant($participant);
+        if ($participant &&
+            (is_array($participant) || $participant instanceof \Traversable || $participant = [$participant])
+        ) {
+            foreach ($participant as $item) {
+                if (!$agentChat->containsParticipant($item)) {
+                    $agentChat->addParticipant($item);
+                }
+            }
+            $collection = $participant instanceof ArrayCollection ? $participant : new ArrayCollection($participant);
+            foreach ($agentChat->getAgents() as $agent) {
+                if (!$collection->contains($agent) && $agent != $person) {
+                    $agentChat->removeParticipant($agent);
+                }
             }
         }
-        if ($this->getFormType($event) === AgentChat::TYPE_AGENT && !$agentChat->getId()) {
+
+        $formType = $this->getFormType($event);
+        if (($formType === AgentChat::TYPE_AGENT || $formType === AgentChat::TYPE_GROUP) && !$agentChat->getId()) {
             $agentChat->addParticipant($this->getPerson($event));
+        }
+        if ($formType === AgentChat::TYPE_GROUP) {
+            $agentChat->setAdmin($this->getPerson($event));
         }
     }
 

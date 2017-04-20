@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,10 +36,14 @@ use Symfony\Component\HttpFoundation\HeaderBag;
  */
 class LogHelper extends AbstractLogHelper
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $requestId;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $clientGeneratedRequestId = false;
 
     /**
@@ -99,16 +103,16 @@ class LogHelper extends AbstractLogHelper
      */
     public function isLoggingEnabled()
     {
-        return
-            $this->resolver->getGlobalSettings()->get('api_log.enabled')
+        return $this->resolver->getGlobalSettings()->get('api_log.enabled')
             && in_array($this->mode, $this->getModes());
     }
 
+    /**
+     * @return array
+     */
     public function getModes()
     {
-        $modes = $this->resolver->getGlobalSettings()->getSerializedArray('api_log.modes', []);
-
-        return $modes;
+        return $this->resolver->getGlobalSettings()->getSerializedArray('api_log.modes', []);
     }
 
     /**
@@ -139,13 +143,19 @@ class LogHelper extends AbstractLogHelper
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getMaxRequestBodyLength()
     {
         return $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
     }
 
+    /**
+     * @return int
+     */
     public function getMaxResponseBodyLength()
     {
-        return $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
+        return $this->resolver->getGlobalSettings()->get('api_log.max_response_body_length', 1024 * 1024);
     }
 }

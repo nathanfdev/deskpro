@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -162,9 +162,7 @@ class LanguageDataService extends BaseRepositoryService
      */
     public function getDefault()
     {
-        $this->preload();
-
-        return $this->get($this->default_lang_id);
+        return $this->default_lang_id ? $this->em->getRepository(Language::class)->find($this->default_lang_id) : null;
     }
 
     /**

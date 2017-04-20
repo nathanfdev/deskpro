@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -507,13 +507,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
-     * @param $old_slug
+     * @param $oldSlug
      *
      * @return ArticleSlugHistory
      */
-    protected function addSlugHistory($old_slug)
+    protected function addSlugHistory($oldSlug)
     {
-        $history = new ArticleSlugHistory($this, $old_slug);
+        $history = new ArticleSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
@@ -646,6 +646,27 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content_input',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'content_input_type',
             ]
         );
         $metadata->mapField(

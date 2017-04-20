@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,5 +42,13 @@ abstract class AbstractCategoryMapper extends AbstractContainerMapper implements
             'title'  => $title,
             'parent' => $parentId,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultCategory()
+    {
+        return $this->em->getRepository(static::getMapperEntityClass())->findOneBy([]);
     }
 }

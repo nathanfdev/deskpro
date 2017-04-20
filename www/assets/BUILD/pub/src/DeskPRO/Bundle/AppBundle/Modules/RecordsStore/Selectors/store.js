@@ -1,5 +1,5 @@
 import Immutable from 'immutable';
-import { createSelector, defaultMemoize } from 'reselect';
+import { createSelector } from 'reselect';
 
 const storeSelector = state => state.RecordsStore.store;
 
@@ -14,7 +14,7 @@ export function isLoadedCollectionSelectorFactory(recordName, collectionName) {
 export function collectionSelectorFactory(recordName, collectionName) {
   return createSelector(
     storeSelector,
-    state => {
+    (state) => {
       let result;
       if (state.hasIn([recordName, 'collections', collectionName]) && state.hasIn([recordName, 'records'])) {
         const ids = state.getIn([recordName, 'collections', collectionName]);

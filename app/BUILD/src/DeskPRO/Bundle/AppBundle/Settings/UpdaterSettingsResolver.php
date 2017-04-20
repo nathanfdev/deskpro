@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -106,6 +106,12 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         if (!preg_match('/^[a-zA-Z0-9\/\.\-_]/', $phpPath)) {
             $phpPath = escapeshellarg($phpPath);
         }
+        // If a path contains php-win.exe, rewrite it to php.exe.
+        $phpPath = str_replace('php-win.exe', 'php.exe', $phpPath);
+        // Also if the path contains special characters like spaces or parenthesis, we need to quote it. E.g. "C:\....\php.exe" dp:update-db
+        if (preg_match('/[^a-zA-Z0-9\\\:\/\.\-_]/', $phpPath)) {
+            $phpPath = '"'.$phpPath.'"';
+        }
 
         $status->setCliCommand(
             $phpPath
@@ -123,8 +129,14 @@ class UpdaterSettingsResolver extends AbstractBrandAwareSettingsResolver
         } else {
             $auth = '';
         }
-        $status->setLogUrl($this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL)."__serverinfo/logs/updater?auth=$auth");
-        $status->setWatcherUrl($this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL).'admin/updater-status/'.sha1($auth.'update_watcher'));
+        $status->setLogUrl(
+            $this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL)
+            ."__serverinfo/logs/updater?auth=$auth"
+        );
+        $status->setWatcherUrl(
+            $this->router->generate('serve_root', [], RouterInterface::ABSOLUTE_URL).'admin/updater-status/'
+            .sha1($auth.'update_watcher')
+        );
 
         $status->setBackupPath($DP_ENV->getUserBackupsDir());
 

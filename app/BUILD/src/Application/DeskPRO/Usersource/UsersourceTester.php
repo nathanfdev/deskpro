@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,8 @@
 namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Util;
+use DeskPRO\Component\Util\MapUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Log\Logger;
@@ -172,7 +174,8 @@ class UsersourceTester
 
         if ($result && $result->isValid() && $result->getIdentity()) {
             $result_raw = "DATA RECORD:\n=======================================================\n";
-            $result_raw .= print_r($result->getIdentity()->getRawData(), true);
+            $data       = $this->_cleanDataForLog($result->getIdentity()->getRawData());
+            $result_raw .= print_r($data, true);
         } else {
             $result_raw = 'No Identity';
         }
@@ -210,6 +213,36 @@ class UsersourceTester
         }
 
         return $this->raw_data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return array
+     */
+    private function _cleanDataForLog(array $data)
+    {
+        $fn = function ($k, $v) use (&$fn) {
+            if (is_array($v)) {
+                return MapUtils::mapValues($v, $fn);
+            } else {
+                if (is_string($v) && !empty($v)) {
+                    if (strpos('photo', $k) !== false || strpos('picture', $k) !== false || strpos('cert', $k) !== false) {
+                        return '[binary data]';
+                    } else {
+                        // some data might still break json encoding, so we're doing a test on every value
+                        $enc = Util::jsonEncode($v);
+                        if (!$enc) {
+                            return 'string:'.strlen($v);
+                        }
+                    }
+                }
+            }
+
+            return $v;
+        };
+
+        return MapUtils::mapValues($data, $fn);
     }
 
     /**

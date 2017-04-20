@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
@@ -269,48 +265,6 @@ class Deskpro3RedirectController extends AbstractController
     public function profileAction()
     {
         return $this->redirectToRoute('portal_user_profile', [], 301);
-    }
-
-    //###########################################################################
-    // Unsupported : Manuals and Troubles
-    //###########################################################################
-
-    public function rewrittenManualsAction($manualBit = '', $pageBit = '')
-    {
-        $manulaId = Strings::extractRegexMatch('#^(\d+)#', $manualBit);
-        $pageId   = Strings::extractRegexMatch('#^(\d+)#', $pageBit);
-
-        if (!$manulaId && !$pageId) {
-            return $this->redirectToRoute('user', [], 301);
-        }
-
-        if ($pageId) {
-            return $this->redirectToRoute('dp3_redirect_manual_php', ['m' => $manulaId, 'p' => $pageId]);
-        } else {
-            return $this->redirectToRoute('dp3_redirect_manual_php', ['m' => $manulaId]);
-        }
-    }
-
-    /**
-     * manual.php
-     * manual.php?m=2
-     * manual.php?m=2
-     * manual.php?p=49
-     * manual_download.php?m=2&do=single
-     * manual_download.php?m=2&do=zip.
-     */
-    public function manualsAction()
-    {
-        return $this->redirectToRoute('user', [], 301);
-    }
-
-    /**
-     * troubleshooter.php
-     * troubleshooter.php?id=1.
-     */
-    public function troublesAction()
-    {
-        return $this->redirectToRoute('user', [], 301);
     }
 
     //###########################################################################

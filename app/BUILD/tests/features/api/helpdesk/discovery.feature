@@ -3,6 +3,7 @@ Feature: Discover settings
   Background:
     Given I install the api data set
     And my request is authenticated
+    And I have only default brand
 
   Scenario: I get discover settings
     When I send a GET request to "/api/v2/helpdesk/discover"
@@ -14,6 +15,7 @@ Feature: Discover settings
     And the JSON node "data.build" should exist
 
   Scenario: I get agent client info settings
+    Given only setting for brand "{defaultBrand}" with name "core.apps_chat" and value "1" exists
     When I send a GET request to "/api/v2/helpdesk/agent-client/info"
     Then the response should be in JSON
     And the response status code should be 200

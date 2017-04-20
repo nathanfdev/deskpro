@@ -67,6 +67,9 @@
 			{% endif %}
 		{% endif %}
 	{% endif %}
+	{% if log.details.via_api_key %}
+		via API key #{{ log.details.via_api_key }}
+	{% endif %}
 {% elseif log.action_type == 'changed_agent' %}
 	<span class="type">{{ phrase('agent.general.assigned_agent') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_agent_name|default(phrase('agent.general.unassigned'))}}</span>
@@ -653,6 +656,17 @@
 			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.content }}</textarea>
 		</div>
 	</div>
+{% elseif log.action_type == 'webhook2' %}
+	WebHook (Custom JSON Payload) <span class="new-val">{{ log.details.url }}</span>
+	<br />
+	Status: {{ log.details.reason }},
+	<span class="new-val expand" data-set=".webhook-details">Details</span>
+	<br />
+	<div class="expand-set webhook-details" style="display: none">
+		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">
+			<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.content }}</textarea>
+		</div>
+	</div>
 {% elseif log.action_type == 'deleted_attachments' %}
 	<span class="new-val expand" data-set=".deleted-attachments-details">
 		Deleted {{ log.details.deleted|length }} attachment{% if log.details.deleted|length > 1 %}s{% endif %}:
@@ -671,6 +685,16 @@
 	<span class="old-val">{{log.details.old|default(phrase('agent.general.none'))}}</span>
     {{ phrase('agent.tickets.changed_to') }}
     <span class="new-val">{{log.details.new|default(phrase('agent.general.none'))}}</span>
+{% elseif log.action_type == 'changed_problems' %}
+    {% if log.details.added %}
+        {{ phrase('agent.general.problems_added') }}: <span class="new-val">{{ log.details.added|join(', ') }}</span>
+    {% endif %}
+    {% if log.details.removed %}
+        {{ phrase('agent.general.problems_removed') }}: <span class="new-val">{{ log.details.removed|join(', ') }}</span>
+    {% endif %}
+{% elseif log.action_type == 'task_created' %}
+	<span class="type">{{ phrase('agent.tasks.task_created') }}</span>
+	<span class="new-val">{{log.details.task_id}}: {{ log.details.task_title}}</span>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

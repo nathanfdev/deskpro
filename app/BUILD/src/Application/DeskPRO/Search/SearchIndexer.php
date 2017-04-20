@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,6 +44,8 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
+use FOS\ElasticaBundle\Persister\ObjectPersister;
 
 /**
  * When something needs to be indexed, index it through this.
@@ -70,10 +72,10 @@ class SearchIndexer
         //------------------------------
 
         if ($this->container->getSetting('elastica.enabled')) {
-            $updates_by_type = [];
-            $deletes_by_type = [];
+            $updatesByType = [];
+            $deletesByType = [];
 
-            $get_persister = function ($object) {
+            $getPersister = function ($object) {
                 switch (true) {
                     case $object instanceof Article:
                         return 'fos_elastica.object_persister.deskpro.article';
@@ -91,36 +93,40 @@ class SearchIndexer
                         return 'fos_elastica.object_persister.deskpro.organization';
                     case $object instanceof ChatConversation:
                         return 'fos_elastica.object_persister.deskpro.chat_conversation';
+                    case $object instanceof Topic:
+                        return 'fos_elastica.object_persister.deskpro.topic';
                 }
 
                 return;
             };
 
             foreach ($updates as $object) {
-                $persister_id = $get_persister($object);
-                if ($persister_id) {
-                    if (!isset($updates_by_type[$persister_id])) {
-                        $updates_by_type[$persister_id] = [];
+                $persisterId = $getPersister($object);
+                if ($persisterId) {
+                    if (!isset($updatesByType[$persisterId])) {
+                        $updatesByType[$persisterId] = [];
                     }
-                    $updates_by_type[$persister_id][] = $object;
+                    $updatesByType[$persisterId][] = $object;
                 }
             }
             foreach ($deletes as $object) {
-                $persister_id = $get_persister($object);
-                if ($persister_id) {
-                    if (!isset($deletes_by_type[$persister_id])) {
-                        $deletes_by_type[$persister_id] = [];
+                $persisterId = $getPersister($object);
+                if ($persisterId) {
+                    if (!isset($deletesByType[$persisterId])) {
+                        $deletesByType[$persisterId] = [];
                     }
-                    $deletes_by_type[$persister_id][] = $object;
+                    $deletesByType[$persisterId][] = $object;
                 }
             }
 
-            foreach ($updates_by_type as $persister_id => $objects) {
-                $persister = $this->container->get($persister_id);
+            foreach ($updatesByType as $persisterId => $objects) {
+                /** @var ObjectPersister $persister */
+                $persister = $this->container->get($persisterId);
                 $persister->replaceMany($objects);
             }
-            foreach ($deletes_by_type as $persister_id => $objects) {
-                $persister = $this->container->get($persister_id);
+            foreach ($deletesByType as $persisterId => $objects) {
+                /** @var ObjectPersister $persister */
+                $persister = $this->container->get($persisterId);
                 $persister->deleteMany($objects);
             }
 

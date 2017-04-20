@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,5 +70,6 @@ $CONFIG['env'] = [
     'debug_mode'  => true,
 ];
 
+$CONFIG['settings']['enable_experimental']    = ['all' => true];
 $CONFIG['settings']['disable_outgoing_email'] = true;
 $CONFIG['settings']['core.deskpro_url']       = 'http://pr-next.deskprodev.com/';

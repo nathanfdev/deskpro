@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import $ from 'jquery';
 import { TicketFormContent } from './TicketFormContent';
 import { TicketFormSpinner } from './TicketFormSpinner';
 import { bootstrapTicketApp, saveNewTicketForm } from '../../Actions/ticketActions';
 import { bootstrapSelector, contentSelector, contentLoadingSelector, contentSavingSelector } from '../../Selectors/ticket';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import $ from 'jquery';
 
 @connect(state => ({
   content:   contentSelector(state),
@@ -13,7 +13,7 @@ import $ from 'jquery';
   loading:   contentLoadingSelector(state),
   saving:    contentSavingSelector(state)
 }))
-export class TicketFormContentContainer extends React.Component {
+export default class TicketFormContentContainer extends React.Component {
 
   static propTypes = {
     dispatch:  PropTypes.func,
@@ -28,7 +28,7 @@ export class TicketFormContentContainer extends React.Component {
     dispatch(bootstrapTicketApp());
   }
 
-  onSubmit = data => {
+  onSubmit = (data) => {
     this.props.dispatch(saveNewTicketForm(data));
   };
 
@@ -42,7 +42,7 @@ export class TicketFormContentContainer extends React.Component {
       <div>
         <div className="header open-new-ticket" style={style}>
           <span className="img" />
-          <h1>{portalPhrases.get('portal.tickets.new-title')}</h1>
+          <h1>{portalPhrases.get('portal.widget.new-ticket-title')}</h1>
           <p>{portalPhrases.get('portal.tickets.new-intro')}</p>
         </div>
         <div className="dpdesignportal-form">

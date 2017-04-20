@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,12 +56,13 @@ class ChatHandler extends AbstractEntityHandler
         $entity
             ->setSubject($model->getSubject())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
-            ->setAgent($this->helpers->getPersonHelper()->findOrCreatePerson($model->getAgent()))
+            ->setAgent($this->helpers->getPersonHelper()->findOrCreatePerson($model->getAgent(), true))
             ->setStatus(Entity\ChatConversation::STATUS_ENDED)
             ->setDateEnded($model->getDateEnded() ?: new \DateTime())
             ->setEndedBy($model->getEndedBy())
             ->setRatingOverall($model->getRatingOverall())
             ->setRatingComment($model->getRatingComment())
+            ->setDepartment($this->mappers->getDepartmentMapper()->getDefaultChatDepartment())
         ;
 
         if ($model->getDateCreated()) {
@@ -92,6 +93,20 @@ class ChatHandler extends AbstractEntityHandler
         $messageEntity = $this->findOrCreateEntity($this->mappers->getChatMessageMapper(), $model);
         $messageEntity->setAuthor($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()));
         $messageEntity->setContent($model->getContent());
+        $messageEntity->setIsHtml(true);
+
+        // simplify edge case when an agent can use the chat widget
+        // because we sometimes can just rely on the author role
+        if (!$messageEntity->getAuthor() || !$messageEntity->getAuthor()->isAgent()) {
+            $messageEntity->setIsUser(true);
+            $messageEntity->setOrigin('user');
+            $messageEntity->setMetadata([
+                'is_html'         => true,
+                'is_user_message' => true,
+            ]);
+        } else {
+            $messageEntity->setOrigin('agent');
+        }
 
         if ($model->getDateCreated()) {
             $messageEntity->setDateCreated($model->getDateCreated());

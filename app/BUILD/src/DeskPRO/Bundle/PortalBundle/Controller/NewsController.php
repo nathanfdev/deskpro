@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\PageViewLog;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
@@ -185,6 +186,7 @@ class NewsController extends AbstractController
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      * @PageHttpCache(content="post")
 
+     *
      * @param Request $request
      * @param News    $post
      * @param int     $visitor_id
@@ -235,6 +237,11 @@ class NewsController extends AbstractController
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
+
+        // REGISTERED PAGE VIEW LOG
+        if ($person = $this->getUser()) {
+            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_NEWS, $post->getId());
+        }
 
         // RENDER THEME
 

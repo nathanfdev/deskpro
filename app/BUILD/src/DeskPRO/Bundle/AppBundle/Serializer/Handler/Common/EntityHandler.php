@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Common;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineEntitySideload;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Util\TypeUtils;
 use JMS\Serializer\GraphNavigator;
@@ -73,6 +74,10 @@ class EntityHandler implements SubscribingHandlerInterface
         $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
         if (in_array($snake, $context->getIncludes())) {
             $context->getSideloadStore()->addSideload($entity);
+
+            if ($context->isInlineSideloads()) {
+                return new InlineEntitySideload($snake, $entity->getId());
+            }
         }
 
         return $entity->getId();

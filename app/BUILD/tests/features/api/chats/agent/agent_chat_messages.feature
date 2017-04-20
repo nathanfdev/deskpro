@@ -4,6 +4,7 @@ Feature: /agent_chats endpoint
 
   Background:
     Given I'm authenticated as "agent"
+    And the setting "beta_features.agent_chat" is set to 1
     And an agent with "james@mi7.uk" email exists
 
     And the following "AgentChat" records exist:
@@ -40,7 +41,7 @@ Feature: /agent_chats endpoint
       | m1 | {agent-agent-chat} | {agent} | 1111 | agent       | test message | 0      |
       | m2 | {agent-agent-chat} | {agent} | 1112 | agent       | test         | 0      |
     When I send a GET request to "/api/v2/agent_chats/{agent-agent-chat}/messages?search=message"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].message" should be equal to "test message"
 
@@ -50,7 +51,7 @@ Feature: /agent_chats endpoint
       | m1 | {agent-agent-chat} | {agent} | 1111 | agent       | test message | 0      |
       | m2 | {agent-agent-chat} | {agent} | 1112 | agent       | test         | 0      |
     When I send a GET request to "/api/v2/agent_chats/{agent-agent-chat}/messages?search=failure"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the JSON node "data" should have 0 elements
 
   Scenario: I count messages
@@ -59,7 +60,7 @@ Feature: /agent_chats endpoint
       | m1 | {agent-agent-chat} | {agent} | 1111 | agent       | test message | 0      |
       | m2 | {agent-agent-chat} | {agent} | 1112 | agent       | test         | 0      |
     When I send a GET request to "/api/v2/agent_chats/messages/counts?group_by=chat"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the JSON node "data.count" should be equal to 2
     And the JSON node "data.grouped_by" should be equal to "chat"
     And the JSON node "data.nested" should have 1 element
@@ -88,14 +89,30 @@ Feature: /agent_chats endpoint
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/agent_chats/{agent-agent-chat}/messages?order_by=id&order_dir=asc"
-    And the response status code should be 200
+    Then the response status code should be 200
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{m1}"
     And the JSON node "data[0].status" should be equal to 1
     And the JSON node "data[1].id" should be equal to "{m2}"
     And the JSON node "data[1].status" should be equal to 1
 
+  Scenario: I mark all messages as read
+    Given only the following "AgentChatMessage" records exist:
+      | #  | Chat               | Person         | UUID | Person name | Message      | Status |
+      | m1 | {agent-agent-chat} | {james@mi7.uk} | 1111 | agent       | test message | 0      |
+      | m2 | {agent-agent-chat} | {james@mi7.uk} | 1112 | agent       | test         | 0      |
+    When I send a PUT request to "/api/v2/agent_chats/{agent-agent-chat}/messages/mark_all"
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/agent_chats/{agent-agent-chat}/messages?order_by=id&order_dir=asc"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{m1}"
+    And the JSON node "data[0].status" should be equal to 2
+    And the JSON node "data[1].id" should be equal to "{m2}"
+    And the JSON node "data[1].status" should be equal to 2
+
   Scenario: I get a message list for nonexistent chat
     When I send a GET request to "/api/v2/agent_chats/500/messages"
-    And the response status code should be 404
+    Then the response status code should be 404
     And the JSON node "data" should not exist

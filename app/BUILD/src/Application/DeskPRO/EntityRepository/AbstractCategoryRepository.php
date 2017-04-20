@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,9 +62,17 @@ class AbstractCategoryRepository extends AbstractEntityRepository
         return $this->_cat_helper;
     }
 
+    /**
+     * @return string
+     */
     public function getPermissionTableName()
     {
         return;
+    }
+
+    public function getCategoryField()
+    {
+        return 'category_id';
     }
 
     /**
@@ -72,7 +80,7 @@ class AbstractCategoryRepository extends AbstractEntityRepository
      * and updates all 'display_order' so that they are stored in
      * real tree order.
      *
-     * This isnt just "bad" thing, it sholud be called for example
+     * This isnt just "bad" thing, it should be called for example
      * when a new category is created, or one is deleted.
      */
     public function repair()

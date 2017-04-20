@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,26 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
-use Application\DeskPRO\Entity\AgentAlert;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class AgentAlertsFixture.
  */
 class AgentAlertsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
 {
-    const NUM_ALERTS = 10;
-
-    private $types = ['is_new_ticket', 'is_new_agent_reply', 'is_new_agent_note', 'is_new_user_reply'];
-
     /**
      * {@inheritdoc}
      */
@@ -56,36 +49,17 @@ class AgentAlertsFixture extends DeskProAbstractFixture implements OrderedFixtur
 
     /**
      * {@inheritdoc}
+     *
+     * @param EntityManager $manager
      */
     public function load(ObjectManager $manager)
     {
-        $people  = $this->fetchIds(self::TABLE_PEOPLE);
-        $tickets = $this->fetchIds(self::TABLE_TICKETS);
-        $type    = $this->faker->randomElement($this->types);
+        /** @var Person $person */
+        $person    = $this->getReference('admin');
+        $generator = $this->container->get('dp.fixtures.random_agent_alert_generator');
 
-        $i = 0;
-        while ($i++ < self::NUM_ALERTS) {
-            $data = [
-                '@fetch_types' => [
-                    'ticket'    => 'DeskPRO:Ticket',
-                    'performer' => 'DeskPRO:Person',
-                    'log_items' => 'DeskPRO:TicketLog',
-                ],
-                'ticket'             => $this->faker->randomElement($tickets),
-                'performer'          => $this->faker->randomElement($people),
-                'is_new_ticket'      => $type === 'is_new_ticket',
-                'is_new_agent_reply' => $type === 'is_new_agent_reply',
-                'is_new_agent_note'  => $type === 'is_new_agent_note',
-                'is_new_user_reply'  => $type === 'is_new_user_reply',
-                'browser_rendered'   => '<big>Alert title</big><small>Alert summary</small>',
-                // 'log_items'          => $log_ids,
-            ];
-            $alert           = new AgentAlert();
-            $alert->person   = $this->getReference('admin');
-            $alert->typename = 'tickets';
-            $alert->data     = $data;
-            $manager->persist($alert);
+        for ($i = 0; $i < 10; ++$i) {
+            $generator->generateRandomAlert($person);
         }
-        $manager->flush();
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -160,10 +160,11 @@ class NewTicket
      * @param Ticket  $ticket
      * @param Request $request
      * @param Form    $guestForm
+     * @param string  $eventMethod
      *
      * @return Ticket
      */
-    public function acceptNewTicketForGuest(Ticket $ticket, Request $request, Form $guestForm)
+    public function acceptNewTicketForGuest(Ticket $ticket, Request $request, Form $guestForm, $eventMethod)
     {
         $person = $ticket->getPerson();
 
@@ -180,21 +181,22 @@ class NewTicket
         $ticket->setPerson($person);
         $guestForm->handleRequest($request);
 
-        return $this->acceptNewTicket($ticket, $request);
+        return $this->acceptNewTicket($ticket, $request, $eventMethod);
     }
 
     /**
      * @param Ticket  $ticket
      * @param Request $request
+     * @param string  $eventMethod
      *
      * @return Ticket
      */
-    public function acceptNewTicket(Ticket $ticket, Request $request)
+    public function acceptNewTicket(Ticket $ticket, Request $request, $eventMethod)
     {
         $person = $ticket->getPerson();
         $this->submitNewTicketAbuseCheck($person, $request->getClientIp());
 
-        return $this->saveNewTicket($ticket, $person);
+        return $this->saveNewTicket($ticket, $person, $eventMethod);
     }
 
     /**
@@ -230,12 +232,13 @@ class NewTicket
     /**
      * @param Ticket $ticket
      * @param Person $person
+     * @param string $eventMethod
      *
      * @throws \Exception
      *
      * @return Ticket
      */
-    protected function saveNewTicket(Ticket $ticket, Person $person)
+    private function saveNewTicket(Ticket $ticket, Person $person, $eventMethod)
     {
         $this->ticket_manager->markAsManaged($ticket);
 
@@ -245,7 +248,7 @@ class NewTicket
             // allow all blobs for a new ticket
             $this->em->persist($ticket);
 
-            $context = $this->ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+            $context = $this->ticket_manager->createUserExecutorContext($person, 'newticket', $eventMethod);
 
             $this->ticket_manager->saveTicket($ticket, $context);
             $this->em->flush();

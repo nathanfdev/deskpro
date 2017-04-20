@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -342,11 +342,6 @@ return [
     'core.apps_feedback' => 1,
 
     /*
-     * Enable chat?
-     */
-    'core.apps_chat' => 1,
-
-    /*
      * Enable agent tasks?
      */
     'core.apps_tasks' => 1,
@@ -469,8 +464,8 @@ return [
 
     'core_tickets.web_require_validation'   => false,
     'core_tickets.email_require_validation' => false,
-
-    'core_tickets.use_ref' => false,
+    'core_tickets.enable_email_preview'     => true,
+    'core_tickets.use_ref'                  => false,
 
     'core_tickets.email_history_limit' => 11, // 10 + 1 for the original message at top
 
@@ -702,6 +697,10 @@ return [
 
     'core_email.enable_date_limit_rejection' => true,
 
+    // TODO insert DeskPRO client_id and secret
+    'core_email.google_oauth_client_id' => '',
+    'core_email.google_oauth_secret'    => '',
+
     //###################################################################################################################
     // core_chat
     //###################################################################################################################
@@ -886,7 +885,8 @@ return [
     'user.portal_tab_feedback'     => 1,
     'user.portal_tab_tickets'      => 1,
     'user.portal_tab_downloads'    => 1,
-    'user.portal_tabs_order'       => 'articles,news,feedback,downloads,newticket',
+    'user.portal_tab_guides'       => 1,
+    'user.portal_tabs_order'       => 'articles,guides,news,feedback,downloads,newticket',
     'user.disable_chat_element'    => false,
     'user.portal_default_news_cat' => 0,
 
@@ -1131,12 +1131,12 @@ return [
     ],
     'api_log.writer.file.serializer.type' => 'serialize',
 
-    'api_limits.global.hour' => 500,
-    'api_limits.global.day'  => 2500,
+    'api_limits.global.hour' => -1,
+    'api_limits.global.day'  => -1,
 
-    'api_limits.key.hour'    => defined('DPC_IS_CLOUD') ? 600 : -1,
+    'api_limits.key.hour'    => -1,
     'api_limits.key.day'     => -1,
-    'api_limits.key.default' => 50,
+    'api_limits.key.default' => -1,
 
     //###################################################################################################################
     // audit_log

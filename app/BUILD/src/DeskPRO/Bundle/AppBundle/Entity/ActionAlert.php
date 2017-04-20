@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity
  * @ORM\Table(name="notify_action_alerts")
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
  * @JMS\ExclusionPolicy("all")
@@ -147,7 +147,7 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setModelField('id', $id);
 
         return $this;
     }
@@ -167,7 +167,7 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
      */
     public function setTargetId($target_id)
     {
-        $this->target_id = $target_id;
+        $this->setModelField('target_id', $target_id);
 
         return $this;
     }
@@ -187,7 +187,7 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
      */
     public function setUuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->setModelField('uuid', $uuid);
 
         return $this;
     }
@@ -221,7 +221,7 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
      */
     public function setDateCreated($date_created)
     {
-        $this->date_created = $date_created;
+        $this->setModelField('date_created', $date_created);
 
         return $this;
     }
@@ -241,7 +241,7 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
      */
     public function setData($data)
     {
-        $this->data = $data;
+        $this->setModelField('data', $data);
 
         return $this;
     }
@@ -261,6 +261,8 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
      */
     public function setType($type)
     {
-        $this->type = $type;
+        $this->setModelField('type', $type);
+
+        return $this;
     }
 }

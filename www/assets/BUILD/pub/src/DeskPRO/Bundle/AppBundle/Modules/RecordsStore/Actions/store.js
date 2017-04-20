@@ -1,6 +1,7 @@
 import { createAction } from 'Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
+import { mapKeyedFromArray } from 'DeskPRO/Component/Util/Map';
 
 
 // loadAll(), loadBatch() and loadFromApi() have the same ID because they share reducer --------------------------------
@@ -8,6 +9,20 @@ import Immutable from 'immutable';
 export const loadBatch = createAction(
   'RECORDS_STORE_LOAD',
   (recordName, ids, collectionName) => (dispatch, getState) => {
+    const numericIds = [];
+    const pushId = (id) => {
+      const intId = parseInt(id, 10);
+      if (intId) {
+        numericIds.push(intId);
+      }
+    };
+
+    if (ids instanceof Array) {
+      ids.forEach(id => pushId(id));
+    } else {
+      pushId(ids);
+    }
+
     const recordStore = getState().RecordsStore.store.get(recordName);
     const loaded = recordStore && recordStore.has('records')
       ? recordStore.get('records')
@@ -15,30 +30,42 @@ export const loadBatch = createAction(
 
     const targets = [];
 
-    ids.forEach(id => {
+    numericIds.forEach((id) => {
       if (!loaded.has(id) && !loaded.has(id.toString())) {
         targets.push(id);
       }
     });
+
+    // merge new ids with existing collection
+    const existIds = recordStore && recordStore.hasIn(['collections', collectionName])
+      ? recordStore.getIn(['collections', collectionName])
+      : Immutable.fromJS([]);
+
+    const allCollectionIds = existIds.merge(numericIds).toJS();
 
     let result;
     if (targets.length) {
       result = {
         recordName,
         collectionName,
-        ids,
-        promise: repository(recordName).loadBatch(targets).then(response => ({
-          recordName,
-          collectionName,
-          ids,
-          records: response.getData().data
-        }))
+        allCollectionIds,
+        promise: repository(recordName).loadBatch(targets).then((response) => {
+          const targetRecords = mapKeyedFromArray(response.getData().data, 'id');
+          const newData = loaded.merge(targetRecords);
+
+          return {
+            recordName,
+            collectionName,
+            allCollectionIds,
+            records: newData
+          };
+        })
       };
     } else {
       result = {
         recordName,
         collectionName,
-        ids,
+        allCollectionIds,
         records: []
       };
     }
@@ -46,9 +73,10 @@ export const loadBatch = createAction(
     return result;
   }
 );
+
 export const loadAll = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName) => (dispatch, getState) => {
+  recordName => (dispatch, getState) => {
     const recordStore = getState().RecordsStore.store.get(recordName);
 
     let result;
@@ -57,7 +85,7 @@ export const loadAll = createAction(
         recordName,
         collectionName: 'all',
         ids:            [],
-        promise:        repository(recordName).loadAll().then(response => {
+        promise:        repository(recordName).loadAll().then((response) => {
           const records = response.getData().data;
           const ids = records.map(record => record.id);
 
@@ -78,23 +106,57 @@ export const loadAll = createAction(
     return result;
   }
 );
-export const loadFromApi = createAction(
+
+export const loadWithParams = createAction(
   'RECORDS_STORE_LOAD',
-  (recordName, url, collectionName) => ({
+  (recordName, params, collectionName) => ({
     recordName,
-    collectionName,
-    promise: api.sendGet(url).then(response => {
+    collectionName: 'all',
+    ids:            [],
+    promise:        repository(recordName).search(params).then((response) => {
       const records = response.getData().data;
       const ids = records.map(record => record.id);
 
       return {
         recordName,
-        collectionName,
         ids,
-        records
+        records,
+        collectionName
       };
     })
   })
+);
+
+export const loadFromApi = createAction(
+  'RECORDS_STORE_LOAD',
+  (recordName, url, collectionName) => (dispatch, getState) => {
+    const recordStore = getState().RecordsStore.store.get(recordName);
+
+    let result;
+    if (!recordStore || !recordStore.hasIn(['statuses', collectionName])) {
+      result = {
+        recordName,
+        collectionName,
+        promise: api.sendGet(url).then((response) => {
+          const records = response.getData().data;
+          const ids = records.map(record => record.id);
+
+          return {
+            recordName,
+            collectionName,
+            ids,
+            records
+          };
+        })
+      };
+    } else {
+      result = {
+        noUpdates: true
+      };
+    }
+
+    return result;
+  }
 );
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -105,6 +167,15 @@ export const setCollection = createAction(
     const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
 
     return { recordName, collectionName, records: recordsArray };
+  }
+);
+
+export const updateCollection = createAction(
+  'RECORDS_STORE_UPDATE_COLLECTION',
+  (recordName, records, mergeType = 'replace') => {
+    const recordsArray = records.map ? records : Object.keys(records).map(k => records[k]);
+
+    return { recordName, records: recordsArray, mergeType };
   }
 );
 

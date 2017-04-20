@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\PhoneNumber as PhoneNumberEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;
@@ -214,10 +215,10 @@ class Person extends AbstractEntityRepository
             ->select(
                 'p.id',
                 "(CASE
-                    WHEN (p.first_name IS NOT NULL AND p.last_name IS NOT NULL) THEN CONCAT(p.first_name, ' ', p.last_name)
-                    WHEN p.name IS NOT NULL THEN p.name
-                    WHEN p.last_name IS NOT NULL THEN p.last_name
-                    WHEN p.first_name IS NOT NULL THEN p.first_name
+                    WHEN (LENGTH(p.first_name) > 0 AND LENGTH(p.last_name) > 0) THEN CONCAT(p.first_name, ' ', p.last_name)
+                    WHEN LENGTH(p.name) > 0 THEN p.name
+                    WHEN LENGTH(p.last_name) > 0 THEN p.last_name
+                    WHEN LENGTH(p.first_name) > 0 THEN p.first_name
                     ELSE ''
                 END) as name
                 ",
@@ -718,5 +719,36 @@ class Person extends AbstractEntityRepository
         $this->_em->refresh($user);
 
         return $user;
+    }
+
+    /**
+     * @param string $phoneNumber
+     *
+     * @return PersonEntity|null
+     */
+    public function getOrCreateUserByPhoneNumber($phoneNumber)
+    {
+        $person = null;
+        if ($phoneNumber) {
+            // check for an existing person
+            $phoneNumberEntity = $this->_em->getRepository(PhoneNumberEntity::class)->findOneBy([
+                'number' => $phoneNumber,
+            ]);
+            if ($phoneNumberEntity) {
+                $person = $phoneNumberEntity->getPerson();
+            }
+
+            // if person was not found then create a new one
+            if (!$person) {
+                $person = new PersonEntity();
+                $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
+                $person->setEmail('incoming.call.'.$phoneNumber.'@example.com');
+
+                $this->_em->persist($person);
+                $this->_em->flush();
+            }
+        }
+
+        return $person;
     }
 }

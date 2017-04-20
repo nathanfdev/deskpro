@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,6 +78,11 @@ class Exchange
      */
     protected $folders;
 
+    /**
+     * @var \Orb\Log\Logger|null
+     */
+    protected $logger;
+
     public function __construct($options = [])
     {
         if (!isset($options['host']) ||
@@ -85,6 +90,10 @@ class Exchange
             !isset($options['password'])
         ) {
             throw new \Exception('Insufficient Parameters');
+        }
+
+        if (isset($options['logger'])) {
+            $this->logger = $options['logger'];
         }
 
         $this->service = new \ExchangeWebServices(
@@ -436,6 +445,10 @@ class Exchange
      */
     public function getEmailProps($message_id)
     {
+        if ($this->logger) {
+            $this->logger->logDebug("Reading message: $message_id");
+        }
+
         // Build the request for the parts.
         $request                       = new EWSType_GetItemType();
         $request->ItemShape            = new EWSType_ItemResponseShapeType();
@@ -459,10 +472,27 @@ class Exchange
 
         $response = $this->service->GetItem($request);
 
+        $reason = 'unknown';
+        if (!empty($response->ResponseMessages->GetItemResponseMessage->ResponseCode)) {
+            $reason = $response->ResponseMessages->GetItemResponseMessage->ResponseCode.': ';
+        }
+        if (!empty($response->ResponseMessages->GetItemResponseMessage->MessageText)) {
+            $reason .= $response->ResponseMessages->GetItemResponseMessage->MessageText;
+        }
+
         if ($response->ResponseMessages->GetItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success') {
+            if ($this->logger) {
+                $this->logger->logDebug("Success: $reason");
+            }
+
             return $response->ResponseMessages->GetItemResponseMessage->Items->Message;
         }
+
+        if ($this->logger) {
+            $this->logger->logDebug("Failure: $reason");
+        }
+        throw new \UnexpectedValueException('Failed to read message: '.$reason);
     }
 
     protected function getChangeKey($message_id)

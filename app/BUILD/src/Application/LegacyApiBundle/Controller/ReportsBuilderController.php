@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Dpql\SqlSelect;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\Builder;
@@ -252,12 +253,16 @@ class ReportsBuilderController extends AbstractController
         $reports_builder = $this->container->getSystemService('reports_builder');
 
         if ($error = $reports_builder->getErrors($id, 'from_request')) {
-            return $this->createApiResponse(['error' => $error]);
+            return $this->createApiResponse([
+                'error' => $error,
+                'sql'   => SqlSelect::getLastCompiledSql(),
+            ]);
         } else {
             $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'rendered_result' => $rendered_result,
+                'sql'             => SqlSelect::getLastCompiledSql(),
             ]);
         }
     }

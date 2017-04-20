@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,9 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
-use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyNode;
 use DeskPRO\Component\Util\ListUtils;
-use Symfony\Component\Form\ChoiceList\Loader\ChoiceLoaderInterface;
 
 /**
  * Class TicketLayoutHelper.
@@ -51,7 +49,6 @@ class TicketLayoutHelper
      */
     public static function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
     {
-        $form      = $context->getForm();
         $finalData = [];
         $keys      = [
             FormFields::DEPARTMENT,
@@ -62,27 +59,8 @@ class TicketLayoutHelper
         ];
 
         foreach ($keys as $key) {
-            if (array_key_exists($key, $submitted_data) && $form->has($key)) {
-                $submitted_value = $submitted_data[$key];
-
-                $choice = null;
-                if (is_scalar($submitted_value)) {
-                    /** @var ChoiceLoaderInterface $choiceLoader */
-                    $choiceLoader = $form->get($key)->getConfig()->getOption('choice_loader');
-                    if ($choiceLoader) {
-                        $choice = current($choiceLoader->loadChoicesForValues([$submitted_value]));
-                    }
-                }
-
-                if ($choice instanceof HierarchyNode) {
-                    $choice = $choice->getData();
-                }
-
-                if ($choice) {
-                    $finalData[$key] = $choice->getId();
-                } else {
-                    $finalData[$key] = null;
-                }
+            if (array_key_exists($key, $submitted_data)) {
+                $finalData[$key] = $submitted_data[$key];
             } else {
                 $finalData[$key] = null;
             }
@@ -169,6 +147,7 @@ class TicketLayoutHelper
             FormFields::PERSON,
             FormFields::SUBJECT,
             FormFields::MESSAGE,
+            FormFields::ATTACHMENTS,
         ]);
     }
 }

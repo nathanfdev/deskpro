@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -98,7 +98,7 @@ class SlaClientMessageSender implements PersonContextInterface
                 'fail_date'             => $ticket_sla->fail_date ? $ticket_sla->fail_date->format('c') : null,
                 'is_completed'          => $ticket_sla->is_completed,
                 'original_is_completed' => $orig_completed,
-                'removed'               => $ticket->hasSla($ticket_sla->sla) ? true : false,
+                'removed'               => $ticket->hasSla($ticket_sla->sla) ? false : true,
                 'via_person'            => $this->person ? $this->person->id : null,
             ]),
         ];

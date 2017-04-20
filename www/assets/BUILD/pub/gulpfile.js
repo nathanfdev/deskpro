@@ -14,7 +14,6 @@ const uglify                = require('uglify-js');
 const fs                    = require('fs');
 const sass                  = require('node-sass');
 const reducerRefresh        = require('./build-tools/app-reducer-gen/loader').refreshBundle;
-const slate                 = require('gulp-slate');
 const spawn                 = require('child_process').spawn;
 const webpackDevMiddleware  = require('webpack-dev-middleware');
 const webpackHotMiddleware  = require('webpack-hot-middleware');
@@ -97,7 +96,7 @@ function refreshWidgetLoader(loaderFilename) {
   console.log(`Writing ${loaderFilePath}`);
 
   const loaderCode = fs.readFileSync(widgetBundlePath + loaderFilePath).toString()
-    .replace('// #include deskpro_loader_utils.js', utilCode);
+    .replace('// #include deskpro_loader_util.js', utilCode);
 
   const transformedLoaderCode = babel.transform(
     loaderCode,
@@ -160,7 +159,8 @@ function getWebpackConfig(mode, isProd) {
         path.join(__dirname, 'src'),
         path.join(__dirname, 'src/DeskPRO/Component'),
         path.join(__dirname, 'src/DeskPRO/Dev'),
-        path.join(__dirname, 'built-tools')
+        path.join(__dirname, 'built-tools'),
+        path.join(__dirname, 'vendor')
       ],
 
       alias: {
@@ -168,12 +168,13 @@ function getWebpackConfig(mode, isProd) {
         warning:                'fbjs/lib/warning',
         'jquery.ui':            'jquery-ui',
         'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
-        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson'
+        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson',
+        'mark.js':              'mark.js/dist/jquery.mark.min'
       }
     },
 
     resolveLoader: {
-      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools']
+      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools', 'vendor']
     },
 
     module: {
@@ -208,6 +209,7 @@ function getWebpackConfig(mode, isProd) {
             path.resolve(__dirname, 'node_modules/bourbon-neat'),
             path.resolve(__dirname, 'node_modules/font-awesome'),
             path.resolve(__dirname, 'node_modules/intl-tel-input'),
+            path.resolve(__dirname, 'node_modules/flag-icon-css'),
             path.resolve(__dirname, 'node_modules/cropper')
           ]
         },
@@ -232,7 +234,7 @@ function getWebpackConfig(mode, isProd) {
           loader: 'json-loader'
         }
       ],
-      noParse: [/\.min\.js/]
+      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
     },
 
     plugins: [
@@ -266,6 +268,8 @@ function getWebpackConfig(mode, isProd) {
     config.entry.DeskPRO_PortalBundle_rtl_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
 
     config.entry.DeskPRO_PortalBundle_vendors_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss'];
+
+    config.entry.DeskPRO_PortalBundle_GuidePdf_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/guide_pdf.scss'];
 
     config.entry.DeskPRO_PortalBundle_iestyle  = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
     config.entry.DeskPRO_PortalBundle_ie8style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];
@@ -486,30 +490,3 @@ gulp.task('bundle:dev-server:demo', () => {
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   startWebpackServer(getWebpackConfig('demo', false));
 });
-
-
-gulp.task('slate', () => new Promise(
-  (resolve, reject) => {
-    const options = {
-      scss:     '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/slate.scss',
-      style:    'androidstudio',
-      logo:     'static/Common/deskpro-logo_2x.png',
-      template: '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/layouts/layout.html'
-    };
-    gulp.src(
-      [
-        '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/apidocs/source/index.html.twig.md'
-      ]
-    )
-      .pipe(slate(options))
-      .on('erorr', reject)
-      .pipe(gulp.dest('build/apidocs'))
-      .on('end', () => {
-        gulp.src(['build/apidocs/index.html.twig'])
-          .pipe(gulp.dest(
-            '../../../../app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/'
-          ))
-          .on('end', resolve);
-      });
-  })
-);

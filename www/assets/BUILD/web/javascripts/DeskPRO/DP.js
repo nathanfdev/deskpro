@@ -61,7 +61,6 @@ var DP = {
       media_strict: false,
       extended_valid_elements: "iframe[src|width|height|name|align], embed[width|height|name|flashvars|src|bgcolor|align|play|loop|quality|allowscriptaccess|type|pluginspage]",
 			width: '100%',
-			content_css: ASSETS_BASE_URL + '/stylesheets/user/content-editor.css',
 
 			style_formats: [
 				{ title: 'Paragraph', block: 'p' },
@@ -228,9 +227,10 @@ var DP = {
 				});
 
 				options.formatSelection = function(data) {
+					data = data || {};
 					var n = $('<span/>').text(data.text);
 					return {type: 'el', value: n};
-				}
+				};
 				options.formatResult = function(result) {
 					var opt = el.find('option[value="' + result.id + '"]');
 					if (!opt || !opt[0]) {
@@ -402,6 +402,7 @@ var DP = {
 			var opt = $(this);
 			if (!$.trim(opt.text())) {
 				opt.html('&nbsp;');
+				opt.attr('value', '');
 			}
 		});
 

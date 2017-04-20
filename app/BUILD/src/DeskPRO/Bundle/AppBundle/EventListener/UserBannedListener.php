@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,7 +91,7 @@ final class UserBannedListener implements EventSubscriberInterface
         $db              = $this->container->get('database_connection');
         $ip              = $event->getRequest()->getClientIp();
         $banIpRepository = $this->container->get('doctrine.orm.default_entity_manager')->getRepository(BanIp::class);
-        $banned          = (bool) $banIpRepository->findOneBy(['banned_ip' => $ip]);
+        $banned          = (bool) $banIpRepository->findOneBy(['is_range' => 0, 'banned_ip' => $ip]);
 
         if (!$banned) {
             $query  = $db->executeQuery('SELECT `banned_ip` FROM `ban_ips` WHERE `is_range` = 1');

@@ -1983,21 +1983,9 @@ $search-btn-height: $search-height - 24;
     width: 25px;
     position: relative;
     text-align: center;
+    vertical-align: middle;
     @media screen and (max-width: 760px) {
       display: none;
-    }
-
-    &:before {
-      content: "";
-      display: block;
-      height: $search-height - 20px;
-      width: 1px;
-      background: darken($page-bg, 5%);
-      position: absolute;
-      top: 10px;
-      bottom: 0;
-      @include left(12px);
-      z-index: 299;
     }
 
     span {
@@ -2008,7 +1996,6 @@ $search-btn-height: $search-height - 24;
       padding-top: 4px;
       padding-bottom: 4px;
       background: darken($page-bg, 5%);
-      position: absolute;
       z-index: 300;
 
       @include left(5px);
@@ -2199,7 +2186,6 @@ $search-btn-height: $search-height - 24;
       float: $float-left;
       width: 100%;
       font-size: $font-size-base;
-      box-shadow: none;
       line-height: 1em;
       cursor: pointer;
       @include padding-right($search-btn-height);
@@ -2225,6 +2211,9 @@ $search-btn-height: $search-height - 24;
         @include margin-right(4px);
       }
       .fa-thumbs-o-up {
+        @include margin-right(4px);
+      }
+      .fa-support {
         @include margin-right(4px);
       }
 
@@ -5479,13 +5468,19 @@ h1.fancy-header {
   }
 
   .button {
-    width: 34%;
-    border: 1px solid $btn-primary-bg;
-    border-bottom: none;
-    background: $btn-primary-bg;
-    text-align: center;
-    text-shadow: none;
-    margin-top: 15px;
+    &:not(.attach-file) {
+      width: 34%;
+      border: 1px solid $btn-primary-bg;
+      border-bottom: none;
+      background: $btn-primary-bg;
+      text-align: center;
+      text-shadow: none;
+      margin-top: 15px;
+    }
+
+    &.attach-file {
+      margin-top: 10px;
+    }
   }
 
   &:before {
@@ -5994,7 +5989,7 @@ h1.fancy-header {
         padding: 8px 10px;
         background: darken(darken($page-bg, 2%), 5%);
         color: lighten($text-color-lighter, 20%);
-        &:hover {
+        &:hover:not(.disabled) {
           background: darken(darken($page-bg, 2%), 20%);
           color: text-color-inverted();
         }
@@ -6021,6 +6016,13 @@ h1.fancy-header {
         &.with-voted .as-vote-animate {
           @include wobble-to-top-right-apply();
           vertical-align: baseline;
+        }
+
+        .agreed {
+          i {
+            color: #337ab7;
+            opacity: 1;
+          }
         }
       }
 
@@ -6989,18 +6991,6 @@ ul.categories-article-list {
     background: $hr-border;
   }
 
-  table {
-    tr {
-      td {
-        padding: 10px 10px;
-
-        &:first-child {
-          min-width: 210px;
-        }
-      }
-    }
-  }
-
   h1 {
     display: inline-block;
     font-weight: normal
@@ -7882,6 +7872,7 @@ ul.big-button-collection {
 
   &.big-buttons {
     @include margin-left(-10px); // to offset the margin on the first elemet of the line
+    text-align: center;
   }
 
   &.left {
@@ -7913,7 +7904,7 @@ ul.big-button-collection {
 
   li a {
     display: block;
-    width: 170px;
+    width: 154px;
     height: 130px;
     border: 1px solid $input-border;
     border-bottom: 2px solid $input-border;
@@ -8520,7 +8511,6 @@ body.with-agent-bar {
   display: block;
   height: 40px;
   float: $float-right;
-  color: #868889;
   font-size: 1em;
 
   > span {
@@ -9073,6 +9063,10 @@ table .form-help {
   font-style: italic;
   font-size: $font-size-base;
   line-height: 1em;
+
+  &.form-meta-top {
+    top: -56px;
+  }
 }
 
 .form-meta-grey {
@@ -9143,6 +9137,13 @@ table .form-help {
         color: $btn-primary-color;
         border: 1px solid $input-border;
         background: $page-bg;
+      }
+    }
+
+    &.collapsed {
+      span {
+        overflow: hidden;
+        height: 25px;
       }
     }
 
@@ -10433,6 +10434,11 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
   margin-top: 5px;
 
   @extend .deskpro-standard-message-formatting;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
 }
 
 .mark-resolved {
@@ -11546,7 +11552,7 @@ body.portal-mode-focus-window {
         @include margin-left(12px);
       }
       a {
-        color: $badge-color;
+        color: $text-color-lighter;
         text-decoration: underline;
         &:hover { color: $link-color; }
       }
@@ -11555,7 +11561,9 @@ body.portal-mode-focus-window {
 
   .button-wrapper {
     @include margin-left(-5px);
-    .show-more-content { color: $badge-color; }
+    .show-more-content {
+      color: $text-color-lighter;
+    }
     .show-more-content:hover { color: text-color-inverted(); }
   }
 
@@ -11574,13 +11582,13 @@ body.portal-mode-focus-window {
       font-size: 1em;
 
       .download-icon {
-        color: $badge-color;
+        color: $text-color-lighter;
         @include margin-right(5px);
         font-size: $font-size-base;
       }
 
       .feedback-count {
-        color: $badge-color;
+        color: $text-color-lighter;
         @include margin-right(5px);
         display: inline-block;
         position: relative;
@@ -11604,7 +11612,7 @@ body.portal-mode-focus-window {
         text-transform: uppercase;
         font-weight: bold;
         display: inline-block;
-        color: $badge-color;
+        color: $text-color-lighter;
         font-size: 0.7em;
         line-height: 1.2em;
         @include margin-right(6px);
@@ -11670,3 +11678,215 @@ $datetime-hover-color: lighten($btn-primary-bg, 10%);
   border: 1px solid $datetime-cell-border;
 }
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Alternative calendars date picker
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/* Smoothness styling for jQuery Calendars Picker v2.0.0. */
+.calendars {
+  background-color: #fff;
+  color: #222;
+  border: 1px solid #aaa;
+  -moz-border-radius: 0.25em;
+  -webkit-border-radius: 0.25em;
+  border-radius: 0.25em;
+  font-family: Arial,Helvetica,Sans-serif;
+  font-size: 90%;
+  line-height: 1.4;
+}
+.calendars-rtl {
+  direction: rtl;
+}
+.calendars-popup {
+  z-index: 3000;
+}
+.calendars-disable {
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.calendars a {
+  color: #222;
+  text-decoration: none;
+}
+.calendars a.calendars-disabled {
+  color: #888;
+  cursor: auto;
+}
+.calendars button {
+  margin: 0.25em;
+  padding: 0.125em 0em;
+  background-color: #ffffff;
+  border: none;
+  -moz-border-radius: 0.25em;
+  -webkit-border-radius: 0.25em;
+  border-radius: 0.25em;
+  font-weight: bold;
+}
+.calendars-nav, .calendars-ctrl {
+  float: left;
+  width: 100%;
+  background-color: #fff;
+  font-size: 90%;
+  font-weight: bold;
+}
+.calendars-ctrl {
+  background-color: #fbfbfb;
+}
+.calendars-cmd {
+  width: 30%;
+}
+.calendars-cmd:hover {
+  background-color: #e0e0e0;
+}
+.calendars-ctrl .calendars-cmd:hover {
+  background-color: #f0f0f0;
+}
+.calendars-cmd-prevJump, .calendars-cmd-nextJump {
+  width: 8%;
+}
+a.calendars-cmd {
+  height: 1.5em;
+}
+button.calendars-cmd {
+  text-align: center;
+}
+.calendars-cmd-prev, .calendars-cmd-prevJump, .calendars-cmd-clear {
+  float: left;
+  padding-left: 2%;
+}
+.calendars-cmd-current, .calendars-cmd-today {
+  float: left;
+  width: 35%;
+  text-align: center;
+}
+.calendars-cmd-next, .calendars-cmd-nextJump, .calendars-cmd-close {
+  float: right;
+  padding-right: 2%;
+  text-align: right;
+}
+.calendars-rtl .calendars-cmd-prev, .calendars-rtl .calendars-cmd-prevJump,
+.calendars-rtl .calendars-cmd-clear {
+  float: right;
+  padding-left: 0%;
+  padding-right: 2%;
+  text-align: right;
+}
+.calendars-rtl .calendars-cmd-current, .calendars-rtl .calendars-cmd-today {
+  float: right;
+}
+.calendars-rtl .calendars-cmd-next, .calendars-rtl .calendars-cmd-nextJump,
+.calendars-rtl .calendars-cmd-close {
+  float: left;
+  padding-left: 2%;
+  padding-right: 0%;
+  text-align: left;
+}
+.calendars-month-nav {
+  float: left;
+  text-align: center;
+}
+.calendars-month-nav div {
+  float: left;
+  width: 12.5%;
+  margin: 1%;
+  padding: 1%;
+}
+.calendars-month-nav span {
+  color: #888;
+}
+.calendars-month-row {
+  clear: left;
+}
+.calendars-month {
+  float: left;
+  width: 15em;
+  border: 1px solid #aaa;
+  text-align: center;
+}
+.calendars-month-header, .calendars-month-header select, .calendars-month-header input {
+  height: 1.5em;
+  background-color: #e0e0e0;
+  color: #222;
+  font-weight: bold;
+}
+.calendars-month-header select, .calendars-month-header input {
+  height: 1.4em;
+  border: none;
+  width: auto;
+  font-size: 11px;
+}
+.calendars-month-header input {
+  position: absolute;
+  display: none;
+}
+.calendars-month table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.calendars-month thead {
+  border-bottom: 1px solid #aaa;
+}
+.calendars-month th, .calendars-month td {
+  margin: 0em;
+  padding: 0em;
+  font-weight: normal;
+  text-align: center;
+}
+.calendars-month thead tr {
+  border: 1px solid #aaa;
+}
+.calendars-month td {
+  background-color: #eee;
+  border: 1px solid $datetime-cell-border;
+}
+.calendars-month td.calendars-week * {
+  background-color: #e0e0e0;
+  color: #222;
+  border: none;
+}
+.calendars-month a {
+  display: block;
+  width: 100%;
+  padding: 0.125em 0em;
+  background-color: #f5f5f5;
+  color: #666;
+  text-decoration: none;
+}
+.calendars-month span {
+  display: block;
+  width: 100%;
+  padding: 0.125em 0em;
+}
+.calendars-month td span {
+  color: #888;
+}
+.calendars-month td .calendars-other-month {
+  background-color: #fff;
+}
+.calendars-month td .calendars-weekend {
+  background-color: #ddd;
+}
+.calendars-month td .calendars-today {
+  color: #fff;
+  background-color: #888;
+}
+.calendars-month td .calendars-highlight {
+  color: #fff;
+  background-color: $datetime-hover-color;
+}
+.calendars-month td .calendars-selected {
+  color: #fff;
+  background-color: $datetime-active-color;
+}
+.calendars-status {
+  clear: both;
+  text-align: center;
+}
+.calendars-clear-fix {
+  clear: both;
+}
+
+@import './guides';

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -98,7 +98,7 @@ class MassLoader
 
     public function clearTickets()
     {
-        $this->connection->executeUpdate('DELETE FROM task_links');
+        $this->connection->executeUpdate('TRUNCATE TABLE task_links');
         $this->connection->executeUpdate('DELETE FROM tickets');
     }
 
@@ -106,13 +106,13 @@ class MassLoader
     {
         $this->clearTickets();
 
-        $this->connection->executeUpdate('DELETE FROM ticket_filter_subscriptions');
-        $this->connection->executeUpdate('DELETE FROM permissions');
-        $this->connection->executeUpdate('DELETE FROM task_attachments');
+        $this->connection->executeUpdate('TRUNCATE TABLE ticket_filter_subscriptions');
+        $this->connection->executeUpdate('TRUNCATE TABLE permissions');
+        $this->connection->executeUpdate('TRUNCATE TABLE task_attachments');
         $this->connection->executeUpdate('DELETE FROM ticket_filters');
-        $this->connection->executeUpdate('DELETE FROM people_emails');
-        $this->connection->executeUpdate('DELETE FROM agent_team_members');
-        $this->connection->executeUpdate('DELETE FROM people');
+        $this->connection->executeUpdate('DELETE FROM people_emails WHERE person_id != 1');
+        $this->connection->executeUpdate('TRUNCATE TABLE agent_team_members');
+        $this->connection->executeUpdate('DELETE FROM people WHERE id != 1');
         $this->connection->executeUpdate('DELETE FROM organizations');
         $this->connection->executeUpdate('DELETE FROM agent_teams');
         $this->connection->executeUpdate('DELETE FROM departments');
@@ -452,7 +452,7 @@ class MassLoader
             for ($i = 0; $i < $options['messagesBatchCount']; ++$i) {
                 $messages[] = [
                     'ticket_id' => $newTicketId,
-                    'message'   => $this->faker->text(50),
+                    'message'   => $this->faker->text(5),
                 ];
             }
         }
@@ -461,9 +461,20 @@ class MassLoader
             $this->connection->batchInsert('tickets_messages', $messagesChunk);
         }
 
-        /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepository */
-        $ticketRepository = $this->em->getRepository(Ticket::class);
-        $ticketRepository->fillSearchTable();
+        if (!empty($options['postBatchCallback'])) {
+            call_user_func(
+                $options['postBatchCallback'],
+                $newTicketIds,
+                $this->connection,
+                $this->faker
+            );
+        }
+
+        if ($options['isLastBatch']) {
+            /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepository */
+            $ticketRepository = $this->em->getRepository(Ticket::class);
+            $ticketRepository->fillSearchTable();
+        }
     }
 
     /**

@@ -10,12 +10,14 @@ class MenuItem extends React.Component {
     onMouseOver: PropTypes.func,
     onMouseOut:  PropTypes.func,
     children:    PropTypes.node,
-    className:   PropTypes.string
+    className:   PropTypes.string,
+    link:        PropTypes.string
   };
   static defaultProps = {
     onClick() {},
     onMouseOver() {},
-    onMouseOut() {}
+    onMouseOut() {},
+    className: ''
   };
 
   getIcon() {
@@ -35,6 +37,7 @@ class MenuItem extends React.Component {
   }
 
   handleClick = (e) => {
+    e.preventDefault();
     this.props.onClick(e);
   };
 
@@ -47,14 +50,23 @@ class MenuItem extends React.Component {
   };
 
   render() {
-    const { label, subContent, children, className } = this.props;
-    return (<a
-      className={classNames('ui', 'item', { dropdown: !!subContent }, className)}
-      onClick={this.handleClick}
-      onMouseOver={this.handleMouseOver}
-      onMouseOut={this.handleMouseOut}
-      ref={(c) => { this.node = c; }}
-    >
+    const { label, subContent, children, className, link } = this.props;
+
+    const props = {
+      className:   classNames('ui', 'item', { dropdown: !!subContent }, className),
+      onClick:     this.handleClick,
+      onMouseOver: this.handleMouseOver,
+      onMouseOut:  this.handleMouseOut,
+      ref:         (c) => {
+        this.node = c;
+      }
+    };
+
+    if (link) {
+      props.href = link;
+    }
+
+    return (<a {...props}>
       {this.getIcon()}
       {label}
       {children}

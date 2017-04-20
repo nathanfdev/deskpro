@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketRef;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -37,24 +33,25 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketRefTerm.
+ */
 class TicketRefTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'ref' => null,
-            ]
-        );
-
-        $resolver->setConstraints(
-            [
-                'ref' => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('string'),
-                ],
-            ]
-        );
+        $resolver->setDefaults([
+            'ref' => null,
+        ]);
+        $resolver->setConstraints([
+            'ref' => [
+                new Assert\NotBlank(),
+                new Assert\Type('string'),
+            ],
+        ]);
 
         $resolver->setNormalizer(
             'ref',
@@ -68,11 +65,17 @@ class TicketRefTerm extends AbstractTerm
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [TermInterface::OP_IS, TermInterface::OP_NOT];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

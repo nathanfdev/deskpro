@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -288,6 +288,12 @@ class PersonMerge implements PersonContextInterface
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
+
+        if ($this->person->isAgent() && $this->other_person->isAgent()) {
+            $this->_updateTablePersonId('tickets', 'agent_id');
+            $this->_updateTablePersonId('tickets_search_active', 'agent_id');
+        }
+
         foreach ($complex_tables as $table => $columns) {
             foreach ($columns as $column) {
                 $this->_updateTablePersonId($table, $column);
@@ -303,6 +309,32 @@ class PersonMerge implements PersonContextInterface
             'ratings',
             'searchlog',
         ];
+
+        if ($this->person->isAgent() && $this->other_person->isAgent()) {
+            $simple_tables = array_merge($simple_tables, [
+
+                'department_permissions',
+                'permissions',
+                'person2usergroups',
+                'app_instance_permissions',
+
+                'agent_team_members',
+
+                'filter_set_agents',
+                'ticket_filters',
+                'ticket_filter_subscriptions',
+                'ticket_filter_sets',
+                'ticket_filter_preferences',
+
+                'text_snippet_categories',
+                'text_snippets',
+
+                'tickets_flagged',
+
+            ]);
+
+            $this->_updateTablePersonId('tasks', 'assigned_agent_id');
+        }
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');

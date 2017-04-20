@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -128,7 +128,12 @@ class NewsController extends AbstractController
     public function listAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
         $person = $this->getCurrentPerson();
-        $pager  = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count'], $person);
+        $pager  = $this->getNewsDataService()->getNewsPager(
+            $category,
+            (int) $options['page'],
+            (int) $options['count'],
+            $person
+        );
 
         return $this->renderThemeView(
             sprintf('Theme:News:PostList/%s.html.twig', $options['style']),

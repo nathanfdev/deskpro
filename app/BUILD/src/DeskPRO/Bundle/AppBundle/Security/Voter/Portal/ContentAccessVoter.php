@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,6 +49,9 @@ class ContentAccessVoter extends AbstractVoter
 
     const VIEW_FEEDBACK = 'VIEW_FEEDBACK';
 
+    const VIEW_GUIDE = 'VIEW_GUIDE';
+    const VIEW_TOPIC = 'VIEW_TOPIC';
+
     /**
      * {@inheritdoc}
      */
@@ -63,6 +66,8 @@ class ContentAccessVoter extends AbstractVoter
             self::VIEW_NEWS,
             self::VIEW_NEWS_CATEGORY,
             self::VIEW_FEEDBACK,
+            self::VIEW_GUIDE,
+            self::VIEW_TOPIC,
         ];
 
         return in_array($attribute, $supported);
@@ -76,7 +81,7 @@ class ContentAccessVoter extends AbstractVoter
         $user = $token->getUser();
 
         // $object is the content entity here (or content category) ie Article, ArticleCategory, etc.
-        $permissions_bag = $this->getPermissionsBag($user);
+        $permissionsBag = $this->getPermissionsBag($user);
 
         switch ($attribute) {
             case static::VIEW_FEEDBACK:
@@ -84,8 +89,9 @@ class ContentAccessVoter extends AbstractVoter
             case static::VIEW_DOWNLOAD:
             case static::VIEW_ARTICLE:
             case static::VIEW_NEWS:
+            case static::VIEW_TOPIC:
                 /* @var \Application\DeskPRO\Entity\ContentAbstract $object */
-                if ($permissions_bag->hasContentCategoryAccess($object) && $object->isPublic()) {
+                if ($permissionsBag->hasContentCategoryAccess($object) && $object->isPublic()) {
                     return true;
                 }
                 // agents can still see unpublished stuff
@@ -98,7 +104,8 @@ class ContentAccessVoter extends AbstractVoter
             case static::VIEW_NEWS_CATEGORY:
             case static::VIEW_DOWNLOAD_CATEGORY:
             case static::VIEW_ARTICLE_CATEGORY:
-                if ($permissions_bag->hasContentCategoryAccess($object)) {
+            case static::VIEW_GUIDE:
+                if ($permissionsBag->hasContentCategoryAccess($object)) {
                     return true;
                 }
                 break;

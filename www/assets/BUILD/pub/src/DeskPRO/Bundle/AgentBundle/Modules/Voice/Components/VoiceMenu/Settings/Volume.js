@@ -1,0 +1,36 @@
+import React, { PropTypes } from 'react';
+import { Range } from 'DeskPRO/Component/Semantic/Form';
+import IncomingCallAudio from '../IncomingCall/IncomingCallAudio';
+
+class Volume extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.string,
+    onChange: PropTypes.func
+  };
+
+  onBlur = () => {
+    this.audio.playSound();
+    setTimeout(() => this.audio.stopSound(), 1000);
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+
+    return (
+      <div className="volume">
+        <IncomingCallAudio
+          ref={(c) => { this.audio = c; }}
+          ringingVolume={value}
+        />
+        <Range
+          value={value}
+          onChange={onChange}
+          onBlur={this.onBlur}
+        />
+      </div>
+    );
+  }
+}
+
+export default Volume;

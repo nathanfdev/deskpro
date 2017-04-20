@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,19 +35,26 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\People\AgentProfileType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AgentsController.
  *
  * @ApiModes("all")
  * @Rest\Route("/agents")
- * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson")
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson"
+ * })
  * @ApiDoc(
  *     target="listAction",
  *     description="get list of agents",
@@ -64,7 +71,7 @@ class AgentsController extends CrudController
     use TicketSaveTrait;
 
     public static $entity       = Person::class;
-    public static $exposeOnly   = ['list', 'delete'];
+    public static $exposeOnly   = ['get', 'list', 'count', 'delete'];
     public static $listPaginate = false;
 
     /**
@@ -107,15 +114,6 @@ class AgentsController extends CrudController
         return View::create($this->wrap($qb->getQuery()->getResult()));
     }
 
-    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
-    {
-        if ($attributes === PermissionGroupVoter::VIEW_LIST) {
-            return;
-        }
-
-        parent::denyAccessUnlessGranted($attributes, $object, $message);
-    }
-
     /**
      * @ApiDoc(
      *     section="Agents",
@@ -125,6 +123,8 @@ class AgentsController extends CrudController
      *     }
      * )
      * @Rest\Delete("/{id}/agent_permissions")
+     *
+     * @param Request $request
      */
     public function deletePermissionsAction($id, Request $request)
     {
@@ -148,11 +148,45 @@ class AgentsController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *     description="edit agent profile",
+     *     statusCodes={
+     *         204="No content"
+     *     },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\People\AgentProfileType",
+     *      "options"={
+     *          "data"="Application\DeskPRO\Entity\Person"
+     *      }
+     *     }
+     * )
+     *
+     * @Rest\Put("/profile")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function editProfileAction(Request $request)
+    {
+        $form = $this->createForm(AgentProfileType::class, $this->getUser());
+        $form->submit($request->request->all(), false);
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $this->persistModel($this->getUser());
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb->andWhere("$alias.is_agent = 1");
+        $qb->select("partial $alias.{id,first_name,last_name,name,is_agent}");
 
         $isDeleted = $request->get('is_deleted', 0);
         if ($isDeleted != -1) {
@@ -183,6 +217,18 @@ class AgentsController extends CrudController
         $entity->setIsDeleted(true);
         $this->getManager()->persist($entity);
         $this->getManager()->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    {
+        if ($attributes === PermissionGroupVoter::VIEW_LIST) {
+            return;
+        }
+
+        parent::denyAccessUnlessGranted($attributes, $object, $message);
     }
 
     /**

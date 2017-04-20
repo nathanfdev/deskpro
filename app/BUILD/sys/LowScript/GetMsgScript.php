@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -353,6 +353,8 @@ class GetMsgScript extends LowScriptAbstract
                     ");
                 }
             }
+            $data['action_alerts'] = $this->getActionAlerts();
+            $data['notifications'] = $this->getNotifications();
 
             header('Content-Type: application/json');
             echo json_encode($data);
@@ -512,6 +514,14 @@ class GetMsgScript extends LowScriptAbstract
 
         $channels[] = 'agent.problems-created';
         $channels[] = 'agent.problems-updated';
+
+        $channels[] = 'agent.voice.calls_enabled';
+        $channels[] = 'agent.voice.conference.participant-invite';
+        $channels[] = 'agent.voice.conference.participant-cancel';
+        $channels[] = 'agent.voice.conference.participant-ignore';
+        $channels[] = 'agent.voice.conference.hold';
+        $channels[] = 'agent.voice.conference.status';
+        $channels[] = 'agent.voice.voicemail.new-message';
 
         if (isset($_REQUEST['chat_ids']) && is_array($_REQUEST['chat_ids'])) {
             foreach ($_REQUEST['chat_ids'] as $chat_id) {
@@ -829,5 +839,61 @@ class GetMsgScript extends LowScriptAbstract
         $q->execute();
 
         return $q->fetchAll();
+    }
+
+    protected function getActionAlerts()
+    {
+        $person = $this->_getPerson();
+        if (!$person || !isset($_REQUEST['last_alert'])) {
+            return [];
+        }
+        $last = new \DateTime('@'.(int) $_REQUEST['last_alert']);
+
+        return $this->transformData($this->fetch($last, $person->getId()));
+    }
+
+    protected function getNotifications()
+    {
+        $person = $this->_getPerson();
+        if (!$person || !isset($_REQUEST['last_notify'])) {
+            return [];
+        }
+        $last = new \DateTime('@'.(int) $_REQUEST['last_notify']);
+
+        return $this->transformData($this->fetch($last, $person->getId(), 'notifications'));
+    }
+
+    protected function fetch(\DateTime $date, $targetId, $type = 'action_alerts')
+    {
+        $tableName = 'notify_'.$type;
+        $sql       = <<<SQL
+SELECT * FROM `{$tableName}`
+WHERE `target_id` = :target_id 
+  AND `date_created` > :date_created
+SQL;
+        $stmnt = $this->getPdoRead()->prepare($sql);
+        $stmnt->execute([
+            'target_id'    => $targetId,
+            'date_created' => $date->format('Y-m-d H:i:s'),
+        ]);
+
+        return $stmnt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    protected function transformData($data)
+    {
+        foreach ($data as &$datum) {
+            foreach ($datum as &$innerData) {
+                if (is_numeric($innerData)) {
+                    $innerData = (int) $innerData;
+                }
+            }
+            $date                  = new \DateTime($datum['date_created']);
+            $datum['date_created'] = $date->format(\DateTime::ISO8601);
+            $datum['timestamp']    = $date->getTimestamp();
+            $datum['data']         = json_decode($datum['data'], true);
+        }
+
+        return $data;
     }
 }

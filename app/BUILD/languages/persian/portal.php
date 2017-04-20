@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -195,6 +195,7 @@ return [
     'user.email_subjects.comment-approved'           => 'نظر شما مورد تایید قرار گرفت',
     'user.email_subjects.comment-deleted'            => 'نظر شما توسط ماموران ما خوانده شده',
     'user.email_subjects.email_new-confirm'          => 'اعتبار سنجی آدرس ایمیل شما',
+    'user.email_subjects.email_primary-confirm'      => 'اعتبار سنجی آدرس ایمیل شما',
     'user.email_subjects.feedback_new'               => 'با تشکر از شما برای ارسال نظرات خود',
     'user.email_subjects.feedback_new-approved'      => 'نظرات شما مورد تایید قرار گرفته است',
     'user.email_subjects.feedback_new-comment'       => 'یک نظر جدید وجود دارد "{{title}}"',
@@ -203,6 +204,7 @@ return [
     'user.email_subjects.password_agent-reset'       => 'عامل تنظیم مجدد رمز عبور خود',
     'user.email_subjects.password_reset'             => 'تنظیم مجدد رمز عبور',
     'user.email_subjects.re'                         => 'پاسخ: {{subject}}',
+    'user.email_subjects.ticket_new-participant'     => 'یک شخص جدید است اضافه شده به تیک خود',
     'user.emails.chat_transcript'                    => 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .',
     'user.emails.comment_approved'                   => 'نظر شما منتشر شده است.',
     'user.emails.comment_deleted'                    => 'نظر شما برای بهبود به صفحه مورد استفاده قرار گرفت .',

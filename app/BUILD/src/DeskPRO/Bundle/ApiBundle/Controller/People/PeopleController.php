@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,12 +57,21 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
+ *          {
+ *              "name"="order_by",
+ *              "description"="people list sort",
+ *              "pattern"="id|date_created|date_last_login|name|first_name|last_name|primary_email|timezone|organization",
+ *              "dataType"="string",
+ *          },
+ *          {"name"="order_dir", "description"="list sort order", "dataType"="string", "pattern"="asc|desc"},
+ *          {"name"="primary_email", "description"="primary email filter", "dataType"="\w+"},
+ *          {"name"="organization", "description"="Comma separated list of IDs", "dataType"="[\d+,]+"},
  *          {"name"="is_agent", "description"="agents filter", "dataType"="boolean"},
  *          {"name"="is_deleted", "description"="deleted filter", "dataType"="boolean"},
  *          {"name"="not_me", "description"="exclude yourself filter", "dataType"="boolean"},
  *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
- *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
+ *          {"name"="label", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
  *          {
  *              "name"="person_field.{id}",
  *              "description"="
@@ -71,6 +80,15 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *              "dataType"="string",
  *              "pattern"="\d+|\w"
  *          }
+ *     }
+ * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Person"
+ *      }
  *     }
  * )
  */
@@ -116,7 +134,8 @@ class PeopleController extends CrudController
      *      description="Get tickets of the given person",
      *      statusCodes={
      *          200="Success"
-     *      }
+     *      },
+     *      output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      * @Rest\Get("/{id}/tickets")
      *
@@ -141,21 +160,15 @@ class PeopleController extends CrudController
         return TicketsController::subRequestSearch($this->getKernel(), $request, $options);
     }
 
-    // This exists temporarily until we have some real versioned actions ###############################################
-
-    public function getTickets20151231Action()
-    {
-        die('v 20151231');
-    }
-
-    // #################################################################################################################
-
     /**
      * @ApiDoc(
      *     section="People",
      *     description="adds permissions (for now only accepts {agent: true} to add agent permissions)",
      *     statusCodes={
      *         200="OK"
+     *     },
+     *     parameters={
+     *        {"name"="agent", "description"="set as agent", "dataType"="boolean", "required"=false}
      *     }
      * )
      * @Rest\Put("/{id}/permissions")
@@ -166,10 +179,11 @@ class PeopleController extends CrudController
     public function updatePermissionsAction($id, Request $request)
     {
         $person      = $this->findEntity($id, $request);
-        $permissions = $this->getRequestContent($request);
-        if (array_key_exists('agent', $permissions) && $permissions['agent'] === true) {
+        $permissions = $request->request->all();
+        if (array_key_exists('agent', $permissions) && $permissions['agent']) {
             $person->setIsAgent(true);
         }
+
         $this->getManager()->persist($person);
         $this->getManager()->flush();
     }
@@ -186,6 +200,9 @@ class PeopleController extends CrudController
         ListHelper::applyInListFilter($context, 'organization');
         LabelHelper::applyLabelFilters($context, static::$entity);
         CustomDataHelper::applyCustomDataFilters($context, 'person', CustomDefPerson::class);
+
+        $qb->leftJoin("$alias.agentData", 'agentData');
+        $qb->addSelect('agentData');
 
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
@@ -212,6 +229,13 @@ class PeopleController extends CrudController
                 $qb->andWhere('teams.id IS NULL');
             }
         }
+
+        if (null !== $request->get('primary_email')) {
+            $email = $request->get('primary_email');
+            $qb->leftJoin("$alias.primary_email", 'primary_email');
+            $qb->andWhere('primary_email.email = :email');
+            $qb->setParameter('email', $email);
+        }
     }
 
     /**
@@ -219,16 +243,21 @@ class PeopleController extends CrudController
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
+        $order = strtolower($request->get('order_dir'));
+        if ($order && !in_array($order, ['asc', 'desc'])) {
+            throw $this->createBadRequestException('Unknown order value');
+        }
+
         $sortParam = strtolower($request->get('order_by'));
         if ($sortParam === 'organization') {
-            $sort  = 'organization.name';
-            $order = strtolower($request->get('order_dir'));
-
-            if ($order && !in_array($order, ['asc', 'desc'])) {
-                throw $this->createBadRequestException('Unknown order value');
-            }
+            $sort = 'organization.name';
 
             $qb->leftJoin("$alias.organization", 'organization');
+            $qb->orderBy($sort, $order);
+        } elseif ($sortParam === 'primary_email') {
+            $sort = 'primary_email.email';
+
+            $qb->leftJoin("$alias.primary_email", 'primary_email');
             $qb->orderBy($sort, $order);
         } else {
             parent::applySorting($qb, $alias, $request);

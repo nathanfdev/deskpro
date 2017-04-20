@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PhoneNumberType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -136,10 +138,27 @@ class PersonType extends AbstractType
             ->add('primary_team', EntityType::class, [
                 'class' => AgentTeam::class,
             ])
+            ->add('agent_data', PersonAgentDataType::class, [
+                'property_path' => 'agentData',
+                'required'      => false,
+            ])
+            ->add('phone_numbers', CollectionType::class, [
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'entry_type'    => PhoneNumberType::class,
+                'entry_options' => [
+                    'error_bubbling' => false,
+                    'person'         => $builder->getData(),
+                    'constraints'    => [
+                        new AppConstraints\PhoneNumber(),
+                    ],
+                ],
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUnsetAgentData'], 100);
     }
 
     /**
@@ -168,7 +187,7 @@ class PersonType extends AbstractType
         $person = $event->getForm()->getData();
         $data   = $event->getData();
 
-        if (isset($data['primary_email'])) {
+        if (!empty($data['primary_email'])) {
             if (!isset($data['emails'])) {
                 $data['emails'] = $person->getEmailAddresses();
             }
@@ -202,9 +221,26 @@ class PersonType extends AbstractType
         if (!empty($data['name'])) {
             $person->setName($data['name']);
             $event->setData(array_merge($data, [
-                'first_name' => $person->first_name,
-                'last_name'  => $person->last_name,
+                'first_name' => $person->getFirstName(),
+                'last_name'  => $person->getLastName(),
             ]));
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onUnsetAgentData(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!$data instanceof Person) {
+            return;
+        }
+
+        if (!$data->isAgent()) {
+            $data->setAgentData(null);
         }
     }
 

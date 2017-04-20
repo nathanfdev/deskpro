@@ -46,6 +46,8 @@ cd $DIR_ROOT
 rm -rf dev/
 rm README.md
 
+rm -rf .github/
+
 find . -type d \( \
     -name ".git" \
 \) -exec rm -rf {} \;
@@ -118,6 +120,8 @@ rm -rf $DIR_ROOT/app/BUILD/vendor/aws/aws-sdk-php/src/build
 rm -rf $DIR_ROOT/app/BUILD/vendor/guzzle/guzzle/phing
 rm -rf $DIR_ROOT/app/BUILD/vendor/vendor/bugsnag/bugsnag/build
 rm -f $DIR_ROOT/app/BUILD/vendor/firebase/php-jwt/composer.phar
+rm -f $DIR_ROOT/app/BUILD/vendor/google/apiclient-services/src/Google/Service/Compute/HTTPHealthCheck.php
+rm -f $DIR_ROOT/app/BUILD/vendor/google/apiclient-services/src/Google/Service/Compute/HTTPSHealthCheck.php
 
 ########################################################################################################################
 # Remove potentially bad files from assets

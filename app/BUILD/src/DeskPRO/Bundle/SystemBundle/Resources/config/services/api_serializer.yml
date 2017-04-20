@@ -1,0 +1,7 @@
+services:
+
+  api_serializer.sys_handler.incident_handler:
+    class: DeskPRO\Bundle\SystemBundle\Serializer\Handler\Entity\IncidentHandler
+    arguments: ["@dp_sys.alerts.instructions_generator"]
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }

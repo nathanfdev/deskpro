@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -45,6 +41,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Class TicketFormWidgetController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/ticket-form-widget/code")
  */
 class TicketFormWidgetController extends BaseController
 {
@@ -54,9 +51,14 @@ class TicketFormWidgetController extends BaseController
      *     description="Get ticket form widget JS code",
      *     statusCodes={
      *         200="OK"
-     *     }
+     *     },
+     *     noOutput=true
      * )
-     * @Rest\Get("/ticket-form-widget/code")
+     * @Rest\Get("")
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
     public function getJsAction(Request $request)
     {
@@ -75,6 +77,11 @@ class TicketFormWidgetController extends BaseController
         return new Response($this->getCode($options));
     }
 
+    /**
+     * @param array $options
+     *
+     * @return string
+     */
     private function getCode(array $options)
     {
         $helpdeskUrl = rtrim($this->generateUrl('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL), '/');

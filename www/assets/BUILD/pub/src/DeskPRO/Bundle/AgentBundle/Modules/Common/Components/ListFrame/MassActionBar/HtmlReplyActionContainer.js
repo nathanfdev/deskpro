@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { RteEditor } from 'DeskPRO/Component/Rte/RteEditor';
+import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 
 @connect()
 
@@ -50,10 +50,10 @@ export class HtmlReplyActionContainer extends Component {
           <div className="dpw-navigation-dropdown-panel-content-line">
             <div className="dpw-navigation-dropdown-panel-content-full">
               <div className="dpw-navigation-dropdown-reply-controls">
-                <a href="#" className="add-agent-note" onClick={this.setIsAgentNote}>
+                <a href="#set-is-note" className="add-agent-note" onClick={this.setIsAgentNote}>
                   <span className="dpw--checkbox-boxy">
                     <i className={classNames('fa', { 'fa-check': this.state.isAgentNote })} />
-                    </span>
+                  </span>
                   <span className="control-text">Agent Note</span>
                 </a>
               </div>
@@ -81,11 +81,11 @@ export class HtmlReplyActionContainer extends Component {
                 />
               </div>
               {this.state.message &&
-              <div className="dpw-navigation-dropdown-reply-item-reply-footer">
-                <a href="#" className="dpw--panel-button" onClick={this.onSubmit}>OK</a>
-                &nbsp;
-                <a href="#" className="dpw--panel-button" onClick={this.onReset}>Reset</a>
-              </div>
+                <div className="dpw-navigation-dropdown-reply-item-reply-footer">
+                  <a href="#submit" className="dpw--panel-button" onClick={this.onSubmit}>OK</a>
+                  &nbsp;
+                  <a href="#reset" className="dpw--panel-button" onClick={this.onReset}>Reset</a>
+                </div>
               }
             </div>
           </div>

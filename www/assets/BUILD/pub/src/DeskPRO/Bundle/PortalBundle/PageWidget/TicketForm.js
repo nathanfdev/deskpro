@@ -8,36 +8,121 @@ import { portalApp } from '../PortalApp';
 import { NewTicketSuggestions } from '../React/NewTicketSuggestions';
 import { DynamicForm } from '../../AppBundle/Form/DynamicForm';
 
-const parseIntSelect = f => parseInt(f.val() || 0, 10) || 0;
-
 class TicketValueReader {
 
   constructor($formEl) {
     this.$formEl = $formEl;
   }
 
+  static parseIntSelect(f) {
+    return parseInt(f.val() || 0, 10) || 0;
+  }
+
+  setHiddenFields(hiddenFields) {
+    this.hiddenFields = hiddenFields;
+  }
+
+  isFieldHidden(fieldName) {
+    return this.hiddenFields && this.hiddenFields.indexOf(fieldName) !== -1;
+  }
+
   getDepartmentId() {
-    return parseIntSelect($('#ticket_department', this.$formEl));
+    return TicketValueReader.parseIntSelect($('#ticket_department', this.$formEl));
   }
 
   getCategoryId() {
-    return parseIntSelect($('#ticket_category', this.$formEl));
+    if (this.isFieldHidden('category')) {
+      return null;
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_category', this.$formEl));
   }
 
   getPriorityId() {
-    return parseIntSelect($('#ticket_priority', this.$formEl));
+    if (this.isFieldHidden('priority')) {
+      return null;
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_priority', this.$formEl));
   }
 
   getProductId() {
-    return parseIntSelect($('#ticket_product', this.$formEl));
+    if (this.isFieldHidden('product')) {
+      return null;
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_product', this.$formEl));
   }
 
   getOrganizationId() {
-    return parseIntSelect($('#ticket_user_organization', this.$formEl));
+    if (this.isFieldHidden('user_organization')) {
+      return null;
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_user_organization', this.$formEl));
   }
 
   getWorkflowId() {
-    return parseIntSelect($('#ticket_workflow', this.$formEl));
+    if (this.isFieldHidden('workflow')) {
+      return null;
+    }
+
+    return TicketValueReader.parseIntSelect($('#ticket_workflow', this.$formEl));
+  }
+
+  getFieldValue(prefix, fieldId) {
+    const fieldName = `${prefix}_field_${fieldId}`;
+
+    if (this.isFieldHidden(fieldName)) {
+      return null;
+    }
+
+    const id = `#ticket_${fieldName}_data`;
+    let $field = $(id, this.$formEl);
+
+    // toggle
+    if ($field.is(':checkbox')) {
+      return $field.is(':checked');
+    }
+
+    if ($field.is('select, input, textarea')) {
+      return $field.val();
+    }
+
+    // date and datetime widgets
+    if ($field.find(`${id}_year`).length) {
+      const year = $(`${id}_year`, $field).val();
+      const month = $(`${id}_month`, $field).val();
+      const day = $(`${id}_day`, $field).val();
+      return `${year}-${month}-${day}`;
+    }
+
+    // choice of checkboxes, radio
+    const name = `ticket[${prefix}_field_${fieldId}]`;
+    $field = $(`[name="${name}[data]"], [name="${name}[data][]"]`, this.$formEl);
+    if ($field.length) {
+      return $field.filter(':checked').map((i, el) => el.value).get();
+    }
+
+    // display field
+    $field = $(`#ticket_${prefix}_field_${fieldId}`, this.$formEl);
+    if ($field.length) {
+      return $.trim($field.text());
+    }
+
+    return null;
+  }
+
+  getTicketFieldValue(fieldId) {
+    return this.getFieldValue('ticket', fieldId);
+  }
+
+  getUserFieldValue(fieldId) {
+    return this.getFieldValue('user', fieldId);
+  }
+
+  getOrgFieldValue(fieldId) {
+    return this.getFieldValue('org', fieldId);
   }
 }
 
@@ -47,7 +132,9 @@ export default class TicketForm extends PageWidget {
     const $formEl = this.$element.find('.dp_ticket_form');
     const $tplEl = this.$element.find('.js_form_tpl');
     const ticketReader = new TicketValueReader($formEl);
-    const allFormFields = $([]).add($formEl.find('select')).add($tplEl.find('select'));
+    const allFormFields = $([])
+      .add($formEl.find('select, input, textarea'))
+      .add($tplEl.find('select, input, textarea'));
 
     $('#ticket_message_message_html', this.$formEl).attr('data-blob-path', 'ticket[attachments]');
 
@@ -66,13 +153,14 @@ export default class TicketForm extends PageWidget {
           $formEl.find('input:visible, textarea:visible').first().focus();
         }
       },
-      fieldFilter: (fields) => {
+      fieldFilter: (fields, dynamicForm) => {
         if (!window.DESKPRO_TICKET_DISPLAY) {
           console.error('DESKPRO_TICKET_DISPLAY is not defined');
           return fields;
         }
 
         const layout = window.DESKPRO_TICKET_DISPLAY.getLayout(ticketReader.getDepartmentId());
+        ticketReader.setHiddenFields(dynamicForm.getHiddenFields());
 
         let newFields = layout.getMatchingFields(ticketReader);
         let filterFn;
@@ -94,7 +182,7 @@ export default class TicketForm extends PageWidget {
           newFields = newFields.filter(filterFn);
         }
 
-        newFields = _.map(newFields, (v) => {
+        newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
           const id = v.id;
           switch (id) {
             case 'subject': return 'subject';
@@ -118,6 +206,12 @@ export default class TicketForm extends PageWidget {
         }
       }
     });
+
+    if (window.DP_FIELDS_INIT_CALLBACK) {
+      this.dynamicForm.ee.on('fieldsUpdated', (evData) => {
+        window.DP_FIELDS_INIT_CALLBACK(evData);
+      });
+    }
 
     const updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
     allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));

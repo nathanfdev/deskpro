@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
+use Application\LegacyApiBundle\Form\CustomField\Model\DateField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DateFieldType extends CustomFieldTypeAbstract
@@ -54,12 +55,17 @@ class DateFieldType extends CustomFieldTypeAbstract
             'required' => false,
             'choices'  => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         ]);
+        $builder->add('calendar', 'choice', [
+            'required'          => false,
+            'choices'           => ['gregorian', 'hijri'],
+            'choices_as_values' => true,
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DateField',
+            'data_class' => DateField::class,
         ];
     }
 }

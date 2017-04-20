@@ -1,11 +1,14 @@
 import 'babel-polyfill';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import $ from 'jquery';
 import PortalPage from './PageWidget/PortalPage';
 import { portalPhrases } from './PortalPhrases';
+import AppContainer from './Modules/Application/Components/AppContainer';
 
 class PortalApp {
   constructor() {
-    window.$ = $;
+    window.jQuery = window.$ = $;
     window.PortalApp = this;
 
     this.phrases = portalPhrases;
@@ -22,6 +25,10 @@ class PortalApp {
     const page = new PortalPage();
     page.renderWhenReady();
     this.portalPage = page;
+  }
+
+  render(props, node) {
+    ReactDOM.render(<AppContainer {...props} />, node);
   }
 }
 

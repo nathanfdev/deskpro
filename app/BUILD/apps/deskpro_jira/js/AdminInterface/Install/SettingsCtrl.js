@@ -47,8 +47,12 @@ define(function () {
     };
 
     $scope.getAccessToken = function () {
-      var backUrl = window.location.href;
-      window.location.href = '/admin/jira/request_token?back_url=' + encodeURIComponent(backUrl);
+      var win = window;
+      if (window.parent && window.parent !== window) {
+        win = window.parent;
+      }
+      var backUrl = win.location.href;
+      win.location.href = '/admin/jira/request_token?back_url=' + encodeURIComponent(backUrl);
     };
 
     $scope.setPresaveCallback(function () {

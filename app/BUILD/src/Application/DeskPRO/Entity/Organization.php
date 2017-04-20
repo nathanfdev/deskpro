@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -563,6 +563,15 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->parent;
     }
 
+    public function setParent(Organization $parent = null)
+    {
+        $oldParent = $this->parent;
+        $this->setModelField('parent', $parent);
+        $this->_onPropertyChanged('parent', $oldParent, $parent);
+
+        return $this;
+    }
+
     /**
      * Set organization picture.
      *
@@ -714,13 +723,17 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     }
 
     /**
-     * @param OrganizationEmailDomain $email_domain
+     * @param OrganizationEmailDomain $emailDomain
+     *
+     * @return $this
      */
-    public function addEmailDomain(OrganizationEmailDomain $email_domain)
+    public function addEmailDomain(OrganizationEmailDomain $emailDomain)
     {
-        $email_domain['organization'] = $this;
-        $this->email_domains->add($email_domain);
+        $emailDomain['organization'] = $this;
+        $this->email_domains->add($emailDomain);
         $this->_onPropertyChanged('email_domains', $this->email_domains, $this->email_domains);
+
+        return $this;
     }
 
     /**
@@ -740,6 +753,22 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     public function getEmailDomains()
     {
         return $this->email_domains;
+    }
+
+    /**
+     * @param OrganizationEmailDomain|string $emailDomain
+     *
+     * @return bool
+     */
+    public function hasEmailDomain($emailDomain)
+    {
+        if ($emailDomain instanceof OrganizationEmailDomain) {
+            $emailDomain = $emailDomain->getDomain();
+        }
+
+        return $this->email_domains->filter(function (OrganizationEmailDomain $existingDomain) use ($emailDomain) {
+            return $existingDomain->getDomain() === $emailDomain;
+        })->count() > 0;
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,6 +44,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class CrudSubController extends CrudController
 {
+    protected static $parentParameter = 'parentId';
     public static $parentProperty;
 
     /**
@@ -51,10 +52,11 @@ abstract class CrudSubController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $prop = static::$parentProperty;
+        $prop  = static::$parentProperty;
+        $param = static::$parentParameter;
         $qb
-            ->andWhere("$alias.$prop = :parentId")
-            ->setParameter('parentId', $this->findParentOr404()->getId());
+            ->andWhere("$alias.$prop = :$param")
+            ->setParameter($param, $this->findParentOr404()->getId());
     }
 
     /**
@@ -93,7 +95,7 @@ abstract class CrudSubController extends CrudController
     protected function findParentOr404()
     {
         $request     = $this->container->get('request_stack')->getCurrentRequest();
-        $parentId    = $request->get('parentId');
+        $parentId    = $request->get(static::$parentParameter);
         $parentClass = $this
                            ->getManager()
                            ->getClassMetadata(trim(static::$entity, '\\'))
@@ -107,7 +109,7 @@ abstract class CrudSubController extends CrudController
      */
     protected function getLocationUrl($entity, Request $request, array $params = [])
     {
-        return parent::getLocationUrl($entity, $request, ['parentId' => $this->findParentOr404()->getId()]);
+        return parent::getLocationUrl($entity, $request, [static::$parentParameter => $this->findParentOr404()->getId()]);
     }
 
     /**

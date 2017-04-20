@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -267,6 +267,7 @@ return [
     'user.email_subjects.comment-deleted'                 => 'あなたのコメントはエージェントにより確認されました。',
     'user.email_subjects.email-too-big'                   => 'あなたのメール "{{subject}}" は受理されませんでした。',
     'user.email_subjects.email_new-confirm'               => 'メールアドレスを認証してください。',
+    'user.email_subjects.email_primary-confirm'           => 'メールアドレスを認証してください。',
     'user.email_subjects.feedback_new'                    => 'フィードバックを頂きありがとうございました。',
     'user.email_subjects.feedback_new-approved'           => 'フィードバックは承認されました。',
     'user.email_subjects.feedback_new-comment'            => '"{{title}}"に新着コメントがあります。',
@@ -282,6 +283,8 @@ return [
     'user.email_subjects.remind_unresolved_final_subject' => 'リマインダ: {{subject}}',
     'user.email_subjects.remind_unresolved_subject'       => 'リマインダ: {{subject}}',
     'user.email_subjects.ticket-rate'                     => 'リクエスト "{{ticket.subject}}"を評価する',
+    'user.email_subjects.ticket_new-participant'          => 'リクエストに新たな参加者が追加されました。',
+    'user.email_subjects.too-many-emails'                 => '通知：上限を超えた数のメールが届いています。',
     'user.emails.auto-close'                              => '長期間返信がないため、リクエスト "{{ticket.subject}}" は対応済みとしてクローズされます。未解決事項がある場合は、エージェントあてに返信を送信してください。',
     'user.emails.chat_transcript'                         => 'チャットに参加いただきありがとうございました。以下、チャットの記録(トランスクリプト)です。',
     'user.emails.comment_approved'                        => 'コメントが公開されました。',

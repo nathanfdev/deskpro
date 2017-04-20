@@ -88,12 +88,48 @@
 	<header>
 		<nav>
 			<ul>
-				{% if person_tickets_count %}<li data-tab-for="#{{baseId}}_tickets_tab" class="on">{{ phrase('agent.general.tickets') }} <span class="count">{{ person_tickets_count }}</span></li>{% endif %}
-				{% if person_chats_count %}<li data-tab-for="#{{baseId}}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count">{{ person_chats_count }}</span></li>{% endif %}
-				{% if person_charges %}<li data-tab-for="#{{baseId}}_billing_tab">Billing <span class="count">{{ person_charge_totals.count }}</span></li>{% endif %}
+				{% if person_tickets_count %}
+					<li
+						data-tab-for="#{{baseId}}_tickets_tab"
+						data-class-show='tickets-tab-show'
+						class="on"
+					>
+						{{ phrase('agent.general.tickets') }}
+						<span class="count">{{ person_tickets_count }}</span>
+					</li>
+				{% endif %}
+				{% if person_chats_count %}
+					<li
+						data-tab-for="#{{baseId}}_chats_tab"
+						data-class-show='chats-tab-show'
+					>
+						{{ phrase('agent.general.chats') }}
+						<span class="count">{{ person_chats_count }}</span>
+					</li>
+				{% endif %}
+				{% if person_charges %}
+					<li
+						data-tab-for="#{{baseId}}_billing_tab"
+						data-class-show='billing-tab-show'
+					>
+						{{ phrase('agent.general.billing') }}
+						<span class="count">
+							{{ person_charge_totals.count }}
+						</span>
+					</li>
+				{% endif %}
 			</ul>
 		</nav>
-				<button class="save sort-trigger" id="{{baseId}}_sort_tickets_menu_trigger" style="float: right; margin: 5px;">Sort Tickets By <em class="downarrow"></em></button>
+		<button
+			class="save sort-trigger tickets-tab-show tabs-control"
+			id="{{baseId}}_sort_tickets_menu_trigger" style="float: right; margin: 5px;">Sort Tickets By
+			<em class="downarrow"></em>
+		</button>
+		<button
+				class="save sort-trigger chats-tab-show tabs-control"
+				id="{{baseId}}_sort_chats_menu_trigger" style="display: none; float: right; margin: 5px;">Sort Chats By
+			<em class="downarrow"></em>
+		</button>
 	</header>
 	<section>
 		{# Tickets Tab #}
@@ -180,7 +216,6 @@
 					</tbody>
 				{% endif %}
 			</table>
-		</article>
 			<ul id="{{baseId}}_sort_tickets_menu" style="display: none;">
 				<li data-sort-by="status">{{ phrase('agent.general.status') }}</li>
 				<li data-sort-by="date_last_user_reply">{{ phrase('agent.general.date_of_last_user_reply')}}</li>
@@ -188,12 +223,14 @@
 				<li data-sort-by="last_reply">{{ phrase('agent.general.date_of_last_reply')}}</li>
 				<li data-sort-by="date_created">{{ phrase('agent.general.date_created')}} </li>
 			</ul>
+		</article>
+
 		{% endif %}
 		{# /Tickets Tab #}
 
 		{% if person_chats_count %}
 		<article id="{{baseId}}_chats_tab">
-			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+			<table class="tickets-simple" id="{{baseId}}_chats_initial" width="100%" border="0" cellpadding="0" cellspacing="0">
 				<tbody>
 					{% for chat in person_chats %}
 						<tr>
@@ -210,6 +247,14 @@
 					{% endfor %}
 				</tbody>
 			</table>
+			<ul id="{{baseId}}_sort_chats_menu" style="display: none;">
+				<li data-order-dir="ASC" data-order-by="date_created">{{ phrase('agent.general.date_created') }} {{ phrase('agent.general.date_oldestnewest') }}</li>
+				<li data-order-dir="DESC" data-order-by="date_created">{{ phrase('agent.general.date_created') }} {{ phrase('agent.general.date_newestoldest') }}</li>
+				<li data-order-dir="ASC" data-order-by="date_assigned">{{ phrase('agent.general.date_assigned')}} {{ phrase('agent.general.date_oldestnewest') }}</li>
+				<li data-order-dir="DESC" data-order-by="date_assigned">{{ phrase('agent.general.date_assigned')}} {{ phrase('agent.general.date_newestoldest') }}</li>
+				<li data-order-dir="ASC" data-order-by="date_ended">{{ phrase('agent.general.date_ended')}} {{ phrase('agent.general.date_oldestnewest') }}</li>
+				<li data-order-dir="DESC" data-order-by="date_ended">{{ phrase('agent.general.date_ended')}} {{ phrase('agent.general.date_newestoldest') }}</li>
+			</ul>
 		</article>
 		{% endif %}
 
@@ -349,7 +394,7 @@
                                 {{ include('AgentBundle:Person:changelog-row.html.twig', {entry: entry}) }}
                             </td>
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
                 </table>
             </article>
         {% endif %}

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,12 +72,12 @@ class BrandStack
     /**
      * @var BrandContainer[] an array of constructed containers keyed by brand entity id
      */
-    private $brand_containers;
+    private $brandContainers;
 
     /**
      * @var \Application\DeskPRO\Entity\Brand
      */
-    private $default_brand;
+    private $defaultBrand;
 
     /**
      * @param BrandContainerFactory $factory
@@ -85,10 +85,10 @@ class BrandStack
      */
     public function __construct(BrandContainerFactory $factory, Brand $default_brand)
     {
-        $this->factory          = $factory;
-        $this->stack            = [];
-        $this->brand_containers = [];
-        $this->default_brand    = $default_brand;
+        $this->factory         = $factory;
+        $this->stack           = [];
+        $this->brandContainers = [];
+        $this->defaultBrand    = $default_brand;
 
         $this->push($default_brand);
     }
@@ -100,13 +100,13 @@ class BrandStack
      */
     public function getActive()
     {
-        $brand_id = end($this->stack);
+        $brandId = end($this->stack);
 
-        if (false !== $brand_id) {
-            return $this->brand_containers[$brand_id];
+        if (false !== $brandId) {
+            return $this->brandContainers[ $brandId];
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -119,7 +119,7 @@ class BrandStack
 
     public function getContainers()
     {
-        return $this->brand_containers;
+        return $this->brandContainers;
     }
 
     /**
@@ -127,25 +127,26 @@ class BrandStack
      */
     public function getDefaultBrand()
     {
-        return $this->default_brand;
+        return $this->defaultBrand;
     }
 
     /**
      * Pushes the Brand into the stack, so that the brand's container is now active.
      *
      * @param Brand $brand
+     * @param bool  $force
      *
      * @return BrandContainer
      */
-    public function push(Brand $brand)
+    public function push(Brand $brand, $force = false)
     {
-        $brand_id = $brand->getId();
+        $brandId = $brand->getId();
 
-        if (!in_array($brand_id, $this->stack)) {
-            array_push($this->stack, $brand_id);
+        if (!in_array($brandId, $this->stack) || $force) {
+            array_push($this->stack, $brandId);
 
-            if (!array_key_exists($brand_id, $this->brand_containers)) {
-                $this->brand_containers[$brand_id] = $this->factory->create($brand);
+            if (!array_key_exists($brandId, $this->brandContainers)) {
+                $this->brandContainers[ $brandId] = $this->factory->create($brand);
             }
         }
 
@@ -159,13 +160,13 @@ class BrandStack
      */
     public function pop()
     {
-        $brand_id = array_pop($this->stack);
+        $brandId = array_pop($this->stack);
 
         // always at least the default brand
         if (empty($this->stack)) {
-            $this->push($this->default_brand);
+            $this->push($this->defaultBrand);
         }
 
-        return $this->brand_containers[$brand_id];
+        return $this->brandContainers[ $brandId];
     }
 }

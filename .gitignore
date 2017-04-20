@@ -42,6 +42,7 @@ bin/deskpro-importer-tools
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css
+/www/assets/BUILD/pub/static/Guides/pdf
 
 /app/BUILD/tests/tools/node_modules
 
@@ -75,6 +76,7 @@ bin/deskpro-importer-tools
 /app/BUILD/sys/Resources/distro-checksums.php
 /app/BUILD/sys/Resources/cloudflare-ips.php
 /app/BUILD/sys/Resources/agent-perm-names.php
+/app/BUILD/sys/Resources/serverinfo/warmupit.php
 /app/BUILD/src/Application/InstallBundle/Data/schema.php
 /app/BUILD/src/Application/DeskPRO/Dpql/Parser.out
 /app/BUILD/sys/enc
@@ -174,6 +176,7 @@ app/sys/Resources/agent-perm-names.php
 /app/src/Cloud/bin/twitter-cloud.pid
 /app/tests/coverage
 !/app/tests/coverage/.gitkeep
+php_errors.log
 
 /data/last-email_error.dat
 /data/is_installed.dat
@@ -245,6 +248,8 @@ www/assets/BUILD/pub/nightwatch.conf.js
 /app/*
 !/app/bin
 !/app/BUILD
+!/app/scripts/user/ExampleController.php
+!/app/scripts/agent/ExampleController.php
 !/app/run
 /www/assets/*
 !/www/assets/index.html

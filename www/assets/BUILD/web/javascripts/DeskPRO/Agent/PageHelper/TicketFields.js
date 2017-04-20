@@ -7,93 +7,93 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	initialize: function(page) {
 		var self = this;
 		this.page = page;
+    this.page.addEvent('destroy', this.destroy, this);
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 
 		this.mode = 'view';
-		this.currentDisplay = [];
-		this.currentDisplayModify = [];
 
 		this.ticketReader = {
 			getDepartmentId: function() {
-				if (self.mode == 'edit') {
-					var catId = self.page.getEl('department_id').val();
-				} else {
-					var catId = self.page.getEl('value_form').find('.department_id').val();
-				}
+				var catId = self.page.getEl('department_id').val();
 				return parseInt(catId) || 0;
 			},
 			getCategoryId: function() {
-				var catId = null;
-				if (self.mode == 'edit') {
-					catId = self.page.getEl('ticket_category_id').val();
-				}
-				if (typeof catId == 'undefined' || catId === null) {
-					catId = self.page.getEl('value_form').find('.category_id').val();
-				}
+				var catId = self.display.find('select.prop-input-category_id:first').val();
 				return parseInt(catId) || 0;
 			},
 			getPriorityId: function() {
-				var catId = null;
-				if (self.mode == 'edit') {
-					catId = self.page.getEl('ticket_priority_id').val();
-				}
-
-				if (typeof catId == 'undefined' || catId === null) {
-					catId = self.page.getEl('value_form').find('.priority_id').val();
-				}
+				var catId = self.display.find('select.prop-input-priority_id:first').val();
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
-				var catId = null;
-				if (self.mode == 'edit') {
-					catId = self.page.getEl('ticket_product_id').val();
-				}
-				if (typeof catId == 'undefined' || catId === null) {
-					catId = self.page.getEl('value_form').find('.product_id').val();
-				}
+				var catId = self.display.find('select.prop-input-product:first').val();
 				return parseInt(catId) || 0;
 			},
 			getOrganizationId: function() {
 				return 0;
 			},
 			getWorkflowId: function() {
-				var catId = null;
-				if (self.mode == 'edit') {
-					catId = self.page.getEl('value_form').find('.workflow_id').val();
-				}
-				if (typeof catId == 'undefined' || catId === null) {
-					catId = self.page.getEl('ticket_workflow_id').val();
-				}
+				var catId = self.display.find('select.prop-input-workflow_id:first').val();
 				return parseInt(catId) || 0;
+			},
+			getFieldValue: function(name) {
+				var $holders = self.page.getEl('field_holders');
+				var $field = $('[name="' + name + '"]', $holders);
+				if ($field.is(':checkbox')) {
+					return $field.is(':checked');
+				}
+				if ($field.attr('type') === 'hidden') {
+					return $.trim($field.parent().text());
+				}
+				if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
+					return $field.val();
+				}
+				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
+				if ($field.hasClass('with-select2')) {
+					var val = $.trim($field.select2('val'));
+					return val || null;
+				}
+				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
+			},
+			getTicketFieldValue: function(fieldId) {
+				switch (fieldId) {
+					case 'category':
+						return this.getCategoryId();
+					case 'workflow':
+            return this.getWorkflowId();
+					case 'priority':
+						return this.getPriorityId();
+					case 'product':
+						return this.getProductId();
+				}
+        fieldId = ((fieldId || '')+'').replace('ticket_field_', '');
+				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
+			},
+			getUserFieldValue: function(fieldId) {
+        fieldId = ((fieldId || '')+'').replace('user_field_');
+				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
+			},
+			getOrgFieldValue: function(fieldId) {
+				fieldId = ((fieldId || '')+'').replace('org_field_');
+				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
 
-		this.fieldDisplay = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'view');
-		this.fieldDisplayModify = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(this.ticketReader, 'modify');
+		this.initScope(this.page.getEl('field_holders'));
+		this.no_value_fields = [];
 
 		this.page.getEl('department').on('change', function() {
+			self.page.getEl('field_errors').hide();
 			self.updateDisplay();
 		});
 
-		this.page.getEl('field_edit_start').on('click', function(ev) {
-			ev.preventDefault();
-			self.openEditMode();
-		});
-
-		self.page.getEl('field_edit_cancel').on('click', function(ev) {
-			ev.preventDefault();
-			self.closeEditMode();
-		});
-
-		self.page.getEl('field_edit_save').on('click', function(ev) {
-			self.page.getEl('field_edit_cancel').hide();
-			self.page.getEl('field_edit_save').hide();
-			self.page.getEl('field_edit_start').hide();
-			self.page.getEl('field_edit_controls').addClass('loading');
-
-			self.page.getEl('field_errors').hide().removeClass('on');
-
-			self.saveChanges();
+		var $holders = self.page.getEl('field_holders');
+		$holders.on('change dp.change', function(e){
+			var name = $(e.target).attr('name');
+			if (!name) return;
+			if (name.indexOf('custom_fields[field_') !== -1 || name.indexOf('custom_person_fields[field_') !== -1 || name.indexOf('custom_org_fields[field_') !== -1) {
+				self.updateDisplay();
+			}
 		});
 
 		this.page.changeManager.addEvent('updateResult', function(data) {
@@ -105,30 +105,267 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 	},
 
-	openEditMode: function() {
-		this.mode = 'edit';
+	initScope: function(el) {
+		var self = this;
+		var $scope = this.$scope = DeskPRO_Window.$scope.$new();
 
-		this.display.addClass('mode-edit-on');
-		this.page.getEl('field_edit_start').hide();
-		this.page.getEl('field_edit_cancel').show();
-		this.page.getEl('field_edit_save').show();
-		this.page.getEl('field_edit_controls').removeClass('loading');
+		this.oldFields = null;
 
-		this.display.find('select[multiple]').each(function() {
-			var min = $(this).width() + 30;
-			var parent = $(this).closest('td').find('> div').first().width();
-			if (parent) {
-				min = Math.max(min, Math.ceil(parent / 1.75));
+		DeskPRO_Window.ngModule.dpInjector.invoke(['$compile', function($compile) {
+			el.data('$ngControllerController', self);
+			$compile(el.contents())(self.$scope);
+		}]);
+
+		$scope.edit_fields = [];
+		$scope.fields = {};
+		$scope.editables = {
+			language: 1,
+			problem: 1
+		};
+		$scope.savedValues = {};
+
+		$scope.show_hidden = 0;
+		$scope.is_saving = false;
+
+		$scope.setFieldValue = function(id, value, allowDefaultValue) {
+      self.display.find('.item.'+id).each(function(i, el) {
+        var $el = $(el);
+        value = allowDefaultValue ? $el.data('default-value') : value;
+        $el.find('input[type=text], textarea, select').val(value);
+        $el.find('.with-select2').select2('val', value);
+        $el.find('input[type=radio]').each(function(i, field) {
+          var $field = $(field);
+
+          if (!String(value) && i === 0) {
+            $field.prop('checked', true);
+					} else if (String($field.val()) === String(value)) {
+            $field.prop('checked', true);
+          } else {
+            $field.prop('checked', false);
+          }
+        });
+        $el.find('input[type=checkbox]').each(function(i, field) {
+          var $field = $(field);
+          if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
+            var vals = value ? String(value).split(',') : [];
+            if (vals.indexOf(String($field.val())) !== -1) {
+              $field.prop('checked', true);
+            } else {
+              $field.prop('checked', false);
+            }
+          } else {
+            $field.prop('checked', value);
+          }
+        });
+      });
+		};
+
+		$scope.editField = function($event, field) {
+			if (!$scope.editables[field]) return;
+			if ($scope.isEditMode(field)) return;
+			if ($event.target.tagName === 'A') return;
+
+			var getSelected = function() {
+				if (window.getSelection) {
+					return window.getSelection().toString();
+				} else if (document.getSelection) {
+					return document.getSelection().toString();
+				} else {
+					var selection = document.selection && document.selection.createRange();
+					if (selection.text) {
+						return selection.text.toString();
+					}
+					return '';
+				}
+				return '';
+			};
+
+			if (getSelected()) {
+				return;
 			}
-			$(this).width(min);
+
+			if (field !== 'problem') {
+				var value;
+				if (0 === field.indexOf('user_field_')) {
+					value = self.ticketReader.getUserFieldValue(field);
+				} else if (0 === field.indexOf('org_field_')) {
+          value = self.ticketReader.getOrgFieldValue(field);
+				} else {
+          value = self.ticketReader.getTicketFieldValue(field);
+				}
+        $scope.savedValues[field] = value;
+      }
+			$scope.edit_fields.push(field);
+
+			// focus input field on open edit mode
+			var $editContainer = $($event.currentTarget).parent().find('.mode-edit');
+			var $simpleField = $editContainer.find('input[type=text], textarea, select');
+
+			setTimeout(function() {
+				if ($simpleField.length) {
+					$simpleField.focus();
+				}
+			}, 0);
+		};
+
+		$scope.isEditMode = function(field) {
+			return $scope.edit_fields.indexOf(field) !== -1;
+		};
+
+		$scope.cancelEdit = function() {
+      $scope.edit_fields.forEach(function(id) {
+        if (typeof $scope.savedValues[id] != 'undefined') {
+          $scope.setFieldValue(id, $scope.savedValues[id]);
+      	}
+      	delete $scope.savedValues[id];
+			});
+      $scope.edit_fields.length = 0;
+      $scope.show_hidden = 0;
+      self.updateDisplay();
+		};
+
+		$scope.saveFields = function() {
+			self.saveChanges();
+		};
+
+		$scope.showHidden = function() {
+			$scope.show_hidden = 1;
+			for (var i = 0; i < self.no_value_fields.length; i++) {
+				$scope.editField(self.no_value_fields[i]);
+			}
+			self.updateDisplay();
+		};
+
+    if (window.DESKPRO_TICKET_DISPLAY) {
+      var reader = self.ticketReader;
+			var fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
+			for (var i = 0; i < fields.length; i++) {
+				var $row = self.display.find('tbody.item.' + fields[i].id + ':first');
+				self.initFieldWidgets($row);
+			}
+    }
+	},
+
+	updateDisplay: function() {
+		var self = this;
+		var fields = [], reader = this.ticketReader;
+		var $scope = this.$scope;
+		if (window.DESKPRO_TICKET_DISPLAY) {
+			fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
+		}
+
+		var isVisibleByCriteria = function(f) {
+      return f.checkFn ? f.checkFn(reader) && f.isVisibleOnView : f.isVisibleOnView;
+		};
+
+		$scope.hidden = 0;
+		$scope.editables = {
+			language: 1,
+			problem: 1
+		};
+
+		this.no_value_fields = [];
+		var $ctrls = this.display.find('.hidden-row');
+		$ctrls.removeClass('off').next().removeClass('off');
+
+		var scopeFields = $scope.fields;
+		for (var i = 0; i < fields.length; i++) {
+			var f = fields[i];
+			var value = true;
+			if (f.field_type === 'ticket_field') {
+				value = this.ticketReader.getTicketFieldValue(f.field_id);
+			} else if (f.field_type === 'user_field') {
+        value = this.ticketReader.getUserFieldValue(f.field_id);
+			} else if (f.field_type === 'org_field') {
+        value = this.ticketReader.getOrgFieldValue(f.field_id);
+			}
+
+			var noValue = !value || (value instanceof Array && value.length === 0);
+
+			if (f.isVisibleOnEdit) {
+				$scope.editables[f.id] = 1;
+			}
+
+			var visibleByCriteria = isVisibleByCriteria(f);
+			var show = visibleByCriteria && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
+			scopeFields[f.id] = !!show;
+
+			if (visibleByCriteria && !f.isVisibleOnViewAlways && noValue) {
+				this.no_value_fields.push(f.id);
+			}
+		}
+
+		var newFields = [];
+		Object.keys(scopeFields).forEach(function(fieldId) {
+			if (scopeFields[fieldId]) {
+				newFields.push(fieldId);
+			}
 		});
 
-    this.display.find('select[data-custom-field]').dpMultiLevelSelect();
-    DP.select(this.display.find('select'));
+		var changed = false;
+		if (!this.oldFields) {
+			changed = true;
+		} else if (this.oldFields.length !== newFields.length) {
+			changed = true;
+		} else {
+			for (i = 0; i < newFields.length; i++) {
+				if (newFields[i] !== this.oldFields[i]) {
+					changed = true;
+					break;
+				}
+			}
+		}
 
-		this.updateDisplay();
+		this.oldFields = newFields;
 
-		$('.Date.customfield input', this.display).each(function(){
+		// recursive update fields if they were changed
+		if (changed) {
+			this.updateDisplay();
+			return;
+		}
+
+		$scope.fields = scopeFields;
+
+		for (i = 0; i < fields.length; i++) {
+			f = fields[i];
+			var row = this.display.find('.item.' + f.id);
+			if (undefined === $scope.fields[f.id] || scopeFields[f.id]) {
+				row.detach().removeClass('off').insertBefore($ctrls);
+			} else {
+				row.addClass('off');
+			}
+		}
+
+		var unsetField = function(name, allowDefaultValue) {
+			$scope.edit_fields.push(name);
+			$scope.setFieldValue(name, '', allowDefaultValue);
+		};
+
+		$scope.hidden = this.no_value_fields.length;
+
+		if (this.oldFields) {
+			this.oldFields.forEach(function(name) {
+				if (newFields.indexOf(name) === -1) {
+					unsetField(name, false);
+				}
+			});
+		}
+
+		newFields.forEach(function(name) {
+			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
+				unsetField(name, true);
+			}
+		});
+	},
+
+	initFieldWidgets: function($tbody) {
+		if (!$tbody || $tbody.data('widget-init')) return;
+
+		$('select', $tbody).not('.no-dp-select').dpMultiLevelSelect();
+		// is it the same as one above?
+		DP.select($('select', $tbody));
+
+		$('.Date.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -140,12 +377,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					next: 'fa fa-chevron-right'
 				}
 			});
-			$(this).on('dp.change', function(){
+			$(this).on('dp.change', function(e){
 				$(this).trigger('change');
 			});
 		});
 
-		$('.DateTime.customfield input', this.display).each(function(){
+		$('.DateTime.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -164,139 +401,17 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			});
 		});
 
-		// Make sure field tab is selected
-		this.page.getEl('fields_display_main_wrap_tab').click();
-	},
+    $('.hijri input', $tbody).calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
 
-	closeEditMode: function() {
-		this.mode = 'view';
-
-		this.display.removeClass('mode-edit-on');
-		this.page.getEl('field_edit_save').hide();
-		this.page.getEl('field_edit_cancel').hide();
-		this.page.getEl('field_edit_start').show();
-		this.page.getEl('field_edit_controls').removeClass('loading');
-		this.updateDisplay();
-	},
-
-	updateDisplay: function() {
-		if (this.mode == 'view') {
-			this.updateDisplay_view();
-		} else {
-			this.updateDisplay_modify();
-		}
-	},
-
-	updateDisplay_modify: function() {
-		var fields = this.fieldDisplayModify.getFields(this.ticketReader.getDepartmentId());
-		var baseId = this.page.meta.baseId;
-		if (!fields || !fields['default']) {
-			fields['default'] = [];
-		}
-
-		fields = fields['default'];
-		this.currentDisplayModify = fields;
-
-		this.display.find('tbody.item.item-on').hide().removeClass('item-on').removeClass('always-display');
-		var last = this.display.find('tbody.always-bottom');
-
-		Array.each(this.currentDisplayModify, function(f) {
-			if (f.field_type == 'ticket_field') {
-				var classname = 'ticket_field_' + f.field_id;
-			} else if (f.field_type == 'user_field') {
-        var classname = 'person_field_' + f.field_id;
-      } else if (f.field_type == 'org_field') {
-        var classname = 'org_field_' + f.field_id;
-      } else if (f.field_type == 'custom_field') {
-				var classname = 'custom_field_' + f.field_id;
-			} else {
-				var classname = f.field_type;
-			}
-
-			var item = this.display.find('.item.' + classname);
-			item.detach().appendTo(this.display).show().addClass('item-on');
-		}, this);
-
-    this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
-    DP.select(this.display.find('select'));
-
-    this.display.find('.prop-input-problem_id').off('change.prob').on('change.prob', function () {
-      var $title = $(this).next('input');
-      if (!$title.length) return;
-      -1 == $(this).val() ? $title.show() : $title.hide();
-    });
-
-		last.detach().appendTo(this.display);
-	},
-
-	updateDisplay_view: function() {
-		var fields = this.fieldDisplay.getFields(this.ticketReader.getDepartmentId());
-		var change = false;
-		if (!fields || !fields['default']) {
-			fields['default'] = [];
-		}
-
-		fields = fields['default'];
-
-		// Check to see if the fields are the same and in the same order
-		if (fields.length == this.currentDisplay.length) {
-			for (var i = 0; i < fields.length; i++) {
-				if (fields[i].field_type == this.currentDisplay[i].field_type) {
-					if (fields[i].field_type == 'ticket_field' && fields[i].field_id != this.currentDisplay[i].field_id) {
-						change = true;
-						break;
-					}
-				} else {
-					change = true;
-					break;
-				}
-			}
-		} else {
-			change = true;
-		}
-
-		// No Changes, dont need to do any expensive dom work
-		if (!change) {
-			console.log("[TicketFields] No change");
-		}
-
-		// still need to run through to make sure visibility on
-		// rows is set
-
-		this.currentDisplay = fields;
-
-		this.display.find('tbody.item.item-on').hide().removeClass('item-on');
-		var last = this.display.find('tbody.always-bottom');
-
-		Array.each(this.currentDisplay, function(f) {
-			if (f.field_type == 'ticket_field') {
-				var classname = 'ticket_field_' + f.field_id;
-			} else if (f.field_type == 'user_field') {
-        var classname = 'person_field_' + f.field_id;
-      } else if (f.field_type == 'org_field') {
-        var classname = 'org_field_' + f.field_id;
-      } else if (f.field_type == 'custom_field') {
-				var classname = 'custom_field_' + f.field_id;
-			} else {
-				var classname = f.field_type;
-			}
-
-			var row = this.display.find('.item.' + classname);
-			row.detach().appendTo(this.display).show().addClass('item-on');
-			if (f.isVisibleOnViewAlways) {
-				row.addClass('always-display');
-			} else {
-				row.removeClass('always-display');
-			}
-		}, this);
-
-		last.detach().appendTo(this.display);
+    $tbody.data('widget-init', 1);
 	},
 
 	saveChanges: function() {
 		var changeManager = this.page.changeManager;
 		var baseId = this.page.meta.baseId;
+		var self = this;
 
+		this.page.getEl('field_errors').hide();
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
 			prop.setValue($(this).val());
@@ -310,56 +425,63 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
 
+		this.$scope.is_saving = true;
+
 		changeManager.saveChanges(
 			customFieldData,
 			(function(data) {
-				this.updateDisplay();
-				this.closeEditMode();
-
-				if (data.data && data.data.perm_errors) {
-					var div = $('<div/>');
-					div.append('<strong>You do not have permission to change some fields. The following changes were not saved:</strong>');
-
-					var list = $('<ul />');
-					list.appendTo(div);
-
-					Array.each(data.data.perm_errors, function(err) {
-						var li = $('<li/>');
-						li.text(err.capitalize());
-						li.appendTo(list);
-					});
-
-					DeskPRO_Window.showAlert(div);
-				}
-
+        self.$scope.is_saving = false;
 				if (data.data && data.data.reload) {
 					this.page.closeSelf();
 					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
 				}
 			}).bind(this),
 			(function(xhr, code, message) {
-        this.closeEditMode();
+        self.$scope.is_saving = false;
+        // this.closeEditMode();
         var div = $('<div><strong>Server error: </strong>' + message + '</div>');
         DeskPRO_Window.showAlert(div);
 				console.error(message);
-			}).bind(this)
+			}).bind(this),
+			function(data) {
+        self.$scope.is_saving = false;
+				if (!data.fields) return;
+				self.$scope.$apply(function(){
+					for (var i = 0; i < data.fields.length; i++) {
+						self.$scope.editField(data.fields[i]);
+					}
+				});
+			}
 		);
 	},
 
 	replaceHolders: function(html) {
-		var last = this.display.find('tbody.always-bottom');
-		last.detach();
+		var labels = this.display.find('tbody.labels-row');
+		var last = this.display.find('tbody.controls-row');
+		this.$scope.$destroy();
 
 		var old = this.display;
-		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">' + html + '</table>');
+		var newDisplay = $('<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table mode-edit-on">' + html + '</table>');
+		newDisplay.append(this.display.find('.hidden-row'));
+		newDisplay.append(this.display.find('.controls-row'));
 		this.page.rewriteRadioNames(newDisplay);
 		this.display = newDisplay;
-		old.after(this.display);
-		old.remove();
-		this.display.append(last);
+    this.display.prepend(labels);
+    this.display.append(last);
 
-		this.currentDisplay = [];
-		this.currentDisplayModify = [];
+    old.after(this.display);
+    old.remove();
+
+		this.initScope(this.page.getEl('field_holders'));
+
 		this.updateDisplay();
+		this.$scope.$apply();
+	},
+
+	destroy: function() {
+		this.page = null;
+    this.$scope && this.$scope.$destroy();
+    this.$scope = null;
+    this.display = null;
 	}
 });

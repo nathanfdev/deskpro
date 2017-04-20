@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -561,8 +561,8 @@ class TaskController extends AbstractController
     {
         $task = $this->_getTaskOr404($task_id);
 
-        if ($task->person->getId() != $this->person->getId()) {
-            throw $this->createNotFoundException();
+        if ($task->person->getId() != $this->person->getId() || $this->api_user->isSuperAdmin()) {
+            return $this->createApiErrorResponse(403, 'Only task owner can do this', 403);
         }
 
         $this->em->remove($task);

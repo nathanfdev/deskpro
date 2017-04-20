@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,8 +70,14 @@ $container->setDefinition('settings_resolver', $definition);
 
 $definition = new Definition();
 $definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\SecurityHeadersResponseListener');
+$definition->setArguments([new Reference('service_container')]);
 $definition->addTag('kernel.event_subscriber');
 $container->setDefinition('listener.security_headers', $definition);
+
+$definition = new Definition();
+$definition->setClass('DeskPRO\Bundle\AppBundle\EventListener\RequestIdResponseListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('listener.response_id_header', $definition);
 
 //###########################################################################
 // Form Type
@@ -103,17 +109,17 @@ $container->setDefinition('ticket.public_id_resolver', $definition);
 //###########################################################################
 
 // Init readers
-$request_stack_reference = new Reference('request_stack');
+$requestStackReference = new Reference('request_stack');
 
 $definition = new Definition(
     'Orb\Input\Reader\Source\Superglobal',
-    ['_REQUEST', ['accept_json_post' => true], $request_stack_reference]
+    ['_REQUEST', ['accept_json_post' => true], $requestStackReference]
 );
 $container->setDefinition('deskpro.core.input_reader_req', $definition);
 
 $definition = new Definition(
     'Orb\Input\Reader\Source\Superglobal',
-    ['_POST', ['accept_json_post' => true], $request_stack_reference]
+    ['_POST', ['accept_json_post' => true], $requestStackReference]
 );
 $container->setDefinition('deskpro.core.input_reader_post', $definition);
 
@@ -190,6 +196,7 @@ $container->setDefinition('category_slug_manager', $definition);
 $definition = new Definition();
 $definition->setClass('DeskPRO\\Bundle\\AppBundle\\Assets\\PackagesFactory');
 $definition->setArguments([
+    new Reference('deskpro.app_env'),
     new Reference('settings_resolver'),
     new Reference('request_stack'),
     new Expression("service('deskpro.app_env').getConfig('paths.asset_paths')"),
@@ -207,7 +214,6 @@ $definition = new Definition();
 $definition->setClass('Orb\\Doctrine\\Common\\Cache\\ArrayFileCache');
 $definition->setFactory('Application\\DeskPRO\\DependencyInjection\\SystemServices\\ArrayFileCacheFactory::create');
 $definition->setArguments(['dql']);
-$definition->addMethodCall('registerShutdownCommit');
 $container->setDefinition('doctrine.orm.default_query_cache', $definition);
 
 // entity listeners
@@ -332,8 +338,8 @@ $container->setDefinition('cache.simple_array', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\ExpiringDoctrineCache');
-$seconds_in_one_day = 86400;
-$definition->setArguments([new Reference('doctrine.orm.default_entity_manager'), $seconds_in_one_day]);
+$secondsInOneDay = 86400;
+$definition->setArguments([new Reference('doctrine.orm.default_entity_manager'), $secondsInOneDay]);
 $container->setDefinition('cache.one_day_doctrine', $definition);
 
 // make an alias so we can easily swap out the underlying adapter for a diff implementation of the same concept
@@ -373,6 +379,10 @@ $definition = new Definition(
     ]
 );
 $container->setDefinition('deskpro.person_activity_logger', $definition);
+
+$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\EventListener', [new Reference('service_container')]);
+$definition->addTag('doctrine.event_subscriber');
+$container->setDefinition('deskpro.orm.event_listener.activity_stream', $definition);
 
 $definition = new Definition(
     'Application\DeskPRO\Log\Handler\LogEventHandler',
@@ -497,6 +507,11 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Transformer\\FeedbackToElasticaTransformer');
 $container->setDefinition('deskpro.search.feedback_to_elastica_transformer', $definition);
 
+// deskpro.search.topic_to_elastica_transformer
+$definition = new Definition();
+$definition->setClass(\Application\DeskPRO\NewSearch\Transformer\TopicToElasticaTransformer::class);
+$container->setDefinition('deskpro.search.topic_to_elastica_transformer', $definition);
+
 // fos_elastica.provider.prototype.orm
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\NewSearch\\Provider\\Doctrine');
@@ -585,7 +600,6 @@ $container->loadFromExtension(
                                     'stop',
                                     'lowercase',
                                     'asciifolding',
-                                    'edge_ngram_filter_3',
                                 ],
                             ],
                             'text_content_analyzer' => [
@@ -630,12 +644,12 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\Article',
+                            'model'                         => \Application\DeskPRO\Entity\Article::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.article_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ArticleRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\ArticleRepository::class,
                         ],
                     ],
                     'news' => [
@@ -651,12 +665,12 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\News',
+                            'model'                         => \Application\DeskPRO\Entity\News::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.news_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\NewsRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\NewsRepository::class,
                         ],
                     ],
                     'download' => [
@@ -672,12 +686,12 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\Download',
+                            'model'                         => \Application\DeskPRO\Entity\Download::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.download_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\DownloadRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\DownloadRepository::class,
                         ],
                     ],
                     'feedback' => [
@@ -693,12 +707,33 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\Feedback',
+                            'model'                         => \Application\DeskPRO\Entity\Feedback::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.feedback_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\FeedbackRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\FeedbackRepository::class,
+                        ],
+                    ],
+                    'topic' => [
+                        'mappings' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'sticky_words' => [],
+                            'content'      => ['analyzer' => 'text_content_analyzer'],
+                            'status'       => [],
+                            'guide_id'     => ['type' => 'integer'],
+                            'date_created' => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'date_active'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                        ],
+                        'persistence' => [
+                            'driver'                        => 'orm',
+                            'model'                         => \Application\DeskPRO\Entity\Topic::class,
+                            'provider'                      => [],
+                            'finder'                        => [],
+                            'elastica_to_model_transformer' => ['ignore_missing' => true],
+                            'model_to_elastica_transformer' => ['service' => 'deskpro.search.topic_to_elastica_transformer'],
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\TopicRepository::class,
                         ],
                     ],
                     'organization' => [
@@ -711,12 +746,12 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\Organization',
+                            'model'                         => \Application\DeskPRO\Entity\Organization::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.org_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\OrganizationRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\OrganizationRepository::class,
                         ],
                     ],
                     'chat_conversation' => [
@@ -725,7 +760,8 @@ $container->loadFromExtension(
                             'labels'        => ['analyzer' => 'title_content_analyzer'],
                             'department_id' => ['type' => 'integer'],
                             'is_agent'      => ['type' => 'boolean'],
-                            'agent_id'      => ['type' => 'integer'],
+                            'person'        => ['type' => 'integer'],
+                            'agent'         => ['type' => 'integer'],
                             'messages'      => [],
                             'date_created'  => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                             'date_active'   => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
@@ -737,7 +773,7 @@ $container->loadFromExtension(
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.chat_conversation_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\ChatConversationRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\ChatConversationRepository::class,
                         ],
                     ],
                     'person' => [
@@ -755,12 +791,12 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\Person',
+                            'model'                         => \Application\DeskPRO\Entity\Person::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.person_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\PersonRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\PersonRepository::class,
                         ],
                     ],
                     'ticket' => [
@@ -781,12 +817,12 @@ $container->loadFromExtension(
                         ],
                         'persistence' => [
                             'driver'                        => 'orm',
-                            'model'                         => 'Application\DeskPRO\Entity\Ticket',
+                            'model'                         => \Application\DeskPRO\Entity\Ticket::class,
                             'provider'                      => [],
                             'finder'                        => [],
                             'elastica_to_model_transformer' => ['ignore_missing' => true],
                             'model_to_elastica_transformer' => ['service' => 'deskpro.search.ticket_to_elastica_transformer'],
-                            'repository'                    => 'Application\DeskPRO\NewSearch\Repository\TicketRepository',
+                            'repository'                    => \Application\DeskPRO\NewSearch\Repository\TicketRepository::class,
                         ],
                     ],
                 ],

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,7 +86,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
         }
 
         try {
-            $this->protocol->connect($host, $port, $ssl, $logger, $verifyCertificate);
+            $this->protocol->connect($host, $port, $ssl, $verifyCertificate);
             if ($logger) {
                 $logger->logDebug('[protocol] connect okay');
             }

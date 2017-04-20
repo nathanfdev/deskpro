@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -250,7 +250,7 @@ class AvatarResolver
         $blob = $person->picture_blob;
         $url  = null;
 
-        if ($blob && $blob->isImage()) {
+        if ($blob && $blob->isImage() && $blob->getAuthId()) {
             $url = $this->router->generate(
                 'serve_blob_sizefit',
                 [
@@ -306,7 +306,7 @@ class AvatarResolver
         $blob = $org->getAvatarBlob();
         $url  = null;
 
-        if ($blob && $blob->isImage()) {
+        if ($blob && $blob->isImage() && $blob->getAuthId()) {
             $url = $this->router->generate(
                 'serve_blob_sizefit',
                 [

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -93,8 +93,8 @@ class FeedbackDataService extends AbstractDataService
         return $this->generateAndCache(
             [
                 'getItemsPager',
-                $page,
-                $max_per_page,
+                (int) $page,
+                (int) $max_per_page,
                 $filter,
                 $person,
             ],

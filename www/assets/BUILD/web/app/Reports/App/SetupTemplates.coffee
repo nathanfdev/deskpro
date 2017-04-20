@@ -37,7 +37,7 @@ define [
         'Index/blank.html',
       ]
 
-      for own _, route of ReportsRouting
+      for own _x, route of ReportsRouting
         if route.templateName
           templates.push(route.templateName)
 

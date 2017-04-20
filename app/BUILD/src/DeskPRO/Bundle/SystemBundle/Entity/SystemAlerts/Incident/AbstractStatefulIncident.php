@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,29 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractStatefulIncident.
  *
  * @ORM\MappedSuperclass
- * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractStatefulIncident extends AbstractIncident implements StatefulIncident
 {
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $resolved = false;
 

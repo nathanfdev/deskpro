@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -89,7 +89,14 @@ class GenTestEmailCommand extends ContainerAwareCommand
         }
 
         $message = $mailer->createMessage();
-        $message->setTo($to);
+
+        $tos = explode(',', $to);
+        foreach ($tos as $to) {
+            $to = trim($to);
+            if ($to) {
+                $message->addTo($to);
+            }
+        }
         $message->setFrom($from);
         $message->setSubject("Test Email - $date");
         $message->setBody("This is a test message sent at $date");

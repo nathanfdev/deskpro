@@ -18,8 +18,8 @@ import EventEmitter from 'eventemitter2';
  * @option {Array}              alwaysFields     Array of fields that are always added to the form, even if they are missing from the filter.
  */
 export class DynamicForm {
-  constructor(options) {
-    options = _.defaults(options, {
+  constructor(customOptions) {
+    const options = _.defaults(customOptions, {
       widgetClassName: 'deskpro-form-widget',
       runInitUpdate:   true,
       alwaysFields:    []
@@ -38,21 +38,35 @@ export class DynamicForm {
 
     this.fields = new Map();
     this.currentFields = [];
+    this.defaultValues = new Map();
 
-    this.$formEl.find('.' + this.widgetClassName).each((x, el) => {
-      el = $(el);
-      const name = el.data('field');
-      if (name && !el.hasClass('as-static') && !this.fields.has(name)) {
+    this.$formEl.find(`.${this.widgetClassName}`).each((x, el) => {
+      const $el = $(el);
+      const name = $el.data('field');
+
+      if (name && !$el.hasClass('as-static') && !this.fields.has(name)) {
         this.currentFields.push(name);
-        this.fields.set(name, el);
+        this.fields.set(name, $el);
       }
     });
 
-    this.$tplEl.find('.' + this.widgetClassName).each((x, el) => {
-      el = $(el);
-      const name = el.data('field');
-      if (name && !el.hasClass('as-static') && !this.fields.has(name)) {
-        this.fields.set(name, el);
+    this.$tplEl.find(`.${this.widgetClassName}`).each((x, el) => {
+      const $el = $(el);
+      const name = $el.data('field');
+
+      if (name && !$el.hasClass('as-static') && !this.fields.has(name)) {
+        this.fields.set(name, $el);
+      }
+    });
+
+    this.$tplEl.find('input, textarea, select').each((i, field) => {
+      const $field = $(field);
+      const fieldId = $field.attr('id');
+
+      if ($field.is(':checkbox, :radio')) {
+        this.defaultValues.set(fieldId, $field.prop('checked'));
+      } else {
+        this.defaultValues.set(fieldId, $field.val());
       }
     });
 
@@ -113,6 +127,10 @@ export class DynamicForm {
     return this.currentFields;
   }
 
+  getHiddenFields() {
+    return this.fieldNames.filter(name => this.currentFields.indexOf(name) === -1);
+  }
+
   /**
    * Sets the current field set.
    *
@@ -123,18 +141,19 @@ export class DynamicForm {
     this.ee.emit('preFieldsUpdated', evData);
     if (evData.cancel) return;
 
+    const oldFields = this.currentFields;
     this.currentFields = this.resolveFields(evData.fields);
 
     console.log('[DynamicForm] <setFieldSet> Fields: %o', fields);
 
-    this.$formEl.find('.' + this.widgetClassName).not('.as-static').detach();
+    this.$formEl.find(`.${this.widgetClassName}`).not('.as-static').detach();
 
     let insertPoint = this.$formEl.find('.dynamic-fields-container');
     if (!insertPoint[0]) {
       insertPoint = this.$formEl;
     }
 
-    this.currentFields.map((name) => {
+    this.currentFields.forEach((name) => {
       if (this.fields.has(name)) {
         const $el = this.fields.get(name);
         if (!$el) {
@@ -142,6 +161,29 @@ export class DynamicForm {
         }
         $el.detach().appendTo(insertPoint);
       }
+    });
+
+    // unset values of hidden fields
+    oldFields.forEach((name) => {
+      if (this.currentFields.indexOf(name) !== -1) {
+        return;
+      }
+
+      const $el = this.fields.get(name);
+      if (!$el) {
+        console.warn('Unknown field: %s', name);
+      }
+
+      $el.find('input, textarea, select').each((i, field) => {
+        const $field = $(field);
+        const defaultValue = this.defaultValues.get($field.attr('id'));
+
+        if ($field.is(':checkbox') || $field.is(':radio')) {
+          $field.prop('checked', defaultValue).trigger('change');
+        } else {
+          $field.val(defaultValue).trigger('change');
+        }
+      });
     });
 
     evData = { inst: this };
@@ -153,35 +195,36 @@ export class DynamicForm {
    * @returns {Array}
    */
   resolveFields(fields) {
+    let newFields = fields;
     if (this.alwaysFields.length) {
-      fields = _.union(fields, this.alwaysFields);
+      newFields = _.union(newFields, this.alwaysFields);
     }
 
-    fields = _.uniq(fields);
+    newFields = _.uniq(newFields);
 
-    return fields;
+    return newFields;
   }
 
   /**
    * Update the form.
    */
   update() {
-    if (this._firePreUpdate().cancel) {
-      return false;
+    let didChange = false;
+
+    if (this.firePreUpdate().cancel) {
+      return;
     }
 
-    const r = this._fireUpdateFields(this.fieldFilter(this.fieldNames, this));
+    const r = this.fireUpdateFields(this.fieldFilter(this.fieldNames, this));
     if (r.cancel) {
-      return false;
+      return;
     }
 
     const newFields = this.resolveFields(r.newFields);
-    let didChange = false;
-
     if (newFields.length !== this.currentFields.length) {
       didChange = true;
     } else {
-      for (let i = 0; i < newFields.length; i++) {
+      for (let i = 0; i < newFields.length; i += 1) {
         if (newFields[i] !== this.currentFields[i]) {
           didChange = true;
           break;
@@ -189,34 +232,35 @@ export class DynamicForm {
       }
     }
 
-    if (!didChange) {
+    if (didChange) {
+      this.setFieldSet(newFields);
+    } else {
       console.log('[DynamicForm] <update> No change. Fields: %o', this.currentFields);
     }
 
+    this.firePostUpdate(didChange);
+
+    // recursive update fields until there will be no changes
     if (didChange) {
-      this.setFieldSet(newFields);
+      this.update();
     }
-
-    this._firePostUpdate(didChange);
-
-    return didChange;
   }
 
-  _firePreUpdate() {
+  firePreUpdate() {
     const evData = { inst: this, cancel: false };
     this.ee.emit('preUpdate', evData);
 
     return evData;
   }
 
-  _firePostUpdate(didChange) {
+  firePostUpdate(didChange) {
     const evData = { inst: this, didChange };
     this.ee.emit('postUpdate', evData);
 
     return evData;
   }
 
-  _fireUpdateFields(newFields) {
+  fireUpdateFields(newFields) {
     const evData = { inst: this, cancel: false, newFields, currentFields: this.currentFields };
     this.ee.emit('updateFields', evData);
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,17 +75,23 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 
         $group_field = $this->grouping_field->getFieldInfo();
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = "
             SELECT {$group_field['select']}, COUNT(*)
             FROM tickets AS tickets
             {$group_field['join']}
             WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
             GROUP BY {$group_field['group_by']}
         ";
 
         $this->logger->logDebug("[TicketsAwaitingAgent] $sql");
         $this->logger->startTimer('TicketsAwaitingAgent');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketsAwaitingAgent');
 
         return $this->values;

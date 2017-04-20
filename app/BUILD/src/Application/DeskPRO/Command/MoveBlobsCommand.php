@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,6 +58,8 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         $bs           = App::getContainer()->getBlobStorage();
         $ignore_error = $input->getOption('ignore-error');
         $limit        = $input->getOption('limit');
+
+        $bs->disableIgnoreFailLimits();
 
         if ($input->getOption('set-storage-loc')) {
             $set_aid = $input->getOption('set-storage-loc');

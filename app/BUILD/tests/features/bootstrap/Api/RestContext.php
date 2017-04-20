@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,11 +31,11 @@ namespace DpBehat\Api;
 use Application\DeskPRO\Entity\Session;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 class RestContext extends BaseContext
 {
@@ -137,7 +137,7 @@ class RestContext extends BaseContext
             if (!isset($row['key']) || !isset($row['value'])) {
                 throw new \Exception("You must provide a 'key' and 'value' column in your table node.");
             }
-
+            $row['value'] = DataContext::replace($row['value']);
             if (is_string($row['value']) && substr($row['value'], 0, 1) == '@') {
                 $row['value'] = '@'.rtrim($this->getMinkParameter('files_path'), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.substr($row['value'], 1);
             }
@@ -235,6 +235,20 @@ class RestContext extends BaseContext
         $actual = $this->getHttpHeader($name);
         $this->assertEquals(strtolower($value), strtolower($actual),
             sprintf('The header "%s" is equal to "%s"', $name, $actual)
+        );
+    }
+
+    /**
+     * Checks, whether the db queries counter equal or less than value.
+     *
+     * @Then the db queries counter should be equal or less than :value
+     */
+    public function theDbQueriesCounterShouldBeEqualOrLessThan($value)
+    {
+        $actual = $this->getHttpHeader('DB-QUERIES-COUNT');
+        $this->assert(
+            intval($actual) <= intval($value),
+            sprintf('The db queries counter "%s" is greater than "%s"', $actual, $value)
         );
     }
 
@@ -356,6 +370,29 @@ class RestContext extends BaseContext
         }
 
         echo "curl -X $method$data$headers '$url'";
+    }
+
+    /**
+     * @Then I can load and save object via :url
+     *
+     * @param string $url
+     */
+    public function canLoadAndSaveObject($url)
+    {
+        $url = DataContext::replace($url);
+
+        /** @var Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+        $client->request('GET', $this->locatePath($url), [], [], $this->server_params);
+
+        $data    = json_decode($client->getResponse()->getContent(), true);
+        $data    = $data['data'];
+        $content = json_encode($data);
+
+        $client->request('PUT', $this->locatePath($url), [], [], $this->server_params, $content);
+
+        $response = $client->getResponse();
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     private function getHttpHeader($name)

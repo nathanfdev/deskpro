@@ -16,11 +16,15 @@
     </div>
 {% endif %}
 
-{% if not ticket.resolved %}
+{% if not ticket.archived and not (ticket.resolved and not has_permission('tickets.reopen_resolved'))%}
 
     <div class="ticket-reply dpx-form" id="ticket-reply-form">
         <div class="ticket-reply-header">
-            {{ phrase('portal.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
+            {% if not ticket.resolved %}
+                {{ phrase('portal.tickets.view_reply_or_close', { close_url: portal_path(ticket, 'resolve') }) }}
+            {% else %}
+                {{ phrase('portal.tickets.view_reply') }}
+            {% endif %}
         </div>
         {{ form_errors(form) }}
         {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
@@ -41,10 +45,23 @@
                 </div>
             </div>
         {% endif %}
-        {{ form_widget(form.ticket_message) }}
+        <div class="bucket">
+            {{ form_widget(form.ticket_message) }}
+        </div>
         {{ form_widget(form.attachments) }}
         <div class="as-no-dpui">{{ form_widget(form.more_attachments) }}</div>
         {{ form_rest(form) }}
         {{ form_end(form) }}
     </div>
+{% else %}
+    <div class="flashes">
+        <div class="flash flash-notice">
+            {{ phrase('portal.tickets.view_cant_reply_archived') }}
+        </div>
+    </div>
+    {% if can_view_tickets_link() %}
+        <a href="{{ path('portal_new_ticket') }}" class="button">
+            <p>{{ phrase('portal.tickets.new_ticket_button') }}</p>
+        </a>
+    {% endif %}
 {% endif %}

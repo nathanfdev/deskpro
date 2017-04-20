@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,16 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+/**
+ * Class ApiExceptionListener.
+ */
 class ApiExceptionListener implements EventSubscriberInterface
 {
     /**
@@ -46,14 +51,32 @@ class ApiExceptionListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onException(GetResponseForExceptionEvent $event)
     {
         $request   = $event->getRequest();
         $exception = $event->getException();
 
-        if (strpos($request->getPathInfo(), '/portal/api') !== false) {
+        // api and ajax requests
+        if (strpos($request->getPathInfo(), '/portal/api') !== false || $request->isXmlHttpRequest()) {
             if ($exception instanceof AccessDeniedException) {
-                $event->setException(new AccessDeniedHttpException($exception->getMessage()));
+                $event->setResponse(new JsonResponse(
+                    [
+                        'code'    => Response::HTTP_FORBIDDEN,
+                        'message' => $exception->getMessage(),
+                    ],
+                    Response::HTTP_FORBIDDEN
+                ));
+            } elseif ($exception instanceof HttpException) {
+                $event->setResponse(new JsonResponse(
+                    [
+                        'code'    => $exception->getStatusCode(),
+                        'message' => $exception->getMessage(),
+                    ],
+                    $exception->getStatusCode()
+                ));
             }
         }
     }

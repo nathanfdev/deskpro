@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,11 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
+use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -93,6 +96,16 @@ class NotificationService
     }
 
     /**
+     * @return int
+     */
+    public function lastNotify()
+    {
+        $date = new \DateTime();
+
+        return $date->getTimestamp();
+    }
+
+    /**
      * @return NotificationConfiguration
      */
     public function getClientsSetup()
@@ -121,6 +134,51 @@ class NotificationService
     }
 
     /**
+     * @param Person $person
+     * @param array  $ids
+     * @param string $noteText
+     */
+    public function sendNote(Person $person, $ids, $noteText)
+    {
+        $agentChatRepository = $this->em->getRepository(AgentChat::class);
+        $personRepository    = $this->em->getRepository(Person::class);
+
+        //ugly cheat
+        foreach ($personRepository->findBy(['id' => $ids]) as $participant) {
+            $noteText = str_replace(
+                '@'.$participant->getDisplayName(),
+                '<strong>@'.$participant->getDisplayName().'</strong>',
+                $noteText
+            );
+        }
+
+        $chat = null;
+
+        foreach ($ids as $participantId) {
+            $participant = $personRepository->find($participantId);
+            $chat        = $agentChatRepository->findChatWithAgent($participant, $person);
+            if (!$chat) {
+                $chat = new AgentChat();
+                $chat->setType(AgentChat::TYPE_AGENT);
+                $chat->addParticipant($participant);
+                $chat->addParticipant($person);
+            }
+
+            $message = new AgentChatMessage();
+            $message
+                ->setPerson($person)
+                ->setChat($chat)
+                ->setUuid(RandUtils::uuidV4())
+                ->setMessage($noteText)
+                ->setMetadata(['mention' => true]);
+            $this->em->persist($chat);
+            $this->em->persist($message);
+        }
+
+        $this->em->flush();
+    }
+
+    /**
      * @param $handler
      *
      * @return NotificationClient
@@ -134,6 +192,12 @@ class NotificationService
                     'debug'  => $this->settings->get('notification.settings.pusher_client.debug'),
                 ]);
             case 'db':
+                return new NotificationClient('legacy', [
+                    'last_alert'  => $this->lastAlert(),
+                    'last_notify' => $this->lastNotify(),
+                ]);
+            case 'db_new':
+
                 return new NotificationClient('polling', [
                     'last_alert'       => $this->lastAlert(),
                     'polling_interval' => $this->settings->get('notification.settings.polling_client.polling_interval', 5000),

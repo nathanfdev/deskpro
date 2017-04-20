@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,6 +52,16 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Rest\Route("/tickets")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Ticket",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class TicketsController extends AbstractTicketsController
 {
@@ -79,47 +89,38 @@ class TicketsController extends AbstractTicketsController
     }
 
     /**
-     * @deprecated
-     * @Rest\Post("")
-     */
-    public function postAction(Request $request)
-    {
-        $this->get('logger')->warning('POST /tickets is deprecated, use /ticket_forms to create tickets');
-
-        return parent::postAction($request);
-    }
-
-    /**
      * @ApiDoc(
      *      description="Get a list of tickets (see parameters description for additional information)",
      *      filters={
      *          {
-     *              "name"="sort",
+     *              "name"="order_by",
      *              "description"="tickets list sort",
      *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting|subject|status",
      *              "dataType"="string",
      *          },
      *          {"name"="ids", "description"="ticket list to fetch, comma separated list", "dataType"="string", "pattern"="[\d+,]+"},
-     *          {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
+     *          {"name"="order_dir", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
      *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="filter", "description"="TicketFilter ID option", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="[\w+]"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="problem", "description"="problem filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="sla", "description"="sla id filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="sla_status", "description"="sla status filter", "dataType"="integer", "pattern"="ok|warning|fail"},
      *          {
      *              "name"="ticket_field.{id}",
      *              "description"="
      *                  Custom ticket field filter. To filter by a custom field with ID=1 you need to add
      *                  ?ticket_field.1=value to the query string",
      *              "dataType"="string",
-     *              "pattern"="\d+|\w"
+     *              "pattern"="\d+|\w+"
      *          }
      *      },
      *      statusCodes={
@@ -152,7 +153,9 @@ class TicketsController extends AbstractTicketsController
                 'include',
                 'count',
                 'page',
+                'offset',
                 'ids_only',
+                'inline_sideloads',
                 JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM,
             ];
 
@@ -175,6 +178,8 @@ class TicketsController extends AbstractTicketsController
                     'total_user_waiting',
                     'subject',
                     'status',
+                    'sla',
+                    'sla_status',
                 ];
                 $orderBy = $params['order_by'];
                 if (!in_array($orderBy, $allowed)) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,9 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
+use Application\DeskPRO\Log\Logger;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Zend\Mail\Protocol;
 use Zend\Mail\Storage;
 
@@ -74,26 +77,21 @@ class ImapSocket extends AbstractFetcher
      *
      * @var array An array of message ids
      */
-    private $message_uids;
+    private $messageUids;
 
     /**
      * Mailbox name to move messages after processing.
      *
      * @var string Mailbox name
      */
-    private $archive_mailbox;
+    private $archiveMailbox;
 
     /**
      * Mailbox name to read messages from.
      *
      * @var string Mailbox name
      */
-    private $read_mailbox;
-
-    /**
-     * @var Protocol\Imap
-     */
-    protected $protocol;
+    private $readMailbox;
 
     /**
      * @throws \Exception
@@ -102,80 +100,86 @@ class ImapSocket extends AbstractFetcher
      */
     protected function _initConnection()
     {
-        $options = [];
+        $incomingAccount = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
 
-        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
-
-        switch ($incoming_account->getType()) {
+        switch ($incomingAccount->getType()) {
             case 'gmail':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $incoming_account;
-
-                $options['host'] = 'imap.gmail.com';
-                $options['port'] = 993;
-                $options['user'] = $gmail_config->user;
-                $options['mode'] = $gmail_config->mode ?: self::MODE_DELETE; // delete in gmail just means archive
-
                 $this->logger->log('Trying to refresh gmail access token', 'debug');
-                $client = new \Google_Client();
-                $client->setClientId($gmail_config->clientId);
-                $client->setClientSecret($gmail_config->clientSecret);
-                $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
-                $client->setAccessToken($gmail_config->token);
-                $client->setAccessType('offline');
-                $client->refreshToken($gmail_config->refreshToken);
-                $data = $client->getAccessToken();
-                if (!empty($data['access_token'])) {
-                    $options['token'] = $data['access_token'];
-                }
-
+                $options = self::initOptions(
+                    $incomingAccount,
+                    App::$container->get('settings_resolver')->getGlobalSettings()
+                );
                 break;
 
             default:
-                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
+                throw new \InvalidArgumentException('Unknown account type: '.$incomingAccount->getType());
         }
 
-        $this->mode            = $options['mode'];
-        $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
-        $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
+        $this->mode           = $options['mode'];
+        $this->archiveMailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
+        $this->readMailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
         $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
         $options['logger'] = $this->logger;
 
-        $this->protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
-        $this->oauth2Authenticate($options['user'], $options['token']);
-        $this->storage = new Storage\Imap($this->protocol);
+        $protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
+        self::oauth2Authenticate($options['user'], $options['token'], $protocol);
+        $this->storage = new Storage\Imap($protocol);
 
-        if ($this->archive_mailbox === $this->storage->getCurrentFolder()) {
+        if ($this->archiveMailbox === $this->storage->getCurrentFolder()) {
             throw new \Exception('The current mailbox is reserved for processed emails, it can not be used as the primary mailbox');
         }
 
         if ($this->mode === self::MODE_ARCHIVE) {
             try {
-                $this->storage->selectFolder($this->archive_mailbox);
+                $this->storage->selectFolder($this->archiveMailbox);
             } catch (Storage\Exception\RuntimeException $e) {
-                $this->storage->createFolder($this->archive_mailbox);
+                $this->storage->createFolder($this->archiveMailbox);
             }
         }
 
-        if ($this->read_mailbox) {
+        if ($this->readMailbox) {
             try {
-                $this->storage->selectFolder($this->read_mailbox);
+                $this->storage->selectFolder($this->readMailbox);
             } catch (Storage\Exception\RuntimeException $e) {
-                $this->storage->createFolder($this->read_mailbox);
+                $this->storage->createFolder($this->readMailbox);
             }
         }
 
         if ($this->mode == self::MODE_READ) {
-            $this->message_uids = $this->protocol->search([Storage::FLAG_UNSEEN]) ?: [];
+            $this->messageUids = $this->protocol->search([Storage::FLAG_UNSEEN]) ?: [];
         } else {
-            $this->message_uids = $this->protocol->search(['ALL']) ?: [];
+            $this->messageUids = $this->protocol->search(['ALL']) ?: [];
         }
 
-        $this->logger->log('Read IDs: '.implode(', ', $this->message_uids), 'debug');
+        $this->logger->log('Read IDs: '.implode(', ', $this->messageUids), 'debug');
 
         return $this->storage;
+    }
+
+    public static function initOptions(GmailConfig $config, SettingsBag $settings)
+    {
+        $options         = [];
+        $options['host'] = 'imap.gmail.com';
+        $options['port'] = 993;
+        $options['user'] = $config->user;
+        $options['mode'] = $config->mode ?: self::MODE_DELETE; // delete in gmail just means archive
+
+        $client = new \Google_Client();
+        $client->setClientId($settings->get('core_email.google_oauth_client_id'));
+        $client->setClientSecret($settings->get('core_email.google_oauth_secret'));
+        $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
+        $client->setAccessToken($config->token);
+        $client->setAccessType('offline');
+        $client->refreshToken($config->refreshToken);
+
+        $data = $client->getAccessToken();
+        if (!empty($data['access_token'])) {
+            $options['token'] = $data['access_token'];
+        }
+
+        return $options;
     }
 
     /**
@@ -188,7 +192,7 @@ class ImapSocket extends AbstractFetcher
     {
         $this->getStorage();
 
-        return array_shift($this->message_uids);
+        return array_shift($this->messageUids);
     }
 
     /**
@@ -198,46 +202,46 @@ class ImapSocket extends AbstractFetcher
      */
     public function _readNext()
     {
-        $message_uid = $this->getNextMessageUid();
+        $messageUid = $this->getNextMessageUid();
 
-        if ($message_uid === null) {
-            return;
+        if ($messageUid === null) {
+            return null;
         }
 
-        $raw_message       = new RawMessage();
-        $raw_message->id   = $message_uid;
-        $raw_message->uid  = $message_uid;
-        $raw_message->size = $this->storage->getSize($message_uid) ?: 0;
+        $rawMessage       = new RawMessage();
+        $rawMessage->id   = $messageUid;
+        $rawMessage->uid  = $messageUid;
+        $rawMessage->size = $this->storage->getSize($messageUid) ?: 0;
 
-        $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
-        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
 
-        if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
+        if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $raw_message->content = $this->storage->getRawHeader($message_uid)."\n\n";
+            $rawMessage->content = $this->storage->getRawHeader($messageUid)."\n\n";
             $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
-            $raw_message->content = $this->storage->getRawContent($message_uid);
+            $rawMessage->content = $this->storage->getRawContent($messageUid);
         }
 
         $headers = null;
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
-        } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
-        } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers) = explode("\n\n", $raw_message->content, 2);
+        if (strpos($rawMessage->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $rawMessage->content, 2);
+        } elseif ($EOL != "\r\n" && strpos($rawMessage->content, "\r\n\r\n")) {
+            list($headers) = explode("\r\n\r\n", $rawMessage->content, 2);
+        } elseif ($EOL != "\n" && strpos($rawMessage->content, "\n\n")) {
+            list($headers) = explode("\n\n", $rawMessage->content, 2);
         } else {
-            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $rawMessage->content, 2);
         }
 
-        $raw_message->headers = $headers;
+        $rawMessage->headers = $headers;
 
-        return $raw_message;
+        return $rawMessage;
     }
 
     /**
@@ -256,8 +260,8 @@ class ImapSocket extends AbstractFetcher
                 break;
 
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessage($id, $this->archive_mailbox);
-                $this->logger->log("Moved $id to {$this->archive_mailbox}", 'debug');
+                $this->storage->moveMessage($id, $this->archiveMailbox);
+                $this->logger->log("Moved $id to {$this->archiveMailbox}", 'debug');
                 break;
 
             case self::MODE_DELETE:
@@ -287,17 +291,17 @@ class ImapSocket extends AbstractFetcher
      *
      * @return bool
      */
-    protected function oauth2Authenticate($email, $accessToken)
+    public static function oauth2Authenticate($email, $accessToken, Protocol\Imap $protocol)
     {
-        $authenticateParams = ['XOAUTH2', $this->constructAuthString($email, $accessToken)];
-        $this->protocol->sendRequest('AUTHENTICATE', $authenticateParams);
+        $authenticateParams = ['XOAUTH2', self::constructAuthString($email, $accessToken)];
+        $protocol->sendRequest('AUTHENTICATE', $authenticateParams);
         while (true) {
             $response = '';
-            $is_plus  = $this->protocol->readLine($response, '+', true);
-            if ($is_plus) {
+            $isPlus   = $this->protocol->readLine($response, '+', true);
+            if ($isPlus) {
                 // error_log("got an extra server challenge: $response");
                 // Send empty client response.
-                $this->protocol->sendRequest('');
+                $protocol->sendRequest('');
                 continue;
             }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -152,6 +153,6 @@ class SnippetFormatter implements PersonContextInterface
      */
     protected function getTemplateRenderer()
     {
-        return new TwigTemplateRenderer($this->twig);
+        return new TwigTemplateRenderer($this->twig, App::$container->get('brand_aware_settings_resolver'));
     }
 }

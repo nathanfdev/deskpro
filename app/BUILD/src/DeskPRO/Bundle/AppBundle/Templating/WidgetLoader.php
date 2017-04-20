@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use JMS\Serializer\Serializer;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class WidgetLoader.
@@ -68,14 +69,15 @@ class WidgetLoader
     }
 
     /**
-     * @param Brand $brand
-     * @param bool  $withOptions
+     * @param Brand   $brand
+     * @param Request $request
+     * @param bool    $withOptions
      *
      * @return string
      */
-    public function getWidgetCode(Brand $brand, $withOptions = false)
+    public function getWidgetCode(Brand $brand, Request $request, $withOptions = false)
     {
-        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand);
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand, $request);
 
         $loaderSrc = $urlSettings->getWidgetLoader();
         $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);

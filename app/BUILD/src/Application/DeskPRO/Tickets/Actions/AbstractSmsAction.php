@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -151,12 +151,18 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         $agents = array_unique($agents);
         $repo   = $this->getContainer()->getEm()->getRepository('DeskPRO:Person');
         $agents = $repo->getPeopleResultsFromIds($agents);
+
         foreach ($agents as $agent) {
             /* @var $agent Person */
+            if (!$agent->isActiveAgent()) {
+                continue;
+            }
+
             if ($pn = $agent->getPrimaryPhoneNumber()) {
                 $numbers[] = $pn['number'];
             }
         }
+
         $numbers = array_unique($numbers);
         $numbers = array_filter($numbers, function ($val) {
             return $val !== null && strlen($val) > 5; // attempt to filter out any impossible numbers

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -238,37 +238,38 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('http://urlupdated', $entity->getContactData()->first()->getField1());
     }
 
-    public function test_remove_contact_data()
+    public function test_add_email_domain()
     {
-        $websiteModel1 = new Model\ContactData\Website();
-        $websiteModel1->setComment('comment');
-        $websiteModel1->setUrl('http://url.com');
-
-        $websiteModel2 = new Model\ContactData\Website();
-        $websiteModel2->setComment('comment');
-        $websiteModel2->setUrl('http://url2.com');
-
+        // base create
         $model = $this->createBaseModel();
-        $model->getContactData()->setWebsite([$websiteModel1, $websiteModel2]);
+        $model->setEmailDomains(['domain.com']);
 
         $this->writer->writeData($model);
         $this->em()->clear();
 
         $entity = $this->getBaseEntity();
+        $this->assertCount(1, $entity->getEmailDomains());
+        $this->assertEquals('domain.com', $entity->getEmailDomains()->first()->getDomain());
 
-        $this->assertNotNull($entity);
-        $this->assertCount(2, $entity->getContactData());
-
-        $model->getContactData()->setWebsite([$websiteModel2]);
+        // append
+        $model->setEmailDomains(['domain2.com']);
 
         $this->writer->writeData($model);
         $this->em()->clear();
 
         $entity = $this->getBaseEntity();
+        $this->assertCount(2, $entity->getEmailDomains());
+        $this->assertEquals('domain.com', $entity->getEmailDomains()->first()->getDomain());
+        $this->assertEquals('domain2.com', $entity->getEmailDomains()->last()->getDomain());
 
-        $this->assertNotNull($entity);
-        $this->assertCount(1, $entity->getContactData());
-        $this->assertEquals('http://url2.com', $entity->getContactData()->first()->getField1());
+        // duplicate check
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertCount(2, $entity->getEmailDomains());
+        $this->assertEquals('domain.com', $entity->getEmailDomains()->first()->getDomain());
+        $this->assertEquals('domain2.com', $entity->getEmailDomains()->last()->getDomain());
     }
 
     /**

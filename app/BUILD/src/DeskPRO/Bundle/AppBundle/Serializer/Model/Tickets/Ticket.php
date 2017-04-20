@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,6 +45,7 @@ use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -255,15 +256,28 @@ class Ticket
      * Ticket status.
      *
      * @JMS\Type("string")
+     * @JMS\Since("20170401")
      *
      * @var string
      */
     private $status;
 
     /**
-     * Ticket hidden status.
+     * Legacy ticket status.
      *
      * @JMS\Type("string")
+     * @JMS\SerializedName("status")
+     * @JMS\Until("20170400")
+     *
+     * @var string
+     */
+    private $oldStatus;
+
+    /**
+     * Legacy ticket hidden status.
+     *
+     * @JMS\Type("string")
+     * @JMS\Until("20170400")
      *
      * @var string
      */
@@ -281,7 +295,7 @@ class Ticket
     /**
      * String array of labels.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelTicket>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelTicket>>")
      *
      * @var bool
      */
@@ -585,6 +599,34 @@ class Ticket
     private $star;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketLayout;
+
+    /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketExcerpt;
+
+    /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketAgentErrors;
+
+    /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $ticketUserErrors;
+
+    /**
      * Constructor.
      *
      * @param TicketEntity $ticket
@@ -621,7 +663,8 @@ class Ticket
         $this->creationSystem       = $ticket->getCreationSystem();
         $this->creationSystemOption = $ticket->getCreationSystemOption();
         $this->ticketHash           = $ticket->getTicketHash();
-        $this->status               = $ticket->getStatus();
+        $this->status               = $ticket->getStatusCode();
+        $this->oldStatus            = $ticket->getStatus();
         $this->hiddenStatus         = $ticket->getHiddenStatus();
         $this->isHold               = $ticket->isHold();
         $this->labels               = $ticket->getLabels();
@@ -665,5 +708,37 @@ class Ticket
     public function setStar($star)
     {
         $this->star = $star;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketLayout
+     */
+    public function setTicketLayout($ticketLayout)
+    {
+        $this->ticketLayout = $ticketLayout;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketExcerpt
+     */
+    public function setTicketExcerpt($ticketExcerpt)
+    {
+        $this->ticketExcerpt = $ticketExcerpt;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketAgentErrors
+     */
+    public function setTicketAgentErrors($ticketAgentErrors)
+    {
+        $this->ticketAgentErrors = $ticketAgentErrors;
+    }
+
+    /**
+     * @param InlineCustomSideload $ticketUserErrors
+     */
+    public function setTicketUserErrors($ticketUserErrors)
+    {
+        $this->ticketUserErrors = $ticketUserErrors;
     }
 }

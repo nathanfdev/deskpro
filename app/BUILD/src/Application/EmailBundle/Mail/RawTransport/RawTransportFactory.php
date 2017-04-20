@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\SwiftMailer\Plugins\TransportLogger;
 use Psr\Log\LoggerInterface;
@@ -48,11 +49,18 @@ class RawTransportFactory
     private $logger;
 
     /**
-     * @param LoggerInterface $logger
+     * @var SettingsBag
      */
-    public function __construct(LoggerInterface $logger)
+    private $settings;
+
+    /**
+     * @param LoggerInterface $logger
+     * @param SettingsBag     $settings
+     */
+    public function __construct(LoggerInterface $logger, SettingsBag $settings)
     {
-        $this->logger = $logger;
+        $this->logger   = $logger;
+        $this->settings = $settings;
     }
 
     /**
@@ -72,11 +80,21 @@ class RawTransportFactory
         }
 
         switch ($config->getType()) {
-            case 'smtp':     $tr = $this->createSmtpTransport($config); break;
-            case 'gmail':    $tr = $this->createGmailTransport($config); break;
-            case 'office365':$tr = $this->createOffice365Transport($config); break;
-            case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
-            case 'exchange': $tr = $this->createExchangeTransport($config); break;
+            case 'smtp':
+                $tr = $this->createSmtpTransport($config);
+                break;
+            case 'gmail':
+                $tr = $this->createGmailTransport($config);
+                break;
+            case 'office365':
+                $tr = $this->createOffice365Transport($config);
+                break;
+            case 'php_mail':
+                $tr = $this->createPhpMailTransport($config);
+                break;
+            case 'exchange':
+                $tr = $this->createExchangeTransport($config);
+                break;
             default:
                 $this->logger->error('Unknown account type: %s', $config->getType());
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
@@ -99,6 +117,10 @@ class RawTransportFactory
             $config->secure_mode == 'none' ? null : $config->secure_mode
         );
 
+        if ($config->secure_mode && $config->isDisableCertValidation()) {
+            $tr->setStreamOptions(['ssl' => ['allow_self_signed' => true, 'verify_peer' => false]]);
+        }
+
         if (!empty($config->user)) {
             $tr->setUsername($config->user);
         }
@@ -114,26 +136,24 @@ class RawTransportFactory
         }
         $tr->registerPlugin($tr_logger);
 
-        $raw_tr = new RawSmtpTransport($tr);
-
-        return $raw_tr;
+        return new RawSmtpTransport($tr);
     }
 
     /**
      * @param OutgoingAccount\GmailConfig $config
      *
-     * @return \Swift_SmtpTransport
+     * @return RawSmtpTransport
      */
     public function createGmailTransport(OutgoingAccount\GmailConfig $config)
     {
         $tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
         $tr->setUsername($config->user);
 
-        if (!empty($config->token)) {
+        if ($config->type === OutgoingAccount\GmailConfig::TYPE_OAUTH) {
             $client = new \Google_Client();
-            $client->setClientId($config->clientId);
-            $client->setClientSecret($config->clientSecret);
-            $client->setScopes(\Google_Service_Gmail::MAIL_GOOGLE_COM);
+            $client->setClientId($this->settings->get('core_email.google_oauth_client_id'));
+            $client->setClientSecret($this->settings->get('core_email.google_oauth_service'));
+            $client->setScopes([\Google_Service_Gmail::MAIL_GOOGLE_COM]);
             $client->setAccessToken($config->token);
             $client->setAccessType('offline');
             $client->refreshToken($config->refreshToken);
@@ -142,6 +162,8 @@ class RawTransportFactory
                 $auth = new \Swift_Transport_Esmtp_Auth_XOAuth2Authenticator();
                 $tr->setExtensionHandlers(['AUTH' => new \Swift_Transport_Esmtp_AuthHandler([$auth])]);
                 $tr->setAuthMode('XOAUTH2');
+                // setUsername again to assign username to AuthHandler
+                $tr->setUsername($config->user);
                 $tr->setPassword($data['access_token']);
             }
         } else {
@@ -151,15 +173,13 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        $raw_tr = new RawSmtpTransport($tr);
-
-        return $raw_tr;
+        return new RawSmtpTransport($tr);
     }
 
     /**
      * @param OutgoingAccount\Office365Config $config
      *
-     * @return \Swift_SmtpTransport
+     * @return RawSmtpTransport
      */
     public function createOffice365Transport(OutgoingAccount\Office365Config $config)
     {
@@ -169,15 +189,13 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        $raw_tr = new RawSmtpTransport($tr);
-
-        return $raw_tr;
+        return new RawSmtpTransport($tr);
     }
 
     /**
      * @param OutgoingAccount\PhpMailConfig $conifg
      *
-     * @return \Swift_MailTransport
+     * @return RawSwiftmailerTransport
      */
     public function createPhpMailTransport(OutgoingAccount\PhpMailConfig $conifg)
     {
@@ -185,9 +203,7 @@ class RawTransportFactory
 
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        $raw_tr = new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
-
-        return $raw_tr;
+        return new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
     }
 
     /**

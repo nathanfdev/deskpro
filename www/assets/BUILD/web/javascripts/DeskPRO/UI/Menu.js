@@ -56,7 +56,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (this.options.parentMenu) {
 			this.parentMenu = this.options.parentMenu;
-			delete this.options.parentMenu;
+			this.options.parentMenu = null;
 		}
 
 		if (DeskPRO.UI.Menu_Instances[this.options.objectGroup] === undefined) {
@@ -238,6 +238,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		// Close all other instances (only matters for parent instances)
 		if (!this.parentMenu) {
 			Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
+				if (!v) return;
 				if (v.isMenuOpen()) {
 					v.closeMenu();
 				}
@@ -498,12 +499,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.elements.shim.hide();
 		}
 
-		if (this.parentMenu) {
-			// no fade for submenus
-			this.elements.wrapperOuter.hide();
-		} else {
-			this.elements.wrapperOuter.fadeOut(200);
-		}
+		this.elements.wrapperOuter.hide();
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('menuClosed', [{ menu: this }]);
@@ -551,7 +547,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 
 		if (!eventData.noFireEvent) {
-			this.fireEvent('itemClicked', [eventData]);
+      this.fireEvent('itemClicked', [eventData]);
 		}
 
 		event.stopPropagation();
@@ -837,22 +833,35 @@ DeskPRO.UI.Menu = new Orb.Class({
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
-
 		this.closeMenu();
 
-		if (this.elements && this.elements.shim) {
-			this.elements.shim.remove();
+		if (this.elements) {
+      if (this.elements.shim) {
+        this.elements.shim.remove();
+        this.elements.shim = null;
+      }
+
+      if (this.elements.wrapper) {
+        this.elements.wrapper.off();
+        this.elements.wrapper = null;
+      }
+
+      if (this.elements.wrapperInner) {
+        this.elements.wrapperInner = null;
+      }
+
+      if (this.elements.wrapperOuter) {
+        this.elements.wrapperOuter.remove();
+        this.elements.wrapperOuter = null;
+      }
+
+      if (this.elements.list) {
+        this.elements.list.remove();
+      	this.elements.list = null;
+			}
 		}
 
-		if (this.elements && this.elements.wrapperOuter) {
-			this.elements.wrapperOuter.remove();
-		}
-
-		if (this.options.menuEl) {
-			this.options.menuEl.remove();
-		}
-
-		delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];
+		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = null;
 
 		Array.each(this.subMenus, function(menuInfo) {
 			if (!menuInfo.OBJ_DESTROYED) {
@@ -861,5 +870,12 @@ DeskPRO.UI.Menu = new Orb.Class({
 		});
 
 		this.subMenus = [];
+    this.elements = null;
+    this.options.subMenuConfig = null;
+    this.options.triggerElement = null;
+    this.options.menuEl = null;
+    this.options.menuElement = null;
+    this.options = null;
+    this.destroyEvents();
 	}
 });

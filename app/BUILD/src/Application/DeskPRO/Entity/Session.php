@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -319,6 +319,38 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
         return $session_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip
+     */
+    public function setIpAddress($ip)
+    {
+        $this->setModelField('ip_address', $ip);
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setVisitorId($id)
+    {
+        $this->setModelField('visitor_id', $id);
     }
 
     //###########################################################################

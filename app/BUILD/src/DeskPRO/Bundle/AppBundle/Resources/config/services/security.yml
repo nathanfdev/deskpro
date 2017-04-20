@@ -3,6 +3,12 @@ parameters:
 
 services:
 
+  security.feature_listener:
+    class: DeskPRO\Bundle\AppBundle\Security\EventListener\FeatureListener
+    arguments: ["@deskpro.feature_flags", "@deskpro.features_collection", "@annotation_reader"]
+    tags:
+      - { name: kernel.event_subscriber }
+
   # Each kernel bundle will have their own specific security services dedicated to it
   # these are some general security services that should be able to be used app-wide.
   # For specific security implmentation details, see security.yml in the kernel bundles.
@@ -44,7 +50,7 @@ services:
 
   dp_person_user_provider:
     class: DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
-    arguments: ["@person_repository"]
+    arguments: ["@person_repository", "@ban_email_repository"]
 
   # use a custom user/password validator
   security.validator.user_password:
@@ -124,6 +130,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.article_category:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCategoriesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.article_comments:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCommentsVoter
     tags:
@@ -151,6 +162,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.download_categories:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\DownloadCategoriesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.download_comments:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\DownloadCommentsVoter
     tags:
@@ -168,6 +184,11 @@ services:
 
   security.voter.permission_groups.news:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\NewsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.news_categories:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\NewsCategoriesVoter
     tags:
       - { name: security.voter.permission_groups }
 

@@ -73,7 +73,7 @@ services:
 
   redirect_to_url_exception.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\RedirectToUrlExceptionListener
-    arguments: ["@logger", "@?settings_resolver", "@?brand_stack"]
+    arguments: ["@logger", "@?url_corrector_factory", "@?brand_stack"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -93,6 +93,15 @@ services:
 
   api_exception.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\ApiExceptionListener
+    tags:
+      - { name: kernel.event_subscriber}
+
+  no_ticket_access_redirect.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\NoTicketAccessRedirectListener
+    arguments:
+      - "@security.token_storage"
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
     tags:
       - { name: kernel.event_subscriber}
 

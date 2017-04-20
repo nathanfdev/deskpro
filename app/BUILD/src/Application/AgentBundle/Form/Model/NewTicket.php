@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -98,6 +98,8 @@ class NewTicket
     public $attach = [];
     /** @var array */
     public $ticket_fields = [];
+    /** @var int */
+    public $organization_id;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -186,6 +188,9 @@ class NewTicket
     public function getMockTicket()
     {
         $t = new Ticket();
+        $p = new Person();
+        $o = new Organization();
+        $t->_setNoPersist();
 
         if ($this->brand_id) {
             $t->setBrandId($this->brand_id);
@@ -208,6 +213,13 @@ class NewTicket
         if ($this->status) {
             $t->setStatus($this->status);
         }
+
+        $t->person       = $p;
+        $p->organization = $o;
+
+        App::$container->getTicketFieldManager()->setFormToObject($this->ticket_fields, $t);
+        App::$container->getPersonFieldManager()->setFormToObject($this->custom_person_fields, $p);
+        App::$container->getOrgFieldManager()->setFormToObject($this->custom_org_fields, $o);
 
         return $t;
     }
@@ -236,6 +248,7 @@ class NewTicket
 
         if ($org) {
             $this->custom_org_fields = App::$container->getOrgFieldManager()->createFormArrayForObject($org);
+            $this->organization_id   = $org->getId();
         }
     }
 
@@ -569,8 +582,27 @@ class NewTicket
         $this->_ticket_manager->saveTicket($ticket, $ticket_context);
 
         if ($agent_chat) {
-            $notify_text = $message->person->getDisplayName().' alerted you in a note in {{t-'.$ticket->id.'}}: '.$ticket->subject;
-            $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+            $agentIds   = array_keys($notify_chat);
+            $notifyText = sprintf(
+                '%s alerted you in a note in {{t-%d}}: %s',
+                $message->getPerson()->getDisplayName(),
+                $ticket->getId(),
+                $ticket->getSubject()
+            );
+            $agent_chat->sendAgentMessage($notifyText, $agentIds);
+            if (App::$container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
+                $newIMtext = sprintf(
+                    '[{{t-%d}}] %s',
+                    $ticket->getId(),
+                    Strings::prepareWysiwygHtml(Strings::trimHtml($this->message))
+                );
+
+                App::$container->get('deskpro.notification.service')->sendNote(
+                    $message->getPerson(),
+                    $agentIds,
+                    $newIMtext
+                );
+            }
         }
 
         $this->_ticket = $ticket;

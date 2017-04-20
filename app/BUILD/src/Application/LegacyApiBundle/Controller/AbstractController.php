@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
+use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\Request\RequestAuth;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\LowError\SystemErrorHandler;
@@ -336,10 +337,18 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             if ($status == 429) {
                 $em->remove($log);
             } else {
-                $log->response = [
+                $settings              = $this->get('settings_resolver')->getGlobalSettings();
+                $maxResponseBodyLength = $settings->get('api_log.max_response_body_length', 1024 * 1024);
+
+                $encodedData = json_encode($data);
+                if ($maxResponseBodyLength && mb_strlen($encodedData, '8bit') > $maxResponseBodyLength) {
+                    $data = substr($encodedData, 0, $maxResponseBodyLength);
+                }
+
+                $log->setResponse([
                     'status'  => $status,
                     'content' => $data,
-                ];
+                ]);
             }
             $em->flush();
         }
@@ -353,7 +362,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
      * @param array $extra
      * @param int   $status
      *
-     * @return Response
+     * @return Response|JsonResponse
      */
     public function createSuccessResponse(array $extra = [], $status = 200)
     {

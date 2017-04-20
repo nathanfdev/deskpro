@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\System\Alerts;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -39,36 +35,27 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident;
 use DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class IncidentController.
  *
  * @ApiModes("all")
  * @Rest\Route("/system/incidents")
- * @ApiDoc(target="all", section="System")
+ * @ApiDoc(target="all", section="System", output="DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident\StatefulIncident")
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType"
+ *     }
+ * )
  */
 class IncidentController extends CrudController
 {
     public static $entity       = AbstractIncident::class;
     public static $type         = IncidentType::class;
-    public static $exposeOnly   = ['get', 'list', 'put', 'delete'];
+    public static $exposeOnly   = ['get', 'list', 'count', 'put', 'delete'];
     public static $listPaginate = false;
-
-    /**
-     * @Rest\Get("/{id}", requirements={"id"="\d+"})
-     */
-    public function getAction(Request $request, $id)
-    {
-        if (!$incident = $this->findEntity($id, $request)) {
-            throw $this->createNotFoundException();
-        }
-        $instructions_html = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
-
-        return View::create($this->wrap(compact('incident', 'instructions_html')), Response::HTTP_OK);
-    }
 
     /**
      * {@inheritdoc}

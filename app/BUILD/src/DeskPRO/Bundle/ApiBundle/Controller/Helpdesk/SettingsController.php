@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,25 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Settings\SettingsManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class SettingsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/helpdesk/agent-client/settings")
  */
 class SettingsController extends BaseController
 {
@@ -57,25 +52,14 @@ class SettingsController extends BaseController
      *     description="Get current user personal settings",
      *     statusCodes={
      *         200="Success"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/helpdesk/agent-client/settings")
+     * @Rest\Get("")
      */
     public function agentClientInfoAction()
     {
-        // serializing w/o serializer because it doesn't support deep objects hierarchies
-        return View::create(
-            ['data' => $this->getSettingsManager()->getAgentSettings()],
-            Response::HTTP_OK
-        );
-    }
-
-    /**
-     * @return SettingsManager
-     */
-    private function getSettingsManager()
-    {
-        return $this->get('dp.app.settings_manager');
+        return View::create($this->wrap($this->get('dp.app.settings_manager')->getAgentSettings()));
     }
 }

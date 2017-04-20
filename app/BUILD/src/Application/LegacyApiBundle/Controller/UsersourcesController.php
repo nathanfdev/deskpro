@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -341,6 +341,14 @@ class UsersourcesController extends AbstractController
         $factory = $this->container->getSystemService('usersource_auth_adapter_factory');
         $adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND, $interface);
 
+        if (!$adapter instanceof IframeSsoInterface) {
+            return $this->createApiErrorResponse(
+
+                'invalid adapter',
+                'this adapter doesn\'t support iframe SSO'
+            );
+        }
+
         if ($adapter instanceof CallbackInterface) {
             // append noredirect so that the callback url knows not to refresh the page on success
             $url                      = Url::createFromUrl($adapter->getCallbackUrl());
@@ -349,25 +357,23 @@ class UsersourcesController extends AbstractController
             $adapter->setCallbackUrl((string) $url);
         }
 
-        if ($adapter instanceof IframeSsoInterface) {
-            $vars = array_merge(
-                [
-                    'iframe_url' => '',
-                    'render'     => true,
-                ],
-                $adapter->getIframeTemplateParams(false)
-            );
+        $vars = array_merge(
+            [
+                'iframe_url' => '',
+                'render'     => true,
+            ],
+            $adapter->getIframeTemplateParams(false)
+        );
 
-            return $this->createApiSuccessResponse(
-                array_merge([
-                    'iframe_html' => $this->renderView(
-                            'DeskPRO:Auth:_sso_iframe_for_test.html.twig',
-                            $vars
-                        ),
-                ],
-                $adapter->getIframeTemplateParams(false))
-            );
-        }
+        return $this->createApiSuccessResponse(
+            array_merge([
+                'iframe_html' => $this->renderView(
+                        'DeskPRO:Auth:_sso_iframe_for_test.html.twig',
+                        $vars
+                    ),
+            ],
+            $adapter->getIframeTemplateParams(false))
+        );
     }
 
     public function updateDisplayOrderAction()

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event;
 
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractEvent.
@@ -53,6 +54,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     "email_outgoing_success" = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent",
  *     "php_error"              = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent"
  * })
+ * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractEvent implements Event
 {
@@ -66,6 +68,9 @@ abstract class AbstractEvent implements Event
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id;
 
@@ -79,12 +84,18 @@ abstract class AbstractEvent implements Event
     /**
      * @var \DateTime
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $dateCreated;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
      */
     protected $processed = false;
 

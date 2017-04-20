@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -87,7 +87,12 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $task = new Task();
-        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task, ['timezone' => 'UTC']);
+
+        $form = $this->getContainer()->getFormFactory()->create(
+            new TaskType(),
+            $task,
+            ['timezone' => 'UTC']
+        );
 
         if (!$person = $this->getCreator($context)) {
             $context->getLogger()->debug('[CreateTask] Wrong creator');
@@ -154,6 +159,7 @@ class CreateTask extends AbstractContainerAwareAction implements ActionInterface
         $em = $this->getContainer()->getEm();
         $em->persist($task);
         $em->flush();
+        $ticket->getStateChangeRecorder()->record('new_tasks', null, $task);
 
         // todo postPersist event
         $notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,9 +32,17 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
@@ -225,33 +233,40 @@ class ContentSubscriptionsHelper
     {
         if (
             'kb' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
+            || is_object($input) && Article::class === get_class($input)
+            || is_object($input) && ArticleCategory::class === get_class($input)
         ) {
             return 'kb_subscriptions';
         }
 
         if (
             'news' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
+            || is_object($input) && News::class === get_class($input)
+            || is_object($input) && NewsCategory::class === get_class($input)
         ) {
             return 'news_subscriptions';
         }
 
         if (
             'downloads' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
+            || is_object($input) && Download::class === get_class($input)
+            || is_object($input) && DownloadCategory::class === get_class($input)
         ) {
             return 'download_subscriptions';
         }
 
         if (
             'feedback' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Feedback' === get_class($input)
+            || is_object($input) && Feedback::class === get_class($input)
         ) {
             return 'feedback_subscriptions';
+        }
+
+        if (
+            'topic' === $input
+            || is_object($input) && Topic::class === get_class($input)
+        ) {
+            return 'topic_subscriptions';
         }
 
         throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
@@ -261,33 +276,40 @@ class ContentSubscriptionsHelper
     {
         if (
             'kb' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
+            || is_object($input) && Article::class === get_class($input)
+            || is_object($input) && ArticleCategory::class === get_class($input)
         ) {
             return 'article_id';
         }
 
         if (
             'news' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
+            || is_object($input) && News::class === get_class($input)
+            || is_object($input) && NewsCategory::class === get_class($input)
         ) {
             return 'news_id';
         }
 
         if (
             'downloads' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
+            || is_object($input) && Download::class === get_class($input)
+            || is_object($input) && DownloadCategory::class === get_class($input)
         ) {
             return 'download_id';
         }
 
         if (
             'feedback' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Feedback' === get_class($input)
+            || is_object($input) && Feedback::class === get_class($input)
         ) {
             return 'feedback_id';
+        }
+
+        if (
+            'topic' === $input
+            || is_object($input) && Topic::class === get_class($input)
+        ) {
+            return 'topic_id';
         }
 
         throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));

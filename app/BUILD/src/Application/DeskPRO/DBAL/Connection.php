@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DBAL;
 
 use Doctrine\DBAL\DBALException;
+use DpSys\LowError\SystemErrorHandler;
 use PDO;
 
 /**
@@ -118,6 +119,21 @@ class Connection extends \Doctrine\DBAL\Connection
             }
 
             throw $e;
+        }
+
+        if ($this->connectAttempts === 1) {
+            \DpShutdown::add(function (Connection $db) {
+                if ($db->isTransactionActive()) {
+                    $e = new \RuntimeException('WARNING: Unclosed transaction at shutdown');
+                    SystemErrorHandler::logException($e, false, 'unclosed_trans_shutdown');
+                    try {
+                        while ($db->isTransactionActive()) {
+                            $db->commit();
+                        }
+                    } catch (\Exception $e) {
+                    }
+                }
+            }, [$db], null, 1000);
         }
     }
 

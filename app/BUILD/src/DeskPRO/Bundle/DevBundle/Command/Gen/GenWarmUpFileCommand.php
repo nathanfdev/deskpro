@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,20 +58,10 @@ class GenWarmUpFileCommand extends ContainerAwareCommand
 
         $finder = Finder::create()
             ->in([
-                DP_APP_DIR.'/src/Application/AdminInterfaceBundle',
-                DP_APP_DIR.'/src/Application/AgentBundle',
-                DP_APP_DIR.'/src/Application/DeskPRO',
-                DP_APP_DIR.'/src/Application/EmailBundle',
-                DP_APP_DIR.'/src/Application/ReportsInterfaceBundle',
-                DP_APP_DIR.'/src/Application/UserBundle',
-                DP_APP_DIR.'/src/DeskPRO/Bundle/ApiBundle',
-                DP_APP_DIR.'/src/DeskPRO/Bundle/AppBundle',
-                DP_APP_DIR.'/src/DeskPRO/Bundle/AuditBundle',
-                DP_APP_DIR.'/src/DeskPRO/Bundle/PortalBundle',
-                DP_APP_DIR.'/src/DeskPRO/Bundle/SystemBundle',
-                DP_APP_DIR.'/src/DeskPRO/Component',
-                DP_APP_DIR.'/src/Orb/Auth',
-                DP_APP_DIR.'/src/Orb/Util',
+                DP_APP_DIR.'/languages/default',
+                DP_APP_DIR.'/src/Application/DeskPRO/Entity',
+                DP_APP_DIR.'/src/Application/DeskPRO/EntityRepository',
+                DP_APP_DIR.'/src/DeskPRO/Bundle/AppBundle/Entity',
                 DP_APP_DIR.'/sys',
             ])
             ->name('*.php');

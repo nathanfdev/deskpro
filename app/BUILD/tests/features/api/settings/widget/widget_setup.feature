@@ -84,6 +84,7 @@ Feature: Widget Setup
       "chat": {
         "begin_mode": "form",
         "waiting_timeout": 40,
+        "select_department": "custom",
         "popup": {
           "translations": [
             {
@@ -178,6 +179,7 @@ Feature: Widget Setup
       "chat": {
         "begin_mode": "conversation",
         "waiting_timeout": 40,
+        "select_department": "custom",
         "popup": {
           "translations": [
             {

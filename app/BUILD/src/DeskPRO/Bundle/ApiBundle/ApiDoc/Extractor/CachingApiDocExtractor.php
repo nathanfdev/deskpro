@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
@@ -41,6 +37,9 @@ use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class CachingApiDocExtractor.
+ */
 class CachingApiDocExtractor extends ApiDocExtractor
 {
     /**
@@ -100,9 +99,10 @@ class CachingApiDocExtractor extends ApiDocExtractor
                 }
             }
 
-            $data = parent::all($view);
+            $data       = parent::all($view);
+            $serialized = serialize($data);
 
-            $cache->write(serialize($data), $resources);
+            $cache->write($serialized, $resources);
 
             return $data;
         }

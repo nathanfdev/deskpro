@@ -1,9 +1,11 @@
 define [
   'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
-  'DeskPRO/Util/Numbers'
+  'DeskPRO/Util/Numbers',
+  '../../../../bower_components/moment/moment'
 ], (
   BaseActionTypesDef,
-  Numbers
+  Numbers,
+  moment
 ) ->
   class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef
     init: ->
@@ -184,6 +186,11 @@ define [
       options.push({
         title: 'Call Web Hook',
         value: 'WebHook'
+      })
+
+      options.push({
+        title: 'Call Web Hook (Custom JSON Payload)',
+        value: 'WebHook2'
       })
 
       set_options.push({
@@ -1306,6 +1313,27 @@ define [
               value.options = model
               return value
             }
+      }
+
+    getWebHook2: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-webhook2.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              return value.options || {}
+            getValue: (model = {}, data) ->
+              value = {}
+              value.type = 'WebHook2'
+              value.options = model
+              return value
+          }
       }
 
     getSetSlas: (options = {}) ->

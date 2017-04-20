@@ -3,6 +3,15 @@
 		<h3>New Ticket Trigger</h3>
 	</div>
 	<div class="col-md-9">
+		<div class="alert alert-danger" ng-if="!TicketAccountsEdit.trigger.is_enabled && !TicketAccountsEdit.trigger.emailaccount_triggers_enabled">
+			<p>
+				Warning: Email account triggers are disabled from
+                {% set href = ng_href('tickets.triggers', {type: 'newticket'}) %}
+				<a href="{{ href }}">
+					New Ticket Triggers
+				</a>
+			</p>
+		</div>
 		<div class="dp-ob-set">
 			<div class="dp-ob-setrow">
 				<header>

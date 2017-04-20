@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,19 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident;
 
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Event;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\SuccessEvent;
-use DeskPRO\Bundle\SystemBundle\Exception\DenormalizationException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AbstractIncident.
@@ -55,8 +49,6 @@ use JMS\Serializer\Annotation as JMS;
  *     "php_critical_error"     = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpCriticalErrorIncident",
  *     "php_notice"             = "DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\PHP\PhpNoticeIncident"
  * })
- *
- * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractIncident implements Incident
 {
@@ -67,9 +59,6 @@ abstract class AbstractIncident implements Incident
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      */
     protected $id;
 
@@ -83,9 +72,6 @@ abstract class AbstractIncident implements Incident
     /**
      * @var \DateTime
      * @ORM\Column(name="date_created", type="datetime", nullable=false)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      */
     protected $dateCreated;
 
@@ -143,27 +129,17 @@ abstract class AbstractIncident implements Incident
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $raised = false;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $dismissed = false;
 
     /**
      * {@inheritdoc}
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("title")
-     * @JMS\Type("string")
      */
     abstract public function getTitle();
 
@@ -328,10 +304,6 @@ abstract class AbstractIncident implements Incident
      */
     public function getFailureEventsCount()
     {
-        if ($this->failureEventsCount + $this->successEventsCount !== $this->getEventsCount()) {
-            throw new DenormalizationException('Total events count is not equal to sum of failure and success counts');
-        }
-
         return $this->failureEventsCount;
     }
 

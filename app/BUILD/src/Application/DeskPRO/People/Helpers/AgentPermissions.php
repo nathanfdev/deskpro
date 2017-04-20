@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -139,10 +139,11 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
      *
      * @param string $context
      * @param bool   $forceAgentData
+     * @param string $permType
      *
      * @return array
      */
-    public function getAllowedDepartments($context = 'tickets', $forceAgentData = false)
+    public function getAllowedDepartments($context = 'tickets', $forceAgentData = false, $permType = 'full')
     {
         if ($this->_allowed_ids !== null) {
             if (!isset($this->_allowed_ids[$context])) {
@@ -184,7 +185,9 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
                 'chat'    => App::$container->getChatDepartments()->getAllAllowedIds(),
             ];
         } else {
-            $raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->getId(), $uids, 'full');
+            $raw = App::$container->getEm()
+                ->getRepository(Entity\DepartmentPermission::class)
+                ->getPermsForAgent($this->person->getId(), $uids, $permType);
 
             /** @var DepartmentDataService $departmentDataService */
             $departmentDataService = App::getContainer()->getDataService('Department');

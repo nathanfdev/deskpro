@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace Application\DeskPRO\NewSearch\SearchEngine;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 
 class SearchContextFactory
 {
@@ -55,29 +56,35 @@ class SearchContextFactory
     {
         $context = new SearchContext();
 
-        $person->loadHelper('PermissionsManager');
-
         if ($person && !$person->isGuest()) {
             $context->setPerson($person);
         }
 
         $context->setBrand($this->container->getBrandStack()->getActive()->getBrand());
 
+        /** @var PortalPermissionsManager $permissionManager */
+        $permissionManager = $this->container->get('portal_permissions_manager');
+        $permissionBag     = $permissionManager->getPermissionsBagForPerson($person);
+
         if ($person->hasPerm('articles.use')) {
-            $ids = $person->PermissionsManager->ArticleCategories->getAllowedCategories();
+            $ids = $permissionBag->getAllowedArticleCategories();
             $context->setArticleCategoryIds($ids);
         }
         if ($person->hasPerm('feedback.use')) {
-            $ids = $person->PermissionsManager->FeedbackCategories->getAllowedCategories();
+            $ids = $permissionBag->getAllowedFeedbackCategoryIds();
             $context->setFeedbackCategoryIds($ids);
         }
         if ($person->hasPerm('news.use')) {
-            $ids = $person->PermissionsManager->NewsCategories->getAllowedCategories();
+            $ids = $permissionBag->getAllowedNewsCategories();
             $context->setNewsCategoryIds($ids);
         }
         if ($person->hasPerm('downloads.use')) {
-            $ids = $person->PermissionsManager->DownloadCategories->getAllowedCategories();
+            $ids = $permissionBag->getAllowedDownloadCategories();
             $context->setDownloadCategoryIds($ids);
+        }
+        if ($person->hasPerm('guides.use')) {
+            $ids = $permissionBag->getAllowedGuides();
+            $context->setGuideIds($ids);
         }
 
         return $context;

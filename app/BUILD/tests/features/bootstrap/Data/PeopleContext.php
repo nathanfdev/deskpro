@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -310,6 +310,7 @@ class PeopleContext extends BaseContext
 
     /**
      * @param string $label
+     * @param Person $person
      *
      * @return LabelPerson
      */
@@ -334,6 +335,7 @@ class PeopleContext extends BaseContext
      */
     private function createUsergroup($name, $isAgent)
     {
+        /** @var Usergroup $group */
         $group = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $name]);
         if (!$group) {
             $group = SimpleFactory::create(Usergroup::class, [

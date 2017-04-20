@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,10 +40,10 @@ use Psr\Log\NullLogger;
 class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 {
     /**
-     * The min size of any DB dump is 8 MB which is just the schema and
+     * The min size of any DB dump is ~6 MB which is just the schema and
      * initial records.
      */
-    const MIN_SIZE = 8388608;
+    const MIN_SIZE = 6000000;
 
     /**
      * @var LoggerInterface
@@ -87,34 +87,6 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
         }
 
         $this->logger->debug('Verify: File size OK');
-
-        $fp = @fopen($filename, 'r');
-        if (!$fp) {
-            $this->logger->critical(sprintf('Could not open dump file for reading, path %s', $filename));
-            throw new DbBackupException('Could not open dump file for reading', DbBackupException::DUMP_ERROR_OPEN_FAILED);
-        }
-
-        $this->logger->debug('Verify: File open OK');
-
-        $filesize = fstat($fp)[7];
-        $chunk    = @stream_get_contents($fp, 250000, $filesize - 250000);
-        @fclose($fp);
-
-        if (!$chunk) {
-            $this->logger->critical(sprintf('Could not read dump file for reading, path %s', $filename));
-            throw new DbBackupException('Could not read dump file', DbBackupException::DUMP_ERROR_READ_FAILED);
-        }
-
-        $this->logger->debug('Verify: File read OK');
-
-        $chunk = str_replace('`', '', $chunk);
-
-        if (strpos($chunk, 'CREATE TABLE worker_jobs') === false) {
-            $this->logger->critical('Database dump seems invalid');
-            throw new DbBackupException('Database dump seems invalid', DbBackupException::DUMP_ERROR_MISSING_TABLE);
-        }
-
-        $this->logger->debug('Verify: File table check OK');
 
         $this->logger->debug('Verify: Done in '.$t->getTotalTime());
 

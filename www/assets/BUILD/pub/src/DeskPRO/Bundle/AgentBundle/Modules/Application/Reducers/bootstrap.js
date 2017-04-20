@@ -1,5 +1,5 @@
-import { donePreloading } from '../Actions/bootstrapActions';
 import { createReducer } from 'Ampliflux';
+import { donePreloading } from '../Actions/bootstrapActions';
 
 const initialState = {
   isBootstrapped: false

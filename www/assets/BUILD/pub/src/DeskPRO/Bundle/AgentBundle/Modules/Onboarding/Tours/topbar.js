@@ -2,53 +2,52 @@ const topbar = {
   force: true,
   steps: [
     {
-      title:    'Search',
-      text:     'You can search the helpdesk for tickets, people, articles etc. in the top-left corner of the screen.',
+      title:    'agent.onboarding.topbar_search_title',
+      text:     'agent.onboarding.topbar_search_text',
       selector: '#react_dp_agent_top_bar .item.search-box',
       position: 'bottom'
     },
     {
-      title:    'History',
-      text:     'Quickly re-open items you have recently viewed.',
+      title:    'agent.onboarding.topbar_history_title',
+      text:     'agent.onboarding.topbar_history_text',
       selector: '#react_dp_agent_top_bar .item.recent',
       position: 'bottom'
     },
     {
-      title: 'Create',
-      text:  'Add new tickets, people, content and tasks to your ' +
-        'helpdesk by clicking the \'+\' button in the header.',
+      title:    'agent.onboarding.topbar_create_title',
+      text:     'agent.onboarding.topbar_create_text',
       selector: '#react_dp_agent_top_bar .item.add',
       position: 'bottom'
     },
     {
-      title:    'Manage views',
-      text:     'Click the \'View\' icon when you want to change the layout of your agent screen.',
+      title:    'agent.onboarding.topbar_views_title',
+      text:     'agent.onboarding.topbar_views_text',
       selector: '#react_dp_agent_top_bar .item.views',
       position: 'bottom'
     },
     {
-      title:    'Notifications',
-      text:     'You will receive notifications about helpdesk activity (e.g. new tickets).',
+      title:    'agent.onboarding.topbar_notifications_title',
+      text:     'agent.onboarding.topbar_notifications_text',
       selector: '#react_dp_agent_top_bar .item.notifications',
       position: 'bottom'
     },
     {
-      title:    'Your profile',
-      text:     'Manage your preferences, find help and log out of DeskPRO.',
+      title:    'agent.onboarding.topbar_profile_title',
+      text:     'agent.onboarding.topbar_profile_text',
       selector: '#react_dp_agent_top_bar .user',
       position: 'bottom'
     },
     {
-      title:    'Chat',
-      text:     'You can control whether you are online to answer user chats.',
+      title:    'agent.onboarding.topbar_chat_title',
+      text:     'agent.onboarding.topbar_chat_text',
       selector: '#react_dp_agent_top_bar .chat',
       position: 'bottom'
     },
   ],
   intro: {
-    title:  'Welcome to DeskPRO',
-    text:   'Let’s take a quick look...',
-    action: 'Start',
+    title:  'agent.onboarding.topbar_intro_title',
+    text:   'agent.onboarding.topbar_intro_text',
+    action: 'agent.onboarding.topbar_intro_button',
     img:    `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/onboarding/topbar_intro.png`
   }
 };

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,6 +43,9 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
+/**
+ * Class AgentReplyCodes.
+ */
 class AgentReplyCodes implements Loggable
 {
     /**
@@ -565,58 +568,74 @@ class AgentReplyCodes implements Loggable
                 return;
             }
         } else {
-            $test_param = preg_replace('#\s#', '', $param);
-            $test_param = strtolower($test_param);
+            $testParam = $this->prepareCompareString($param);
+            $useAgent  = null;
 
-            $use_agent = null;
             foreach (App::getDataService('Agent')->getAgents() as $agent) {
-                $test_name = $agent['name'];
-
-                if (!$test_name) {
+                $testName = $this->prepareCompareString($agent['name']);
+                if (!$testName) {
                     continue;
                 }
 
-                $test_name = preg_replace('#\s#', '', $test_name);
-                $test_name = strtolower($test_name);
-
-                if ($test_name == $test_param) {
-                    $use_agent = $agent;
+                if ($testName == $testParam) {
+                    $useAgent = $agent;
                     break;
                 }
             }
 
-            if ($use_agent) {
-                return $use_agent;
+            if ($useAgent) {
+                return $useAgent;
             } else {
                 return;
             }
         }
     }
 
-    protected function _findObjFromCollection($collection, $name_field, $param)
+    /**
+     * @param array  $collection
+     * @param string $nameField
+     * @param string $param
+     *
+     * @return mixed
+     */
+    protected function _findObjFromCollection($collection, $nameField, $param)
     {
-        $test_param = preg_replace('#\s#', '', $param);
-        $test_param = strtolower($test_param);
+        $testParam = $this->prepareCompareString($param);
 
         foreach ($collection as $obj) {
-            if (!isset($obj[$name_field]) || !$obj[$name_field]) {
+            if (!isset($obj[$nameField]) || !$obj[$nameField]) {
                 continue;
             }
 
-            $test_name = $obj[$name_field];
-            $test_name = preg_replace('#\s#', '', $test_name);
-            $test_name = strtolower($test_name);
-
-            if (!$test_name) {
+            $testName = $this->prepareCompareString($obj[$nameField]);
+            if (!$testName) {
                 continue;
             }
 
-            if ($test_param == $test_name) {
+            if ($testParam == $testName) {
                 return $obj;
             }
         }
 
         return;
+    }
+
+    /**
+     * @param $string
+     *
+     * @return string
+     */
+    protected function prepareCompareString($string)
+    {
+        if (!$string || !is_scalar($string)) {
+            return '';
+        }
+
+        $string = preg_replace('#\s#', '', $string);
+        $string = preg_replace('/[[:punct:]]/', '', $string);
+        $string = strtolower($string);
+
+        return $string;
     }
 
     /**

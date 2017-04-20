@@ -27,6 +27,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
+  form.scalar_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\ScalarTransformerExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
   form.checkbox_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproCheckboxExtension
     tags:
@@ -87,12 +92,6 @@ services:
     tags:
       - { name: form.type }
 
-  form.feedback_attachment:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\FeedbackAttachmentType
-    arguments: ["@blob.storage", "@blob_repository", "@attachment_accepter"]
-    tags:
-      - { name: form.type }
-
   form.request_password_reset:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PasswordResetRequestType
     arguments:
@@ -117,7 +116,12 @@ services:
 
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
-    arguments: ["@form.api.chat.set_person_listener", "@widget_settings_resolver", "@custom_field_manager"]
+    arguments:
+      - "@form.api.chat.set_person_listener"
+      - "@widget_settings_resolver"
+      - "@custom_field_manager"
+      - "@brand_stack"
+      - "@permissions_manager"
     tags:
       - { name: form.type }
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,7 +42,6 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout as TicketLayo
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Doctrine\ORM\EntityManager;
-use JMS\Serializer\JsonSerializationVisitor;
 use Symfony\Component\Form\FormFactory;
 
 /**
@@ -106,49 +105,6 @@ class TicketHandler extends AbstractEntityHandler
     public static function getClassNames()
     {
         return TicketEntity::class;
-    }
-
-    /**
-     * @param JsonSerializationVisitor     $visitor
-     * @param TicketEntity                 $entity
-     * @param array                        $type
-     * @param SideloadSerializationContext $context
-     *
-     * @return mixed
-     */
-    public function serialize(JsonSerializationVisitor $visitor, $entity, $type, SideloadSerializationContext $context)
-    {
-        $sideloads = $context->getSideloadStore();
-        $sideloads->addCustomSideload(
-            'ticket_layout',
-            $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getTicketLayout'], [$entity])
-        );
-        $sideloads->addCustomSideload(
-            'ticket_excerpt',
-            $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity, $context])
-        );
-
-        // validation
-        $sideloads->addCustomSideload(
-            'ticket_agent_errors',
-            $entity->getId(),
-            new CallbackDeferredProperty(
-                [$this, 'getTicketErrors'],
-                [$entity, $context, TicketWithLayoutsContext::VIEW_AGENT]
-            )
-        );
-        $sideloads->addCustomSideload(
-            'ticket_user_errors',
-            $entity->getId(),
-            new CallbackDeferredProperty(
-                [$this, 'getTicketErrors'],
-                [$entity, $context, TicketWithLayoutsContext::VIEW_USER]
-            )
-        );
-
-        return parent::serialize($visitor, $entity, $type, $context);
     }
 
     /**
@@ -255,6 +211,40 @@ class TicketHandler extends AbstractEntityHandler
 
         $model = new TicketModel($entity);
         $model->setStar(new CallbackDeferredProperty([$this, 'getStar'], [$entity, $context]));
+
+        $sideloads = $context->getSideloadStore();
+        $sideloads->addCustomSideload(
+            'ticket_layout',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getTicketLayout'], [$entity]),
+            $model
+        );
+        $sideloads->addCustomSideload(
+            'ticket_excerpt',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity, $context]),
+            $model
+        );
+
+        // validation
+        $sideloads->addCustomSideload(
+            'ticket_agent_errors',
+            $entity->getId(),
+            new CallbackDeferredProperty(
+                [$this, 'getTicketErrors'],
+                [$entity, $context, TicketWithLayoutsContext::VIEW_AGENT]
+            ),
+            $model
+        );
+        $sideloads->addCustomSideload(
+            'ticket_user_errors',
+            $entity->getId(),
+            new CallbackDeferredProperty(
+                [$this, 'getTicketErrors'],
+                [$entity, $context, TicketWithLayoutsContext::VIEW_USER]
+            ),
+            $model
+        );
 
         return $model;
     }

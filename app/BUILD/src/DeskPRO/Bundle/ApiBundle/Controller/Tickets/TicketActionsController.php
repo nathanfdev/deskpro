@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,6 +63,9 @@ class TicketActionsController extends BaseController
      *              "dataType"="integer"
      *          }
      *      },
+     *      parameters={
+     *        {"name"="force", "description"="force apply", "dataType"="boolean", "required"=false}
+     *      },
      *      statusCodes={
      *          204="Returned in case of successful resource update",
      *          400="We will return this in case your request was malformed"
@@ -103,6 +106,9 @@ class TicketActionsController extends BaseController
      *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
+     *      },
+     *      parameters={
+     *        {"name"="force", "description"="force apply", "dataType"="boolean", "required"=false}
      *      },
      *      statusCodes={
      *          204="Returned in case of successful resource update",

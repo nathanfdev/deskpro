@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -308,16 +308,17 @@ class Util
 
     /**
      * @param string|array $labels
+     * @param bool         $toLower
      *
      * @return array
      */
-    public static function labelsArrayFromString($labels)
+    public static function labelsArrayFromString($labels, $toLower = true)
     {
         if (!is_array($labels)) {
             $labels = explode(',', $labels);
         }
 
-        $labels = array_map(function ($v) {
+        $labels = array_map(function ($v) use ($toLower) {
             if (!is_scalar($v)) {
                 return;
             }
@@ -326,7 +327,9 @@ class Util
                 return;
             }
 
-            $v = strtolower($v);
+            if ($toLower) {
+                $v = strtolower($v);
+            }
 
             return $v;
         }, $labels);

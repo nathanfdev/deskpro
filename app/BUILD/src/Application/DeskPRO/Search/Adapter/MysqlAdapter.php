@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,11 @@
 namespace Application\DeskPRO\Search\Adapter;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Search\Searcher\Mysql\AgentCombinedSearcher;
 use Application\DeskPRO\Search\Searcher\Mysql\ContentSearcher;
 use Orb\Util\Strings;
@@ -51,10 +56,11 @@ class MysqlAdapter extends AbstractAdapter
 
     public function __construct()
     {
-        $this->addContentTypeMap('Application\\DeskPRO\\Entity\\Article', 'article');
-        $this->addContentTypeMap('Application\\DeskPRO\\Entity\\Download', 'download');
-        $this->addContentTypeMap('Application\\DeskPRO\\Entity\\Feedback', 'feedback');
-        $this->addContentTypeMap('Application\\DeskPRO\\Entity\\News', 'news');
+        $this->addContentTypeMap(Article::class, 'article');
+        $this->addContentTypeMap(Download::class, 'download');
+        $this->addContentTypeMap(Feedback::class, 'feedback');
+        $this->addContentTypeMap(News::class, 'news');
+        $this->addContentTypeMap(Topic::class, 'topic');
     }
 
     /**

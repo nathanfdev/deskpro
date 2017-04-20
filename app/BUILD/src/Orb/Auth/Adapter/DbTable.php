@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -291,15 +291,17 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
         return $userinfo[$field] == $password_compare;
     }
 
-    public function getAllUserInfo($offset = 0)
+    public function getAllUserInfo($offset = 0, $limit = 1000)
     {
         if (!$this->getDb()) {
             return [];
         }
 
-        $table = $this->options[self::OPT_TABLE];
-        // From MySQL manuel, OFFSET without LIMIT: http://dev.mysql.com/doc/refman/5.0/en/select.html#id4651990
-        $result = $this->db->executeQuery("SELECT * FROM $table LIMIT 18446744073709551610 OFFSET $offset")->fetchAll();
+        $table  = $this->options[self::OPT_TABLE];
+        $result = $this->db
+            ->executeQuery(sprintf('SELECT * FROM %s LIMIT %d, %d', $table, $offset, $limit))
+            ->fetchAll();
+
         if (!$result) {
             return [];
         }

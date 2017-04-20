@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -90,11 +90,9 @@ return [
     'portal.email_subjects.feedback_updated'         => 'O seu comentário foi atualizado: {{title}}',
     'portal.email_subjects.password_agent-reset'     => 'Um agente efectuou a reinicialização da sua palavra cháve',
     'portal.email_subjects.password_reset'           => 'Reinicializar a palavra cháve',
-    'portal.email_subjects.re'                       => 'RE: {{subject}}',
     'portal.email_subjects.register-welcome'         => 'Obrigado por se ter registado',
     'portal.email_subjects.ticket-rate'              => 'Avalie a sua experiencia com a equipa de suporte para o seu bilhete "{{ticket.subject}}"',
     'portal.email_subjects.ticket_new-participant'   => 'Uma nova pessoa foi adicionada ao seu bilhete',
-    'portal.email_subjects.tickets_re'               => 'RE: {{ticket.subject}}',
     'portal.email_subjects.validate-email'           => 'Valide o seu endereço de email',
     'portal.emails.auto-close'                       => 'O seu bilhete "{{ticket.subject}}" irá ser fechado automaticamente devido a não ter atualizado o mesmo recentemente. Se não deseja que o seu bilhete seja fechado, por enviar uma nova resposta para que os nossos agentes o possam ajudar.',
     'portal.emails.chat_transcript'                  => 'Obrigado por ter conversado connosco. Aqui está a cópia da nossa conversa.',
@@ -302,6 +300,7 @@ return [
     'user.email_subjects.comment-deleted'            => 'O seu comentário foi lido pelos nossos agentes',
     'user.email_subjects.email-too-big'              => 'O seu email "{{subject}}" não foi aceite',
     'user.email_subjects.email_new-confirm'          => 'Valide o seu endereço de email',
+    'user.email_subjects.email_primary-confirm'      => 'Valide o seu endereço de email',
     'user.email_subjects.feedback_new'               => 'Obrigado por ter enviado os seus comentários',
     'user.email_subjects.feedback_new-approved'      => 'Os seus comentários foram aprovados',
     'user.email_subjects.feedback_new-comment'       => 'Existe um novo comentário no "{{title}}"',
@@ -309,10 +308,9 @@ return [
     'user.email_subjects.feedback_updated'           => 'O seu comentário foi atualizado: {{title}}',
     'user.email_subjects.password_agent-reset'       => 'Um agente efectuou a reinicialização da sua palavra cháve',
     'user.email_subjects.password_reset'             => 'Reinicializar a palavra cháve',
-    'user.email_subjects.re'                         => 'RE: {{subject}}',
     'user.email_subjects.register-welcome'           => 'Obrigado por se ter registado',
     'user.email_subjects.ticket-rate'                => 'Avalie a sua experiencia com a equipa de suporte para o seu bilhete "{{ticket.subject}}"',
-    'user.email_subjects.tickets_re'                 => 'RE: {{ticket.subject}}',
+    'user.email_subjects.ticket_new-participant'     => 'Uma nova pessoa foi adicionada ao seu bilhete',
     'user.emails.auto-close'                         => 'O seu bilhete "{{ticket.subject}}" irá ser fechado automaticamente devido a não ter atualizado o mesmo recentemente. Se não deseja que o seu bilhete seja fechado, por enviar uma nova resposta para que os nossos agentes o possam ajudar.',
     'user.emails.chat_transcript'                    => 'Obrigado por ter conversado connosco. Aqui está a cópia da nossa conversa.',
     'user.emails.comment_approved'                   => 'O seu comentário foi publicado.',
@@ -334,7 +332,6 @@ return [
     'user.emails.message-clipped'                    => '(Mensagem foi cortada)',
     'user.emails.password_agent-reset'               => 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.',
     'user.emails.password_reset'                     => 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:',
-    'user.emails.profile_email-new-confirm'          => 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo',
     'user.emails.profile_email_link-validate'        => 'Para validar o seu endereço de email simplesmente clique no link abaixo',
     'user.emails.register-confirm'                   => 'Obrigado por registar a sua conta.<br /><br />Antes de ser capaz de utilizar a sua conta, tem de clicar no link seguinte para validar o seu endereço de email',
     'user.emails.register-welcome'                   => 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}',
@@ -343,7 +340,6 @@ return [
     'user.emails.reject_resolved-new'                => 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br /><a href="{{link}}">{{link}}</a>',
     'user.emails.reject_resolved-newemail'           => 'e quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a>',
     'user.emails.ticket_access_ticket_online'        => 'Ver e gerir este bilhete online:',
-    'user.emails.ticket_cc-new'                      => 'Foi incluído em um bilhete iniciado por {{name}}.',
     'user.emails.ticket_flood'                       => 'Enviou recentemente um e-mail para nossa central de atendimento. O nosso sistema automatizado detetou que enviou várias mensagens em sucessão rápida, que eram mais provável automatizado. <br /><br /> Para se proteger contra um ciclo auto-responder o nosso helpdesk não irá enviar mais e-mails de notificação automática para si.',
     'user.emails.ticket_message_title'               => 'Em {{date}} as {{time}}, {{author}} escreveu:',
     'user.emails.ticket_no-autoresponse'             => 'Aviso: Emails de confirmação estão desligados',
@@ -383,7 +379,6 @@ return [
     'user.error.permission-denied-title'             => 'Não tem permissão para fazer isso',
     'user.error.server-error'                        => 'Houve um erro no servidor que impediu o carregamento da página. Por favor, tente novamente',
     'user.feedback.submit_feedback'                  => 'Submeter Comentário',
-    'user.general.deskpro'                           => 'DeskPRO',
     'user.general.helpdesk_by'                       => 'Programa Helpdesk da <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                     => 'Código de confirmação',
     'user.general.page'                              => 'Pagina',
@@ -402,7 +397,6 @@ return [
     'user.tickets.form_error_captcha'                => 'Por favor introduza o código',
     'user.tickets.form_error_captcha_invalid'        => 'O código que introduziu está incorreto.',
     'user.tickets.from_x_at_y'                       => 'De {{name}} em {{date}}',
-    'user.tickets.label_cced'                        => 'CCed',
     'user.tickets.no_subject'                        => '(Sem assunto)',
     'user.tickets.rate-negative'                     => 'Não foi bom',
     'user.tickets.rate-neutral'                      => 'Foi OK',
@@ -439,12 +433,7 @@ return [
     'user.time.short-month_august'                   => 'Ago',
     'user.time.short-month_december'                 => 'Dez',
     'user.time.short-month_february'                 => 'Fev',
-    'user.time.short-month_january'                  => 'Jan',
-    'user.time.short-month_july'                     => 'Jul',
-    'user.time.short-month_june'                     => 'Jun',
-    'user.time.short-month_march'                    => 'Mar',
     'user.time.short-month_may'                      => 'Mai',
-    'user.time.short-month_november'                 => 'Nov',
     'user.time.short-month_october'                  => 'Out',
     'user.time.short-month_september'                => 'Set',
     'user.time.time-ago_1_day'                       => '1 dia atrás',
@@ -471,7 +460,6 @@ return [
     'user.time.time_1_year'                          => '1 ano',
     'user.time.time_less_second'                     => 'menos de um segundo',
     'user.time.time_x_day'                           => '{0} dias',
-    'user.time.time_x_hour'                          => '{0} hours',
     'user.time.time_x_minute'                        => '{0} minutos',
     'user.time.time_x_month'                         => '{0} meses',
     'user.time.time_x_second'                        => '{0} segundos',

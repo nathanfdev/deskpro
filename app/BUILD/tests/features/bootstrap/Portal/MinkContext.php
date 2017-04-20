@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -107,15 +107,10 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
      */
     public function assertHiddenFieldContains($name, $value)
     {
-        $name  = DataContext::replace($name);
-        $value = DataContext::replace($value);
-
-        $node = $this->getSession()->getPage()->find('css', 'input[type="hidden"][name="'.$name.'"]');
-        if (null === $node) {
-            throw new \Exception("Field $name not found");
-        }
-
+        $node   = $this->getHiddenField($name);
+        $value  = DataContext::replace($value);
         $actual = $node->getValue();
+
         $this->checkFieldContainsValue($name, $value, $actual);
     }
 
@@ -142,6 +137,16 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
 
     /**
      * @override
+     */
+    public function assertPageAddress($page)
+    {
+        $page = DataContext::replace($page);
+
+        parent::assertPageAddress($page);
+    }
+
+    /**
+     * @override
      *
      * @param string $name
      * @param string $value
@@ -152,6 +157,22 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
         $value = DataContext::replace($value);
 
         parent::fillField($name, $value);
+    }
+
+    /**
+     * @When /^(?:|I )fill in hidden field "(?P<field>(?:[^"]|\\")*)" with "(?P<value>(?:[^"]|\\")*)"$/
+     * @When /^(?:|I )fill in hidden field "(?P<field>(?:[^"]|\\")*)" with:$/
+     * @When /^(?:|I )fill in hidden field "(?P<value>(?:[^"]|\\")*)" for "(?P<field>(?:[^"]|\\")*)"$/
+     *
+     * @param string $field
+     * @param string $value
+     */
+    public function fillHiddenField($field, $value)
+    {
+        $node  = $this->getHiddenField($field);
+        $value = DataContext::replace($value);
+
+        $node->setValue($value);
     }
 
     /**
@@ -171,12 +192,37 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
     /**
      * @override
      *
+     * @param string $select
+     * @param string $option
+     */
+    public function additionallySelectOption($select, $option)
+    {
+        $select = DataContext::replace($select);
+        $option = DataContext::replace($option);
+
+        parent::additionallySelectOption($select, $option);
+    }
+
+    /**
+     * @override
+     *
      * @param string $option
      */
     public function checkOption($option)
     {
         $option = DataContext::replace($option);
         parent::checkOption($option);
+    }
+
+    /**
+     * @override
+     *
+     * @param string $option
+     */
+    public function uncheckOption($option)
+    {
+        $option = DataContext::replace($option);
+        parent::uncheckOption($option);
     }
 
     /**
@@ -193,5 +239,23 @@ class MinkContext extends \Behat\MinkExtension\Context\MinkContext
             $message = sprintf('The field "%s" value is "%s", but "%s" expected.', $name, $actual, $value);
             throw new ExpectationException($message, $this->getSession());
         }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @throws \Exception
+     *
+     * @return \Behat\Mink\Element\NodeElement
+     */
+    private function getHiddenField($name)
+    {
+        $name = DataContext::replace($name);
+        $node = $this->getSession()->getPage()->find('css', 'input[type="hidden"][name="'.$name.'"]');
+        if (null === $node) {
+            throw new \Exception("Field $name not found");
+        }
+
+        return $node;
     }
 }

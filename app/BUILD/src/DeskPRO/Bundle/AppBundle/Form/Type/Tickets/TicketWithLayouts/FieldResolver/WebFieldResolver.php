@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,10 +39,14 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\HiddenEntityType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -66,7 +70,16 @@ class WebFieldResolver extends AbstractFieldResolver
             ]);
         }
 
-        return parent::createDepartment($context);
+        return new FormField(TicketDepartmentChoiceType::class, [
+            'label'       => $this->phrase('portal.forms.label_department'),
+            'person'      => $context->getPerson(),
+            'ticket'      => $context->getTicket(),
+            'placeholder' => '',
+            'constraints' => [
+                new Assert\NotNull(),
+                new AppAssert\LeafDepartment(),
+            ],
+        ]);
     }
 
     /**
@@ -116,12 +129,24 @@ class WebFieldResolver extends AbstractFieldResolver
     }
 
     /**
-     * @return FormField
+     * {@inheritdoc}
      */
-    protected function createSubject()
+    protected function createSubject(TicketWithLayoutsContext $context)
     {
+        $subjectType = $context->getOption('subject_type');
+        if (in_array($subjectType, ['default', 'message'], true)) {
+            $params = [];
+            if ($subjectType === 'default') {
+                $params['data'] = $context->getOption('default_subject');
+            }
+
+            return new FormField(HiddenType::class, $params);
+        }
+
         return new FormField(TextType::class, [
-            'label'       => $this->phrase('portal.forms.label_subject'),
+            'label' => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_subject')
+                : $this->phrase('portal.forms.label_subject'),
             'required'    => true,
             'constraints' => [
                 new Assert\NotBlank(),
@@ -148,6 +173,25 @@ class WebFieldResolver extends AbstractFieldResolver
             'data'           => $context->getMessage(),
             'format'         => 'html',
             'required'       => true,
+            'message_label'  => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_message')
+                : $this->phrase('portal.forms.label_message'),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createAttach(TicketWithLayoutsContext $context)
+    {
+        if (!$context->getMessage()) {
+            return false;
+        }
+
+        return new FormField(WebTicketMessageAttachmentCollectionType::class, [
+            'required'       => false,
+            'person'         => $context->getPerson(),
+            'ticket_message' => $context->getMessage(),
         ]);
     }
 
@@ -156,7 +200,7 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null)
     {
-        if (!$this->canRenderCustomDef($def)) {
+        if (!$this->canRenderCustomDef($def, $context)) {
             return false;
         }
 
@@ -198,9 +242,11 @@ class WebFieldResolver extends AbstractFieldResolver
             'type'    => TextType::class,
             'options' => [
                 'property_path' => 'person.name',
-                'label'         => $this->phrase('portal.forms.label_name'),
-                'empty_data'    => $context->getPerson()->getDisplayName(false),
-                'constraints'   => [
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_name')
+                    : $this->phrase('portal.forms.label_name'),
+                'empty_data'  => $context->getPerson()->getDisplayName(false),
+                'constraints' => [
                     new Assert\NotBlank(),
                 ],
             ],
@@ -232,7 +278,9 @@ class WebFieldResolver extends AbstractFieldResolver
             'type'    => PersonEmailType::class,
             'options' => [
                 'property_path' => 'person.primary_email',
-                'label'         => $this->phrase('portal.forms.label_email'),
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_email')
+                    : $this->phrase('portal.forms.label_email'),
 
                 // ignore the "unique entity" constraint here
                 'constraints' => [],

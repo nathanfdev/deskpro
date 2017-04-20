@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,7 +91,6 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
     {
         $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
         $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
-        $message->setId($ref.'@deskpro-message');
 
         $this->logger->debug(sprintf('Preprocessing: %s', $message->getId()));
 

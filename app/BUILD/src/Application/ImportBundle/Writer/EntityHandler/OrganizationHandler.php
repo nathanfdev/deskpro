@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -68,6 +68,17 @@ class OrganizationHandler extends AbstractEntityHandler
             $entity->setPicture(null);
         }
 
+        foreach ($model->getEmailDomains() as $emailDomain) {
+            if ($entity->hasEmailDomain($emailDomain)) {
+                continue;
+            }
+
+            $domainEntity = new Entity\OrganizationEmailDomain();
+            $domainEntity->setDomain($emailDomain);
+
+            $entity->addEmailDomain($domainEntity);
+        }
+
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getOrganizationCustomDefMapper(), $model, $entity);
         $this->helpers->getLabelHelper()->updateLabels($model, $entity, Entity\LabelOrganization::class);
 
@@ -75,6 +86,6 @@ class OrganizationHandler extends AbstractEntityHandler
         $this->persister->persistAndFlush($entity, $model);
 
         // persist others related entities which contains own oids
-        $this->helpers->getContactDataHelper()->updateContactData($this->mappers->getOrganizationContactDataMapper(), $model, $entity);
+        $this->helpers->getOrganizationContactDataHelper()->updateContactData($model, $entity);
     }
 }

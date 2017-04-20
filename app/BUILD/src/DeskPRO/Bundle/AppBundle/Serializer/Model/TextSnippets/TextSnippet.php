@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,8 +29,12 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet as TextSnippetEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class TextSnippet.
+ */
 class TextSnippet
 {
     /**
@@ -88,6 +92,13 @@ class TextSnippet
     private $isDraft;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $textSnippetContent;
+
+    /**
      * TextSnippet constructor.
      *
      * @param TextSnippetEntity $snippet
@@ -101,5 +112,21 @@ class TextSnippet
         $this->category     = $snippet->getCategory();
         $this->shortcutCode = $snippet->getShortcutCode();
         $this->isDraft      = $snippet->isDraft();
+    }
+
+    /**
+     * @return InlineCustomSideload
+     */
+    public function getTextSnippetContent()
+    {
+        return $this->textSnippetContent;
+    }
+
+    /**
+     * @param InlineCustomSideload $textSnippetContent
+     */
+    public function setTextSnippetContent($textSnippetContent)
+    {
+        $this->textSnippetContent = $textSnippetContent;
     }
 }

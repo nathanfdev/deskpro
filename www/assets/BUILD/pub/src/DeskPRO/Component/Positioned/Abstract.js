@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import invariant from 'invariant';
 import $ from 'jquery';
+import 'jquery-ui/jquery-ui';
 import 'jquery-ui/position';
 
 export class Abstract extends React.Component {

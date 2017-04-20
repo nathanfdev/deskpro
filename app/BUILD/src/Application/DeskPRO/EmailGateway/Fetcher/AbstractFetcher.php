@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,17 +64,17 @@ abstract class AbstractFetcher
      *
      * @var int
      */
-    protected $max_size = 0;
+    protected $maxSize = 0;
 
     /**
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $max_size The max size in bytes to read. 0 to disable
+     * @param int                                      $maxSize The max size in bytes to read. 0 to disable
      */
-    public function __construct(EmailAccount $account, $max_size = 0)
+    public function __construct(EmailAccount $account, $maxSize = 0)
     {
         $this->account = $account;
         $this->logger  = new Logger();
-        $this->setMaxSize($max_size);
+        $this->setMaxSize($maxSize);
         $this->init();
     }
 
@@ -87,7 +87,7 @@ abstract class AbstractFetcher
         if ($this->storage) {
             try {
                 $this->storage->close();
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
             }
         }
     }
@@ -100,7 +100,7 @@ abstract class AbstractFetcher
         if ($this->storage) {
             try {
                 $this->storage->close();
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
             }
         }
     }
@@ -108,13 +108,13 @@ abstract class AbstractFetcher
     /**
      * Set the max size to read.
      *
-     * @param int $max_size The max size in bytes
+     * @param int $maxSize The max size in bytes
      */
-    public function setMaxSize($max_size)
+    public function setMaxSize($maxSize)
     {
-        $this->max_size = (int) $max_size;
-        if ($this->max_size < 0) {
-            $this->max_size = 0;
+        $this->maxSize = (int) $maxSize;
+        if ($this->maxSize < 0) {
+            $this->maxSize = 0;
         }
     }
 
@@ -125,7 +125,7 @@ abstract class AbstractFetcher
      */
     public function getMaxSize()
     {
-        return $this->max_size;
+        return $this->maxSize;
     }
 
     /**
@@ -202,28 +202,28 @@ abstract class AbstractFetcher
     public function readNext($object_type = 'ticket')
     {
         try {
-            $raw_message = $this->_readNext();
-        } catch (\Exception $e) {
-            $this->logger->log(sprintf('_readNext exception: %s', $e->getMessage()), 'debug');
+            $rawMessage = $this->_readNext();
+        } catch (\Exception $exception) {
+            $this->logger->log(sprintf('_readNext exception: %s', $exception->getMessage()), 'debug');
             if ($this->storage) {
                 try {
                     $this->storage->close();
-                } catch (\Exception $e) {
+                } catch (\Exception $exception) {
                 }
             }
-            throw $e;
+            throw $exception;
         }
 
-        if (!$raw_message) {
-            return;
+        if (!$rawMessage) {
+            return null;
         }
 
         // Protection against nulls
-        if (!$raw_message->headers) {
-            $raw_message->headers = '';
+        if (!$rawMessage->headers) {
+            $rawMessage->headers = '';
         }
-        if (!$raw_message->content) {
-            $raw_message->content = '';
+        if (!$rawMessage->content) {
+            $rawMessage->content = '';
         }
 
         App::getOrm()->beginTransaction();
@@ -236,46 +236,46 @@ abstract class AbstractFetcher
             $source = new EmailSource();
             $source->fromArray([
                 'email_account' => $this->account,
-                'headers'       => $raw_message->headers,
+                'headers'       => $rawMessage->headers,
                 'status'        => 'inserted',
             ]);
 
             // Rough matching, just for info purposes when browsing a list
-            $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_message->headers) ?: '';
-            $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $raw_message->headers) ?: '';
-            $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_message->headers) ?: '';
-            $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_message->headers) ?: '';
+            $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $rawMessage->headers) ?: '';
+            $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $rawMessage->headers) ?: '';
+            $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $rawMessage->headers) ?: '';
+            $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $rawMessage->headers) ?: '';
             $source->object_type    = $object_type;
 
-            if ($raw_message->uid) {
-                $source->uid = $raw_message->uid;
+            if ($rawMessage->uid) {
+                $source->uid = $rawMessage->uid;
 
                 App::getDb()->executeUpdate('
                     INSERT IGNORE INTO email_uids
                     SET id = ?, email_account_id = ?, date_created = ?
-                ', [$raw_message->uid, $this->account->getId(), date('Y-m-d H:i:s')]);
+                ', [$rawMessage->uid, $this->account->getId(), date('Y-m-d H:i:s')]);
 
-                $this->logger->log(sprintf('Saved UID: %s', $raw_message->uid), 'debug');
+                $this->logger->log(sprintf('Saved UID: %s', $rawMessage->uid), 'debug');
             }
 
-            if ($raw_message->too_big) {
+            if ($rawMessage->too_big) {
                 $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-                    $raw_message->content,
+                    $rawMessage->content,
                     'email.eml',
                     'message/rfc822'
                 );
                 // Unset the content now, its not used from here on out
-                $raw_message->content = '';
+                $rawMessage->content = '';
 
                 $source->status      = 'error';
                 $source->error_code  = EmailSource::ERR_MESSAGE_TOO_BIG;
                 $source->source_info = [
-                    'size'     => $raw_message->size,
-                    'max_size' => $this->max_size,
+                    'size'     => $rawMessage->size,
+                    'max_size' => $this->maxSize,
                 ];
             } else {
                 $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-                    $raw_message->content,
+                    $rawMessage->content,
                     'email.eml',
                     'message/rfc822'
                 );
@@ -294,20 +294,20 @@ abstract class AbstractFetcher
             // Delete message on the server
             //------------------------------
 
-            $this->_doneRead($raw_message->id);
-        } catch (\Exception $e) {
-            $this->logger->log(sprintf('Save source error: %s', $e->getMessage()), 'debug');
+            $this->_doneRead($rawMessage->id);
+        } catch (\Exception $exception) {
+            $this->logger->log(sprintf('Save source error: %s', $exception->getMessage()), 'debug');
             App::getOrm()->rollback();
             if ($this->storage) {
                 try {
                     $this->storage->close();
-                } catch (\Exception $e) {
+                } catch (\Exception $exception) {
                 }
             }
-            throw $e;
+            throw $exception;
         }
 
-        $source->_raw = $raw_message->content;
+        $source->_raw = $rawMessage->content;
 
         return $source;
     }

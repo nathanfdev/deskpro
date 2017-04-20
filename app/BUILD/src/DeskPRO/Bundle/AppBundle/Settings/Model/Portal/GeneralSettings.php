@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use JMS\Serializer\Annotation as JMS;
 
@@ -37,7 +38,7 @@ use JMS\Serializer\Annotation as JMS;
 class GeneralSettings extends AbstractBrandAwareSettings
 {
     /**
-     * {@inheritdoc}
+     * @var Brand
      *
      * @JMS\Exclude()
      */
@@ -114,6 +115,15 @@ class GeneralSettings extends AbstractBrandAwareSettings
      * @JMS\Type("boolean")
      */
     private $appsDownloads;
+
+    /**
+     * Application guides enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $appsGuides;
 
     /**
      * Application portal enabled.
@@ -248,11 +258,34 @@ class GeneralSettings extends AbstractBrandAwareSettings
      */
     public function getPortalMode()
     {
-        if ($this->appsDownloads || $this->appsFeedback || $this->appsKb || $this->appsNews) {
+        if ($this->appsDownloads || $this->appsFeedback || $this->appsKb || $this->appsNews || $this->appsGuides) {
             return 'publish';
         }
 
         return 'tickets';
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("brand_name")
+     *
+     * @return string
+     */
+    public function getBrandName()
+    {
+        return $this->brand->getName();
+    }
+
+    /**
+     * @param string $brandName
+     *
+     * @return $this
+     */
+    public function setBrandName($brandName)
+    {
+        $this->brand->setName($brandName);
+
+        return $this;
     }
 
     /**
@@ -331,6 +364,26 @@ class GeneralSettings extends AbstractBrandAwareSettings
     public function setAppsDownloads($appsDownloads)
     {
         $this->appsDownloads = $appsDownloads;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppsGuides()
+    {
+        return $this->appsGuides;
+    }
+
+    /**
+     * @param bool $appsGuides
+     *
+     * @return GeneralSettings
+     */
+    public function setAppsGuides($appsGuides)
+    {
+        $this->appsGuides = $appsGuides;
 
         return $this;
     }

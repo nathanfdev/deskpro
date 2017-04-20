@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,22 +36,21 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
 use DeskPRO\Component\Util\EntityUtils;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use Symfony\Component\HttpKernel\Fragment\EsiFragmentRenderer;
 
+/**
+ * Class EsiTagHandler.
+ */
 class EsiTagHandler implements TagHandlerInterface
 {
     /**
      * @var PortalCacheHelper
      */
     private $portalCacheHelper;
-
-    /**
-     * @var EsiFragmentRenderer
-     */
-    private $esiRenderer;
 
     /**
      * @var ContainerInterface
@@ -63,34 +62,53 @@ class EsiTagHandler implements TagHandlerInterface
      */
     private $modeStorage;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     * @param PortalCacheHelper  $portalCacheHelper
+     * @param PortalModeStorage  $modeStorage
+     */
     public function __construct(
         ContainerInterface $container,
-        PortalCacheHelper $portal_cache_helper,
-        PortalModeStorage $mode_storage
+        PortalCacheHelper $portalCacheHelper,
+        PortalModeStorage $modeStorage
     ) {
-        $this->portalCacheHelper = $portal_cache_helper;
+        $this->portalCacheHelper = $portalCacheHelper;
         $this->container         = $container;
-        $this->modeStorage       = $mode_storage;
+        $this->modeStorage       = $modeStorage;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supports(Tag $tag, TagRequest $tag_request)
     {
         return $tag->isEsi($this->portalCacheHelper->isGuestRequest());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Tag $tag, TagRequest $tag_request)
     {
         $this->filterRequest($tag_request);
 
-        return $this->container->get('fragment.renderer.esi')->render(
-            new ControllerReference(
-                $tag->getControllerName(),
-                $tag_request->attributes->all(),
-                $tag_request->query->all()
-            ),
-            $tag_request,
-            ['ignore_errors' => false]
-        );
+        try {
+            return $this->container->get('fragment.renderer.esi')->render(
+                new ControllerReference(
+                    $tag->getControllerName(),
+                    $tag_request->attributes->all(),
+                    $tag_request->query->all()
+                ),
+                $tag_request,
+                ['ignore_errors' => false]
+            );
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e, false, null, true);
+
+            return new Response('');
+        }
     }
 
     /**
@@ -108,6 +126,11 @@ class EsiTagHandler implements TagHandlerInterface
         );
     }
 
+    /**
+     * @param ParameterBag $bag
+     *
+     * @return array
+     */
     private function filterOutObjects(ParameterBag $bag)
     {
         $new_params = [];

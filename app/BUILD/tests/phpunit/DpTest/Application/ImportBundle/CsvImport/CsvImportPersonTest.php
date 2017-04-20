@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PhoneNumber;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\ImportBundle\CsvImport\CsvImporter;
 use DpTest\Application\ImportBundle\Writer\AbstractWriterTest;
@@ -222,7 +223,6 @@ class CsvImportPersonTest extends AbstractWriterTest
             ['facebook', 'http://facebook.com/username', 'username', null],
             ['linkedin', 'http://linkedin.com/in/profile', 'profile', null],
             ['im', 'username', 'aim', null],
-            ['phone', '1', '4157012311', 'phone', '+14157012311'],
         ];
     }
 
@@ -256,10 +256,10 @@ class CsvImportPersonTest extends AbstractWriterTest
             'ref'
         ));
 
-        /** @var ContactDataAbstract[] $contactData */
-        $contactData = array_values($this->getPerson()->getContactData()->toArray());
-        $this->assertEquals('4157012311', $contactData[0]->getField2());
-        $this->assertEquals('mobile', $contactData[0]->getField3());
+        /** @var PhoneNumber[] $contactData */
+        $contactData = array_values($this->getPerson()->getPhoneNumbers()->toArray());
+        $this->assertEquals('+14157012311', $contactData[0]->getNumber());
+        $this->assertEquals('mobile', $contactData[0]->getGuessedType());
     }
 
     public function test_address()

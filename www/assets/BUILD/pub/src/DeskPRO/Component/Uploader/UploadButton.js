@@ -1,23 +1,25 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import { AbstractFileUpload } from './AbstractFileUpload';
 import $ from 'jquery';
 import 'blueimp-file-upload';
+import { AbstractFileUpload } from './AbstractFileUpload';
 
 export class UploadButton extends AbstractFileUpload {
 
   static propTypes = {
-    name:      PropTypes.string,
-    className: PropTypes.string,
-    multiple:  PropTypes.bool
+    name:            PropTypes.string,
+    className:       PropTypes.string,
+    multiple:        PropTypes.bool,
+    acceptFileTypes: PropTypes.func
   };
 
   initializeFileUpload() {
-    const { uploadUrl, uploadParams } = this.props;
+    const { uploadUrl, uploadParams, acceptFileTypes } = this.props;
     const { onSubmit, onSend, onSuccess, onFail } = this.props;
 
-    const $input = $(this.getInput());
+    const $input = $(this.input);
     $input.fileupload({
+      acceptFileTypes,
+
       fileInput: $input,
       url:       uploadUrl,
       formData:  uploadParams,
@@ -28,8 +30,13 @@ export class UploadButton extends AbstractFileUpload {
     });
   }
 
+  /**
+   * BC. use this.input instead.
+   *
+   * @returns {input}
+   */
   getInput() {
-    return ReactDOM.findDOMNode(this.refs.input);
+    return this.input;
   }
 
   render() {
@@ -38,7 +45,7 @@ export class UploadButton extends AbstractFileUpload {
 
     return (
       <input
-        ref="input"
+        ref={(c) => { this.input = c; }}
         className={className}
         type="file"
         name={inputName}

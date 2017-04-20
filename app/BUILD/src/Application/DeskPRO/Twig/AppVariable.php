@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Twig;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Templating\GlobalVariablesInterface;
 use DeskPRO\Bundle\AppBundle\Server\PhpInfo;
+use DpSys\Features;
 use Symfony\Bridge\Twig\AppVariable as BaseAppVariable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -348,5 +349,33 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     public function isDevEnv()
     {
         return $this->container->get('kernel')->getEnvironment() !== 'prod';
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasVoice()
+    {
+        return $this->hasFeature(Features::VOICE);
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasFeature($id)
+    {
+        return $this->container->get('deskpro.feature_flags')->hasFeature($id);
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasBeta($id)
+    {
+        return $this->container->get('deskpro.feature_flags')->hasBeta($id);
     }
 }

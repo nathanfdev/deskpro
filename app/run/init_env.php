@@ -72,6 +72,7 @@ if (php_sapi_name() === 'cli') {
 
     if (in_array('--no-debug', $_SERVER['argv'])) {
         $config['env']['debug_mode'] = false;
+        $config['env']['no_debug']   = true;
     }
 
     $m = null;
@@ -195,12 +196,13 @@ error_reporting(E_ALL);
 
 $parse_bytes = function($val) {
     $val = trim($val);
+    $num = (int) $val;
     switch(strtolower($val[strlen($val)-1])) {
-        case 'g': $val *= 1024;
-        case 'm': $val *= 1024;
-        case 'k': $val *= 1024;
+        case 'g': $num *= 1024;
+        case 'm': $num *= 1024;
+        case 'k': $num *= 1024;
     }
-    return $val;
+    return $num;
 };
 
 /**

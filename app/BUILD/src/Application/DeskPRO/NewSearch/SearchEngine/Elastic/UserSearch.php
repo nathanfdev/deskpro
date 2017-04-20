@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
+use Elastica\Index;
 use Elastica\Query;
 use Elastica\Util as ElasticaUtil;
 use Orb\Util\Arrays;
@@ -43,7 +44,7 @@ class UserSearch implements UserSearchInterface
     const LIMIT           = 20;
 
     /**
-     * @var \Elastica\Index
+     * @var Index
      */
     private $index;
 
@@ -53,10 +54,10 @@ class UserSearch implements UserSearchInterface
     private $transformer;
 
     /**
-     * @param \Elastica\Index            $index
+     * @param Index                      $index
      * @param ElasticaResultsTransformer $transformer
      */
-    public function __construct(\Elastica\Index $index, ElasticaResultsTransformer $transformer)
+    public function __construct(Index $index, ElasticaResultsTransformer $transformer)
     {
         $this->index       = $index;
         $this->transformer = $transformer;
@@ -74,16 +75,16 @@ class UserSearch implements UserSearchInterface
         $search = $this->index->createSearch();
         $filter = new Query\BoolQuery();
 
-        $limit_types = isset($options['limit_types']) ? $options['limit_types'] : null;
-        if ($limit_types && !is_array($limit_types)) {
-            $limit_types = explode(',', $limit_types);
-            $limit_types = Arrays::func($limit_types, 'trim');
+        $limitTypes = isset($options['limit_types']) ? $options['limit_types'] : null;
+        if ($limitTypes && !is_array($limitTypes)) {
+            $limitTypes = explode(',', $limitTypes);
+            $limitTypes = Arrays::func($limitTypes, 'trim');
         }
-        if ($limit_types) {
-            $limit_types = Arrays::removeFalsey($limit_types);
+        if ($limitTypes) {
+            $limitTypes = Arrays::removeFalsey($limitTypes);
         }
 
-        if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
+        if ($context->getArticleCategoryIds() && ($limitTypes === null || in_array('article', $limitTypes))) {
             $search->addType('article');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'article']));
@@ -91,7 +92,7 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_ids', $context->getArticleCategoryIds()));
             $filter->addShould($f);
         }
-        if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
+        if ($context->getNewsCategoryIds() && ($limitTypes === null || in_array('news', $limitTypes))) {
             $search->addType('news');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'news']));
@@ -99,7 +100,7 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getNewsCategoryIds()));
             $filter->addShould($f);
         }
-        if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
+        if ($context->getDownloadCategoryIds() && ($limitTypes === null || in_array('download', $limitTypes))) {
             $search->addType('download');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'download']));
@@ -107,7 +108,7 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $filter->addShould($f);
         }
-        if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
+        if ($context->getFeedbackCategoryIds() && ($limitTypes === null || in_array('feedback', $limitTypes))) {
             $search->addType('feedback');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'feedback']));
@@ -115,7 +116,15 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
             $filter->addShould($f);
         }
-        if ($context->getPerson() && ($limit_types === null || in_array('ticket', $limit_types))) {
+        if ($context->getGuideIds() && ($limitTypes === null || in_array('topic', $limitTypes))) {
+            $search->addType('topic');
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'topic']));
+            $f->addMustNot(new Query\Term(['status' => 'hidden']));
+            $f->addMust(new Query\Terms('guide_id', $context->getGuideIds()));
+            $filter->addShould($f);
+        }
+        if ($context->getPerson() && ($limitTypes === null || in_array('ticket', $limitTypes))) {
             $search->addType('ticket');
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'ticket']));
@@ -134,6 +143,15 @@ class UserSearch implements UserSearchInterface
             $f->addMust($f2);
             $filter->addShould($f);
         }
+        if ($context->getPerson() && ($limitTypes === null || in_array('chat_conversation', $limitTypes))) {
+            $search->addType('chat_conversation');
+
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'chat_conversation']));
+            $f->addMust(new Query\Term(['person' => $context->getPerson()->getId()]));
+
+            $filter->addShould($f);
+        }
 
         if (!$search->getTypes()) {
             return new ResultSet();
@@ -143,36 +161,36 @@ class UserSearch implements UserSearchInterface
             $query = substr($query, 0, self::MAX_LEN);
         }
 
-        $bool_query = new Query\BoolQuery();
-        $qs         = $this->getQueryString($query);
+        $boolQuery = new Query\BoolQuery();
+        $qs        = $this->getQueryString($query);
         $qs->setDefaultField('_all');
         $qs->setFields(['_id', 'ref', 'title', 'labels', 'content', 'messages']);
         $qs->setDefaultOperator('AND');
-        $bool_query->addMust($qs);
+        $boolQuery->addMust($qs);
 
         $match = new Query\Match();
         $match->setFieldQuery('_type', 'ticket');
         $match->setFieldBoost('_type', 1000);
-        $bool_query->addShould($match);
+        $boolQuery->addShould($match);
 
         $match = new Query\Match();
         $match->setFieldQuery('_id', $query);
         $match->setFieldBoost('_id', 1000);
-        $bool_query->addShould($match);
+        $boolQuery->addShould($match);
 
         $match = new Query\Match();
         $match->setFieldQuery('ref', $query);
         $match->setFieldBoost('ref', 3);
-        $bool_query->addShould($match);
+        $boolQuery->addShould($match);
 
-        $sticky_match = new Query\Match();
-        $sticky_match->setFieldQuery('sticky_words', $query);
-        $sticky_match->setFieldOperator('sticky_words', 'AND');
-        $sticky_match->setFieldBoost('sticky_words', 2);
-        $bool_query->addShould($sticky_match);
+        $stickyMatch = new Query\Match();
+        $stickyMatch->setFieldQuery('sticky_words', $query);
+        $stickyMatch->setFieldOperator('sticky_words', 'AND');
+        $stickyMatch->setFieldBoost('sticky_words', 2);
+        $boolQuery->addShould($stickyMatch);
 
         $filteredQuery = new Query\BoolQuery();
-        $filteredQuery->addMust($bool_query);
+        $filteredQuery->addMust($boolQuery);
         $filteredQuery->addFilter($filter);
 
         $res     = $search->search($filteredQuery, ['limit' => self::LIMIT]);
@@ -226,7 +244,7 @@ class UserSearch implements UserSearchInterface
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'news']));
             $f->addMust(new Query\Term(['status' => 'published']));
-            $f->addMust(new Query\Term('category_id', $context->getNewsCategoryIds()));
+            $f->addMust(new Query\Terms('category_id', $context->getNewsCategoryIds()));
             $boolQuery->addShould($f);
         }
         if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
@@ -234,7 +252,7 @@ class UserSearch implements UserSearchInterface
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'download']));
             $f->addMust(new Query\Term(['status' => 'published']));
-            $f->addMust(new Query\Term('category_id', $context->getDownloadCategoryIds()));
+            $f->addMust(new Query\Terms('category_id', $context->getDownloadCategoryIds()));
             $boolQuery->addShould($f);
         }
         if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
@@ -242,7 +260,15 @@ class UserSearch implements UserSearchInterface
             $f = new Query\BoolQuery();
             $f->addMust(new Query\Term(['_type' => 'feedback']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
-            $f->addMust(new Query\Term('category_id', $context->getFeedbackCategoryIds()));
+            $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $boolQuery->addShould($f);
+        }
+        if ($context->getGuideIds() && ($limit_types === null || in_array('topic', $limit_types))) {
+            $search->addType('topic');
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'topic']));
+            $f->addMustNot(new Query\Term(['status' => 'hidden']));
+            $f->addMust(new Query\Terms('guide_id', $context->getGuideIds()));
             $boolQuery->addShould($f);
         }
 

@@ -1,20 +1,20 @@
 import React, { PropTypes } from 'react';
-import { UserInfoForm } from './UserInfoForm';
+import { Field } from 'react-forms';
+import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
-import { Field, Input } from 'react-forms';
-import { ChatBeginLoadingSpinner } from '../ChatBeginLoadingSpinner';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
-import { CustomFieldTemplate } from './CustomFieldTemplate';
+import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFieldSingleChoice';
 import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
+import { UserInfoForm } from './UserInfoForm';
+import { ChatBeginContainer } from '../ChatBeginContainer';
+import { CustomFieldTemplate } from './CustomFieldTemplate';
 
 export class ChatBeginConversation extends React.Component {
 
   static propTypes = {
-    submit:             PropTypes.bool,
-    errors:             PropTypes.object,
-    onSubmit:           PropTypes.func,
-    customFields:       PropTypes.object,
-    customFieldsLoaded: PropTypes.bool
+    errors:       PropTypes.object,
+    onSubmit:     PropTypes.func,
+    customFields: PropTypes.object
   };
 
   constructor(props) {
@@ -30,12 +30,8 @@ export class ChatBeginConversation extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { customFields, customFieldsLoaded } = this.props;
-
-    if (newProps.customFields !== customFields
-        || newProps.customFieldsLoaded !== customFieldsLoaded
-        || newProps.errors
-        || newProps.submit) {
+    const { customFields } = this.props;
+    if (newProps.customFields !== customFields || newProps.errors || newProps.submit) {
       this.prepareFormFields(newProps);
     }
   }
@@ -53,11 +49,26 @@ export class ChatBeginConversation extends React.Component {
     }
   };
 
+  getChatDepartmentField(props) {
+    return (
+      <UserInfoForm
+        title={portalPhrases.get('portal.chat.label-department')}
+        isSubmit={props.submit}
+        errors={props.errors}
+        onSubmit={this.onSubmit}
+        field="chat_department"
+      >
+        <CustomFieldSingleChoice
+          name="chat_department"
+          {...ChatBeginContainer.getWidgetConfig(props.chatDepartments)}
+        />
+      </UserInfoForm>
+    );
+  }
+
   prepareFormFields(props) {
-    const { customFields, errors, submit } = props;
-    if (!props.customFieldsLoaded) {
-      return;
-    }
+    const { customFields, widgetLanguage, errors, submit, loggedIn } = props;
+    const { chatRequiredName, chatRequiredEmail } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
       <CustomField config={customField} key={customField.get('id')}>
@@ -67,43 +78,58 @@ export class ChatBeginConversation extends React.Component {
 
     let current = 0;
     const fields = [];
-    fields.push(
-      <UserInfoForm
-        title={portalPhrases.get('portal.chat.label-name')}
-        isSubmit={submit}
-        onSubmit={this.onSubmit}
-        field="name"
-        errors={errors}
-      >
-        {hiddenFields}
-        <Field select="name">
-          <Input type="text" placeholder={portalPhrases.get('portal.chat.details-placeholder')} />
-        </Field>
-      </UserInfoForm>
-    );
-    fields.push(
-      <UserInfoForm
-        title={portalPhrases.get('portal.chat.label-email')}
-        isSubmit={submit}
-        onSubmit={this.onSubmit}
-        field="email"
-        errors={errors}
-      >
-        {hiddenFields}
-        <Field select="email">
-          <Input type="text" placeholder="email@example.com" />
-        </Field>
-      </UserInfoForm>
-    );
 
-    if (hasErrors(errors, 'email')) {
-      current = 1;
+    if (!loggedIn) {
+      fields.push(
+        <UserInfoForm
+          title={portalPhrases.get('portal.chat.label-name')}
+          isSubmit={submit}
+          onSubmit={this.onSubmit}
+          field="name"
+          errors={errors}
+          required={chatRequiredName}
+        >
+          {hiddenFields}
+          <Field select="name">
+            <Input type="text" placeholder={portalPhrases.get('portal.chat.details-placeholder')} />
+          </Field>
+        </UserInfoForm>
+      );
+      fields.push(
+        <UserInfoForm
+          title={portalPhrases.get('portal.chat.label-email')}
+          isSubmit={submit}
+          onSubmit={this.onSubmit}
+          field="email"
+          errors={errors}
+          required={chatRequiredEmail}
+        >
+          {hiddenFields}
+          <Field select="email">
+            <Input type="text" placeholder="email@example.com" />
+          </Field>
+        </UserInfoForm>
+      );
+
+      if (hasErrors(errors, 'email')) {
+        current = 1;
+      }
     }
 
-    customFields.valueSeq().filter(this.isNotHiddenField).forEach(customField => {
+    if (props.allowDepartmentSelection) {
+      const departmentField = this.getChatDepartmentField(props);
+      fields.push(departmentField);
+
+      if (hasErrors(errors, 'chat_department')) {
+        current = fields.indexOf(departmentField);
+      }
+    }
+
+    customFields.valueSeq().filter(this.isNotHiddenField).forEach((customField) => {
       const field = (
         <CustomField
           config={customField}
+          language={widgetLanguage}
           formErrors={errors}
           widgetOptions={{
             context:       [parent.document, window.widgetFrame.document],
@@ -133,11 +159,6 @@ export class ChatBeginConversation extends React.Component {
 
   render() {
     const { fields, current } = this.state;
-    const { customFieldsLoaded } = this.props;
-
-    if (!customFieldsLoaded || !fields.length) {
-      return <ChatBeginLoadingSpinner />;
-    }
 
     return (
       <div>

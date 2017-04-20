@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -72,15 +72,21 @@ class TicketsStatus extends AbstractTableOverviewStat
             return $this->values;
         }
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = '
             SELECT tickets.status, COUNT(*)
             FROM tickets AS tickets WHERE is_hold = 0
+            '.($this->agentTeam ? ' AND agent_team_id = :team_id ' : '').'
             GROUP BY tickets.status
         ';
 
         $this->logger->logDebug("[TicketsStatus] $sql");
         $this->logger->startTimer('TicketsStatus');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketsStatus');
 
         $sql = "
@@ -91,7 +97,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
         $this->logger->logDebug("[TicketsStatus w hold] $sql");
         $this->logger->startTimer('TicketsStatus_w_hold');
-        $this->values = array_merge($this->values, App::getDb()->fetchAllKeyValue($sql));
+        $this->values = array_merge($this->values, App::getDb()->fetchAllKeyValue($sql, $params));
         $this->logger->logTotalTime('TicketsStatus_w_hold');
 
         return $this->values;

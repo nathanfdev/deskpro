@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,7 +85,7 @@ class CleanupQuarterHourly extends AbstractJob
 
         if ($counts['tickets'] < 1000000) {
             $all_agents = App::getContainer()->getAgentData()->getAgents();
-            if (count($all_agents) < 250) {
+            if (count($all_agents) < 75) {
                 $did_per_agent_filters = true;
 
                 // Fetch in agent context
@@ -132,6 +132,21 @@ class CleanupQuarterHourly extends AbstractJob
 
         if (!$did_per_agent_filters) {
             App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
+        }
+
+        //------------------------------
+        // Enable cached slas
+        //------------------------------
+
+        if (!$this->getContainer()->getSetting('enable_cached_sla_counts')) {
+            $incompleteSlas     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
+            $awaitingAgentcount = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_agent'");
+            if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $awaitingAgentcount) >= 10000) {
+                $this->getContainer()->getDb()->replace('settings', [
+                    'name'  => 'enable_cached_sla_counts',
+                    'value' => time(),
+                ]);
+            }
         }
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -479,7 +479,7 @@ return [
     'portal.forms.error_upload_general'                     => 'Er was een probleem bij het uploaden van dit bestand. Probeer het nogmaals.',
     'portal.forms.error_upload_html_size'                   => 'Het bestand is te groot.',
     'portal.forms.error_upload_ini_size'                    => 'Het bestand is te groot. Maximum toegestane grootte is {{ limit }} {{ suffix }}.',
-    'portal.forms.error_extra_fields'                       => 'Sorry, maar er was een fout bij het behandelen van uw aanvraag. Probeer het nogmaals.',
+    'portal.forms.extra_fields'                             => 'Sorry, maar er was een fout bij het behandelen van uw aanvraag. Probeer het nogmaals.',
     'portal.forms.label_add_attachment'                     => 'Nog een bijlage toevoegen',
     'portal.forms.label_captcha'                            => 'Om te bewijzen dat u een mens bent, moet u vertellen welke tekst u ziet in de CAPTCHA-afbeelding',
     'portal.forms.label_category'                           => 'Categorie',
@@ -810,6 +810,7 @@ return [
     'user.email_subjects.download_sub_updated'              => 'Bijgewerkte downloads',
     'user.email_subjects.email-too-big'                     => 'Uw email "{{subject}}"  werd niet aanvaard',
     'user.email_subjects.email_new-confirm'                 => 'Valideer uw e-mailadres',
+    'user.email_subjects.email_primary-confirm'             => 'Valideer uw e-mailadres',
     'user.email_subjects.feedback_new'                      => 'Bedankt voor het sturen van uw feedback',
     'user.email_subjects.feedback_new-approved'             => 'Uw feedback is goedgekeurd',
     'user.email_subjects.feedback_new-comment'              => 'Er is een nieuwe reactie op "{{title}}"',
@@ -832,7 +833,9 @@ return [
     'user.email_subjects.remind_unresolved_final_subject'   => 'HERINNERING: {{subject}}',
     'user.email_subjects.remind_unresolved_subject'         => 'HERINNERING: {{subject}}',
     'user.email_subjects.ticket-rate'                       => 'Beoordeel uw support ervaring op uw ticket "{{ticket.subject}}"',
+    'user.email_subjects.ticket_new-participant'            => 'Er is een nieuw persoon toegevoegd aan uw ticket',
     'user.email_subjects.tickets_re'                        => 'RE: {{ticket.subject}}',
+    'user.email_subjects.too-many-emails'                   => 'LET OP: U heeft te veel e-mails verzonden',
     'user.emails.auto-close'                                => 'Uw ticket "{{ticket.subject}}" wordt automatisch afgesloten omdat je het de laatste tijd niet hebt bijgewerkt. Als u niet wilt dat uw ticket wordt afgesloten, voeg een nieuw antwoord toe, zodat onze medewerkers u verder kunnen helpen.',
     'user.emails.chat_transcript'                           => 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.',
     'user.emails.chat_validate_email'                       => 'Valideer uw e-mailadres door deze code "{{validation_code}}" in te vullen in het widgetformulier of door op deze link te klikken:',
@@ -877,7 +880,7 @@ return [
     'user.emails.reject_resolved'                           => 'Je antwoord is niet aanvaard omdat uw ticket gemarkeerd is als opgelost. Onze medewerkers zullen dit bericht niet lezen of op reageren.',
     'user.emails.reject_resolved-new'                       => 'Als u een ​​nieuw ticket wenst aan te maken, kunt u een e-mail sturen naar<a href="mailto:{{email_to}}">{{email_to}}</a>of via ons online formulier:<br /><a href="{{link}}">{{link}}</a>',
     'user.emails.reject_resolved-newemail'                  => 'Als u een ​​nieuw ticket wenst aan te maken, kunt u een e-mail sturen naar<a href="mailto:{{email_to}}">{{email_to}}</a>',
-    'user.emails.remind_unresolved'                         => 'Dit is een opvolging boodschap om u eraan herinneren dat u nog steeds een open ticket met {{ helpdesk_name }}.<br />heeft. Als je niet verder wenst geholpen te worden met dit probleem, klikt u op de onderstaande link:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a><br />Als u nog steeds hulp nodig heeft, beantwoordt u deze e-mail.',
+    'user.emails.remind_unresolved'                         => 'U ontvangt dit bericht om u er aan te herinneren dat uw melding bij {{ helpdesk_name }}.<br /> nog open staat. U kunt uw melding afsluiten door op de volgende link te klikken: <br /><a href="{{ resolve_url }}">{{ resolve_url }}</a><br />. Aanvullende vragen met betrekking tot deze melding kunt u stellen door op deze mail te reageren. ',
     'user.emails.remind_unresolved_final'                   => 'We hebben onlangs niets gehoord van u over dit ticket.<br />Als u nog steeds hulp nodig heeft, beantwoordt u deze e-mail.<br />Als je verder geen hulp meer nodig hebt met dit probleem, dan klikt u op de onderstaande link om ons dit te laten weten:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a>',
     'user.emails.ticket_access_ticket_online'               => 'Bekijk en beheer deze ticket online:',
     'user.emails.ticket_flood'                              => 'U heeft onlangs een e-mail naar onze helpdesk gestuurd. Ons geautomatiseerd systeem heeft ontdekt dat er veel berichten zijn gestuurd.<br /><br />Ter bescherming tegen een hoop automatische antwoorden, zal onze helpdesk geen automatische meldingen naar uw e-mailadres verzenden.',

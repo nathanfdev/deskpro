@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,8 +41,11 @@ use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -125,12 +128,12 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @Assert\GroupSequenceProvider
  */
 class Person extends DomainObject implements
-HighlightableModelInterface,
-UserInterface,
-\Serializable,
+    HighlightableModelInterface,
+    UserInterface,
+    \Serializable,
     EquatableInterface,
-LabelsOwner,
-GroupSequenceProviderInterface
+    LabelsOwner,
+    GroupSequenceProviderInterface
 {
     const CREATED_WEB_PERSON     = 'web.person';
     const CREATED_WEB_AGENT      = 'web.agent';
@@ -603,6 +606,24 @@ GroupSequenceProviderInterface
     protected $chats;
 
     /**
+     * @var AgentData
+     *
+     * @Assert\IsNull(groups="User")
+     * @Assert\Valid()
+     */
+    protected $agentData;
+
+    /**
+     * @var VoiceQueue[]|ArrayCollection
+     */
+    protected $voiceQueues;
+
+    /**
+     * @var PersonOnboarding[]|ArrayCollection
+     */
+    protected $onboarding;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -683,6 +704,8 @@ GroupSequenceProviderInterface
         $this->project_members        = new ArrayCollection();
         $this->tickets                = new ArrayCollection();
         $this->chats                  = new ArrayCollection();
+        $this->voiceQueues            = new ArrayCollection();
+        $this->onboarding             = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -870,6 +893,18 @@ GroupSequenceProviderInterface
     public function isUser()
     {
         return (bool) $this->is_user;
+    }
+
+    /**
+     * @param bool $isUser
+     *
+     * @return $this
+     */
+    public function setIsUser($isUser)
+    {
+        $this->setModelField('is_user', $isUser);
+
+        return $this;
     }
 
     /**
@@ -2720,6 +2755,11 @@ GroupSequenceProviderInterface
      */
     public function addLabel(Label $label)
     {
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                return;
+            }
+        }
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
@@ -3503,6 +3543,21 @@ GroupSequenceProviderInterface
     }
 
     /**
+     * @param AgentTeam $agentTeam
+     *
+     * @return $this
+     */
+    public function setPrimaryTeam(AgentTeam $agentTeam = null)
+    {
+        $this->setModelField('primary_team', $agentTeam);
+        if ($agentTeam) {
+            $this->addTeam($agentTeam);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return \Application\DeskPRO\Entity\AgentTeam
      */
     public function getPrimaryTeam()
@@ -3516,6 +3571,27 @@ GroupSequenceProviderInterface
         }
 
         return;
+    }
+
+    /**
+     * @param PersonOnboarding $onboarding
+     *
+     * @return $this
+     */
+    public function addOnboarding(PersonOnboarding $onboarding)
+    {
+        $existing = $this->onboarding->filter(function (PersonOnboarding $existOnboarding) use ($onboarding) {
+            return $onboarding->getOnboardingClass() === $existOnboarding->getOnboardingClass();
+        });
+
+        if (!$existing->count()) {
+            $onboarding->setPerson($this);
+            $this->onboarding->add($onboarding);
+
+            $this->_onPropertyChanged('onboarding', $this->onboarding, $this->onboarding);
+        }
+
+        return $this;
     }
 
     /**
@@ -3574,6 +3650,11 @@ GroupSequenceProviderInterface
 
         $pp                    = $this->getPrimaryPhoneNumber();
         $data['primary_phone'] = $pp ? $pp->toApiData() : [];
+        $data['phone_numbers'] = [];
+
+        foreach ($this->phone_numbers as $phoneNumber) {
+            $data['phone_numbers'][] = $phoneNumber->toApiData();
+        }
 
         $data['emails'] = [];
         foreach ($this->emails as $eml) {
@@ -3717,6 +3798,14 @@ GroupSequenceProviderInterface
     }
 
     /**
+     * @return PhoneNumber[]|ArrayCollection
+     */
+    public function getPhoneNumbers()
+    {
+        return $this->phone_numbers;
+    }
+
+    /**
      * Count of tickets person was assigned.
      *
      * @return int
@@ -3747,6 +3836,34 @@ GroupSequenceProviderInterface
             /* @var \Application\DeskPRO\Entity\PersonEmail $email */
             return $email->getEmail();
         });
+    }
+
+    /**
+     * @param AgentData $agentData
+     *
+     * @return $this
+     */
+    public function setAgentData(AgentData $agentData = null)
+    {
+        $this->setModelField('agentData', $agentData);
+
+        return $this;
+    }
+
+    /**
+     * @return AgentData
+     */
+    public function getAgentData()
+    {
+        return $this->agentData;
+    }
+
+    /**
+     * @return VoiceQueue[]|ArrayCollection
+     */
+    public function getVoiceQueues()
+    {
+        return $this->voiceQueues;
     }
 
     //###########################################################################
@@ -3784,7 +3901,7 @@ GroupSequenceProviderInterface
                     'on'.ucfirst($event)
                 );
             }
-            foreach ([Events::prePersist, Events::preUpdate, Events::preFlush] as $event) {
+            foreach ([Events::prePersist, Events::preUpdate] as $event) {
                 $metadata->addEntityListener(
                     $event,
                     PersonOnboardingListener::class,
@@ -4304,6 +4421,7 @@ GroupSequenceProviderInterface
             [
                 'fieldName'    => 'usergroups',
                 'targetEntity' => Usergroup::class,
+                'inversedBy'   => 'people',
                 'cascade'      => ['persist', 'merge'],
                 'joinTable'    => [
                     'name'        => 'person2usergroups',
@@ -4452,6 +4570,39 @@ GroupSequenceProviderInterface
                 'mappedBy'     => 'person',
             ]
         );
+
+        $metadata->mapOneToOne([
+            'fieldName'     => 'agentData',
+            'targetEntity'  => AgentData::class,
+            'inversedBy'    => 'person',
+            'cascade'       => ['persist', 'remove'],
+            'orphanRemoval' => true,
+            'joinColumns'   => [
+                [
+                    'name'                 => 'agent_data_id',
+                    'referencedColumnName' => 'id',
+                    'unique'               => true,
+                    'nullable'             => true,
+                    'columnDefinition'     => null,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+
+        $metadata->mapManyToMany([
+            'fieldName'    => 'voiceQueues',
+            'targetEntity' => VoiceQueue::class,
+            'mappedBy'     => 'agents',
+            'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+        ]);
+
+        $metadata->mapOneToMany([
+            'fieldName'     => 'onboarding',
+            'targetEntity'  => PersonOnboarding::class,
+            'mappedBy'      => 'person',
+            'orphanRemoval' => true,
+            'cascade'       => ['persist', 'remove', 'merge'],
+        ]);
     }
 
     public function clear()

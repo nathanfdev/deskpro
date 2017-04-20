@@ -109,6 +109,7 @@ $border-color: #e7e7e7;
         & > div {
           margin: 1px;
           display: inline-block;
+          width: 98%; // 100 and 99% conflict with bottom-aligner
         }
       }
 
@@ -190,6 +191,27 @@ $border-color: #e7e7e7;
         top: 50%;
         left: 50%;
       }
+    }
+  }
+
+  &.full-screen {
+    width: 100%;
+    margin-left: 0;
+
+    .dpdesignportal-content {
+      padding-right: 10px;
+    }
+
+    .dpdesignportal-widget-body {
+      width: 100%;
+    }
+
+    .dpdesignportal-chat-footer {
+      width: 100%;
+    }
+
+    .dpdesignportal-powered-by-deskpro {
+      width: 100%;
     }
   }
 }

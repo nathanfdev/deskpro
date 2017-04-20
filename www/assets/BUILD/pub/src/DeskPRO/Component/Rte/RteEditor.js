@@ -1,24 +1,31 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
-import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { clipboardHasImages, getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
 
-export class RteEditor extends React.Component {
+export default class RteEditor extends React.Component {
 
   static propTypes = {
-    tag:          PropTypes.string,
-    value:        PropTypes.string,
-    inline:       PropTypes.bool,
-    options:      PropTypes.object,
-    onChange:     PropTypes.func,
-    onSubmit:     PropTypes.func,
-    onPasteImage: PropTypes.func
+    tag:             PropTypes.string,
+    value:           PropTypes.string,
+    inline:          PropTypes.bool,
+    ctrlEnterSubmit: PropTypes.bool,
+    options:         PropTypes.object,
+    onChange:        PropTypes.func,
+    onSubmit:        PropTypes.func,
+    onPasteImage:    PropTypes.func,
+    onFocus:         PropTypes.func,
+    onBlur:          PropTypes.func
   };
 
   componentDidMount() {
-    const { inline, value = '', options = {} } = this.props;
-    const { onChange = () => {}, onSubmit = () => {} } = this.props;
+    const { inline, ctrlEnterSubmit, value = '', options = {} } = this.props;
+    const {
+      onChange = () => {},
+      onSubmit = () => {},
+      onFocus = () => {},
+      onBlur = () => {}
+    } = this.props;
 
     const node = this.getNode();
     const onChangeContent = () => {
@@ -43,15 +50,19 @@ export class RteEditor extends React.Component {
     // Override default paste listener to upload images
     $(node).on('paste', this.onPaste);
     const overrideOptions = {
-      paste: { cleanPastedHTML: true }
+      paste: { cleanPastedHTML: false, forcePlainText: false }
     };
 
     this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
     this.medium.setContent(value);
     this.medium.subscribe('editableInput', onChangeContent);
     this.medium.subscribe('onChange', onChangeContent);
-    this.medium.subscribe('editableKeydownEnter', event => {
-      if (inline && !event.altKey && !event.ctrlKey && !event.shiftKey) {
+    this.medium.subscribe('focus', onFocus);
+    this.medium.subscribe('blur', onBlur);
+    this.medium.subscribe('editableKeydownEnter', (event) => {
+      const ctrlKey = event.ctrlKey || event.metaKey;
+
+      if ((inline && !event.altKey && !ctrlKey && !event.shiftKey) || (ctrlEnterSubmit && ctrlKey)) {
         onSubmit(event, node.innerHTML);
       }
     });
@@ -60,11 +71,14 @@ export class RteEditor extends React.Component {
     });
 
     this.getDocument().addEventListener('mousemove', this.onMouseMove, true);
-    node.addEventListener('focus', this.onShowToolbar, true);
+
+    if (options.toolbar) {
+      node.addEventListener('focus', this.onShowToolbar, true);
+    }
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.value !== this.getNode().innerHTML) {
+    if (this.getNode() && newProps.value !== this.getNode().innerHTML) {
       let content = newProps.value;
       if (!content) {
         content = '<p></p>';
@@ -84,7 +98,7 @@ export class RteEditor extends React.Component {
     this.getDocument().removeEventListener('mousemove', this.onMouseMove, true);
   };
 
-  onPaste = event => {
+  onPaste = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -92,7 +106,9 @@ export class RteEditor extends React.Component {
     const pastedText = clipboardData.getData('text/plain');
     const pastedHtml = clipboardData.getData('text/html');
 
-    this.medium.cleanPaste(pastedText);
+    if (!clipboardHasImages(clipboardData)) {
+      this.medium.cleanPaste(pastedText);
+    }
 
     const { onPasteImage } = this.props;
     if (onPasteImage) {
@@ -117,7 +133,7 @@ export class RteEditor extends React.Component {
   }
 
   getNode() {
-    return ReactDOM.findDOMNode(this);
+    return this.node;
   }
 
   getDocument() {
@@ -196,6 +212,6 @@ export class RteEditor extends React.Component {
 
   render() {
     const { tag = 'div' } = this.props;
-    return React.createElement(tag, this.props);
+    return React.createElement(tag, { ...this.props, ref: (c) => { this.node = c; } });
   }
 }

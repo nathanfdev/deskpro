@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity()
  * @ORM\Table("api_log", uniqueConstraints={@ORM\UniqueConstraint(name="request_id_unique",columns={"request_id"})})
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
  * @JMS\ExclusionPolicy("all")
@@ -252,7 +252,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->setModelField('id', $id);
 
         return $this;
     }
@@ -272,7 +272,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setStartTime($start_time)
     {
-        $this->start_time = $start_time;
+        $this->setModelField('start_time', $start_time);
 
         return $this;
     }
@@ -292,7 +292,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setEndTime($end_time)
     {
-        $this->end_time = $end_time;
+        $this->setModelField('end_time', $end_time);
 
         return $this;
     }
@@ -310,9 +310,9 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setKey(ApiKey $key)
+    public function setKey(ApiKey $key = null)
     {
-        $this->key = $key;
+        $this->setModelField('key', $key);
 
         return $this;
     }
@@ -332,7 +332,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setCredentials($credentials)
     {
-        $this->credentials = $credentials;
+        $this->setModelField('credentials', $credentials);
 
         return $this;
     }
@@ -352,7 +352,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setMode($mode)
     {
-        $this->mode = $mode;
+        $this->setModelField('mode', $mode);
 
         return $this;
     }
@@ -372,7 +372,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setRequestedUri($requested_uri)
     {
-        $this->requested_uri = $requested_uri;
+        $this->setModelField('requested_uri', $requested_uri);
 
         return $this;
     }
@@ -392,7 +392,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setMethod($method)
     {
-        $this->method = strtoupper($method);
+        $this->setModelField('method', strtoupper($method));
 
         return $this;
     }
@@ -412,7 +412,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->setModelField('status', $status);
 
         return $this;
     }
@@ -438,7 +438,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setRequestData(array $request_data)
     {
-        $this->request_data = $request_data;
+        $this->setModelField('request_data', $request_data);
 
         return $this;
     }
@@ -476,7 +476,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setRequestId($request_id)
     {
-        $this->request_id = $request_id;
+        $this->setModelField('request_id', $request_id);
 
         return $this;
     }
@@ -496,7 +496,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setResponseData(array $response_data)
     {
-        $this->response_data = $response_data;
+        $this->setModelField('response_data', $response_data);
 
         return $this;
     }
@@ -516,7 +516,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setIsDupe($isDupe)
     {
-        $this->isDupe = $isDupe;
+        $this->setModelField('isDupe', (bool) $isDupe);
 
         return $this;
     }
@@ -536,7 +536,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setIsRequestTruncated($isRequestTruncated)
     {
-        $this->isRequestTruncated = $isRequestTruncated;
+        $this->setModelField('isRequestTruncated', (bool) $isRequestTruncated);
 
         return $this;
     }
@@ -556,7 +556,7 @@ class ApiLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setIsResponseTruncated($isResponseTruncated)
     {
-        $this->isResponseTruncated = $isResponseTruncated;
+        $this->setModelField('isResponseTruncated', (bool) $isResponseTruncated);
 
         return $this;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Component\Util\ControllerUtils;
 use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
 use Symfony\Component\Routing\Route;
@@ -52,16 +49,44 @@ class ApiDocExtractor extends BaseApiDocExtractor
     ];
 
     /**
-     * @return Route[]
+     * {@inheritdoc}
      */
     public function getRoutes()
     {
-        return array_filter($this->router->getRouteCollection()->all(), function (Route $r) {
+        $features          = $this->container->get('deskpro.feature_flags');
+        $annotationsReader = $this->container->get('annotation_reader');
+
+        return array_filter($this->router->getRouteCollection()->all(), function (Route $r) use ($annotationsReader, $features) {
             $ctrl = $r->getDefault('_controller');
             $action = $ctrl ? ControllerUtils::cleanAction($ctrl, true) : false;
             $reflection = ControllerUtils::extractControllerReflection($r);
 
-            return $action && $reflection && $this->isExposedAction($action, $reflection);
+            if (!$action || !$reflection) {
+                return false;
+            }
+
+            // check feature annotation
+            $method = explode('::', $ctrl);
+            if (isset($method[1])) {
+                $method = $reflection->getMethod($method[1]);
+
+                $classAnnotation = $annotationsReader->getClassAnnotation($reflection, Feature::class);
+                $methodAnnotation = $annotationsReader->getMethodAnnotation($method, Feature::class);
+
+                /** @var Feature $annotation */
+                $annotation = $methodAnnotation ?: $classAnnotation;
+                $name = $annotation ? $annotation->getName() : null;
+                if ($annotation && !($features->hasFeature($name) || $features->hasBeta($name))) {
+                    return false;
+                }
+            }
+
+            // check exposed
+            if (!$this->isExposedAction($action, $reflection)) {
+                return false;
+            }
+
+            return true;
         });
     }
 

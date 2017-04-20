@@ -577,6 +577,11 @@ class DpEnv
      */
     public function isDebug()
     {
+        // '--no-debug' console option should override 'dev' and 'test' mode
+        if ($this->getConfig('env.no_debug')) {
+            return false;
+        }
+
         return $this->getEnvId() === 'dev' || $this->getEnvId() === 'test' || $this->getConfig('env.debug_mode');
     }
 

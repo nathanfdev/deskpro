@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,12 +32,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
+use Application\DeskPRO\HttpFoundation\Session as AgentSession;
+use DeskPRO\Bundle\AppBundle\EventListener\Helper\LowTemplateHelper;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DpSys\License;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -134,7 +137,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
                 return;
             }
 
-            $event->setResponse($this->getLicErrorPageResponse('You have not entered a license code. Go to /admin and enter your license code now.'));
+            $event->setResponse($this->getLicErrorPageResponse($request, 'You have not entered a license code. Go to /admin and enter your license code now.'));
             $event->stopPropagation();
 
             return;
@@ -146,7 +149,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
             $count = $db->fetchColumn('SELECT COUNT(*) FROM people WHERE is_agent = 1 AND is_deleted = 0');
 
             if ($count > $lic->getMaxAgents()) {
-                $event->setResponse($this->getLicErrorPageResponse("
+                $event->setResponse($this->getLicErrorPageResponse($request, "
                     Your helpdesk is using more agents than your license allows.<br/><br/>
                     - Number of agents: {$count}<br/><br/>
                     - Number of seats available: {$lic->getMaxAgents()}<br/><br/>
@@ -165,11 +168,22 @@ final class LicenseCheckListener implements EventSubscriberInterface
             $this->interfaceInfo->isAgentInterface()
             || ($this->interfaceInfo->isUserInterface() && $lic->isPastExpireDate() >= 14)
         )) {
-            $date = $lic->getExpireDate()->format('F jS');
-            $event->setResponse($this->getLicErrorPageResponse("
-                Your helpdesk license expired on {$date}. To continue using your helpdesk,
-                an administrator needs to renew the license.
-            "));
+            $date    = $lic->getExpireDate()->format('F jS');
+            $message = "Your helpdesk license expired on {$date}. To continue using your helpdesk,
+                an administrator needs to renew the license. Go to
+                <a href='{$this->container->get('router')->generate('admin_interface')}#/license'>billing settings</a>.";
+
+            // In agent interface add note if they are not an admin
+            if ($this->container->initialized('session')
+                && $this->container->get('session') instanceof AgentSession
+                && $this->container->get('session')->getPerson()
+                && !$this->container->get('session')->getPerson()->canAdmin()
+            ) {
+                $message .= '<p>Note: You are not an administrator and cannot make this change yourself.
+                    Please get your administrator to log in and update the license.</p>';
+            }
+
+            $event->setResponse($this->getLicErrorPageResponse($request, $message));
             $event->stopPropagation();
 
             return;
@@ -200,7 +214,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
                 ($this->interfaceInfo->isAgentInterface() && defined('DPC_AGENT_OFF') && DPC_AGENT_OFF)
                 || ($this->interfaceInfo->isUserInterface() && defined('DPC_USER_OFF') && DPC_USER_OFF)
             ) {
-                $event->setResponse($this->getCloudErrorPageResponse('cloud-error.bill-failed.html'));
+                $event->setResponse($this->getCloudErrorPageResponse($request, 'cloud-error.bill-failed.html'));
                 $event->stopPropagation();
 
                 return;
@@ -213,7 +227,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
             || ($this->interfaceInfo->isAgentInterface() && defined('DPC_AGENT_OFF') && DPC_AGENT_OFF)
             || ($this->interfaceInfo->isUserInterface() && defined('DPC_USER_OFF') && DPC_USER_OFF)
         ) {
-            $event->setResponse($this->getCloudErrorPageResponse('cloud-error.offline.html', defined('DPC_OFF_REASON') ? DPC_OFF_REASON : ''));
+            $event->setResponse($this->getCloudErrorPageResponse($request, 'cloud-error.offline.html', defined('DPC_OFF_REASON') ? DPC_OFF_REASON : ''));
             $event->stopPropagation();
 
             return;
@@ -221,7 +235,7 @@ final class LicenseCheckListener implements EventSubscriberInterface
 
         // The whole site might be offline
         if (defined('DPC_SYS_DISABLED') && DPC_SYS_DISABLED) {
-            $event->setResponse($this->getCloudErrorPageResponse('cloud-error.offline.html', ''));
+            $event->setResponse($this->getCloudErrorPageResponse($request, 'cloud-error.offline.html', ''));
             $event->stopPropagation();
 
             return;
@@ -229,24 +243,26 @@ final class LicenseCheckListener implements EventSubscriberInterface
     }
 
     /**
-     * @param string $message
+     * @param Request $request
+     * @param string  $message
      *
      * @return Response
      */
-    private function getLicErrorPageResponse($message)
+    private function getLicErrorPageResponse(Request $request, $message)
     {
-        $response = new Response($this->getLicErrorPage($message));
+        $response = new Response($this->getLicErrorPage($request, $message));
         $response->headers->set('X-DeskPRO-ErrorType', 'license');
 
         return $response;
     }
 
     /**
-     * @param string $message
+     * @param Request $request
+     * @param string  $message
      *
      * @return string
      */
-    private function getLicErrorPage($message)
+    private function getLicErrorPage(Request $request, $message)
     {
         $asset_url = $this->assetUrl;
         $tpl       = 'lic-error.html';
@@ -254,37 +270,41 @@ final class LicenseCheckListener implements EventSubscriberInterface
         $page_html = @file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/'.$tpl) ?: '{{ CONTENT }}';
         $page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
         $page_html = str_replace('{{ CONTENT }}', $message, $page_html);
+        $page_html = LowTemplateHelper::injectAdminRedirect($request, $page_html);
 
         return $page_html;
     }
 
     /**
-     * @param string $tpl
-     * @param string $message
+     * @param Request $request
+     * @param string  $tpl
+     * @param string  $message
      *
      * @return Response
      */
-    private function getCloudErrorPageResponse($tpl, $message = '')
+    private function getCloudErrorPageResponse(Request $request, $tpl, $message = '')
     {
-        $response = new Response($this->getCloudErrorPage($tpl, $message));
+        $response = new Response($this->getCloudErrorPage($request, $tpl, $message));
         $response->headers->set('X-DeskPRO-ErrorType', 'license');
 
         return $response;
     }
 
     /**
-     * @param string $tpl
-     * @param string $message
+     * @param Request $request
+     * @param string  $tpl
+     * @param string  $message
      *
      * @return string
      */
-    private function getCloudErrorPage($tpl, $message = '')
+    private function getCloudErrorPage(Request $request, $tpl, $message = '')
     {
         $asset_url = $this->assetUrl;
 
         $page_html = @file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/'.$tpl) ?: '{{ CONTENT }}';
         $page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
         $page_html = str_replace('{{ CONTENT }}', $message, $page_html);
+        $page_html = LowTemplateHelper::injectAdminRedirect($request, $page_html);
 
         return $page_html;
     }

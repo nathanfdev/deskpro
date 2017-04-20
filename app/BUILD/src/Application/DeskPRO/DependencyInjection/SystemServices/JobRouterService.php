@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,12 +36,14 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\JobQueue\JobRouter;
+use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\MassActions\PublishProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
+use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
@@ -122,6 +124,24 @@ class JobRouterService
         }
 
         $router->addProcessor(new UsersImportProcessor($container));
+
+        // voice records processor
+        $router->addProcessor(
+            new VoiceDownloadRecordProcessor(
+                $conn,
+                $container->getEm(),
+                $container->getBlobStorage(),
+                $container->get('serializer')
+            )
+        );
+
+        // features processor
+        $router->addProcessor(
+            new FeatureProcessor(
+                $conn,
+                $container
+            )
+        );
 
         return $router;
     }

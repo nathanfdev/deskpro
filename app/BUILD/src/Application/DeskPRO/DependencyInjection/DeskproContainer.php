@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -558,6 +558,14 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return \Application\DeskPRO\EmailGateway\Reader\EzcReaderFactory
+     */
+    public function getEmailEzcReaderFactory()
+    {
+        return $this->get('email.ezc_reader_factory');
+    }
+
+    /**
      * @return \Application\DeskPRO\Attachments\AcceptAttachment
      */
     public function getAttachmentAccepter()
@@ -707,6 +715,14 @@ class DeskproContainer extends Container
     public function getOrgFieldManager()
     {
         return $this->getSystemService('org_fields_manager');
+    }
+
+    /**
+     * @return \Application\DeskPRO\CustomFields\ChatFieldManager
+     */
+    public function getChatFieldManager()
+    {
+        return $this->getSystemService('chat_fields_manager');
     }
 
     /**

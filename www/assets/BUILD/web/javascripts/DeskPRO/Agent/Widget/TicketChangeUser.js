@@ -24,6 +24,7 @@ DeskPRO.Agent.Widget.TicketChangeUser = new Orb.Class({
 
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
+      zIndex: 1800,
 			contentAjax: {
 				url: BASE_URL + 'agent/tickets/' + this.ticketId + '/change-user-overlay',
 				data: data

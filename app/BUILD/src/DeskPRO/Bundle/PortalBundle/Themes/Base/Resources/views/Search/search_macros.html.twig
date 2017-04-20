@@ -9,6 +9,8 @@
         {{ _self.feedback_search_result(result['object']) }}
     {% elseif result['type'] == 'download' %}
         {{ _self.dl_search_result(result['object']) }}
+    {% elseif result['type'] == 'topic' %}
+        {{ _self.topic_search_result(result['object']) }}
     {% endif %}
 {% endmacro %}
 
@@ -58,7 +60,7 @@
           <span class="feedback-count"><i class="fa fa-thumbs-up"></i>{{ feedback.total_rating >= 0 ? (feedback.total_rating > 0 ? '+' : '') : '-' }}{{ feedback.total_rating }}</span>
           {{ feedback.title }}
       </span>
-      <p>{{ feedback.getContentPlainHtml()|html_content_preview(350) }}</p>
+      <p>{{ feedback.getContentHtml()|html_content_preview(350) }}</p>
     </a>
   </li>
 {% endmacro %}
@@ -71,4 +73,17 @@
           <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
   </li>
+{% endmacro %}
+
+
+{% macro topic_search_result(topic) %}
+    <li>
+        {{ content_icon(topic) }}
+        <a href="{{ portal_path(topic) }}">
+          <span class="item-title">
+            {{ topic.title }}
+          </span>
+          <p>{{ topic.realContent|html_content_preview(350) }}</p>
+        </a>
+    </li>
 {% endmacro %}

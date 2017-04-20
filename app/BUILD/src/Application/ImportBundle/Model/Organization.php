@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -65,6 +65,17 @@ class Organization implements LabelAwareModelInterface, CustomDataAwareModelInte
      * @JMS\Type("integer")
      */
     private $importance;
+
+    /**
+     * @var array
+     *
+     * @JMS\Type("array<string>")
+     *
+     * @Assert\All(constraints={
+     *   @Assert\NotBlank()
+     * })
+     */
+    private $emailDomains = [];
 
     /**
      * @var \DateTime
@@ -192,5 +203,25 @@ class Organization implements LabelAwareModelInterface, CustomDataAwareModelInte
     public function getContactData()
     {
         return $this->contact_data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmailDomains()
+    {
+        return $this->emailDomains;
+    }
+
+    /**
+     * @param array $emailDomains
+     *
+     * @return $this
+     */
+    public function setEmailDomains($emailDomains)
+    {
+        $this->emailDomains = $emailDomains;
+
+        return $this;
     }
 }

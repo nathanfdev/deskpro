@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use Application\EmailBundle\Entity\SendmailSource;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use deskpro_sendgrid\InstallerHandler;
@@ -254,7 +255,13 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $data = [];
         foreach ($results as $r) {
-            $data[] = $r->toArray();
+            $res = $r->toArray();
+            if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED) {
+                // dont reveal rate limit error code
+                $res['status']     = SendmailSource::STATUS_COMPLETE;
+                $res['error_code'] = null;
+            }
+            $data[] = $res;
         }
 
         return $this->createApiResponse(
@@ -332,7 +339,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
 
         $info = '';
@@ -376,7 +383,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
 
         $text = null;
@@ -479,10 +486,17 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $info['sendmail'] = $sendmail->toArray();
 
-        if ($sendmail->getLogBlob()) {
-            $info['sendmail_log'] = $bs->copyBlobRecordToString($sendmail->getLogBlob());
+        if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED && $sendmail->getStatus() === SendmailSource::STATUS_ERROR && $sendmail->getErrorCode() === 'rate_limit') {
+            // hide rate limit from unapproved acc
+            $info['sendmail_log']           = null;
+            $info['sendmail']['status']     = SendmailSource::STATUS_COMPLETE;
+            $info['sendmail']['error_code'] = null;
         } else {
-            $info['sendmail_log'] = null;
+            if ($sendmail->getLogBlob()) {
+                $info['sendmail_log'] = $bs->copyBlobRecordToString($sendmail->getLogBlob());
+            } else {
+                $info['sendmail_log'] = null;
+            }
         }
 
         if ($sendmail->getBlob() && $this->in->getBool('with_raw')) {
@@ -511,7 +525,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
 
         $info = '';
@@ -555,7 +569,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
         $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->getBlob()));
 
         $text = null;
@@ -627,6 +641,12 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             throw $this->createNotFoundException();
         }
 
+        if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED) {
+            // dont allow reset on unapproved sites
+            // noop and pretend success
+            return $this->createApiSuccessResponse();
+        }
+
         /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
         $source_mapper = $this->get('email.source_mapper');
 
@@ -655,6 +675,12 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         switch ($action) {
             case 'resend':
+                if (defined('DPC_IS_CLOUD') && !DPC_SITE_IS_APPROVED) {
+                    // dont allow reset on unapproved sites
+                    // noop and pretend success
+                    return $this->createApiSuccessResponse();
+                }
+
                 /** @var \Application\EmailBundle\SourceMapper\SourceMapperInterface $source_mapper */
                 $source_mapper = $this->get('email.source_mapper');
 

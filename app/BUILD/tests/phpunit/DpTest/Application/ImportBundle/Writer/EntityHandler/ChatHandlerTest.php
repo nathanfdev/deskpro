@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,8 @@
 namespace DpTest\Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Department;
 use Application\ImportBundle\Model;
 
 /**
@@ -44,6 +46,20 @@ class ChatHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('chat_messages');
         $this->clearTable('chat_conversations');
         $this->clearTable('people');
+
+        $brand = new Brand();
+        $brand->setName('Brand');
+        $this->em()->persist($brand);
+
+        $this->em()->flush();
+
+        $brandStack = $this->get('brand_stack');
+        $brandStack->push($brand);
+
+        $dep = $this->createDepartment('department');
+        $this->em()->persist($dep);
+
+        $this->em()->flush();
 
         parent::setUp();
     }
@@ -167,6 +183,35 @@ class ChatHandlerTest extends AbstractEntityHandlerTest
         $model->addMessage($message1);
 
         return $model;
+    }
+
+    /**
+     * @return Brand
+     */
+    private function getBrand()
+    {
+        return $this->getRepository(Brand::class)->findOneBy([]);
+    }
+
+    /**
+     * @param string          $title
+     * @param Department|null $parent
+     *
+     * @return Department
+     */
+    private function createDepartment($title, Department $parent = null)
+    {
+        $department                     = new Department();
+        $department->is_tickets_enabled = 1;
+        $department->is_chat_enabled    = 1;
+        $department->addBrand($this->getBrand());
+        $department->setRealTitle($title);
+
+        if ($parent) {
+            $department->setParent($parent);
+        }
+
+        return $department;
     }
 
     /**

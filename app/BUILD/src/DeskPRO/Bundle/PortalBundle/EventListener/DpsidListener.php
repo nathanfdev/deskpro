@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,10 +39,10 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Uses to cross-domain widget authorization.
@@ -138,13 +138,13 @@ class DpsidListener implements EventSubscriberInterface
         }
 
         if (!$token = $request->query->get('dpsid')) {
-            throw new AccessDeniedHttpException('No token provided');
+            throw new AccessDeniedException('No token provided');
         }
 
         /** @var \Application\DeskPRO\EntityRepository\Session $repo */
         $repo = $this->em->getRepository(Session::class);
         if (!$session = $repo->getSessionFromCode($token)) {
-            throw new AccessDeniedHttpException('Invalid token');
+            throw new AccessDeniedException('Invalid token');
         }
 
         $this->setPortalApiToken($session, $request);

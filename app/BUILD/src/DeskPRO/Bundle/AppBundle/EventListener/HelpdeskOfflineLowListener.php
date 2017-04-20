@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\Command\WorkerJobCommand;
+use DeskPRO\Bundle\AppBundle\EventListener\Helper\LowTemplateHelper;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -155,7 +156,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             ]));
             $response->headers->set('Content-Type', 'application/json');
         } else {
-            $response->setContent($this->getOfflineHtmlPage($message, $request->getBasePath().'/pub'));
+            $response->setContent($this->getOfflineHtmlPage($request, $message));
             $response->headers->set('Content-Type', 'text/html');
         }
 
@@ -183,7 +184,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         $response->headers->set('X-DeskPRO-Premature-Termintation', 'upgrade_pending');
 
         if (in_array('application/json', $request->getAcceptableContentTypes())) {
-            $message = 'An upgrade is pending. An administrator must run the dp:upgrade command.';
+            $message = 'An upgrade is pending. An administrator must run the dp:update-db command.';
             $response->setContent(json_encode([
                 'type'         => 'upgrade_pending',
                 'message_html' => $message,
@@ -191,7 +192,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             ]));
             $response->headers->set('Content-Type', 'application/json');
         } else {
-            $response->setContent($this->getOfflineHtmlPage('', $request->getBasePath().'/pub', 'upgrade-pending.html'));
+            $response->setContent($this->getOfflineHtmlPage($request, '', 'upgrade-pending.html'));
             $response->headers->set('Content-Type', 'text/html');
         }
 
@@ -210,7 +211,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         }
 
         // Offline setting applies to all but admin
-        if ($this->getBrandSetting('core.helpdesk_disabled')) {
+        if ($this->getGlobalSetting('core.helpdesk_disabled')) {
             // exclude admin interface
             if ($this->interfaceInfo->isAdminInterface()) {
                 return false;
@@ -222,7 +223,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
             }
 
             // exclude legacy api for admin interface
-            if ($this->container->has('deskpro.api.request_auth')) {
+            if ($request && $this->container->has('deskpro.api.request_auth')) {
                 $apiUser = $this->container->get('deskpro.api.request_auth')->getApiUser();
                 if ($apiUser && $apiUser->person && $apiUser->person->isAdmin()) {
                     return false;
@@ -240,7 +241,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
      */
     private function isUpgradePending()
     {
-        $build = $this->getBrandSetting('core.deskpro_build');
+        $build = $this->getGlobalSetting('core.deskpro_build');
 
         if (!$build) {
             // no build info: no db conn, not installed yet, etc
@@ -267,6 +268,16 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     }
 
     /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getGlobalSetting($name)
+    {
+        return $this->container->get('settings_resolver')->getGlobalSettings()->get($name);
+    }
+
+    /**
      * @return string
      */
     private function getOfflineMessage()
@@ -275,7 +286,7 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
         if (file_exists($this->data_dir.'/helpdesk-offline-message.txt')) {
             $offline_message = file_get_contents($this->data_dir.'/helpdesk-offline-message.txt');
         } else {
-            $offline_message = $this->getBrandSetting('core.helpdesk_disabled_message');
+            $offline_message = $this->getGlobalSetting('core.helpdesk_disabled_message');
         }
 
         if (!$offline_message) {
@@ -286,15 +297,22 @@ class HelpdeskOfflineLowListener implements EventSubscriberInterface
     }
 
     /**
-     * @param string $message
+     * @param Request $request
+     * @param string  $message
+     * @param string  $tpl
      *
      * @return string
      */
-    private function getOfflineHtmlPage($message, $asset_url, $tpl = 'helpdesk-disabled.html')
+    private function getOfflineHtmlPage(Request $request, $message, $tpl = 'helpdesk-disabled.html')
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+        $asset_url = $request->getUriForPath('/assets/'.$DP_ENV->getAppName().'/pub');
+
         $page_html = @file_get_contents(DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Resources/views/kernel/'.$tpl) ?: '{{ CONTENT }}';
         $page_html = str_replace('{{ ASSET_URL }}', $asset_url, $page_html);
         $page_html = str_replace('{{ CONTENT }}', $message, $page_html);
+        $page_html = LowTemplateHelper::injectAdminRedirect($request, $page_html);
 
         return $page_html;
     }

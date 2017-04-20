@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,13 @@ namespace Application\DeskPRO\Dpql;
  */
 class SqlSelect
 {
+    /**
+     * The last compiled SQL string.
+     *
+     * @var string
+     */
+    private static $lastSql;
+
     /**
      * List of fields/expressions in the SELECT clause. Joined by commas.
      *
@@ -291,13 +298,27 @@ class SqlSelect
             $limit = false;
         }
 
-        return 'SELECT '.implode(', ', $this->_fields)
+        $sql = 'SELECT '.implode(', ', $this->_fields)
             ."\nFROM `$this->_table`"
             .($this->_joins ? "\n".implode("\n", $this->_joins) : '')
             .($this->_conditions ? "\nWHERE ".implode(' AND ', $this->_conditions) : '')
             .($this->_groupBy ? "\nGROUP BY ".implode(', ', $this->_groupBy) : '')
             .($this->_orderBy ? "\nORDER BY ".implode(', ', $this->_orderBy) : '')
             .($limit ? "\nLIMIT $limit" : '');
+
+        self::$lastSql = $sql;
+
+        return $sql;
+    }
+
+    /**
+     * Get the last query that was compiled into SQL.
+     *
+     * @return string
+     */
+    public static function getLastCompiledSql()
+    {
+        return self::$lastSql;
     }
 
     /**

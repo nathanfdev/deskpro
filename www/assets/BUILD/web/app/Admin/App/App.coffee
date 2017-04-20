@@ -64,19 +64,17 @@ define [
     console.log("Redirect to license")
     window.location.hash = '/license'
 
-  if window.parent == window.self && !window.DP_IS_DEV_ENV
-    window.location.href = window.DP_BASE_URL + 'agent/#admin:' + (window.location.hash.replace(/^#/, '') || '/')
+  try
+    if window.parent?.DP_FRAME_OVERLAYS?.admin
+      AdminModule.run(['$rootScope', ($rootScope) ->
 
-  if window.parent?.DP_FRAME_OVERLAYS?.admin
-    window.parent.DP_FRAME_OVERLAYS.admin.callLoaded()
-
-    AdminModule.run(['$rootScope', ($rootScope) ->
-
-      if not window.DP_REDIRECT_TO_LICENSE
-        $rootScope.$on('$stateChangeSuccess', ->
-          if window.parent.DP_FRAME_OVERLAYS.admin.opened
-            window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
-        )
-    ])
+        if not window.DP_REDIRECT_TO_LICENSE
+          $rootScope.$on('$stateChangeSuccess', ->
+            if window.parent.DP_FRAME_OVERLAYS.admin.opened
+              window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash)
+          )
+      ])
+  catch e
+    console.log e
 
   return AdminModule

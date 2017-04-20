@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,14 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Log\Helper;
 
+use Application\DeskPRO\Entity\ApiKey;
 use DeskPRO\Bundle\ApiBundle\Log\LogSaveException;
 use DeskPRO\Bundle\ApiBundle\Log\Writer\WriterInterface;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AbstractApiSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Util\ApiUtil;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -148,7 +150,7 @@ class LogComposer
     public function createApiLog(Request $request)
     {
         if (!$this->log) {
-            $this->log = $this->internalCreate($request);
+            $this->log = $this->doCreate($request);
         }
 
         return $this->log;
@@ -159,7 +161,7 @@ class LogComposer
      *
      * @return ApiLog
      */
-    public function internalCreate(Request $request)
+    private function doCreate(Request $request)
     {
         $log         = new ApiLog();
         $requestData = [
@@ -187,23 +189,14 @@ class LogComposer
      */
     public function finishApiLog(Response $response)
     {
-        $this->internalFinish($response, $this->log);
-    }
-
-    /**
-     * @param Response $response
-     * @param ApiLog   $log
-     */
-    public function internalFinish(Response $response, ApiLog $log)
-    {
         $responseData = [
             'headers' => $response->headers->all(),
             'body'    => $response->getContent(),
         ];
 
-        $this->setResponseData($log, $responseData);
+        $this->setResponseData($this->log, $responseData);
 
-        $log->setEndTime(time())
+        $this->log->setEndTime(time())
             ->setStatus($response->getStatusCode());
     }
 
@@ -221,7 +214,7 @@ class LogComposer
             && $options['failure_mode'] === LogHelper::FAILURE_MODE_SKIP && $options['eager'] !== LogHelper::EAGER_ON
             && !($response->isSuccessful() || $response->isRedirection());
 
-        $should_save =
+        $shouldSave =
             (
                 $this->logHelper->isLoggingEnabled() ||
                 (
@@ -233,7 +226,7 @@ class LogComposer
 
         if ($skipFailedClientRequest) {
             return false;
-        } elseif ($should_save) {
+        } elseif ($shouldSave) {
             $this->saveLog();
         }
 
@@ -245,6 +238,7 @@ class LogComposer
         try {
             $this->writer->write($this->log);
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
             throw new LogSaveException();
         }
     }
@@ -266,13 +260,13 @@ class LogComposer
      */
     protected function addKey(ApiLog $log)
     {
-        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
-        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $keyRepo */
+        $keyRepo = $this->em->getRepository(ApiKey::class);
         if ($this->getToken()->getName() === 'api_key'
-            && $key = $key_repo->findByKeyString($this->getToken()->getCredentials())
+            && $key = $keyRepo->findByKeyString($this->getToken()->getCredentials())
         ) {
             /* @var \Application\DeskPRO\Entity\ApiKey $key */
-            $log->setKey($key);
+            $key->addApiLog($log);
         }
     }
 

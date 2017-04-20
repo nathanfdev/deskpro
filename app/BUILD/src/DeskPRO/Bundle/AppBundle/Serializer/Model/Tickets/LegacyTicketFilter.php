@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -76,11 +76,11 @@ class LegacyTicketFilter
     /**
      * An array of terms for filter.
      *
-     * @JMS\Type("array")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketFilterTerm>")
      *
      * @var array
      */
-    private $term;
+    private $term = [];
 
     /**
      * The id of ticket filter set - the owner of ticket filter.
@@ -139,7 +139,10 @@ class LegacyTicketFilter
         $this->displayOrder    = $ticketFilter->getDisplayOrder();
         $this->title           = $ticketFilter->getRawTitle();
         $this->sysName         = $ticketFilter->getSysName();
-        $this->term            = $ticketFilter->getTerms();
         $this->ticketFilterSet = $filterSet->getId();
+
+        foreach ($ticketFilter->getTerms() as $term) {
+            $this->term[] = new TicketFilterTerm($term);
+        }
     }
 }

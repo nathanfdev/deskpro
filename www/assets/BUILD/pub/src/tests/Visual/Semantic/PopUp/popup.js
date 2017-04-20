@@ -1,8 +1,8 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import { css } from '../../decorators';
+import { PopUp } from 'Semantic/PopUp';
+import { MenuItem } from 'Semantic/Menu';
+import { css } from 'Visual/decorators';
 
 const PopupContent = 'Test Very long content to figure out how the popup is behaving';
 

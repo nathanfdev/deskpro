@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -72,6 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @JMS\ExclusionPolicy("all")
  * @AppAssert\Ticket\TicketDupeMessage()
+ * @AppAssert\Ticket\TicketOpenedMessage()
  */
 class TicketMessage extends DomainObject
 {
@@ -124,6 +126,13 @@ class TicketMessage extends DomainObject
      * @var EmailSource
      */
     protected $email_source = null;
+
+    /**
+     * @JMS\Expose()
+     *
+     * @var TicketMessageAttribute[]
+     */
+    protected $attributes;
 
     /**
      * Items attached to the ticket.
@@ -321,6 +330,7 @@ class TicketMessage extends DomainObject
     public function __construct($email_id = null)
     {
         $this->setModelField('date_created', new \DateTime());
+        $this->attributes  = new ArrayCollection();
         $this->attachments = new ArrayCollection();
         if ($email_id) {
             $ref             = new TicketMessageEmailId();
@@ -459,9 +469,9 @@ class TicketMessage extends DomainObject
         }
 
         $message = Strings::standardEol($message);
+        $message = Strings::decodeHtmlEntities($message);
         $message = str_replace(['<br/>', '<br>', '<br />', '<p>', '</p>'], "\n", $message);
         $message = Strings::stripTags($message);
-        $message = Strings::decodeHtmlEntities($message);
         $message = Strings::decodeWhitespaceHtmlEntities($message);
         $message = preg_replace('#\s+#u', ' ', $message);
         $message = trim($message);
@@ -729,10 +739,76 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @param TicketAttachment $attach
+     *
+     * @return $this
+     */
     public function addAttachment(TicketAttachment $attach)
     {
-        $this->attachments->add($attach);
-        $attach['message'] = $this;
+        if (!$this->attachments->contains($attach)) {
+            $this->attachments->add($attach);
+        }
+
+        $attach->setMessage($this);
+
+        return $this;
+    }
+
+    /**
+     * @return TicketMessageAttribute[]
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return TicketMessageAttribute|null
+     */
+    public function getAttribute($name)
+    {
+        foreach ($this->attributes as $attr) {
+            if ($attr->getName() === $name) {
+                return $attr;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param TicketMessageAttribute $attr
+     *
+     * @return $this
+     */
+    public function addAttribute(TicketMessageAttribute $attr)
+    {
+        $this->attributes->add($attr);
+        $attr->setMessage($this);
+
+        return $this;
+    }
+
+    /**
+     * @param string|TicketMessageAttribute $attr
+     *
+     * @return $this
+     */
+    public function removeAttribute($attr)
+    {
+        if (!$attr instanceof TicketMessageAttribute) {
+            $attr = $this->getAttribute($attr);
+            if (!$attr) {
+                throw new \OutOfBoundsException();
+            }
+        }
+
+        $this->attributes->removeElement($attr);
+
+        return $this;
     }
 
     /**
@@ -1116,6 +1192,16 @@ class TicketMessage extends DomainObject
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'visitor_id',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'attributes',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketMessageAttribute',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'message',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
             ]
         );
         $metadata->mapOneToMany(

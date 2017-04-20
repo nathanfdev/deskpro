@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketSla;
@@ -48,7 +44,17 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @Rest\Route("/tickets/{parentId}/ticket_slas")
  * @ApiModes("all")
- * @ApiDoc(target="all", section="Tickets", output="TicketSla")
+ * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketSla")
+ * @ApiDoc(
+ *     target="postAction,putAction,postSingleSlaAction,putSingleSlaAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketSlaType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TicketSla",
+ *          "ticket"="Application\DeskPRO\Entity\Ticket"
+ *      }
+ *     }
+ * )
  */
 class TicketSlasController extends CrudSubController
 {
@@ -87,7 +93,8 @@ class TicketSlasController extends CrudSubController
      *              "description"="the id of parent SLA",
      *              "dataType"="integer"
      *        }
-     *     }
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
      * )
      *
      * @Rest\Get("/by_sla/{slaId}")
@@ -167,7 +174,8 @@ class TicketSlasController extends CrudSubController
      *              "description"="the id of parent SLA",
      *              "dataType"="integer"
      *        }
-     *     }
+     *     },
+     *     output="Application\DeskPRO\Entity\TicketSla"
      * )
      *
      * @Rest\Post("", name="api_ticket_sla_single_create")

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
@@ -63,7 +59,7 @@ class ProblemType extends AbstractType
     public function onSetOpenByDefault(FormEvent $event)
     {
         $data = $event->getData();
-        if (!isset($data['is_open'])) {
+        if (is_array($data) && !array_key_exists('is_open', $data)) {
             $data['is_open'] = 1;
         }
 

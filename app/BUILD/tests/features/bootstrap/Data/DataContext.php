@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,7 @@ use DpBehat\BaseContext;
 use DpBehat\Data\Factory\SimpleFactory;
 use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpBehat\DataSetContext;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 /**
  * Class DataContext.
@@ -387,7 +388,7 @@ class DataContext extends BaseContext
 
             // Resolve references to other objects
             foreach ($data as &$value) {
-                if (self::isArray($value)) {
+                if (self::isArray($value) && !json_decode($value)) {
                     $arrayValue = [];
                     foreach (self::transformToArray($value) as $item) {
                         if (self::isReference($item)) {
@@ -440,6 +441,19 @@ class DataContext extends BaseContext
         $record = self::resolveReference($ref);
         if (self::isReference($value)) {
             $value = self::resolveReference($value);
+        } elseif (self::isArray($value)) {
+            $arrayValue = [];
+            foreach (self::transformToArray($value) as $item) {
+                if (self::isReference($item)) {
+                    $arrayValue[] = self::resolveReference($item);
+                } else {
+                    $arrayValue[] = $item;
+                }
+            }
+
+            $value = new ArrayCollection($arrayValue);
+        } else {
+            $value = self::replace($value);
         }
 
         $value = ObjectsManager::preProcessValue($value);
@@ -545,9 +559,19 @@ class DataContext extends BaseContext
                 throw new \Exception("Object $ref not found");
             }
 
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
+            if ($propertyAccessor->isReadable($object, $prop)) {
+                return $propertyAccessor->getValue($object, $prop);
+            }
+
             $reflectionObject = new \ReflectionObject($object);
             if (!$reflectionObject->hasProperty($prop)) {
-                throw new \Exception("Property $prop doesn't exist");
+                $propsNames = [];
+                foreach ($reflectionObject->getProperties() as $prop) {
+                    $propsNames[] = $prop->getName();
+                }
+
+                throw new \Exception("Property $prop doesn't exist. Has props: ".implode(',', $propsNames));
             }
 
             $reflectionProperty = $reflectionObject->getProperty($prop);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -203,9 +203,11 @@ class ProjectFileSet
             'Mock',
             'test-suite',
             'classes.map',
+            'storybook',
         ];
 
-        static $ignorePaths = [
+        // making this static causes a syntax error in PHP5.5 on the last element of the array for some reason (wtf?)
+        $ignorePaths = [
             '%DP_APP_DIR%/vendor/autoload.php',
             '%DP_APP_DIR%/vendor/behat/',
             '%DP_APP_DIR%/vendor/behatch/',
@@ -225,8 +227,11 @@ class ProjectFileSet
             '%DP_APP_DIR%/vendor/fabpot/php-cs-fixer/',
             '%DP_APP_DIR%/vendor/mockery/',
             '%DP_APP_DIR%/vendor/zendframework/zend-ldap/src/Node.php', // because we patch it ourselves
+            '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php', // because we patch it ourselves
+            '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/Event/PreUpdateEventArgs.php', // because we patch it ourselves
             '%DP_APP_KERNEL_CACHE%/dev/',
             '%DP_APP_KERNEL_CACHE%/test/',
+            '%DP_APP_WWW_ASSET%'.DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR.'storybook',
         ];
 
         foreach ($ignoreAnywhere as $p) {

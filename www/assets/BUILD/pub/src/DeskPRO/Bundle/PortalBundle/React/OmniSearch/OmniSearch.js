@@ -10,10 +10,9 @@ import moment from 'moment';
 export class OmniSearch extends React.Component {
 
   static propTypes = {
-    $input:    PropTypes.object,
-    $close:    PropTypes.object,
-    $button:   PropTypes.object,
-    $showMore: PropTypes.string
+    $input:  PropTypes.object,
+    $close:  PropTypes.object,
+    $button: PropTypes.object
   };
 
   constructor(props) {
@@ -68,7 +67,7 @@ export class OmniSearch extends React.Component {
     window.clearInterval(this.interval);
   }
 
-  onClickOut = event => {
+  onClickOut = (event) => {
     event.preventDefault();
 
     this.props.$input.val('');
@@ -93,7 +92,7 @@ export class OmniSearch extends React.Component {
       doSpin: true
     });
 
-    portalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then(response => {
+    portalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then((response) => {
       if (response.isError()) {
         return;
       }
@@ -130,7 +129,6 @@ export class OmniSearch extends React.Component {
             initialResult={'ticket' in data ? data.ticket : {}}
             q={this.state.searchQuery.q}
           />
-
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-kb')}
             nameApi="article"
@@ -138,7 +136,6 @@ export class OmniSearch extends React.Component {
             initialResult={'article' in data ? data.article : {}}
             q={this.state.searchQuery.q}
           />
-
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-downloads')}
             nameApi="download"
@@ -146,7 +143,6 @@ export class OmniSearch extends React.Component {
             initialResult={'download' in data ? data.download : {}}
             q={this.state.searchQuery.q}
           />
-
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-news')}
             nameApi="news"
@@ -154,12 +150,25 @@ export class OmniSearch extends React.Component {
             initialResult={'news' in data ? data.news : {}}
             q={this.state.searchQuery.q}
           />
-
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-feedback')}
             nameApi="feedback"
             nameIcon="fa fa-comments"
             initialResult={'feedback' in data ? data.feedback : {}}
+            q={this.state.searchQuery.q}
+          />
+          <OmniSearchResultSection
+            name={portalPhrases.get('portal.general.nav-guides')}
+            nameApi="topic"
+            nameIcon="fa fa-book"
+            initialResult={'topic' in data ? data.topic : {}}
+            q={this.state.searchQuery.q}
+          />
+          <OmniSearchResultSection
+            name={portalPhrases.get('portal.general.nav-chat')}
+            nameApi="chat_conversation"
+            nameIcon="fa fa-comments"
+            initialResult={'chat_conversation' in data ? data.chat_conversation : {}}
             q={this.state.searchQuery.q}
           />
         </div>
@@ -183,7 +192,6 @@ export class OmniSearch extends React.Component {
     return (
       <ClickOut onClickOut={this.onClickOut} additionalNodes={[$input, $button, '.search-results-show-more']}>
         <div
-          ref="searchDropdown"
           className="expanded-search-results"
           style={{
             display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
@@ -192,40 +200,27 @@ export class OmniSearch extends React.Component {
         >
 
           {this.state.doSpin || (!this.doResultsExist() && this.state.userTyping)
-            ? <div className="search-result-collection-loading"></div>
+            ? <div className="search-result-collection-loading" />
             : this.renderResults()
           }
 
           <div className="search-results-footer">
-            {
-              window.DESKPRO_CAN_USE_TICKETS
-                ?
-                <a href={portalUrlGenerator.path('/new-ticket')}>
-                  <i className="fa fa-comment" />
-                  <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
-                </a>
-                : null
-            }
+            {window.DESKPRO_CAN_USE_TICKETS &&
+              <a href={portalUrlGenerator.path('/new-ticket')}>
+                <i className="fa fa-comment" />
+                <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
+              </a>}
 
-            {
-              window.DESKPRO_CAN_USE_FEEDBACK
-                ?
-                <a href={portalUrlGenerator.path('/feedback')}>
-                  <i className="fa fa-list" />
-                  <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
-                </a>
-                : null
-            }
-
-            {
-              window.DESKPRO_CAN_USE_CHAT
-                ?
-                <a href="#">
-                  <i className="fa fa-comments" />
-                  <span>{portalPhrases.get('portal.general.start-chat')}</span>
-                </a>
-                : null
-            }
+            {window.DESKPRO_CAN_USE_FEEDBACK &&
+              <a href={portalUrlGenerator.path('/feedback')}>
+                <i className="fa fa-list" />
+                <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
+              </a>}
+            {window.DESKPRO_CAN_USE_CHAT &&
+              <a href={portalUrlGenerator.path('/chat-logs')}>
+                <i className="fa fa-comments" />
+                <span>{portalPhrases.get('portal.general.start-chat')}</span>
+              </a>}
           </div>
         </div>
       </ClickOut>

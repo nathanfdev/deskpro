@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -136,19 +136,6 @@ class ArticleCategoryHandler extends AbstractEntityHandler
             $this->createOrUpdateDeepCategories($subEntity, $subModel);
 
             $newTitles[] = $subModel->getTitle();
-        }
-
-        // remove deleted sub categories
-        foreach ($model->getCategories() as $newCategory) {
-            $newTitles[$newCategory->getTitle()] = $newCategory;
-        }
-
-        foreach ($entity->getChildren() as $subEntity) {
-            if (!in_array($subEntity->getTitle(), $newTitles) && !in_array($subEntity->getId(), $newIds)) {
-                $this->logger->debug("Removing article sub category `{$subEntity->getTitle()}`");
-                $entity->getChildren()->removeElement($subEntity);
-                $this->persister->removeAndFlush($subEntity);
-            }
         }
     }
 

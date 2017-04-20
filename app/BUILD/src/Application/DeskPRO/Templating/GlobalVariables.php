@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,6 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
 use DpSys\License;
@@ -85,7 +84,7 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isPortalEnabled()
     {
-        return App::$container->getSetting('user.portal_enabled');
+        return App::$container->getBrandSetting('core.iface_portal');
     }
 
     public function getJira()
@@ -397,15 +396,22 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function canResetHelpdesk()
     {
-        $query = $this
-            ->container
-            ->get('doctrine.orm.default_entity_manager')
-            ->createQuery('SELECT COUNT(t.id) FROM DeskPRO:Ticket t');
-        $count            = $query->getSingleScalarResult();
+        return $this->daysToResetLeft() > 0;
+    }
+
+    private function daysToResetLeft()
+    {
         $settingsResolver = $this->container->get('settings_resolver');
         $installTime      = $settingsResolver->getGlobalSettings()->get('core.install_timestamp');
 
-        return $count < 500 && $installTime && $installTime > time() - 90 * 60 * 60 * 24;
+        return 90 - (time() - $installTime) / (60 * 60 * 24);
+    }
+
+    public function formatDaysToResetLeft()
+    {
+        $date = new \DateTime('+'.floor($this->daysToResetLeft()).' days');
+
+        return $date->format('Y-m-d');
     }
 
     public function brandDefaultDepartment($type)

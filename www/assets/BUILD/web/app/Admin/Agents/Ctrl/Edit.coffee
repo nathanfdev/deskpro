@@ -17,6 +17,7 @@ define [
     init: ->
       window.AGENT_CTRL = this
       @agentId = parseInt(@$stateParams.id)
+      @created_agent = @$stateParams.created_agent
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
       @hasDepOverrides = false
@@ -120,7 +121,14 @@ define [
       )
       return promise
 
+    hasAnyDepTicketsPerms: ->
+      for own perm, obj of @deps_perms['tickets']
+        if obj.assign
+          return true
+      return false
 
+    canCreateNewTicket: ->
+      return @perm_form && @perm_form['ticket']? && @perm_form['ticket'].create
 
     changeUse: (type) ->
       return if !@perm_form[type]? || true == @perm_form[type].use
@@ -644,7 +652,7 @@ define [
 
         if !@agentId
           @service.agents.all(true)
-          @$state.go('agents.agents.edit', {id: res.data.person_id})
+          @$state.go('agents.agents.edit', {id: res.data.person_id, created_agent: 1})
 
         @stopSpinner('saving')
       , (res) =>

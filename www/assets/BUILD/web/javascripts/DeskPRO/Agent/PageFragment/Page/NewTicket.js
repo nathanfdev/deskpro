@@ -24,6 +24,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	initPage: function(el) {
 		var self = this;
+		this.signatureSet = false;
 		this.wrapper = el;
 		this.el = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
@@ -215,6 +216,34 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			getWorkflowId: function() {
 				var catId = self.getEl('work').val();
 				return parseInt(catId) || 0;
+			},
+			getFieldValue: function(name) {
+				var $cont = self.getEl('fields_container');
+				var $field = $('[name="' + name + '"]', $cont);
+				if ($field.is(':checkbox')) {
+					return $field.is(':checked');
+				}
+        if ($field.attr('type') === 'hidden') {
+					return $.trim($field.parent().text());
+				}
+        if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
+          return $field.val();
+        }
+				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $cont);
+				if ($field.hasClass('with-select2')) {
+          var val = $.trim($field.select2('val'));
+					return $field.select2('val');
+				}
+				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
+			},
+			getTicketFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
+			},
+			getUserFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
+			},
+			getOrgFieldValue: function(fieldId) {
+				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
 
@@ -228,9 +257,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.recordSnippetUse = recordSnippetUse;
 
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
+		this.oldFields = null;
+
 		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
 			var fieldDisplay = fieldDisplayFetch.getFields(depSel.val());
+			var newFields = [];
 
 			Object.each(fieldDisplay, function(fields, section) {
 				Array.each(fields, function(f) {
@@ -247,24 +279,100 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						classname = f.field_type;
 					}
 
+					newFields.push(classname);
 					$('.ticket-field.' + classname, self.wrapper).not('.error-message').detach().appendTo(self.getEl('fields_container')).show().addClass('item-on');
 				});
 			});
 
 			var depId = depSel.val();
+			var unsetField = function(name, allowDefaultValue) {
+				$(self.wrapper).find('.ticket-field.'+name).not('.item-on').each(function(i, el) {
+					var $el = $(el);
+					var defaultValue = allowDefaultValue? $el.data('default-value') : '';
+					$el.find('input[type=text], textarea, select').val(defaultValue);
+					$el.find('.with-select2').select2('val', defaultValue);
+					$el.find('input[type=radio]').each(function(i, field) {
+						var $field = $(field);
+						if ($field.val() === String(defaultValue)) {
+							$field.prop('checked', true);
+						} else {
+							$field.prop('checked', false);
+						}
+					});
+					$el.find('input[type=checkbox]').each(function(i, field) {
+						var $field = $(field);
+						if ($field.attr('name') && $field.attr('name').indexOf('[]') !== -1) {
+							var vals = defaultValue ? String(defaultValue).split(',') : [];
+							if (vals.indexOf(String($field.val())) !== -1) {
+								$field.prop('checked', true);
+							} else {
+								$field.prop('checked', false);
+							}
+						} else {
+							$field.prop('checked', defaultValue);
+						}
+					});
+				});
+			};
+
+			if (self.oldFields) {
+				self.oldFields.forEach(function(name) {
+					if (newFields.indexOf(name) === -1) {
+						unsetField(name, false);
+					}
+				});
+			}
+
+			newFields.forEach(function(name) {
+				if (self.oldFields && self.oldFields.indexOf(name) === -1) {
+					unsetField(name, true);
+				}
+			});
 
 			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
       self.getEl('fields_container').find('select').dpMultiLevelSelect();
 
 			self.updateUi();
+
+			var changed = false;
+			if (!self.oldFields) {
+				changed = true;
+			} else if (self.oldFields.length !== newFields.length) {
+				changed = true;
+			} else {
+				for (var i = 0; i < newFields.length; i++) {
+					if (newFields[i] !== self.oldFields[i]) {
+						changed = true;
+						break;
+					}
+				}
+			}
+
+			self.oldFields = newFields;
+
+			// recursive update fields if they were changed
+			if (changed) {
+				self._updateFields();
+			}
 		};
 
 		depSel.on('change', function(ev) {
 			self.getCustomFields();
 		});
 
+		var $cont = self.getEl('fields_container');
+		$cont.on('change dp.change', function(e){
+			var name = $(e.target).attr('name');
+			if (!name) return;
+			if (name.indexOf('custom_fields[field_') !== -1 || name.indexOf('custom_person_fields[field_') !== -1 || name.indexOf('custom_org_fields[field_') !== -1) {
+				self._updateFields();
+			}
+		});
+
 		$('.ticket-field select', this.wrapper).on('change', function() {
-			self._updateFields();
+			if ($(this).attr('name') && $(this).attr('name').indexOf('custom_') === -1) {
+				self._updateFields();
+			}
 		});
 
 		self.getCustomFields();
@@ -302,6 +410,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				top: pos.top - statusMenuH + 3
 			});
 		};
+
+		var storedNoteText = '';
+		var storedReplyText = '';
 
 		var openStatusMenu = function() {
 			statusListItems = statusMenu.find('li[data-type]').not('.off');
@@ -488,25 +599,30 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       $(this).addClass('on');
 
       if ($(this).data('is-note')) {
-
+				$('.hide-note').hide();
+				$('.hide-reply').show();
         self.isNote = true;
         emailCheckboxState = $input.prop('checked');
-        replyAsState = self.getEl('reply_as_type').data('type');
-        self.removeSignature();
-
+				replyAsState = self.getEl('reply_as_type').data('type');
+				storedReplyText = self.textarea.getCode();
+				self.textarea.setCode(storedNoteText || '');
         $input.prop('checked', false).parent().hide();
-        self.shortcutReplySetAwaitingAgent();
 
       } else {
+				$('.hide-note').show();
+				$('.hide-reply').hide();
         self.isNote = false;
         $input.prop('checked', emailCheckboxState).parent().show();
         self.setReplyAsOptionName(replyAsState, true);
-        self.addSignature();
+				storedNoteText = self.textarea.getCode();
+				self.textarea.setCode(storedReplyText || '');
       }
     });
 
-		$toggle.children('li:first').trigger('click');
-
+    if(!self.isNote && !self.signatureSet) {
+      self.addSignature();
+      self.signatureSet = true;
+    }
 
 		var $problems = this.getEl('select_problem');
 		$problems.on('change', function () {
@@ -514,7 +630,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			if (!$title.length) {
 				return;
 			}
-			-1 === $problems.val() ? $title.show() : $title.hide();
+			-1 === parseInt($problems.val()) ? $title.show() : $title.hide();
 		});
 
 		this.draft.init();
@@ -551,7 +667,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     } else {
 
-      sig = this.getEl('signature_value').val()
+      sig = this.getEl('signature_value').val();
 			var text = textarea.val();
 
       if (!text.match(new RegExp(sig + '$'))) {
@@ -567,7 +683,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     if (api) {
 
-      sig = api.$editor.find('.dp-signature-start:first')
+      sig = api.$editor.find('.dp-signature-start:first');
 			var p;
       if (!sig.length) {
 				return;
@@ -739,6 +855,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			return;
 		}
 
+		var api = this.textarea.data('redactor');
+		api.$editor.linkify();
+		api.syncCode();
+
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
 		var formData = this.form.serializeArray();
     formData.push({
@@ -772,10 +892,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			success: function(data) {
 				if (data.error) {
 					if (data.is_dupe) {
-						DeskPRO_Window.showConfirm('The ticket you tried to submit is an exact duplicate of an existing ticket. This new ticket was not saved.', function() {
-							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.dupe_ticket_id)
-						}, function() {}, 'View Existing Ticket', 'hidden');
-					} else {
+            DeskPRO_Window.showConfirm(
+              'The ticket you tried to submit is an exact duplicate of an existing ticket. This new ticket was not saved.',
+              function() {
+                DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.dupe_ticket_id);
+              },
+              function() {
+              }, 'View Existing Ticket', 'hidden');
+          } else {
 						Array.each(data.error_codes, function(code) {
 							this.showErrorCode(code);
 						}, this);
@@ -1391,7 +1515,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet...</span>');
 
 							var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
-							self.pauseSend = true
+							self.pauseSend = true;
 							$.ajax({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
 								dataType: 'json',
@@ -1525,10 +1649,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		DeskPRO_Window.initAgentNotifierForRte(
 			this,
 			textarea,
-			false,
-			function(agentId) {
-				return true;
-			}
+			false
 		);
 	},
 
@@ -1718,7 +1839,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				selectDepartment.children().remove();
 				$(res).find('option').appendTo(selectDepartment);
 				selectDepartment.select2('val', '');
-			})
+			});
 		});
 	},
 

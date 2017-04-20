@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,17 @@
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -65,17 +71,36 @@ class ChatCreateType extends AbstractType
     private $fieldManager;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
+     * @var PermissionsManager
+     */
+    private $permissionsManager;
+
+    /**
      * Constructor.
      *
      * @param SetPersonListener      $personListener
      * @param WidgetSettingsResolver $settingsResolver
      * @param CustomFieldManager     $fieldManager
+     * @param BrandStack             $brandStack
+     * @param PermissionsManager     $permissionsManager
      */
-    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $settingsResolver, CustomFieldManager $fieldManager)
-    {
-        $this->personListener   = $personListener;
-        $this->settingsResolver = $settingsResolver;
-        $this->fieldManager     = $fieldManager;
+    public function __construct(
+        SetPersonListener      $personListener,
+        WidgetSettingsResolver $settingsResolver,
+        CustomFieldManager     $fieldManager,
+        BrandStack             $brandStack,
+        PermissionsManager     $permissionsManager
+    ) {
+        $this->personListener     = $personListener;
+        $this->settingsResolver   = $settingsResolver;
+        $this->fieldManager       = $fieldManager;
+        $this->brandStack         = $brandStack;
+        $this->permissionsManager = $permissionsManager;
     }
 
     /**
@@ -83,9 +108,19 @@ class ChatCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $brand        = $this->brandStack->getActive()->getBrand();
+        $brandOptions = $this->settingsResolver->getWidgetBrandOptions($brand);
+
+        $nameConstraints = [];
+        if ($brandOptions->getChat()->isRequiredName()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceName'], 100);
+            $nameConstraints[] = new Assert\NotBlank();
+        }
+
         $emailConstraints = [new Assert\Email(['strict' => true])];
-        if ($this->settingsResolver->isChatEmailValidation() && !$this->settingsResolver->isChatRequireLogin()) {
-            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmailSubmit'], 100);
+        if (($this->settingsResolver->isChatEmailValidation()
+            || $brandOptions->getChat()->isRequiredEmail()) && !$this->settingsResolver->isChatRequireLogin()) {
+            $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
 
@@ -93,6 +128,7 @@ class ChatCreateType extends AbstractType
             ->add('name', TextType::class, [
                 'property_path' => 'person_name',
                 'required'      => false,
+                'constraints'   => $nameConstraints,
             ])
             ->add('email', EmailType::class, [
                 'property_path' => 'person_email',
@@ -105,12 +141,41 @@ class ChatCreateType extends AbstractType
             ])
         ;
 
+        $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
+        $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
+
+        $builder->add('chat_department', EntityType::class, [
+            'class'         => Department::class,
+            'property_path' => 'department',
+            'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds, $brand) {
+                $qb = $er
+                    ->createQueryBuilder('d')
+                    ->join('d.brands', 'b')
+                    ->where(
+                        'd.is_chat_enabled = true',
+                        'd.id IN (:allowed_department_ids)',
+                        'b.id IN(:brand)'
+                    )
+                    ->setParameter('allowed_department_ids', $allowedDepartmentIds)
+                    ->setParameter('brand', $brand)
+                ;
+
+                return $qb;
+            },
+            'constraints' => [
+                new Assert\NotNull(),
+                new LeafDepartment(),
+            ],
+        ]);
+
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonDataFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetVisitorId']);
     }
 
     /**
@@ -124,9 +189,27 @@ class ChatCreateType extends AbstractType
                 'csrf_protection'               => false,
                 'csrf_double_submit_protection' => false,
             ])
-            ->setRequired('person')
+            ->setRequired(['person', 'visitor_id'])
             ->setAllowedTypes('person', ['null', Person::class])
+            ->setAllowedTypes('visitor_id', ['null', 'string'])
         ;
+    }
+
+    /**
+     * Force name field if it's required.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceName(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['name'])) {
+            $data['name'] = '';
+        }
+
+        $event->setData($data);
     }
 
     /**
@@ -136,11 +219,28 @@ class ChatCreateType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onForceEmailSubmit(FormEvent $event)
+    public function onForceEmail(FormEvent $event)
     {
         $data = $event->getData();
         if (!isset($data['email'])) {
             $data['email'] = '';
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * Ensure that department field was submitted.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onForceDepartment(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!isset($data['chat_department'])) {
+            $data['chat_department'] = null;
         }
 
         $event->setData($data);
@@ -154,15 +254,15 @@ class ChatCreateType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetPersonEmailFromSession(FormEvent $event)
+    public function onSetPersonDataFromSession(FormEvent $event)
     {
         $form   = $event->getForm();
         $person = $form->getConfig()->getOption('person');
 
-        /** @var \Application\DeskPRO\Entity\Person $person */
-        if ($person) {
+        if ($person instanceof Person) {
             $event->setData(array_merge($event->getData(), [
                 'email' => $person->getPrimaryEmailAddress(),
+                'name'  => $person->getDisplayName(),
             ]));
         }
     }
@@ -212,6 +312,18 @@ class ChatCreateType extends AbstractType
         if ($this->settingsResolver->isChatRequireLogin() && !$person) {
             $form->addError(new FormError('Login required'));
         }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetVisitorId(FormEvent $event)
+    {
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        $conversation->setVisitorId($event->getForm()->getConfig()->getOption('visitor_id'));
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -130,7 +131,8 @@ class NewFeedbackType extends AbstractType
                 'forms' => $this->getCustomDataForms(),
             ])
             ->add('attachments', FeedbackAttachmentCollectionType::class, [
-                'person' => $options['person'],
+                'person'   => $options['person'],
+                'feedback' => $builder->getData(),
             ])
             ->add('more_attachments', SubmitType::class, [
                 'validation_groups' => false,
@@ -161,6 +163,8 @@ class NewFeedbackType extends AbstractType
                 ]);
             }
         });
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -183,6 +187,21 @@ class NewFeedbackType extends AbstractType
     public function getBlockPrefix()
     {
         return 'new_feedback';
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['content']) && is_string($data['content'])) {
+            $data['content'] = nl2br(htmlspecialchars($data['content']));
+        }
+
+        $event->setData($data);
     }
 
     /**

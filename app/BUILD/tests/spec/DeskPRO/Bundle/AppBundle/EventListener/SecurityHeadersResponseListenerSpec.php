@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +41,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class SecurityHeadersResponseListenerSpec extends ObjectBehavior
 {
+    public function let(
+        IntrospectableContainerInterface $container
+    ) {
+        $this->beConstructedWith($container);
+    }
+
     public function it_is_an_event_subscriber()
     {
         $this->shouldHaveType('Symfony\Component\EventDispatcher\EventSubscriberInterface');
@@ -67,7 +74,8 @@ class SecurityHeadersResponseListenerSpec extends ObjectBehavior
 
         $headers->add(['X-Content-Type-Options' => 'nosniff'])->shouldBeCalled();
         $headers->add(['X-Frame-Options' => 'sameorigin'])->shouldBeCalled();
-        $headers->add(['Content-Security-Policy' => 'default-src \'self\'; script-src * data: \'unsafe-inline\' \'unsafe-eval\'; style-src * data: \'unsafe-inline\'; img-src * data:; font-src * data:; connect-src *; media-src *; object-src *; child-src *; form-action *; referrer no-referrer-when-downgrade; frame-ancestors \'self\''])->shouldBeCalled();
+        $headers->add(['Content-Security-Policy' => 'default-src \'self\' blob:; script-src * data: \'unsafe-inline\' \'unsafe-eval\'; style-src * data: \'unsafe-inline\'; img-src * data: blob:; font-src * data:; connect-src *; media-src * data: blob:; object-src *; child-src * blob:; form-action *; frame-src *; frame-ancestors \'self\''])->shouldBeCalled();
+        $headers->add(['Referrer-Policy' => 'no-referrer-when-downgrade'])->shouldBeCalled();
 
         $this->onResponse($event);
     }

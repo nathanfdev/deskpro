@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,8 +58,6 @@ class OrganizationSearch extends SearcherAbstract
 
     /**
      * Run the search and return an array of matching ID's.
-     *
-     * @param int $limit
      *
      * @return array
      */
@@ -213,7 +211,6 @@ class OrganizationSearch extends SearcherAbstract
         $org_table = 'organizations';
 
         $db = App::getDbRead('search.filter.people');
-        $tr = App::getTranslator();
 
         $wheres_all = [];
         $wheres_any = [];
@@ -253,11 +250,11 @@ class OrganizationSearch extends SearcherAbstract
 
                 switch ($term) {
                     case self::TERM_ID:
-                        $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
+                        $wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice);
                         break;
 
                     case self::TERM_PARENT_ID:
-                        $wheres[] = $this->_rangeMatch("$org_table.parent_id", $op, $choice, true);
+                        $wheres[] = $this->_rangeMatch("$org_table.parent_id", $op, $choice);
                         break;
 
                     case self::TERM_NAME:
@@ -276,7 +273,7 @@ class OrganizationSearch extends SearcherAbstract
                             'organizations_contact_data',
                             "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'phone')",
                         ];
-                        $wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice, false, true);
+                        $wheres[] = $this->_stringMatch("$join_name.field_10", $op, $choice, false, true);
 
                         break;
 
@@ -290,7 +287,16 @@ class OrganizationSearch extends SearcherAbstract
                             'organizations_contact_data',
                             "LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.contact_type = 'address')",
                         ];
-                        $_wheres = [];
+
+                        // Searchable value without punctuation etc
+                        $normalizedChoice = preg_replace('#[^0-9A-Za-z\s]#', '', $choice);
+                        $_wheres[]        = $this->_stringMatch(
+                            "$join_name.field_10",
+                            $op,
+                            $normalizedChoice,
+                            false,
+                            true
+                        );
                         for ($i = 1; $i <= 5; ++$i) {
                             $_wheres[] = $this->_stringMatch("$join_name.field_$i", $op, $choice, false, true);
                         }
@@ -350,7 +356,9 @@ class OrganizationSearch extends SearcherAbstract
                             case self::OP_NOT:
                                 $joins[] = [
                                     'labels_organizations',
-                                    "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote($choice).')',
+                                    "LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = ".$db->quote(
+                                        $choice
+                                    ).')',
                                 ];
                                 $wheres[] = "$join_name.person_id IS NULL";
                                 break;
@@ -440,9 +448,14 @@ class OrganizationSearch extends SearcherAbstract
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = "$field $op ".(int) $choice['date1'];
                                             } elseif (!empty($choice['date1_relative'])) {
-                                                $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
+                                                $wheres[] = "$field $op ".strtotime(
+                                                        '-'.$choice['date1_relative'].' '.$choice['date1_relative_type']
+                                                    );
                                             }
-                                        } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
+                                        } elseif (!is_array($choice) && strlen(
+                                                $choice
+                                            ) && 'DP_NO_SELECTION' !== $choice
+                                        ) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
                                         break;
@@ -451,8 +464,12 @@ class OrganizationSearch extends SearcherAbstract
                                             if (!empty($choice['date1'])) {
                                                 $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
                                             } elseif (!empty($choice['date1_relative'])) {
-                                                $d1 = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
-                                                $d2 = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
+                                                $d1 = strtotime(
+                                                    '-'.$choice['date1_relative'].' '.$choice['date1_relative_type']
+                                                );
+                                                $d2 = strtotime(
+                                                    '-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']
+                                                );
                                                 if ($d1 < $d2) {
                                                     $wheres[] = "$field BETWEEN $d1 AND $d2";
                                                 } else {
@@ -596,7 +613,7 @@ class OrganizationSearch extends SearcherAbstract
                     if (is_array($choice)) {
                         $choice = array_pop($choice);
                     }
-                    foreach ($org->email_domains as $domain) {
+                    foreach ($org->getEmailDomains() as $domain) {
                         if (strpos(strtolower($domain['domain']), strtolower($choice)) !== false) {
                             $any = true;
                             if ($op == self::OP_NOTCONTAINS) {
@@ -615,11 +632,9 @@ class OrganizationSearch extends SearcherAbstract
                 case self::TERM_CONTACT_PHONE:
                     if ($term == self::TERM_CONTACT_ADDRESS) {
                         $field = 'addresss';
-                    }
-                    if ($term == self::TERM_CONTACT_IM) {
+                    } elseif ($term == self::TERM_CONTACT_IM) {
                         $field = 'instant_message';
-                    }
-                    if ($term == self::TERM_CONTACT_PHONE) {
+                    } else {
                         $field = 'phone';
                     }
 

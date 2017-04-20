@@ -1,0 +1,67 @@
+export const tree = [{
+  id:       '1',
+  title:    'dist',
+  children: [{
+    id:    '2',
+    title: 'node.js'
+  }, {
+    id:    '3',
+    title: 'react-ui-tree.css'
+  }, {
+    id:    '4',
+    title: 'react-ui-tree.js'
+  }, {
+    id:    '5',
+    title: 'tree.js'
+  }]
+}, {
+  id:       '6',
+  title:    'example',
+  children: [{
+    id:    '7',
+    title: 'app.js'
+  }, {
+    id:    '8',
+    title: 'app.less'
+  }, {
+    id:    '9',
+    title: 'index.html'
+  }]
+}, {
+  id:       '10',
+  title:    'lib',
+  children: [{
+    id:    '11',
+    title: 'node.js'
+  }, {
+    id:    '12',
+    title: 'react-ui-tree.js'
+  }, {
+    id:    '13',
+    title: 'react-ui-tree.less'
+  }, {
+    id:    '14',
+    title: 'tree.js'
+  }]
+}, {
+  id:    '15',
+  title: '.gitiignore'
+}, {
+  id:    '16',
+  title: 'index.js'
+}, {
+  id:    '17',
+  title: 'LICENSE'
+}, {
+  id:    '18',
+  title: 'Makefile'
+}, {
+  id:    '19',
+  title: 'package.json'
+}, {
+  id:    '20',
+  title: 'README.md'
+}, {
+  id:    '21',
+  title: 'webpack.config.js'
+}];

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { HelpButton } from './HelpButton';
 import { OnlineAgentsPopup } from '../Popups/OnlineAgentsPopup';
 import { AgentMessagePopupContainer } from '../Popups/AgentMessage/AgentMessagePopupContainer';
@@ -14,50 +15,56 @@ import {
   widgetOpenedSelector,
   widgetPositionSelector,
   widgetPopupStyleSelector,
+  widgetPopupDelaySelector,
   helpButtonSizeSelector,
   helpButtonNameSelector,
   helpButtonBackgroundColorSelector,
   helpButtonTextColorSelector,
   agentPollingTimeoutSelector,
   triggerPopupOpenedSelector,
-  liveDemoSelector
+  liveDemoSelector,
+  helpPopupStartButtonSelector
 } from '../../../Selectors/dpWindow';
 import { widgetHasChatSelector } from '../../../Selectors/bootstrap';
 import { chatIdSelector } from '../../../../Chat/Selectors/chat';
 import { getLocation } from '../../../../../Services/history';
 
 @connect(state => ({
-  hasChat:             widgetHasChatSelector(state),
-  proactiveChat:       widgetProactiveChatSelector(state),
-  popupStyle:          widgetPopupStyleSelector(state),
-  triggerPopupOpened:  triggerPopupOpenedSelector(state),
-  widgetOpened:        widgetOpenedSelector(state),
-  widgetPosition:      widgetPositionSelector(state),
-  size:                helpButtonSizeSelector(state),
-  name:                helpButtonNameSelector(state),
-  backgroundColor:     helpButtonBackgroundColorSelector(state),
-  textColor:           helpButtonTextColorSelector(state),
-  agentsCount:         onlineAgentsCountSelector(state),
-  agentPollingTimeout: agentPollingTimeoutSelector(state),
-  liveDemo:            liveDemoSelector(state),
-  chatId:              chatIdSelector(state)
+  hasChat:              widgetHasChatSelector(state),
+  proactiveChat:        widgetProactiveChatSelector(state),
+  popupStyle:           widgetPopupStyleSelector(state),
+  popupDelay:           widgetPopupDelaySelector(state),
+  triggerPopupOpened:   triggerPopupOpenedSelector(state),
+  widgetOpened:         widgetOpenedSelector(state),
+  widgetPosition:       widgetPositionSelector(state),
+  size:                 helpButtonSizeSelector(state),
+  name:                 helpButtonNameSelector(state),
+  backgroundColor:      helpButtonBackgroundColorSelector(state),
+  textColor:            helpButtonTextColorSelector(state),
+  agentsCount:          onlineAgentsCountSelector(state),
+  agentPollingTimeout:  agentPollingTimeoutSelector(state),
+  liveDemo:             liveDemoSelector(state),
+  chatId:               chatIdSelector(state),
+  helpPopupStartButton: helpPopupStartButtonSelector(state)
 }))
-export class HelpButtonContainer extends React.Component {
+export default class HelpButtonContainer extends React.Component {
 
   static propTypes = {
-    hasChat:             PropTypes.bool,
-    proactiveChat:       PropTypes.bool,
-    triggerPopupOpened:  PropTypes.bool,
-    widgetOpened:        PropTypes.bool,
-    popupStyle:          PropTypes.string,
-    size:                PropTypes.string,
-    widgetPosition:      PropTypes.string,
-    dispatch:            PropTypes.func,
-    backgroundColor:     PropTypes.string,
-    borderColor:         PropTypes.string,
-    textColor:           PropTypes.string,
-    agentsCount:         PropTypes.number,
-    agentPollingTimeout: PropTypes.oneOfType([
+    hasChat:              PropTypes.bool,
+    proactiveChat:        PropTypes.bool,
+    triggerPopupOpened:   PropTypes.bool,
+    widgetOpened:         PropTypes.bool,
+    popupStyle:           PropTypes.string,
+    popupDelay:           PropTypes.number,
+    size:                 PropTypes.string,
+    widgetPosition:       PropTypes.string,
+    dispatch:             PropTypes.func,
+    backgroundColor:      PropTypes.string,
+    borderColor:          PropTypes.string,
+    textColor:            PropTypes.string,
+    agentsCount:          PropTypes.number,
+    helpPopupStartButton: PropTypes.string,
+    agentPollingTimeout:  PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]),
@@ -77,7 +84,7 @@ export class HelpButtonContainer extends React.Component {
   }
 
   componentWillUpdate() {
-    getLocation(location => {
+    getLocation((location) => {
       if (this.state.locationPath !== location.pathname) {
         this.setState({
           locationPath: location.pathname
@@ -92,26 +99,30 @@ export class HelpButtonContainer extends React.Component {
 
   onClick = () => {
     this.props.dispatch(reopenWidget());
+    if (storageAvailable('sessionStorage')) {
+      delete sessionStorage['dpWidget.dpWindow.minimized'];
+    }
   };
 
   onClosePopup = () => {
     this.props.dispatch(closeTriggerPopup());
-    sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
+    if (storageAvailable('sessionStorage')) {
+      sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
+    }
   };
 
   checkRenderPopup() {
     const { widgetOpened, triggerPopupOpened, agentsCount, hasChat, proactiveChat, liveDemo, dispatch } = this.props;
     const storageKey = 'dpWidget.dpWindow.popupShown';
-    const notClosedPopup = !(storageKey in sessionStorage) || sessionStorage[storageKey] !== 'none';
+    const notClosedPopup = !storageAvailable('sessionStorage') || !(storageKey in sessionStorage) || sessionStorage[storageKey] !== 'none';
 
     if (!widgetOpened && hasChat && proactiveChat && (liveDemo || (notClosedPopup && agentsCount > 0))) {
       if (!triggerPopupOpened) {
-        dispatch(openTriggerPopup());
+        const delay = Math.abs(parseFloat(this.props.popupDelay)) || 0;
+        setTimeout(() => dispatch(openTriggerPopup), delay * 1000);
       }
-    } else {
-      if (triggerPopupOpened) {
-        dispatch(closeTriggerPopup());
-      }
+    } else if (triggerPopupOpened) {
+      dispatch(closeTriggerPopup());
     }
   }
 
@@ -136,7 +147,7 @@ export class HelpButtonContainer extends React.Component {
 
   renderPopup() {
     const { widgetPosition } = this.props;
-    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle, size } = this.props;
+    const { backgroundColor, textColor, borderColor, liveDemo, popupStyle, size, helpPopupStartButton } = this.props;
     const popupProps = {
       widgetPosition,
       backgroundColor,
@@ -145,9 +156,10 @@ export class HelpButtonContainer extends React.Component {
       liveDemo,
       popupStyle,
       size,
+      helpPopupStartButton,
       onClick:   this.onClick,
       onClose:   this.onClosePopup,
-      getButton: () => this.refs.button
+      getButton: () => this.button.node
     };
 
     if (popupStyle === 'agents_button') {
@@ -156,7 +168,7 @@ export class HelpButtonContainer extends React.Component {
 
     return (
       <AgentMessagePopupContainer {...popupProps}>
-        {popupStyle.match(/_button$/) ? <ReplyButtons {...popupProps} /> : <ReplyForm {...popupProps} />}
+        {popupStyle && popupStyle.match(/_button$/) ? <ReplyButtons {...popupProps} /> : <ReplyForm {...popupProps} />}
       </AgentMessagePopupContainer>
     );
   }
@@ -171,7 +183,7 @@ export class HelpButtonContainer extends React.Component {
       }
       <HelpButton
         {...this.props}
-        ref="button"
+        ref={(c) => { this.button = c; }}
         locationPath={this.state.locationPath || null}
         onClick={this.onClick}
       />

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -65,6 +65,13 @@ class WidgetBrandChatPopupSettings
     private $style = self::STYLE_AGENT_TEXT_BUTTON;
 
     /**
+     * @var float
+     *
+     * @JMS\Type("float")
+     */
+    private $delay = 0;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -93,6 +100,18 @@ class WidgetBrandChatPopupSettings
     }
 
     /**
+     * @param int $languageId
+     *
+     * @return WidgetBrandChatPopupTranslation|null
+     */
+    public function getTranslation($languageId)
+    {
+        return $this->translations->filter(function (WidgetBrandChatPopupTranslation $translation) use ($languageId) {
+            return $translation->getLanguage() === $languageId;
+        })->first();
+    }
+
+    /**
      * @return string
      */
     public function getStyle()
@@ -108,6 +127,26 @@ class WidgetBrandChatPopupSettings
     public function setStyle($style)
     {
         $this->style = $style;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDelay()
+    {
+        return $this->delay;
+    }
+
+    /**
+     * @param float $delay
+     *
+     * @return $this
+     */
+    public function setDelay($delay)
+    {
+        $this->delay = $delay;
 
         return $this;
     }

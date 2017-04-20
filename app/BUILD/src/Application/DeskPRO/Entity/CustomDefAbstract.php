@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,6 @@ use Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -51,8 +50,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property CustomDefAbstract[]|ArrayCollection $children
  *
  * @method setParent(CustomDefAbstract $parent)
- *
- * @JMS\ExclusionPolicy("all")
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
@@ -80,9 +77,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The unique ID.
      *
      * @var int
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -138,9 +132,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @var string
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @Assert\NotBlank()
      */
     protected $title = '';
@@ -149,9 +140,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * The description.
      *
      * @var string
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      */
     protected $description = '';
 
@@ -168,8 +156,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * Options for the field.
      *
-     * @JMS\Expose()
-     * @JMS\Type("array")
+     * @var array
      */
     protected $options = [];
 
@@ -177,17 +164,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * Can the field be viewed by the user?
      *
      * @var bool
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      */
     protected $is_user_enabled = true;
 
     /**
      * True if field is enabled.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -195,9 +176,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Obviously it is field`s display order.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -212,9 +190,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
     /**
      * Is this field associated with agents only.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -280,27 +255,39 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param Language|int $language
+     *
      * @return string
      */
-    public function getRealTitle()
+    public function getTitle($language = null)
+    {
+        return App::getTranslator()->getPhraseObject($this, 'title', $language);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawTitle()
     {
         return $this->title;
     }
 
     /**
+     * @param Language|int $language
+     *
      * @return string
      */
-    public function getTitle()
+    public function getDescription($language = null)
     {
-        return App::getTranslator()->getPhraseObject($this, 'title');
+        return App::getTranslator()->getPhraseObject($this, 'description', $language);
     }
 
     /**
      * @return string
      */
-    public function getDescription()
+    public function getRawDescription()
     {
-        return App::getTranslator()->getPhraseObject($this, 'description');
+        return $this->description;
     }
 
     /**
@@ -385,9 +372,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\Type("array")
-     *
      * @return array
      */
     public function getChoices()
@@ -764,6 +748,18 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->getOption($option_name, null);
     }
 
+    /**
+     * @param bool $isAgent
+     *
+     * @return bool
+     */
+    public function isRegexRequired($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'regex_required';
+
+        return $this->getOption($option_name, null);
+    }
+
     public function getValidWeekDays()
     {
         return $this->getOption('date_valid_dow', null);
@@ -908,8 +904,23 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @JMS\VirtualProperty()
-     *
+     * @return string
+     */
+    public function getStringDefaultValue()
+    {
+        $defaultValue = $this->getDefaultValue();
+
+        if (is_array($defaultValue)) {
+            $defaultValue = implode(',', $defaultValue);
+        }
+        if (!$defaultValue) {
+            $defaultValue = '';
+        }
+
+        return $defaultValue;
+    }
+
+    /**
      * @return mixed
      */
     public function getDefaultValue()
@@ -983,9 +994,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      * we return the real type of field (e.g., checkbox or radio) based on display options.
      *
      * @return string
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\Type("string")
      */
     public function getWidgetType()
     {
@@ -1162,11 +1170,20 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             $property = 'title';
         }
 
-        $name = strtolower(\Orb\Util\Util::getBaseClassname($this));
+        return $this->getPropertyPhraseName($property);
+    }
 
-        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
+    /**
+     * @param string $property
+     *
+     * @return string
+     */
+    public function getPropertyPhraseName($property)
+    {
+        $name       = strtolower(\Orb\Util\Util::getBaseClassname($this));
+        $phraseName = 'obj_'.$name.'.'.$this->id.'_'.$property;
 
-        return $phrase_name;
+        return $phraseName;
     }
 
     /**

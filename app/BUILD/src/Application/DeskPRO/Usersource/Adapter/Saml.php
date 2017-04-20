@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,7 @@ namespace Application\DeskPRO\Usersource\Adapter;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
 
-class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
+class Saml extends AbstractAdapter
 {
     public function getFieldsFromIdentity(Identity $identity)
     {
@@ -51,7 +51,7 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
     }
 
     /**
-     * @return \deskpro_magento\Usersource\Auth\Magento
+     * @return \Orb\Auth\Adapter\Saml
      */
     protected function _createAuthAdapterObject()
     {
@@ -80,7 +80,7 @@ class Saml extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
             UsersourceInfo::CAPABILITY_SSO_JS,
         ];
 
-        if (isset($this->usersource->options['login_custom_text']) && $custom_button_text = $this->usersource->options['login_custom_text']) {
+        if (isset($this->usersource->options['login_custom_text']) && $customButtonText = $this->usersource->options['login_custom_text']) {
             $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
         }
 

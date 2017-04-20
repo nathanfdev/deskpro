@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,12 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
-use Orb\Data\ContentTypes;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use Orb\Util\Strings;
 
 /**
@@ -44,6 +49,25 @@ use Orb\Util\Strings;
 class EzcReader extends AbstractReader
 {
     /**
+     * @var EmailAccount
+     */
+    protected $emailAccount;
+
+    /**
+     * @var EmailAccountManager
+     */
+    protected $emailAccountManager;
+
+    /**
+     * @var AppEnv
+     */
+    protected $environment;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    protected $blobStorage;
+    /**
      * @var \ezcMailParser|null
      */
     protected $parser = null;
@@ -53,11 +77,22 @@ class EzcReader extends AbstractReader
      */
     protected $mail = null;
 
+    const DECRYPT_NO_ACCOUNT         = 'no_account';
+    const DECRYPT_NO_KEY_FOR_ACCOUNT = 'no_key';
+    const DECRYPT_FAILURE            = 'other_failure';
     /**
      * EzcReader constructor.
+     *
+     * @param EmailAccountManager $emailAccountManager
+     * @param DeskproBlobStorage  $blobStorage
+     * @param AppEnv              $environment
      */
-    public function __construct()
+    public function __construct(EmailAccountManager $emailAccountManager, DeskproBlobStorage $blobStorage, AppEnv $environment)
     {
+        $this->emailAccountManager = $emailAccountManager;
+        $this->blobStorage         = $blobStorage;
+        $this->environment         = $environment;
+
         $opt = new \ezcMailParserOptions();
 
         $this->parser = new \ezcMailParser($opt);
@@ -71,6 +106,42 @@ class EzcReader extends AbstractReader
                 return $text;
             });
         }
+    }
+
+    /**
+     * @return EmailAccount
+     */
+    public function getEmailAccount()
+    {
+        return $this->emailAccount;
+    }
+
+    /**
+     * @param EmailAccount $emailAccount
+     *
+     * @return EzcReader
+     */
+    public function setEmailAccount($emailAccount)
+    {
+        $this->emailAccount = $emailAccount;
+
+        return $this;
+    }
+
+    /**
+     * @return EmailAccountManager
+     */
+    public function getEmailAccountManager()
+    {
+        return $this->emailAccountManager;
+    }
+
+    /**
+     * @return AppEnv
+     */
+    public function getEnv()
+    {
+        return $this->environment;
     }
 
     public function _kill()
@@ -94,6 +165,15 @@ class EzcReader extends AbstractReader
         }
 
         $this->mail = $this->mail[0];
+
+        foreach ($this->mail->fetchParts() as $part) {
+            if (isset($part->mimeType) && $part->mimeType === 'pkcs7-mime') {
+                $this->decryptEmail();
+            }
+            if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
+                $this->validateSignature();
+            }
+        }
     }
 
     /**
@@ -115,6 +195,32 @@ class EzcReader extends AbstractReader
         }
 
         return $header;
+    }
+
+    /**
+     * @return AuthenticationResults[]
+     */
+    protected function _getAuthenticationResults()
+    {
+        $headers = $this->mail->getHeader('Authentication-Results', true);
+
+        $authenticationResults = [];
+        if ($headers) {
+            foreach ($headers as $header) {
+                $authenticationResult                                          = AuthenticationResults::parseHeader($header);
+                $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+            }
+        } else {
+            $receivedSpf = $this->mail->getHeader('Received-SPF', true);
+            if ($receivedSpf) {
+                foreach ($receivedSpf as $value) {
+                    $authenticationResult                                          = AuthenticationResults::parseReceivedSpf($value);
+                    $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+                }
+            }
+        }
+
+        return $authenticationResults;
     }
 
     /**
@@ -282,13 +388,13 @@ class EzcReader extends AbstractReader
     }
 
     /**
-     * @return Item\Subject|void
+     * @return Item\Subject|null
      */
     protected function _getOriginalSubject()
     {
         $header = $this->getHeader('Thread-Topic');
         if (!$header || empty($header->header_parts)) {
-            return;
+            return null;
         }
 
         $subject                   = new Item\Subject();
@@ -306,13 +412,19 @@ class EzcReader extends AbstractReader
     {
         $attachments = [];
 
-        foreach ($this->mail->fetchParts() as $part) {
+        $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
+
+        foreach ($mail->fetchParts() as $part) {
             if (
                 $part instanceof \ezcMailFile
                 || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
                 || ($part instanceof \ezcMailText && $part->subType == 'calendar')
                 || ($part instanceof \ezcMailRfc822Digest)
             ) {
+                // We already analysed the signature or the encrypted content so we don't had it as an attachment
+                if (isset($part->mimeType) && ($part->mimeType === 'pkcs7-signature' || $part->mimeType === 'pkcs7-mime')) {
+                    continue;
+                }
                 $attach = new Item\Attachment();
 
                 if ($part instanceof \ezcMailText) {
@@ -353,8 +465,8 @@ class EzcReader extends AbstractReader
                         // ezc does charset conversion that makes the charset think its utf8
                         // but it may not be. we need to copy the original
                         if (isset($part->mail->body->originalCharset)) {
-                            $body_charset             = $part->mail->body->originalCharset;
-                            $attach->original_charset = $body_charset;
+                            $bodyCharset              = $part->mail->body->originalCharset;
+                            $attach->original_charset = $bodyCharset;
                         }
 
                         $attach->tmp_file = tempnam(dp_get_tmp_dir(), 'eml');
@@ -417,13 +529,6 @@ class EzcReader extends AbstractReader
                             $attach->mime_type = 'application/octet-stream';
                         }
                     }
-
-                    if (!Strings::getExtension($attach->file_name)) {
-                        $ext = ContentTypes::findExtensionForContentType($attach->mime_type);
-                        if ($ext) {
-                            $attach->file_name .= ".$ext";
-                        }
-                    }
                 }
 
                 if ($attach) {
@@ -448,7 +553,9 @@ class EzcReader extends AbstractReader
     {
         $rawParts = [];
 
-        foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
+        $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
+
+        foreach ($mail->fetchParts(['ezcMailText']) as $part) {
             if (
                 $part->subType == 'html'
                 && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
@@ -466,7 +573,7 @@ class EzcReader extends AbstractReader
 
         //we're going append technical detail to html body if it exists.
         if ($rawParts) {
-            foreach ($this->mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
+            foreach ($mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
                 /* @var \ezcMailDeliveryStatus $part */
                 $generatedBody   = Strings::standardEol($part->generateBody());
                 $body            = new Item\BodyHtml();
@@ -535,7 +642,9 @@ class EzcReader extends AbstractReader
     {
         $rawParts = [];
 
-        foreach ($this->mail->fetchParts(['ezcMailText']) as $part) {
+        $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
+
+        foreach ($mail->fetchParts(['ezcMailText']) as $part) {
             if ($part->subType == 'plain') {
                 $originalCharset = $this->getOriginalCharset($part);
 
@@ -548,7 +657,7 @@ class EzcReader extends AbstractReader
             }
         }
 
-        foreach ($this->mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
+        foreach ($mail->fetchParts(['ezcMailDeliveryStatus']) as $part) {
             /* @var \ezcMailDeliveryStatus $part */
             $generatedBody   = Strings::standardEol($part->generateBody());
             $body            = new Item\BodyHtml();
@@ -667,5 +776,103 @@ class EzcReader extends AbstractReader
         }
 
         return $attachments;
+    }
+
+    public function decryptEmail()
+    {
+        $account = $this->findEmailAccountFrom();
+
+        if (!$account) {
+            $this->decryptionError = self::DECRYPT_NO_ACCOUNT;
+        } else {
+            $certBlob = $account->getCertBlob();
+            $keyBlob  = $account->getKeyBlob();
+            if ($certBlob && $keyBlob) {
+                $public    = $this->blobStorage->copyBlobRecordToString($certBlob);
+                $private   = $this->blobStorage->copyBlobRecordToString($keyBlob);
+                $fileId    = uniqid('encMails', true);
+                $tmpDir    = $this->getEnv()->getUserTmpDir();
+                $encrypted = $tmpDir.'/'.$fileId.'encrypted.txt';
+                file_put_contents($encrypted, $this->raw_source);
+                $outfile = $tmpDir.'/'.$fileId.'decrypted.txt';
+                try {
+                    $key = $account->getKeyPassPhrase() ?
+                        [$private, $account->getKeyPassPhrase()] :
+                        $private;
+                    if (openssl_pkcs7_decrypt($encrypted, $outfile, $public, $key)) {
+                        $set                 = new \ezcMailVariableSet(file_get_contents($outfile));
+                        $this->decryptedMail = $this->parser->parseMail($set);
+
+                        if (!$this->decryptedMail || !isset($this->decryptedMail[0])) {
+                            throw new \InvalidArgumentException('Bad mail source, could not decode');
+                        }
+
+                        $this->decryptedMail = $this->decryptedMail[0];
+
+                        foreach ($this->decryptedMail->fetchParts() as $part) {
+                            if (isset($part->mimeType) && $part->mimeType === 'pkcs7-signature') {
+                                $this->validateSignature($outfile);
+                            }
+                        }
+                    } else {
+                        $this->decryptionError = self::DECRYPT_FAILURE;
+                    }
+                } finally {
+                    @unlink($encrypted);
+                    @unlink($outfile);
+                }
+            } else {
+                $this->decryptionError = self::DECRYPT_NO_KEY_FOR_ACCOUNT;
+            }
+        }
+    }
+
+    public function validateSignature($file = null)
+    {
+        if (!$file) {
+            $tmpDir = $this->getEnv()->getUserTmpDir();
+            $fileId = uniqid('sigMails', true);
+            $file   = $tmpDir.'/'.$fileId.'encrypted.txt';
+            file_put_contents($file, $this->raw_source);
+        }
+        try {
+            $this->isSigned = openssl_pkcs7_verify($file, 0);
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     */
+    private function findEmailAccountFrom()
+    {
+        if ($this->emailAccount) {
+            return $this->emailAccount;
+        }
+        foreach ($this->getReceivedAddresses() as $email) {
+            $account = $this->emailAccountManager->findAccountForEmailAddress($email->email, 'is_enabled');
+            if ($account) {
+                return $account;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getSourceAsBlob()
+    {
+        $filename = 'original.eml';
+        $mimeType = 'message/rfc822';
+
+        return $this->blobStorage->createBlobRecordFromString(
+            $this->raw_source,
+            $filename,
+            $mimeType,
+            ['is_temp' => false]
+        );
     }
 }

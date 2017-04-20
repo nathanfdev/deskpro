@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,8 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPref;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\IMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -71,6 +73,7 @@ class SettingsManager
     {
         $settings = new AgentSettings();
         $settings->setTickets($this->getTicketsSettings());
+        $settings->setIM($this->getIMSettings());
 
         return $settings;
     }
@@ -94,6 +97,23 @@ class SettingsManager
         }
 
         $settings->setFilterGroupings($grouping);
+
+        return $settings;
+    }
+
+    /**
+     * @return IMSettings
+     */
+    private function getIMSettings()
+    {
+        $settings = new IMSettings();
+
+        $chatsOrderPreference = $this
+            ->em
+            ->getRepository(PersonPref::class)
+            ->findOneBy(['name' => 'agent.ui.im.chats_order', 'person' => $this->user]);
+
+        $settings->setChatsOrder($chatsOrderPreference ? $chatsOrderPreference->getValue() : []);
 
         return $settings;
     }

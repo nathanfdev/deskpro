@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\TicketMessage;
 
@@ -47,6 +48,43 @@ class PreProcessor extends AbstractGatewayProcessor
 
     public function run()
     {
+        // TODO [cloudspam] proper cloud spam checker/handling
+        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
+            $em = $this->getEm();
+            $db = $this->getDb();
+
+            $emailCount = $db->fetchColumn('
+                SELECT COUNT(*)
+                FROM email_sources
+                WHERE date_created > ?
+            ', [date('Y-m-d H:i:s', time() - 3600)]);
+
+            if ($emailCount && $emailCount >= 50) {
+                \DpShutdown::add(function () use ($em) {
+                    $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                    $tmpdata->setType('cancel_for_abuse');
+                    $tmpdata->date_expire = new \DateTime('+30 minutes');
+                    $em->persist($tmpdata);
+                    $em->flush();
+
+                    $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                    try {
+                        $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                        $client->setUri($url);
+                        $r = $client->send();
+                    } catch (\Exception $e) {
+                        error_log('Failed to cancel site: '.$e->getMessage());
+                    }
+                });
+
+                $this->error = EmailSource::ERR_RATE_LIMIT;
+
+                return;
+            }
+        }
+
         //------------------------------
         // Empty From
         //------------------------------
@@ -95,12 +133,12 @@ class PreProcessor extends AbstractGatewayProcessor
         // From is a know gateway address
         //------------------------------
 
-        $account_manager = App::$container->getEmailAccountManager();
-        if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
+        $accountManager = App::$container->getEmailAccountManager();
+        if ($foundAccount = $accountManager->findAccountForEmailAddress($from)) {
             $this->error         = EmailSource::ERR_FROM_GATEWAY;
             $this->source_info[] = 'Read from address: '.$from;
-            $this->source_info[] = 'Matched account: '.$found_account->id;
-            $this->source_info[] = 'Account addresses: '.implode(', ', $found_account->getAllAddresses());
+            $this->source_info[] = 'Matched account: '.$foundAccount->id;
+            $this->source_info[] = 'Account addresses: '.implode(', ', $foundAccount->getAllAddresses());
 
             return;
         }
@@ -138,13 +176,42 @@ class PreProcessor extends AbstractGatewayProcessor
         // on the account
         //------------------------------
 
-        if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
-            if ($email_date < $this->account->date_read_start) {
+        if ($this->account->date_read_start && $emailDate = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
+            if ($emailDate < $this->account->date_read_start) {
                 $this->error         = EmailSource::ERR_DATE_LIMIT;
                 $this->source_info[] = 'Gateway date limit: '.$this->account->date_read_start->format(\DateTime::RFC2822);
-                $this->source_info[] = 'Message date: '.$email_date->format(\DateTime::RFC2822);
+                $this->source_info[] = 'Message date: '.$emailDate->format(\DateTime::RFC2822);
 
                 return;
+            }
+        }
+
+        //--------------------------------
+        // Validate email SPF and DKIM header
+        //--------------------------------
+
+        if (App::getSetting('core_tickets.reject_spf_level') || App::getSetting('core_tickets.reject_dkim_level')) {
+            $authenticationResults = $this->reader->getAuthenticationResults();
+
+            $spfLevel  = App::getSetting('core_tickets.reject_spf_level');
+            $dkimLevel = App::getSetting('core_tickets.reject_dkim_level');
+
+            /** @var AuthenticationResults $authenticationResult */
+            foreach ($authenticationResults as $authenticationResult) {
+                if ($spfLevel && in_array($authenticationResult->getSpfResult(), explode(',', $spfLevel))) {
+                    $this->error         = EmailSource::ERR_SPF_REJECT;
+                    $this->source_info[] = 'SPF servId: '.$authenticationResult->getAuthservId();
+                    $this->source_info[] = 'SPF result: '.$authenticationResult->getSpfResult();
+
+                    return;
+                }
+                if ($dkimLevel && in_array($authenticationResult->getDkimResult(), explode(',', $dkimLevel))) {
+                    $this->error         = EmailSource::ERR_DKIM_REJECT;
+                    $this->source_info[] = 'DKIM servId: '.$authenticationResult->getAuthservId();
+                    $this->source_info[] = 'DKIM result: '.$authenticationResult->getDkimResult();
+
+                    return;
+                }
             }
         }
 

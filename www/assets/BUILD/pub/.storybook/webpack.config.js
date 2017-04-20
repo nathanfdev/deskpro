@@ -1,4 +1,5 @@
-const path = require('path');
+const path    = require('path');
+const webpack = require('webpack');
 
 const config = {
   module: {
@@ -9,7 +10,7 @@ const config = {
         include: path.resolve(__dirname, '../../')
       },
       {
-        test: /\.(svg|png|jpg)$/,
+        test: /\.(svg|png|jpg|mp3|wav|ogg)$/,
         loader:  'url'
       },
       {
@@ -23,8 +24,18 @@ const config = {
       path.resolve('./src'),
       path.resolve('./src/DeskPRO/Component'),
       path.resolve('./src/tests')
-    ]
-  }
+    ],
+    alias: {
+      'jquery.ui':        'jquery-ui',
+      'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget'
+    }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      $:      'jquery',
+      jQuery: 'jquery'
+    })
+  ]
 };
 
 module.exports = config;

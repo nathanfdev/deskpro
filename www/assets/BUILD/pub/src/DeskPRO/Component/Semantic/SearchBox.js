@@ -7,14 +7,22 @@ class SearchBox extends React.Component {
     onUserInput:  PropTypes.func,
     onFocus:      PropTypes.func,
     onBlur:       PropTypes.func,
-    onClearInput: PropTypes.func
+    onClearInput: PropTypes.func,
+    focusOnMount: PropTypes.bool
   };
   static defaultProps = {
     onUserInput() {},
     onFocus() {},
     onBlur() {},
-    onClearInput() {}
+    onClearInput() {},
+    focusOnMount: false
   };
+
+  componentDidMount() {
+    if (this.props.focusOnMount) {
+      this.textInput.focus();
+    }
+  }
 
   handleChange = () => {
     this.props.onUserInput(
@@ -24,6 +32,9 @@ class SearchBox extends React.Component {
 
   clearInput = () => {
     this.textInput.value = '';
+    this.props.onUserInput(
+      this.textInput.value
+    );
     if (this.props.onClearInput) {
       this.props.onClearInput();
     }

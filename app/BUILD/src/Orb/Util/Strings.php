@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -501,7 +501,7 @@ class Strings
     public static function getExtension($string)
     {
         $matches = null;
-        if (preg_match('#\.([a-zA-Z0-9]+)$#', $string, $matches)) {
+        if (preg_match('#\.([a-zA-Z0-9_\-]+)$#', $string, $matches)) {
             return strtolower($matches[1]);
         }
 
@@ -2771,5 +2771,13 @@ class Strings
         $filename_safe = RegexUtils::safePregReplace('#\-{2,}#', '-', $filename_safe);
 
         return $filename_safe ?: 'file';
+    }
+
+    public static function escapeForJson($string)
+    {
+        $escapers     = ['\\', '/', '"', "\n", "\r", "\t", "\x08", "\x0c", "'"];
+        $replacements = ['\\\\', '\\/', '\\"', '\\n', '\\r', '\\t', '\\f', '\\b', "\\'"];
+
+        return str_replace($escapers, $replacements, $string);
     }
 }

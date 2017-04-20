@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,7 +78,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
             'Application\\DeskPRO\\Command\\DevTestApiCommand',
             'Application\\DeskPRO\\Command\\FixBlobPathsCommand',
-            'Application\\DeskPRO\\Command\\GenBuildClassCommand',
             'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
             'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
             'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
@@ -97,7 +96,6 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\TestCommand',
             'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
             'Application\\DeskPRO\\Command\\TestFilterCommand',
-            'Application\\DeskPRO\\Command\\UpgradeCommand',
             'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
             'Application\\DeskPRO\\Command\\WorkerJobCommand',
         ];

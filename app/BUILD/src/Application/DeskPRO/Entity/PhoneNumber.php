@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,8 +34,10 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
 
@@ -52,6 +54,10 @@ use Orb\Util\PhoneNumbers;
  * @property string $region
  * @property string $guessed_type
  * @property \DateTime $date_created
+ *
+ * @JMS\ExclusionPolicy("ALL")
+ *
+ * @AppAssert\PhoneNumber()
  */
 class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -71,6 +77,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * The number, stored in E.164 string format, ie. +19021111111.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $number;
 
@@ -78,6 +87,9 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * A human-defined (optional) label to describe what this phone number is.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $label;
 
@@ -85,6 +97,10 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * An extension for the number - optional.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\SerializedName("extension")
      */
     protected $ext;
 
@@ -202,6 +218,58 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @param string $number
+     *
+     * @return $this
+     */
+    public function setNumber($number)
+    {
+        $this->setModelField('number', $number);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNumber()
+    {
+        return $this->number;
+    }
+
+    /**
+     * @param string $guessed_type
+     *
+     * @return $this
+     */
+    public function setGuessedType($guessed_type)
+    {
+        $this->setModelField('guessed_type', $guessed_type);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGuessedType()
+    {
+        return $this->guessed_type;
+    }
+
+    /**
      * @return string|int|null
      */
     public function getExt()
@@ -230,10 +298,25 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * @param string $region
+     *
+     * @return $this
+     */
     public function setRegion($region)
     {
         $region = strtoupper($region);
         $this->setModelField('region', $region);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
     }
 
     //###########################################################################
@@ -316,7 +399,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(
             [
                 'fieldName'  => 'guessed_type',
-                'type'       => 'integer',
+                'type'       => 'string',
                 'precision'  => 10,
                 'scale'      => 0,
                 'nullable'   => false,

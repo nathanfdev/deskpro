@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,24 +47,34 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
     public function transform($object, array $fields)
     {
         $document = new Document();
-        $document->setId($object->id);
+        $document->setId($object->getId());
 
-        $document->set('title', $object->getRealTitle());
-        $document->set('content', $object->getContentPlain());
-        $document->set('status', $object->status);
+        $titles  = [$object->getRealTitle()];
+        $content = [$object->getContentPlain()];
+
+        foreach ($object->getTitleTranslations() as $translation) {
+            $titles[] = $translation->getValue();
+        }
+        foreach ($object->getContentTranslations() as $translation) {
+            $content[] = $translation->getValue();
+        }
+
+        $document->set('title', implode(' ', $titles));
+        $document->set('content', implode(' ', $content));
+        $document->set('status', $object->getStatus());
 
         $cat_ids = [];
-        foreach ($object->categories as $c) {
-            $cat_ids[] = $c->id;
+        foreach ($object->getCategories() as $c) {
+            $cat_ids[] = $c->getId();
         }
         if ($cat_ids) {
             $document->set('category_ids', $cat_ids);
         }
 
-        if ($object->labels) {
+        if ($object->getLabels()) {
             $labels = Arrays::map(function ($l) {
                 return $l->label;
-            }, $object->labels);
+            }, $object->getLabels());
             $document->set('labels', $labels);
         }
 
@@ -72,12 +82,12 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
             SELECT word
             FROM search_sticky_result
             WHERE object_type = ? AND object_id = ?
-        ', ['DeskPRO:Article', $object->id]);
+        ', ['DeskPRO:Article', $object->getId()]);
         if ($sticky_words) {
             $document->set('sticky_words', $sticky_words);
         }
 
-        $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+        $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
         $document->set('date_active', date('Y-m-d H:i:s'));
 
         return $document;

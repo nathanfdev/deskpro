@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Brands;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -43,6 +42,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class BrandsController.
@@ -50,6 +50,15 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/brands")
  * @ApiDoc(target="all", section="Brands", output="Application\DeskPRO\Entity\Brand")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\BrandType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Brand"
+ *      }
+ *     }
+ * )
  */
 class BrandsController extends CrudController
 {
@@ -104,6 +113,7 @@ class BrandsController extends CrudController
      *     statusCodes = {
      *       201 = "Brand was created",
      *     },
+     *     input="DeskPRO\Bundle\AppBundle\Form\Type\BrandType",
      *     output="Application\DeskPRO\Entity\Brand"
      * )
      * @Rest\Post("")
@@ -126,7 +136,17 @@ class BrandsController extends CrudController
         /** @var UrlHostChecker $urlHostChecker */
         $urlHostChecker = $this->get('url_host_checker');
 
-        $brand->setUrl($urlHostChecker->simplifyUrl($brand->getUrl()));
+        $url         = $urlHostChecker->simplifyUrl($brand->getUrl());
+        $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+        $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
+
+        if (false !== strpos($url, $helpdeskUrl)) {
+            throw new BadRequestHttpException(
+                'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
+            );
+        }
+
+        $brand->setUrl($url);
 
         $themeSet = new ThemeSet();
         $themeSet->setThemeId('standard');
@@ -138,14 +158,6 @@ class BrandsController extends CrudController
 
         $brand->setThemeSet($themeSet);
         $brand->setEditThemeSet($editThemeSet);
-
-        /** @var Department[] $departments */
-        $departments = $this->getRepository(Department::class)->getChildDepartments('both');
-        foreach ($departments as $department) {
-            $brand->addDepartment($department);
-            $department->addBrand($brand);
-            $this->persistModel($department);
-        }
 
         $this->persistModel($brand);
 
@@ -210,11 +222,17 @@ class BrandsController extends CrudController
      */
     public function checkBrandUrlAction(Request $request)
     {
-        $url   = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
-        $brand = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+        $url         = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
+        $brand       = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+        $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+        $helpdeskUrl = $this->get('url_host_checker')->simplifyUrl($helpdeskUrl);
+        $response    = ['free' => !$brand];
 
-        return new View($this->wrap([
-            'free' => !$brand,
-        ]));
+        if (false !== strpos($url, $helpdeskUrl)) {
+            $response['free']   = false;
+            $response['reason'] = 'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.';
+        }
+
+        return new View($this->wrap($response));
     }
 }

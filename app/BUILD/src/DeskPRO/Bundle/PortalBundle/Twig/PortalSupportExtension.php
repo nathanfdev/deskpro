@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -469,6 +469,8 @@ class PortalSupportExtension extends \Twig_Extension
                 return preg_match('#^portal_feedback#', $route);
             case 'tickets':
                 return preg_match('#^portal_tickets#', $route) || $route === 'portal_new_ticket';
+            case 'guides':
+                return preg_match('#^portal_guides#', $route);
         }
 
         return false;
@@ -630,7 +632,9 @@ class PortalSupportExtension extends \Twig_Extension
 
         $date->setTimezone($timezone);
 
-        return $date->format($format);
+        $translator = $this->container->get('language_manager')->getTranslator();
+
+        return $translator->date($format, $date, 'user.time.');
     }
 
     /**

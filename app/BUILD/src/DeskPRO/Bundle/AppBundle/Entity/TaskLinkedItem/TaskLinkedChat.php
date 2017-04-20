@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,7 +74,7 @@ class TaskLinkedChat extends AbstractTaskLinkedItem
      * @JMS\Type("entity<Application\DeskPRO\Entity\ChatConversation>")
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatConversation")
-     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="chat_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @Assert\NotBlank()
      *
@@ -97,7 +97,7 @@ class TaskLinkedChat extends AbstractTaskLinkedItem
      */
     public function setChat(ChatConversation $chat)
     {
-        $this->chat = $chat;
+        $this->setModelField('chat', $chat);
 
         return $this;
     }

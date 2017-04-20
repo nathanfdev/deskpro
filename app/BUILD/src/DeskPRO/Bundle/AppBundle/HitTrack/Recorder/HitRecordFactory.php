@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,20 +29,21 @@
 namespace DeskPRO\Bundle\AppBundle\HitTrack\Recorder;
 
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
+use DeskPRO\Component\Util\StringUtils;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 
 class HitRecordFactory
 {
     /**
-     * @param string      $page_type
-     * @param string      $page_id
+     * @param string      $pageType
+     * @param string      $pageId
      * @param Request     $request
-     * @param string|null $visitor_id
+     * @param string|null $visitorId
      *
      * @return HitRecord
      */
-    public function fromRequest($page_type, $page_id, Request $request, $visitor_id = null)
+    public function fromRequest($pageType, $pageId, Request $request, $visitorId = null)
     {
         switch ($request->getMethod()) {
             case 'POST':
@@ -76,8 +77,55 @@ class HitRecordFactory
             throw new \InvalidArgumentException('No params');
         }
 
-        $ip_address = $request->getClientIp();
-        $user_agent = $request->headers->get('User-Agent', '');
+        $bag->set('page_type', $pageType);
+        $bag->set('page_id', $pageId);
+
+        return $this->fromParameters($bag, $request, $visitorId);
+    }
+
+    /**
+     * @param array|ParameterBag $params
+     * @param Request|null       $request   Optional request to fetch referrer, user agent and IP from if not specified in params
+     * @param string|null        $visitorId
+     *
+     * @return HitRecord
+     */
+    public function fromParameters($params, Request $request = null, $visitorId = null)
+    {
+        if ($params instanceof ParameterBag) {
+            $bag = $params;
+        } elseif (is_array($params)) {
+            $bag = new ParameterBag($params);
+        } else {
+            throw new \InvalidArgumentException();
+        }
+
+        // copy myValue -> my_value so we can use both input formats
+        foreach ($bag->all() as $k => $v) {
+            $altK = StringUtils::toSnakeCase($k);
+
+            if ($altK !== 'meta' && !is_scalar($v)) {
+                $v = null;
+                $bag->set($altK, $v);
+            }
+            if ($k !== $altK && !$bag->has($altK)) {
+                $bag->set($altK, $v);
+            }
+        }
+
+        $pageType  = $bag->get('page_type', 'page');
+        $pageId    = $bag->get('page_id', 'page');
+        $ipAddress = $bag->get('ip_address');
+        $userAgent = $bag->get('user_agent');
+
+        if ($request) {
+            if (!$ipAddress) {
+                $ipAddress = $request->getClientIp();
+            }
+            if (!$userAgent) {
+                $userAgent = $request->headers->get('User-Agent', '');
+            }
+        }
 
         $url      = $bag->get('url');
         $referrer = $bag->get('referrer', '');
@@ -94,7 +142,7 @@ class HitRecordFactory
         // If we werent given a URL specifically,
         // maybe its a fallback image in which case we sholud use
         // the referrer which will be the 'real' page the user is actually on
-        if (!$url) {
+        if (!$url && $request) {
             $url = $request->headers->get('Referer', null);
         }
 
@@ -102,16 +150,16 @@ class HitRecordFactory
             throw new \InvalidArgumentException('Missing URL');
         }
 
-        $hit = new HitRecord($page_type, $page_id, $url, $meta);
+        $hit = new HitRecord($pageType, $pageId, $url, $meta);
 
-        if ($visitor_id) {
-            $hit->setVisitorId($visitor_id);
+        if ($visitorId) {
+            $hit->setVisitorId($visitorId);
         }
-        if ($ip_address) {
-            $hit->setIpAddress($ip_address);
+        if ($ipAddress) {
+            $hit->setIpAddress($ipAddress);
         }
-        if ($user_agent) {
-            $hit->setUserAgent($user_agent);
+        if ($userAgent) {
+            $hit->setUserAgent($userAgent);
         }
         if ($referrer) {
             $hit->setReferrer($referrer);

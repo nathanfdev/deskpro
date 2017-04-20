@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,18 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/task_projects/{parentId}/members/agents")
- * @ApiDoc(target="all", section="TaskProjects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(target="all", section="Task Projects", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskProjectMemberType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\ProjectMember",
+ *          "project"="DeskPRO\Bundle\AppBundle\Entity\TaskProject",
+ *          "type"="person"
+ *      }
+ *     }
+ * )
  */
 class TaskProjectAgentsController extends AbstractTaskProjectMembersController
 {

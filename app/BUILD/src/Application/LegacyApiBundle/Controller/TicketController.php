@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,6 +46,7 @@ use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\Common\Collections\ArrayCollection;
 use DpSys\LowError\SystemErrorHandler;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -587,9 +588,6 @@ class TicketController extends AbstractController implements ProtectedController
     public function deleteTicketAction($ticket_id)
     {
         $ticket = $this->_getTicketOr404($ticket_id, 'delete');
-
-        $this->container->getTicketManager()->markAsManaged($ticket);
-
         $this->em->getConnection()->beginTransaction();
 
         try {
@@ -601,7 +599,7 @@ class TicketController extends AbstractController implements ProtectedController
             throw $e;
         }
 
-        $this->db->insert('tickets_deleted', [
+        $this->db->replace('tickets_deleted', [
             'ticket_id'     => $ticket->id,
             'by_person_id'  => $this->person->id,
             'new_ticket_id' => 0,
@@ -785,8 +783,8 @@ class TicketController extends AbstractController implements ProtectedController
         $notify_agent_ids = [];
 
         if ($this->in->getBool('message_is_html')) {
-            $message_text     = \Orb\Util\Strings::trimHtml($this->in->getHtmlCore('message'));
-            $message_text     = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+            $message_text     = Strings::trimHtml($this->in->getHtmlCore('message'));
+            $message_text     = Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
 
             preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
@@ -859,8 +857,22 @@ class TicketController extends AbstractController implements ProtectedController
             }
 
             if ($notify_chat) {
-                $notify_text = $this->person->getDisplayName()." alerted you in a note in {{t-$ticket->id}}: $ticket->subject";
-                $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+                $agentIds   = array_keys($notify_chat);
+                $notifyText = sprintf(
+                    '%s alerted you in a note in {{t-%d}}: %s',
+                    $message->getPerson()->getDisplayName(),
+                    $ticket->getId(),
+                    $ticket->getSubject()
+                );
+                $agent_chat->sendAgentMessage($notifyText, $agentIds);
+                if ($this->container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
+                    $newIMtext = sprintf(
+                        '[{{t-%d}}] @ %s',
+                        $ticket->getId(),
+                        Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
+                    );
+                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $newIMtext);
+                }
             }
 
             if ($notify_email) {

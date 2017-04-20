@@ -1,0 +1,101 @@
+<div class="dp-layout-list">
+	<div class="dp-layout-list-listpane">
+		<div class="dp-pane">
+
+			<section class="dp-paneblock dp-listpane">
+				<header>
+					<h3>Guides Settings</h3>
+				</header>
+				<article>
+					<ul class="dp-item-list">
+						<li dp-state-mark="portal.guides_settings">
+							<a href="{{ ng_href('portal.guides_settings') }}">
+								<h4>General Settings</h4>
+							</a>
+						</li>
+					</ul>
+				</article>
+			</section>
+		</div>
+	</div>
+	<div class="dp-layout-list-editpane">
+
+		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Ctrl.save()">
+			<section class="dp-paneblock dp-listpane">
+				<header>
+					<h3>Guides Settings</h3>
+				</header>
+
+				<article>
+					<div class="panel panel-innertable">
+						<div class="form-group">
+							<div class="labels-group">
+								<label>
+									<input type="radio" ng-model="settings.enabled" ng-value="true" />
+									<h4>Enable the Guides section</h4>
+									<span class="help-block" ng-show="settings.enabled">
+										Enable the guides section.
+									</span>
+								</label>
+								<label>
+									<input type="radio" ng-model="settings.enabled" ng-value="false" />
+									<h4>Disable the Guides section</h4>
+									<span class="help-block" ng-show="!settings.enabled">
+										Disable the guides section.
+									</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</article>
+				<article ng-show="settings.enabled">
+					<div class="panel panel-innertable">
+						<div class="form-group">
+							<label>
+								<input type="checkbox" ng-model="settings.tab_enabled" />
+								<h4>Enable the Guides tab in the portal tab bar</h4>
+								<span class="help-block">
+									<p>
+										Enable the Guides tab in the navigation tab bar? When not checked, the Guides tab will not be visible
+										but the Guides section will still be active (e.g., you could create your own link to the guides URL).
+									</p>
+									<p>
+										Use the <a href="{{ ng_href('portal.portal_editor') }}">Portal Editor</a> to re-order items in the tab bar.
+									</p>
+								</span>
+							</label>
+						</div>
+					</div>
+					<div class="panel panel-innertable">
+						<div class="form-group">
+							<label>
+								<input type="checkbox" ng-model="settings.subscriptions" />
+								<h4>Enable Guides subscriptions</h4>
+								<span class="help-block">
+									<p>
+										Allow users to subscribe to Topics and Guides.
+									</p>
+								</span>
+							</label>
+						</div>
+					</div>
+				</article>
+
+				<footer>
+					<div class="dp-content">
+						<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+							<div dp-hide-spinning="saving">
+								<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+							</div>
+							<div dp-show-spinning="saving">
+								<i class="spinner-flat"></i>
+							</div>
+						</div>
+					</div>
+				</footer>
+
+			</section>
+		</form>
+
+	</div>
+</div>

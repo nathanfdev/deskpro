@@ -184,7 +184,7 @@ class ConfigReader implements ConfigReaderInterface
 
             // merge in 'all' file
             if ($id !== 'all' && isset($this->config_values['all'][$file_id])) {
-                $this->config_values[$file_id] = array_merge($this->config_values['all'][$file_id], $this->config_values[$file_id]);
+                $this->config_values[$file_id] = array_merge($this->config_values[$file_id], $this->config_values['all'][$file_id]);
             }
 
             $this->is_reading = false;
@@ -223,7 +223,7 @@ class ConfigReader implements ConfigReaderInterface
      *
      * @return mixed
      */
-    private function _fetchFromArray(array $array, array $parts, $default = null)
+    private function _fetchFromArray($array, array $parts, $default = null)
     {
         if (empty($parts)) {
             return $array;

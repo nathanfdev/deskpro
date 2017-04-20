@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/organization_custom_fields")
  * @ApiDoc(target="all", section="Organizations", output="Application\DeskPRO\Entity\CustomDefOrganization")
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\CustomDefOrganization"
+ *      }
+ *     }
+ * )
  */
 class OrganizationCustomFieldsController extends AbstractCustomFieldsController
 {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,7 +52,7 @@ class ChatPingTimeout extends AbstractJob
         // Agent timeouts
         //------------------------------
 
-        $cutoff = date('Y-m-d H:i:s', time() - 20); // 20 secs for agents
+        $cutoff = date('Y-m-d H:i:s', time() - 360);
 
         // Agnets who we know are online
         $agent_ids = App::getDb()->fetchAllCol('
@@ -87,12 +87,12 @@ class ChatPingTimeout extends AbstractJob
         // User timeouts
         //------------------------------
 
-        $cutoff = time() - 50;
+        $cutoff = time() - 1200;
 
         $chat_ids = App::getDb()->fetchAllCol("
             SELECT DISTINCT c.id
             FROM chat_conversations c
-            JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
+            LEFT JOIN chat_conversation_pings AS p ON (p.chat_id = c.id AND p.ping_time > ?)
             WHERE c.status = 'open' AND c.is_agent = 0 AND p.id IS NULL
         ", [$cutoff]);
 

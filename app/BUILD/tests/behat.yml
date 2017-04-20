@@ -42,7 +42,7 @@ api:
                 - DpBehat\Data\LabelContext
                 - DpBehat\BrandSettingContext
     extensions:
-        Sanpi\Behatch\Extension: ~
+        Behatch\Extension: ~
         Behat\MinkExtension:
             default_session: default
             sessions:
@@ -71,7 +71,7 @@ system-api:
                 - DpBehat\Data\PeopleContext
                 - DpBehat\System\Alerts\IncidentsContext
     extensions:
-        Sanpi\Behatch\Extension: ~
+        Behatch\Extension: ~
         Behat\MinkExtension:
             default_session: default
             sessions:
@@ -136,6 +136,7 @@ portal:
                     dataset_manager: @dataset_manager
                 - DpBehat\Portal\Api\AuthContext
                 - DpBehat\Portal\Api\ChatContext
+                - DpBehat\Portal\Api\SettingsContext
                 - DpBehat\Portal\PortalDesigner\AssetsContext
                 - DpBehat\System\AntiAbuse\AntiAbuseContext
                 - DpBehat\Data\DataContext
@@ -145,7 +146,7 @@ portal:
                 - DpBehat\PermissionContext
                 - DpBehat\BrandSettingContext
     extensions:
-        Sanpi\Behatch\Extension: ~
+        Behatch\Extension: ~
         Behat\MinkExtension:
             default_session: default
             sessions:
@@ -188,7 +189,7 @@ production:
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
     extensions:
-        Sanpi\Behatch\Extension: ~
+        Behatch\Extension: ~
         Behat\MinkExtension:
             default_session: default
             sessions:

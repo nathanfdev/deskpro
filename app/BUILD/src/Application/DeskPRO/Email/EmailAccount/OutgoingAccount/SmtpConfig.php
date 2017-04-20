@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,17 +75,39 @@ class SmtpConfig implements AccountConfigInterface
     public $helo_string = '';
 
     /**
+     * @var bool
+     */
+    private $disable_cert_validation = false;
+
+    /**
+     * @return bool
+     */
+    public function isDisableCertValidation()
+    {
+        return $this->disable_cert_validation;
+    }
+
+    /**
+     * @param bool $disable_cert_validation
+     */
+    public function setDisableCertValidation($disable_cert_validation)
+    {
+        $this->disable_cert_validation = $disable_cert_validation;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function serializeJsonArray()
     {
         return [
-            'host'        => $this->host,
-            'port'        => $this->port,
-            'user'        => $this->user,
-            'password'    => $this->password,
-            'secure_mode' => $this->secure_mode,
-            'helo_string' => $this->helo_string,
+            'host'                    => $this->host,
+            'port'                    => $this->port,
+            'user'                    => $this->user,
+            'password'                => $this->password,
+            'secure_mode'             => $this->secure_mode,
+            'helo_string'             => $this->helo_string,
+            'disable_cert_validation' => $this->disable_cert_validation,
         ];
     }
 
@@ -118,8 +140,13 @@ class SmtpConfig implements AccountConfigInterface
     {
         $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
         $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(['value' => 1]));
-        $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice([
-            'choices' => ['none', 'ssl', 'tls'],
-        ]));
+        $metadata->addPropertyConstraint(
+            'secure_mode',
+            new Constraints\Choice(
+                [
+                    'choices' => ['none', 'ssl', 'tls'],
+                ]
+            )
+        );
     }
 }

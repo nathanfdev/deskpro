@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,13 +61,17 @@ class DownloadHandler extends AbstractEntityHandler
             ->setStatus($model->getStatus())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
             ->setNumDownloads($model->getNumDownloads())
         ;
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
+        }
+        if ($model->getDatePublished()) {
+            $entity->setDatePublished($model->getDatePublished());
+        } else {
+            $entity->setDatePublished($entity->getDateCreated());
         }
 
         // update download category
@@ -77,7 +81,8 @@ class DownloadHandler extends AbstractEntityHandler
                 $model->getCategory()
             ));
         } else {
-            $entity->setCategory(null);
+            // use default category
+            $entity->setCategory($this->mappers->getDownloadCategoryMapper()->getDefaultCategory());
         }
 
         // update download blob

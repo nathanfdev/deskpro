@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Util'], (Util)  ->
   class Admin_Portal_Service_PortalGeneralSettings
-    @$inject = ['Api2', '$q']
+    @$inject = ['Api2', '$q', 'Growl']
 
     constructor: (@Api2, @$q) ->
 
@@ -90,7 +90,6 @@ define ['DeskPRO/Util/Util'], (Util)  ->
       data = angular.copy(settings)
 
       me = @
-
       # Virtual value we don't want to save it
       delete data.brand
       delete data.portal_mode
@@ -102,8 +101,9 @@ define ['DeskPRO/Util/Util'], (Util)  ->
         , ->
           d.resolve(res.data.data)
         )
-      , (res, status) ->
+      , (res, status) =>
         d.reject(res, status)
+        @Api2.Growl.error(res.data.message) if res.data?.message
       )
 
       d.promise

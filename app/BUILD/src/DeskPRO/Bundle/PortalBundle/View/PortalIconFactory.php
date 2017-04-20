@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Strings;
 
@@ -127,6 +128,8 @@ class PortalIconFactory
             return $this->makeNewsIcon($content);
         } elseif ($content instanceof Feedback) {
             return $this->makeFeedbackIcon($content);
+        } elseif ($content instanceof Topic) {
+            return $this->makeTopicIcon($content);
         } elseif ($content instanceof Ticket) {
             return $this->makeTicketIcon($content);
         }
@@ -200,6 +203,18 @@ class PortalIconFactory
     public function makeFeedbackIcon(Feedback $feedback)
     {
         return '<i class="fa fa-file-text-o"></i>';
+    }
+
+    /**
+     * Will return HTML representing an icon for any topic.
+     *
+     * @param Topic $topic
+     *
+     * @return string
+     */
+    public function makeTopicIcon(Topic $topic)
+    {
+        return '<i class="fa fa-book"></i>';
     }
 
     /**

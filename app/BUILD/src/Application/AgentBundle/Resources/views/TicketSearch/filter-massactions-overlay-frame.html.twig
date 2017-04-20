@@ -1,0 +1,31 @@
+<div
+	class="mass-actions-overlay-container mass-actions"
+	data-base-id="mass_actions_overlay"
+	data-upload-url="{{ path('agent_accept_upload') }}"
+	id="{{ tplvars.baseId }}_mass_actions_frame"
+	style="display: none"
+>
+	<section class="mass-actions-overlay">
+		<header>
+			<span class="close close-trigger"></span>
+			<h1>
+				{{ phrase('agent.general.apply_to_x_selections', {'placeholder': '<span class="selected-tickets-count"></span>'}, true) }}
+			</h1>
+		</header>
+		<article class="popover-inner">
+			<div class="layout-content">
+				<div class="dp-page-content inner-mount-point">
+					<div style="padding:20px; text-align: center;">
+						<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
+					</div>
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="is-not-loading"><button class="apply-actions">{{ phrase('agent.general.apply') }}</button></div>
+			<div class="is-loading">
+				<div class="loading-icon" style="margin-top: 5px;">&nbsp;</div>
+			</div>
+		</footer>
+	</section>
+</div>

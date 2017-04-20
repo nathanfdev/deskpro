@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,6 +46,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
@@ -58,6 +59,7 @@ use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketEscalation;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketPriority;
@@ -66,6 +68,8 @@ use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Entity\WhiteListedIp;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\AuditBundle\EventListener\AuditListener;
 
 return [
@@ -341,6 +345,8 @@ return [
         AuditListener::UPDATE => [
             'conditions' => [
                 [
+                    'expression'    => 'entity.isAgent() === true',
+                    'variables'     => ['entity', 'changeSet'],
                     'preconditions' => [
                         'custom_data',
                         'password',
@@ -453,13 +459,13 @@ return [
         AuditListener::ALL => [
             'field_filters' => [
                 'apply_terms' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
                 'warn_actions' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
                 'fail_actions' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
             ],
         ],
@@ -469,6 +475,12 @@ return [
     ],
 
     Template::class => [
+        AuditListener::ALL => [
+            'naming' => [
+                'type' => 'service',
+                'id'   => 'audit_log.naming_strategy.theme',
+            ],
+        ],
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [
@@ -535,10 +547,10 @@ return [
         AuditListener::ALL => [
             'field_filters' => [
                 'terms' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
                 'actions' => [
-                    ['object', ['object.serialize()']],
+                    ['object', ['object.exportToArray()']],
                 ],
             ],
         ],
@@ -622,4 +634,47 @@ return [
     ],
 
     WhiteListedIp::class => [AuditListener::INSERT => true],
+
+    LegacyTicketFilter::class => [
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
+
+    TicketEscalation::class => [
+        AuditListener::ALL => [
+            'field_filters' => [
+                'actions' => [
+                    ['entity', ['item.exportToArray()']],
+                ],
+            ],
+        ],
+        AuditListener::INSERT => true,
+        AuditListener::REMOVE => true,
+        AuditListener::UPDATE => true,
+    ],
+
+    ThemeSetAsset::class => [
+        AuditListener::ALL => [
+            'naming' => [
+                'type' => 'service',
+                'id'   => 'audit_log.naming_strategy.theme',
+            ],
+        ],
+        AuditListener::INSERT => true,
+        AuditListener::UPDATE => true,
+        AuditListener::REMOVE => true,
+    ],
+
+    ThemeSet::class => [
+        AuditListener::ALL => [
+            'naming' => [
+                'type' => 'service',
+                'id'   => 'audit_log.naming_strategy.theme',
+            ],
+        ],
+        AuditListener::INSERT => true,
+        AuditListener::UPDATE => true,
+        AuditListener::REMOVE => true,
+    ],
 ];

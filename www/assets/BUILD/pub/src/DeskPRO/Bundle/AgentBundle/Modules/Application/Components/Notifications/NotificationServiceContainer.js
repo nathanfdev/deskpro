@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
-import { ActionAlertsHandler } from 'DeskPRO/Bundle/AgentBundle/Services/ActionAlertsHandler';
+import ActionAlertsHandler from 'DeskPRO/Bundle/AgentBundle/Services/ActionAlertsHandler';
+import NotificationsHandler from 'DeskPRO/Bundle/AgentBundle/Services/NotificationsHandler';
 import { connect } from 'react-redux';
+import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 
 @connect(state => ({
   user:              meSelector(state),
@@ -10,11 +12,10 @@ import { connect } from 'react-redux';
   actionAlertsSetup: state.Application.notifications.get('actionAlertsSetup'),
   state
 }))
-export class NotificationServiceContainer extends React.Component {
+export class NotificationServiceContainer extends SeparateComponent {
 
   static propTypes = {
     user:              PropTypes.object.isRequired,
-    state:             PropTypes.object.isRequired,
     dispatch:          PropTypes.func.isRequired,
     actionAlerts:      PropTypes.object.isRequired,
     actionAlertsSetup: PropTypes.bool.isRequired
@@ -40,13 +41,22 @@ export class NotificationServiceContainer extends React.Component {
     }
   }
 
+  static getType() {
+    return 'NotificationService';
+  }
+
   setupPolling() {
     const { user, dispatch, actionAlerts, actionAlertsSetup } = this.props;
 
     if (!actionAlertsSetup && !this.started) {
       const aah = new ActionAlertsHandler({ dispatch, me: user.get('id') });
-
-      this.ns = new NotificationService({ user, clients: actionAlerts.clients, actionAlertsHandler: aah });
+      const nh = new NotificationsHandler({ dispatch, me: user.get('id') });
+      this.ns = new NotificationService({
+        user,
+        clients:              actionAlerts.clients,
+        actionAlertsHandler:  aah,
+        notificationsHandler: nh
+      });
       this.ns.startPolling();
       this.started = true;
     }
@@ -56,3 +66,5 @@ export class NotificationServiceContainer extends React.Component {
     return <span />;
   }
 }
+
+export default NotificationServiceContainer;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ use FOS\HttpCache\UserContext\ContextProviderInterface;
 use FOS\HttpCache\UserContext\UserContext;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Class PortalUserHashContextProvider.
@@ -107,7 +107,7 @@ class PortalUserHashContextProvider implements ContextProviderInterface
 
                     $cacheKey = "$timestamp-permissions-$userGroups";
                 }
-            } catch (BadCredentialsException $e) {
+            } catch (AuthenticationException $e) {
                 // keep the silence, nothing bad was happened, so we just keep 'guest' cache_key
             }
         }

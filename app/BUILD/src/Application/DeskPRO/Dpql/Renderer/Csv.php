@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,11 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Renderer;
+
+use Application\DeskPRO\Dpql\Renderer\Values\Text;
+use Application\DeskPRO\Dpql\ResultHandler;
 
 /**
  * Renders DPQL results to CSV.
@@ -44,7 +43,7 @@ class Csv extends AbstractRenderer
      */
     protected function _getDefaultValueRenderer()
     {
-        return new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+        return new Text();
     }
 
     /**
@@ -105,20 +104,16 @@ class Csv extends AbstractRenderer
             return '';
         }
 
-        if ($this->_handler->getGroupXColumns()) {
+        if ($this->_handler->getGroupXColumns() && !$this->_handler->hasFlag(ResultHandler::FLAG_HIERARCHICAL)) {
             return $this->_renderMatrixTable($rows);
         }
 
-        $groupXColumns = $this->_handler->getGroupXColumns();
         $groupYColumns = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
 
         $output = [];
 
         $columns = [];
-        foreach ($groupXColumns as $column) {
-            $columns[] = $this->wrapCell($column['title']);
-        }
         foreach ($groupYColumns as $column) {
             $columns[] = $this->wrapCell($column['title']);
         }
@@ -130,9 +125,7 @@ class Csv extends AbstractRenderer
 
         foreach ($rows as $row) {
             $columns = [];
-            foreach ($groupXColumns as $column) {
-                $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
-            }
+
             foreach ($groupYColumns as $column) {
                 $columns[] = $this->wrapCell($this->_renderCellValue($row, $column));
             }
@@ -167,7 +160,7 @@ class Csv extends AbstractRenderer
                     if (!isset($columnTotals[$id])) {
                         $columnTotals[$id] = 0;
                     }
-                    $columnTotals[$id] += $this->getColumnValue($row, $id);
+                    $columnTotals[$id] += (int) $this->getColumnValue($row, $id);
                 }
             }
 

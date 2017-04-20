@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { closeWidget, closeTriggerPopup } from '../../../../Actions/dpWindowActions';
 import { unsetChatId } from '../../../../../Chat/Actions/chatActions';
 import { companyNameSelector, companyLogoSelector } from '../../../../Selectors/bootstrap';
@@ -28,7 +29,11 @@ export class WidgetHeaderContainer extends React.Component {
     dispatch(closeWidget());
 
     this.props.dispatch(closeTriggerPopup());
-    sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
+
+    if (storageAvailable('sessionStorage')) {
+      sessionStorage['dpWidget.dpWindow.popupShown'] = 'none';
+      sessionStorage['dpWidget.dpWindow.minimized'] = true;
+    }
 
     // If chat was ended then we can unset chat on close button
     if (chatEnded) {

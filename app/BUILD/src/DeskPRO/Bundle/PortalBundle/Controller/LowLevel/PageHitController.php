@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
+use DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -70,31 +71,42 @@ class PageHitController extends BaseController
         }
 
         try {
+            $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
+            $request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $visitorId);
+
             $hit = $this->get('hitrecord.record_factory')->fromRequest(
                 $page_type,
                 $page_id,
                 $request,
-                $this->get('visitor_identification_provider')->getVisitorIdentifier()
+                $visitorId
             );
         } catch (\Exception $e) {
             throw $this->createNotFoundException($e->getMessage());
         }
 
-        $id = $this->get('hitrecord.record_storage')->record($hit);
+        $this->get('hitrecord.record_storage')->record($hit);
 
         switch ($request->getRequestFormat('json')) {
             case 'text':
             case 'txt':
-                $resData = 'hit_id='.$id;
+                $resData = 'ok';
                 $resType = 'text/plain';
                 break;
             case 'html':
-                $resData = 'hit_id='.$id;
+                $resData = 'ok';
                 $resType = 'text/html';
                 break;
             case 'json':
-                $resData = json_encode(['hit_id' => $id]);
+                $resData = json_encode(['ok' => 'ok']);
                 $resType = 'application/json';
+                break;
+            case 'js':
+                $resData = '// ok';
+                $resType = 'text/javascript';
+                break;
+            case 'css':
+                $resData = '/* ok */';
+                $resType = 'text/css';
                 break;
             case 'png':
                 $resData = base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=');

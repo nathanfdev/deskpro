@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,6 +84,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const ERR_INVALID_ADDRESS   = 'invalid_address';
     const ERR_RATE_LIMIT        = 'rate_limit';
     const ERR_USER_VALIDATING   = 'user_validating';
+    const ERR_SPF_REJECT        = 'spf_rejected';
+    const ERR_DKIM_REJECT       = 'dkim_rejected';
 
     /**
      * @var int
@@ -242,6 +244,30 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return EmailAccount
+     */
+    public function getEmailAccount()
+    {
+        return $this->email_account;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
+    /**
      * Get the full raw source of the email.
      *
      * @deprecated
@@ -257,6 +283,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->_raw = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
         return $this->_raw;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSourceInfo()
+    {
+        return $this->source_info;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getLogBlob()
+    {
+        return $this->log_blob;
     }
 
     /**
@@ -544,7 +586,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'blob',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'targetEntity' => Blob::class,
             'dpApi'        => true,
             'dpApiDeep'    => true,
             'joinColumns'  => [
@@ -558,7 +600,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'email_account',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount',
+            'targetEntity' => EmailAccount::class,
             'dpApi'        => true,
             'joinColumns'  => [
                 [
@@ -571,7 +613,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'log_blob',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'targetEntity' => Blob::class,
             'dpApi'        => true,
             'dpApiDeep'    => true,
             'joinColumns'  => [

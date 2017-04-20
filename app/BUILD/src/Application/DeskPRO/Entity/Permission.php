@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -77,7 +77,7 @@ class Permission extends DomainObject
      * The usergroup this properly belongs to. Note that a permission applies to either
      * a person or a usergroup, never both.
      *
-     * @var \Application\DeskPRO\Entity\Usergroup
+     * @var Usergroup
      */
     protected $usergroup;
 
@@ -85,7 +85,7 @@ class Permission extends DomainObject
      * The person this properly belongs to. Note that a permission applies to either
      * a person or a usergroup, never both.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $person;
 
@@ -291,7 +291,7 @@ class Permission extends DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'usergroup',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'targetEntity' => Usergroup::class,
                 'inversedBy'   => 'permissions',
                 'joinColumns'  => [
                     0 => [
@@ -307,7 +307,7 @@ class Permission extends DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [

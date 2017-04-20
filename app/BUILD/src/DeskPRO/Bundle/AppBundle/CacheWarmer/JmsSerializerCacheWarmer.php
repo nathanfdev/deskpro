@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,10 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\CacheWarmer;
 
-use Gnugat\NomoSpaco\File\FileRepository;
-use Gnugat\NomoSpaco\FqcnRepository;
-use Gnugat\NomoSpaco\Token\ParserFactory;
 use Metadata\MetadataFactoryInterface;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -56,23 +54,41 @@ class JmsSerializerCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $fqcnRepo = new FqcnRepository(new FileRepository(), new ParserFactory());
-
         $dirs = [
             DP_ROOT.'/src/Application/DeskPRO/Entity',
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Entity',
             DP_ROOT.'/src/DeskPRO/Bundle/AppBundle/Serializer/Model',
         ];
 
-        foreach ($dirs as $dir) {
-            $fqcns = @$fqcnRepo->findIn($dir);
-            foreach ($fqcns as $fqcn) {
-                try {
-                    $this->metadataFactory->getMetadataForClass($fqcn);
-                } catch (\ReflectionException $e) {
-                    // TODO: we should dive into FQCN to know why it return directories as FQCN.
-                }
+        $finder = Finder::create()
+            ->in($dirs)
+            ->name('*.php')
+            ->notPath('/Dpql\/build.+/')
+            ->notPath('/Resources/')
+            ->notPath('/InstallBundle\/Data/')
+        ;
+
+        foreach ($finder as $f) {
+            require_once $f->getRealPath();
+        }
+
+        foreach (get_declared_classes() as $class) {
+            if (0 === strpos($class, 'Application/DeskPRO/Entity')) {
+                $this->cacheMetadata($class);
+            } elseif (0 === strpos($class, 'DeskPRO/Bundle/AppBundle/Entity')) {
+                $this->cacheMetadata($class);
+            } elseif (0 === strpos($class, 'DeskPRO/Bundle/AppBundle/Serializer/Model')) {
+                $this->cacheMetadata($class);
             }
+        }
+    }
+
+    protected function cacheMetadata($class)
+    {
+        try {
+            $this->metadataFactory->getMetadataForClass($class);
+        } catch (\ReflectionException $e) {
+            // TODO: we should dive into FQCN to know why it return directories as FQCN.
         }
     }
 

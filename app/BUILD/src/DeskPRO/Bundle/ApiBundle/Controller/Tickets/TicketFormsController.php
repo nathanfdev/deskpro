@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,6 +44,18 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/ticket_forms/{context}", requirements={"context"="(agent|user)"})
+ * @ApiDoc(
+ *     target="postContextAction,putContextAction",
+ *     input={
+ *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType",
+ *         "options"={
+ *              "data"="Application\DeskPRO\Entity\Ticket",
+ *              "person"="Application\DeskPRO\Entity\Person",
+ *              "ticket_view_context"="agent",
+ *              "ticket_visibility"="new"
+ *         }
+ *     }
+ * )
  */
 class TicketFormsController extends AbstractTicketsController
 {

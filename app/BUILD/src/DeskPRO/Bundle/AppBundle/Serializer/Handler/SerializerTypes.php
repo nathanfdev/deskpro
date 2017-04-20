@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
 
 /**
@@ -37,6 +33,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler;
  */
 final class SerializerTypes
 {
+    const TYPE_RAW             = 'raw';
     const TYPE_ENTITY          = 'entity';
     const TYPE_TO_STRING       = 'to_string';
     const TYPE_CUSTOM_DATA     = 'custom_data';
@@ -44,4 +41,5 @@ final class SerializerTypes
     const TYPE_COLLECTION      = 'collection';
     const TYPE_MAP             = 'map';
     const TYPE_DEFERRED        = 'deferred';
+    const TYPE_LABEL           = 'label';
 }

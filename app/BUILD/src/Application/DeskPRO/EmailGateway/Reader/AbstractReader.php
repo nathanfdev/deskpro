@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,6 +48,21 @@ abstract class AbstractReader
     protected $raw_headers;
     /** @var array */
     protected $from_headers = ['from'];
+
+    /**
+     * @var \ezcMail
+     */
+    protected $decryptedMail = null;
+
+    /**
+     * @var string
+     */
+    protected $decryptionError = null;
+
+    /**
+     * @var bool
+     */
+    protected $isSigned = null;
 
     public function _kill()
     {
@@ -317,8 +332,8 @@ abstract class AbstractReader
         $try = new \Application\DeskPRO\Config\UserFileConfig('original-to-headers');
         $try = $try->all();
 
-        foreach ($try as $header_name) {
-            if (!($h = $this->getHeader($header_name))) {
+        foreach ($try as $headerName) {
+            if (!($h = $this->getHeader($headerName))) {
                 return;
             }
 
@@ -351,6 +366,18 @@ abstract class AbstractReader
         return $this->vals['headers'][$header];
     }
 
+    /**
+     * @return \Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults
+     */
+    public function getAuthenticationResults()
+    {
+        if (!isset($this->vals['authentication_results'])) {
+            $this->vals['authentication_results'] = $this->_getAuthenticationResults();
+        }
+
+        return $this->vals['authentication_results'];
+    }
+
     abstract protected function _setRawSource($source);
     abstract protected function _getBodyText();
     abstract protected function _getBodyHtml();
@@ -362,6 +389,7 @@ abstract class AbstractReader
     abstract protected function _getToAddresses();
     abstract protected function _getCcAddresses();
     abstract protected function _getHeader($header);
+    abstract protected function _getAuthenticationResults();
 
     /**
      * Returns true if message marks itself as from a robot.
@@ -370,9 +398,9 @@ abstract class AbstractReader
      */
     public function isFromRobot()
     {
-        $deskpro_auto = $this->getHeader('X-DeskPRO-Auto')->getAllParts();
-        if ($deskpro_auto) {
-            foreach ($deskpro_auto as $v) {
+        $deskproAuto = $this->getHeader('X-DeskPRO-Auto')->getAllParts();
+        if ($deskproAuto) {
+            foreach ($deskproAuto as $v) {
                 if (stripos($v, 'Yes') !== false) {
                     return true;
                 }
@@ -413,20 +441,20 @@ abstract class AbstractReader
             return $this->vals['is_outlook'];
         }
 
-        $is_outlook = false;
+        $isOutlook = false;
 
         $mailer = $this->getHeader('X-Mailer');
         if ($mailer && strpos($mailer->getHeader(), 'Outlook') !== false) {
-            $is_outlook = true;
+            $isOutlook = true;
         }
-        if (!$is_outlook) {
+        if (!$isOutlook) {
             $headers = $this->getRawHeaders();
             if (preg_match('#^X\-MS\-#', $headers)) {
-                $is_outlook = true;
+                $isOutlook = true;
             }
         }
 
-        $this->vals['is_outlook'] = $is_outlook;
+        $this->vals['is_outlook'] = $isOutlook;
 
         return $this->vals['is_outlook'];
     }
@@ -445,30 +473,30 @@ abstract class AbstractReader
 
         $this->vals['date'] = false;
 
-        $use_date = null;
-        $date     = null;
+        $useDate = null;
+        $date    = null;
 
-        $date_header = $this->getHeader('Date');
-        if (!$date_header || !count($date_header->header_parts)) {
+        $dateHeader = $this->getHeader('Date');
+        if (!$dateHeader || !count($dateHeader->header_parts)) {
             return;
         }
 
-        foreach ($date_header->header_parts as $date_part) {
+        foreach ($dateHeader->header_parts as $date_part) {
             if (!is_string($date_part)) {
                 continue;
             }
 
             $date = \DateTime::createFromFormat(\DateTime::RFC2822, $date_part);
 
-            if ($date && (!$use_date || $date > $use_date)) {
-                $use_date = $date;
+            if ($date && (!$useDate || $date > $useDate)) {
+                $useDate = $date;
             }
         }
 
-        if ($use_date) {
-            $this->vals['date'] = $use_date;
+        if ($useDate) {
+            $this->vals['date'] = $useDate;
 
-            return $use_date;
+            return $useDate;
         }
 
         return;
@@ -522,5 +550,29 @@ abstract class AbstractReader
         }
 
         return $newId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSigned()
+    {
+        return $this->isSigned;
+    }
+
+    /**
+     * @return \ezcMail
+     */
+    public function getDecryptedMail()
+    {
+        return $this->decryptedMail;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDecryptionError()
+    {
+        return $this->decryptionError;
     }
 }

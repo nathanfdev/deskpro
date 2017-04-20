@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketSubject;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -37,32 +33,34 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketSubjectTerm.
+ */
 class TicketSubjectTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'subject'          => null,
-                'wildcard_prefix'  => false,
-                'wildcard_postfix' => false,
-            ]
-        );
-
-        $resolver->setConstraints(
-            [
-                'subject' => [
-                    new Assert\NotNull(),
-                    new Assert\All(
-                        [
-                            'constraints' => new Assert\NotBlank(),
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $resolver->setDefaults([
+            'subject'          => null,
+            'wildcard_prefix'  => false,
+            'wildcard_postfix' => false,
+        ]);
+        $resolver->setConstraints([
+            'subject' => [
+                new Assert\NotNull(),
+                new Assert\All([
+                    'constraints' => new Assert\NotBlank(),
+                ]),
+            ],
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [
@@ -73,6 +71,9 @@ class TicketSubjectTerm extends AbstractTerm
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

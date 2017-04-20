@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -261,9 +261,13 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         $messageFactory = $this->container->get('form_error.message_factory.portal');
         $codeFactory    = $this->container->get('form_error.code_factory');
 
-        $code = $codeFactory->getErrorCodeForFormError($formError);
+        $code    = $codeFactory->getErrorCodeForFormError($formError);
+        $message = $messageFactory->createFormErrorMessage($code, $formError);
+        if (is_string($message)) {
+            $message = htmlentities($message);
+        }
 
-        return $messageFactory->createFormErrorMessage($code, $formError);
+        return $message;
     }
 
     /**
@@ -559,6 +563,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getWidgetLoader()
     {
+        $request       = $this->container->get('request_stack')->getCurrentRequest();
         $brand         = $this->getBrandStack()->getActive()->getBrand();
         $widgetOptions = $this->container->get('widget_settings_resolver')->getWidgetBrandOptions($brand);
 
@@ -566,7 +571,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             return '';
         }
 
-        return $this->container->get('widget_loader_code_renderer')->getWidgetCode($brand, true);
+        return $this->container->get('widget_loader_code_renderer')->getWidgetCode($brand, $request, true);
     }
 
     /**

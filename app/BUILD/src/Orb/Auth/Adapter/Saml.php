@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Orb\Auth\Result;
 use Orb\Auth\StateHandler\StateHandlerInterface;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
+use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
 
 class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, IframeSsoInterface, SamlAdapterInterface, ExtraDetailsInterface
@@ -57,12 +58,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     /**
      * @var string url to metadata of this adapter
      */
-    protected $metadata_xml_url;
+    protected $metadataXmlUrl;
 
     /**
      * @var string url single logout service url for this adapter
      */
-    protected $sls_url;
+    protected $slsUrl;
 
     /**
      * @var string not required, but can be a backup if no saml redirect is provided
@@ -94,6 +95,9 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     protected function getSamlSettings()
     {
         $settings = [
+            'security' => [
+                'requestedAuthnContext' => false,
+            ],
             'sp' => [
                 'entityId'                 => $this->getMetadataXmlUrl(),
                 'assertionConsumerService' => [
@@ -118,9 +122,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         ];
 
         if ($this->options['sign_authn_request']) {
-            $settings['security'] = [
-                'authnRequestsSigned' => true,
-            ];
+            $settings['security']['authnRequestsSigned'] = true;
 
             $settings['sp']['privateKey'] = $this->options['sp_private_key'];
             $settings['sp']['x509cert']   = $this->options['sp_public_x509'];
@@ -170,6 +172,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         try {
             return $this->processAcs($_REQUEST);
         } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log(
+                    $e->getMessage(),
+                    Logger::DEBUG
+                );
+            }
+
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
                 ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
@@ -211,7 +220,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     protected function processAcs(array $callback_data)
     {
-        $time_start = microtime(true);
+        $timeStart = microtime(true);
         if ($this->logger) {
             $this->logger->log('START Saml::processAcs', Logger::DEBUG);
             $this->logger->log(
@@ -224,6 +233,10 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
             $saml = $this->createSamlProcessor();
             $saml->processResponse();
         } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log($e->getMessage(), Logger::DEBUG);
+            }
+
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
                 ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
@@ -260,42 +273,52 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
         // start user_info as the $attrs from the saml response so that people can filter on them
         if (is_array($attrs)) {
-            $user_info = $attrs;
+            $userInfo = $attrs;
         } else {
-            $user_info = [];
+            $userInfo = [];
         }
 
-        $user_info['email']      = Arrays::reachForFirstValueInKey($attrs, 'email');
-        $user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'first_name');
-        $user_info['last_name']  = Arrays::reachForFirstValueInKey($attrs, 'last_name');
-        $user_info['name']       = Arrays::reachForFirstValueInKey($attrs, 'name');
+        $userInfo['email']      = Arrays::reachForFirstValueInKey($attrs, 'email');
+        $userInfo['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'first_name');
+        $userInfo['last_name']  = Arrays::reachForFirstValueInKey($attrs, 'last_name');
+        $userInfo['name']       = Arrays::reachForFirstValueInKey($attrs, 'name');
 
         // add some stuff for xmlsoap (Azure AD)
-        if (!$user_info['email']) {
-            $user_info['email'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress');
+        if (!$userInfo['email']) {
+            $userInfo['email'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress');
         }
-        if (!$user_info['first_name']) {
-            $user_info['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname');
+        if (!$userInfo['first_name']) {
+            $userInfo['first_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname');
         }
-        if (!$user_info['last_name']) {
-            $user_info['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname');
+        if (!$userInfo['last_name']) {
+            $userInfo['last_name'] = Arrays::reachForFirstValueInKey($attrs, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname');
         }
         // end xmlsoap stuff
 
-        $id = new Identity($saml->getNameId(), $user_info);
+        // Office 365 empty emailAddress workaround
+        if (
+            !$userInfo['email']
+            && !empty($saml->getNameId())
+            && StringEmail::isValueValid($saml->getNameId())
+            && $saml->getNameIdFormat() === 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+        ) {
+            $userInfo['email'] = $saml->getNameId();
+        }
+
+        $id = new Identity($saml->getNameId(), $userInfo);
 
         if ($this->logger) {
-            $user_info_extra             = $user_info;
-            $user_info_extra['identity'] = $id->getIdentity();
+            $userInfoExtra             = $userInfo;
+            $userInfoExtra['identity'] = $id->getIdentity();
             $this->logger->log(
-                "SAML Success: \n".trim(Arrays::implodeTemplate($user_info_extra, "{KEY}: {VAL}\n")),
+                "SAML Success: \n".trim(Arrays::implodeTemplate($userInfoExtra, "{KEY}: {VAL}\n")),
                 Logger::DEBUG
             );
         }
 
         if ($this->logger) {
             $this->logger->log(
-                sprintf('END Saml::processAcs (took %.4fs)', microtime(true) - $time_start), Logger::DEBUG
+                sprintf('END Saml::processAcs (took %.4fs)', microtime(true) - $timeStart), Logger::DEBUG
             );
         }
 
@@ -308,16 +331,16 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     public function getLogoutRedirectUrl()
     {
-        $saml          = $this->createSamlProcessor();
-        $saml_settings = $saml->getSettings();
-        $idpData       = $saml_settings->getIdPData();
+        $saml         = $this->createSamlProcessor();
+        $samlSettings = $saml->getSettings();
+        $idpData      = $samlSettings->getIdPData();
         if (isset($idpData['singleLogoutService']) && isset($idpData['singleLogoutService']['url'])) {
             $sloUrl = $idpData['singleLogoutService']['url'];
         } else {
             throw new \Exception('The IdP does not support Single Log Out');
         }
 
-        $logoutRequest = new \OneLogin_Saml2_LogoutRequest($saml_settings);
+        $logoutRequest = new \OneLogin_Saml2_LogoutRequest($samlSettings);
         $samlRequest   = $logoutRequest->getRequest();
         $parameters    = ['SAMLRequest' => $samlRequest];
         $url           = \OneLogin_Saml2_Utils::redirect($sloUrl, $parameters, true);
@@ -355,18 +378,16 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
     public function setMetadataXmlUrl($url)
     {
-        $this->metadata_xml_url = $url;
+        $this->metadataXmlUrl = $url;
     }
 
     public function getMetadataXmlUrl()
     {
-        return $this->metadata_xml_url;
+        return $this->metadataXmlUrl;
     }
 
     /**
      * Return a response OR do the redirect yourself inside the method.
-     *
-     * @return \Application\Deskpro\HttpFoundation\Request
      */
     public function performSingleLogOutService()
     {
@@ -376,12 +397,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
 
     public function setSingleLogoutServiceUrl($url)
     {
-        $this->sls_url = $url;
+        $this->slsUrl = $url;
     }
 
     public function getSingleLogoutServiceUrl()
     {
-        return $this->sls_url;
+        return $this->slsUrl;
     }
 
     /**
@@ -406,9 +427,9 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
      */
     public function getMetadataXmlResponse()
     {
-        $saml_metadata = $this->getMetadataXml();
+        $samlMetadata = $this->getMetadataXml();
 
-        $response = new Response($saml_metadata, 200);
+        $response = new Response($samlMetadata, 200);
         $response->headers->set('Content-Type', 'text/xml');
 
         return $response;
@@ -419,12 +440,12 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         $saml = $this->createSamlProcessor();
         $sp   = $saml->getSettings()->getSPData();
 
-        $custom_xml = '';
+        $customXml = '';
         if ($this->options->get('include_custom_metadata_xml')) {
-            $custom_xml = $this->options->get('custom_metadata_xml');
+            $customXml = $this->options->get('custom_metadata_xml');
         }
 
-        return SamlMetadataBuilder::builder($sp, false, false, null, null, [], [], [], $custom_xml);
+        return SamlMetadataBuilder::builder($sp, false, false, null, null, [], [], [], $customXml);
     }
 
     /**
@@ -433,15 +454,15 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     public function getExtraDetails()
     {
         try {
-            $xml_text = $this->getMetadataXml();
+            $xmlText = $this->getMetadataXml();
         } catch (\Exception $e) {
-            $xml_text = 'SP Metadata not yet available. Please fill out SSO URL and Issuer Metadata (a.k.a IdP EntityID) settings and save.';
+            $xmlText = 'SP Metadata not yet available. Please fill out SSO URL and Issuer Metadata (a.k.a IdP EntityID) settings and save.';
         }
 
         return [
             'consumer_url'  => $this->getCallbackUrl(),
             'metadata_url'  => $this->getMetadataXmlUrl(),
-            'metadata_text' => $xml_text,
+            'metadata_text' => $xmlText,
             'slo_url'       => $this->getSingleLogoutServiceUrl(),
         ];
     }

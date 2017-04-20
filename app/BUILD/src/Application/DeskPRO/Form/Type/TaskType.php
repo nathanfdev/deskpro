@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -80,7 +80,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
                 'required' => false,
                 'property' => 'name',
             ])
-            ->add('ticket', 'text', [
+            ->add('ticket', 'number', [
                 'required' => false,
                 'mapped'   => false,
             ]);
@@ -123,7 +123,7 @@ class TaskType extends AbstractType implements EventSubscriberInterface
         $form = $event->getForm();
         if ($ticket_id = $form->get('ticket')->getData()) {
             $ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($ticket_id);
-            if ($ticket_id) {
+            if ($ticket) {
                 $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
                 $task          = $form->getData();
                 $assoc->ticket = $ticket;
@@ -150,8 +150,10 @@ class TaskType extends AbstractType implements EventSubscriberInterface
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'Application\DeskPRO\Entity\Task',
-            'timezone'   => null,
+            'data_class'                    => Task::class,
+            'timezone'                      => null,
+            'csrf_protection'               => false,
+            'csrf_double_submit_protection' => false,
         ]);
     }
 

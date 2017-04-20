@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\EventListener\Log;
 
 use DeskPRO\Bundle\ApiBundle\Log\Helper\LogComposer;
-use DeskPRO\Bundle\ApiBundle\Log\LogSaveException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 abstract class AbstractLogListener implements EventSubscriberInterface
 {
@@ -47,20 +44,5 @@ abstract class AbstractLogListener implements EventSubscriberInterface
     public function __construct(LogComposer $log_composer)
     {
         $this->composer = $log_composer;
-    }
-
-    /**
-     * @param FilterResponseEvent $event
-     */
-    public function onResponse(FilterResponseEvent $event)
-    {
-        if ($this->composer->getLog()) {
-            $this->composer->finishApiLog($event->getResponse());
-            try {
-                $this->composer->write($event->getRequest(), $event->getResponse());
-            } catch (LogSaveException $e) {
-                throw new ConflictHttpException('Error saving log entry, possibly request with given ID already processed');
-            }
-        }
     }
 }

@@ -11,13 +11,15 @@ define [
       @form.in_gmail_account    =
         mode: "read"
         read_mailbox_type: "inbox"
+        type: 'pop3'
       @form.in_pop3_account     = {}
       @form.in_imap_account     = {}
       @form.in_exchange_account = {}
       @form.in_office365_account  = {}
 
       @form.outgoing_type     = 'php_mail'
-      @form.out_gmail_account = {}
+      @form.out_gmail_account =
+        type: 'password'
       @form.out_smtp_account  = {}
       @form.out_exchange_account  = {}
       @form.out_office365_account  = {}
@@ -36,6 +38,11 @@ define [
       else
         @form.with_email_aliases = false
         @form.other_addresses = ''
+
+      @form.encryption_enabled = (@account.cert_blob? || @account.key_blob?);
+      @form.cert_file = @account.cert_blob?.filename
+      @form.key_file = @account.key_blob?.filename
+      @form.key_pass_phrase = @account.key_pass_phrase
 
       #--------------------
       # Trigger
@@ -121,10 +128,9 @@ define [
 
         if @form.incoming_type == 'gmail'
           @form.in_gmail_account.password     = @account.incoming_account.password
-          @form.in_gmail_account.clientId     = @account.incoming_account.clientId
-          @form.in_gmail_account.clientSecret = @account.incoming_account.clientSecret
           @form.in_gmail_account.token        = @account.incoming_account.token
           @form.in_gmail_account.refreshToken = @account.incoming_account.refreshToken
+          @form.in_gmail_account.type         = @account.incoming_account.type || 'pop3'
           @form.in_gmail_account.mode        = @account.incoming_account.mode || 'read'
           if @form.in_gmail_account.secure_mode and @form.in_gmail_account.secure_mode != ''
             @form.in_gmail_account.secure = true
@@ -151,14 +157,14 @@ define [
           @form.out_smtp_account.user        = @account.outgoing_account.user
           @form.out_smtp_account.password    = @account.outgoing_account.password
           if @form.out_smtp_account.secure_mode and @form.out_smtp_account.secure_mode != ''
+            @form.out_smtp_account.disable_cert_validation = @account.outgoing_account.disable_cert_validation
             @form.out_smtp_account.secure = true
 
         if @form.outgoing_type == 'gmail'
-          @form.out_gmail_account.password = @account.outgoing_account.password
-          @form.out_gmail_account.clientId     = @account.outgoing_account.clientId
-          @form.out_gmail_account.clientSecret = @account.outgoing_account.clientSecret
+          @form.out_gmail_account.password     = @account.outgoing_account.password
           @form.out_gmail_account.token        = @account.outgoing_account.token
           @form.out_gmail_account.refreshToken = @account.outgoing_account.refreshToken
+          @form.out_gmail_account.type         = @account.outgoing_account.type || 'pop3'
 
         if @form.outgoing_type == 'office365'
           @form.out_office365_account.password = @account.outgoing_account.password

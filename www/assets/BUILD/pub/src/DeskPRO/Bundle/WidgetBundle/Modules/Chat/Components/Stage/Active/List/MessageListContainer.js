@@ -1,18 +1,19 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import Immutable from 'immutable';
 import { MessageList } from './MessageList';
 import { MessageListSpinner } from './MessageListSpinner';
 import {
   chatLoadedSelector,
   messagesSelector,
-  muteSelector
+  muteSelector,
+  agentSelector
 } from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
+import { windowResize } from '../../../../../Application/Actions/dpWindowActions';
 
 @connect(state => ({
+  chatAgent:        agentSelector(state),
   chatLoaded:       chatLoadedSelector(state),
   messages:         messagesSelector(state),
   widgetDimensions: widgetDimensionsSelector(state),
@@ -22,26 +23,15 @@ import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Appli
 export class MessageListContainer extends React.Component {
 
   static propTypes = {
+    isBubble:         PropTypes.bool,
+    dispatch:         PropTypes.func,
     chatLoaded:       PropTypes.bool,
-    messages:         PropTypes.object,
-    widgetDimensions: PropTypes.object,
-    mute:             PropTypes.bool,
-    isBubble:         PropTypes.bool
+    chatAgent:        PropTypes.object,
+    widgetDimensions: PropTypes.object
   };
 
   componentDidMount() {
     this.reCalcHeight();
-  }
-
-  shouldComponentUpdate(props) {
-    const { chatLoaded, messages, widgetDimensions, mute, isBubble } = this.props;
-    const dimensionsChanged = !Immutable.is(widgetDimensions, props.widgetDimensions);
-
-    return props.chatLoaded !== chatLoaded
-      || !Immutable.is(messages, props.messages)
-      || dimensionsChanged
-      || props.mute !== mute
-      || props.isBubble !== isBubble;
   }
 
   componentDidUpdate() {
@@ -49,41 +39,68 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const node = ReactDOM.findDOMNode(this);
-    const widgetHeight = this.props.widgetDimensions.get('height');
+    const { widgetDimensions, chatAgent, isBubble, dispatch } = this.props;
+    const widgetHeight = widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
+    const $chatHeader = $document.find('.dpdesignportal-chat-header, .dpdesignportal-collect-user-info-header');
+    const $powered = $document.find('.dpdesignportal-powered-by-deskpro');
 
-    let height = widgetHeight;
+    const calc = (ignoreHeaderAndFooter) => {
+      let height = widgetHeight;
 
-    height -= $document.find('.dpdesignportal-header').outerHeight();
-    height -= $document.find('.dpdesignportal-chat-header-wrapper').outerHeight();
-    height -= $document.find('.dpdesignportal-chat-footer').outerHeight();
-    height -= $document.find('.dpdesignportal-powered-by-deskpro').outerHeight();
-    // lost margin of .dpdesignportal-chat-header-controls
-    height -= 20;
+      height -= $document.find('.dpdesignportal-header').outerHeight(true);
+      height -= $document.find('.dpdesignportal-chat-header-controls').outerHeight(true);
+      height -= $document.find('.dpdesignportal-chat-footer').outerHeight(true);
 
-    $(node).parent().children()
-      .each((i, child) => {
-        if (child !== node) {
-          height -= $(child).outerHeight();
-        }
-      });
+      if (!ignoreHeaderAndFooter) {
+        // increase height manually, because it isn't changing instantly after hide()/show()
+        height -= $chatHeader.outerHeight(true);
+        height -= $powered.outerHeight(true);
+      }
 
-    if (height < 100) {
-      height = 100;
+      if (isBubble) {
+        height -= 10;
+      }
+
+      return height;
+    };
+
+    let height = calc();
+    if (chatAgent && height < 100) {
+      $chatHeader.hide();
+      $powered.hide();
+
+      // re-calc one more time
+      height = calc(true);
+    } else {
+      $chatHeader.show();
+      $powered.show();
+
+      // re-calc one more time
+      height = calc();
     }
 
-    $(node).css('height', height);
+    if (this.node) {
+      $(this.node.node).css('height', height);
 
-    if (this.list) {
-      this.list.scrollBottom();
+      // re-calc one more time to set elements in DOM properly
+      if (this.prevHeight !== height) {
+        this.prevHeight = height;
+        setTimeout(() => dispatch(windowResize()), 0);
+      }
+
+      if (this.node.scrollBottom) {
+        this.node.scrollBottom();
+      }
     }
   }
 
   render() {
-    return this.props.chatLoaded
-      ? <MessageList ref={(c) => { this.list = c; }} {...this.props} />
-      : <MessageListSpinner />;
+    const { chatLoaded } = this.props;
+
+    return chatLoaded
+      ? <MessageList ref={(c) => { this.node = c; }} {...this.props} />
+      : <MessageListSpinner ref={(c) => { this.node = c; }} />;
   }
 }
 export default MessageListContainer;

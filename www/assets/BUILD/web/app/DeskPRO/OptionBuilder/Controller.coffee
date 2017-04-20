@@ -105,6 +105,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
       @els.select = @element.find('.select2-wrap').find('select').first()
       @els.select.select2({
         dropdownCssClass: 'dp-ob-select2'
+        formatInputTooShort: (input, min) ->
+          "Please enter " + min + "or more characters"
       })
       @els.select.on('change', =>
         selected_opt = @els.select.find(':selected').first()

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,8 @@
  */
 
 namespace Application\DeskPRO\EmailGateway\Reader;
+
+use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 
 class ValueReader extends AbstractReader
 {
@@ -95,13 +97,39 @@ class ValueReader extends AbstractReader
         return $header;
     }
 
+    /**
+     * @return AuthenticationResults[]
+     */
+    protected function _getAuthenticationResults()
+    {
+        $headers = isset($this->values['headers']['Authentication-Results']) ? $this->values['headers']['Authentication-Results'] : [];
+
+        $authenticationResults = [];
+        if ($headers) {
+            foreach ($headers as $header) {
+                $authenticationResult                                          = AuthenticationResults::parseHeader($header);
+                $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+            }
+        } else {
+            $receivedSpf = isset($this->values['headers']['Received-SPF']) ? $this->values['headers']['Received-SPF'] : [];
+            if ($receivedSpf) {
+                foreach ($receivedSpf as $value) {
+                    $authenticationResult                                          = AuthenticationResults::parseReceivedSpf($value);
+                    $authenticationResults[$authenticationResult->getAuthservId()] = $authenticationResult;
+                }
+            }
+        }
+
+        return $authenticationResults;
+    }
+
     protected function _getCcAddresses()
     {
         $emails = [];
 
-        $val_emails = isset($this->values['ccs']) ? $this->values['ccs'] : [];
+        $valEmails = isset($this->values['ccs']) ? $this->values['ccs'] : [];
 
-        foreach ($val_emails as $name => $eml) {
+        foreach ($valEmails as $name => $eml) {
             $email                   = new Item\EmailAddress();
             $email->name             = $name;
             $email->name_utf8        = $name;
@@ -118,9 +146,9 @@ class ValueReader extends AbstractReader
     {
         $emails = [];
 
-        $val_emails = isset($this->values['tos']) ? $this->values['tos'] : [];
+        $valEmails = isset($this->values['tos']) ? $this->values['tos'] : [];
 
-        foreach ($val_emails as $name => $eml) {
+        foreach ($valEmails as $name => $eml) {
             $email                   = new Item\EmailAddress();
             $email->name             = $name;
             $email->name_utf8        = $name;
@@ -198,7 +226,7 @@ class ValueReader extends AbstractReader
     {
         $header = $this->getHeader('Thread-Topic');
         if (!$header || empty($header->header_parts)) {
-            return;
+            return null;
         }
 
         $subject                   = new Item\Subject();

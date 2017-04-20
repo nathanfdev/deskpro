@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -39,6 +35,7 @@ use Application\DeskPRO\Dpql\Func\Link;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
@@ -75,13 +72,21 @@ class Column extends AbstractPart
         'labels_tickets'             => ['label', 'label'],
         'languages'                  => ['id', 'title'],
         'organizations'              => ['id', 'name', 'organization'],
-        'people'                     => ['id', 'name', 'person'],
-        'products'                   => ['id', 'title'],
-        'slas'                       => ['id', 'title'],
-        'tickets'                    => ['id', 'subject', 'ticket'],
-        'ticket_categories'          => ['id', 'title'],
-        'ticket_priorities'          => ['id', 'title'],
-        'ticket_workflows'           => ['id', 'title'],
+        'people'                     => ['id', '
+(CASE
+    WHEN (LENGTH(%1$s.first_name) > 0 AND LENGTH(%1$s.last_name) > 0) THEN CONCAT(%1$s.first_name, \' \', %1$s.last_name)
+    WHEN LENGTH(%1$s.name) > 0 THEN %1$s.name
+    WHEN LENGTH(%1$s.last_name) > 0 THEN %1$s.last_name
+    WHEN LENGTH(%1$s.first_name) > 0 THEN %1$s.first_name
+    ELSE CONCAT(\'ID-\', %1$s.id)
+END)
+', 'person'],
+        'products'          => ['id', 'title'],
+        'slas'              => ['id', 'title'],
+        'tickets'           => ['id', 'subject', 'ticket'],
+        'ticket_categories' => ['id', 'title'],
+        'ticket_priorities' => ['id', 'title'],
+        'ticket_workflows'  => ['id', 'title'],
     ];
 
     /**
@@ -279,9 +284,9 @@ class Column extends AbstractPart
             foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = $target::getRepository();
+                    $childRepository = App::getEntityRepository($target);
 
-                    if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
+                    if (!($childRepository instanceof AbstractEntityRepository)) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
                     }
 
@@ -305,10 +310,10 @@ class Column extends AbstractPart
                 // are we referencing an association?
                 if (strtolower($association['fieldName']) == $part) {
                     $target          = $association['targetEntity'];
-                    $childRepository = $target::getRepository();
+                    $childRepository = App::getEntityRepository($target);
 
                     if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
-                        || !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
+                        || !($childRepository instanceof AbstractEntityRepository)
                         || $association['type'] == ClassMetadataInfo::MANY_TO_MANY
                     ) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
@@ -412,21 +417,14 @@ class Column extends AbstractPart
                 }
 
                 $renderer = null;
-                if ($field && $field->getTypeName() == 'date') {
+                if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
                     $call    = new self(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
-                    $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
-                        if (!$value) {
-                            return $valueRenderer->renderValue(null, 'date');
-                        }
+                    $renderer = function (AbstractValues $valueRenderer, $value) use ($type) {
+                        $date = $value ? new \DateTime('@'.$value) : null;
 
-                        $date = new \DateTime('@'.$value);
-                        if (!$date) {
-                            return $valueRenderer->renderValue(null, 'date');
-                        }
-
-                        return $valueRenderer->renderValue($date, 'date');
+                        return $valueRenderer->renderValue($date ?: null, $type);
                     };
                 } else {
                     $call = new FunctionCall('if', [
@@ -450,14 +448,16 @@ class Column extends AbstractPart
             } elseif (isset(self::$_tableResolver[$assocTable])) {
                 $resolver = self::$_tableResolver[$assocTable];
 
-                if ($stack || in_array($section, ['order'])) {
+                if ($section === 'where') {
+                    $sql = "`$sqlTable`.`$resolver[0]`";
+                } elseif ($stack || in_array($section, ['order'])) {
                     // if we have a parent of any sort, act on the printed value
                     $sql = "`$sqlTable`.`$resolver[1]`";
                 } else {
                     $sql = "`$sqlTable`.`$resolver[0]`";
                 }
 
-                $printedSql = "`$sqlTable`.`$resolver[1]`";
+                $printedSql = strpos($resolver[1], '%1$s') !== false ? sprintf($resolver[1], $sqlTable) : "`$sqlTable`.`$resolver[1]`";
 
                 if (isset($resolver[2])) {
                     if ($section == 'split') {

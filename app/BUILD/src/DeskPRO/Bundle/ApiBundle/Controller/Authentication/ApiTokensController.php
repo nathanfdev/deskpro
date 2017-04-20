@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,8 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
+use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -51,6 +53,7 @@ use Orb\Auth\Adapter\CallbackInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -68,11 +71,18 @@ class ApiTokensController extends BaseController
      * @ApiDoc(
      *      description="create a new api token",
      *      output="token",
+     *      parameters={
+     *          { "name" = "email", "dataType" = "string", "format" = "string", "required" = true, "description" = "Email address" },
+     *          { "name" = "password", "dataType" = "string", "format" = "string", "required" = true, "description" = "Password" },
+     *      },
      *      statusCodes={
      *          201="Created token",
      *          401="Invalid credentials",
      *          400="Bad request"
-     *      }
+     *      },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType"
+     *     }
      * )
      *
      * @Rest\Post("")
@@ -84,10 +94,10 @@ class ApiTokensController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-        $request_data = $request->request->all();
+        $requestData = $request->request->all();
 
         $form = $this->createForm(AuthenticationRequestType::class);
-        $form->submit($request_data);
+        $form->submit($requestData);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -96,24 +106,35 @@ class ApiTokensController extends BaseController
         $email    = $data['email'];
         $password = $data['password'];
 
-        $auth_result = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
+        $check = new LoginAbuseCheck($email, $request->getClientIp());
+        try {
+            $this->container->get('anti_abuse')->check($check);
+        } catch (AntiAbuseException $e) {
+        }
 
-        if (!$auth_result->isValid()) {
+        if ($check->isLockoutRecommended() || $check->isCaptchaRecommended()) {
+            throw new TooManyRequestsHttpException();
+        }
+
+        $authResult = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
+
+        if (!$authResult->isValid()) {
             // failed on agent usersources, revert to user
-            $auth_result = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
-            if (!$auth_result->isValid()) {
+            $authResult = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
+            $this->container->get('anti_abuse')->saveRateLimit($check);
+            if (!$authResult->isValid()) {
                 $this->throwUnauthorized();
             }
         }
 
-        $identity  = $auth_result->getIdentity();
-        $person_id = $identity->getIdentity();
+        $identity = $authResult->getIdentity();
+        $personId = $identity->getIdentity();
 
-        if (!$person_id) {
+        if (!$personId) {
             $this->throwUnauthorized();
         }
 
-        $person = $this->getManager()->getRepository(Person::class)->find($person_id);
+        $person = $this->getManager()->getRepository(Person::class)->find($personId);
         if (!$person) {
             $this->throwUnauthorized();
         }
@@ -155,10 +176,11 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get list of api token usersources.",
-     *      statusCodes={
-     *          404="Usersource not found"
-     *      }
+     *     description="Get list of api token usersources.",
+     *     statusCodes={
+     *         404="Usersource not found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Usersource>"
      * )
      *
      * @Rest\Get("/user_sources/{context}.{_format}", requirements={"context": "(agent|user)", "_format": "(json|html)"})
@@ -203,10 +225,11 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Login via usersource.",
-     *      statusCodes={
-     *          404="Usersource not found"
-     *      }
+     *     description="Login via usersource.",
+     *     statusCodes={
+     *         404="Usersource not found"
+     *     },
+     *     noOutput=true
      * )
      *
      * @Rest\Get("/user_sources/{usersource}/login")
@@ -239,21 +262,23 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Returns api token on usersource callback",
-     *      output="token",
-     *      statusCodes={
-     *          200="Created token"
-     *      }
+     *     description="Returns api token on usersource callback",
+     *     output="token",
+     *     statusCodes={
+     *         200="Created token"
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
-     * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
-     * @Rest\Post("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
+     * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|deskpro_scheme|default)"})
+     * @Rest\Post("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|deskpro_scheme|default)"})
      *
      * @param Request    $request
      * @param Usersource $usersource
      * @param string     $format
      *
-     * @return View
+     * @return Response
      */
     public function usersourceCallbackAction(Request $request, Usersource $usersource, $format)
     {

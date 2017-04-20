@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -105,6 +105,23 @@ class NewsHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('Sub category 1', $entity->getCategory()->getTitle());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
         $this->assertEquals('label 2', $entity->getLabels()[1]->getLabel());
+    }
+
+    public function test_default_category()
+    {
+        $category = new Entity\NewsCategory();
+        $category->setRealTitle('cat');
+
+        $this->em()->persist($category);
+        $this->em()->flush($category);
+
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertNotNull($entity);
+        $this->assertNotNull($entity->getCategory());
     }
 
     /**

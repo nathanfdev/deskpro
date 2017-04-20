@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,27 +56,18 @@ class CustomFieldUtil
     {
         switch ($field_def->getHandlerClass()) {
             case Date::class:
-                try {
-                    if ($data->getData()) {
-                        if (is_numeric($data->getData())) {
-                            $datetime = new \DateTime('@'.$data->getData());
-                        } else {
-                            $datetime = new \DateTime($data->getData());
-                        }
-                        $value = date('F j, Y', $datetime->getTimestamp());
-                    } else {
-                        $value = '';
-                    }
-                } catch (\Exception $e) {
-                    $value = '';
-                }
+                $value = Date::getDisplayValue($data->getData(), $field_def->getOption('calendar'));
                 break;
             case DateTime::class:
                 try {
-                    $datetime = new \DateTime($data->getData());
-                    $value    = date('F j, Y, g:i a', $datetime->getTimestamp());
+                    if (is_numeric($data->getData())) {
+                        $datetime = new \DateTime('@'.$data->getData());
+                    } else {
+                        $datetime = new \DateTime($data->getData());
+                    }
+                    $value = date('F j, Y, g:i a', $datetime->getTimestamp());
                 } catch (\Exception $e) {
-                    $value = '';
+                    $value = ''.$data->getData();
                 }
                 break;
             case Toggle::class:

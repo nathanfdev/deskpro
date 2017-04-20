@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -302,6 +302,7 @@ return [
     'user.email_subjects.comment-deleted'            => 'Yorumunuz personelimiz tarafından okundu',
     'user.email_subjects.email-too-big'              => '{{subject}} başlıklı email konunuz kabul edilmiştir.',
     'user.email_subjects.email_new-confirm'          => 'Eposta adresinizi doğrulayın',
+    'user.email_subjects.email_primary-confirm'      => 'Eposta adresinizi doğrulayın',
     'user.email_subjects.feedback_new'               => 'Geri bildirimde bulunduğunuz için teşekkürler',
     'user.email_subjects.feedback_new-approved'      => 'Geri bildiriminiz onaylandı',
     'user.email_subjects.feedback_new-comment'       => 'Yeni bir yorum mevcut "{{title}}"',
@@ -315,6 +316,7 @@ return [
     'user.email_subjects.re'                         => 'YNT: {{subject}}',
     'user.email_subjects.register-welcome'           => 'Kayıt olduğunuz için teşekkürler',
     'user.email_subjects.ticket-rate'                => 'Kayıt ile ilgili sizlere vermiş olduğumuz hizmeti değerlendiriniz.{{ticket.subject}}',
+    'user.email_subjects.ticket_new-participant'     => 'Çağrı kaydınıza yeni bir kişi katıldı',
     'user.emails.auto-close'                         => 'Uzun süredir cevap vermediğiniz için {{ticket.subject}} konulu kaydınız kapanacaktır. Kaydınızın kapanmamasını istiyorsanız lütfen tarafımıza geri dönüş yapınız.',
     'user.emails.chat_transcript'                    => 'Sohbet için teşekkürler. Sohbet dökümünü burada.',
     'user.emails.comment_approved'                   => 'Yorumunuz yayınlandı.',

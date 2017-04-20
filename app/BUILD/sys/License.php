@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,7 +63,7 @@ final class License
     /**
      * @var array
      */
-    private $data;
+    private $data = [];
 
     /**
      * When non-null, then it means there was a problem with the license (ie bad format).
@@ -189,7 +189,7 @@ final class License
     private function __construct($license_code, $install_key = '')
     {
         // "no license" mode
-        if ($license_code === null) {
+        if ($license_code === null || $license_code === false || trim($license_code) === '') {
             $this->data = ['no_license' => true];
 
             return;

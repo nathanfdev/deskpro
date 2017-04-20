@@ -6,12 +6,12 @@
         <h1><i class="fa fa-cog"></i> {{ phrase('admin.setup.user_interface') }}</h1>
 
         <form>
-            <div ng-if="brand.name != 'Default'">
+            <div>
                 {##########################################################################################################}
                 {# WEBSITE #}
                 {##########################################################################################################}
 
-                <div class="content-section">
+                <div class="content-section" ng-if="brand.id != default_brand.id">
                     <h2 class="with-divider form-header"><span>{{ phrase('admin.setup.website_settings') }}</span></h2>
 
                     <div class="row">
@@ -56,6 +56,21 @@
                     <div class="row">
                         <div class="bucket-third">
                             <div class="inline-input">
+                                <label>{{ phrase('admin.setup.brand_name') }}:</label>
+                                <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.brand_name" />
+                            </div>
+                        </div>
+
+                        <div class="bucket-two-thirds">
+                            <div class="form-text">
+                                <p>{{ phrase('admin.setup.brand_name_help') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" ng-if="brand.id != default_brand.id">
+                        <div class="bucket-third">
+                            <div class="inline-input">
                                 <label>{{ phrase('admin.setup.helpdesk_name') }}:</label>
                                 <input id="helpdesk_name" type="text" placeholder="{{ phrase('admin.setup.helpdesk_name') }}" ng-model="Ctrl.settings.deskpro_name" />
                             </div>
@@ -68,7 +83,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row" ng-if="brand.id != default_brand.id">
                         <div class="bucket-third">
                             <div class="inline-input">
                                 <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
@@ -83,7 +98,7 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-show="brand_id != 'new'">
+                    <div class="row" ng-show="brand_id != 'new' && brand.id != default_brand.id">
                         <div class="bucket-third">
                             <div class="inline-input">
                                 <label>{{ phrase('admin.setup.view_brand') }}:</label>
@@ -91,6 +106,17 @@
                             </div>
                         </div>
                     </div>
+
+                    {% if app.isCloud() %}
+                        <div style="margin-top: 5px; margin-left: 170px; background: #d8edf6; padding: 8px; width: 500px;">
+                            <p>
+                                <strong>Important</strong>: You must edit your DNS to create a <code>CNAME</code> record to <code>{{ constant('DPC_SITE_DOMAIN') }}</code>
+                            </p>
+                            <p>
+                                For more information, refer to <a href="http://support.deskpro.com/kb/articles/79-using-a-custom-domain-name" target="_blank">this DeskPRO knowledgebase article</a>.
+                            </p>
+                        </div>
+                    {% endif %}
                 </div><!-- End .content-section -->
             </div>
 
@@ -153,7 +179,7 @@
                                 <a class="control" href="{{ ng_href('portal.kb_settings') }}">{{ phrase('admin.setup.portal_section_manage') }} <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
-                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_knowledgebase') }}">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_knowledgebase') }}">
                             </div>
 
                             <div class="form-text">
@@ -190,7 +216,7 @@
                                 <a class="control" href="{{ ng_href('portal.news_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
-                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_news') }}">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_news') }}">
                             </div>
 
                             <div class="form-text">
@@ -208,7 +234,7 @@
                                 <a class="control" href="{{ ng_href('portal.feedback_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
-                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_feedback') }}">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_feedback') }}">
                             </div>
 
                             <div class="form-text">
@@ -218,6 +244,25 @@
                             </div>
                         </div>
                     </div>
+
+                    {% if app.hasFeature('guides') %}
+                        <div class="col-half">
+                            <div ng-class="{'widget-preview': Ctrl.settings.apps_guides, 'widget-preview-disabled': !Ctrl.settings.apps_guides}">
+                                <div class="widget-header">
+                                    <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_guides" />
+                                    <span class="title">{{ phrase('admin.setup.portal_section_guides') }}</span>
+                                    <a class="control" href="{{ ng_href('portal.guides_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
+                                </div>
+                                <div class="widget-image">
+                                    <img src="{{ asset('app/Admin/Resources/img/widget-preview-guides.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_guides') }}">
+                                </div>
+
+                                <div class="form-text">
+                                    <p>{{ phrase('admin.setup.portal_section_guides_help') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
 
 
                 </div>

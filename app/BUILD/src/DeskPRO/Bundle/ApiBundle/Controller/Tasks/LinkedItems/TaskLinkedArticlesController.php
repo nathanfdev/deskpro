@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,16 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/tasks/{parentId}/linked_items/articles")
  * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\Article")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\LinkedItem\TaskLinkedArticleType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle",
+ *          "task"="DeskPRO\Bundle\AppBundle\Entity\Task"
+ *      }
+ *     }
+ * )
  */
 class TaskLinkedArticlesController extends AbstractTaskLinkedItemController
 {

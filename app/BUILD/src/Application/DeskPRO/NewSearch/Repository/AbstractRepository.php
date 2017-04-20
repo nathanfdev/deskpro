@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -136,21 +136,13 @@ abstract class AbstractRepository extends Repository
             $queryString->setFields(['labels']);
             $queryString->setDefaultOperator('AND');
             $query = new Query([
-                'query' => [
-                    'filtered' => [
-                        'query'  => $queryString->toArray(),
-                        'filter' => $this->getFilters($options),
-                    ],
-                ],
+                'query'       => $queryString->toArray(),
+                'post_filter' => $this->getFilters($options),
             ]);
         } else {
             $query = new Query([
-                'query' => [
-                    'filtered' => [
-                        'query'  => $this->getQueryString($q)->toArray(),
-                        'filter' => $this->getFilters($options),
-                    ],
-                ],
+                'query'       => $this->getQueryString($q)->toArray(),
+                'post_filter' => $this->getFilters($options),
             ]);
         }
 

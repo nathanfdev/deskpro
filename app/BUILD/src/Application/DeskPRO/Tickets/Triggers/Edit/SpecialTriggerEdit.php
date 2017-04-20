@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -139,7 +139,7 @@ class SpecialTriggerEdit
         } else {
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
-            $trigger->by_user_mode  = ['form', 'portal', 'widget'];
+            $trigger->by_user_mode  = ['api', 'form', 'portal', 'widget'];
 
             $terms_set->add(new CheckDepartment('is', ['department_ids' => [$this->obj->id]]));
         }

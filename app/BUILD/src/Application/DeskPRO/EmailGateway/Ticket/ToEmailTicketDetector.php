@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,7 +46,7 @@ use Orb\Util\Strings;
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
-class ToEmailTicketDetector implements TicketDetectorInterface
+class ToEmailTicketDetector implements TicketDetectorInterface, PublicTacAware
 {
     /**
      * The regex to match.
@@ -59,6 +59,11 @@ class ToEmailTicketDetector implements TicketDetectorInterface
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $_found_person = null;
+
+    /**
+     * @var bool
+     */
+    protected $publicTac = false;
 
     /**
      * $account_pattern needs to be an email address with the special token TICKET_CODE
@@ -88,7 +93,8 @@ class ToEmailTicketDetector implements TicketDetectorInterface
      */
     public function findExistingTicket(AbstractReader $reader)
     {
-        $search_addr = [];
+        $this->publicTac = false;
+        $search_addr     = [];
         foreach ($reader->getToAddresses() as $addr) {
             $search_addr[] = $addr->email;
         }
@@ -109,6 +115,10 @@ class ToEmailTicketDetector implements TicketDetectorInterface
         //------------------------------
 
         $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
+
+        if ($ticket) {
+            $this->publicTac = true;
+        }
 
         if ($ticket && !$ticket->isArchived()) {
             $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
@@ -137,5 +147,10 @@ class ToEmailTicketDetector implements TicketDetectorInterface
     public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
     {
         return true;
+    }
+
+    public function isPublicTac()
+    {
+        return $this->publicTac;
     }
 }

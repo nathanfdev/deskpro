@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -42,7 +43,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Ticket charges.
  */
-class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
+class TicketCharge extends DomainObject
 {
     /**
      * @var int
@@ -93,6 +94,78 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
     {
         $this['date_created'] = new \DateTime('now', new \DateTimeZone('UTC'));
         $this->custom_data    = new ArrayCollection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getChargeTime()
+    {
+        return $this->charge_time;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @return Ticket|null
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return Organization|null
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
     }
 
     /**
@@ -148,7 +221,10 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
      * Set custom field data for a particular field.
      *
      * @param int   $field_id
+     * @param       $value_type
      * @param mixed $value
+     *
+     * @throws \Exception
      *
      * @return mixed
      */
@@ -233,6 +309,9 @@ class TicketCharge extends \Application\DeskPRO\Domain\DomainObject
      * Render a custom field.
      *
      * @deprecated
+     *
+     * @param        $field_id
+     * @param string $context
      */
     public function renderCustomField($field_id, $context = 'html')
     {

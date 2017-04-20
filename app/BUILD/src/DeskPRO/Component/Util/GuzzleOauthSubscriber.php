@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -285,10 +285,18 @@ class GuzzleOauthSubscriber
             ? $this->config['private_key']
             : file_get_contents($this->config['private_key_file']);
 
+        if (!$privateKey) {
+            throw new \RuntimeException('Private key is required for RSA-SHA1 signature');
+        }
+
         $privateKey = openssl_pkey_get_private(
             $privateKey,
             $this->config['private_key_passphrase']
         );
+
+        if (!$privateKey) {
+            throw new \RuntimeException(openssl_error_string());
+        }
 
         $signature = '';
         openssl_sign($baseString, $signature, $privateKey);

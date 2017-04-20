@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use Application\DeskPRO\Entity\BrandSetting;
@@ -49,6 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @Rest\Route("/settings/departments")
  */
 class DepartmentSettingsController extends BaseController
 {
@@ -62,26 +59,28 @@ class DepartmentSettingsController extends BaseController
      *      output="array<DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings>"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/settings/departments/default")
+     * @Rest\Get("/default")
      *
      * @return View
      */
     public function listAction()
     {
-        return new View($this->wrap($this->container->get('brand_aware_settings_resolver')
-            ->getDefaultDepartmentSettings()));
+        return new View($this->wrap($this->container->get('brand_aware_settings_resolver')->getDefaultDepartmentSettings()));
     }
 
     /**
      * @ApiDoc(
-     *      section="Settings",
-     *      description="list if default departments grouped by brand",
-     *      statusCodes={
-     *          204="Update successful",
-     *      },
+     *     section="Settings",
+     *     description="list if default departments grouped by brand",
+     *     statusCodes={
+     *         204="Update successful",
+     *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\DefaultDepartmentSettingsType"
+     *     }
      * )
      * @ApiUnstable()
-     * @Rest\Put("/settings/departments/default")
+     * @Rest\Put("/default")
      *
      * @return View
      */

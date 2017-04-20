@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import TicketForm from './TicketForm';
-import { PortalFormWidget } from './PortalFormWidget';
+import PortalFormWidget from './PortalFormWidget';
 import { TicketView } from './TicketView';
 import { TicketList } from './TicketList';
 import { DownloadsList } from './DownloadsList';
@@ -65,6 +65,7 @@ class PortalPage extends PageWidget {
           fn();
         });
       }
+      window.DP_PAGE_IS_READY = true;
     });
   }
 

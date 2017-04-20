@@ -1,6 +1,6 @@
 import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-export class OnboardingRepository extends ApiRepository {
+class OnboardingRepository extends ApiRepository {
   loadNewOnboarding() {
     return this.api.sendGet(`DP_API/${this.url}/new`);
   }
@@ -9,3 +9,4 @@ export class OnboardingRepository extends ApiRepository {
     return this.api.sendPut(`DP_API/${this.url}/${id}`, onboarding);
   }
 }
+export default OnboardingRepository;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -164,8 +164,8 @@ class News extends AbstractEntityRepository
     {
         return [
             'views' => [
-                'conditions'   => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog',
+                'conditions'   => '%1$s.page_type = "deskpro.news_view" AND %1$s.page_id = %2$s.id',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\HitRecord',
             ],
         ];
     }

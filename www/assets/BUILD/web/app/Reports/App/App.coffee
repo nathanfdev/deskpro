@@ -55,17 +55,29 @@ define [
     , 20000)
   ])
 
+  # IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
+  document.domain = document.domain;
+
   if window.parent == window.self
     window.location.href = window.DP_BASE_URL + 'agent/#reports:' + (window.location.hash.replace(/^#/, '') || '/')
+  else
+    # open agent links in parent window when clicking in iframe
+    $(document).on 'click', (e) =>
+      href = $(e.target).attr('href')
+      if !href || 0 != href.indexOf('/agent/#') then return
+      e.preventDefault()
+      event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, "$1") } } )
+      window.parent.document.dispatchEvent(event)
 
-  if window.parent?.DP_FRAME_OVERLAYS?.reports
-    window.parent.DP_FRAME_OVERLAYS.reports.callLoaded()
-
-    ReportsModule.run(['$rootScope', ($rootScope) ->
-      $rootScope.$on('$stateChangeSuccess', ->
-        if window.parent.DP_FRAME_OVERLAYS.reports.opened
-          window.parent.DP_FRAME_OVERLAYS.reports.setHash(window.location.hash)
-      )
-    ])
+  try
+    if window.parent?.DP_FRAME_OVERLAYS?.reports
+      ReportsModule.run(['$rootScope', ($rootScope) ->
+        $rootScope.$on('$stateChangeSuccess', ->
+          if window.parent.DP_FRAME_OVERLAYS.reports.opened
+            window.parent.DP_FRAME_OVERLAYS.reports.setHash(window.location.hash)
+        )
+      ])
+  catch e
+    console.log e
 
   return ReportsModule

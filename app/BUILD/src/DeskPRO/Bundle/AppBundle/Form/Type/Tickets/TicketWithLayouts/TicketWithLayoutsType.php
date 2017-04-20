@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,8 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\AbstractFieldResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -105,6 +107,10 @@ class TicketWithLayoutsType extends AbstractType
                 // the form fields are very dependant on the visibility context ('new', 'edit') and layout type ('agent' or 'user')
                 'ticket_visibility',
                 'ticket_view_context',
+
+                'field_resolver',
+                'field_renderer',
+                'layout_factory',
             ])
             ->setAllowedValues('ticket_visibility', [
                 TicketWithLayoutsContext::VISIBILITY_NEW,
@@ -117,6 +123,9 @@ class TicketWithLayoutsType extends AbstractType
             ])
             ->setAllowedTypes('person', Person::class)
             ->setAllowedTypes('department_id', ['null', 'integer'])
+            ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
+            ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
+            ->setAllowedTypes('layout_factory', 'callable')
         ;
     }
 
@@ -147,8 +156,14 @@ class TicketWithLayoutsType extends AbstractType
     public function onSetDefaultDepartment(FormEvent $event)
     {
         /** @var Ticket $data */
-        $data   = $event->getData();
-        $config = $event->getForm()->getConfig();
+        $data    = $event->getData();
+        $config  = $event->getForm()->getConfig();
+        $options = $config->getOptions();
+
+        // Setting ticket person if not defined
+        if ($data && !$data->getPerson()) {
+            $data->setPerson($options['person']);
+        }
 
         // department is already chosen, no need to select the default one
         if ($data->getDepartment()) {
@@ -165,6 +180,16 @@ class TicketWithLayoutsType extends AbstractType
             }
         } else {
             $data->setDepartment($this->brandHelper->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE));
+        }
+
+        // if there is only one department we want to make sure to set it now...
+        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($options['person']);
+
+        // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
+        if (!$data->getDepartment()) {
+            if ($hierarchy->countSelectable() === 1) {
+                $data->setDepartment($hierarchy->getFirstSelectable());
+            }
         }
     }
 }

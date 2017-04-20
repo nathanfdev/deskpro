@@ -24,22 +24,19 @@ npm install
 bower install --config.interactive=false --allow-root
 echo ".. done"
 
-echo ">> Building web assets"
-npm run build:dev
-echo ".. done"
-echo
-
 echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/www/assets/BUILD/pub
 npm install
 echo ".. done"
 
-echo ">> Building documentation"
-npm run-script gulp-docs
+echo ">> Building web assets"
+cd $DIR_ROOT/www/assets/BUILD/web
+npm run gulp
 echo ".. done"
 echo
 
 echo ">> Building new web assets"
-npm run gulp bundle
+cd $DIR_ROOT/www/assets/BUILD/pub
+npm run gulp
 echo ".. done"
 echo

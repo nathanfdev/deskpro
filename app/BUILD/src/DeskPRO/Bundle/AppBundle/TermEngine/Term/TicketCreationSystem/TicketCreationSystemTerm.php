@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCreationSystem;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -38,41 +34,41 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketCreationSystemTerm.
+ */
 class TicketCreationSystemTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'creation_system' => null,
-            ]
-        );
+        $resolver->setDefaults([
+            'creation_system' => null,
+        ]);
 
-        $resolver->setConstraints(
-            [
-                'creation_system' => [
-                    new Assert\NotBlank(),
-                    new Assert\Type('string'),
-                    new Assert\Choice(
-                        [
-                            'choices' => [
-                                Ticket::CREATED_WEB_PERSON,
-                                Ticket::CREATED_WEB_PERSON_PORTAL,
-                                Ticket::CREATED_WEB_PERSON_WIDGET,
-                                Ticket::CREATED_WEB_PERSON_EMBED,
-                                Ticket::CREATED_WEB_AGENT,
-                                Ticket::CREATED_WEB_AGENT_PORTAL,
-                                Ticket::CREATED_WEB_API,
-                                Ticket::CREATED_WEB_API_PERSON,
-                                Ticket::CREATED_WEB_API_AGENT,
-                                Ticket::CREATED_GATEWAY_PERSON,
-                                Ticket::CREATED_GATEWAY_AGENT,
-                            ],
-                        ]
-                    ),
-                ],
-            ]
-        );
+        $resolver->setConstraints([
+            'creation_system' => [
+                new Assert\NotBlank(),
+                new Assert\Type('string'),
+                new Assert\Choice([
+                    'choices' => [
+                        Ticket::CREATED_WEB_PERSON,
+                        Ticket::CREATED_WEB_PERSON_PORTAL,
+                        Ticket::CREATED_WEB_PERSON_WIDGET,
+                        Ticket::CREATED_WEB_PERSON_EMBED,
+                        Ticket::CREATED_WEB_AGENT,
+                        Ticket::CREATED_WEB_AGENT_PORTAL,
+                        Ticket::CREATED_WEB_API,
+                        Ticket::CREATED_WEB_API_PERSON,
+                        Ticket::CREATED_WEB_API_AGENT,
+                        Ticket::CREATED_GATEWAY_PERSON,
+                        Ticket::CREATED_GATEWAY_AGENT,
+                    ],
+                ]),
+            ],
+        ]);
 
         $resolver->setNormalizer(
             'creation_system',
@@ -86,6 +82,9 @@ class TicketCreationSystemTerm extends AbstractTerm
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [
@@ -96,6 +95,9 @@ class TicketCreationSystemTerm extends AbstractTerm
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

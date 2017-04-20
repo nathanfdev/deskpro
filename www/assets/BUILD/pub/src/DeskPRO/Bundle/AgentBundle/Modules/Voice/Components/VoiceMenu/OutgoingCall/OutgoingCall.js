@@ -1,0 +1,105 @@
+import React, { PropTypes } from 'react';
+import Avatar from '../../Common/Avatar';
+
+class OutgoingCall extends React.Component {
+
+  static propTypes = {
+    me:           PropTypes.object,
+    people:       PropTypes.object,
+    outgoingCall: PropTypes.object,
+    onHangup:     PropTypes.func
+  };
+
+  static defaultProps = {
+    onHangup: () => {}
+  };
+
+  onHangup = (event) => {
+    event.preventDefault();
+    this.props.onHangup();
+  };
+
+  render() {
+    const { me, people, outgoingCall } = this.props;
+    const person = people.get(outgoingCall.getIn(['phoneCall', 'person']));
+
+    return (
+      <div className="outgoing-call">
+        <CallFrom
+          agent={me}
+          number={outgoingCall.get('callFrom')}
+        />
+        <div className="incoming-call-type">
+          <div>
+            <span>Direct</span>
+          </div>
+        </div>
+        <CallTo
+          number={outgoingCall.get('callTo')}
+          person={person}
+        />
+
+        <div className="buttons">
+          <a
+            className="ignore-button"
+            href="#ignore"
+            onClick={this.onHangup}
+          >
+            <i className="icon remove" />
+            Ignore
+          </a>
+        </div>
+      </div>
+    );
+  }
+}
+
+class CallFrom extends React.Component {
+
+  static propTypes = {
+    agent:  PropTypes.object,
+    number: PropTypes.string
+  };
+
+  render() {
+    const { agent, number } = this.props;
+
+    return (
+      <div className="call-from">
+        <div className="call-from-number">
+          {number ? number.get('number') : 'Unknown number'}
+        </div>
+        <Avatar person={agent} size={60} />
+        <div className="call-from-name">
+          {agent && agent.get('name')}
+        </div>
+      </div>
+    );
+  }
+}
+
+class CallTo extends React.Component {
+
+  static propTypes = {
+    person: PropTypes.object,
+    number: PropTypes.string
+  };
+
+  render() {
+    const { person, number } = this.props;
+
+    return (
+      <div className="call-to">
+        <div className="call-from-number">
+          {number}
+        </div>
+        <Avatar person={person} size={60} />
+        <div className="call-to-name">
+          {person && person.get('name')}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default OutgoingCall;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,13 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
-use DeskPRO\Bundle\AppBundle\Request\UrlCorrector;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Component\Util\DebugUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -65,6 +65,11 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     private $portalModeStorage;
 
     /**
+     * @var UrlCorrectorFactory
+     */
+    private $urlCorrectorFactory;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -72,17 +77,24 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param InterfaceInfo     $interfaceInfo
-     * @param BrandStack        $brandStack
-     * @param PortalModeStorage $portalModeStorage
-     * @param LoggerInterface   $logger
+     * @param InterfaceInfo       $interfaceInfo
+     * @param BrandStack          $brandStack
+     * @param PortalModeStorage   $portalModeStorage
+     * @param UrlCorrectorFactory $urlCorrectorFactory
+     * @param LoggerInterface     $logger
      */
-    public function __construct(InterfaceInfo $interfaceInfo, BrandStack $brandStack, PortalModeStorage $portalModeStorage, LoggerInterface $logger)
-    {
-        $this->interfaceInfo     = $interfaceInfo;
-        $this->brandStack        = $brandStack;
-        $this->portalModeStorage = $portalModeStorage;
-        $this->logger            = $logger;
+    public function __construct(
+        InterfaceInfo       $interfaceInfo,
+        BrandStack          $brandStack,
+        PortalModeStorage   $portalModeStorage,
+        UrlCorrectorFactory $urlCorrectorFactory,
+        LoggerInterface     $logger
+    ) {
+        $this->interfaceInfo       = $interfaceInfo;
+        $this->brandStack          = $brandStack;
+        $this->portalModeStorage   = $portalModeStorage;
+        $this->urlCorrectorFactory = $urlCorrectorFactory;
+        $this->logger              = $logger;
     }
 
     /**
@@ -105,34 +117,27 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $brand   = $this->brandStack->getActive();
+        $brand   = $this->brandStack->getActive()->getBrand();
 
-        $options = [
-            'autoCorrectScheme' => $brand->getSetting('core.deskpro_url_autocorrect'),
-            'autoCorrectHost'   => $brand->getSetting('core.deskpro_url_autocorrect'),
-            'helpdeskUrl'       => $brand->getSetting('core.deskpro_url'),
-        ];
-
-        $urlCorrector = new UrlCorrector($options);
-
-        $corrections = $urlCorrector->getCorrections($request);
+        $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
+        $corrections  = $urlCorrector->getCorrections($request);
 
         if ($corrections) {
             if (DebugUtils::isLoggerHandling($this->logger, 'DBEUG')) {
-                $this->logger->debug('[UrlCorrector] corrections: '.DebugUtils::varToString($options));
+                $this->logger->debug('[UrlCorrector] corrections: '.DebugUtils::varToString($urlCorrector->getOptions()));
             }
 
             $url = $urlCorrector->getCorrectedUrl($request);
             $this->logger->debug('[UrlCorrector] Got URI: '.$request->getUri());
             $this->logger->debug('[UrlCorrector] Correct URI: '.$url);
 
-            $mode = $this->getCorrectionMode($event);
+            $mode = $this->getCorrectionMode();
 
             switch ($mode) {
                 case self::MODE_REDIRECT:
                     $this->logger->debug('[UrlCorrector] Redirecting...');
                     $redirectResponse = new RedirectResponse($url, 301);
-                    $redirectResponse->headers->setCookie(new Cookie('dp_autocorrect_url', 1));
+                    $redirectResponse->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'true');
                     $event->setController(function () use ($redirectResponse) {
                         return $redirectResponse;
                     });
@@ -221,11 +226,9 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     }
 
     /**
-     * @param FilterControllerEvent $event
-     *
      * @return string
      */
-    private function getCorrectionMode(FilterControllerEvent $event)
+    private function getCorrectionMode()
     {
         if ($this->interfaceInfo->isInterfaceId([InterfaceInfo::ID_AGENT, InterfaceInfo::ID_ADMIN])) {
             // admin and agent logins are handled in the controller so we can show info

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -122,25 +123,26 @@ class BatchController extends BaseController
         if (strpos($info['url'], '/api/v2') !== 0) {
             $info['url'] = '/api/v2/'.ltrim($info['url'], '/');
         }
-        if (!$this->matchRouteUrl($info['url'])) {
-            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
-        }
 
         $json_serialized = null;
         if ($info['data']) {
             $json            = $info['data'];
-            $json_serialized = $this->get('serializer')->serialize($json, 'json');
+            $json_serialized = @json_encode($json);
         }
 
         $subRequest = Request::create(
-            $request->getSchemeAndHttpHost().$info['url'],
+            $request->getUriForPath($info['url']),
             $info['method'],
             $info['params'],
             [],
             [],
-            [],
+            $request->server->all(),
             $json_serialized
         );
+
+        if (!$this->get('request_matcher')->requestRouteExist($subRequest)) {
+            throw $this->createBadRequestException("Route path for '{$info['url']}' not found");
+        }
 
         $subRequest->headers->set('Content-Type', 'json');
         $subRequest->query->set(JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM, 1);
@@ -151,22 +153,15 @@ class BatchController extends BaseController
             }
         }
 
+        // reset entity manager
+        $this->getDoctrine()->getManager()->clear();
+        if ($this->getUser() instanceof Person) {
+            $token = $this->container->get('security.token_storage')->getToken();
+            $token->setUser($this->getRepository(Person::class)->find($this->getUser()->getId()));
+        }
+
         $response = $this->getKernel()->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $this->get('serializer')->deserialize($response->getContent(), 'array', 'json');
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return array|false
-     */
-    protected function matchRouteUrl($url)
-    {
-        try {
-            return $this->get('router')->matchRequest(Request::create($url));
-        } catch (\Exception $e) {
-            return false;
-        }
     }
 }

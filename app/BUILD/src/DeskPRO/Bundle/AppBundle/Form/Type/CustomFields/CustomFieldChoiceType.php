@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,11 +29,10 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use DeskPRO\Bundle\AppBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
+use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyChoiceLoader;
 use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\StringToIntegerArrayTransformer;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\HierarchyNodeTransformer;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\LazyChoiceList;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -66,9 +65,7 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['multiple']) {
-            $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
-        } else {
+        if (!$options['multiple']) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformSingleChoice'], 100);
 
             if ($options['expanded']) {
@@ -78,10 +75,7 @@ class CustomFieldChoiceType extends AbstractType
             }
         }
 
-        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer(
-            new LazyChoiceList($options['choice_loader'])),
-            true
-        );
+        $builder->addModelTransformer(new HierarchyNodeTransformer());
     }
 
     /**
@@ -102,13 +96,18 @@ class CustomFieldChoiceType extends AbstractType
                 'empty_data'        => null,
                 'choices_as_values' => true,
                 'choice_loader'     => function (Options $options) {
-                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])->getChoiceLoader();
+                    return $this->hierarchyGenerator->generateForCustomFormField($options['custom_field'])
+                        ->getChoiceLoader();
+                },
+                'choice_label' => function ($value) {
+                    return (string) $value;
                 },
                 'placeholder' => '',
                 'help'        => '',
             ])
             ->setRequired('custom_field')
             ->setAllowedTypes('custom_field', CustomDefAbstract::class)
+            ->setAllowedTypes('choice_loader', [HierarchyChoiceLoader::class])
         ;
     }
 
@@ -130,10 +129,9 @@ class CustomFieldChoiceType extends AbstractType
      */
     public function onTransformRadioData(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
+        $form = $event->getForm();
 
-        $transformer = new CustomDefHierarchyNodeTransformer(new LazyChoiceList($config->getOption('choice_loader')));
+        $transformer = new HierarchyNodeTransformer();
         $event->setData($transformer->transform($event->getData()));
     }
 }

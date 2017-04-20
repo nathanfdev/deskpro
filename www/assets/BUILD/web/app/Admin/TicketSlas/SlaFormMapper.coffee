@@ -93,21 +93,21 @@ define [
         postData.hours_set = form.hours_set
 
       if form.apply_type == 'terms'
-        for own _, crit_set of form.apply_terms
+        for own _x, crit_set of form.apply_terms
           set = []
-          for own _, crit of crit_set
+          for own _x, crit of crit_set
             if crit.type
               set.push(crit)
           if set.length
             postData.apply_terms.push(set)
 
       if form.warn_actions
-        for own _, act of form.warn_actions
+        for own _x, act of form.warn_actions
           if act.type
             postData.warn_actions.push(act)
 
       if form.fail_actions
-        for own _, act of form.fail_actions
+        for own _x, act of form.fail_actions
           if act.type
             postData.fail_actions.push(act)
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -94,7 +94,7 @@ class Organization
     /**
      * Labels associated with this organization.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelOrganization>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelOrganization>>")
      *
      * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
@@ -155,15 +155,6 @@ class Organization
     protected $ticketsCount;
 
     /**
-     * Organization members.
-     *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
-     *
-     * @var \Application\DeskPRO\Entity\Person[]
-     */
-    protected $members;
-
-    /**
      * Constructor.
      *
      * @param OrganizationEntity $organization
@@ -184,6 +175,5 @@ class Organization
         $this->parent       = $organization->getParent();
         $this->chatsCount   = $chatsCount;
         $this->ticketsCount = $organization->getTicketsCount();
-        $this->members      = $organization->getMembers();
     }
 }

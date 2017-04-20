@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,9 +47,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AgentAlertsController extends CrudController
 {
-    public static $entity    = AgentAlert::class;
-    public static $listSort  = 'date_created';
-    public static $listOrder = 'desc';
+    public static $entity     = AgentAlert::class;
+    public static $listSort   = 'date_created';
+    public static $listOrder  = 'desc';
+    public static $exposeOnly = ['get', 'list', 'count', 'delete'];
 
     /**
      * Dismiss alerts with given ids array.
@@ -60,7 +61,11 @@ class AgentAlertsController extends CrudController
      *     description="Dismiss set of alerts",
      *     statusCodes={
      *         204="Returned if everything is ok",
-     *     }
+     *     },
+     *     parameters={
+     *         {"name"="alert_ids", "description"="", "dataType"="array", "required"=true}
+     *     },
+     *     noOutput=true
      * )
      * @Rest\Post("/dismiss")
      *
@@ -96,7 +101,9 @@ class AgentAlertsController extends CrudController
      *     description="dismiss all alerts for the current user",
      *     statusCodes={
      *         200="Returned if everything is ok",
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      * @Rest\Post("/dismiss/all")
      *

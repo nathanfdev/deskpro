@@ -1,4 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% set full_height = 1 %}
 {% block fullpane_content %}
     <form class="ui form widget-editor admin-next">
         <div class="ui grid">
@@ -202,6 +204,7 @@
                                     <p>
                                         {{ phrase('admin.widget.chat_request_person_desc') }}
                                     </p>
+                                    <label ng-if="brand_settings.chat.request_user_info">{{ phrase('admin.widget.chat_show_fields_title') }}:</label>
                                     <div ng-if="brand_settings.chat.request_user_info">
                                         <div class="dp-item-list">
                                             <div class="inline field">
@@ -212,6 +215,7 @@
                                                         Name
                                                     </label>
                                                 </div>
+                                                <input type="checkbox" ng-model="brand_settings.chat.required_name" /> Required
                                             </div>
                                             <div class="inline field">
                                                 <div class="ui checkbox">
@@ -221,6 +225,38 @@
                                                         Email address
                                                     </label>
                                                 </div>
+                                                <input type="checkbox" ng-model="brand_settings.chat.required_email" /> Required
+                                            </div>
+                                            <div class="inline field" ng-if="chat_departments.length > 1">
+                                                <div class="ui checkbox">
+                                                    <input type="checkbox" id="chat_department"
+                                                           ng-model="brand_settings.chat.select_department"
+                                                           ng-true-value="custom"
+                                                           ng-false-value="default"
+                                                           class="hidden">
+                                                    <label for="chat_department">
+                                                        Department
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="inline field" ng-if="chat_departments.length > 1 && brand_settings.chat.select_department == 'default'">
+                                                <span>Chat will always be created in</span>
+                                                <select ng-model="brand_settings.chat.default_department">
+                                                    <option ng-repeat="option in chat_departments" ng-value="option.id" ng-selected="brand_settings.chat.default_department == option.id">
+                                                        {{ ng_var('option.title') }}
+                                                    </option>
+                                                </select>
+
+                                                <ul class="errors">
+                                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.chat.fields.select_department.errors">
+                                                        {{ ng_var('error.message') }}
+                                                    </li>
+                                                </ul>
+                                                <ul class="errors">
+                                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.chat.fields.default_department.errors">
+                                                        {{ ng_var('error.message') }}
+                                                    </li>
+                                                </ul>
                                             </div>
                                             <div ui-sortable="Ctrl.chatFieldsSortOptions" class="chat-custom-fields">
                                                 <div class="inline field with-drag-handle" ng-repeat="field in chat_custom_fields" data-id="{{ ng_var('field.id') }}">
@@ -232,6 +268,8 @@
                                                             <i class="fa fa-bars drag-handle"></i>
                                                         </label>
                                                     </div>
+                                                    <input type="checkbox" ng-model="brand_settings.chat.required_email" ng-checked="field.options.required || field.options.validation_type === 'required'" disabled /> Required
+                                                    (<a href="#/chat/fields/{{ ng_var('field.id') }}">change</a>)
                                                 </div>
                                             </div>
                                         </div>
@@ -294,6 +332,17 @@
                                     Having proactive chat enabled switched on enabled a popup that encourages users to
                                     chat with you
                                 </p>
+                            </div>
+                            <div class="field" ng-show="brand_settings.chat.proactive">
+                                <div class="ui grid">
+                                    <label>
+                                        Delay proactive chat by
+                                        <input type="number" ng-model="brand_settings.chat.popup.delay" step="0.1"
+                                               style="width: 70px; vertical-align: middle;"
+                                        />
+                                        seconds
+                                    </label>
+                                </div>
                             </div>
                             <div class="field" ng-show="brand_settings.chat.proactive">
                                 <label>Proactive chat widget style</label>
@@ -433,6 +482,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="with-margin" ng-show="brand_settings.chat.popup.style == 'agent_text_button' || brand_settings.chat.popup.style == 'text_button' || brand_settings.chat.popup.style == 'agents_button'">
+                                    <label>Start conversation button</label>
+                                    <div class="inline fields">
+                                        <div class="thirteen wide field">
+                                            <textarea rows="3" ng-model="brand_settings.chat.popup.translations[0].start_button"></textarea>
+                                        </div>
+                                        <div class="three wide field">
+                                            <dp-semantic-language-button translations="brand_settings.chat.popup.translations" key="start_button" languages="languages">
+                                            </dp-semantic-language-button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -475,6 +536,53 @@
                                     </ul>
                                     <ul class="errors">
                                         <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_department.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div>
+                                    <label>Subject</label>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_custom"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="custom">
+                                            <label for="ticket_subject_select_custom">
+                                                Ask user for a subject
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_message"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="message">
+                                            <label for="ticket_subject_select_message">
+                                                Set the subject as the first 5 words of the message
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="inline field">
+                                        <div class="ui radio checkbox">
+                                            <input type="radio" name="ticket_subject" id="ticket_subject_select_set"
+                                                   class="hidden" ng-model="brand_settings.ticket.select_subject"
+                                                   value="default">
+                                            <label for="ticket_subject_select_set">
+                                                Set a subject
+                                            </label>
+                                            <input type="text" ng-model="brand_settings.ticket.default_subject"
+                                                   ng-show="brand_settings.ticket.select_subject == 'default'" />
+                                        </div>
+                                    </div>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.select_subject.errors">
+                                            {{ ng_var('error.message') }}
+                                        </li>
+                                    </ul>
+                                    <ul class="errors">
+                                        <li ng-repeat="error in formErrors.settings.fields.brand.fields.ticket.fields.default_subject.errors">
                                             {{ ng_var('error.message') }}
                                         </li>
                                     </ul>
@@ -645,13 +753,15 @@
                     </div>
                 </div>
 
-                <button class="ui button right" ng-click="Ctrl.reset()">Reset to default</button>
-                <button class="ui button" ng-click="Ctrl.discard()" ng-disabled="!flag_has_changed">Discard changes</button>
-                <button class="ui button" ng-click="Ctrl.updateChatCode()" ng-disabled="!flag_has_changed">Save</button>
-                <div ng-show="flag_has_changed" class="pending_changes">
-                    <p>
-                        Pending changes
-                    </p>
+                <div ng-class="{'widget-editor-save-buttons': true, 'preview-opened': brand_settings.widget.enabled && !show_embed_help}">
+                    <button class="ui button right" ng-click="Ctrl.reset()">Reset to default</button>
+                    <button class="ui button" ng-click="Ctrl.discard()" ng-disabled="!flag_has_changed">Discard changes</button>
+                    <button class="ui button" ng-click="Ctrl.updateChatCode()" ng-disabled="!flag_has_changed">Save</button>
+                    <div ng-show="flag_has_changed" class="pending_changes">
+                        <p>
+                            Pending changes
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

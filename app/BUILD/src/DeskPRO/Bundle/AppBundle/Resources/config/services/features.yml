@@ -1,0 +1,24 @@
+services:
+
+  deskpro.features_access_checker:
+    class: DeskPRO\Bundle\AppBundle\Features\FeaturesAccessChecker
+    arguments:
+      - "@deskpro.app_env"
+
+  deskpro.features_collection:
+    class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
+    arguments: ["@deskpro.features_access_checker"]
+
+  deskpro.features.agent_chat:
+    class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
+
+  deskpro.features.voice:
+    class: DeskPRO\Bundle\AppBundle\Features\VoiceFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

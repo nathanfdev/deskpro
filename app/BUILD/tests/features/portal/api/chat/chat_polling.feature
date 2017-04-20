@@ -4,14 +4,23 @@ Feature: Widget Chat
 
   Background:
     Given a user with "user@deskpro.dev" email exists
+    And I have only default brand
     And I have guest portal api session with code "AAAAAAAAAAAAAAA"
+    And only the following Department records exist:
+      | #  | Title        | Brands           | Is Chat Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1               |
+      | d2 | Department 2 | [{defaultBrand}] | 1               |
+    And I grant the "{d1}" department permission of chat app for usergroup everyone
+    And I grant the "{d2}" department permission of chat app for usergroup everyone
 
   Scenario: I'm checking for chat changes
     Given the setting "portal.chat.email_validation" is set to 0
     And the setting "portal.chat.require_login" is set to 0
     And there are no Chat records
 
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}"
+    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+      | key             | value |
+      | chat_department | {d1}  |
     Then the response status code should be 200
 
     When I send a GET request to "/portal/api/chats/{lastCreatedId}/polling?dpsid={sid_AAAAAAAAAAAAAAA}"
@@ -32,14 +41,6 @@ Feature: Widget Chat
     And the JSON node "chat_info.data.date_created" should exist
     And the JSON node "chat_info.data.date_ended" should exist
     And the JSON node "chat_info.data.ended_by" should exist
-    And the JSON node "new_messages.data[0].author" should be equal to 0
-    And the JSON node "new_messages.data[0].content" should contain "phrase_id"
-    And the JSON node "new_messages.data[0].content" should contain "message_started"
-    And the JSON node "new_messages.data[0].date_created" should exist
-    And the JSON node "new_messages.data[0].is_html" should be equal to 0
-    And the JSON node "new_messages.data[0].is_sys" should be equal to 1
-    And the JSON node "new_messages.data[0].is_user" should be equal to 0
-    And the JSON node "new_messages.data[1].id" should not exist
 
   Scenario: I send empty message
     Given only the following Chat records exist:

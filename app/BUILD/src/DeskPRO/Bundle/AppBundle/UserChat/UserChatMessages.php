@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -112,6 +112,44 @@ class UserChatMessages
             ->setIsUserHidden(self::isUserHiddenSysMessage($eventName))
             ->setIsHtml(self::isHtmlSysMessage($eventName))
             ->setContent(json_encode($content))
+            ->setMetadata($metadata)
+        ;
+
+        return $chatMessage;
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param                  $url
+     *
+     * @return ChatMessage
+     */
+    public static function createUserTrackMessage(ChatConversation $chat, $url)
+    {
+        $phraseId = 'msg_new_user_track';
+
+        $urlShow = preg_replace('#^https?://(www\.)?#i', '', $url);
+        if (strlen($urlShow) > 50) {
+            $urlShow = substr($urlShow, 0, 50).'...';
+        }
+
+        $url     = htmlspecialchars($url);
+        $urlShow = htmlspecialchars($urlShow);
+
+        $label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$urlShow</a>";
+
+        $metadata = [
+            'phrase_id' => $phraseId,
+            'label'     => $label,
+            'url'       => $url,
+        ];
+
+        $chatMessage = new ChatMessage();
+        $chatMessage
+            ->setIsSys(true)
+            ->setIsUserHidden(true)
+            ->setIsHtml(true)
+            ->setContent(json_encode($metadata))
             ->setMetadata($metadata)
         ;
 

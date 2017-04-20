@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -108,6 +108,11 @@ $collection->create(
         'methods'    => ['GET'],
     ]
 );
+
+$collection->create('check_url', [
+    'path'       => '/check_url',
+    'controller' => 'LegacyApiBundle:Misc:checkUrl',
+]);
 
 $collection->create(
     'api_deskpro_dpspecial',
@@ -873,6 +878,16 @@ $collection->create(
     'api_people_person',
     [
         'path'         => '/people/{person_id}',
+        'controller'   => 'LegacyApiBundle:Person:getPerson',
+        'requirements' => ['person_id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_people_quick_search_person',
+    [
+        'path'         => '/people/quick_search/{person_id}',
         'controller'   => 'LegacyApiBundle:Person:getPerson',
         'requirements' => ['person_id' => '\\d+'],
         'methods'      => ['GET'],

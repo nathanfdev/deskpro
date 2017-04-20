@@ -1,34 +1,45 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { Avatar } from './Avatar';
-import { chooseColor } from './colors';
+import { chooseColor, darkerColor } from './colors';
 
 export class DepartmentAvatar extends React.Component {
 
   static propTypes = {
     department: PropTypes.object.isRequired,
-    size:       PropTypes.any
+    size:       PropTypes.number,
+    className:  PropTypes.string,
+    title:      PropTypes.string,
+    tooltipId:  PropTypes.string
+  };
+
+  static defaultProps = {
+    className: ''
   };
 
   getDepartmentFallbackText() {
     const department = this.props.department || Immutable.fromJS({});
-    const name = department.get('title');
-    const text = (name && name.length ? name[0] : '');
+    const name       = department.get('title');
+    const text       = (name && name.length ? name.substr(0, 2) : '');
 
-    return text ? text : '?';
+    return text || '?';
   }
 
   render() {
-    const { size } = this.props;
+    const { size, className, title, tooltipId } = this.props;
     const department = this.props.department || Immutable.fromJS({});
-    const avatar = department.get('avatar') || Immutable.fromJS({});
+    const avatar     = department.get('avatar') || Immutable.fromJS({});
 
     const props = {
       size,
-      color:      chooseColor(department.get('id')),
-      url:        avatar.get('url'),
-      urlPattern: avatar.get('url_pattern'),
-      text:       this.getDepartmentFallbackText()
+      tooltipId,
+      color:       chooseColor(department.get('id')),
+      borderColor: darkerColor(department.get('id')),
+      url:         avatar.get('url'),
+      urlPattern:  avatar.get('url_pattern'),
+      text:        this.getDepartmentFallbackText(),
+      title,
+      className
     };
 
     return (
@@ -36,3 +47,5 @@ export class DepartmentAvatar extends React.Component {
     );
   }
 }
+
+export default DepartmentAvatar;

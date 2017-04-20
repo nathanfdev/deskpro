@@ -297,6 +297,27 @@
 <% } %>
 
 {######################################################################## #}
+{# Topic #}
+{######################################################################## #}
+
+{% if app.hasFeature('guides') %}
+<% if (group.type == 'topic') { var item = result; %>
+<article class="row-item single-row" route-notabreload="1" data-route="page:{{ path('agent_topic_view', {'topic_id': '0000'})|replace({'0000': '<%= item.id %>'})|raw }}">
+	<div class="top-row">
+		<div class="top-row-left">
+			<h3>
+				<span class="obj-id">#<%- item.id %></span>
+				<a class="subject click-through">
+					<%- item.title %>
+				</a>
+			</h3>
+		</div>
+	</div>
+</article>
+<% } %>
+{% endif %}
+
+{######################################################################## #}
 {# Deleted tickets #}
 {######################################################################## #}
 

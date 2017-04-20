@@ -23,7 +23,7 @@ services:
   quick_search.listener.usersource:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\UsersourceListener
     arguments:
-      - "@=service('service_container').getSystemService('usersource_manager')"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: quick_search.event_subscriber }
 
@@ -60,5 +60,10 @@ services:
 
   quick_search.listener.sort_listener:
     class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\SortListener
+    tags:
+      - { name: quick_search.event_subscriber }
+
+  quick_search.listener.filter_listener:
+    class: DeskPRO\Bundle\AppBundle\QuickSearch\EventListener\FilterListener
     tags:
       - { name: quick_search.event_subscriber }

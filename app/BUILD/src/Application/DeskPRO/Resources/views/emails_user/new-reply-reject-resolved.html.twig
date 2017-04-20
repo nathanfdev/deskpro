@@ -8,7 +8,7 @@
 
 <br /><br />
 
-{% if app.getSetting('user.portal_enabled') %}
+{% if app.isPortalEnabled() %}
 	{{ phrase('user.emails.reject_resolved-new', {
 		email_to: email_to,
 		link: url_full('portal_new_ticket')

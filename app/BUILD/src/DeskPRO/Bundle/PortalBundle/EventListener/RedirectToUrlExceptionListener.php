@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use Psr\Log\LoggerInterface;
@@ -49,9 +49,9 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
     private $logger;
 
     /**
-     * @var SettingsResolver
+     * @var UrlCorrectorFactory
      */
-    private $resolver;
+    private $urlCorrectorFactory;
 
     /**
      * @var BrandStack
@@ -61,15 +61,18 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param LoggerInterface  $logger
-     * @param SettingsResolver $resolver
-     * @param BrandStack       $brandStack
+     * @param LoggerInterface     $logger
+     * @param UrlCorrectorFactory $urlCorrectorFactory
+     * @param BrandStack          $brandStack
      */
-    public function __construct(LoggerInterface $logger, SettingsResolver $resolver = null, BrandStack $brandStack = null)
-    {
-        $this->logger     = $logger;
-        $this->resolver   = $resolver;
-        $this->brandStack = $brandStack;
+    public function __construct(
+        LoggerInterface     $logger,
+        UrlCorrectorFactory $urlCorrectorFactory = null,
+        BrandStack          $brandStack = null
+    ) {
+        $this->logger              = $logger;
+        $this->urlCorrectorFactory = $urlCorrectorFactory;
+        $this->brandStack          = $brandStack;
     }
 
     /**
@@ -89,27 +92,32 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
      */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
-        $e = $event->getException();
+        $exception = $event->getException();
 
         // only interested in a particular exception here
         // the PortalRouter throws this
-        if (!$e instanceof RedirectToUrlException) {
+        if (!$exception instanceof RedirectToUrlException) {
             return;
         }
 
-        if (!$this->resolver || !$this->brandStack) {
-            return;
+        if (!$this->urlCorrectorFactory || !$this->brandStack) {
+            // fallback if it's unable to get brand for some reason, redirect to the same host
+            $url = trim($event->getRequest()->getSchemeAndHttpHost(), '/').'/'.ltrim($exception->getUrl(), '/');
+        } else {
+            $url      = $exception->getUrl();
+            $brand    = $this->brandStack->getActive()->getBrand();
+            $request  = $event->getRequest();
+            $brandUrl = $this->urlCorrectorFactory->createUrlCorrector($brand)->getCorrectedHelpdeskUrl($request);
+
+            $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
         }
 
-        $url      = $e->getUrl();
-        $brand    = $this->brandStack->getActive()->getBrand();
-        $brandUrl = $this->resolver->getBrandSettings($brand)->get('core.deskpro_url', '');
+        $this->logger->info('RedirectToUrlException caught: '.$exception->getMessage().' -- 302 redirecting to "'.$url.'"');
 
-        $url = rtrim($brandUrl, '/').'/'.ltrim($url, '/');
+        $response = new RedirectResponse($url, Response::HTTP_FOUND);
+        $response->headers->set('X-DeskPRO-RedirectReason', 'RedirectToUrlException: '.$exception->getMessage());
 
-        $this->logger->info('RedirectToUrlException caught: 302 redirecting to "'.$url.'"');
-
-        $event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));
+        $event->setResponse($response);
         $event->stopPropagation();
     }
 }

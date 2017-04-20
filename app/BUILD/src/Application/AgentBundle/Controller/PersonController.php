@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,17 +34,21 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
+use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\EntityRepository\ChatConversation as ChatConversationRepository;
 use Application\DeskPRO\EntityRepository\Person;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\Log\Event\UserMerged;
-use Application\DeskPRO\Mail\Mailer;
 use Application\DeskPRO\People\PersonEditManager;
+use Application\DeskPRO\People\PersonMerge\PersonMerge;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Symfony\Component\Form\FormError;
@@ -192,8 +196,10 @@ class PersonController extends AbstractController
             }
         }
 
-        $person_chats       = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForPerson($person);
-        $person_chats_count = count($person_chats);
+        /** @var ChatConversationRepository $chatConversationRepository */
+        $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
+        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person);
+        $person_chats_count         = count($person_chats);
 
         $is_editable = $this->isPersonEditable($person);
         $perms       = [
@@ -696,8 +702,8 @@ class PersonController extends AbstractController
 
         $invalid_custom_fields = [];
         $is_valid              = true;
-        foreach ($field_manager->getFields() as $field) {
-            $errors = $field->getHandler()->validateFormData($custom_fields);
+        foreach ($field_manager->getDefinedFields() as $field) {
+            $errors = $field->getHandler()->validateFormData($custom_fields, HandlerAbstract::CONTEXT_AGENT);
             foreach ($errors as $code) {
                 $invalid_custom_fields['field_'.$field->getId()] = preg_replace('#^(.*?)\.#', '', $code);
                 $is_valid                                        = false;
@@ -1213,6 +1219,15 @@ class PersonController extends AbstractController
         if ($other_person_id && $other_person_id != $person_id) {
             $other_person        = $this->getPersonOr404($other_person_id);
             $other_custom_fields = $field_manager->getDisplayArrayForObject($other_person);
+
+            if (!$person->isAgent() && $other_person->isAgent()) {
+                $tmp                  = $person;
+                $tmpFields            = $person_custom_fields;
+                $person               = $other_person;
+                $person_custom_fields = $other_custom_fields;
+                $other_person         = $tmp;
+                $other_custom_fields  = $tmpFields;
+            }
         } else {
             $other_person        = false;
             $other_custom_fields = false;
@@ -1228,32 +1243,32 @@ class PersonController extends AbstractController
 
     public function mergeAction($person_id, $other_person_id)
     {
-        $person       = $this->getPersonOr404($person_id);
-        $other_person = $this->getPersonOr404($other_person_id);
+        $person      = $this->getPersonOr404($person_id);
+        $otherPerson = $this->getPersonOr404($other_person_id);
 
-        if (!$person || !$other_person) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        if (!$person || !$otherPerson) {
+            throw new NotFoundHttpException();
         }
 
         if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
             return $this->createJsonResponse(['success' => false]);
         }
 
-        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($other_person)) {
+        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($otherPerson)) {
             return $this->createJsonResponse(['success' => false]);
         }
 
-        $old_person_id = $other_person['id'];
+        $oldPersonId = $otherPerson['id'];
 
-        $logEvent = new Entity\LogEvent(new UserMerged($person, $other_person), $this->person);
-        $merge    = new \Application\DeskPRO\People\PersonMerge\PersonMerge($this->person, $person, $other_person);
+        $logEvent = new Entity\LogEvent(new UserMerged($person, $otherPerson), $this->person);
+        $merge    = new PersonMerge($this->person, $person, $otherPerson);
         $merge->merge();
         $this->container->get('deskpro.logger.changelog')->info($logEvent);
 
         return $this->createJsonResponse([
             'success' => true,
             'id'      => $person['id'],
-            'old_id'  => $old_person_id,
+            'old_id'  => $oldPersonId,
         ]);
     }
 
@@ -1500,8 +1515,46 @@ class PersonController extends AbstractController
             $form->isValid();
 
             $newperson->setCustomFieldForm($_POST);
-            $newperson->save();
 
+            /** @var PersonFieldManager $fieldsManager */
+            $fieldsManager = App::getSystemService('PersonFieldsManager');
+            $personFields  = $fieldsManager->getDefinedFields();
+
+            $fieldErrors = [];
+            foreach ($personFields as $field) {
+                $errors = $field->getHandler()->validateFormData($newperson->custom_fields ?: [], HandlerAbstract::CONTEXT_AGENT);
+
+                foreach ($errors as $code) {
+                    $title = $field->getTitle();
+                    $str   = "Please correct $title";
+                    $code  = str_replace('field_'.$field->getId().'.', '', $code);
+                    switch ($code) {
+                        case 'required':
+                            $str = "$title is required";
+                            break;
+                        case 'min_length':
+                            $str = "$title is too short";
+                            break;
+                        case 'max_length':
+                            $str = "$title is too long";
+                            break;
+                        case 'regex':
+                            $str = "$title is invalid";
+                            break;
+                    }
+
+                    $fieldErrors[] = $str;
+                }
+            }
+
+            if (count($fieldErrors)) {
+                return $this->createJsonResponse([
+                    'success'        => false,
+                    'error_messages' => $fieldErrors,
+                ]);
+            }
+
+            $newperson->save();
             $person = $newperson->getPerson();
 
             $manager                   = $this->container->getCustomFieldManager();
@@ -1559,6 +1612,22 @@ class PersonController extends AbstractController
 
         return $this->render('AgentBundle:Person:view-tickets.html.twig', [
             'tickets' => $person_tickets,
+        ]);
+    }
+
+    public function getPersonChatsAction($person_id)
+    {
+        $person = $this->getPersonOr404($person_id);
+
+        /** @var ChatConversationRepository $chatConversationRepository */
+        $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
+
+        $orderBy  = $this->in->getString('order_by');
+        $orderDir = $this->in->getString('order_dir');
+        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $orderBy, $orderDir);
+
+        return $this->render('AgentBundle:Person:view-chats.html.twig', [
+            'chats' => $chats,
         ]);
     }
 

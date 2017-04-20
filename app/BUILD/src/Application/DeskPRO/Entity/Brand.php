@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -187,6 +187,26 @@ class Brand extends DomainObject
     }
 
     /**
+     * @return ArrayCollection|Department[]
+     */
+    public function getTicketDepartments()
+    {
+        return $this->departments->filter(function (Department $department) {
+            return $department->isTicketsEnabled();
+        });
+    }
+
+    /**
+     * @return ArrayCollection|Department[]
+     */
+    public function getChatDepartments()
+    {
+        return $this->departments->filter(function (Department $department) {
+            return $department->isChatEnabled();
+        });
+    }
+
+    /**
      * @param Department $department
      *
      * @return $this
@@ -214,13 +234,13 @@ class Brand extends DomainObject
     }
 
     /**
-     * @param Department $searchDepartment
+     * @param Department $department
      *
      * @return bool
      */
-    public function hasDepartment(Department $searchDepartment)
+    public function hasDepartment(Department $department)
     {
-        return $this->departments->contains($searchDepartment);
+        return $this->departments->contains($department);
     }
 
     public function __toString()

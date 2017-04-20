@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,9 +45,9 @@ class DpFormLoginToken extends AbstractToken
     /**
      * DpFormLoginToken constructor.
      *
-     * @param \Application\DeskPRO\Entity\Person $user
-     * @param string                             $credentials
-     * @param array                              $roles
+     * @param \Application\DeskPRO\Entity\Person|string $user
+     * @param string                                    $credentials
+     * @param array                                     $roles
      */
     public function __construct($user, $credentials, array $roles = [])
     {

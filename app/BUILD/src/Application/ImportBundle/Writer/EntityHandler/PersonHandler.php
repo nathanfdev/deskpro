@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
+use Orb\Util\Strings;
 
 /**
  * DeskPRO person importer.
@@ -84,6 +85,11 @@ class PersonHandler extends AbstractEntityHandler
             $entity->setName($model->getName());
         }
 
+        // no name provided, email fallback
+        if (!$entity->getName() && $model->getFirstEmail()) {
+            $entity->setName(Strings::getNameFromEmail($model->getFirstEmail()));
+        }
+
         // update organization
         if ($model->getOrganization()) {
             $organizationEntity = $this->helpers->getOrganizationHelper()->findOrCreateOrganization($model->getOrganization());
@@ -95,7 +101,7 @@ class PersonHandler extends AbstractEntityHandler
             }
         }
 
-        // set password
+        // set or reset password if we get it from the import
         if ($model->getPassword()) {
             $entity->setPassword($model->getPassword());
         }
@@ -137,7 +143,7 @@ class PersonHandler extends AbstractEntityHandler
         $this->persister->persistAndFlush($entity, $model);
 
         // persist others related entities which contains own oids
-        $this->helpers->getContactDataHelper()->updateContactData($this->mappers->getPersonContactDataMapper(), $model, $entity);
+        $this->helpers->getPersonContactDataHelper()->updateContactData($model, $entity);
     }
 
     /**

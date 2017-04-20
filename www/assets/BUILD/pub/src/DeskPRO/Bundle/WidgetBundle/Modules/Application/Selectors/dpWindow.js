@@ -1,6 +1,6 @@
-import { createSelector } from 'reselect';
-import { widgetLanguageSelector } from './bootstrap';
 import Immutable from 'immutable';
+import { createSelector } from 'reselect';
+import { sessionLanguageSelector } from './bootstrap';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
   const translations = options.get('translations') || [];
@@ -44,6 +44,16 @@ export const dimensionsSelector = createSelector(
 export const windowDimensionsSelector = createSelector(
   dimensionsSelector,
   dimensions => dimensions.get('window')
+);
+
+export const isFullScreenSelector = createSelector(
+  windowDimensionsSelector,
+  windowDimensions => windowDimensions.get('width') < 450
+);
+
+export const isLandscapeModeSelector = createSelector(
+  windowDimensionsSelector,
+  windowDimensions => windowDimensions.get('height') < 500
 );
 
 export const widgetDimensionsSelector = createSelector(
@@ -100,7 +110,9 @@ export const widgetPositionSelector = createSelector(
 
 export const isBubbleSelector = createSelector(
   widgetTypeSelector,
-  widgetType => widgetType === 'bubble'
+  isFullScreenSelector,
+  isLandscapeModeSelector,
+  (widgetType, fullScreen, landscapeMode) => widgetType === 'bubble' && !fullScreen && !landscapeMode
 );
 
 export const liveDemoSelector = createSelector(
@@ -122,6 +134,17 @@ export const helpButtonSelector = createSelector(
 export const helpButtonSizeSelector = createSelector(
   helpButtonSelector,
   options => options.get('size')
+);
+
+export const widgetLanguageSelector = createSelector(
+  widgetOptionsSelector,
+  sessionLanguageSelector,
+  (options, sessionLanguage) => {
+    if (options.get('language')) {
+      return options.get('language');
+    }
+    return sessionLanguage;
+  }
 );
 
 export const helpButtonNameSelector = createSelector(
@@ -193,14 +216,62 @@ export const helpPopupSubheadingSelector = createSelector(
   )
 );
 
+export const helpPopupStartButtonSelector = createSelector(
+  helpPopupSelector,
+  widgetLanguageSelector,
+  translationsSelectorFactory(
+    'start_button',
+    'Start a conversation'
+  )
+);
+
 export const widgetPopupStyleSelector = createSelector(
   helpPopupSelector,
   options => options.get('style')
 );
 
+export const widgetPopupDelaySelector = createSelector(
+  helpPopupSelector,
+  options => options.get('delay')
+);
+
 export const agentAcceptTimeoutSelector = createSelector(
   chatOptionsSelector,
   options => options.get('waiting_timeout') || 120 // 2 minutes
+);
+
+export const chatFormDefaultValuesSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('default_values')
+);
+
+export const chatEnabledCustomFieldsSelector = createSelector(
+  chatOptionsSelector,
+  options => (
+    options.get('enabled_custom_fields') instanceof Immutable.List
+      ? options.get('enabled_custom_fields').map(id => parseInt(id, 10))
+      : null
+  )
+);
+
+export const chatDefaultDepartmentSelector = createSelector(
+  chatOptionsSelector,
+  options => parseInt(options.get('default_department'), 10)
+);
+
+export const chatSelectDepartmentTypeSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('select_department')
+);
+
+export const chatRequiredNameSelector = createSelector(
+  chatOptionsSelector,
+  options => !!options.get('required_name')
+);
+
+export const chatRequiredEmailSelector = createSelector(
+  chatOptionsSelector,
+  options => !!options.get('required_email')
 );
 
 // Ticket options selectors
@@ -219,8 +290,23 @@ export const ticketSelectDepartmentTypeSelector = createSelector(
   options => options.get('select_department')
 );
 
+export const ticketDefaultSubjectSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('default_subject')
+);
+
+export const ticketSelectSubjectTypeSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('select_subject')
+);
+
 export const isTicketDepartmentFieldHidden = createSelector(
   ticketDefaultDepartmentSelector,
   ticketSelectDepartmentTypeSelector,
   (defaultDepartment, selectDepartmentType) => selectDepartmentType === 'default' && defaultDepartment > 0
+);
+
+export const ticketDefaultValuesSelector = createSelector(
+  ticketOptionsSelector,
+  options => options.get('default_values')
 );

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,12 +35,14 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Controller\Helper\PeopleResults;
 use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\People\PeopleResultsDisplay;
 use Application\DeskPRO\UI\RuleBuilder;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Handles searching for people.
@@ -723,7 +725,7 @@ class PeopleSearchController extends AbstractController
     // /agent/people-search/quick-search            agent_peoplesearch_performquick
     //###########################################################################
 
-    public function performQuickSearchAction()
+    public function performQuickSearchAction(Request $request)
     {
         $q = $this->in->getString('q');
         if (!$q) {
@@ -766,18 +768,18 @@ class PeopleSearchController extends AbstractController
                     ];
                 }
 
-                $people_list = $output;
+                $peopleList = $output;
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
                 /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-                $rep         = $this->em->getRepository('DeskPRO:Person');
-                $people_list = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
+                $rep        = $this->em->getRepository('DeskPRO:Person');
+                $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
 
                 // If the string is an exact email, we can try and find the user in usersources as well
                 if (StringEmail::isValueValid($q)) {
                     $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-                    if ($person && !isset($people_list[$person->getId()])) {
-                        $people_list[$person->getId()] = [
+                    if ($person && !isset($peopleList[$person->getId()])) {
+                        $peopleList[$person->getId()] = [
                             'id'         => $person->getId(),
                             'first_name' => $person->first_name,
                             'last_name'  => $person->last_name,
@@ -788,14 +790,14 @@ class PeopleSearchController extends AbstractController
             }
         } else {
             /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-            $rep         = $this->em->getRepository('DeskPRO:Person');
-            $people_list = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
+            $rep        = $this->em->getRepository('DeskPRO:Person');
+            $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
 
             // If the string is an exact email, we can try and find the user in usersources as well
             if (StringEmail::isValueValid($q)) {
                 $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-                if ($person && !isset($people_list[$person->getId()])) {
-                    $people_list[$person->getId()] = [
+                if ($person && !isset($peopleList[$person->getId()])) {
+                    $peopleList[$person->getId()] = [
                         'id'         => $person->getId(),
                         'first_name' => $person->first_name,
                         'last_name'  => $person->last_name,
@@ -816,8 +818,20 @@ class PeopleSearchController extends AbstractController
             }
         }
 
+        if ($request->query->get('ignore_banned')) {
+            /** @var BanEmail $banRepo */
+            $banRepo = $this->em->getRepository(Entity\BanEmail::class);
+
+            /** @var Entity\Person $person */
+            foreach ($peopleList as $num => $person) {
+                if ($banRepo->isEmailBanned($person['email'])) {
+                    unset($peopleList[$num]);
+                }
+            }
+        }
+
         return $this->render($tpl, [
-            'people_list' => $people_list,
+            'people_list' => $peopleList,
         ]);
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,7 @@ class TaskAssignNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $agent)
     {
-        if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref('agent_notify_override.all.alert')) {
+        if (App::getCurrentPerson() === $agent && !$agent->getPref('agent_notify_override.all.alert')) {
             return false;
         }
 
@@ -68,7 +68,7 @@ class TaskAssignNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $agent)
     {
-        if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref('agent_notify_override.all.email')) {
+        if (App::getCurrentPerson() === $agent && !$agent->getPref('agent_notify_override.all.email')) {
             return false;
         }
 

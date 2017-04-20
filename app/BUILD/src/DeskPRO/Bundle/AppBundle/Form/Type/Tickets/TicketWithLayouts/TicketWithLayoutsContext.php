@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,6 +58,8 @@ class TicketWithLayoutsContext
     const VIEW_USER  = 'user';
     const VIEW_AGENT = 'agent';
 
+    const FORM_TYPE_WIDGET = 'widget';
+
     /**
      * @var \Application\DeskPRO\Entity\Ticket
      */
@@ -84,6 +86,11 @@ class TicketWithLayoutsContext
     private $submittedData;
 
     /**
+     * @var string|null
+     */
+    private $formType;
+
+    /**
      * @param FormEvent $event
      *
      * @return $this
@@ -96,6 +103,9 @@ class TicketWithLayoutsContext
 
         $context = new self($form, $data, new TicketLayout());
         $context->setNewLayout($options['layout_factory']($data->getDepartment()));
+        if (isset($options['form_type'])) {
+            $context->formType = $options['form_type'];
+        }
 
         return $context;
     }
@@ -116,6 +126,9 @@ class TicketWithLayoutsContext
 
         if ($form->has(FormFields::DEPARTMENT) && isset($submitted[FormFields::DEPARTMENT])) {
             $context->setNewLayout($options['layout_factory']($submitted[FormFields::DEPARTMENT]));
+        }
+        if (isset($options['form_type'])) {
+            $context->formType = $options['form_type'];
         }
 
         return $context;
@@ -338,5 +351,13 @@ class TicketWithLayoutsContext
     public function getSubmittedData()
     {
         return $this->submittedData;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function isWidgetType()
+    {
+        return $this->formType === self::FORM_TYPE_WIDGET;
     }
 }

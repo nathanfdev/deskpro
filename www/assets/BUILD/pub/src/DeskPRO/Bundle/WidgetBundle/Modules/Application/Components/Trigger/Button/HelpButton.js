@@ -7,7 +7,6 @@ export class HelpButton extends React.Component {
   static propTypes = {
     chatId:          PropTypes.string,
     widgetPosition:  PropTypes.string,
-    type:            PropTypes.string,
     onClick:         PropTypes.func,
     size:            PropTypes.string,
     name:            PropTypes.string,
@@ -15,32 +14,32 @@ export class HelpButton extends React.Component {
     textColor:       PropTypes.string,
     disabled:        PropTypes.bool,
     triggerResize:   PropTypes.func,
-    locationPath:    PropTypes.string
+    widgetOpened:    PropTypes.bool
   };
 
   componentDidUpdate() {
     this.props.triggerResize();
   }
 
-  onClick = event => {
+  onClick = (event) => {
     event.preventDefault();
     this.props.onClick();
   };
 
   render() {
-    const { chatId, widgetPosition, name, size, disabled, backgroundColor, textColor, locationPath } = this.props;
+    const { chatId, widgetPosition, name, size, disabled, backgroundColor, textColor, widgetOpened } = this.props;
 
     let buttonCaption;
-    if (chatId && locationPath === '/chat/active') {
+    if (chatId && !widgetOpened) {
       buttonCaption = portalPhrases.get('portal.chat.reopen_chat_action');
     } else {
       buttonCaption = name;
     }
 
     return (
-      <div className="dpdesignportal-state-buttons">
+      <div className="dpdesignportal-state-buttons" ref={(node) => { this.node = node; }}>
         <a
-          href="#"
+          href="#open-widget"
           onClick={this.onClick}
           style={{
             backgroundColor,

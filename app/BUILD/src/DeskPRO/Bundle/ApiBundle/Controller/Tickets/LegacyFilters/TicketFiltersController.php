@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\LegacyFilters;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -55,45 +56,47 @@ class TicketFiltersController extends CrudController
 {
     use TicketsPagerTrait;
 
-    public static $exposeOnly = ['list', 'get'];
+    public static $exposeOnly = ['list', 'get', 'count'];
     public static $entity     = LegacyTicketFilter::class;
+    public static $listSort   = 'title';
     public static $listOrder  = 'asc';
 
     /**
      * @ApiDoc(
-     *      description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
+     *     description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
      *     filters={
-     *          {
-     *              "name"="sort",
-     *              "description"="tickets list sort",
-     *              "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
-     *              "dataType"="string",
-     *          },
-     *          {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
-     *          {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="urgency", "description"="urgency filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="agent_team", "description"="agent team filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="waiting_time", "description"="user waiting time filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="all_waiting_time", "description"="total user waiting time filter", "dataType"="integer", "pattern"="\d+"},
-     *          {"name"="date_created", "description"="date created filter", "dataType"="integer", "pattern"="\d+"},
-     *          {
-     *              "name"="ticket_field.{id}",
-     *              "description"="
-     *                  Custom ticket field filter. To filter by a custom field with ID=1 you need to add
-     *                  ?ticket_field.1=value to the query string",
-     *              "dataType"="string",
-     *              "pattern"="\d+|\w"
-     *          }
-     *      },
-     *      statusCodes={
-     *          200="Success"
-     *      }
+     *         {
+     *             "name"="sort",
+     *             "description"="tickets list sort",
+     *             "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
+     *             "dataType"="string",
+     *         },
+     *         {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"},
+     *         {"name"="page", "description"="pagination page parameter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="count", "description"="pagination results per page parameter.", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="urgency", "description"="urgency filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="agent_team", "description"="agent team filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="waiting_time", "description"="user waiting time filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="all_waiting_time", "description"="total user waiting time filter", "dataType"="integer", "pattern"="\d+"},
+     *         {"name"="date_created", "description"="date created filter", "dataType"="integer", "pattern"="\d+"},
+     *         {
+     *             "name"="ticket_field.{id}",
+     *             "description"="
+     *                 Custom ticket field filter. To filter by a custom field with ID=1 you need to add
+     *                 ?ticket_field.1=value to the query string",
+     *             "dataType"="string",
+     *             "pattern"="\d+|\w"
+     *         }
+     *     },
+     *     statusCodes={
+     *         200="Success"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket>"
      * )
      *
      * @Rest\Get("/{filter}/tickets")
@@ -148,8 +151,25 @@ class TicketFiltersController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->andWhere('NOT REGEXP(e.sys_name, :regexp) = 1 OR e.sys_name IS NULL');
-        $qb->setParameter('regexp', '^problem_[0-9]+$');
+        /** @var Person $person */
+        $person      = $this->getUser();
+        $personWhere = $qb->expr()->orX(
+            "$alias.is_global = 1",
+            "$alias.person = :person"
+        );
+
+        if ($person->getTeams()->count()) {
+            $personWhere->add("$alias.agent_team IN (:teams)");
+            $qb->setParameter('teams', $person->getTeams());
+        }
+
+        $qb
+            ->andWhere("NOT REGEXP($alias.sys_name, :regexp) = 1 OR $alias.sys_name IS NULL")
+            ->andWhere("$alias.is_enabled = 1")
+            ->andWhere($personWhere)
+            ->setParameter('regexp', '^problem_[0-9]+$')
+            ->setParameter('person', $person)
+        ;
     }
 
     /**
@@ -157,9 +177,19 @@ class TicketFiltersController extends CrudController
      */
     protected function findEntity($id, Request $request)
     {
+        /** @var Person $person */
+        $person = $this->getUser();
         /** @var LegacyTicketFilter $entity */
         $entity = parent::findEntity($id, $request);
-        if ($entity->isProblemFilter()) {
+
+        if (
+            $entity->isProblemFilter()
+            || (
+                !$entity->isGlobal()
+                && $entity->getPerson() !== $person
+                && !($entity->getAgentTeam() && $person->getTeams()->contains($entity->getAgentTeam()))
+            )
+        ) {
             throw $this->createNotFoundException();
         }
 

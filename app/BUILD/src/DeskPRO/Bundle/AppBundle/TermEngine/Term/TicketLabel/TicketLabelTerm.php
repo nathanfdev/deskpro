@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -37,32 +33,37 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\PrimaryKeyExists;
 
+/**
+ * Class TicketLabelTerm.
+ */
 class TicketLabelTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'label' => '',
-            ]
-        );
-
-        $resolver->setConstraints(
-            [
-                new PrimaryKeyExists(
-                    [
-                        'table' => 'labels_tickets',
-                    ]
-                ),
-            ]
-        );
+        $resolver->setDefaults([
+            'label' => '',
+        ]);
+        $resolver->setConstraints([
+            new PrimaryKeyExists([
+                'table' => 'labels_tickets',
+            ]),
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [TermInterface::OP_HAS, TermInterface::OP_NOT_HAS];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_HAS;

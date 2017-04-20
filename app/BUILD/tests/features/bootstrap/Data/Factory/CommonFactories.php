@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,13 +61,20 @@ class CommonFactories
      */
     public static function person($role, array $data = [])
     {
-        $data['password'] = 'password';
-        if ($role === 'agent') {
-            $data['is_agent'] = 1;
-        } elseif ($role === 'admin') {
-            $data['is_agent']  = 1;
-            $data['can_admin'] = 1;
+        if ($role === 'guest') {
+            $data['is_user']  = false;
+            $data['password'] = '';
+        } else {
+            $data['password'] = 'password';
+
+            if ($role === 'agent') {
+                $data['is_agent'] = 1;
+            } elseif ($role === 'admin') {
+                $data['is_agent']  = 1;
+                $data['can_admin'] = 1;
+            }
         }
+
         if (!isset($data['email'])) {
             $data['email'] = uniqid().'@deskpro.com';
         }

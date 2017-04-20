@@ -36,6 +36,8 @@ services:
 
   audit_log.object_listener:
     class: DeskPRO\Bundle\AuditBundle\EventListener\ObjectListener
+    arguments:
+      - "@=service('audit_log.configuration_builder_wrapper').buildConfigurationSet()"
     tags:
       - { name: kernel.event_listener, event: audit_log.start_log, method: setObject}
 
@@ -64,3 +66,8 @@ services:
     tags:
       - { name: kernel.event_listener, event: audit_log.finish_log, method: onFinish }
       - { name: doctrine.event_listener, connection: default, event: postFlush, priority: -1 }
+
+  audit_log.naming_strategy.theme:
+    class: DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\ThemeNamingStrategy
+    arguments:
+      - "@doctrine.orm.default_entity_manager"

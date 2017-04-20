@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWord;
@@ -47,6 +43,15 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/glossary/words")
  * @ApiDoc(target="all", section="Glossary", output="Application\DeskPRO\Entity\GlossaryWord")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\GlossaryWord"
+ *      }
+ *     }
+ * )
  */
 class GlossaryWordController extends CrudController
 {

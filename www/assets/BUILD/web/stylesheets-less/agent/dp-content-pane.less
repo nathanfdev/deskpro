@@ -2405,7 +2405,7 @@ nav.section-subnav ul li.on em {
 	}
 }
 
-.profile-box-container > header .controls.hide-locked {
+.profile-box-container > header .controls.hide-locked, .headerbox .controls.hide-locked {
 	display: none;
 }
 
@@ -6672,6 +6672,21 @@ ul.attachment-list {
 	li.with-icon-filetype-js { background-image: url(../../images/filetypes/page_white_world.png); }
 	li.with-icon-filetype-css { background-image: url(../../images/filetypes/page_white_world.png); }
 }
+ul.encryption {
+	margin: 13px 6px 6px 6px;
+	background-color: #ECEEF0;
+	border: 1px solid #D7D9DB;
+	.rounded(4px);
+	padding: 8px;
+	&.valid {
+		background-color: #deffdc;
+		border-color: #81db76;
+	}
+	&.invalid {
+		background-color: #fcc7cf;
+		border-color: #db7988;
+	}
+}
 
 i.dp-icon-filetype {
 	display: block;
@@ -6814,6 +6829,11 @@ table.prop-table {
 		vertical-align: middle;
 		border-top: 1px solid #D5E3EE;
         word-wrap: break-word;
+
+		input[type=text],textarea,select {
+			width: 90%;
+			max-width: 200px;
+		}
 	}
 
 	.error-msg {
@@ -7155,16 +7175,16 @@ tr.member-row:hover .single-click-activate {
 	border-top: none;
 }
 
-.field-holders-table .no-value {
-	display: none !important;
-}
-
 .field-holders-table .no-value.always-display {
 	display: table-row-group !important;
 }
 
 .field-holders-table.mode-edit-on .item-on.no-value {
 	display: table-row-group !important;
+}
+
+.field-holders-table tbody.item.off {
+	display: none;
 }
 
 table.field-holders-table th {
@@ -7200,9 +7220,9 @@ table.field-holders-table td {
 	vertical-align: middle;
 }
 
-table.field-holders-table tr.mode-edit { display: none; }
-table.field-holders-table.mode-edit-on tr.mode-edit { display: table-row; }
-table.field-holders-table.mode-edit-on tr.mode-display { display: none; }
+//table.field-holders-table tr.mode-edit { display: none; }
+//table.field-holders-table.mode-edit-on tr.mode-edit { display: table-row; }
+//table.field-holders-table.mode-edit-on tr.mode-display { display: none; }
 
 
 .errors-section {
@@ -8568,3 +8588,44 @@ a.assign-self-link {
     list-style: disc;
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Alternative calendars date picker
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+.calendars {
+	line-height: 1.4;
+	button {
+		background-color: #fff;
+	}
+	&-ctrl {
+		background-color: #fbfbfb;
+		.calendars-cmd:hover {
+			background-color: #f0f0f0;
+		}
+	}
+	&-month-header select {
+		width: auto;
+		font-size: 11px !important;
+	}
+	&-month td {
+		background-color: #f5f5f5;
+		.calendars-today {
+			color: #fff;
+			background-color: #888;
+		}
+		.calendars-highlight {
+			color: #fff;
+			background-color: #5094ce;
+		}
+		.calendars-selected {
+			color: #fff;
+			background-color: #337ab7;
+		}
+	}
+	&-month a {
+		background-color: #f5f5f5;
+		color: #666;
+	}
+}
+
+

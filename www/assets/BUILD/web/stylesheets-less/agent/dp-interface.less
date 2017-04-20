@@ -194,6 +194,7 @@ select:focus{outline: none;}
 
 #colorbox, #cboxOverlay, #cboxWrapper {
 	z-index: 99999999;
+	box-sizing: content-box;
 }
 
 article,aside,details,figcaption,figure,
@@ -859,13 +860,11 @@ select.dpe_select, select.with-select2 {
 	}
 
 	&.switch-success {
-		#global_ajax_error_submit { display: none; }
 		#global_ajax_error_info { display: none; }
 		.error-desc { display: none; }
 		.success-on { display: block; }
 	}
 	&.switch-loading {
-		#global_ajax_error_submit { display: none; }
 		#global_ajax_error_info { display: none; }
 		.error-desc { display: none; }
 		.loading-on { display: block; }
@@ -900,7 +899,7 @@ select.dpe_select, select.with-select2 {
 /* Main overlay wrapper */
 .deskpro-overlay-outer {
 	position: absolute;
-	z-index: 10002;
+	z-index: 1900;
 
 	background-color: #FAFAFA;
 	border: 2px solid #0B374D;
@@ -3342,7 +3341,7 @@ z-index: 2;
 
 .person-search-box {
   position: absolute;
-  z-index: 199;
+  z-index: 1999;
 
   .loading-el {
 	display: none;
@@ -4877,4 +4876,23 @@ ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
 	bottom: 0;
 	width: 52px;
 	position: absolute;
+}
+
+//https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
+.dont-break-out {
+	/* These are technically the same, but use both */
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+
+	-ms-word-break: break-all;
+	/* This is the dangerous one in WebKit, as it breaks things wherever */
+	word-break: break-all;
+	/* Instead use this non-standard one: */
+	word-break: break-word;
+
+	/* Adds a hyphen where the word breaks, if supported (No Blink) */
+	-ms-hyphens: auto;
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
+	hyphens: auto;
 }

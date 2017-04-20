@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSet
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -63,6 +64,7 @@ class WidgetBrandChatPopupSettingsType extends AbstractType
                     WidgetBrandChatPopupSettings::STYLE_WIDGET_BUTTON_AGENT,
                 ],
             ])
+            ->add('delay', NumberType::class)
         ;
     }
 

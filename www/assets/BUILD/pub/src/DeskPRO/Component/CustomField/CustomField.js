@@ -13,11 +13,10 @@ import { CustomFieldToggle } from './CustomFieldToggle';
 export class CustomField extends React.Component {
 
   static propTypes = {
-    config:        PropTypes.object,
-    propertyPath:  PropTypes.string,
-    formErrors:    PropTypes.object,
-    children:      PropTypes.node,
-    widgetOptions: PropTypes.object
+    config:     PropTypes.object,
+    language:   PropTypes.number,
+    formErrors: PropTypes.object,
+    children:   PropTypes.node
   };
 
   static getFieldPropertyPath(props) {
@@ -62,19 +61,29 @@ export class CustomField extends React.Component {
   }
 
   render() {
-    const { config, children, formErrors } = this.props;
+    const { config, language, children, formErrors } = this.props;
     const childProps = children.props;
     const widgetType = config.get('widget_type');
+
+    let title = config.get('title');
+    let description = config.get('description');
+
+    const translation = config.getIn(['translations', `${language}`]);
+    if (translation) {
+      title = translation.get('title');
+      description = translation.get('description');
+    }
 
     return React.cloneElement(children, {
       ...childProps,
 
+      title,
+      description,
+      formErrors,
       propertyPath: CustomField.getFieldPropertyPath(this.props),
-      title:        config.get('title'),
-      description:  config.get('description'),
       field:        this.renderCustomField(),
       isHidden:     widgetType === 'hidden',
-      formErrors
+      required:     config.getIn(['options', 'required']) || config.getIn(['options', 'validation_type']) === 'required'
     });
   }
 }

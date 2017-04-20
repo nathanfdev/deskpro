@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1184,7 +1184,12 @@ class FeedbackController extends AbstractController
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
 
         if ($request->getMethod() == 'POST') {
-            $form->handleRequest($request);
+            $data            = $request->get($form->getName()) ?: [];
+            $data['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
+                ? $this->in->getCleanValue($form->getName().'.content', 'string', null, ['noclean' => true])
+                : $this->in->getCleanValue($form->getName().'.content', 'html');
+
+            $form->submit($data);
             $form->isValid();
 
             $validator = new NewFeedbackValidator();

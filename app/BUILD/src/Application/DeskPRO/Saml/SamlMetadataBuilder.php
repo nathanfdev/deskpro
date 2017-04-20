@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,8 @@
 
 namespace Application\DeskPRO\Saml;
 
+use DateTime;
+
 /**
  * This is taken from the onelogin/saml-php library, and changed so we can manipulate the metadata.
  *
@@ -41,13 +43,15 @@ class SamlMetadataBuilder extends \OneLogin_Saml2_Metadata
     /**
      * Generates the metadata of the SP based on the settings.
      *
-     * @param string    $sp            The SP data
-     * @param string    $authnsign     authnRequestsSigned attribute
-     * @param string    $wsign         wantAssertionsSigned attribute
-     * @param DateTime  $validUntil    Metadata's valid time
-     * @param Timestamp $cacheDuration Duration of the cache in seconds
-     * @param array     $contacts      Contacts info
-     * @param array     $organization  Organization ingo
+     * @param string        $sp            The SP data
+     * @param bool|string   $authnsign     authnRequestsSigned attribute
+     * @param bool|string   $wsign         wantAssertionsSigned attribute
+     * @param DateTime|null $validUntil    Metadata's valid time
+     * @param int|null      $cacheDuration Duration of the cache in seconds
+     * @param array         $contacts      Contacts info
+     * @param array         $organization  Organization ingo
+     * @param array         $attributes
+     * @param string        $custom_xml
      *
      * @return string SAML Metadata XML
      */

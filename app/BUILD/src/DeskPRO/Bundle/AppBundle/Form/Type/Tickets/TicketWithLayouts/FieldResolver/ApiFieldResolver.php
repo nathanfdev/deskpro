@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,8 @@ use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessageAttachmentCollectionType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
@@ -56,7 +58,13 @@ class ApiFieldResolver extends AbstractFieldResolver
             return false;
         }
 
-        return parent::createDepartment($context);
+        return new FormField(TicketDepartmentChoiceType::class, [
+            'person'      => $context->getPerson(),
+            'ticket'      => $context->getTicket(),
+            'constraints' => [
+                new Assert\NotNull(),
+            ],
+        ]);
     }
 
     /**
@@ -93,9 +101,9 @@ class ApiFieldResolver extends AbstractFieldResolver
     }
 
     /**
-     * @return FormField
+     * {@inheritdoc}
      */
-    protected function createSubject()
+    protected function createSubject(TicketWithLayoutsContext $context)
     {
         return new FormField(TextType::class, [
             'constraints' => [
@@ -126,9 +134,25 @@ class ApiFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
+    protected function createAttach(TicketWithLayoutsContext $context)
+    {
+        if (!$context->getMessage()) {
+            return false;
+        }
+
+        return new FormField(ApiTicketMessageAttachmentCollectionType::class, [
+            'required'       => false,
+            'person'         => $context->getPerson(),
+            'ticket_message' => $context->getMessage(),
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function createCustomField(TicketWithLayoutsContext $context, $propertyPath, CustomDefAbstract $def = null)
     {
-        if (!$this->canRenderCustomDef($def)) {
+        if (!$this->canRenderCustomDef($def, $context)) {
             return false;
         }
 

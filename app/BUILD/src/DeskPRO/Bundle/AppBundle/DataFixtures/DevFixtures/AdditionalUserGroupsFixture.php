@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -53,22 +53,19 @@ class AdditionalUserGroupsFixture extends DeskProAbstractFixture implements Orde
         $group = new Usergroup();
         $group
             ->setTitle('VIP')
-            ->setNote('VIP: '.$this->faker->sentence())
-            ->setSysName('vip');
+            ->setNote('VIP: '.$this->faker->sentence());
         $manager->persist($group);
 
         $group = new Usergroup();
         $group
             ->setTitle('Extra Priv')
-            ->setNote('Extra Priv: '.$this->faker->sentence())
-            ->setSysName('extra_priv');
+            ->setNote('Extra Priv: '.$this->faker->sentence());
         $manager->persist($group);
 
         $group = new Usergroup();
         $group
             ->setTitle('Beta Users')
-            ->setNote('Beta Users: '.$this->faker->sentence())
-            ->setSysName('beta_users');
+            ->setNote('Beta Users: '.$this->faker->sentence());
         $manager->persist($group);
 
         $manager->flush();

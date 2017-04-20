@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,7 +62,7 @@ class KbController extends AbstractController
     // Edit article
     //###########################################################################
 
-    public function viewArticleAction($article_id)
+    public function viewArticleAction($article_id, Request $request)
     {
         $isPdf = $this->in->getBool('pdf');
         /** @var Article $article */
@@ -71,7 +71,7 @@ class KbController extends AbstractController
             throw $this->createNotFoundException("Unknown article $article_id");
         }
 
-        if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.unpublished' && $this->person->hasPerm('agent_publish.validate')) {
+        if ($request->get('do_validate') and $article['status_code'] == 'hidden.unpublished' && $this->person->hasPerm('agent_publish.validate')) {
             $article['status_code'] = Article::STATUS_PUBLISHED;
             $this->em->persist($article);
             $this->em->flush();
@@ -107,9 +107,11 @@ class KbController extends AbstractController
             $category = current($article->getCategories());
         }
         if ($category && $category->getBrand()) {
-            $brandId = $category->getBrand()->getId();
+            $brand   = $category->getBrand();
+            $brandId = $brand->getId();
         } else {
             $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+            $brand   = $this->em->getRepository(Brand::class)->find($brandId);
         }
         $article_categories = $this->getFilteredCategory($brandId);
         $article_products   = $this->em->getRepository(Product::class)->getInHierarchy();
@@ -137,15 +139,16 @@ class KbController extends AbstractController
 
         $trans_data = $this->container->getObjectLangRepository()->getLoadedRecs($article);
 
-        if (!count($article->getCategories())) {
+        if (!count($article->getCategories()) && $article_categories) {
             $first = Arrays::getFirstKey($article_categories);
-            $cat   = $this->em->getRepository(ArticleCategory::class)->find($first);
-            $article->addToCategory($cat);
-            $this->em->persist($article);
-            $this->em->flush($article);
+            if ($category = $this->em->getRepository(ArticleCategory::class)->find($first)) {
+                $article->addToCategory($category);
+                $this->em->persist($article);
+                $this->em->flush($article);
+            }
         }
 
-        $glossary       = new GlossaryHandler($this->em, $category->getBrand());
+        $glossary       = new GlossaryHandler($this->em, $brand);
         $glossary_words = $glossary->findWords($article->content);
         $word_defs      = $glossary->getWordDefs($glossary_words);
 
@@ -404,21 +407,21 @@ class KbController extends AbstractController
                 break;
 
             case 'categories':
-                $cat_ids = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
-                $cats    = $this->em->getRepository(ArticleCategory::class)->getByIds($cat_ids);
+                $catIds = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
+                $cats   = $this->em->getRepository(ArticleCategory::class)->getByIds($catIds);
 
                 $article->setCategories($cats);
 
-                $data['category_ids'] = $cat_ids;
+                $data['category_ids'] = $catIds;
                 break;
 
             case 'products':
-                $prod_ids = $this->in->getCleanValueArray('product_ids', 'uint', 'discard');
-                $prods    = $this->em->getRepository(Product::class)->getByIds($prod_ids);
+                $prodIds = $this->in->getCleanValueArray('product_ids', 'uint', 'discard');
+                $prods   = $this->em->getRepository(Product::class)->getByIds($prodIds);
 
                 $article->setProducts($prods);
 
-                $data['product_ids'] = $prod_ids;
+                $data['product_ids'] = $prodIds;
                 break;
 
             case 'remove-auto-unpub':
@@ -478,18 +481,18 @@ class KbController extends AbstractController
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
 
-                $content_info = Strings::parseImageDataUrls($content);
+                $contentInfo = Strings::parseImageDataUrls($content);
 
-                if (!empty($content_info['files'])) {
-                    foreach ($content_info['files'] as $file_info) {
-                        $file_ext = ContentTypes::findExtensionForContentType($file_info['type'], false);
-                        if (!$file_ext) {
+                if (!empty($contentInfo['files'])) {
+                    foreach ($contentInfo['files'] as $file_info) {
+                        $fileExt = ContentTypes::findExtensionForContentType($file_info['type'], false);
+                        if (!$fileExt) {
                             continue;
                         }
 
                         $blob = $this->container->getBlobStorage()->createBlobRecordFromString(
                             $file_info['data'],
-                            "file.$file_ext",
+                            "file.$fileExt",
                             $file_info['type'],
                             []
                         );
@@ -497,13 +500,13 @@ class KbController extends AbstractController
 
                         $this->em->persist($blob);
 
-                        $content_info['string'] = str_replace($file_info['token'], $blob->getDownloadUrl(true, true), $content_info['string']);
+                        $contentInfo['string'] = str_replace($file_info['token'], $blob->getDownloadUrl(true, true), $contentInfo['string']);
                     }
                 }
 
                 $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
-                $article['content'] = $content_info['string'];
+                $article['content'] = $contentInfo['string'];
 
                 $rev            = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
                 $rev['content'] = $article['content'];
@@ -522,8 +525,11 @@ class KbController extends AbstractController
                 $content  = $article->content;
                 $content  = $glossary->processText($content);
 
-                if ($lang_id = $this->in->getUInt('language_id')) {
-                    $lang = $this->container->getLanguageData()->get($lang_id);
+                $article->setContentInput($this->in->getStringRaw('content_input'));
+                $article->setContentInputType($this->in->getString('content_input_type'));
+
+                if ($langId = $this->in->getUInt('language_id')) {
+                    $lang = $this->container->getLanguageData()->get($langId);
                     if ($lang) {
                         $article->language = $lang;
                     }
@@ -544,14 +550,14 @@ class KbController extends AbstractController
                 }
 
                 foreach ($this->container->getLanguageData()->getAll() as $lang) {
-                    $lang_id = $lang->getId();
+                    $langId = $lang->getId();
 
-                    if ($lang_id == $article->language->getId()) {
+                    if ($langId == $article->language->getId()) {
                         continue;
                     }
 
-                    $title       = $this->in->getString("title.$lang_id");
-                    $content_val = (string) $this->in->getRaw("content.$lang_id");
+                    $title       = $this->in->getString("title.$langId");
+                    $content_val = (string) $this->in->getRaw("content.$langId");
 
                     if (!$title && !$content_val) {
                         continue;

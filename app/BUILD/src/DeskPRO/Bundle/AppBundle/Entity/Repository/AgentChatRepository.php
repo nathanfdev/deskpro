@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat as AgentChatEntity;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
@@ -49,12 +48,21 @@ use Doctrine\ORM\EntityRepository;
 class AgentChatRepository extends EntityRepository
 {
     /**
-     * @param PersonEntity $person
+     * @param Person $me
      *
      * @return AgentChatEntity[]
      */
-    public function findAllPersonChats(PersonEntity $person)
+    public function findGroupChats(Person $me)
     {
+        $qb = $this->createQueryBuilder('ac');
+        $qb
+            ->innerJoin(AgentChatParticipant::class, 'acp', 'WITH', 'ac.id = acp.chat')
+            ->andWhere('acp.person = :me')
+            ->andWhere('ac.type = :type')
+            ->setParameter('me', $me)
+            ->setParameter('type', 'group');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**
@@ -153,5 +161,25 @@ class AgentChatRepository extends EntityRepository
         $results = $qb->getQuery()->getResult();
 
         return $results;
+    }
+
+    public function findGroupChat($participants)
+    {
+        $qb = $this->createQueryBuilder('ac');
+        $qb
+            ->innerJoin(AgentChatParticipant::class, 'acp', 'WITH', 'ac.id = acp.chat')
+            ->andWhere('ac.type = :type')
+            ->setParameter('type', 'group')
+            ->groupBy('ac.id')
+            ->having('COUNT(acp.person) = :count')
+            ->andHaving('SUM(CASE WHEN acp.person IN (:participants) THEN 1 ELSE 0 END) = :count2')
+            ->setParameter('participants', $participants)
+            ->setParameter('count', count($participants))
+            ->setParameter('count2', count($participants))
+            ->orderBy('ac.id', 'DESC')
+            ->setMaxResults(1)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 }

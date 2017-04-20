@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,10 +39,13 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
 
@@ -55,12 +58,14 @@ class AgentHelper implements PersonContextInterface
     const DOWNLOADS = 'downloads';
     const NEWS      = 'news';
     const FEEDBACK  = 'feedback';
+    const TOPICS    = 'topics';
 
     /** @var array */
     protected $enabled_types = [
         self::ARTICLES,
         self::DOWNLOADS,
         self::NEWS,
+        self::TOPICS,
     ];
 
     /**
@@ -336,7 +341,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['category_link_table']}
                         ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
                 )';
@@ -348,7 +353,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['content_type']}
                         ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
                 )';
@@ -435,7 +440,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['category_link_table']}
                         ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
                 ) AS $alias";
@@ -446,7 +451,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['content_type']}
                         ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
                 ) AS $alias";
@@ -485,6 +490,7 @@ class AgentHelper implements PersonContextInterface
                 'entity'              => ArticleComment::class,
                 'category_table'      => 'article_categories',
                 'category_link_table' => 'article_to_categories',
+                'category_field'      => 'category_id',
                 'id_field'            => 'article_id',
             ],
             'downloads' => [
@@ -492,6 +498,7 @@ class AgentHelper implements PersonContextInterface
                 'table'          => 'download_comments',
                 'entity'         => DownloadComment::class,
                 'category_table' => 'download_categories',
+                'category_field' => 'category_id',
                 'id_field'       => 'download_id',
             ],
             'news' => [
@@ -499,6 +506,7 @@ class AgentHelper implements PersonContextInterface
                 'table'          => 'news_comments',
                 'entity'         => NewsComment::class,
                 'category_table' => 'news_categories',
+                'category_field' => 'category_id',
                 'id_field'       => 'news_id',
             ],
             'feedback' => [
@@ -506,6 +514,14 @@ class AgentHelper implements PersonContextInterface
                 'table'        => 'feedback_comments',
                 'entity'       => FeedbackComment::class,
                 'id_field'     => 'feedback_id',
+            ],
+            'topics' => [
+                'content_type'   => 'topics',
+                'table'          => 'topic_comments',
+                'entity'         => TopicComment::class,
+                'category_table' => 'guides',
+                'category_field' => 'guide_id',
+                'id_field'       => 'topic_id',
             ],
         ];
 
@@ -538,12 +554,13 @@ class AgentHelper implements PersonContextInterface
      * @param null   $limit
      * @param string $order_dir
      * @param bool   $all
+     * @param string $status
      *
      * @return array
      */
-    public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false)
+    public function getDraftContent($limit = null, $order_dir = 'ASC', $all = false, $status = 'draft')
     {
-        $results = $this->getDraftInfo($limit, $order_dir, $all);
+        $results = $this->getDraftInfo($limit, $order_dir, $all, $status);
 
         return $this->getContentFromInfo($results);
     }
@@ -555,7 +572,7 @@ class AgentHelper implements PersonContextInterface
      *
      * @return array
      */
-    public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false)
+    public function getDraftInfo($limit = null, $order_dir = 'ASC', $all = false, $status = 'draft')
     {
         $sql_parts = [];
 
@@ -595,6 +612,12 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
+            'topics' => [
+                'content_type' => 'topic',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
+            ],
         ];
 
         //------------------------------
@@ -615,7 +638,9 @@ class AgentHelper implements PersonContextInterface
                 SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
                 FROM $table AS c
                 LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-                WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
+                WHERE 
+                    (c.status = 'hidden' AND c.hidden_status = '{$status}' $person_sql) 
+                 OR (r.status = '{$status}' $person_sql)
                 GROUP BY c.id
             )";
         }
@@ -635,11 +660,12 @@ class AgentHelper implements PersonContextInterface
     /**
      * Count how many drafts there are for this user.
      *
-     * @param bool $mine
+     * @param bool   $mine
+     * @param string $status
      *
      * @return int
      */
-    public function getDraftsCount($mine = true)
+    public function getCountsByHiddenStatus($mine = true, $status = 'draft')
     {
         $types = [
             'articles' => [
@@ -666,6 +692,12 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
+            'topics' => [
+                'content_type' => 'topics',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
+            ],
         ];
 
         $db        = App::getDb();
@@ -684,7 +716,9 @@ class AgentHelper implements PersonContextInterface
                 SELECT COUNT(DISTINCT c.id)
                 FROM $table c
                 LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
-                WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' $person_sql) OR (r.status = 'draft' $person_sql)
+                WHERE 
+                    (c.status = 'hidden' AND c.hidden_status = '{$status}' $person_sql) 
+                    OR (r.status = '{$status}' $person_sql)
             ) AS $alias";
         }
 
@@ -728,6 +762,12 @@ class AgentHelper implements PersonContextInterface
                 'entity'       => Feedback::class,
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
+            ],
+            'topics' => [
+                'content_type' => 'topics',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
             ],
         ];
 
@@ -796,6 +836,9 @@ class AgentHelper implements PersonContextInterface
             case self::FEEDBACK:
                 return Feedback::class;
                 break;
+            case self::TOPICS:
+                return Topic::class;
+                break;
         }
 
         throw new \InvalidArgumentException("Unknown type `$type`");
@@ -825,6 +868,9 @@ class AgentHelper implements PersonContextInterface
                 break;
             case self::FEEDBACK:
                 return FeedbackCategory::class;
+                break;
+            case self::TOPICS:
+                return Guide::class;
                 break;
         }
 

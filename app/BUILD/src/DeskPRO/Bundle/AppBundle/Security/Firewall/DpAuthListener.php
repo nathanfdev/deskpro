@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,6 +48,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
 
@@ -88,7 +89,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     {
         $tokenOrResponse = null;
 
-        if ('portal_login_submit' == $request->attributes->get('_route')) {
+        $username = $request->get('username', '');
+        $route    = $request->attributes->get('_route');
+
+        if ('portal_login_submit' == $route && is_scalar($username)) {
             $abuseCheck = $this->createAntiAbuseEvent($request);
             $response   = $this->checkCaptcha($request, $abuseCheck);
             if ($response) {
@@ -97,25 +101,27 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $response;
             }
 
-            $tokenOrResponse = new DpFormLoginToken($request->get('username', ''), $request->get('password', ''));
-        } elseif ('portal_agent_login' == $request->attributes->get('_route')) {
+            $tokenOrResponse = new DpFormLoginToken($username, $request->get('password', ''));
+        } elseif ('portal_agent_login' == $route) {
             $tokenOrResponse = new AgentImpersonateToken($request->attributes->get('code'));
             $request->getSession()->set('is_impersonating', true);
-        } elseif ('portal_login_authenticate' == $request->attributes->get('_route')) {
+        } elseif ('portal_login_authenticate' == $route) {
             $tokenOrResponse = $this->getAuthRedirect($request);
-        } elseif ('portal_login_callback' == $request->attributes->get('_route')) {
+        } elseif ('portal_login_callback' == $route) {
             $tokenOrResponse = $this->processCallback($request);
-        } elseif ('portal_login_usersource_sso' == $request->attributes->get('_route')) {
+        } elseif ('portal_login_usersource_sso' == $route) {
             $tokenOrResponse = $this->processBackgroundSso($request);
         }
 
         if ($tokenOrResponse instanceof Response) {
             return $tokenOrResponse;
+        } elseif (!$tokenOrResponse) {
+            return new RedirectResponse('/login');
         }
 
         try {
             return $this->authenticationManager->authenticate($tokenOrResponse);
-        } catch (BadCredentialsException $e) {
+        } catch (AuthenticationException $e) {
             if (isset($abuseCheck)) {
                 $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);
             }
@@ -157,10 +163,16 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         return;
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return LoginAbuseCheck
+     */
     protected function createAntiAbuseEvent(Request $request)
     {
-        $abuseCheck = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
         $request->getSession()->set('last_username', $request->get('username'));
+
+        $abuseCheck = new LoginAbuseCheck($request->get('username'), $request->getClientIp());
         $abuseCheck->markAsCheckOnly(true);
         $abuseCheck->setResponse(new RedirectResponse($this->container->get('router')->generate('portal_login')));
 
@@ -199,7 +211,12 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
                 $return = $request->get('return');
-                $session->set('auth_return', $return);
+
+                // set return path only if it's defined in query params, otherwise it could be set in auth listener
+                // so don't clear it
+                if ($return) {
+                    $session->set('_security.'.$this->providerKey.'.target_path', $return);
+                }
 
                 $r = $this->redirect($result->getRedirectUrl());
                 $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
@@ -207,7 +224,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $r;
             }
 
-            throw new BadCredentialsException();
+            throw new BadCredentialsException('portal.account.login-invalid');
         } else {
             $result = $adapter->authenticate();
 
@@ -215,7 +232,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $this->createTokenFromUsersourceResult($usersource, $result);
             }
 
-            throw new BadCredentialsException();
+            throw new BadCredentialsException('portal.account.login-invalid');
         }
     }
 
@@ -247,7 +264,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         if (!$adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             $session->getFlashBag()->set('login_failed', true);
 
-            throw new BadCredentialsException();
+            throw new BadCredentialsException('portal.account.login-invalid');
         }
 
         $adapter->setCallbackContext($_REQUEST);
@@ -260,6 +277,11 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 return $this->getSuccessTestResponse($token->getUser(), $writer);
             }
 
+            // allow to JWT or SAML to control redirect to specific page after login
+            if ($request->get('return')) {
+                $session->set('_security.'.$this->providerKey.'.target_path', $request->get('return'));
+            }
+
             return $token;
         }
 
@@ -267,7 +289,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return $this->getFailedTestResponse($writer);
         }
 
-        throw new BadCredentialsException();
+        throw new BadCredentialsException('portal.account.login-invalid');
     }
 
     /**
@@ -310,7 +332,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             return $this->getFailedTestResponse($writer);
         }
 
-        throw new BadCredentialsException();
+        throw new BadCredentialsException('portal.account.login-invalid');
     }
 
     /**
@@ -356,7 +378,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         $token = $this->createTokenFromPerson($person);
         if (!$token->isAuthenticated()) {
-            throw new BadCredentialsException();
+            throw new BadCredentialsException('portal.account.login-invalid');
         }
 
         return $token;

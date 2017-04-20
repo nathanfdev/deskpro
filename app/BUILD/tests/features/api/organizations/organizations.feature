@@ -5,7 +5,8 @@ Feature: /organizations endpoint
   I want an API endpoint
 
   Background:
-    Given I'm authenticated as admin
+    Given no Person records exist
+    And I'm authenticated as admin
     And there are no Blob records in the DB
     And I add the following Usergroup records:
       | #  | Sys name     | Title    |
@@ -24,6 +25,7 @@ Feature: /organizations endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 2 elements
+    And the db queries counter should be equal or less than 25
 
   Scenario: I try to add a new organization with empty request
     When I send a POST request to "/api/v2/organizations"
@@ -42,7 +44,6 @@ Feature: /organizations endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].code" should be equal to "invalid_data_type"
-    And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].message" should be equal to "This data type is not is data type that was expected."
 
   Scenario: I try to add a new organization with duplicate email domains
     When I send a POST request to "/api/v2/organizations" with body:
@@ -107,7 +108,7 @@ Feature: /organizations endpoint
         "city": "city",
         "state": "state",
         "zip": "zip",
-        "country": "UK"
+        "country": "GB"
       }
     ]
   }
@@ -177,7 +178,7 @@ Feature: /organizations endpoint
     And the JSON node "data[7].city" should be equal to "city"
     And the JSON node "data[7].state" should be equal to "state"
     And the JSON node "data[7].zip" should be equal to "zip"
-    And the JSON node "data[7].country" should be equal to "UK"
+    And the JSON node "data[7].country" should be equal to "GB"
     And the JSON node "data[7].comment" should be equal to 0
 
   Scenario: I update an organization
@@ -320,12 +321,11 @@ Feature: /organizations endpoint
     }
     """
 
-    When I send a GET request to "/api/v2/organizations/{yahoo}"
-    Then the JSON node "data.members" should have 3 elements
-    And the JSON node "data.members[0]" should be equal to "{user1@deskpro.dev}"
-    And the JSON node "data.members[1]" should be equal to "{user2@deskpro.dev}"
-    And the JSON node "data.members[2]" should be equal to "{user3@deskpro.dev}"
-
+    When I send a GET request to "/api/v2/organizations/{yahoo}/members?order_by=id&order_dir=asc"
+    Then the JSON node "data" should have 3 elements
+    And the JSON node "data[0].id" should be equal to "{user1@deskpro.dev}"
+    And the JSON node "data[1].id" should be equal to "{user2@deskpro.dev}"
+    And the JSON node "data[2].id" should be equal to "{user3@deskpro.dev}"
 
   Scenario: I update org members
     Given only the following Organization records exist:
@@ -344,7 +344,54 @@ Feature: /organizations endpoint
     }
     """
 
-    When I send a GET request to "/api/v2/organizations/{o1}"
-    Then the JSON node "data.members" should have 2 elements
-    And the JSON node "data.members[0]" should be equal to "{u2}"
-    And the JSON node "data.members[1]" should be equal to "{u4}"
+    When I send a GET request to "/api/v2/organizations/{o1}/members?order_by=id&order_dir=asc"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{u2}"
+    And the JSON node "data[1].id" should be equal to "{u4}"
+
+  Scenario: I set phone number country code w/o plus char
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Ebay",
+  "contact_data": {
+    "phone": [
+      {
+        "type": "mobile",
+        "code": "1",
+        "number": "234-534-5345"
+      }
+    ]
+  }
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.contact_data[0].contact_type" should be equal to "phone"
+    And the JSON node "data.contact_data[0].code" should be equal to "+1"
+    And the JSON node "data.contact_data[0].number" should be equal to "234-534-5345"
+
+  Scenario Outline: I set country by name
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Ebay",
+  "contact_data": {
+    "address": [
+      {
+        "address": "address",
+        "city": "city",
+        "state": "state",
+        "zip": "zip",
+        "country": "<country>"
+      }
+    ]
+  }
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.contact_data[0].country" should be equal to "<country>"
+
+    Examples:
+      | country        |
+      | United Kingdom |
+      | United States  |

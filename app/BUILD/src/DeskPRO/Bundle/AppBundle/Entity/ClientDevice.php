@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,7 +40,7 @@ use Zend\Db\TableGateway\Exception\RuntimeException;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="client_devices", uniqueConstraints={@ORM\UniqueConstraint(name="device",columns={"device_id", "person_id", "app_type"})})
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  * @JMS\ExclusionPolicy("all")
  */
@@ -48,10 +48,13 @@ class ClientDevice implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const TYPE_GENERIC     = 'generic';
-    const TYPE_IOS_GENERIC = 'ios';
-    const TYPE_IOS_IPHONE  = 'ios.iphone';
-    const TYPE_IOS_IPAD    = 'ios.ipad';
+    const TYPE_GENERIC        = 'generic';
+    const TYPE_IOS_GENERIC    = 'ios';
+    const TYPE_IOS_IPHONE     = 'ios.iphone';
+    const TYPE_IOS_IPAD       = 'ios.ipad';
+    const TYPE_ANDROID        = 'android';
+    const TYPE_ANDROID_PHONE  = 'android.phone';
+    const TYPE_ANDROID_TABLET = 'android.tablet';
 
     const APP_TYPE_MOBILE = 'mobile';
 

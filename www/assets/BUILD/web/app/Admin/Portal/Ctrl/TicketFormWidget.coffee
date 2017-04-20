@@ -13,8 +13,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl
       @$scope.languages = []
 
     initialLoad: ->
-      @Api2.sendGet('/ticket_departments').then ({data}) =>
-        @$scope.departments = data.data
+      @Api2.sendGet('/ticket_departments?selectable=1').then ({data}) =>
+        @$scope.departments = data.data || []
       @Api2.sendGet('/languages').then ({data}) =>
         @$scope.languages = data.data
         @$scope.language = data.data[0].locale

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,9 +67,9 @@ class AppManipulator
 
     public function installInstance(AppPackage $package, AppManipulatorContext $context)
     {
-        $instance_installer = new InstanceInstaller($this->manager, $package, $this->em);
+        $instanceInstaller = new InstanceInstaller($this->manager, $package, $this->em);
 
-        $app = $instance_installer->install(
+        $app = $instanceInstaller->install(
             $context->getInputTitle(),
             $context->getSettings(),
             $this->container,

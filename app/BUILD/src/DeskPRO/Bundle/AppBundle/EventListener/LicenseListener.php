@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use DpSys\License;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -63,7 +64,8 @@ class LicenseListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::REQUEST  => ['onPreRequest', 0],
+            // above when Security is run because we need the lic to check auto-agent
+            KernelEvents::REQUEST  => ['onPreRequest', 10],
             ConsoleEvents::COMMAND => ['onCommand', 0],
         ];
     }
@@ -123,6 +125,12 @@ class LicenseListener implements EventSubscriberInterface
 
         if (isset($settingsConfig[$id])) {
             return $settingsConfig[$id];
+        }
+
+        if (!$this->container || !$this->container->has('settings_resolver')) {
+            SystemErrorHandler::logException(new \RuntimeException('Calling on License before container is available'));
+
+            return null;
         }
 
         /** @var SettingsBag $settings */

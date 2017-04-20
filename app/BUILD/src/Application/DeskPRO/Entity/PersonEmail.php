@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -245,14 +245,13 @@ class PersonEmail extends DomainObject
      */
     public function setEmail($email)
     {
-        $email_domain = null;
-
+        $emailDomain = '';
         if ($email && strpos($email, '@')) {
-            list(, $email_domain) = explode('@', $email, 2);
+            list(, $emailDomain) = explode('@', $email, 2);
         }
 
         $this->setModelField('email', strtolower($email));
-        $this->setModelField('email_domain', $email_domain);
+        $this->setModelField('email_domain', $emailDomain);
 
         return $this;
     }

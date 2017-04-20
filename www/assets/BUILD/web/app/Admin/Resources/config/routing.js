@@ -101,6 +101,27 @@ define(function() {
     controller: 'Admin_Main_Ctrl_Nav'
   });
 
+  routes.push({
+    id:           'voice-channel',
+    url:          '/voice_channel',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
+  routes.push({
+    id:           'features',
+    url:          '/features',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
+  routes.push({
+    id:           'dev',
+    url:          '/dev',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
   //##################################################################################################################
   // Interface Nav
   //##################################################################################################################
@@ -300,7 +321,7 @@ define(function() {
 
   routes.push({
     id: 'agents.agents.edit',
-    url: '/{id:[0-9]+}',
+    url: '/{id:[0-9]+}?created_agent',
     templateName: 'Agents/edit.html',
     controller: 'Admin_Agents_Ctrl_Edit'
   });
@@ -1948,6 +1969,16 @@ define(function() {
     data: {type: 'feedback'}
   });
 
+  //###
+  //# Guides::Settings
+  //###
+  routes.push({
+    id: 'portal.guides_settings',
+    url: '/guides/settings',
+    templateName: 'GuidesSettings/guides-settings.html',
+    controller: 'Admin_GuidesSettings_Ctrl_GuidesSettings'
+  });
+
   //##################################################################################################################
   // Chat
   //##################################################################################################################
@@ -2105,6 +2136,147 @@ define(function() {
   });
 
   //##################################################################################################################
+  // Voice channel
+  //##################################################################################################################
+
+  routes.push({
+    id:           'voice-channel.accounts',
+    url:          '/accounts',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.numbers',
+    url:          '/numbers',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.numbers_search_available',
+    url:          '/numbers/available',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.numbers_search_existing',
+    url:          '/numbers/existing',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.numbers_edit',
+    url:          '/numbers/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.extensions',
+    url:          '/extensions',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.extensions_new',
+    url:          '/extensions/new',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.extensions_edit',
+    url:          '/extensions/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.queues',
+    url:          '/queues',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.queues_new',
+    url:          '/queues/new',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.queues_edit',
+    url:          '/queues/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.auto_attendants',
+    url:          '/auto_attendants',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.auto_attendants_new',
+    url:          '/auto_attendants/new',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.auto_attendants_edit',
+    url:          '/auto_attendants/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.agents',
+    url:          '/agents',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.music_and_greetings',
+    url:          '/music_and_greetings',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.call_logs',
+    url:          '/call_logs',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'voice-channel.call_logs_view',
+    url:          '/call_logs/{id:\\d+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  //##################################################################################################################
+  // Dev
+  //##################################################################################################################
+
+  routes.push({
+    id:           'dev.notifications',
+    url:          '/notifications',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  //##################################################################################################################
   // Apps
   //##################################################################################################################
 
@@ -2226,6 +2398,24 @@ define(function() {
     url: '/settings',
     templateName: 'Tasks/settings.html',
     controller: 'Admin_Tasks_Ctrl_Edit'
+  });
+
+  //##################################################################################################################
+  // Features
+  //##################################################################################################################
+
+  routes.push({
+    id: 'features.enable',
+    url: '/enable/{id:[a-zA-Z0-9\\._\\-]+}',
+    templateName: 'Features/enable.html',
+    controller: 'Admin_Main_Ctrl_Features'
+  });
+
+  routes.push({
+    id: 'features.disable',
+    url: '/disable/{id:[a-zA-Z0-9\\._\\-]+}',
+    templateName: 'Features/disable.html',
+    controller: 'Admin_Main_Ctrl_Features'
   });
 
   //##################################################################################################################
@@ -2410,6 +2600,14 @@ define(function() {
 		url: '/view/{id}',
 		templateName: 'Server/server-incidents-view.html',
 		controller: 'Admin_ServerIncidents_Ctrl_View',
+		target: "appbody@server"
+	});
+
+	routes.push({
+		id: 'server.incidents.event',
+		url: '/event/{id}',
+		templateName: 'Server/server-incidents-event.html',
+		controller: 'Admin_ServerIncidents_Ctrl_Event',
 		target: "appbody@server"
 	});
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,12 +56,12 @@ class PlainMailDir extends AbstractFetcher
     /**
      * @var array
      */
-    protected $message_list;
+    protected $messageList;
 
     /**
      * @var int
      */
-    protected $read_count = 0;
+    protected $readCount = 0;
 
     /**
      * Initiates the connection.
@@ -103,22 +103,24 @@ class PlainMailDir extends AbstractFetcher
      */
     protected function _initMessageList()
     {
-        if ($this->message_list !== null) {
-            return $this->message_list;
+        if ($this->messageList !== null) {
+            return $this->messageList;
         }
 
-        $this->message_list = [];
+        $this->messageList = [];
 
         while (($f = $this->dir->read()) !== false) {
             if ($f != '.' && $f !== '..') {
-                $this->message_list[] = $f;
+                $this->messageList[] = $f;
             }
         }
 
-        return $this->message_list;
+        return $this->messageList;
     }
 
     /**
+     * @param bool $reconnect
+     *
      * @return \Directory
      */
     public function getStorage($reconnect = false)
@@ -138,18 +140,18 @@ class PlainMailDir extends AbstractFetcher
     protected function _readNext()
     {
         if (!$this->getStorage()) {
-            return;
+            return null;
         }
 
         $this->getStorage();
         $this->_initMessageList();
 
-        ++$this->read_count;
-        $this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
+        ++$this->readCount;
+        $this->logger->log("Trying to read next ({$this->readCount} call)", 'debug');
 
-        $next = array_shift($this->message_list);
+        $next = array_shift($this->messageList);
         if (!$next) {
-            return;
+            return null;
         }
 
         $mailfile = $this->maildir.'/'.$next;
@@ -161,39 +163,39 @@ class PlainMailDir extends AbstractFetcher
             return $this->_readNext();
         }
 
-        $message_size = filesize($mailfile);
+        $messageSize = filesize($mailfile);
 
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
         $this->logger->log("Fetching message $next", 'debug');
 
-        $raw_message       = new RawMessage();
-        $raw_message->id   = $next;
-        $raw_message->size = $message_size;
+        $rawMessage       = new RawMessage();
+        $rawMessage->id   = $next;
+        $rawMessage->size = $messageSize;
 
-        $raw_message->content = file_get_contents($mailfile);
-        $headers              = null;
+        $rawMessage->content = file_get_contents($mailfile);
+        $headers             = null;
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
-        } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
-        } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers) = explode("\n\n", $raw_message->content, 2);
+        if (strpos($rawMessage->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $rawMessage->content, 2);
+        } elseif ($EOL != "\r\n" && strpos($rawMessage->content, "\r\n\r\n")) {
+            list($headers) = explode("\r\n\r\n", $rawMessage->content, 2);
+        } elseif ($EOL != "\n" && strpos($rawMessage->content, "\n\n")) {
+            list($headers) = explode("\n\n", $rawMessage->content, 2);
         } else {
-            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $rawMessage->content, 2);
         }
 
-        $raw_message->headers = $headers;
+        $rawMessage->headers = $headers;
 
-        if ($this->max_size && $raw_message->size > $this->max_size) {
-            $raw_message->too_big = true;
+        if ($this->maxSize && $rawMessage->size > $this->maxSize) {
+            $rawMessage->too_big = true;
         }
 
-        $this->logger->log(sprintf('Got message Took %0.2f seconds.', microtime(true) - $start_time), 'debug');
+        $this->logger->log(sprintf('Got message Took %0.2f seconds.', microtime(true) - $startTime), 'debug');
 
-        return $raw_message;
+        return $rawMessage;
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,17 +45,21 @@ class PhoneNumberValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof PhoneNumber) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\PhoneNumber');
+            throw new UnexpectedTypeException($constraint, PhoneNumber::class);
         }
 
         if (!$value) {
             return;
         }
         if ($value instanceof Entity\PhoneNumber) {
-            $value = $value->getNumberFormatted();
+            $checkValue = $value->getNumberFormatted();
+        } elseif (is_scalar($value)) {
+            $checkValue = $value;
+        } else {
+            throw new UnexpectedTypeException($value, implode(', ', ['string', PhoneNumber::class]));
         }
 
-        if (!PhoneNumbers::isValid($value)) {
+        if (!PhoneNumbers::isValid($checkValue)) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;
             $context

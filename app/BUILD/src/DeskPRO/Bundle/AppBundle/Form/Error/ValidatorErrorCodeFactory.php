@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,6 +57,7 @@ class ValidatorErrorCodeFactory
         '/The choice ".*" does not exist or is not unique/'          => ErrorsCodes::BAD_CHOICE,
         '/The choices ".*" do not exist in the choice list./'        => ErrorsCodes::BAD_CHOICE,
         '/Could not find all matching choices for the given values/' => ErrorsCodes::BAD_CHOICE,
+        '/All values in the array should be the same/'               => ErrorsCodes::MISMATCH_VALUES,
     ];
 
     /**
@@ -80,6 +81,9 @@ class ValidatorErrorCodeFactory
         Assert\Count::TOO_MANY_ERROR             => ErrorsCodes::TOO_MANY_ELEMENTS,
         Assert\Url::INVALID_URL_ERROR            => ErrorsCodes::INVALID_URL,
         Assert\GreaterThanOrEqual::TOO_LOW_ERROR => ErrorsCodes::TOO_LOW,
+        Assert\Range::TOO_LOW_ERROR              => ErrorsCodes::TOO_LOW,
+        Assert\LessThanOrEqual::TOO_HIGH_ERROR   => ErrorsCodes::TOO_HIGH,
+        Assert\Range::TOO_HIGH_ERROR             => ErrorsCodes::TOO_HIGH,
         Assert\IsTrue::NOT_TRUE_ERROR            => ErrorsCodes::NOT_CHECKED,
         Assert\Regex::REGEX_FAILED_ERROR         => ErrorsCodes::REGEX,
         Assert\Image::INVALID_MIME_TYPE_ERROR    => ErrorsCodes::NOT_AN_IMAGE,

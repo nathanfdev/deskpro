@@ -38,7 +38,7 @@
 {% macro list_item_group(title, icon, href, state_mark, cond, ngClass, groupNgClass) %}
     <li {% if groupNgClass %}ng-class="{{ groupNgClass }}"{% endif %} {% if cond %}ng-show="{{ cond }}"{% endif %}>
         <a ng-href="{{ href }}" class="item group" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
-            <i class="fa {{ icon }}"></i> {{ title }} <i class="fa fa-caret-down pull-right"></i>
+            <i class="fa fa-caret-down pull-right"></i><i class="fa {{ icon }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
         <ul class="sub-list">

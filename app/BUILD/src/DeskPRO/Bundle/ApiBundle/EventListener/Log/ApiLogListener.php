@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,10 @@
 namespace DeskPRO\Bundle\ApiBundle\EventListener\Log;
 
 use DeskPRO\Bundle\ApiBundle\Log\Helper\LogHelper;
+use DeskPRO\Bundle\ApiBundle\Log\LogSaveException;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -47,7 +50,7 @@ class ApiLogListener extends AbstractLogListener
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::RESPONSE => ['onResponse', 32],
+            KernelEvents::RESPONSE => ['onResponse', 31],
             // the priority doesn't make sense because we are using DP_START_TIME, that defined
             // at the very beginning of request handling
             // so you have to be sure, that it will run AFTER Auth and RequestIdListener
@@ -67,6 +70,21 @@ class ApiLogListener extends AbstractLogListener
         }
 
         return;
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     */
+    public function onResponse(FilterResponseEvent $event)
+    {
+        if ($event->isMasterRequest() && $this->composer->getLog() && $this->composer->getLog()->getMode()) {
+            $this->composer->finishApiLog($event->getResponse());
+            try {
+                $this->composer->write($event->getRequest(), $event->getResponse());
+            } catch (LogSaveException $e) {
+                throw new ConflictHttpException('Error saving log entry, possibly request with given ID already processed');
+            }
+        }
     }
 
     /**

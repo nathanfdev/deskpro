@@ -1,6 +1,8 @@
+{% set isVoiceMessage = message.getAttribute('voice_phone_call') %}
+
 <article
-	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %}"
-	data-message-id="{{message.id}}"
+	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %} {% if isVoiceMessage %}react-voice-component{% endif %}"
+	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call']) }}"{% endif %}
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="Agent note: This message will NOT appear to end-users."><i>Note</i></div>{% endif %}
 	<div class="avatar"><img
@@ -206,16 +208,55 @@
 			<ul class="attachment-list">
 				{% for attach_id in ticket_message_attachments[message.id] %}
 					{% set ticket_attach = ticket_attachments[attach_id] %}
-					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}with-icon with-icon-attachment with-icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
-						{% if ticket_attach.blob.isImage() %}
-							<a class="dragout" draggable="true" data-downloadurl="{{ticket_attach.blob.content_type}}:{{ticket_attach.blob.filename}}:{{ ticket_attach.blob.getDownloadUrl(true) }}" data-blob-authid="{{ ticket_attach.blob.getAuthId() }}" href="{{ ticket_attach.blob.download_url }}" data-deskpro-url="{{ ticket_attach.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+					{% set blob = ticket_attach.blob %}
+					<li class="{% if blob.isImage() %}is-image{% else %}with-icon with-icon-attachment with-icon-filetype-{{blob.extension|default('none')}}{% endif %}{% if blob.isArchive() %} archive-blob{% endif %}" rel="message-{{message.id}}">
+						{% if blob.isImage() %}
+							<a class="dragout"
+								draggable="true"
+								data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}"
+								data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}"
+								data-deskpro-url="{{ blob.getDownloadUrl(false, false) }}"
+								target="_blank">
+								<img src="{{ blob.getThumbnailUrl(50, 1, true) }}"
+									 alt=""
+									 class="preview" />
+							</a>
 						{% endif %}
-						<a class="dragout" draggable="true" data-downloadurl="{{ticket_attach.blob.content_type}}:{{ticket_attach.blob.filename}}:{{ ticket_attach.blob.getDownloadUrl(true) }}" data-blob-authid="{{ ticket_attach.blob.getAuthId() }}" href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
-						<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+						<a class="dragout" draggable="true" data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}" data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}" target="_blank">{{blob.filename}}</a>
+						<span class="size">({{ blob.readable_filesize }})</span>
+						{% if blob.isArchive() and blob.hasZipArchiveClass() %}
+							<span class="view-archive-files"/>
+						{% endif %}
 					</li>
 				{% endfor %}
 			</ul>
 		{%endif%}
+		{% set attribute = "signed" %}
+		{%  if message.getAttribute("signed") %}
+			<ul class="encryption {% if message.getAttribute("signed").getValue() == 1 %}valid{% else %}invalid{% endif %}">
+				<li>
+                    {% if message.getAttribute("signed").getValue() == 1 %}
+						<i class="icon-shield"></i> {{ phrase('agent.tickets.signature_valid') }}
+					{% else %}
+						<i class="icon-exclamation text-danger"></i> {{ phrase('agent.tickets.signature_invalid') }}
+					{% endif %}
+				</li>
+			</ul>
+		{% endif %}
+        {%  if message.getAttribute("decrypted") %}
+			<ul class="encryption valid">
+				<li>
+					<i class="icon-lock"></i> {{ phrase('agent.tickets.decrypted') }}
+				</li>
+			</ul>
+        {% endif %}
+        {%  if message.getAttribute("decryption_error") %}
+			<ul class="encryption invalid">
+				<li>
+					<i class="icon-exclamation"></i> {{ phrase('agent.tickets.decryption_error') }}
+				</li>
+			</ul>
+        {% endif %}
 		{% if ticket_fwd_logs[message.id] %}
 			<ul class="attachment-list fwd-list">
 				{% for log in ticket_fwd_logs[message.id] %}

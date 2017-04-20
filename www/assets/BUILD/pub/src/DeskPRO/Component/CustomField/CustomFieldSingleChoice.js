@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { AbstractCustomField } from './AbstractCustomField';
 import { Field } from 'react-forms';
-import { PortalSimpleSelectBoxWrapper } from './PortalSimpleSelectBoxWrapper';
+import { AbstractCustomField } from './AbstractCustomField';
+import PortalSimpleSelectBoxWrapper from './PortalSimpleSelectBoxWrapper';
 
 export class CustomFieldSingleChoice extends AbstractCustomField {
 
@@ -31,13 +31,14 @@ class DeepSelectBox extends React.Component {
 
   renderDeep(choices, deep = 1) {
     const { value, onChange, widgetOptions } = this.props;
-    const hasValue = choice => {
+
+    const hasValue = (choice) => {
       if (choice.get('id') === value) {
         return true;
       }
       if (choice.get('children')) {
         let hasChild = false;
-        choice.get('children').forEach(child => {
+        choice.get('children').forEach((child) => {
           if (hasValue(child)) {
             hasChild = true;
           }
@@ -53,7 +54,7 @@ class DeepSelectBox extends React.Component {
 
     let subChoice = null;
     if (value && choices) {
-      choices.forEach(choice => {
+      choices.forEach((choice) => {
         if (hasValue(choice)) {
           subChoice = choice;
         }
@@ -63,7 +64,7 @@ class DeepSelectBox extends React.Component {
     return (
       <div>
         <PortalSimpleSelectBoxWrapper
-          value={subChoice}
+          value={subChoice && subChoice.get('id')}
           level={deep}
           onChange={onChange}
           choices={choices}

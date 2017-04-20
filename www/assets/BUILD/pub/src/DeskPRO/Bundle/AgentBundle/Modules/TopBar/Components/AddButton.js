@@ -6,7 +6,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class AddButton extends React.Component {
   static propTypes = {
-    closeIframes: PropTypes.func
+    closeIframes: PropTypes.func,
   };
   static defaultProps = {
     closeIframes() {}
@@ -40,6 +40,10 @@ class AddButton extends React.Component {
           <i className="icon download" /> {agentPhrases.get('agent.general.download')}</MenuItem>);
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
           <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
+        if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
+          items.push(<MenuItem key="topic" onClick={this.addTopic}>
+            <i className="icon book" /> {agentPhrases.get('agent.general.topic')}</MenuItem>);
+        }
       }
       if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
         items.push(<MenuItem key="task" onClick={this.addTask}>
@@ -92,6 +96,11 @@ class AddButton extends React.Component {
     this.closePopup();
   };
 
+  addTopic = () => {
+    window.DeskPRO_Window.newTopicLoader.toggle();
+    this.closePopup();
+  };
+
   addTask = () => {
     window.$('form#newTaskForm input, form#newTaskForm select').val('');
     window.DeskPRO_Window.newTaskLoader.toggle();
@@ -109,25 +118,29 @@ class AddButton extends React.Component {
 
   render() {
     const content = this.getPopupContent();
+
     if (content) {
-      return (<div className="item add" onClick={this.togglePopup}>
-        <PopUp
-          positionMy="center top"
-          positionAt="center bottom"
-          id={3}
-          elementId="add-menu-popup"
-          zIndex={99999}
-          content={content}
-          ref={(c) => { this.addPopup = c; }}
-          className="add_menu_popup"
-          autoOpen={false}
-        >
-          <button className="ui button">
-            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
-          </button>
-        </PopUp>
-      </div>);
+      return (
+        <div className="item add" onClick={this.togglePopup}>
+          <PopUp
+            positionMy="center top"
+            positionAt="center bottom"
+            id={3}
+            elementId="add-menu-popup"
+            zIndex={99999}
+            content={content}
+            ref={(c) => { this.addPopup = c; }}
+            className="add_menu_popup"
+            autoOpen={false}
+          >
+            <button className="ui button">
+              <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+            </button>
+          </PopUp>
+        </div>
+      );
     }
+
     return null;
   }
 }

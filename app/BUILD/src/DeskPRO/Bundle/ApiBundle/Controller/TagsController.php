@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TagsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/api_tags")
  */
 class TagsController extends BaseController
 {
@@ -62,7 +63,7 @@ class TagsController extends BaseController
      *     },
      *     output="array<DeskPRO\Bundle\AppBundle\ApiTag\Model\Tag>"
      * )
-     * @Rest\Get("/api_tags/{id}")
+     * @Rest\Get("/{id}")
      *
      * @param int $id
      *
@@ -74,10 +75,7 @@ class TagsController extends BaseController
         $tagsCollector->collectTags(true);
         $gatheredTags = $this->get('api_tags.tags_manipulator')->gatherTagsForKey($id);
 
-        return View::create(
-            $this->wrap($tagsCollector->getTagsHierarchyForApi($gatheredTags)),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($tagsCollector->getTagsHierarchyForApi($gatheredTags)));
     }
 
     /**
@@ -100,7 +98,7 @@ class TagsController extends BaseController
      *     },
      *     output="array<string>"
      * )
-     * @Rest\Get("/api_tags/{id}/flatten")
+     * @Rest\Get("/{id}/flatten")
      *
      * @param int $id
      *
@@ -110,10 +108,7 @@ class TagsController extends BaseController
     {
         $gatheredTags = $this->get('api_tags.tags_manipulator')->gatherTagsForKey($id);
 
-        return View::create(
-            $this->wrap($gatheredTags),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($gatheredTags));
     }
 
     /**
@@ -143,14 +138,17 @@ class TagsController extends BaseController
      *     },
      *     statusCodes={
      *         204="Returned if everything is OK",
-     *     }
+     *     },
+     *     noInput=true
      * )
-     * @Rest\Put("/api_tags/{id}", name="api_tags_put", requirements={"id": "\d+"})
+     * @Rest\Put("/{id}", name="api_tags_put", requirements={"id": "\d+"})
      *
      * @param Request $request
      * @param int     $id
      *
      * @return View
+     *
+     * todo refactor to forms
      */
     public function putAction(Request $request, $id)
     {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,5 +92,60 @@ class StringUtils
         $result = implode('', array_map('ucfirst', explode('_', $string)));
 
         return $upper ? $result : lcfirst($result);
+    }
+
+    /**
+     * Check if $needle is at the beginning of $haystack.
+     *
+     * @param string $needle     The string to search for
+     * @param string $haystack   The string to search in
+     * @param bool   $ignoreCase True to ignore case
+     *
+     * @return bool
+     */
+    public static function startsWith($needle, $haystack, $ignoreCase = false)
+    {
+        if ($needle === $haystack) {
+            return true;
+        }
+
+        if ($needle === '' || $haystack === '') {
+            return false;
+        }
+
+        if ($ignoreCase) {
+            return stripos($haystack, $needle) === 0;
+        } else {
+            return strpos($haystack, $needle) === 0;
+        }
+    }
+
+    /**
+     * Check if $needle is at the end of $haystack.
+     *
+     * @param string $needle     The string to search for
+     * @param string $haystack   The string to search in
+     * @param bool   $ignoreCase True to ignore case
+     *
+     * @return bool
+     */
+    public static function endsWith($needle, $haystack, $ignoreCase = false)
+    {
+        if ($needle === $haystack) {
+            return true;
+        }
+
+        if ($needle === '' || $haystack === '') {
+            return false;
+        }
+
+        $haystackLen = strlen($haystack);
+        $needleLen   = strlen($needle);
+
+        if ($needleLen > $haystackLen) {
+            return false;
+        }
+
+        return substr_compare($haystack, $needle, $haystackLen - $needleLen, $needleLen, $ignoreCase) === 0;
     }
 }

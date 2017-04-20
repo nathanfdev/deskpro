@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,11 @@ $collection = new RouteCollection();
 
 $collection->create('admin', [
     'path'       => '/',
+    'controller' => 'AdminInterfaceBundle:Index:redirectToAdmin',
+]);
+
+$collection->create('admin_interface', [
+    'path'       => '/admin-interface',
     'controller' => 'AdminInterfaceBundle:Index:interface',
 ]);
 
@@ -111,9 +116,14 @@ $collection->create('admin_download_export_file', [
 // Gmail OAuth
 //#######################################################################################################################
 
+$collection->create('gmail_access_code', [
+    'path'       => '/gmail/access_code',
+    'controller' => 'AdminInterfaceBundle:Gmail:requestAccessCode',
+]);
+
 $collection->create('gmail_token', [
-    'path'       => '/gmail/request_token',
-    'controller' => 'AdminInterfaceBundle:Gmail:token',
+    'path'       => '/gmail/token',
+    'controller' => 'AdminInterfaceBundle:Gmail:requestAccessToken',
 ]);
 
 return $collection;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -68,8 +68,6 @@ class BlobController extends BaseController
         $response->headers->set('Content-Type', 'image/vnd.microsoft.icon; filename=favicon.ico');
         $response->headers->set('Content-Disposition', 'inline; filename=favicon.ico');
         $response->setExpires(date_create('+5 days'));
-        $response->setMaxAge(432000);
-        $response->setSharedMaxAge(432000);
         $response->setPublic();
 
         return $response;
@@ -129,8 +127,6 @@ class BlobController extends BaseController
         $response->headers->set('Content-Type', 'text/xml; filename=sitemap.xml');
         $response->headers->set('Content-Disposition', 'inline; filename=sitemap.xml');
         $response->setExpires(date_create('+5 days'));
-        $response->setMaxAge(432000);
-        $response->setSharedMaxAge(432000);
         $response->setPublic();
 
         return $response;
@@ -151,8 +147,6 @@ class BlobController extends BaseController
         $response->headers->set('Content-Type', 'text/plain; filename=robots.txt');
         $response->headers->set('Content-Disposition', 'inline; filename=robots.txt');
         $response->setExpires(date_create('+7 days'));
-        $response->setMaxAge(432000);
-        $response->setSharedMaxAge(432000);
         $response->setPublic();
 
         return $response;

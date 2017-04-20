@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
 use JMS\Serializer\Annotation as JMS;
 
@@ -65,14 +66,24 @@ class AgentTeam
     protected $avatar;
 
     /**
+     * Agents belong to department.
+     *
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     *
+     * @var Person[]
+     */
+    protected $agents;
+
+    /**
      * AgentTeam constructor.
      *
      * @param AgentTeamEntity $agent_team
      */
     public function __construct(AgentTeamEntity $agent_team)
     {
-        $this->id   = $agent_team->getId();
-        $this->name = $agent_team->getName();
+        $this->id     = $agent_team->getId();
+        $this->name   = $agent_team->getName();
+        $this->agents = $agent_team->getPersonList();
     }
 
     /**

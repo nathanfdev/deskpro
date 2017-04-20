@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,9 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class PersonOnboardingType.
+ */
 class PersonOnboardingType extends AbstractType
 {
     /**
@@ -42,11 +45,13 @@ class PersonOnboardingType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('status', IntegerType::class);
-        $builder->add('date_completion', CoreDateTimeType::class, [
-            'widget' => 'single_text',
-        ]);
-        $builder->add('current_step', IntegerType::class);
+        $builder
+            ->add('status', IntegerType::class)
+            ->add('date_completion', CoreDateTimeType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('current_step', IntegerType::class)
+        ;
     }
 
     /**
@@ -54,10 +59,8 @@ class PersonOnboardingType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'data_class' => PersonOnboarding::class,
-            ])
-        ;
+        $resolver->setDefaults([
+            'data_class' => PersonOnboarding::class,
+        ]);
     }
 }

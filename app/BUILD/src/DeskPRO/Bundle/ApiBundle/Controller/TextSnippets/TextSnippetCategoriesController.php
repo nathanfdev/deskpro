@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -24,10 +24,6 @@
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
  * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
  */
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
@@ -53,6 +49,17 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     target="all",
  *     section="Text snippets",
  *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippetCategory"
+ * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetCategoryType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TextSnippetCategory",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "type"="tickets"
+ *      }
+ *     }
  * )
  */
 class TextSnippetCategoriesController extends CrudController

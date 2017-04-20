@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,20 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class SecurityHeadersResponseListener.
+ */
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
+    /**
+     * @var IntrospectableContainerInterface
+     */
+    protected $container;
+
+    public function __construct(IntrospectableContainerInterface $container)
+    {
+        $this->container = $container;
+    }
     /**
      * {@inheritdoc}
      */
@@ -55,6 +64,12 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
+        if ($this->container->initialized('deskpro.core.settings')) {
+            if ($this->container->get('deskpro.core.settings')->get('core.disable_csp_headers')) {
+                return;
+            }
+        }
+
         $response = $event->getResponse();
         $response->headers->add(['X-Content-Type-Options' => 'nosniff']);
 
@@ -62,18 +77,20 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         $path    = $request->getPathInfo();
 
         $csp = [
-            'default-src' => 'self',
+            'default-src' => ['self', 'blob:'],
             'script-src'  => ['*', 'data:', 'unsafe-inline', 'unsafe-eval'],
             'style-src'   => ['*', 'data:', 'unsafe-inline'],
-            'img-src'     => ['*', 'data:'],
+            'img-src'     => ['*', 'data:', 'blob:'],
             'font-src'    => ['*', 'data:'],
             'connect-src' => '*',
-            'media-src'   => '*',
+            'media-src'   => ['*', 'data:', 'blob:'],
             'object-src'  => '*',
-            'child-src'   => '*',
+            'child-src'   => ['*', 'blob:'],
             'form-action' => '*',
-            'referrer'    => 'no-referrer-when-downgrade',
+            'frame-src'   => ['*'],
         ];
+
+        $referrerPolicy = 'no-referrer-when-downgrade';
 
         if (strpos($path, '/frame-embed') === 0 || strpos($path, '/focus-win') === 0) {
             // these portal modes can be framed,
@@ -87,11 +104,11 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         // Lock down agent/admin a bit
         if (strpos($path, '/agent') || strpos($path, '/admin')) {
             $csp['form-action'] = 'self';
-            $csp['child-src']   = 'self';
-            $csp['referrer']    = 'no-referrer';
+            $referrerPolicy     = 'no-referrer';
         }
 
         $response->headers->add(['Content-Security-Policy' => $this->buildCspString($csp)]);
+        $response->headers->add(['Referrer-Policy' => $referrerPolicy]);
     }
 
     /**

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,12 +37,28 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class DateType.
  */
 class DpDateType extends AbstractType
 {
+    /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
+     * Constructor.
+     *
+     * @param TokenStorage $tokenStorage
+     */
+    public function __construct(TokenStorage $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -65,18 +82,26 @@ class DpDateType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $current_date = new \DateTime();
-        $current_year = (int) $current_date->format('Y');
+        $currentDate = new \DateTime();
+        $currentYear = (int) $currentDate->format('Y');
+
+        /** @var \Application\DeskPRO\Entity\Person $user */
+        $token = $this->tokenStorage->getToken();
+        $user  = $token ? $token->getUser() : null;
 
         $resolver
             ->setDefaults([
-                'years'       => range(($current_year - 100), ($current_year + 100)),
-                'placeholder' => '',
-                'weekdays'    => [0, 1, 2, 3, 4, 5, 6],
-                'min_date'    => null,
-                'max_date'    => null,
+                'years'         => range(($currentYear - 100), ($currentYear + 100)),
+                'placeholder'   => '',
+                'calendar'      => 'gregorian',
+                'weekdays'      => [0, 1, 2, 3, 4, 5, 6],
+                'min_date'      => null,
+                'max_date'      => null,
+                'view_timezone' => $user instanceof Person ? $user->getTimezone() : 'UTC',
             ])
-            ->setAllowedTypes('weekdays', ['array', 'null']);
+            ->setAllowedTypes('weekdays', ['array', 'null'])
+            ->setAllowedValues('calendar', ['gregorian', 'hijri', null])
+        ;
     }
 
     /**
@@ -84,6 +109,7 @@ class DpDateType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
+        $view->vars['calendar'] = $options['calendar'];
         $view->vars['weekdays'] = $options['weekdays'] ? implode(',', $options['weekdays']) : null;
         $view->vars['min_date'] = $options['min_date'];
         $view->vars['max_date'] = $options['max_date'];

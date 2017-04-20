@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,7 +70,7 @@ class BlobAuthTransformer implements DataTransformerInterface
     public function reverseTransform($value)
     {
         /** @var \Application\DeskPRO\EntityRepository\Blob $repository */
-        $repository = $this->em->getRepository('DeskPRO:Blob');
+        $repository = $this->em->getRepository(Blob::class);
 
         return $value ? $repository->getByAuthId($value) : null;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -221,6 +221,37 @@ class AuditListener
 
             $this->dispatcher->dispatch(LogEvent::START_LOG_EVENT, $logEvent);
             $this->dispatcher->dispatch(LogEvent::FINISH_LOG_EVENT, $logEvent);
+        }
+
+        // TODO [cloudspam] proper cloud spam checker/handling
+        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
+            if ($entity instanceof \Application\DeskPRO\Entity\Template && ($action === self::UPDATE || $action === self::INSERT) && strpos($entity->getName(), ':emails_') !== false) {
+                $code = $entity->getTemplateCode();
+                $code = \Orb\Util\Strings::decodeHtmlEntities($code);
+                $code = \Orb\Util\Strings::decodeUnicodeEntities($code);
+
+                if (stripos($code, 'http://') || stripos($code, 'https://')) {
+                    $tpl = $entity->getName();
+                    \DpShutdown::add(function () use ($tpl) {
+                        $tmpdata = new \Application\DeskPRO\Entity\TmpData();
+                        $tmpdata->setType('cancel_for_abuse');
+                        $tmpdata->date_expire = new \DateTime('+30 minutes');
+                        $this->em->persist($tmpdata);
+                        $this->em->flush();
+
+                        $url = DP_MA_SERVER_SECURE.'/cloud/call/'.DPC_SITE_ID.'/'.$tmpdata->getCode();
+
+                        try {
+                            $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
+                            $client->setMethod(\Zend\Http\Request::METHOD_GET);
+                            $client->setUri($url);
+                            $r = $client->send();
+                        } catch (\Exception $e) {
+                            error_log('Failed to cancel site: '.$e->getMessage());
+                        }
+                    });
+                }
+            }
         }
     }
 

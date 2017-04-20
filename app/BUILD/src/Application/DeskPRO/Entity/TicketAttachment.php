@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -95,7 +95,7 @@ class TicketAttachment extends DomainObject
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessage>")
      *
-     * @Assert\Valid()
+     * @Assert\NotBlank()
      *
      * @var TicketMessage
      */
@@ -150,7 +150,7 @@ class TicketAttachment extends DomainObject
      *
      * @return $this
      */
-    public function setBlob(Blob $blob)
+    public function setBlob(Blob $blob = null)
     {
         $this->setModelField('blob', $blob);
 
@@ -214,6 +214,22 @@ class TicketAttachment extends DomainObject
     public function isInline()
     {
         return $this->is_inline;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
+    {
+        return $this->message;
     }
 
     //###########################################################################

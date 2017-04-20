@@ -110,12 +110,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	 * @return {Array}
 	 */
 	getLabels: function() {
-		return this.input.select2('val') || [];
+		return this.input && this.input.select2('val') || [];
 	},
 
   setLabels: function (labels) {
     labels = labels || [];
-    this.input.select2('val', labels);
+    this.input && this.input.select2('val', labels);
   },
 
 	/**
@@ -148,9 +148,12 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	},
 
 	destroy: function() {
-		this.getLabels = function() { return []; };
-		this.getFormData = function() { return []; };
+		this.input.off();
+    this.input.select2 && this.input.select2('destroy');
 		this.input = null;
+    this.options.input = null;
+    this.options.onChange = null;
 		this.options = null;
+		this.destroyEvents();
 	}
 });

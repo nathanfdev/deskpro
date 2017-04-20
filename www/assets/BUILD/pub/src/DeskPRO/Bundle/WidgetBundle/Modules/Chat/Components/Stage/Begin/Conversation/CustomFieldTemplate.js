@@ -12,18 +12,26 @@ export class CustomFieldTemplate extends React.Component {
     formErrors:   PropTypes.object,
     isSubmit:     PropTypes.bool,
     onSubmit:     PropTypes.func,
-    hiddenFields: PropTypes.any
+    hiddenFields: PropTypes.any,  // eslint-disable-line react/forbid-prop-types
+    required:     PropTypes.bool
   };
 
   render() {
-    const { title, field, isHidden, propertyPath, formErrors, isSubmit, onSubmit, hiddenFields } = this.props;
+    const { title, field, isHidden, propertyPath, formErrors, isSubmit, onSubmit, hiddenFields, required } = this.props;
 
     if (isHidden) {
       return field;
     }
 
     return (
-      <UserInfoForm title={title} errors={formErrors} field={propertyPath} isSubmit={isSubmit} onSubmit={onSubmit}>
+      <UserInfoForm
+        title={title}
+        errors={formErrors}
+        field={propertyPath}
+        isSubmit={isSubmit}
+        onSubmit={onSubmit}
+        required={required}
+      >
         {hiddenFields}
         {field}
       </UserInfoForm>

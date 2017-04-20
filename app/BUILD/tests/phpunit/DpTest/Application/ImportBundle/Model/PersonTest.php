@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,16 +41,14 @@ class PersonTest extends AbstractModelTest
     {
         $errors = $this->validateData([]);
 
-        $this->assertCount(3, $errors);
-        $this->assertEquals('name', $errors[0]->getPropertyPath());
-        $this->assertEquals('emails', $errors[1]->getPropertyPath());
-        $this->assertEquals('raw_data', $errors[2]->getPropertyPath());
+        $this->assertCount(2, $errors);
+        $this->assertEquals('emails', $errors[0]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[1]->getPropertyPath());
     }
 
     public function test_required_params()
     {
         $params = [
-            'name'   => 'Person Name',
             'emails' => ['email_1@deskpro.dev'],
         ];
 
@@ -76,6 +74,7 @@ class PersonTest extends AbstractModelTest
             'first_name'            => 'First Name',
             'last_name'             => 'Last Name',
             'name'                  => 'Person Name',
+            'title_prefix'          => 'Dr',
             'emails'                => ['email_1@deskpro.dev'],
             'override_display_name' => 'Override name',
             'password'              => 'password',

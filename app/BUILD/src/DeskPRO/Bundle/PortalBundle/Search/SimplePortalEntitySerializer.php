@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -101,9 +101,10 @@ class SimplePortalEntitySerializer
             || $object instanceof Entity\News
             || $object instanceof Entity\Download
             || $object instanceof Entity\Feedback
+            || $object instanceof Entity\Topic
         ) {
             $result['id']        = $object->getId();
-            $result['name']      = $object->getTitle();
+            $result['name']      = $object->getTranslatedTitle();
             $result['url']       = $this->object_router->getPortalUrl($object);
             $result['icon_html'] = $this->icon_factory->makeContentIcon($object);
             if ($object instanceof Entity\News) {
@@ -133,7 +134,7 @@ class SimplePortalEntitySerializer
         } elseif ($object instanceof Entity\ChatConversation) {
             $result['id']   = $object->getId();
             $result['name'] = $object->getSubjectLine();
-            $result['url']  = null; // TODO: chat conversations will eventually have a route/url
+            $result['url']  = $this->object_router->getPortalUrl($object);
         } else {
             $result = null;
         }

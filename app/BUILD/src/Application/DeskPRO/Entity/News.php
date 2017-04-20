@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,9 +36,11 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -58,14 +60,14 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     const CONTENT_TYPE = 'news';
 
     /**
-     * @var \Application\DeskPRO\Entity\NewsCategory
+     * @var NewsCategory
      */
     protected $category;
 
     /**
      * Revisions of this news.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $revisions;
 
@@ -75,7 +77,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
      * @Assert\Valid()
      * @AppAssert\UniqueCollection(property={"label"})
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection|LabelNews[]
+     * @var ArrayCollection|LabelNews[]
      */
     protected $labels;
 
@@ -87,12 +89,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     protected $_search_highlights;
 
     /**
-     * @var \DateTime
-     */
-    protected $date_updated;
-
-    /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_end;
 
@@ -278,20 +275,12 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         return $this->category;
     }
 
-    protected function addSlugHistory($old_slug)
+    protected function addSlugHistory($oldSlug)
     {
-        $history = new NewsSlugHistory($this, $old_slug);
+        $history = new NewsSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
     }
 
     /**
@@ -364,6 +353,27 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content_input',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'content_input_type',
             ]
         );
         $metadata->mapField(

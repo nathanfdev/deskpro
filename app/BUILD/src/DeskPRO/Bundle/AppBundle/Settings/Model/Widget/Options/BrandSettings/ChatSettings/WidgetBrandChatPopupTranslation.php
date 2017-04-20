@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -43,7 +43,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $title = 'Customer Support';
+    private $title;
 
     /**
      * Translation message.
@@ -52,7 +52,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $message = 'Need help? Just reply to start a live chat with one of our team.';
+    private $message;
 
     /**
      * Translation title.
@@ -61,7 +61,7 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $heading = 'Ask us a question!';
+    private $heading;
 
     /**
      * Translation message.
@@ -70,7 +70,16 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
      *
      * @JMS\Type("string")
      */
-    private $subheading = 'Our team are online and ready to help with your enquiries. Send us a message to get started.';
+    private $subheading;
+
+    /**
+     * Message at start button.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $startButton;
 
     /**
      * @return string
@@ -148,6 +157,26 @@ class WidgetBrandChatPopupTranslation extends AbstractTranslationModel
     public function setSubheading($subheading)
     {
         $this->subheading = $subheading;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStartButton()
+    {
+        return $this->startButton;
+    }
+
+    /**
+     * @param string $startButton
+     *
+     * @return $this
+     */
+    public function setStartButton($startButton)
+    {
+        $this->startButton = $startButton;
 
         return $this;
     }

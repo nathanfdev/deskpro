@@ -10,7 +10,7 @@ define [
   class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
     @CTRL_AS = 'TicketAccountsEdit'
-    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location']
+    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location', '$upload', '$http', 'Api2']
 
     init: ->
       @actionsTypeDef = @dpObTypesDefTicketActions
@@ -51,19 +51,25 @@ define [
       }
       if @accountId
         get.trigger = "/ticket_triggers/email_accounts/#{@accountId}"
+      else
+        get.trigger = "/ticket_triggers/newticket"
 
       trigger_promise = @Api.sendDataGet(get).then( (result) =>
         @customActions = result.data.customActions.action_defs
 
-        if result.data?.trigger?.trigger?
-          @trigger = result.data.trigger.trigger
-          @triggerId = @trigger.id
+        if result.data && result.data.trigger
+          if result.data.trigger.trigger
+            @trigger = result.data.trigger.trigger
+            @triggerId = @trigger.id
 
-          if @trigger.actions?.actions?.length
-            @$scope.actions_form = {}
-            for action in @trigger.actions.actions
-              rowId = _.uniqueId('action')
-              @$scope.actions_form[rowId] = action
+            if @trigger.actions?.actions?.length
+              @$scope.actions_form = {}
+              for action in @trigger.actions.actions
+                rowId = _.uniqueId('action')
+                @$scope.actions_form[rowId] = action
+          else
+            @trigger = result.data.trigger
+            @triggerId = 0
         else
           @trigger = {}
           @triggerId = 0
@@ -105,6 +111,9 @@ define [
           @$scope.form.outgoing_type = 'php_mail'
 
         @updateCriteriaOptionTypes()
+
+        if @$scope.form.encryption_enabled
+          @$scope.show_adv = true
       )
       return final_promise
 
@@ -128,7 +137,7 @@ define [
           actions:       []
         }
         if @$scope.actions_form
-          for own _, act of @$scope.actions_form
+          for own _x, act of @$scope.actions_form
             if act.type
               postData.actions.push(act)
         @Api.sendPostJson('/ticket_triggers/email_accounts/' + @account.id, postData)
@@ -148,20 +157,25 @@ define [
           @stopSpinner('saving_account', true).then(=>
             @Growl.success(@getRegisteredMessage('saved_account'))
           )
-
           @form_model.apply()
           @TicketAccountsData.updateModel(@account)
-
-          @skipDirtyState()
-          if is_new
-            @$state.go('tickets.ticket_accounts.gocreate')
-          else
-            @$state.go('tickets.ticket_accounts')
+          @uploadFiles().then(=>
+              @skipDirtyState()
+              if is_new
+                @$state.go('tickets.ticket_accounts.gocreate')
+              else
+                @$state.go('tickets.ticket_accounts')
+            , (err) =>
+              @Growl.error(err)
+          )
         )
       )
       promise.error( (info, code) =>
         @stopSpinner('saving_account', true)
-        @applyErrorResponseToView(info)
+        if info?.error_code == 'invalid_data' and info?.error_message
+          @showAlert(info.error_message)
+        else
+          @applyErrorResponseToView(info)
       )
 
       return promise
@@ -187,7 +201,7 @@ define [
       form_data = @form_model.getFormData()
       form_data.test_email = @test_email
 
-      return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data)
+      return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data, null, { timeout: 12000})
 
 
     ###
@@ -251,6 +265,9 @@ define [
           @saveAccount()
       )
 
+    setupTestModalScope: ($scope) ->
+      return
+
     ###
       # Show the test account modal
     ###
@@ -271,6 +288,7 @@ define [
             $scope.showing_log = true
 
           $scope.test_email = test_email
+          me.setupTestModalScope($scope)
 
           testNow = =>
             $scope.testing_started = true
@@ -285,12 +303,19 @@ define [
               $scope.is_success    = result.is_success
               $scope.log           = result.log
               $scope.message_count = result.message_count
-            ).error(=>
-              $scope.showing_log   = true
-              $scope.is_testing    = false
-              $scope.is_success    = false
-              $scope.log           = "Server Error"
-              $scope.message_count = 0
+            ).error( (result) =>
+              if result.status == 0 or result.status == 524
+                $scope.showing_log   = true
+                $scope.is_testing    = false
+                $scope.is_success    = false
+                $scope.log           = "The test failed due to a network problem. For example, the test may have timed out due to a firewall blocking it."
+                $scope.message_count = 0
+              else
+                $scope.showing_log   = true
+                $scope.is_testing    = false
+                $scope.is_success    = false
+                $scope.log           = "Server Error"
+                $scope.message_count = 0
             )
 
           resetTest = =>
@@ -305,10 +330,81 @@ define [
 
 
 
-    resetToken: (type) ->
-      if @form_model.form[type]?.token?
-        @form_model.form[type].token = null
-        @form_model.form[type].refreshToken = null
+    getCode: (url) ->
+      newWindow = window.open(url, 'name', 'height=600,width=450');
+      if window.focus then newWindow.focus()
+
+
+
+    getAccessToken: (url, type) =>
+      if !(@$scope.form["#{type}_gmail_account"].code || '').length then return
+      url = url + '?code=' + encodeURIComponent(@$scope.form["#{type}_gmail_account"].code)
+      @$http({method: 'GET', url: url }).then (res) =>
+        if res.data?.error
+          @Growl.error(res.data.error)
+        else
+          @$scope.form["#{type}_gmail_account"].token = res.data.access_token
+          @$scope.form["#{type}_gmail_account"].refreshToken = res.data.refresh_token
+
+
+    onFileSelect: (files, type) ->
+      if (!@$scope.files)
+        @$scope.files = {}
+      @$scope.files[type] = files[0]
+      if (type == 'certificate')
+        @$scope.form.cert_file = files[0].name
+      else if (type == 'key')
+        @$scope.form.key_file = files[0].name
+
+    uploadFiles: () ->
+      return new Promise( (resolve, reject) =>
+        if (!@$scope.files || (!@$scope.files.certificate && !@$scope.files.key))
+          return resolve()
+        if (!@$scope.files.certificate || !@$scope.files.key)
+          return reject('You must add a certificate and a key')
+        @$upload.upload({
+          url: @Api2.formatUrl('/email_accounts/'+@form_model.account.id+'/encryption'),
+          data:{ cert: @$scope.files.certificate, key: @$scope.files.key, pass_phrase: @form_model.form.key_pass_phrase }
+        }).success( (data) =>
+          @setCertificate data.data.cert_blob
+          @setKey data.data.key_blob
+          return resolve()
+        ).error( (data) =>
+          return reject(data?.error_message || 'Error')
+        )
+      )
+
+    setCertificate: (blob) =>
+      if !blob?
+        @$scope.form.cert_file = null
+      else
+        @$scope.form.cert_file = blob.filename
+
+    setKey: (blob) =>
+      if !blob?
+        @$scope.form.key_file = null
+      else
+        @$scope.form.key_file = blob.filename
+
+    deleteCertificate: () =>
+      if @form_model.account.cert_blob
+        @Api2.sendDelete('/email_accounts/'+@form_model.account.id+'/certificate').success(() =>
+          @$scope.form.cert_file = null
+        )
+      else
+        @$scope.files.certificate = null
+        @$scope.form.cert_file = null
+
+
+    deleteKey: () =>
+      if @form_model.account.cert_blob
+        @Api2.sendDelete('/email_accounts/'+@form_model.account.id+'/key').success(() =>
+          @$scope.form.key_file = null
+        )
+      else
+        @$scope.files.key = null
+        @$scope.form.key_file = null
+
 
 
 

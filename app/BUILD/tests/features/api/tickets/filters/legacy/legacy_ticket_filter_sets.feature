@@ -76,16 +76,16 @@ Feature: /ticket_filter_sets endpoint
     And the response should be in JSON
 
     And the JSON node "data" should have 10 elements
-    And the JSON node "data[0].id" should be equal to 5
-    And the JSON node "data[0].title" should be equal to "All"
-    And the JSON node "data[1].id" should be equal to 15
-    And the JSON node "data[1].title" should be equal to "All (Hold)"
-    And the JSON node "data[2].id" should be equal to 2
-    And the JSON node "data[2].title" should be equal to "My Team's Tickets"
-    And the JSON node "data[3].id" should be equal to 12
-    And the JSON node "data[3].title" should be equal to "My Team's Tickets (Hold)"
-    And the JSON node "data[4].id" should be equal to 1
-    And the JSON node "data[4].title" should be equal to "My Tickets"
+    And the JSON node "data[4].id" should be equal to 5
+    And the JSON node "data[4].title" should be equal to "All"
+    And the JSON node "data[9].id" should be equal to 15
+    And the JSON node "data[9].title" should be equal to "All (Hold)"
+    And the JSON node "data[1].id" should be equal to 2
+    And the JSON node "data[1].title" should be equal to "My Team's Tickets"
+    And the JSON node "data[6].id" should be equal to 12
+    And the JSON node "data[6].title" should be equal to "My Team's Tickets (Hold)"
+    And the JSON node "data[0].id" should be equal to 1
+    And the JSON node "data[0].title" should be equal to "My Tickets"
     And the JSON node "data[5].id" should be equal to 11
     And the JSON node "data[5].title" should be equal to "My Tickets (Hold)"
 
@@ -95,16 +95,16 @@ Feature: /ticket_filter_sets endpoint
     And the response should be in JSON
 
     And the JSON node "data" should have 5 elements
-    And the JSON node "data[0].id" should be equal to 8
-    And the JSON node "data[0].title" should be equal to "Archived"
-    And the JSON node "data[1].id" should be equal to 6
-    And the JSON node "data[1].title" should be equal to "Awaiting User"
-    And the JSON node "data[2].id" should be equal to 10
-    And the JSON node "data[2].title" should be equal to "Deleted"
-    And the JSON node "data[3].id" should be equal to 7
-    And the JSON node "data[3].title" should be equal to "Resolved"
-    And the JSON node "data[4].id" should be equal to 9
-    And the JSON node "data[4].title" should be equal to "Spam"
+    And the JSON node "data[2].id" should be equal to 8
+    And the JSON node "data[2].title" should be equal to "Archived"
+    And the JSON node "data[0].id" should be equal to 6
+    And the JSON node "data[0].title" should be equal to "Awaiting User"
+    And the JSON node "data[4].id" should be equal to 10
+    And the JSON node "data[4].title" should be equal to "Deleted"
+    And the JSON node "data[1].id" should be equal to 7
+    And the JSON node "data[1].title" should be equal to "Resolved"
+    And the JSON node "data[3].id" should be equal to 9
+    And the JSON node "data[3].title" should be equal to "Spam"
 
   Scenario: I get related filters for custom filter set
     When I send a GET request to "/api/v2/ticket_filter_sets/3/filters"

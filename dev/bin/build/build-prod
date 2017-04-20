@@ -69,6 +69,33 @@ file_put_contents($f, $newContent);
 unset($f, $content, $newContent);
 echo ".. Done\n";
 
+
+echo "Patching Doctrine/ORM/UnitOfWork.php\n";
+
+// https://github.com/doctrine/doctrine2/issues/5605
+// https://github.com/doctrine/doctrine2/issues/3468
+
+$f          = $DP_DIR.'/app/BUILD/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php';
+$content    = file_get_contents($f);
+$newContent = str_replace(
+    'new PreUpdateEventArgs($entity, $this->em, $this->entityChangeSets[$oid])',
+    'new PreUpdateEventArgs($entity, $this->em, $this->getEntityChangeSet($entity))',
+    $content
+);
+file_put_contents($f, $newContent);
+
+$f          = $DP_DIR.'/app/BUILD/vendor/doctrine/orm/lib/Doctrine/ORM/Event/PreUpdateEventArgs.php';
+$content    = file_get_contents($f);
+$newContent = str_replace(
+    '&$changeSet',
+    '$changeSet',
+    $content
+);
+file_put_contents($f, $newContent);
+
+unset($f, $content, $newContent);
+echo ".. Done\n";
+
 ########################################################################################################################
 # Cache warmup
 ########################################################################################################################

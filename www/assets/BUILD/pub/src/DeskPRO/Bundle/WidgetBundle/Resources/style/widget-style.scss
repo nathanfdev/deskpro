@@ -56,6 +56,32 @@ html, body {
 
 .widget-container {
   overflow: auto;
+
+  &.rtl-language {
+    .textarea, input, textarea {
+      text-align: right;
+    }
+
+    .textarea {
+      &:after {
+        right: 0;
+      }
+    }
+
+    .dpdesignportal-form {
+      text-align: right;
+
+      .medium-editor-toolbar-actions {
+        li {
+          float: right;
+        }
+      }
+    }
+
+    .dpdesignportal-message-content {
+      text-align: right;
+    }
+  }
 }
 
 body.widget_trigger_iframe_body {
@@ -170,4 +196,8 @@ body.widget_trigger_iframe_body {
   a {
     color: #000;
   }
+}
+
+.scrollarea-content {
+  overflow: initial;
 }

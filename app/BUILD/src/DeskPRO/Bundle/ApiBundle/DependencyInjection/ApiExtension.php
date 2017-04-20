@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,21 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
 
+use DeskPRO\Bundle\ApiBundle\Routing\ApiVersionInfo;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 
+/**
+ * Class ApiExtension.
+ */
 class ApiExtension extends Extension
 {
-    public function load(array $config, ContainerBuilder $container)
+    /**
+     * {@inheritdoc}
+     */
+    public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new YamlDirectoryLoader($container);
         $loader->loadDir(__DIR__.'/../Resources/config/services');
+
+        $configuration = $this->getConfiguration($configs, $container);
+        $config        = $this->processConfiguration($configuration, $configs);
+
+        // register version info
+        $definition = new Definition(ApiVersionInfo::class, [
+            'default_version' => $config['default_version'],
+            'versions'        => $config['versions'],
+        ]);
+
+        $container->setDefinition('api.version_info', $definition);
     }
 }

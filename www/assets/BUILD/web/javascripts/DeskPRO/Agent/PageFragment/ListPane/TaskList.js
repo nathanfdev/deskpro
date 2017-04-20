@@ -38,7 +38,6 @@ DeskPRO.Agent.PageFragment.ListPane.TaskList = new Orb.Class({
 			self.updateUi();
 			$('.message-text textarea', el).each(function(){
 				$(this).height($(this).prop('scrollHeight') + 25);
-				console.info($(this).height(), $(this).prop('scrollHeight'));
 			});
 		});
 	}

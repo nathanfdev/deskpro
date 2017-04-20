@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,14 @@ class ReportsOverviewController extends AbstractController
         $reports_overview = $this->container->getSystemService('reports_overview');
         $reports_overview->setPerson($this->person);
 
-        return $this->createApiResponse($reports_overview->getOverviewData($type));
+        $options = [];
+
+        $agentTeam = $this->in->getCleanValue('agent_team', 'integer');
+        if ($agentTeam) {
+            $options['agent_team'] = $agentTeam;
+        }
+
+        return $this->createApiResponse($reports_overview->getOverviewData($type, $options));
     }
 
     //###################################################################################################################

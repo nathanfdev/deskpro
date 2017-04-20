@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1211,7 +1211,8 @@ class Arrays
     /**
      * @param $array
      * @param string $order_key
-     * @param string $parent_id_key
+     * @param string $parent_key
+     * @param bool   $keep_keys
      */
     public static function sortFlatHierarchyArray(
         &$array,
@@ -1484,7 +1485,7 @@ class Arrays
      *
      * @param array $array
      *
-     * @return index
+     * @return int index
      */
     public static function getFirstKey($array)
     {

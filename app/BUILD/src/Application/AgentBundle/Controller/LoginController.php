@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -45,6 +45,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 {
     /** @var string */
     protected $tpl_prefix = 'AgentBundle:Login';
+
     /** @var string */
     protected $route_prefix = 'agent';
 
@@ -68,7 +69,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $has_logged_out = $this->in->checkIsset('o');
+        $has_logged_out = $request->cookies->has('dp-recent-logout');
+        if ($has_logged_out) {
+            // remove recent logout cookie on redirect login
+            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-recent-logout');
+            $cookie->send();
+        }
 
         // SSO Automatic Redirecting
 
@@ -225,6 +231,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         );
     }
 
+    public function viewResetPasswordFormAction()
+    {
+        return $this->redirect($this->generateUrl('agent_login').'#reset-password');
+    }
+
     public function preloadSourcesAction()
     {
         return $this->render('AgentBundle:Login:js-preload.html.twig');
@@ -233,6 +244,14 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
     public function browserRequirementsAction()
     {
         return $this->render('AgentBundle:Login:browser-requirements.html.twig');
+    }
+
+    /**
+     * @return Response
+     */
+    public function minIEVersionAction()
+    {
+        return $this->render('AgentBundle:Login:min-ie-version.html.twig');
     }
 
     public function authAdminLoginAction(Request $request, $code)
@@ -271,3 +290,4 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         return $this->redirectRoute('agent');
     }
 }
+//Your email address has been banned.

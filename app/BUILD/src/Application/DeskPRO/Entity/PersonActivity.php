@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -89,6 +89,20 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
     {
         $person         = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
         $this['person'] = $person;
+    }
+
+    /**
+     * @return array
+     */
+    public function toDbArray()
+    {
+        return [
+            'id'           => $this->id,
+            'person_id'    => $this->person ? $this->person->getId() : null,
+            'action_type'  => $this->action_type,
+            'details'      => serialize($this->details ?: []),
+            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
+        ];
     }
 
     //###########################################################################

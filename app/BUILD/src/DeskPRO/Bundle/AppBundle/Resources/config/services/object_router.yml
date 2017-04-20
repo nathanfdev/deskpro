@@ -8,6 +8,7 @@ services:
         - "@object_router.link_generator.content.articles"
         - "@object_router.link_generator.content.news"
         - "@object_router.link_generator.content.downloads"
+        - "@object_router.link_generator.content.guides"
         - "@object_router.link_generator.portal"
         - "@object_router.link_generator.agent"
         - "@object_router.link_generator.ticket"
@@ -104,4 +105,13 @@ services:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator
     arguments:
       - "@router"
+
+  object_router.link_generator.content.guides:
+    public: false
+    class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\Content\GuidesLinkGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+      - "@property_accessor"
+      - "@object_router.annotation_config"
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -217,6 +217,22 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public function getLanguage()
     {
         return $this->language;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefType()
+    {
+        return $this->ref_type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefId()
+    {
+        return $this->ref_id;
     }
 
     public function _resetRefCode()

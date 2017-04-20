@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -80,7 +80,9 @@ class MassActionsController extends BaseController
      *     statusCodes={
      *         200="Your request was successful",
      *         400="Malformed request, refer to manual",
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/{content}", name="mass_action_create", requirements={"content"="\w+"})
@@ -101,7 +103,7 @@ class MassActionsController extends BaseController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        return Response::HTTP_OK;
+        return new Response('', Response::HTTP_OK);
     }
 
     /**
@@ -121,7 +123,9 @@ class MassActionsController extends BaseController
      *     statusCodes={
      *         200="Your request was successful",
      *         400="Malformed request, refer to manual",
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/{content}/queued", name="queued_mass_action_create")

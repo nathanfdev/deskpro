@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,7 @@ use JMS\Serializer\Metadata\PropertyMetadata;
 class JmsMetadataParser extends \Nelmio\ApiDocBundle\Parser\JmsMetadataParser
 {
     /**
-     * It's use to handle our super-trouper custom type called "entity"
+     * It's used to handle our super-trouper custom type called "entity"
      * So if it's entity array - then in doc you'll see something like
      * "array of integer ids (EntityName)".
      * In case it's not an array, but entity - then you'll see text like below:

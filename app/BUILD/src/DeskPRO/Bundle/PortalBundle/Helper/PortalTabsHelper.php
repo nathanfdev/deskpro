@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,6 +91,12 @@ class PortalTabsHelper
                         $tabs[] = $tab_type;
                     }
                     break;
+                case 'guides':
+                    if ($this->getBrandSetting('user.portal_tab_guides')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_GUIDES)) {
+                        $tabs[] = $tab_type;
+                    }
+                    break;
                 case 'newticket':
                     if ($this->getBrandSetting('user.portal_tab_tickets')
                         && $this->auth_checker->isGranted(UseSectionVoter::VIEW_TICKETS_LINK)) {
@@ -119,6 +125,7 @@ class PortalTabsHelper
 
         $order = array_merge($order, [
             'articles',
+            'guides',
             'news',
             'feedback',
             'downloads',

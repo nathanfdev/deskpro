@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -150,10 +150,10 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function serverSettingsAction()
     {
-        $server_settings = new ServerSettings($this->settings);
+        $serverSettings = new ServerSettings($this->settings);
 
         return $this->createApiResponse([
-            'server_settings' => $server_settings->toArray(),
+            'server_settings' => $serverSettings->toArray(),
         ]);
     }
 
@@ -163,9 +163,9 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function saveServerSettingsAction()
     {
-        $server_settings = new ServerSettings($this->settings);
-        $server_settings->setArray($this->in->getArrayValue('server_settings'));
-        $server_settings->saveSettings();
+        $serverSettings = new ServerSettings($this->settings);
+        $serverSettings->setArray($this->in->getArrayValue('server_settings'));
+        $serverSettings->saveSettings();
 
         return $this->createSuccessResponse();
     }
@@ -592,6 +592,14 @@ class SettingsController extends AbstractController implements ProtectedControll
                 ];
                 break;
 
+            case 'guides':
+                $settings = [
+                    'enabled'       => (bool) $this->settings->get('core.apps_guides'),
+                    'tab_enabled'   => (bool) $this->settings->get('user.portal_tab_guides'),
+                    'subscriptions' => (bool) $this->settings->get('user.guides_subscriptions'),
+                ];
+                break;
+
             default:
                 throw $this->createNotFoundException();
         }
@@ -646,6 +654,14 @@ class SettingsController extends AbstractController implements ProtectedControll
                     'core.apps_downloads'          => $this->in->getBoolInt('settings.enabled'),
                     'user.portal_tab_downloads'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
                     'user.downloads_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
+                ];
+                break;
+
+            case 'guides':
+                $settings = [
+                    'core.apps_guides'          => $this->in->getBoolInt('settings.enabled'),
+                    'user.portal_tab_guides'    => (int) ($this->in->getBool('settings.enabled') && $this->in->getBool('settings.tab_enabled')),
+                    'user.guides_subscriptions' => (int) $this->in->getBool('settings.subscriptions'),
                 ];
                 break;
 

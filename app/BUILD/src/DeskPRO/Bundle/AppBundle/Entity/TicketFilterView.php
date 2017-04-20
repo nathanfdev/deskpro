@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,7 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterViewRepository")
  * @ORM\Table(name="ticket_filter_views")
  * @JMS\ExclusionPolicy("all")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
 class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 {
@@ -162,10 +163,10 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->type        = self::TYPE_LIST;
-        $this->icon_fields = [];
-        $this->options     = [];
-        $this->fields      = [];
+        $this->setModelField('type', self::TYPE_LIST);
+        $this->setModelField('icon_fields', []);
+        $this->setModelField('options', []);
+        $this->setModelField('fields', []);
     }
 
     /**
@@ -194,6 +195,8 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param string $type
+     *
+     * @return $this
      */
     public function setType($type)
     {
@@ -202,6 +205,8 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('type', $type);
+
+        return $this;
     }
 
     /**
@@ -214,14 +219,16 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param TicketFilter $filter
+     *
+     * @return $this
      */
     public function setFilter(TicketFilter $filter = null)
     {
         $this->filter = $filter;
-
         $this->setModelField('filter', $filter);
-
         $filter->addFilterView($this);
+
+        return $this;
     }
 
     /**
@@ -234,10 +241,14 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param Person $agent
+     *
+     * @return $this
      */
     public function setAgent(Person $agent = null)
     {
         $this->setModelField('agent', $agent);
+
+        return $this;
     }
 
     /**
@@ -250,10 +261,14 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $fields
+     *
+     * @return $this
      */
     public function setFields(array $fields = [])
     {
         $this->setModelField('fields', $fields);
+
+        return $this;
     }
 
     /**
@@ -266,10 +281,14 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $icon_fields
+     *
+     * @return $this
      */
     public function setIconFields(array $icon_fields = [])
     {
         $this->setModelField('icon_fields', $icon_fields);
+
+        return $this;
     }
 
     /**
@@ -282,37 +301,49 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param array $options
+     *
+     * @return $this
      */
     public function setOptions(array $options = [])
     {
         $this->setModelField('options', $options);
+
+        return $this;
     }
 
     /**
      * @param string $key
      * @param mixed  $val
+     *
+     * @return $this
      */
     public function addOption($key, $val)
     {
         $this->options[$key] = $val;
-
         $this->setModelField('options', $this->options);
+
+        return $this;
     }
 
     /**
      * @param string $key
+     *
+     * @return $this
      */
     public function removeOption($key)
     {
         if (array_key_exists($key, $this->options)) {
             unset($this->options[$key]);
         }
-
         $this->setModelField('options', $this->options);
+
+        return $this;
     }
 
     /**
      * @param string $field
+     *
+     * @return $this
      */
     public function addIconField($field)
     {
@@ -321,10 +352,14 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('icon_fields', $this->icon_fields);
+
+        return $this;
     }
 
     /**
      * @param string $field
+     *
+     * @return $this
      */
     public function removeIconField($field)
     {
@@ -340,10 +375,14 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('icon_fields', $this->icon_fields);
+
+        return $this;
     }
 
     /**
      * @param string $field
+     *
+     * @return $this
      */
     public function addField($field)
     {
@@ -352,10 +391,14 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('fields', $this->fields);
+
+        return $this;
     }
 
     /**
      * @param string $field
+     *
+     * @return $this
      */
     public function removeField($field)
     {
@@ -371,5 +414,7 @@ class TicketFilterView implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('fields', $this->fields);
+
+        return $this;
     }
 }

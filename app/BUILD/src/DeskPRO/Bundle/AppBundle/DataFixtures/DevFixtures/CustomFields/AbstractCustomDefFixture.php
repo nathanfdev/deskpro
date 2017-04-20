@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields;
 
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDataOrganization;
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Organization;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
@@ -43,49 +47,52 @@ abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implement
 {
     protected $cnt = 1;
 
+    protected $customPersonChoiceFields = [];
+
+    protected $customOrgChoiceFields = [];
+
     /**
      * @return CustomDefAbstract
      */
     abstract protected function initiateEntity();
 
     /**
-     * @param string     $type
-     * @param string     $title
-     * @param array|null $choices
+     * @param string $type
+     * @param string $title
+     * @param array  $options
      *
      * @return CustomDefAbstract
      */
-    protected function createField($type, $title, array $choices = null)
+    protected function createField($type, $title, array $options = [])
     {
         $handlers = 'Application\DeskPRO\CustomFields\Handler\\';
-        $options  = [];
         switch ($type) {
             case 'text':
-                $handler_class = $handlers.'Text';
+                $handlerClass = $handlers.'Text';
                 break;
             case 'textarea':
-                $handler_class = $handlers.'Textarea';
+                $handlerClass = $handlers.'Textarea';
                 break;
             case 'date':
-                $handler_class = $handlers.'Date';
+                $handlerClass = $handlers.'Date';
                 break;
             case 'datetime':
-                $handler_class = $handlers.'DateTime';
+                $handlerClass = $handlers.'DateTime';
                 break;
             case 'select':
-                $handler_class = $handlers.'Choice';
+                $handlerClass = $handlers.'Choice';
                 break;
             case 'multiselect':
-                $handler_class       = $handlers.'Choice';
+                $handlerClass        = $handlers.'Choice';
                 $options['multiple'] = true;
                 break;
             case 'checkbox':
-                $handler_class       = $handlers.'Choice';
+                $handlerClass        = $handlers.'Choice';
                 $options['multiple'] = true;
                 $options['expanded'] = true;
                 break;
             case 'radio':
-                $handler_class       = $handlers.'Choice';
+                $handlerClass        = $handlers.'Choice';
                 $options['multiple'] = false;
                 $options['expanded'] = true;
                 break;
@@ -93,35 +100,67 @@ abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implement
                 throw new \InvalidArgumentException();
         }
 
-        $f                  = $this->initiateEntity();
-        $f->title           = $title;
-        $f->description     = 'A custom '.$f->getWidgetType().' field';
-        $f->handler_class   = $handler_class;
-        $f->options         = $options;
-        $f->is_user_enabled = true;
-        $f->is_enabled      = true;
-        $f->display_order   = $this->cnt++;
+        $f = $this->initiateEntity();
+        $f
+            ->setTitle($title)
+            ->setDescription('A custom '.$f->getWidgetType().' field')
+            ->setHandlerClass($handlerClass)
+            ->setOptions($options)
+            ->setIsUserEnabled(true)
+            ->setIsEnabled(true)
+            ->setDisplayOreder($this->cnt++);
+
+        if ($handlerClass !== $handlers.'Choice' && array_key_exists('default_value', $options)) {
+            $f->setDefaultValue($options['default_value']);
+        }
 
         $this->manager->persist($f);
-        $this->manager->flush();
 
-        if ($handler_class === $handlers.'Choice' && $choices) {
-            foreach ($choices as $c) {
-                $this->_createSubOptions($f, null, $c);
+        if ($handlerClass === $handlers.'Choice' && array_key_exists('choices', $options)) {
+            foreach ($options['choices'] as $c) {
+                $this->createSubOptions($f, null, $c);
+            }
+        } else {
+            if ($this instanceof PersonFieldsFixture) {
+                foreach ($this->getPersons() as $person) {
+                    $customData = $this->createCustomDataPerson($person);
+                    $this->setUpCustomInputData($type, $customData, $f);
+                }
+            } elseif ($this instanceof OrganizationFieldsFixture) {
+                $customData = $this->createCustomDataOrganization();
+                $this->setUpCustomInputData($type, $customData, $f);
             }
         }
+        $this->manager->flush();
 
         return $f;
     }
 
     /**
+     * @return array
+     */
+    protected function getWidgetsFields()
+    {
+        //------------------------------
+        // Widgets
+        //------------------------------
+        $fields   = [];
+        $fields[] = $this->createField('text', 'Widget Type', ['default_value' => $this->faker->word]);
+        $fields[] = $this->createField('textarea', 'Widget Description', ['default_value' => $this->faker->paragraph]);
+        $fields[] = $this->createField('checkbox', 'Desired Sizes', ['choices' => ['Small', 'Medium', 'Large']]);
+        $fields[] = $this->createField('date', 'Manufacture Date');
+
+        return $fields;
+    }
+
+    /**
      * @param CustomDefAbstract      $parent
-     * @param CustomDefAbstract|null $parent_opt
+     * @param CustomDefAbstract|null $parentOption
      * @param array|string           $desc
      *
      * @return CustomDefAbstract
      */
-    protected function _createSubOptions(CustomDefAbstract $parent, CustomDefAbstract $parent_opt = null, $desc)
+    private function createSubOptions(CustomDefAbstract $parent, CustomDefAbstract $parentOption = null, $desc)
     {
         if (is_array($desc)) {
             $title  = $desc[0];
@@ -131,29 +170,118 @@ abstract class AbstractCustomDefFixture extends DeskProAbstractFixture implement
             $others = [];
         }
 
-        $opt_f                  = $this->initiateEntity();
-        $opt_f->parent          = $parent;
-        $opt_f->title           = $title;
-        $opt_f->description     = '';
-        $opt_f->is_user_enabled = true;
-        $opt_f->is_enabled      = true;
-        $opt_f->display_order   = $this->cnt++;
+        $optionField = $this->initiateEntity();
+        $optionField
+            ->setTitle($title)
+            ->setDescription('')
+            ->setIsUserEnabled(true)
+            ->setIsEnabled(true)
+            ->setDisplayOreder($this->cnt++)
+            ->setParent($parent);
 
-        if ($parent_opt) {
-            $opt_f->setOption('parent_id', $parent_opt->getId());
+        if ($parentOption) {
+            $optionField->setOption('parent_id', $parentOption->getId());
         }
 
-        $parent->addChild($opt_f);
+        $parent->addChild($optionField);
 
-        $this->manager->persist($opt_f);
-        $this->manager->flush();
+        $this->manager->persist($optionField);
 
         if ($others) {
-            foreach ($others as $sub_title) {
-                $this->_createSubOptions($parent, $opt_f, $sub_title);
+            foreach ($others as $subTitle) {
+                $this->createSubOptions($parent, $optionField, $subTitle);
+            }
+        } else {
+            $this->manager->flush();
+            $id = $optionField->getId();
+            $parent->setDefaultValue($id);
+            if ($this instanceof PersonFieldsFixture) {
+                $refName                          = 'person.custom_field_'.$id;
+                $this->customPersonChoiceFields[] = $refName;
+                $this->setReference($refName, $optionField);
+            } elseif ($this instanceof OrganizationFieldsFixture) {
+                $refName                       = 'org.custom_field_'.$id;
+                $this->customOrgChoiceFields[] = $refName;
+                $this->setReference($refName, $optionField);
             }
         }
 
-        return $opt_f;
+        return $optionField;
+    }
+
+    protected function getPersons()
+    {
+        return [
+            $this->getReference('person.publisher'),
+            $this->getReference('person.joe'),
+            $this->getReference('person.joes_manager'),
+        ];
+    }
+
+    /**
+     * @param $person
+     *
+     * @return CustomDataPerson
+     */
+    protected function createCustomDataPerson($person)
+    {
+        $customData = new CustomDataPerson();
+        $customData->setPerson($person);
+
+        return $customData;
+    }
+
+    /**
+     * @return CustomDataOrganization
+     */
+    protected function createCustomDataOrganization()
+    {
+        /** @var Organization $organization */
+        $organization = $this->getReference('org.mana');
+        $customData   = new CustomDataOrganization();
+        $customData->setOrganization($organization);
+
+        return $customData;
+    }
+
+    /**
+     * @param string             $type
+     * @param CustomDataAbstract $customData
+     * @param CustomDefAbstract  $f
+     */
+    private function setUpCustomInputData($type, CustomDataAbstract $customData, CustomDefAbstract $f)
+    {
+        $customData
+            ->setRootField($f)
+            ->setField($f)
+            ->setValue(0);
+        if ($type === CustomDefAbstract::TYPE_TEXT) {
+            $customData
+                ->setInput($this->faker->words(3, true));
+        } elseif ($type === CustomDefAbstract::TYPE_TEXTAREA) {
+            $customData
+                ->setInput($this->faker->paragraph());
+        } elseif (array_search($type, [CustomDefAbstract::TYPE_DATE, CustomDefAbstract::TYPE_DATETIME])) {
+            $customData
+                ->setValue($this->faker->dateTimeBetween()->getTimestamp());
+        }
+        $this->manager->persist($customData);
+    }
+
+    /**
+     * @param CustomDefAbstract  $parent
+     * @param CustomDataAbstract $customData
+     * @param CustomDefAbstract  $optionField
+     */
+    protected function setUpCustomChoiceData(
+        CustomDefAbstract $parent,
+        CustomDataAbstract $customData,
+        CustomDefAbstract $optionField
+    ) {
+        $customData
+            ->setRootField($parent)
+            ->setField($optionField)
+            ->setValue(1);
+        $this->manager->persist($customData);
     }
 }

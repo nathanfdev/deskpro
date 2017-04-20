@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,12 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Renderer;
 
+use Application\DeskPRO\Dpql\Renderer\Values\Html as HtmlValues;
+use Application\DeskPRO\Dpql\Renderer\Values\Text;
 use Application\DeskPRO\Dpql\ResultHandler;
 
 /**
@@ -62,7 +60,7 @@ class Html extends AbstractRenderer
      */
     protected function _getDefaultValueRenderer()
     {
-        return new \Application\DeskPRO\Dpql\Renderer\Values\Html();
+        return new HtmlValues();
     }
 
     /**
@@ -130,7 +128,7 @@ class Html extends AbstractRenderer
         }
 
         return $this->_renderTableWrapper(
-            $this->_renderHeader($rows)
+            $this->_renderHeader()
             .$this->_renderBody($rows)
             .$this->_renderFooter($rows)
         );
@@ -152,11 +150,9 @@ class Html extends AbstractRenderer
     /**
      * Renders the header row (for a simple table).
      *
-     * @param array $rows
-     *
      * @return string
      */
-    protected function _renderHeader(array $rows)
+    protected function _renderHeader()
     {
         $columnHtml = [];
         foreach ($this->_handler->getGroupYColumns() as $column) {
@@ -316,7 +312,7 @@ class Html extends AbstractRenderer
                 if (!isset($columnTotals[$id])) {
                     $columnTotals[$id] = 0;
                 }
-                $columnTotals[$id] += $this->getColumnValue($row, $id);
+                $columnTotals[$id] += (int) $this->getColumnValue($row, $id);
             }
         }
 
@@ -409,7 +405,7 @@ class Html extends AbstractRenderer
                     $row = $prefix.$row;
                 }
                 if ($totalType) {
-                    $row .= "<th class=\"column-total\"$rowSpan>Total</th>";
+                    $row .= "<th class=\"column-total\" $rowSpan>Total</th>";
                 }
             }
             $output[] = "<tr class=\"row-header\">$row</tr>";
@@ -631,7 +627,7 @@ class Html extends AbstractRenderer
         }
 
         $originalValueRenderer = $this->_valueRenderer;
-        $this->_valueRenderer  = new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+        $this->_valueRenderer  = new Text();
 
         $selectColumns = $this->_handler->getSelectColumns();
         $groupYColumns = $this->_handler->getGroupYColumns();
@@ -757,7 +753,6 @@ class Html extends AbstractRenderer
                 foreach ($rows as $row) {
                     $categories = [];
                     $grouper    = $this->_valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
-                    $i          = 0;
                     foreach ($groupYColumns as $column) {
                         $categories[] = $this->_renderCellValue($row, $column);
                     }
@@ -915,28 +910,6 @@ class Html extends AbstractRenderer
                     </script>
                 ';
             }
-
-            /*foreach ($graphs AS $graph) {
-                $id = 'report_chart_' . md5(uniqid());
-
-                $output .= '
-                    <div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
-                    <script type="text/javascript">
-                    $(function () {
-                        var chart = new AmCharts.AmPieChart();
-                        chart.dataProvider = ' . json_encode($chartData) . ';
-                        chart.titleField = "category";
-                        chart.valueField = "' . $graph['value'] . '";
-                        chart.startDuration = 0;
-                        ' . ($sliceCount >= 25 ? 'chart.labelsEnabled = false;' : '') . '
-                        chart.addLegend(new AmCharts.AmLegend());
-                        ' . ($showTitle ? 'chart.addTitle(' . json_encode($graph['title']) . ');' : '') . '
-
-                        chart.write("' . $id . '");
-                    });
-                    </script>
-                ';
-            }*/
         } else {
             if ($hasCategory) {
                 $balloonText = '[[category]], [[title]]: [[value]]';
@@ -980,10 +953,8 @@ class Html extends AbstractRenderer
                 $chartData = $this->_fillInGraphValues($chartData);
             }
 
-            $is_percent   = false;
             $percent_code = '';
             if (isset($selectColumns[0]) && isset($selectColumns[0]['renderer']) && $selectColumns[0]['renderer'] == 'percent') {
-                $is_percent   = true;
                 $percent_code = '
                     valueAxis.maximum = 100;
                     valueAxis.minimum = 0;

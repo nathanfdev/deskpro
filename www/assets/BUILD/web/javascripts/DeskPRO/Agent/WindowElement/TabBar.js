@@ -18,7 +18,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			/**
 			 * The element the append body pages to
 			 */
-			bodyPane: null
+			bodyPane: null,
+
+      /**
+			 * when enabled, init is run when the html is entered into the dom
+			 * when disabled, init is run when tab is focused for first time
+       */
+      initOnRender: false
 		};
 
 		this.setOptions(options);
@@ -28,8 +34,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.bodyPane = $(this.options.bodyPane);
 		this.menuBtn = $(this.options.menuBtn);
 		this.active = null;
+		this.initOnRender = this.options.initOnRender || false;
 
 		this.tabCount = 0;
+
+		this.showListIfNoTabs = _.debounce((function() {
+      var last_tab_id = Object.keys(this.tabs).getLast();
+      if (!last_tab_id) {
+        this.$timeout((function() {
+          this.$scope.showList();
+        }).bind(this));
+      }
+		}).bind(this), 400);
 
 		this.tabs = {};
 		this._tabs = [];
@@ -38,6 +54,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
 	},
+
+	enableInitOnRender: function() {
+		this.initOnRender = true;
+	},
+
+  disableInitOnRender: function() {
+    this.initOnRender = true;
+  },
 
 	initScope: function() {
 		var self = this;
@@ -53,22 +77,20 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			self.$scope.contextTab = tab;
 		};
 
-		this.$scope.closeAll = function(){
+		this.$scope.closeAll = function() {
 			var tabs = [];
-			self._tabs.each(function(tab){ tabs.push(tab) });
-			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+			self._tabs.each(function(tab){ tabs.push(tab); });
+      tabs.each(function(tab){ self.removeTab(tab); });
 		};
 
 		this.$scope.closeOthers = function(){
 			var tabs = [], active = self.getActiveTab();
-			self._tabs.each(function(tab){ tab !== active && tabs.push(tab) });
-			self.$timeout(function(){ tabs.each(function(tab){ self.removeTab(tab); }); }, 10);
+			self._tabs.each(function(tab){ tab !== active && tabs.push(tab); });
+      tabs.each(function(tab){ self.removeTab(tab); });
 		};
 
 		this.$scope.closeCurrent = function(){
-			self.$timeout(function(){
-				self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
-			}, 10);
+      self.$scope.contextTab && self.removeTab(self.$scope.contextTab);
 		};
 
 		this.$scope.reopenTab = function(tab){
@@ -86,7 +108,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 	_filterTabHistory: function() {
 		var tabRoutes = {}, i, t;
-		var tabHistory = []
+		var tabHistory = [];
 		for (i = 0; i < this.$scope.tabs.length; i++) {
 			t = this.$scope.tabs[i];
 			if (t.page && t.page.meta && t.page.meta.routeUrl) {
@@ -136,7 +158,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				}
 			}
 		}
-		this.$scope.$safeApply();
 	},
 
 	//##################################################################################################################
@@ -261,6 +282,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.page = page;
 		data.classId = page.getMetaData('tabClassId', '');
 		data.title = page.getMetaData('title', 'Untitled');
+		data.initOnRender = this.initOnRender;
 		data.callback_render = function(container) {
 			container = $(container);
 			page.fireEvent('render', [container.first(), id]);
@@ -358,6 +380,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				this.currentTabId = null;
 			}
 
+      if (otherTab.page) {
+				otherTab.page.HAS_REAL_TAB = true;
+      }
 			this.removeTab(otherTab, true);
 		}
 
@@ -366,6 +391,16 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		//----------
 		// Just about done
 		//----------
+
+    if (!data.isInited && data.initOnRender && (!otherTab || otherTab.initOnRender)) {
+      data.isInited = true;
+
+      if (data.callback_render !== undefined) {
+        data.callback_render(data.wrapper);
+      }
+
+      this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
+    }
 
 		this.fireEvent('addTab', [data, this]);
 
@@ -377,7 +412,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		this.$scope.$safeApply();
 		this.$timeout(function() {
 			self.tabBarOverflow.update();
 		});
@@ -483,7 +517,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.isActivating = false;
 		data.isActive = true;
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.$scope.$safeApply();
 	},
 
 
@@ -513,7 +546,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			data.callback_hide_content(data, $('#' + data.wrapperId), this);
 		}
 
-		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId), this.isActivating, this]);
+		this.fireEvent('deactivateTab', [data]);
 
 		this.currentTabId = null;
 	},
@@ -560,6 +593,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		var data = this.tabs[id];
+		if (!data) {
+			return;
+		}
 		delete this.tabs[id];
 		this.tabCount--;
 		if (this.tabCount <= 0) {
@@ -569,16 +605,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (tab === this.$scope.contextTab) {
 			this.$scope.contextTab = null;
 		}
+
+		if (!silent) {
+      if (data.tabBtn)  data.tabBtn.remove();
+      if (data.tabBtn2) data.tabBtn2.remove();
+		}
+
 		this._checkOpenedItems();
-
-		if (data.callback_remove_content !== undefined) {
-			data.callback_remove_content(data, $('#' + data.wrapperId), this);
-		}
-
-		if (data.wrapper) {
-			data.wrapper.empty();
-			data.wrapper.remove();
-		}
 
 		if (data.page) {
 			if (data.page.meta.routeData && data.page.meta.routeData.xhr) {
@@ -613,22 +646,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 						// make it visiable.
 						// The timeout is in case we have other routines that auto-open
 						// a new tab (e.g., after ticket reply)
-						this.$timeout(function () {
-							var last_tab_id = Object.keys(self.tabs).getLast();
-							if (!last_tab_id) {
-								self.$scope.showList();
-							}
-						}, 100);
+						this.showListIfNoTabs();
 					}
 				}
 			}
-
-			if (data.tabBtn)  data.tabBtn.remove();
-			if (data.tabBtn2) data.tabBtn2.remove();
 		}
 
 		DeskPRO_Window.updateWindowUrlFragment();
-		this.$scope.$safeApply();
 		if (!silent && tab.page && tab.page.meta.routeUrl && !tab.page.LOADING_TYPENAME) {
 			this.$scope.tabHistory.push({
 				title: tab.title,
@@ -639,9 +663,31 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 				this.$scope.tabHistory.shift();
 			}
 		}
+
 		this.$timeout(function() {
 			self.tabBarOverflow.update();
-		})
+		});
+
+    window.setTimeout(function() {
+      if (typeof data.callback_remove_content !== 'undefined') {
+        data.callback_remove_content(data, $('#' + data.wrapperId), this);
+      }
+
+      if (data.wrapper) {
+        data.wrapper.remove();
+        data.wrapper = null;
+      }
+
+      if (data.page.destroyEvents) {
+        data.page.destroyEvents();
+      }
+
+      data.callback_render = null;
+      data.callback_remove_content = null;
+      data.callback_activate = null;
+      data.callback_deactivate = null;
+      data.page = null;
+    }, 100);
 	},
 
 

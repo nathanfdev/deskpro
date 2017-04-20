@@ -89,7 +89,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, otherId) },
-			zIndex: 40000 // Above floating people windows
+			zIndex: 1900 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();
@@ -119,7 +119,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, otherId) },
-			zIndex: 40000 // Above floating people windows
+			zIndex: 1900 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();
@@ -133,7 +133,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: { url: this._getOverlayUrl(this.options.metaId, 0) },
-			zIndex: 40000 // Above floating people windows
+			zIndex: 1900 // Above floating people windows
 		});
 		this.overlay.addEvent('ajaxDone', this._overlayLoaded.bind(this));
 		this.overlay.open();
@@ -219,19 +219,19 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			ev.preventDefault();
 			buttons.each(function() {
 				if (!$(this).data('keep')) {
-					$(this).click();
+					$(this).trigger('click');
 					return false;
 				}
 			});
 		});
 
-		buttons.click(function() {
+		buttons.on('click', function() {
 			buttons.data('keep', false).html(mergeHtml);
 			$(this).data('keep', 1).html(keepHtml);
 			setMergeDataLostClasses();
 		});
 
-		wrapper.find('.merge-trigger').click(this._mergeTriggerClick.bind(this));
+		wrapper.find('.merge-trigger').on('click', this._mergeTriggerClick.bind(this));
 	},
 
 	_mergeTriggerClick: function() {
@@ -288,6 +288,11 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 		}
 		if (this.mergeMenu) {
 			this.mergeMenu.destroy();
+			this.mergeMenu = null;
 		}
+    this.overlay = null;
+    this.mergeButtons = null;
+		this.trigger = null;
+		this.options = null;
 	}
 });

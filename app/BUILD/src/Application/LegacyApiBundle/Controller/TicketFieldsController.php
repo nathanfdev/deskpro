@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -209,6 +209,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         }
 
         $post = $this->in->getAll('req');
+        if (empty($post['title'])) {
+            return $this->createApiErrorResponse('validation_error', 'Empty title');
+        }
 
         $helper = new CustomFieldHelper($this);
         $helper->saveFormToField($field, $post);
@@ -217,12 +220,12 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             return $this->createSuccessResponse([
                 'field_id' => $field->id,
             ]);
-        } else {
-            return $this->createSuccessResponse([
-                'field_id' => $field->id,
-                $this->generateUrl('api_ticket_fields_get', ['id' => $field->id]),
-            ]);
         }
+
+        return $this->createSuccessResponse([
+            'field_id' => $field->id,
+            $this->generateUrl('api_ticket_fields_get', ['id' => $field->id]),
+        ]);
     }
 
     //###################################################################################################################

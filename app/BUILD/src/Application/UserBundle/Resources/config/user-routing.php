@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,11 +58,6 @@ $collection->create('user_login_usersource_sso', [
     'path'         => '/login/usersource-sso/{usersource_id}',
     'controller'   => 'UserBundle:Login:usersourceSso',
     'requirements' => ['usersource_id' => '\\d+'],
-]);
-
-$collection->create('user_logout', [
-    'path'       => '/logout/{auth}',
-    'controller' => 'UserBundle:Login:logout',
 ]);
 
 $collection->create('user_saml_sls', [

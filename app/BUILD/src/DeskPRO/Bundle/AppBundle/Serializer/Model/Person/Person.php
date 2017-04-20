@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,22 +31,17 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class Person.
  */
-class Person
+class Person extends BasePerson
 {
-    /**
-     * The unique ID.
-     *
-     * @var int
-     */
-    protected $id;
-
     /**
      * The user`s profile picture.
      *
@@ -89,15 +84,6 @@ class Person
      * @var bool
      */
     protected $isUser;
-
-    /**
-     * Is this person an agent?
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $isAgent;
 
     /**
      * Was this person an agent?
@@ -188,42 +174,6 @@ class Person
      * @var string
      */
     protected $creationSystem;
-
-    /**
-     * The users name (best guess from other sources etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * The users name (best guess from other sources etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $firstName;
-
-    /**
-     * The users name (best guess from other sources etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $lastName;
-
-    /**
-     * The users title prefix (Mr., Mrs., etc).
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $titlePrefix;
 
     /**
      * Overrides the display name of an person in the user interface (agents only).
@@ -336,20 +286,11 @@ class Person
     /**
      * Labels associated with this user.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelPerson>>")
+     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelPerson>>")
      *
      * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
     protected $labels;
-
-    /**
-     * Main user`s email.
-     *
-     * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
-     *
-     * @var string
-     */
-    protected $primaryEmail;
 
     /**
      * Emails belong to user.
@@ -361,36 +302,9 @@ class Person
     protected $emails;
 
     /**
-     * Users avatar.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Content\Avatar")
-     *
-     * @var Avatar
-     */
-    protected $avatar;
-
-    /**
-     * Is user online?
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $online;
-
-    /**
-     * Date when user was last seen online.
-     *
-     * @JMS\Type("deferred<DateTime>")
-     *
-     * @var \DateTime
-     */
-    protected $lastSeen;
-
-    /**
      * Phone numbers belong to user.
      *
-     * @JMS\Type("array<array<string>>")
+     * @JMS\Type("collection<Application\DeskPRO\Entity\PhoneNumber>")
      *
      * @var array
      */
@@ -451,90 +365,57 @@ class Person
     protected $primaryTeam;
 
     /**
-     * Constructor.
+     * Agent data.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AgentData")
+     *
+     * @var AgentData
      */
-    public function __construct(\Application\DeskPRO\Entity\Person $person)
+    protected $agentData;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(PersonEntity $person, Avatar $avatar)
     {
-        $this->id                      = $person->getId();
+        parent::__construct($person, $avatar);
+
         $this->pictureBlob             = $person->picture_blob;
         $this->disablePicture          = $person->disable_picture;
         $this->gravatarUrl             = $person->getGravatarUrl();
         $this->isContact               = $person->is_contact;
         $this->isUser                  = $person->isUser();
-        $this->isAgent                 = $person->isAgent();
-        $this->wasAgent                = $person->was_agent;
-        $this->canAgent                = $person->can_agent;
-        $this->canAdmin                = $person->can_admin;
+        $this->wasAgent                = $person->wasAgent();
+        $this->canAgent                = $person->canAgent();
+        $this->canAdmin                = $person->canAdmin();
         $this->canBilling              = $person->getRealCanBilling();
         $this->disableAutoresponses    = $person->disable_autoresponses;
         $this->disableAutoresponsesLog = $person->disable_autoresponses_log;
         $this->isConfirmed             = $person->isConfirmed();
         $this->isDeleted               = $person->isDeleted();
         $this->isDisabled              = $person->isDisabled();
-        $this->creationSystem          = $person->creation_system;
-        $this->name                    = $person->name;
-        $this->firstName               = $person->first_name;
-        $this->lastName                = $person->last_name;
-        $this->titlePrefix             = $person->title_prefix;
-        $this->overrideDisplayName     = $person->override_display_name;
-        $this->summary                 = $person->summary;
+        $this->creationSystem          = $person->getCreationSystem();
+        $this->overrideDisplayName     = $person->getOverrideDisplayName();
+        $this->summary                 = $person->getSummary();
         $this->language                = $person->getLanguage();
         $this->organization            = $person->getOrganization();
-        $this->organizationPosition    = $person->organization_position;
+        $this->organizationPosition    = $person->getOrganizationPosition();
         $this->organizationManager     = $person->isOrganizationManager();
         $this->timezone                = $person->getTimezone();
-        $this->dateCreated             = $person->date_created;
+        $this->dateCreated             = $person->getDateCreated();
         $this->dateLastLogin           = $person->date_last_login;
         $this->browser                 = $person->browser;
         $this->userGroups              = $person->getPublicUsergroups();
         $this->agentGroups             = $person->getPublicAgentgroups();
         $this->labels                  = $person->getLabels();
-        $this->primaryEmail            = $person->getPrimaryEmail();
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
-        $this->phoneNumbers            = $person->getPhoneNumbersArray();
-        $this->fields                  = $person->custom_data;
+        $this->phoneNumbers            = $person->getPhoneNumbers();
+        $this->fields                  = $person->getCustomData();
         $this->contactData             = $person->getContactData();
         $this->emails                  = $person->getEmails();
         $this->teams                   = $person->getTeams();
         $this->primaryTeam             = $person->getPrimaryTeam();
-    }
-
-    /**
-     * @param Avatar $avatar
-     *
-     * @return $this
-     */
-    public function setAvatar(Avatar $avatar)
-    {
-        $this->avatar = $avatar;
-
-        return $this;
-    }
-
-    /**
-     * @param bool $online
-     *
-     * @return $this
-     */
-    public function setOnline($online)
-    {
-        $this->online = $online;
-
-        return $this;
-    }
-
-    /**
-     * @param $lastSeen
-     *
-     * @return $this
-     */
-    public function setLastSeen($lastSeen = null)
-    {
-        $this->lastSeen = $lastSeen;
-
-        return $this;
+        $this->agentData               = $person->getAgentData();
     }
 }

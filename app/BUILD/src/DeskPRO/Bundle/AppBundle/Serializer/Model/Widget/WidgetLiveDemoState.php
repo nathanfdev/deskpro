@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,15 +51,23 @@ class WidgetLiveDemoState
     private $chat;
 
     /**
+     * @var array
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\Department>")
+     */
+    private $departments;
+
+    /**
      * Constructor.
      *
      * @param array            $agents
      * @param array            $users
      * @param ChatConversation $chat
      */
-    public function __construct(array $agents, array $users, ChatConversation $chat)
+    public function __construct(array $agents, array $users, ChatConversation $chat, array $departments)
     {
-        $this->people = new WidgetPeopleDemoState($agents, $users);
-        $this->chat   = new WidgetChatDemoState($chat);
+        $this->people      = new WidgetPeopleDemoState($agents, $users);
+        $this->chat        = new WidgetChatDemoState($chat);
+        $this->departments = $departments;
     }
 }

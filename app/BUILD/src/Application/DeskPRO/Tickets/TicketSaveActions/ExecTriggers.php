@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -177,6 +177,12 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
                 break;
             case 'user':
                 $mode_var = $trigger->by_user_mode;
+
+                // trigger should run if just one of the widget events exists
+                if (array_intersect($mode_var, ['widget', 'form'])) {
+                    $mode_var = array_unique(array_merge($mode_var, ['widget', 'form']));
+                }
+
                 break;
             case 'system':
                 $mode_var = $trigger->by_app_mode;

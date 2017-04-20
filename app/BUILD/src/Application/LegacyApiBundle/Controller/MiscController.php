@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -490,5 +490,22 @@ class MiscController extends AbstractController
         }
 
         throw $this->createNotFoundException();
+    }
+
+    public function checkUrlAction(Request $request)
+    {
+        $scheme = $request->get('scheme');
+        $host   = $request->get('host');
+        $port   = (int) $request->get('port');
+
+        $actualScheme = $request->getScheme();
+        $actualHost   = $request->getHost();
+        $actualPort   = (int) $request->getPort();
+
+        $valid = $actualScheme === $scheme && $actualHost === $host && $actualPort === $port;
+
+        return $this->createJsonResponse([
+            'valid' => $valid,
+        ]);
     }
 }

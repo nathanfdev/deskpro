@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,8 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TmpData;
+use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
+use Symfony\Bridge\Monolog\Handler\DebugHandler;
 
 class CleanupDaily extends AbstractJob
 {
@@ -363,5 +365,24 @@ BODY;
         // Cleanup rate limit logs
         //------------------------------
         $db->executeQuery('DELETE FROM `rate_limit_log` WHERE `date_created` < (NOW() - INTERVAL 1 DAY)');
+
+        //------------------------------
+        // Cleanup old builds
+        //------------------------------
+
+        $logger = new \Monolog\Logger('out');
+        $debug  = new DebugHandler();
+        $logger->pushHandler($debug);
+
+        $service = new UpdateCleanup(App::getContainer());
+        $service->cleanup(true, $logger);
+
+        $logString = implode("\n", array_map(function ($r) {
+            return '[UpdateCleanup] '.$r['message'];
+        }, $debug->getLogs()));
+
+        if ($logString) {
+            $this->logStatus($logString);
+        }
     }
 }

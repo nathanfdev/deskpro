@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -113,6 +113,8 @@ class Ticket extends AbstractEntityRepository
      * Find a ticket by its TAC.
      *
      * @param $access_code
+     *
+     * @return mixed|null|object|void
      */
     public function getByAccessCode($access_code)
     {
@@ -179,6 +181,7 @@ class Ticket extends AbstractEntityRepository
      */
     public function findTicketRef($ticket_ref)
     {
+        /** @var TicketEntity $ticket */
         $ticket = $this->findOneBy(['ref' => $ticket_ref]);
         if ($ticket) {
             return $ticket;
@@ -236,6 +239,8 @@ class Ticket extends AbstractEntityRepository
 
     /**
      * @param \Application\DeskPRO\Entity\TicketDeleted $del_ticket
+     *
+     * @return null|object|void
      */
     public function resolveDeletedTicket(TicketDeletedEntity $del_ticket)
     {
@@ -321,6 +326,11 @@ class Ticket extends AbstractEntityRepository
     /**
      * Get all tickets a person owns, or is a participant in.
      * This is usually used to fetch a list of tickets for an end-user.
+     *
+     * @param PersonEntity $person
+     * @param null         $limit
+     * @param null         $sort_by
+     * @param string       $sort_order
      *
      * @return array
      */
@@ -520,6 +530,9 @@ class Ticket extends AbstractEntityRepository
     /**
      * Get all tickets that belong ot an org.
      *
+     * @param Entity\Organization $org
+     * @param null                $limit
+     *
      * @return array
      */
     public function getOrganizationTickets(Entity\Organization $org, $limit = null)
@@ -590,7 +603,8 @@ class Ticket extends AbstractEntityRepository
      * Get the latest tickets from a particular user.
      *
      * @param \Application\DeskPRO\Entity\Person $person
-     * @param int                                $max    The max number of results
+     * @param int                                $max       The max number of results
+     * @param bool                               $only_open
      *
      * @return array
      */
@@ -772,9 +786,11 @@ class Ticket extends AbstractEntityRepository
     }
 
     /**
-     * @param mixed $id
+     * @param $ticket_ref
+     * @param PersonEntity $person_context
+     * @param null         $matched_type
      *
-     * @return \Application\DeskPRO\Entity\Ticket
+     * @return TicketEntity
      */
     public function getTicketByPublicId($ticket_ref, PersonEntity $person_context = null, &$matched_type = null)
     {
@@ -1038,7 +1054,6 @@ class Ticket extends AbstractEntityRepository
 
     /**
      * @param PersonEntity $person
-     * @param bool         $isCount
      * @param null         $sort
      *
      * @return \Doctrine\ORM\Query

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,10 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\CacheWarmer;
 
-use Gnugat\NomoSpaco\File\FileRepository;
-use Gnugat\NomoSpaco\FqcnRepository;
-use Gnugat\NomoSpaco\Token\ParserFactory;
+use Doctrine\Common\Annotations\AnnotationException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 /**
@@ -71,35 +70,34 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
      */
     public function warmUp($cacheDir)
     {
-        $fqcnRepo = new FqcnRepository(new FileRepository(), new ParserFactory());
-
         $dirs = [
             DP_ROOT.'/src/Application',
             DP_ROOT.'/src/DeskPRO',
         ];
 
-        foreach ($dirs as $dir) {
-            $fqcns = @$fqcnRepo->findIn($dir);
-            $this->cacheAnnotations($fqcns);
-        }
-    }
-
-    /**
-     * @param $fqcns
-     */
-    private function cacheAnnotations($fqcns)
-    {
         $annotaionReader = $this->container->get('annotation_reader');
+        $finder          = Finder::create()
+            ->in($dirs)
+            ->name('*.php')
+            ->notPath('/Dpql\/build.+/')
+            ->notPath('/Resources/')
+            ->notPath('/InstallBundle\/Data/')
+        ;
 
-        foreach ($fqcns as $fqcn) {
-            if (!class_exists($fqcn)) {
+        foreach ($finder as $f) {
+            require_once $f->getRealPath();
+        }
+
+        foreach (get_declared_classes() as $class) {
+            if (0 !== strpos($class, 'DeskPRO') && 0 !== strpos($class, 'Application')) {
                 continue;
             }
 
+            $reflection = new \ReflectionClass($class);
             try {
-                $reflection = new \ReflectionClass($fqcn);
                 $annotaionReader->getClassAnnotations($reflection);
-            } catch (\Exception $e) {
+            } catch (AnnotationException $e) {
+                // todo we have lots of @option that throw AnnotationException. ignore or cleanup?
             }
         }
     }

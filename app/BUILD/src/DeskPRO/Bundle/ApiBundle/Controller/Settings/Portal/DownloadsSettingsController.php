@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,9 +57,7 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings"
-     *      }
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings"
      * )
      *
      * @Rest\Get("")
@@ -85,10 +83,9 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\Portal\DownloadsSettingsType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
-     *     }
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\DownloadsSettingsType"
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("")
      *

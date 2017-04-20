@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,9 +38,16 @@ class HierarchyTest extends \PHPUnit_Framework_TestCase
 {
     public function test_with_out_display_order()
     {
-        $node1 = new HierarchyNode('val 1');
-        $node2 = new HierarchyNode('val 2');
-        $node3 = new HierarchyNode('val 3');
+        $data1     = new \stdClass();
+        $data1->id = 1;
+        $data2     = new \stdClass();
+        $data2->id = 2;
+        $data3     = new \stdClass();
+        $data3->id = 3;
+
+        $node1 = new HierarchyNode($data1);
+        $node2 = new HierarchyNode($data2);
+        $node3 = new HierarchyNode($data3);
 
         $hierarchy = new Hierarchy([$node1, $node2, $node3]);
         $this->assertEquals([$node1, $node2, $node3], $hierarchy->getRootNodes());
@@ -48,9 +55,16 @@ class HierarchyTest extends \PHPUnit_Framework_TestCase
 
     public function test_sort_by_display_order()
     {
-        $node1 = new HierarchyNode('val 1', 0, 10);
-        $node2 = new HierarchyNode('val 2', 0, 5);
-        $node3 = new HierarchyNode('val 3', 0, 20);
+        $data1     = new \stdClass();
+        $data1->id = 1;
+        $data2     = new \stdClass();
+        $data2->id = 2;
+        $data3     = new \stdClass();
+        $data3->id = 3;
+
+        $node1 = new HierarchyNode($data1, 0, 10);
+        $node2 = new HierarchyNode($data2, 0, 5);
+        $node3 = new HierarchyNode($data3, 0, 20);
 
         $hierarchy = new Hierarchy([$node1, $node2, $node3]);
         $this->assertEquals([$node3, $node1, $node2], $hierarchy->getRootNodes());

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
@@ -54,9 +55,10 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         EntityRepository $repo,
         NewMessageEvent $event,
         AgentChatMessage $message,
-        AgentChat $chat
+        AgentChat $chat,
+        AvatarResolver $avatarResolver
     ) {
-        $this->beConstructedWith($em, $token_storage);
+        $this->beConstructedWith($em, $token_storage, $avatarResolver);
         $token_storage->getToken()->willReturn($token);
         $token->getUser()->willReturn($bob);
 
@@ -68,8 +70,11 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         $message->getChat()->willReturn($chat);
         $message->getPersonName()->willReturn('Bob');
         $message->getMessage()->willReturn('Hello, Alice');
+        $message->getPerson()->willReturn($bob);
+        $avatarResolver->getAvatar($bob, 64)->willReturn('http://lorempixel.com/64/64');
 
         $chat->getPersonList()->willReturn([$bob, $alice]);
+        $chat->getId()->willReturn(1);
 
         $bob->getId()->willReturn(1);
         $alice->getId()->willReturn(2);

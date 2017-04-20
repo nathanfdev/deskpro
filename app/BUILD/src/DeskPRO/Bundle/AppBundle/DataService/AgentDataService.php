@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -122,10 +122,10 @@ class AgentDataService extends AbstractDataService
 
         $data = $this->db->fetchAllKeyValue('
             SELECT DISTINCT
-            s.person_id,
-            IF(s.date_last > ?, 1, 0)
-            FROM sessions s
-            INNER JOIN people p ON (s.person_id = p.id)
+            p.id,
+            IF(s.date_last < ? OR s.person_id IS NULL, 0, 1)
+            FROM people p
+            LEFT JOIN sessions s ON (s.person_id = p.id)
             WHERE p.is_agent = 1 AND p.is_deleted = 0
         ', [$cutoff], [], 0, 1);
 

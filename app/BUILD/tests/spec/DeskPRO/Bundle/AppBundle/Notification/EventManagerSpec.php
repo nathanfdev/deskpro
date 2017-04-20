@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 
+use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkAllMessagesEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
@@ -56,10 +57,11 @@ class EventManagerSpec extends ObjectBehavior
     {
         $this->getSubscribedEvents()->shouldBe(
             [
-                NewMessageEvent::EVENT_NAME    => 'handleEvent',
-                MarkMessageEvent::EVENT_NAME   => 'handleEvent',
-                TicketUpdatedEvent::EVENT_NAME => 'handleEvent',
-                UpdateOnlineEvent::EVENT_NAME  => 'handleEvent',
+                NewMessageEvent::EVENT_NAME      => 'handleEvent',
+                MarkMessageEvent::EVENT_NAME     => 'handleEvent',
+                MarkAllMessagesEvent::EVENT_NAME => 'handleEvent',
+                TicketUpdatedEvent::EVENT_NAME   => 'handleEvent',
+                UpdateOnlineEvent::EVENT_NAME    => 'handleEvent',
             ]
         );
     }

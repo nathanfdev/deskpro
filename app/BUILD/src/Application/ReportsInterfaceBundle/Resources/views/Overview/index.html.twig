@@ -4,6 +4,15 @@
 
 	<section class="padd">
 
+		<div ng-show="agent_teams.length > 0" style="margin-bottom: 10px;">
+			<select ng-model="agent_team">
+				<option ng-repeat="option in agent_teams" ng-value="option.id" ng-selected="agent_team == option.id">
+					Team: {{ ng_var('option.name') }}
+				</option>
+			</select>
+			<button ng-click="Overview.loadData()">View</button>
+		</div>
+
 		<table cellspacing="0" cellpadding="0" width="100%">
 			<tr>
 				<td style="padding-right: 6px;vertical-align: top;" width="50%">

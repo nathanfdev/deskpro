@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,8 +37,8 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Twig\Extension\TemplatingExtension;
-use GuzzleHttp\Client;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp\RequestOptions;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Strings;
@@ -63,7 +63,7 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('url');
-        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type');
+        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type', 'disable_cert');
 
         return $options;
     }
@@ -73,26 +73,24 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $timeout = intval($this->getActionOption('timeout')) ?: 20;
+        $timeout     = intval($this->getActionOption('timeout')) ?: 20;
+        $disableCert = (bool) $this->getActionOption('disable_cert');
 
-        /** @var TemplatingExtension $renderer */
-        $renderer    = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+        $renderer    = $this->getContainer()->get('twig_template_renderer');
         $url         = $renderer->renderTicketTemplate($this->getActionOption('url'), $ticket, $context);
         $headers     = $renderer->renderTicketTemplate($this->getActionOption('headers'), $ticket, $context);
         $custom_data = $renderer->renderTicketTemplate($this->getActionOption('custom_data') ?: '', $ticket, $context);
         $username    = $renderer->renderTicketTemplate($this->getActionOption('username') ?: '', $ticket, $context);
         $password    = $renderer->renderTicketTemplate($this->getActionOption('password') ?: '', $ticket, $context);
 
-        $http_client = new Client(['timeout' => $timeout]);
+        $http_client = new HttpClient(['timeout' => $timeout]);
+        $method      = strtoupper($this->getActionOption('method')) ?: 'POST';
+        $options     = [];
 
         if ($headers) {
-            $headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
-        } else {
-            $headers = [];
+            $headers                          = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
+            $options[RequestOptions::HEADERS] = $headers;
         }
-
-        $method  = strtoupper($this->getActionOption('method')) ?: 'POST';
-        $options = [];
 
         if ($method == 'POST' || $method == 'PUT') {
             $data                    = [];
@@ -102,6 +100,18 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $data['event_type']      = $context->getEventType();
             $data['event_method']    = $context->getEventMethod();
             $data['custom_data']     = $custom_data;
+            $data['ticket_logs']     = [];
+
+            $state   = $ticket->getStateChangeRecorder();
+            $changes = $state->getChanges();
+
+            $logGenerator = new TicketLogGenerator($ticket, $context);
+            foreach ($changes as $change) {
+                $logData = $logGenerator->getLogDataForChange($change);
+                if ($logData) {
+                    $data['ticket_logs'][] = $logData;
+                }
+            }
 
             $format = 'json' === $this->getActionOption('payload_type')
                 ? RequestOptions::JSON
@@ -111,6 +121,9 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
 
         if ($username || $password) {
             $options[RequestOptions::AUTH] = [$username, $password];
+        }
+        if ($disableCert) {
+            $options[RequestOptions::VERIFY] = false;
         }
 
         try {

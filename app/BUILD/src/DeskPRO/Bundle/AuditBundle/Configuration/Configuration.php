@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,6 +27,8 @@
  */
 
 namespace DeskPRO\Bundle\AuditBundle\Configuration;
+
+use DeskPRO\Bundle\AuditBundle\Entity\NamingStrategy\NamingStrategyInterface;
 
 /**
  * Class Configuration.
@@ -62,6 +64,11 @@ class Configuration
      * @var AuditContext
      */
     private $context;
+
+    /**
+     * @var NamingStrategyInterface
+     */
+    private $namingStrategy;
 
     /**
      * Configuration constructor.
@@ -168,5 +175,25 @@ class Configuration
         }
 
         return $result;
+    }
+
+    /**
+     * @param NamingStrategyInterface $strategy
+     *
+     * @return $this
+     */
+    public function setNamingStrategy(NamingStrategyInterface $strategy)
+    {
+        $this->namingStrategy = $strategy;
+
+        return $this;
+    }
+
+    /**
+     * @return NamingStrategyInterface
+     */
+    public function getNamingStrategy()
+    {
+        return $this->namingStrategy;
     }
 }

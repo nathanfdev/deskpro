@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,11 +82,12 @@ class HierarchyNodeSpec extends ObjectBehavior
         HierarchyNode $child1,
         HierarchyNode $child2
     ) {
+        $hierarchy->addNode($this);
         $child1->getOrder()->willReturn(-40);
         $child2->getOrder()->willReturn(-10);
 
-        $child1->setHierarchy($hierarchy)->shouldBeCalled();
-        $child2->setHierarchy($hierarchy)->shouldBeCalled();
+        $hierarchy->addNode($child1)->shouldBeCalled();
+        $hierarchy->addNode($child2)->shouldBeCalled();
 
         $this->setHierarchy($hierarchy);
         $this->addChild($child1);

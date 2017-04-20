@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -205,11 +205,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function setSetting($setting, $value)
     {
-
         // it is not an option in the new settings resolver to SET settings directly. This is left for BC.
 
         $this->db->beginTransaction();
-
+        $this->reloadSettings();
+        $old = $this->get($setting);
         try {
             if ($value !== null) {
                 if ($value === true) {
@@ -228,13 +228,18 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             $this->db->rollback();
             throw $e;
         }
-
         $auditLog     = new AuditLog();
         $auditLogData = new AuditLogData();
-        $auditLogData->setContext([])->setDiff([$setting => [$this->get($setting), $value]]);
+
+        // just leave in case $old = "0" and $value = false e.g.
+        if ($old === $value || ((is_numeric($old) || is_numeric($value)) && ((int) $old === (int) $value))) {
+            return;
+        }
+
+        $auditLogData->setContext([])->setDiff([$setting => [$old, $value]]);
         $auditLog
             ->setAction(sprintf('settings.%s', $value !== null ? 'replace' : 'delete'))
-            ->setPerformerId(App::getCurrentPerson()->getId())
+            ->setPerformerId(App::getCurrentPerson() ? App::getCurrentPerson()->getId() : 0)
             ->setDescription(sprintf(
                     'Setting was %s via Setting::setSetting() method',
                     $value !== null ? 'replaced' : 'deleted'
@@ -244,10 +249,9 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             ->setObjectName(sprintf('"%s" setting', $setting))
             ->setObjectType(TypeUtils::getBaseTypeName(Setting::class))
             ->setData($auditLogData)
-            ->setPerformerName(App::getCurrentPerson()->getDisplayName());
+            ->setPerformerName(App::getCurrentPerson() ? App::getCurrentPerson()->getDisplayName() : '');
 
         $this->auditService->write($auditLog);
-        $this->reloadSettings();
     }
 
     /**

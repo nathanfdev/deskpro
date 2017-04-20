@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -105,13 +107,28 @@ class TicketController extends AbstractApiController
             'use_captcha'                   => false,
             'department_id'                 => $request->query->getInt('department_id'),
             'hide_department_field'         => $request->query->getBoolean('hide_department_field'),
+            'subject_type'                  => $request->get('subject_type'),
+            'default_subject'               => $request->get('default_subject'),
             'ticket_view_context'           => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'             => TicketWithLayoutsContext::VISIBILITY_NEW,
+            'form_type'                     => $request->get('type'),
         ];
+
+        if ($request->isMethod('get')) {
+            $formOptions['validation_groups']  = false;
+            $formOptions['allow_extra_fields'] = true;
+        }
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
         $form->handleRequest($request);
-        if ($form->isValid()) {
+
+        // set default values on the main form
+        if ($request->isMethod('get') && $request->query->get('ticket') && !$form->isSubmitted()) {
+            $form->submit($request->query->get('ticket') ?: []);
+            FormValidatorChecker::clearFormErrors($form);
+        }
+
+        if ($request->isMethod('post') && $form->isValid()) {
             $email     = $person->getPrimaryEmail();
             $person    = $this->get('data.person')->getPersonForEmail($email->getEmail());
             $guestForm = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
@@ -120,9 +137,14 @@ class TicketController extends AbstractApiController
                 $ticket->setPerson($person);
                 $guestForm->handleRequest($request);
 
-                $ticketService->acceptNewTicket($ticket, $request);
+                if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
+                    // if the user is not authorized then don't allow to change person entity
+                    $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
+                }
+
+                $ticketService->acceptNewTicket($ticket, $request, 'widget');
             } else {
-                $ticketService->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                $ticketService->acceptNewTicketForGuest($ticket, $request, $guestForm, 'widget');
             }
 
             // check if ticket was created and then return success response
@@ -133,22 +155,28 @@ class TicketController extends AbstractApiController
             }
         }
 
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
+        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
             'person'              => $person,
             'action'              => $this->generateUrl('portal_api_ticket_new'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
 
+        // set default values on the full form
+        if ($request->isMethod('get') && $request->query->get('ticket')) {
+            $formFull->submit($request->query->get('ticket') ?: []);
+            FormValidatorChecker::clearFormErrors($formFull);
+        }
+
         $params = [
             'form'                    => $form->createView(),
-            'form_full'               => $form_full->createView(),
+            'form_full'               => $formFull->createView(),
             'form_errors'             => $form->isSubmitted() ? $form->getErrors() : [],
             'show_ticket_suggestions' => (bool) $this->getBrandContainer()->getSetting('core.show_ticket_suggestions'),
         ];
 
         $content    = ['data' => $this->render('Theme:NewTicket:new_ticket_form.html.twig', $params)->getContent()];
-        $statusCode = !$form->isSubmitted() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
+        $statusCode = $request->isMethod('get') || $form->isValid() ? Response::HTTP_OK : Response::HTTP_BAD_REQUEST;
 
         return new View($content, $statusCode);
     }

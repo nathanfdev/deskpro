@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,7 +71,7 @@ class FilterChangeDetector
     /**
      * @var bool
      */
-    private $extended_log_info = false;
+    private $extended_log_info = true;
 
     /**
      * @var bool
@@ -324,6 +324,9 @@ class FilterChangeDetector
                             $orig_match = false;
                         } else {
                             $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms_orig);
+                            if ($this->extended_log_info) {
+                                $logger->debug('[FilterChangeDetector] performed orig_ticket check -- '.($orig_match ? 'yes' : 'no'));
+                            }
                         }
                         $orig_match_real = $orig_match;
                     }
@@ -331,6 +334,10 @@ class FilterChangeDetector
                     if ($new_match_failterm === null) {
                         $new_match      = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
                         $new_match_real = $new_match;
+
+                        if ($this->extended_log_info) {
+                            $logger->debug('[FilterChangeDetector] performed new_ticket check -- '.($new_match ? 'yes' : 'no'));
+                        }
                     }
 
                     if ($orig_match && $agentPermOld) {
@@ -351,9 +358,15 @@ class FilterChangeDetector
                             $orig_match = false;
                         } else {
                             $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm, $cached_terms_orig);
+                            if ($this->extended_log_info) {
+                                $logger->debug('[FilterChangeDetector] performed orig_ticket check (reset status) -- '.($orig_match ? 'yes' : 'no'));
+                            }
                         }
 
                         $new_match = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm, $cached_terms_new);
+                        if ($this->extended_log_info) {
+                            $logger->debug('[FilterChangeDetector] performed new_ticket check (reset status) -- '.($new_match ? 'yes' : 'no'));
+                        }
 
                         $orig_match_real = $orig_match;
                         $new_match_real  = $new_match;
@@ -563,8 +576,8 @@ class FilterChangeDetector
         foreach ($result as $filter) {
             $filter['terms'] = json_decode($filter['terms'], true);
 
-            $filters[$filter['id']]                          = $filter;
-            $this->cachedUserFilters[$filter['person_id']][] = $filter;
+            $filters[$filter['id']]                                       = $filter;
+            $this->cachedUserFilters[$filter['person_id']][$filter['id']] = $filter;
         }
 
         return $filters;

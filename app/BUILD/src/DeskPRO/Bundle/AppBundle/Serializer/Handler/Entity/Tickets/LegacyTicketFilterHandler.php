@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -73,9 +73,11 @@ class LegacyTicketFilterHandler extends AbstractEntityHandler
     {
         $set      = $this->getSet($entity);
         $deferred = new CallbackDeferredProperty([$this, 'getSet'], [$entity]);
-        $context->getSideloadStore()->addCustomSideload('ticket_filter_set', $set->getId(), $deferred);
+        $model    = new LegacyTicketFilterModel($entity, $set);
 
-        return new LegacyTicketFilterModel($entity, $set);
+        $context->getSideloadStore()->addCustomSideload('ticket_filter_set', $set->getId(), $deferred, $model);
+
+        return $model;
     }
 
     /**

@@ -29,6 +29,14 @@
 						<em class="counter list-counter" id="kb_pending_count">{{ counts.pending|default(0) }}</em>
 					</div>
 				</li>
+				{% if counts.pending_approval and app.user.hasPerm('agent_publish.validate')%}
+					<li class="is-nav-item" data-route="listpane:{{ path('agent_public_pending_approval', {'type': 'mine'}) }}">
+						<div class="item">
+							<h3>{{ phrase('agent.publish.pending_approval_content') }}</h3>
+							<em class="counter list-counter" id="publish_drafts_count">{{ counts.pending_approval }}</em>
+						</div>
+					</li>
+				{% endif %}
 				{% if counts.drafts %}
 				<li class="is-nav-item" data-route="listpane:{{ path('agent_public_drafts', {'type': 'mine'}) }}">
 					<div class="item">
@@ -59,6 +67,8 @@
 				{% endfor %}
 			</select>
 		</section>
+	{% else %}
+		<input type="hidden" name="brand_id" id="publish_brand_id" value="{{ brands[0].id }}" />
 	{% endif %}
 
 	{% if app_settings['core.apps_kb'] %}
@@ -148,6 +158,28 @@
 						<div class="item" data-route="poppage:{{ path('agent_publish_cats_newform', {type: 'download', brand_id: selected_brand_id}) }}">
 							<i class="icon-folder-close-alt"></i>
 							<h3>{{ phrase('agent.publish.add_new_category') }}</h3>
+						</div>
+					</li>
+				</ul>
+			</article>
+		</section>
+	{% endif %}
+
+    {% if app.hasFeature('guides') %}
+		<section class="pane-section dp-collapsible" id="publish_section_manuals">
+			<header>
+				<h1>
+					<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+                    {{ phrase('agent.general.guides') }}
+				</h1>
+			</header>
+			<article>
+				<ul class="nav-list nav-list-small nav-list-tree">
+                    {% include 'AgentBundle:Publish:guides-list.html.twig' with {'guides': guides, 'counts': guides_counts, 'depth': 0 } %}
+					<li class="new-cat-trigger new-cat">
+						<div class="item" data-route="poppage:{{ path('agent_publish_guides_newform', {type: 'topics', brand_id: selected_brand_id}) }}">
+							<i class="icon-folder-close-alt"></i>
+							<h3>{{ phrase('agent.publish.add_new_guide') }}</h3>
 						</div>
 					</li>
 				</ul>

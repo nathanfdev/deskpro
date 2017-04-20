@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -75,6 +75,9 @@ class ChatConversation extends DomainObject implements LabelsOwner
 
     /**
      * Department which chat was assigned.
+     *
+     * @AppAssert\LeafDepartment()
+     * @Assert\NotNull()
      *
      * @var \Application\DeskPRO\Entity\Department
      */
@@ -798,6 +801,18 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment($department)
+    {
+        $this->setModelField('department', $department);
+
+        return $this;
+    }
+
+    /**
      * @return Department|null
      */
     public function getDepartment()
@@ -1167,7 +1182,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         }
 
         if ($change) {
-            $this->_onPropertyChanged('custom_data', null, $this->participants);
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
     }
 
@@ -1360,6 +1375,26 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @return null|string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param null|string $visitor_id
+     *
+     * @return $this
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getEmailValidated()
@@ -1391,6 +1426,14 @@ class ChatConversation extends DomainObject implements LabelsOwner
         }
 
         $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = [])

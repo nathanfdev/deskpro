@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -40,6 +36,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class JsonHeadersResponseListener.
+ */
 class JsonHeadersResponseListener implements EventSubscriberInterface
 {
     const INCLUDE_HEADERS_PARAM = 'include_headers';
@@ -63,12 +62,21 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
      */
     protected $location = null;
 
+    /**
+     * Constructor.
+     *
+     * @param SerializerInterface $serializer
+     * @param SettingsResolver    $resolver
+     */
     public function __construct(SerializerInterface $serializer, SettingsResolver $resolver)
     {
         $this->serializer = $serializer;
         $this->resolver   = $resolver;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [
@@ -76,6 +84,11 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @internal
+     *
+     * @param FilterResponseEvent $event
+     */
     public function onResponse(FilterResponseEvent $event)
     {
         $request  = $event->getRequest();
@@ -88,13 +101,17 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
             // add the "headers" node to the json response body
 
             $body = $response->getContent();
-            $json = $this->serializer->deserialize($body, 'array', 'json');
+            if ($body) {
+                $data = $this->serializer->deserialize($body, 'array', 'json');
+            } else {
+                $data = [];
+            }
 
-            $json['headers'] = $this->extractHeaderArray($response);
+            $data['headers'] = $this->extractHeaderArray($response);
 
-            $new_body = $this->serializer->serialize($json, 'json');
+            $newBody = $this->serializer->serialize($data, 'json');
 
-            $response->setContent($new_body);
+            $response->setContent($newBody);
         }
     }
 
@@ -154,6 +171,10 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
         return $json_headers;
     }
 
+    /**
+     * @param Request  $request
+     * @param Response $response
+     */
     protected function stripLocationHeader(Request $request, Response $response)
     {
         // there is no location header

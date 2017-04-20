@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -262,7 +262,7 @@ class Countries
         'UG' => 'Uganda',
         'UA' => 'Ukraine',
         'AE' => 'United Arab Emirates',
-        'UK' => 'United Kingdom',
+        'GB' => 'United Kingdom',
         'US' => 'United States',
         'UM' => 'United States Minor Outlying Islands',
         'UY' => 'Uruguay',
@@ -785,7 +785,7 @@ class Countries
         'uganda'                              => 'UG',
         'ukraine'                             => 'UA',
         'unitedarabemirates'                  => 'AE',
-        'unitedkingdom'                       => 'UK',
+        'unitedkingdom'                       => 'GB',
         'unitedstates'                        => 'US',
         'unitedstatesminoroutlyingislands'    => 'UM',
         'uruguay'                             => 'UY',
@@ -1036,7 +1036,7 @@ class Countries
         ['country' => 'Uganda',                                          'country_code' => 'UG',  'calling_code' => '256'],
         ['country' => 'Ukraine',                                         'country_code' => 'UA',  'calling_code' => '380'],
         ['country' => 'United Arab Emirates',                            'country_code' => 'AE',  'calling_code' => '971'],
-        ['country' => 'United Kingdom',                                  'country_code' => 'UK',  'calling_code' => '44'],
+        ['country' => 'United Kingdom',                                  'country_code' => 'GB',  'calling_code' => '44'],
         ['country' => 'United States',                                   'country_code' => 'US',  'calling_code' => '1'],
         ['country' => 'Uruguay',                                         'country_code' => 'UY',  'calling_code' => '598'],
         ['country' => 'U.S. Virgin Islands',                             'country_code' => null,  'calling_code' => '1 340'],

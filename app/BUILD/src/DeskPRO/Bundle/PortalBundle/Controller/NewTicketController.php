@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -89,9 +90,7 @@ class NewTicketController extends AbstractController
         if ($request->isMethod('get') && $request->query->count()) {
             // to set form default values from request query
             $formOptions['validation_groups']             = false;
-            $formOptions['csrf_protection']               = false;
-            $formOptions['csrf_double_submit_protection'] = false;
-            $formOptions['allow_extra_fields']            = true;
+            $formOptions['csrf_double_submit_skip_check'] = true;
         }
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
@@ -104,11 +103,12 @@ class NewTicketController extends AbstractController
             // set default values
             // using the string constant to acquire data from query instead of Form::getName for BC
             $form->submit($request->query->get('ticket') ?: []);
+            FormValidatorChecker::clearFormErrors($form);
         }
 
-        if ($form->isValid()) {
+        if ($form->isValid() && $request->isMethod('post')) {
             // dont process if user hit "more attachments"
-            if ($form->getClickedButton() && $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+            if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if (!$rerendering && !$rerendering_saved) {
                     // deal with guests via negotiating with PersonFactory
                     if ($person instanceof PersonGuest) {
@@ -116,7 +116,7 @@ class NewTicketController extends AbstractController
 
                         try {
                             $this->getPersonFactory()->checkGuestForValidation($person, $this->isSavedFormSubRequest($request));
-                            $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                            $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm, 'portal');
 
                             return $this->onSavedTicket($newTicket, $request);
                         } catch (\InvalidArgumentException $e) {
@@ -147,13 +147,13 @@ class NewTicketController extends AbstractController
                                 return $this->redirectToRoute('portal_thanks_verify');
                             } else {
                                 // this is a guest that we are accepting
-                                $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm);
+                                $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm, 'portal');
 
                                 return $this->onSavedTicket($newTicket, $request);
                             }
                         }
                     } else {
-                        $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request);
+                        $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');
 
                         return $this->onSavedTicket($newTicket, $request);
                     }
@@ -181,6 +181,12 @@ class NewTicketController extends AbstractController
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,
         ]);
+
+        // set default values on the full form
+        if ($request->isMethod('get') && $request->query->get('ticket')) {
+            $formFull->submit($request->query->get('ticket') ?: []);
+            FormValidatorChecker::clearFormErrors($formFull);
+        }
 
         /** @var \Application\DeskPRO\TicketLayout\LayoutCollection $layouts */
         $layouts           = $this->getContainer()->getTicketLayoutManager()->getUserLayouts(true);

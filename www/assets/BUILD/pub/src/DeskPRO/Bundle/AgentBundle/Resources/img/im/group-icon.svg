@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 32 16" style="enable-background:new 0 0 32 16;" xml:space="preserve">
+<style type="text/css">
+	.group-icon0{opacity:0.5;}
+	.group-icon1{fill:#FFFFFF;}
+</style>
+<g class="group-icon0">
+	<g>
+		<rect x="21" y="5.3" class="group-icon1" width="10.4" height="1.7"/>
+		
+			<rect x="21" y="5.3" transform="matrix(4.512461e-11 1 -1 4.512461e-11 32.365 -19.9649)" class="group-icon1" width="10.4" height="1.7"/>
+	</g>
+</g>
+<g class="group-icon0">
+	<g>
+		<path class="group-icon1" d="M7.7,4.5c0-1.5,1.2-2.7,2.7-2.7s2.7,1.2,2.7,2.7s-1.2,2.7-2.7,2.7S7.7,6,7.7,4.5z M10.4,9C6.2,9,5,12,5,12v4
+			h10.8v-4C15.8,12,14.6,9,10.4,9z"/>
+	</g>
+	<g>
+		<g>
+			<circle class="group-icon1" cx="16.3" cy="4" r="2.3"/>
+		</g>
+		<g>
+			<path class="group-icon1" d="M16.5,8.1c-1.1,0-2,0.3-2.7,0.7c2.1,1,2.8,2.7,2.8,2.9v0.1h4.2v-1.2C20.8,10.6,19.6,8.1,16.5,8.1z"/>
+		</g>
+	</g>
+	<g>
+		<g>
+			<circle class="group-icon1" cx="16.3" cy="4" r="2.3"/>
+		</g>
+		<g>
+			<path class="group-icon1" d="M16.5,8.1c-1.1,0-2,0.3-2.7,0.7c2.1,1,2.8,2.7,2.8,2.9v2.6h4.2v-3.7C20.8,10.6,19.6,8.1,16.5,8.1z"/>
+		</g>
+	</g>
+	<g>
+		<g>
+			<circle class="group-icon1" cx="4.5" cy="4" r="2.3"/>
+		</g>
+		<g>
+			<path class="group-icon1" d="M4.7,8.1c1.1,0,1.8,0.3,2.5,0.7c-2.1,1-3,2.7-3,2.9v2.6H0.8v-3.7C0.8,10.6,1.6,8.1,4.7,8.1z"/>
+		</g>
+	</g>
+</g>
+</svg>

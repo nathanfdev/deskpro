@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureHandler;
 use Symfony\Component\Security\Http\HttpUtils;
 
@@ -90,7 +91,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
             if (!$attempt_person = $this->person_repo->findOneByEmail($token->getUsername())) {
                 $attempt_person = $this->person_repo->findOneByEmail($token->getUser());
             }
-            if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
+            if (!$exception instanceof DisabledException && $attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email') && !$attempt_person->is_deleted) {
                 $this->portal_mailer->sendLoginAlert($attempt_person, $request, false);
             }
         }
@@ -118,6 +119,7 @@ class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
                 [
                     'success' => false,
                     'captcha' => $check->isCaptchaRecommended(),
+                    'reason'  => $exception instanceof AuthenticationException ? $exception->getMessage() : null,
                 ]
             );
         }

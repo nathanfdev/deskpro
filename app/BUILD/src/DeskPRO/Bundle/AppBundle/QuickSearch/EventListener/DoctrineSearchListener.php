@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -129,6 +129,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             QuickSearchContext::TYPE_DOWNLOAD,
             QuickSearchContext::TYPE_FEEDBACK,
             QuickSearchContext::TYPE_NEWS,
+            QuickSearchContext::TYPE_TOPIC,
         ];
 
         $context = $event->getContext();
@@ -184,17 +185,19 @@ class DoctrineSearchListener implements EventSubscriberInterface
             ->orderBy('p.id', 'desc')
         ;
 
+        if ($request->getParam('with_phone_number')) {
+            $qb->join('p.phone_numbers', 'pn');
+        } else {
+            $qb->leftJoin('p.phone_numbers', 'pn');
+        }
+
         if ($request->isEmailPart()) {
             if ($request->isEmailDomain()) {
-                $qb
-                    ->andWhere('pe.email_domain LIKE :email_domain')
-                    ->setParameter('email_domain', $this->escapeLike($request->getEmailDomain()).'%')
-                ;
+                $qb->andWhere('pe.email_domain LIKE :email_domain');
+                $qb->setParameter('email_domain', $this->escapeLike($request->getEmailDomain()).'%');
             } else {
-                $qb
-                    ->andWhere('pe.email LIKE :email')
-                    ->setParameter('email', $this->escapeLike($request->getQuery()).'%')
-                ;
+                $qb->andWhere('pe.email LIKE :email');
+                $qb->setParameter('email', $this->escapeLike($request->getQuery()).'%');
             }
         } else {
             $qb
@@ -203,6 +206,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
                     'p.first_name LIKE :query',
                     'p.last_name LIKE :query',
                     'pe.email LIKE :query',
+                    'pn.number LIKE :query',
                     "CONCAT(CONCAT(p.first_name, ' '), p.last_name) LIKE :query"
                 ))
                 ->setParameter('query', '%'.$this->escapeLike(RegexUtils::safePregReplace('#\s+#', ' ', $request->getQuery())).'%')
@@ -297,6 +301,7 @@ class DoctrineSearchListener implements EventSubscriberInterface
             case QuickSearchContext::TYPE_DOWNLOAD:
             case QuickSearchContext::TYPE_FEEDBACK:
             case QuickSearchContext::TYPE_NEWS:
+            case QuickSearchContext::TYPE_TOPIC:
                 $qb->andWhere($qb->expr()->orX(
                     "t.hidden_status NOT IN('spam', 'deleted')",
                     't.hidden_status is null'

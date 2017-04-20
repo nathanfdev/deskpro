@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -54,6 +54,7 @@ class UserChatEvent extends Event
     const SEND_MESSAGE   = 'user_chat.send_message';
     const ACK_MESSAGES   = 'user_chat.ack_messages';
     const USER_TYPING    = 'user_chat.user_typing';
+    const POLLING        = 'user_chat.polling';
 
     /**
      * @var ChatConversation

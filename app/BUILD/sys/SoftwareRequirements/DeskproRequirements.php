@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -430,10 +430,18 @@ class DeskproRequirements extends RequirementCollection
      */
     private function getRealpathCacheSize()
     {
-        $size = ini_get('realpath_cache_size');
-        $size = trim($size);
-        $unit = strtolower(substr($size, -1, 1));
-        switch ($unit) {
+        $size = strtolower(trim(ini_get('realpath_cache_size')));
+        preg_match('/^([0-9]+)([gmk]*)$/', $size, $matches);
+
+        if (empty($matches)) { // Invalid 'realpath_cache_size' value in php.ini
+            return 0;
+        }
+        if (!$matches[2]) { // Just digital 'realpath_cache_size' value in php.ini
+            return (int) $size;
+        }
+
+        $size = (int) $matches[1];
+        switch ($matches[2]) {
             case 'g':
                 return $size * 1024 * 1024 * 1024;
             case 'm':
@@ -441,7 +449,7 @@ class DeskproRequirements extends RequirementCollection
             case 'k':
                 return $size * 1024;
             default:
-                return (int) $size;
+                return 0;
         }
     }
 

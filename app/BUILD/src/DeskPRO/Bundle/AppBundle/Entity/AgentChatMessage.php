@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,7 +46,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @JMS\ExclusionPolicy("all")
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AgentChatMessageRepository")
  * @ORM\Table(name="agent_chat_message", uniqueConstraints={@ORM\UniqueConstraint(name="uuid_unique",columns={"uuid"})})
- * @ORM\ChangeTrackingPolicy("DEFERRED_IMPLICIT")
+ * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
  * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener"})
@@ -190,7 +190,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->date_created = new \DateTime();
+        $this->setModelField('date_created', new \DateTime());
     }
 
     /**
@@ -216,7 +216,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function setUuid($uuid)
     {
-        $this->uuid = $uuid;
+        $this->setModelField('uuid', $uuid);
 
         return $this;
     }
@@ -253,8 +253,8 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function setPerson(Person $person)
     {
-        $this->person      = $person;
-        $this->person_name = $person->getDisplayName();
+        $this->setModelField('person', $person);
+        $this->setModelField('person_name', $person->getDisplayName());
 
         return $this;
     }
@@ -282,7 +282,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function setChat(AgentChat $chat = null)
     {
-        $this->chat = $chat;
+        $this->setModelField('chat', $chat);
 
         return $this;
     }
@@ -302,7 +302,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function setMessage($message)
     {
-        $this->message = $message;
+        $this->setModelField('message', $message);
 
         return $this;
     }
@@ -322,7 +322,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function setMetadata($metadata)
     {
-        $this->metadata = $metadata;
+        $this->setModelField('metadata', $metadata);
 
         return $this;
     }
@@ -342,7 +342,7 @@ class AgentChatMessage implements EntityInterface, NotifyPropertyChanged
      */
     public function setStatus($status)
     {
-        $this->status = $status;
+        $this->setModelField('status', $status);
 
         return $this;
     }

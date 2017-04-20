@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
-    public static $whitelisted_route_names = [
+    public static $whitelistedRouteNames = [
         'user_context_hash',
         'user_logout',
         'portal_ping',
@@ -63,7 +63,7 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
      * @var LoggerInterface
@@ -72,9 +72,9 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
 
     public function __construct(BrandStack $brand_stack, SettingsResolver $resolver, LoggerInterface $logger)
     {
-        $this->resolver    = $resolver;
-        $this->brand_stack = $brand_stack;
-        $this->logger      = $logger;
+        $this->resolver   = $resolver;
+        $this->brandStack = $brand_stack;
+        $this->logger     = $logger;
     }
 
     /**
@@ -100,12 +100,12 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
             return;
         }
 
-        $brand          = $this->brand_stack->getActive();
-        $brand_disabled = $brand->getSetting('core.helpdesk_disabled', false);
+        $brand         = $this->brandStack->getActive();
+        $brandDisabled = $brand->getSetting('core.helpdesk_disabled', false);
 
-        $globally_disabled = $this->resolver->getGlobalSettings()->get('core.helpdesk_disabled', false);
+        $globallyDisabled = $this->resolver->getGlobalSettings()->get('core.helpdesk_disabled', false);
 
-        if ($globally_disabled || $brand_disabled) {
+        if ($globallyDisabled || $brandDisabled) {
             // we can always use brand settings here, because they inherit global in case brand specific is not set
             $event->setResponse(new Response('<!--PORTAL_OFFLINE-->'.$brand->getSetting('core.helpdesk_disabled_message')));
         }
@@ -113,8 +113,8 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
 
     protected function isWhitelisted(Request $request)
     {
-        $route_name = $request->attributes->get('_route');
+        $routeName = $request->attributes->get('_route');
 
-        return in_array($route_name, self::$whitelisted_route_names);
+        return in_array($routeName, self::$whitelistedRouteNames);
     }
 }

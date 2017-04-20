@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -91,8 +91,8 @@ class NewsDataService extends AbstractDataService
             [
                 'getNewsPager',
                 $category,
-                $page,
-                $max_per_page,
+                (int) $page,
+                (int) $max_per_page,
                 $person,
             ],
             function () use ($em, $permissionsManager, $category, $max_per_page, $page, $person) {
@@ -101,7 +101,7 @@ class NewsDataService extends AbstractDataService
                 $qb->select('n')
                     ->from(News::class, 'n')
                     ->where('n.status = :status')->setParameter('status', News::STATUS_PUBLISHED)
-                    ->orderBy('n.id', 'DESC');
+                    ->orderBy('n.date_published', 'DESC');
 
                 $allowed_ids = $permissionsManager->getPortalPermissionsBag($person)->getAllowedNewsCategories();
                 if ($category) {

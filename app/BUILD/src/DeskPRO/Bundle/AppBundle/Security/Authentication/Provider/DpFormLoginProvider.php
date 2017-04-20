@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -46,6 +46,7 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 
 class DpFormLoginProvider implements AuthenticationProviderInterface
 {
@@ -123,13 +124,17 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
             $person          = $login_processor->getPerson();
 
+            if ($this->dp_person_provider->personHasBannedEmail($person)) {
+                throw new DisabledException('portal.account.login-disabled');
+            }
+
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
             return $authenticatedToken;
         }
 
-        throw new BadCredentialsException();
+        throw new BadCredentialsException('portal.account.login-invalid');
     }
 
     /**
@@ -146,9 +151,9 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
     /**
      * @param TokenInterface $token
-     * @param Usersource[]   $usersources
+     * @param DpAuthManager  $auth_manager
      *
-     * @return Result
+     * @return array
      */
     protected function getDpAuthResultForGivenUsersources(TokenInterface $token, AuthenticationManager $auth_manager)
     {
@@ -165,6 +170,8 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
                 try {
                     $authResult = $adapter->authenticate();
+                } catch (AuthenticationException $e) {
+                    throw $e;
                 } catch (\Exception $e) {
                     $this->logger->log($e);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;

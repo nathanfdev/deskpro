@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,6 +64,52 @@ class StringUtilsTest extends DeskProTestCase
             ['DeskPro', 'desk_pro'],
             ['ImACamel', 'im_a_camel'],
             ['QuickBrownFoxJumpsOverTheLazyDog', 'quick_brown_fox_jumps_over_the_lazy_dog'],
+        ];
+    }
+
+    /**
+     * @dataProvider getTestStartsWith
+     */
+    public function testStartsWith($needle, $haystack, $ignoreCase, $expected)
+    {
+        $this->assertEquals(StringUtils::startsWith($needle, $haystack, $ignoreCase), $expected);
+    }
+
+    public function getTestStartsWith()
+    {
+        // $needle, $haystack, $ignoreCase, $expected
+        return [
+            ['foo', 'foobar', false, true],
+            ['foo', 'foo', false, true],
+            ['ABC', 'abcde', false, false],
+            ['ABC', 'abcde', true, true],
+            ['123', '123', false, true],
+            ['foo', ' foobar', false, false],
+            ['', 'x', false, false],
+            ['x', '', false, false],
+        ];
+    }
+
+    /**
+     * @dataProvider getTestEndsWith
+     */
+    public function testEndsWith($needle, $haystack, $ignoreCase, $expected)
+    {
+        $this->assertEquals(StringUtils::endsWith($needle, $haystack, $ignoreCase), $expected);
+    }
+
+    public function getTestEndsWith()
+    {
+        // $needle, $haystack, $ignoreCase, $expected
+        return [
+            ['bar', 'foobar', false, true],
+            ['foo', 'foo', false, true],
+            ['CDE', 'abcde', false, false],
+            ['CDE', 'abcde', true, true],
+            ['123', '123', false, true],
+            ['bar', 'foobar ', false, false],
+            ['', 'x', false, false],
+            ['x', '', false, false],
         ];
     }
 }

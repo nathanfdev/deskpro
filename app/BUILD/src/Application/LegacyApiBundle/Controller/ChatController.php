@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -421,14 +421,7 @@ class ChatController extends AbstractController
         $chat_manager = $this->container->getSystemObject('user_chat_manager');
         $message      = $chat_manager->addMessage($chat, $this->person, $text);
 
-        return $this->createApiCreateResponse(
-            ['message_id' => $message->id],
-            $this->generateUrl(
-                'api_chats_chat_message',
-                ['chat_id' => $chat->id, 'message_id' => $message->id],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            )
-        );
+        return $this->createApiResponse(['message_id' => $message->getId()], 201);
     }
 
     /**

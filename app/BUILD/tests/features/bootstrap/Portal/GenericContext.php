@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,11 @@
 namespace DpBehat\Portal;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
@@ -47,6 +49,7 @@ use Application\EmailBundle\Entity\SendmailSource;
 use Application\EmailBundle\EntityRepository\SendmailSourceRepository;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DpBehat\Api\BrandContext;
+use DpBehat\Data\DataContext;
 
 class GenericContext extends BasePortalContext
 {
@@ -174,6 +177,31 @@ class GenericContext extends BasePortalContext
             'REPLACE INTO settings (name, value) VALUES (:name, :value)',
             ['name' => $setting_name, 'value' => $val]
         );
+    }
+
+    /**
+     * @Given the :brand setting :setting_name is set to :val
+     *
+     * @param string $brand
+     * @param string $setting_name
+     * @param string $val
+     *
+     * @throws \Exception
+     */
+    public function theBrandSettingIsSetTo($brand, $setting_name, $val)
+    {
+        $brand = DataContext::resolveReference($brand);
+        if (!$brand instanceof Brand) {
+            throw new \Exception('Brand not found');
+        }
+
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings_brand (name, value, brand_id) VALUES (:name, :value, :brand_id)',
+            ['name' => $setting_name, 'value' => $val, 'brand_id' => $brand->getId()]
+        );
+
+        $this->container()->get('settings_resolver')->getBrandSettings($brand, true);
+        $this->container()->get('brand_stack')->push($brand, true);
     }
 
     /**
@@ -353,7 +381,8 @@ class GenericContext extends BasePortalContext
         $email_body    = $blob_storage->copyBlobRecordToString($blob);
         $email_subject = $last_email->getHeaderSubject();
 
-        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        /** @var EzcReader $reader */
+        $reader = $this->get('email.ezc_reader_factory')->create();
         $reader->setRawSource($email_body);
         $email_body = $reader->getBodyText()->getBodyUtf8();
 

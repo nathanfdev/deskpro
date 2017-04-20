@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,14 +30,20 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\C
 
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class WidgetBrandChatSettings.
+ *
+ * @Assert\GroupSequenceProvider
  */
-class WidgetBrandChatSettings
+class WidgetBrandChatSettings implements GroupSequenceProviderInterface
 {
     const BEGIN_MODE_CONVERSATION = 'conversation';
     const BEGIN_MODE_FORM         = 'form';
+
+    const SELECT_DEFAULT = 'default';
+    const SELECT_CUSTOM  = 'custom';
 
     /**
      * @var bool
@@ -72,11 +78,39 @@ class WidgetBrandChatSettings
      * @var int
      *
      * @JMS\Type("integer")
+     * @Assert\NotNull(groups={"DefaultDepartment"})
+     */
+    private $defaultDepartment;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank(groups={"Common"})
+     */
+    private $selectDepartment = self::SELECT_CUSTOM;
+
+    /**
+     * @var int
      *
      * @JMS\Type("integer")
-     * @Assert\GreaterThanOrEqual(30)
+     * @Assert\GreaterThanOrEqual(value=30, groups={"Common"})
      */
     private $waitingTimeout = 150;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $requiredName = false;
+
+    /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $requiredEmail = false;
 
     /**
      * Constructor.
@@ -101,7 +135,7 @@ class WidgetBrandChatSettings
      */
     public function setRequestUserInfo($requestUserInfo)
     {
-        $this->requestUserInfo = $requestUserInfo;
+        $this->requestUserInfo = (bool) $requestUserInfo;
 
         return $this;
     }
@@ -121,7 +155,7 @@ class WidgetBrandChatSettings
      */
     public function setProactive($proactive)
     {
-        $this->proactive = $proactive;
+        $this->proactive = (bool) $proactive;
 
         return $this;
     }
@@ -184,5 +218,98 @@ class WidgetBrandChatSettings
         $this->waitingTimeout = $waitingTimeout;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultDepartment()
+    {
+        return $this->defaultDepartment;
+    }
+
+    /**
+     * @param int $defaultDepartment
+     *
+     * @return $this
+     */
+    public function setDefaultDepartment($defaultDepartment)
+    {
+        $this->defaultDepartment = $defaultDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSelectDepartment()
+    {
+        return $this->selectDepartment;
+    }
+
+    /**
+     * @param string $selectDepartment
+     *
+     * @return $this
+     */
+    public function setSelectDepartment($selectDepartment)
+    {
+        $this->selectDepartment = $selectDepartment;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequiredName()
+    {
+        return $this->requiredName;
+    }
+
+    /**
+     * @param boolean $requiredName
+     *
+     * @return $this
+     */
+    public function setRequiredName($requiredName)
+    {
+        $this->requiredName = $requiredName;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isRequiredEmail()
+    {
+        return $this->requiredEmail;
+    }
+
+    /**
+     * @param boolean $requiredEmail
+     *
+     * @return $this
+     */
+    public function setRequiredEmail($requiredEmail)
+    {
+        $this->requiredEmail = $requiredEmail;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['Common'];
+        if ($this->selectDepartment === self::SELECT_DEFAULT) {
+            $groups[] = 'DefaultDepartment';
+        }
+
+        return $groups;
     }
 }

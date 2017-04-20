@@ -20,6 +20,10 @@ pageMeta.person_id = {{ convo.person.id }};
 pageMeta.person_id = 0;
 {% endif %}
 
+{% if convo.status == 'ended' %}
+	pageMeta.deleteUrl = '{{ path('agent_userchat_delete', {conversation_id: convo.id}) }}'
+{% endif %}
+
 {% if convo.person %}
 	pageMeta.chatTitle = '{{ convo.person.display_name }} ({{ convo.person.primary_email_address }})';
 {% else %}
@@ -218,6 +222,8 @@ pageMeta.baseId = '{{ baseId }}';
 			<li data-tab-for="#{{ baseId }}_fields_display_main_wrap" id="{{ baseId }}_fields_display_main_wrap_tab" class="is-fields-tab">{{ phrase('agent.general.fields') }}</li>
 			{% if convo.status == 'open' or block %}
 				<li data-tab-for="#{{baseId}}_block">{% if block %}{{ phrase('agent.userchat.user_is_blocked') }}{% else %}{{ phrase('agent.userchat.block_user') }}{% endif %}</li>
+			{% elseif convo.status == 'ended' and app.user.hasPerm('agent_chat.delete') %}
+				<li data-tab-for="#{{baseId}}_delete">{{ phrase('agent.general.delete') }}</li>
 			{% endif %}
 		</ul></nav>
 	</header>
@@ -331,12 +337,23 @@ pageMeta.baseId = '{{ baseId }}';
 					{{ phrase('agent.general.reason') }}: <input type="text" id="{{baseId}}_block_reason" value="" style="width: 60%;" /><br />
 					<label>
 						<input type="checkbox" id="{{baseId}}_block_ip" /> {{ phrase('agent.userchat.block_ip_address') }}
+						{% if convo.session and convo.session.ip_address %}{{ convo.session.ip_address }}{% endif %}
 						<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.userchat.block_ip_address_info') }}"></span>
 					</label>
 
 					<br /><br />
 					<button class="clean-white" id="{{baseId}}_block_user">{{ phrase('agent.userchat.block_user') }}</button>
 				{% endif %}
+			</article>
+		{% elseif convo.status == 'ended' and app.user.hasPerm('agent_chat.delete') %}
+			<article id="{{baseId}}_delete" style="padding: 15px;">
+				<label>
+					<input type="checkbox" /> {{ phrase('agent.userchat.delete_confirm') }}
+				</label>
+				<br /><br />
+				<button class="clean-white" id="{{baseId}}_delete-transcript">
+					{{ phrase('agent.userchat.delete') }}
+				</button>
 			</article>
 		{% endif %}
 	</section>

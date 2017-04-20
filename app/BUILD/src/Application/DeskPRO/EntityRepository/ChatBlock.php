@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,29 @@ class ChatBlock extends AbstractEntityRepository
      * How long a block stays in place.
      */
     const BLOCK_TIMEOUT = 86400;
+
+    public function getBlockForVisitor($visitor_id = null, $ip = null)
+    {
+        if (!$visitor_id && !$ip) {
+            return null;
+        }
+
+        $qb = $this->createQueryBuilder('b');
+
+        if ($visitor_id) {
+            $qb->orWhere('b.visitor_id = :vid')->setParameter('vid', $visitor_id);
+        }
+
+        if ($ip) {
+            $qb->orWhere('b.ip_address = :ip')->setParameter('ip', $ip);
+        }
+
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
+        $qb->andWhere('b.date_created > :created')->setParameter('created', $datecut);
+        $block = $qb->getQuery()->setMaxResults(1)->getOneOrNullResult();
+
+        return $block;
+    }
 
     /**
      * @param string $ip_address
