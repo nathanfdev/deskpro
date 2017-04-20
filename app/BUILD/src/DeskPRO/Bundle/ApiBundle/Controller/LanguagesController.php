@@ -342,7 +342,8 @@ class LanguagesController extends CrudController
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
-     *      }
+     *      },
+     *     output="array"
      * )
      * @Rest\Get("/email_phrases/{group}/{languageId}")
      * @Feature("email_templates")
@@ -466,7 +467,11 @@ class LanguagesController extends CrudController
      *      statusCodes={
      *          201="Created",
      *          400="Bad Request"
-     *      }
+     *      },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType",
+     *     },
+     *     output="Application\DeskPRO\Entity\Phrase",
      * )
      * @Rest\Post("/custom_phrase")
      *

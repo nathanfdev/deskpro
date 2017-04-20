@@ -70,6 +70,7 @@ class TemplateController extends BaseController
      *             "dataType"="string"
      *         }
      *     },
+     *     output="array"
      *)
      * @Rest\Get("/template/{name}")
      *
@@ -117,6 +118,10 @@ class TemplateController extends BaseController
      *             "dataType"="string"
      *         }
      *     },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType",
+     *     },
+     *     output="array"
      *)
      * @ApiUnstable()
      * @Rest\Post("/template/{name}")
@@ -239,6 +244,8 @@ class TemplateController extends BaseController
      * @ApiDoc(
      *     section="Email Templates",
      *     description="Render a template to preview",
+     *     input="array",
+     *     output="string"
      *)
      * @ApiUnstable()
      * @Rest\Post("/render_template")

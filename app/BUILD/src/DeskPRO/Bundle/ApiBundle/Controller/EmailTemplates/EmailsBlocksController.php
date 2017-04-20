@@ -56,7 +56,8 @@ class EmailsBlocksController extends BaseController
      *     description="get templates",
      *     statusCodes={
      *         200="Returned if everything is OK",
-     *     }
+     *     },
+     *     output="array"
      * )
      *
      * @Rest\Get("/email_templates/info", name="api_email_templates_info")

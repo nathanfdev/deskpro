@@ -43,6 +43,7 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @ApiDoc(target="all", section="Email Templates", output="Application\DeskPRO\Entity\Blob")
  * @Feature("email_templates")
  * @Rest\Route("/email_templates/email_assets")
  */
@@ -50,7 +51,6 @@ class AssetsController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     section="Email Templates",
      *     description="Add a new asset",
      *     tags={"CRUD"="#ffa500"},
      *     requirements={
@@ -79,7 +79,6 @@ class AssetsController extends BaseController
 
     /**
      * @ApiDoc(
-     *     section="Email Templates",
      *     description="Add a new asset",
      *     tags={"CRUD"="#ffa500"},
      *     requirements={
@@ -89,6 +88,10 @@ class AssetsController extends BaseController
      *             "dataType"="string"
      *         }
      *     },
+     *     input={
+     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType"
+     *     },
+     *     output="Application\DeskPRO\Entity\Blob"
      *)
      * @Rest\Post("/{type}")
      *
@@ -134,7 +137,6 @@ class AssetsController extends BaseController
      * Be careful there is no CTRL+Z shortcut.
      *
      * @ApiDoc(
-     *     section="Email Templates",
      *      description="Delete an email asset",
      *      tags={"CRUD"="#ffa500"},
      *      requirements={

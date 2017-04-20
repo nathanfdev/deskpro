@@ -58,6 +58,7 @@ class ViewModelController extends BaseController
      *             "dataType"="string"
      *         }
      *     },
+     *     output="array"
      *)
      * @ApiUnstable()
      * @Rest\Get("/variables/{className}")
