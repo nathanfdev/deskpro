@@ -38,7 +38,8 @@ use Application\DeskPRO\JIRA\Meta;
 use Application\DeskPRO\Tickets\StateChangeRecorder;
 use Application\DeskPRO\Tickets\TicketManager;
 use Composer\CaBundle\CaBundle;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
@@ -101,6 +102,11 @@ class JIRA
      * @var AppInstance
      */
     protected $app = false;
+
+    /**
+     * @var EventLogger
+     */
+    protected $logger;
 
     public function __construct(Container $container)
     {
@@ -611,6 +617,11 @@ class JIRA
      */
     protected function logException(\Exception $e)
     {
-        SystemErrorHandler::logException($e);
+        if (!$this->logger) {
+            /* @var EventLogger logger */
+            $this->logger = $this->container->get('dp_sys.alerts.event_logger');
+        }
+
+        $this->logger->log(new JiraApiExceptionEvent($e));
     }
 }

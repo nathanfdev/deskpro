@@ -32,7 +32,8 @@ use Application\DeskPRO\Entity\JiraIssue;
 use Application\DeskPRO\Service\JIRA;
 use Application\DeskPRO\Tickets\StateChangeRecorder;
 use Application\DeskPRO\Tickets\TicketManager;
-use DpSys\LowError\SystemErrorHandler;
+use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
+use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -71,7 +72,9 @@ class WebhookHandler
 
             return true;
         } catch (\Exception $e) {
-            SystemErrorHandler::logException($e);
+            /* @var EventLogger logger */
+            $logger = $this->container->get('dp_sys.alerts.event_logger');
+            $logger->log(new JiraApiExceptionEvent($e));
 
             return false;
         }
