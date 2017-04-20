@@ -792,6 +792,10 @@ i.icon.fitted {
   .header {
     margin-bottom: 10px;
   }
+}
 
-@-webkit-keyframes billingProblemPulse{from{background-color:#630030;-webkit-box-shadow:0 0 9px #333;}50%{background-color:#a9014b;-webkit-box-shadow:0 0 18px #a9014b;}to{background-color:#630030;-webkit-box-shadow:0 0 9px #333;}}
-
+@keyframes billingProblemPulse {
+  0%   { background-color: #630030; box-shadow: 0 0 9px  #333;    }
+  50%  { background-color: #a9014b; box-shadow: 0 0 18px #a9014b; }
+  100% { background-color: #630030; box-shadow: 0 0 9px  #333;    }
+}
