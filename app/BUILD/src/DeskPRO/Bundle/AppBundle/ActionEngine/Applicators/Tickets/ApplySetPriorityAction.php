@@ -28,34 +28,39 @@
 
 namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
 
-use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketPriority;
 use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * Class ApplySetProductAction.
+ * Class ApplySetPriorityAction.
  */
-class ApplySetProductAction extends AbstractTicketApplicator implements ActionInitializationInterface
+class ApplySetPriorityAction extends AbstractTicketApplicator implements ActionInitializationInterface
 {
     /**
-     * @var Product
+     * @var TicketPriority
      */
-    private $product;
+    private $priority;
 
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
-        $this->product = $this->em->getRepository(Product::class)->find($this->options['set_product']);
-        if (!$this->product) {
-            throw new BadRequestHttpException('Product with ID='.$this->options['set_product']." doesn't exists");
+        $this->priority = $this->em->getRepository(TicketPriority::class)->find($this->options['set_priority']);
+        if (!$this->priority) {
+            throw new BadRequestHttpException('Priority with ID='.$this->options['set_priority']." doesn't exists");
         }
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @param Ticket $ticket
      */
     public function apply($ticket)
     {
-        $ticket->setProduct($this->product);
+        $ticket->setPriority($this->priority);
     }
 }
