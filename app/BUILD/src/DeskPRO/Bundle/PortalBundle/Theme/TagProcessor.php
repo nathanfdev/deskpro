@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -51,20 +50,13 @@ class TagProcessor
     private $tagHandlers;
 
     /**
-     * @var EventLogger
-     */
-    private $logger;
-
-    /**
      * @param TagRequestFactory $tagRequestFactory
      * @param array             $tagHandlers
-     * @param EventLogger       $logger
      */
-    public function __construct(TagRequestFactory $tagRequestFactory, array $tagHandlers, EventLogger $logger)
+    public function __construct(TagRequestFactory $tagRequestFactory, array $tagHandlers)
     {
         $this->tagRequestFactory = $tagRequestFactory;
         $this->tagHandlers       = $tagHandlers;
-        $this->logger            = $logger;
     }
 
     /**
@@ -117,7 +109,7 @@ class TagProcessor
         if (!$response) {
             return ''; // be passive and default to blank
         } elseif (!$response->isSuccessful()) {
-            $this->logger->log(new \RuntimeException('Unable to render theme content: '.$response->getContent()));
+            SystemErrorHandler::logException(new \RuntimeException('Unable to render theme content: '.$response->getContent()));
 
             return ''; // be passive and default to blank
         }

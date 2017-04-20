@@ -34,8 +34,8 @@ use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\Usersource\Sync\SyncCursor;
 use Application\DeskPRO\Usersource\Sync\SyncManager;
 use Application\DeskPRO\Usersource\UsersourceManager;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Doctrine\DBAL\Connection;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 use Orb\Util\Env;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -67,23 +67,16 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
      */
     protected $job_queue;
 
-    /**
-     * @var EventLogger
-     */
-    protected $logger;
-
     public function __construct(
         Connection $connection,
         JobQueue $job_queue,
         UsersourceManager $usersource_manager,
-        SyncManager $sync_manager,
-        EventLogger $logger
+        SyncManager $sync_manager
     ) {
         parent::__construct($connection);
         $this->usersource_manager = $usersource_manager;
         $this->sync_manager       = $sync_manager;
         $this->job_queue          = $job_queue;
-        $this->logger             = $logger;
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -244,7 +237,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
             } catch (\Exception $e) {
                 $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'SYNC ERROR, marking sync as error ('.get_class($e).' '.$e->getMessage().')');
                 // log the errors but continue on to the next usersource
-                $this->logger->log($e);
+                SystemErrorHandler::logException($e);
                 $log->markErrorStatus();
             }
 
@@ -322,7 +315,7 @@ class UsersourceSyncProcessor extends AbstractJobProcessor
                     $this->sync_manager->getSyncHelper()->log(Logger::ERR, 'an exception was thrown when refresh "'.$identity.'" from remote usersource, usersource='.$usersource->getId());
                     // log the error, but continue processing
                     ++$this_usersource_errors;
-                    $this->logger->log($e);
+                    SystemErrorHandler::logException($e);
                     if ($this_usersource_errors > 10) {
                         $log->markErrorStatus();
                         $this->sync_manager->saveLog($log);

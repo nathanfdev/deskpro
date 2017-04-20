@@ -38,7 +38,6 @@ services:
           - "@dp_authentication_manager.user"
           - "@dp_person_user_provider"
           - "@session"
-          - "@dp_sys.alerts.event_logger"
 
     dp_security.legacy_remember_me.provider:
       class: DeskPRO\Bundle\AppBundle\Security\Authentication\Provider\LegacyRememberMeProvider

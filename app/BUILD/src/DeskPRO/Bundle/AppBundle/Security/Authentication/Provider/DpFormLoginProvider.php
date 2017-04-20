@@ -38,7 +38,7 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -66,23 +66,16 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
     private $session;
 
     /**
-     * @var EventLogger
-     */
-    private $logger;
-
-    /**
      * @param DpAuthManager        $dp_auth_manager
      * @param DpPersonUserProvider $dp_person_provider
      * @param Session              $session
-     * @param EventLogger          $logger
      */
     public function __construct(
-        DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session, EventLogger $logger)
+        DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session)
     {
         $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
         $this->session            = $session;
-        $this->logger             = $logger;
     }
 
     /**
@@ -173,7 +166,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 } catch (AuthenticationException $e) {
                     throw $e;
                 } catch (\Exception $e) {
-                    $this->logger->log($e);
+                    SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;

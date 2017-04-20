@@ -32,8 +32,7 @@
 
 namespace DeskPRO\Bundle\SystemBundle\SystemAlerts\Bridge;
 
-use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -72,7 +71,7 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
     protected function write(array $record)
     {
         if (!empty($record['context']['exception']) && $record['context']['exception'] instanceof \Exception) {
-            $this->getEventLogger()->log($record['context']['exception']);
+            SystemErrorHandler::logException($record['context']['exception']);
         } else {
             $context = array_key_exists('context', $record) ? $record['context'] : [];
             $code    = array_key_exists('code', $context) ? $context['code'] : null;
@@ -88,7 +87,7 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
             }
             $this->lastRecordHash = $hash;
 
-            $this->getEventLogger()->log(new ErrorEvent($code, $message, $file, $line, null, $record));
+            SystemErrorHandler::logException(new \RuntimeException($code, $message, $file, $line, null, $record));
         }
     }
 
@@ -107,13 +106,5 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
         $message = md5($message);
 
         return "{$code}-{$file}-{$line}-{$message}";
-    }
-
-    /**
-     * @return EventLogger
-     */
-    private function getEventLogger()
-    {
-        return $this->container->get('dp_sys.alerts.event_logger');
     }
 }
