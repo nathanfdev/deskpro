@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @Rest\Route("/system/incidents")
  * @ApiDoc(target="all", section="System", output="DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident\StatefulIncident")
  * @ApiDoc(
- *     target="putAction",
+ *     target="putAction,dismissAllAction",
  *     input={
  *      "class"="DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType"
  *     }
