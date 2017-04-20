@@ -143,14 +143,30 @@ export class VariablesMenu extends React.Component {
     if (!this.props.viewModel) {
       return null;
     }
-    return this.props.viewModel.valueSeq().map((variable, key) =>
-      <MenuItem
-        key={`variable${key}`}
-        label={variable.get('description')}
-        icon="folder open"
-        className={classNames({ active: this.isActive(variable) })}
-        onClick={() => this.setActive(variable)}
-      />
+    return this.props.viewModel
+      .filter(
+        (variable) => {
+          if (!this.state.filter) {
+            return true;
+          }
+          if (variable.get('properties')) {
+            return variable.get('properties')
+                .filter(property => (property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+                  || property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1))
+                .size > 0;
+          }
+          return (variable.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+          || variable.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1);
+        }
+      )
+      .valueSeq().map((variable, key) =>
+        <MenuItem
+          key={`variable${key}`}
+          label={variable.get('description')}
+          icon="folder open"
+          className={classNames({ active: this.isActive(variable) })}
+          onClick={() => this.setActive(variable)}
+        />
     );
   };
 
@@ -182,26 +198,20 @@ export class VariablesMenu extends React.Component {
         console.log('No properties');
         return null;
       }
-      properties = this.state.selectedLeft.get('properties').valueSeq().sort(
-        (a, b) => a.get('attribute').localeCompare(b.get('attribute'))
-      ).map(
-        (property, key) => {
-          if (
-            this.state.filter
-            && property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-            && property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-            && this.state.selectedLeft.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          ) {
-            return null;
-          }
-          return (<VariablesMenuProperty
-            key={key}
-            attribute={this.state.selectedLeft.get('attribute')}
-            onSelectVariable={this.props.onSelectVariable}
-            getExample={this.getVariableExample}
-            property={property}
-          />);
-        });
+      properties = this.state.selectedLeft.get('properties').valueSeq()
+        .filter(property => (!this.state.filter
+          || property.get('description').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+          || property.get('attribute').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1))
+        .sort((a, b) =>
+          a.get('attribute').localeCompare(b.get('attribute'))
+        )
+        .map((property, key) => (<VariablesMenuProperty
+          key={key}
+          attribute={this.state.selectedLeft.get('attribute')}
+          onSelectVariable={this.props.onSelectVariable}
+          getExample={this.getVariableExample}
+          property={property}
+        />));
     } else {
       properties.push(<VariablesMenuProperty
         key="1"

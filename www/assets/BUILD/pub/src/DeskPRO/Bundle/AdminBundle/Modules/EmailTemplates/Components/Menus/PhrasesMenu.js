@@ -81,14 +81,26 @@ export class PhrasesMenu extends React.Component {
     if (!this.props.phrases) {
       return null;
     }
-    return this.props.phrases.valueSeq().map((group, key) =>
-      <MenuItem
-        key={`phrase${key}`}
-        label={PhrasesMenu.formatTitle(group.get('title'))}
-        icon="folder open"
-        className={classNames({ active: this.isActive(group) })}
-        onClick={() => this.setActive(group)}
-      />
+    return this.props.phrases
+      .filter(
+        (group) => {
+          if (!this.state.filter) {
+            return true;
+          }
+          return group.get('phrases').filter(phrase => (phrase.get('phrase').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+            || phrase.get('key').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+            || group.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1))
+            .size > 0;
+        }
+      )
+      .valueSeq().map((group, key) =>
+        <MenuItem
+          key={`phrase${key}`}
+          label={PhrasesMenu.formatTitle(group.get('title'))}
+          icon="folder open"
+          className={classNames({ active: this.isActive(group) })}
+          onClick={() => this.setActive(group)}
+        />
     );
   };
 
@@ -105,27 +117,33 @@ export class PhrasesMenu extends React.Component {
     if (!this.state.selectedLeft.get('phrases')) {
       return null;
     }
-    const properties = this.state.selectedLeft.get('phrases').valueSeq().sort(
-      (a, b) => a.get('key').localeCompare(b.get('key'))
-    ).map(
-      (phrase, key) => {
-        if (
-          this.state.filter
-          && phrase.get('phrase').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          && phrase.get('key').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          && this.state.selectedLeft.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-        ) {
-          return null;
-        }
-        return (<MenuItem key={key} onClick={() => this.selectPhrase(phrase)}>
-          <span className="phrase">{phrase.get('phrase')}</span>
-          <br />
-          <span className="phrase-key">
-            {phrase.get('key')}
-          </span>
+    const properties = this.state.selectedLeft.get('phrases').valueSeq()
+      .filter(phrase => (!this.state.filter
+        ||  phrase.get('phrase').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+        || phrase.get('key').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1
+        || this.state.selectedLeft.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) !== -1))
+      .sort(
+        (a, b) => a.get('key').localeCompare(b.get('key'))
+      )
+      .map(
+        (phrase, key) => {
+          if (
+            this.state.filter
+            && phrase.get('phrase').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+            && phrase.get('key').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+            && this.state.selectedLeft.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
+          ) {
+            return null;
+          }
+          return (<MenuItem key={key} onClick={() => this.selectPhrase(phrase)}>
+            <span className="phrase">{phrase.get('phrase')}</span>
+            <br />
+            <span className="phrase-key">
+              {phrase.get('key')}
+            </span>
 
-        </MenuItem>);
-      });
+          </MenuItem>);
+        });
     return (
       <MenuWrapper className="right-panel">
         <Menu>
