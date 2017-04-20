@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
@@ -261,6 +262,10 @@ class TemplateController extends BaseController
 
         $viewModel = $request->request->get('template');
         $group     = $request->request->get('group');
+        $lang      = $request->request->get('lang');
+
+        /** @var Language $language */
+        $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $lang]);
         /** @var AgentViewModelFactory|UserViewModelFactory $factory */
         $factory = $this->get('email.'.$group.'_viewmodel_factory');
         $action  = 'create'.$viewModel.'Model';
@@ -303,7 +308,15 @@ class TemplateController extends BaseController
         $renderer = $this->get('email.email_renderer');
         $renderer->setTemplateEngine($twig);
 
-        return new View($renderer->render($tplName, $model));
+        $view = null;
+        $this->get('translator')->setTemporaryLanguage(
+            $language,
+            function () use ($tplName, $model, $renderer, &$view) {
+                $view = $renderer->render($tplName, $model);
+            }
+        );
+
+        return new View($view);
     }
 
     /**

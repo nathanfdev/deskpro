@@ -17,8 +17,8 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendDelete(`DP_API/${this.url}/template/${name}`);
   }
 
-  previewTemplate(template, group, code, variables) {
-    return this.api.sendPost(`DP_API/${this.url}/render_template`, { template, group, code, variables });
+  previewTemplate(template, group, code, variables, lang) {
+    return this.api.sendPost(`DP_API/${this.url}/render_template`, { template, group, code, variables, lang });
   }
 
   loadVariables(viewModel) {

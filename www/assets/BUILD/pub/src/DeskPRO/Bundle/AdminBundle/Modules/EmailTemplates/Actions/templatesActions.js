@@ -98,8 +98,8 @@ export const resetTemplate = createAction(
 
 export const previewTemplate = createAction(
   'EMAIL_TEMPLATES_PREVIEW_TEMPLATE',
-  (template, group, code, variables) => new Promise((resolve) => {
-    repository('EmailTemplates').previewTemplate(template, group, code, variables).then((promise) => {
+  (template, group, code, variables, lang) => new Promise((resolve) => {
+    repository('EmailTemplates').previewTemplate(template, group, code, variables, lang).then((promise) => {
       const res = promise.getData();
 
       resolve(res);

@@ -69,12 +69,13 @@ class EmailTemplatesEditorContainer extends React.Component {
     }
     const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
     const group = this.props.emailTemplates.get('currentTemplateGroup');
-    this.previewTemplate(viewModel, group, value, variables);
+    const lang = this.props.emailTemplates.get('currentLanguage');
+    this.previewTemplate(viewModel, group, value, variables, lang);
     this.props.dispatch(actions.updateTemplateBody(value));
   };
 
-  previewTemplate = debounce(function (viewModel, group, value, variables) {
-    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables));
+  previewTemplate = debounce(function (viewModel, group, value, variables, lang) {
+    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang));
   }, 400);
 
   saveTemplate = () => {
