@@ -78,6 +78,7 @@ class DbalExecutableQuerySpec extends ObjectBehavior
         Statement $stmt
     ) {
         $query->setSelectPart('COUNT(distinct ticket.id) AS count')->shouldBeCalled();
+        $query->setOffset(null)->shouldBeCalled();
         $query->setPage(null)->shouldBeCalled();
         $query->setLimit(null)->shouldBeCalled();
 

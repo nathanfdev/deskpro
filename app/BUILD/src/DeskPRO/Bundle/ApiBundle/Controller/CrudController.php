@@ -37,10 +37,10 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\AppBundle\Serializer\OffsetList;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -227,8 +227,6 @@ abstract class CrudController extends BaseController
             throw $this->createBadRequestException('You must select a limit of at least 1');
         }
 
-        $meta = [];
-
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
             $page   = (int) $request->query->getInt('page', 1);
@@ -242,18 +240,7 @@ abstract class CrudController extends BaseController
             }
 
             if ($offset) {
-                $qb->setMaxResults($count);
-                $qb->setFirstResult($offset);
-
-                $paginator = new Paginator($qb);
-
-                $result = $qb->getQuery()->getResult();
-                $meta   = [
-                    'pagination' => [
-                        'per_page' => $qb->getMaxResults(),
-                        'total'    => $paginator->count(),
-                    ],
-                ];
+                $result = new OffsetList($qb, $count, $offset);
             } else {
                 if ($limit) {
                     // adding limit to the initial qb will
@@ -281,7 +268,7 @@ abstract class CrudController extends BaseController
             $result = $qb->getQuery()->getResult();
         }
 
-        return View::create($this->wrap($result, $meta), Response::HTTP_OK);
+        return View::create($this->wrap($result), Response::HTTP_OK);
     }
 
     /**
