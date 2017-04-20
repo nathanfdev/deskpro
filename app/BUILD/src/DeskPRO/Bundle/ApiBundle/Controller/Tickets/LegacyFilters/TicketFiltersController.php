@@ -134,16 +134,23 @@ class TicketFiltersController extends CrudController
             }
         }
 
+        $offset      = $request->query->getInt('offset');
         $currentPage = $request->query->getInt('page', 1);
         $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
 
         $total = $searcher->getCount();
         $ids   = $searcher->getMatches([
             'limit'  => $maxPerPage,
-            'offset' => $maxPerPage * ($currentPage - 1),
+            'offset' => $offset ?: ($maxPerPage * ($currentPage - 1)),
         ]);
 
-        return View::create($this->wrap($this->getTicketsPager($total, $ids, $currentPage, $maxPerPage)));
+        if ($offset) {
+            $result = $this->getTicketsOffsetList($total, $ids, $offset, $maxPerPage);
+        } else {
+            $result = $this->getTicketsPager($total, $ids, $currentPage, $maxPerPage);
+        }
+
+        return View::create($this->wrap($result));
     }
 
     /**

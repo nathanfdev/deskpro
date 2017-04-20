@@ -78,6 +78,7 @@ class DbalExecutableQuery
 
     private $order_by;
     private $page;
+    private $offset;
     private $count;
     private $and_where;
     private $and_group_where;
@@ -145,8 +146,14 @@ class DbalExecutableQuery
         $query = clone $this->query;
         // pagination
         if ($this->count) {
-            $this->log(Logger::DEBUG, 'adding pagination to query', ['page' => $this->page, 'count' => $this->count]);
+            $this->log(Logger::DEBUG, 'adding pagination to query', [
+                'page'   => $this->page,
+                'offset' => $this->offset,
+                'count'  => $this->count,
+            ]);
+
             $query->setPage($this->page);
+            $query->setOffset($this->offset);
             $query->setLimit($this->count);
         }
 
@@ -185,8 +192,14 @@ class DbalExecutableQuery
 
         // pagination
         if ($this->count) {
-            $this->log(Logger::DEBUG, 'adding pagination to query', ['page' => $this->page, 'count' => $this->count]);
+            $this->log(Logger::DEBUG, 'adding pagination to query', [
+                'page'   => $this->page,
+                'offset' => $this->offset,
+                'count'  => $this->count,
+            ]);
+
             $query->setPage($this->page);
+            $query->setOffset($this->offset);
             $query->setLimit($this->count);
         }
 
@@ -225,6 +238,7 @@ class DbalExecutableQuery
 
         $query->setSelectPart('COUNT(distinct ticket.id) AS count');
         $query->setPage(null);
+        $query->setOffset(null);
         $query->setLimit(null);
 
         // various WHERE manipulations
@@ -285,6 +299,7 @@ class DbalExecutableQuery
         $this->manipulateWhere($query);
 
         $query->setPage(null);
+        $query->setOffset(null);
         $query->setLimit(self::GROUPS_LIMIT);
 
         $stmt   = $this->execute($query);
@@ -571,6 +586,26 @@ class DbalExecutableQuery
     public function setPage($page)
     {
         $this->page = $page;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param mixed $offset
+     *
+     * @return $this
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+
+        return $this;
     }
 
     /**
