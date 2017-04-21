@@ -21,6 +21,10 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendPost(`DP_API/${this.url}/render_template`, { template, group, code, variables, lang });
   }
 
+  sendPreviewEmail(viewModel, group, subject, body, variables, lang, from, to) {
+    return this.api.sendPost(`DP_API/${this.url}/send_preview`, { viewModel, group, subject, body, variables, lang, from, to });
+  }
+
   loadVariables(viewModel) {
     return this.api.sendGet(`DP_API/${this.url}/view_model/variables/${viewModel}`);
   }

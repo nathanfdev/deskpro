@@ -26,9 +26,13 @@ class EmailTemplatesEditorContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saveSubmit:  false,
-      undoSubmit:  false,
-      resetSubmit: false,
+      saveSubmit:           false,
+      undoSubmit:           false,
+      resetSubmit:          false,
+      previewSubmit:        false,
+      emailAccounts:        [],
+      selectedEmailAccount: '',
+      previewEmailAddress:  '',
     };
   }
 
@@ -36,16 +40,24 @@ class EmailTemplatesEditorContainer extends React.Component {
     const { dispatch } = this.props;
 
     dispatch(actions.loadTemplates());
-    this.props.dispatch(actions.loadPhrases(
+    dispatch(actions.loadPhrases(
       this.props.emailTemplates.get('currentTemplateGroup'),
       this.props.emailTemplates.get('currentLanguage')
     ));
-    this.props.dispatch(actions.loadInlineImages);
-    this.props.dispatch(actions.loadAttachments);
-  }
-
-  componentDidMount() {
-
+    dispatch(actions.loadInlineImages);
+    dispatch(actions.loadAttachments);
+    dispatch(actions.loadEmailAccounts).then((accounts) => {
+      const emailAccounts = [];
+      accounts.forEach((account) => {
+        emailAccounts.push({
+          value: account.address,
+          label: account.address
+        });
+      });
+      this.setState({
+        emailAccounts
+      });
+    });
   }
 
   componentWillUnmount() {
@@ -135,7 +147,7 @@ class EmailTemplatesEditorContainer extends React.Component {
 
   insertAttachmentAsLink = (e, file) => {
     e.stopPropagation();
-    const tag = `<a href="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="">${file.get('name')}</a>`;
+    const tag = `<a href="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}">${file.get('name')}</a>`;
     this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
   };
 
@@ -147,10 +159,51 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(variable);
   };
 
+  sendPreview = () => {
+    this.setState({
+      previewSubmit: true
+    });
+    const variables = [];
+    if (this.props.emailTemplates.get('exampleTicket')) {
+      variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
+    }
+    const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
+    const group = this.props.emailTemplates.get('currentTemplateGroup');
+    const lang = this.props.emailTemplates.get('currentLanguage');
+    const subject = this.props.emailTemplates.get('template').get('template_code').get('subject');
+    const body = this.props.emailTemplates.get('template').get('template_code').get('body');
+    const from = this.state.selectedEmailAccount;
+    const to   = this.state.previewEmailAddress;
+    this.props.dispatch(actions.sendPreview(viewModel, group, subject, body, variables, lang, from, to)).then(
+      () => {
+        this.setState({
+          previewSubmit: false
+        });
+      }
+    );
+  };
+
+  selectEmailAccount = (account) => {
+    this.setState({
+      selectedEmailAccount: account
+    });
+  };
+
+  handleEmailAddress = (e) => {
+    this.setState({
+      previewEmailAddress: e.target.value
+    });
+  };
+
   render() {
     return (<EmailTemplatesEditor
       emailTemplates={this.props.emailTemplates}
+      emailAccounts={this.state.emailAccounts}
+      selectEmailAccount={this.selectEmailAccount}
+      selectedEmailAccount={this.state.selectedEmailAccount}
+      previewEmailAddress={this.state.previewEmailAddress}
       selectTemplateGroup={this.selectTemplateGroup}
+      handleEmailAddress={this.handleEmailAddress}
       changeTemplateBody={this.changeTemplateBody}
       changeTemplateSubject={this.changeTemplateSubject}
       saveTemplate={this.saveTemplate}
@@ -161,6 +214,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       insertAttachmentAsLink={this.insertAttachmentAsLink}
       insertPhrase={this.insertPhrase}
       insertVariable={this.insertVariable}
+      sendPreview={this.sendPreview}
+      previewSubmit={this.state.previewSubmit}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
       undoSubmit={this.state.undoSubmit}
@@ -172,6 +227,11 @@ class EmailTemplatesEditorContainer extends React.Component {
 class EmailTemplatesEditor extends React.Component {
   static propTypes = {
     emailTemplates:         PropTypes.object,
+    selectedEmailAccount:   PropTypes.string,
+    previewEmailAddress:    PropTypes.string,
+    emailAccounts:          PropTypes.array,
+    selectEmailAccount:     PropTypes.func,
+    handleEmailAddress:     PropTypes.func,
     selectTemplateGroup:    PropTypes.func,
     changeTemplateSubject:  PropTypes.func,
     changeTemplateBody:     PropTypes.func,
@@ -183,6 +243,8 @@ class EmailTemplatesEditor extends React.Component {
     insertInlineImage:      PropTypes.func,
     insertPhrase:           PropTypes.func,
     insertVariable:         PropTypes.func,
+    sendPreview:            PropTypes.func,
+    previewSubmit:          PropTypes.bool,
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
     undoSubmit:             PropTypes.bool,
@@ -382,19 +444,32 @@ class EmailTemplatesEditor extends React.Component {
               <div className="fields">
                 <div className="six wide field">
                   <label htmlFor="test_email_from">From</label>
-                  <div className="ui selection dropdown" id="test_email_from">
-                    <input type="hidden" />
-                    <i className="dropdown icon" />
-                    <span className="item">support@deskpro.com</span>
-                  </div>
+                  <Select
+                    options={this.props.emailAccounts}
+                    className="email-account basic"
+                    onChange={this.props.selectEmailAccount}
+                    value={this.props.selectedEmailAccount}
+                  />
                 </div>
                 <div className="six wide field">
                   <label htmlFor="test_email_to">To</label>
-                  <input type="text" name="to" id="test_email_to" />
+                  <input
+                    type="text"
+                    name="to"
+                    id="test_email_to"
+                    onChange={this.props.handleEmailAddress}
+                    value={this.props.previewEmailAddress}
+                  />
                 </div>
                 <div className="four wide field">
                   <label htmlFor="test_email_submit">&nbsp;</label>
-                  <input type="submit" className="ui basic button" value="Send" id="test_email_submit" />
+                  <Button
+                    className={classNames('ui basic button', { loading: this.props.previewSubmit })}
+                    disabled={this.state.textareaDisabled}
+                    onClick={this.props.sendPreview}
+                  >
+                    Send
+                  </Button>
                 </div>
               </div>
             </form>

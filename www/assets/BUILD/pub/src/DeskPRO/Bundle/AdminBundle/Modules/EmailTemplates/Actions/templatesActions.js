@@ -167,3 +167,25 @@ export const deleteAsset = createAction(
   'EMAIL_TEMPLATES_DELETE_ASSET',
   themeSetAssetId => repository('EmailTemplates').deleteAsset(themeSetAssetId)
 );
+
+export const loadEmailAccounts = createAction(
+  'EMAIL_TEMPLATES_LOAD_EMAIL_ACCOUNTS',
+  () => new Promise(
+    (resolve, reject) => repository('EmailAccounts').loadEmailAccounts()
+      .success((result) => {
+        resolve(result.data);
+      })
+      .error(response => reject(response))
+  )
+);
+
+export const sendPreview = createAction(
+  'EMAIL_TEMPLATES_SEND_PREVIEW',
+  (viewModel, group, subject, body, variables, lang, from, to) => new Promise((resolve, reject) =>
+    repository('EmailTemplates').sendPreviewEmail(viewModel, group, subject, body, variables, lang, from, to)
+      .success((result) => {
+        resolve(result);
+      })
+      .error(response => reject(response))
+  )
+);

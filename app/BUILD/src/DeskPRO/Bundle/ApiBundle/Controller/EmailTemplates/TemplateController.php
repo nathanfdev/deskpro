@@ -34,6 +34,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
+use Application\EmailBundle\SwiftMailer\Message\Message;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -264,6 +266,68 @@ class TemplateController extends BaseController
         $group     = $request->request->get('group');
         $lang      = $request->request->get('lang');
 
+        $view = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang);
+
+        return new View($view);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Render a template to preview",
+     *     input="array",
+     *     output="string"
+     *)
+     * @ApiUnstable()
+     * @Rest\Post("/send_preview")
+     *
+     * @param Request $request
+     */
+    public function postSendPreviewEmailAction(Request $request)
+    {
+        $body    = $request->request->get('body');
+        $subject = $request->request->get('subject');
+        $tplName = uniqid('string_template_', true);
+
+        $viewModel   = $request->request->get('viewModel');
+        $group       = $request->request->get('group');
+        $lang        = $request->request->get('lang');
+        $fromAccount = $request->request->get('from');
+        $to          = $request->request->get('to');
+
+        $code = '<dp:subject>'.$subject.'</dp:subject>'."\n\n".$body;
+
+        /** @var Message $message */
+        $message   = $this->get('mailer')->createMessage();
+        $emailCode = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang);
+        $message->setBody($emailCode->getBody(), 'text/html');
+        $message->setSubject($emailCode->getSubject());
+        foreach ($emailCode->getAttachments() as $blob) {
+            $message->attachBlob($blob);
+        }
+        $message->setTo($to);
+        if (!empty($args['attachments'])) {
+            foreach ($args['attachments'] as $attach) {
+                $message->attach($attach);
+            }
+        }
+        $this->get('mailer')->send($message);
+
+        return new View('OK');
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $code
+     * @param string  $tplName
+     * @param string  $viewModel
+     * @param string  $group
+     * @param string  $lang
+     *
+     * @return EmailTemplateCode
+     */
+    private function renderPreview($request, $code, $tplName, $viewModel, $group, $lang)
+    {
         /** @var Language $language */
         $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $lang]);
         /** @var AgentViewModelFactory|UserViewModelFactory $factory */
@@ -316,7 +380,7 @@ class TemplateController extends BaseController
             }
         );
 
-        return new View($view);
+        return $view;
     }
 
     /**

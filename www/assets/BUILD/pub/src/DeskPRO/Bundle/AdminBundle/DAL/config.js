@@ -1,9 +1,11 @@
 import EmailTemplatesRepository from './Repositories/EmailTemplatesRepository';
+import EmailAccountRepository from './Repositories/EmailAccountRepository';
 import LanguagesRepository from './Repositories/LanguagesRepository';
 import TicketsRepository from './Repositories/TicketsRepository';
 
 export const repositoriesConfig = {
   EmailTemplates:     { type: 'api', url: '/email_templates', repositoryClass: EmailTemplatesRepository },
+  EmailAccounts:      { type: 'api', url: '/email_accounts', repositoryClass: EmailAccountRepository },
   Languages:          { type: 'api', url: '/languages', repositoryClass: LanguagesRepository },
   Person:             { type: 'api', url: '/people', allowAll: false },
   Ticket:             { type: 'api', url: '/people', allowAll: false },

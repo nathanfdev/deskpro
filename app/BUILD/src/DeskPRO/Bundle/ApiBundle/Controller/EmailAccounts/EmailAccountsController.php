@@ -30,8 +30,9 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\EmailAccounts;
 
 use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,15 +43,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * API to access email accounts.
  *
  * @ApiModes("all")
+ * @ApiUserContext("admin")
+ * @ApiDoc(target="all", section="Email accounts", output="Application\DeskPRO\Entity\EmailAccount")
  * @Rest\Route("/email_accounts")
  */
-class EmailAccountsController extends BaseController
+class EmailAccountsController extends CrudController
 {
+    public static $exposeOnly = ['list'];
+    public static $entity     = EmailAccount::class;
+
     /**
      * Get resource with provided id.
      *
      * @ApiDoc(
-     *     section="Email accounts",
      *     description="Upload a certificate and a key",
      *     requirements={
      *         {
@@ -124,7 +129,6 @@ class EmailAccountsController extends BaseController
      * Get resource with provided id.
      *
      * @ApiDoc(
-     *      section="Email accounts",
      *      description="Delete a certificate",
      *      requirements={
      *          {
@@ -166,7 +170,6 @@ class EmailAccountsController extends BaseController
      * Get resource with provided id.
      *
      * @ApiDoc(
-     *      section="Email accounts",
      *      description="Delete a key",
      *      requirements={
      *          {
