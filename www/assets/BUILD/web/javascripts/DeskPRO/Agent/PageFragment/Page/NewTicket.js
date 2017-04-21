@@ -220,6 +220,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			getFieldValue: function(name) {
 				var $cont = self.getEl('fields_container');
 				var $field = $('[name="' + name + '"]', $cont);
+
+				// field is not present on the form
+				// e.g. org field if user doesn't belogn to a org
+				if (!$field.length) {
+					return null;
+				}
+
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
