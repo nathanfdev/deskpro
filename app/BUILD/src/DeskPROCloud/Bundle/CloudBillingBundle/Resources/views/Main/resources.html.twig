@@ -1,5 +1,6 @@
 <script type="text/javascript">
 window.DP_BASE_API_URL = '/{{ path('user')|ltrim('/') }}api';
+window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') | replace({'http://localhost:9666/': '/' ~ path('user')|ltrim('/') ~ 'assets/BUILD/'}) }}';
 </script>
 <link type="text/css" rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}" />
 <link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_DemoBundle_style.css', 'app_assets') }}" />
