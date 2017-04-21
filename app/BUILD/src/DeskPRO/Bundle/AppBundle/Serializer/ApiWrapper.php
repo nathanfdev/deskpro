@@ -62,7 +62,7 @@ class ApiWrapper
     protected $linked = [];
 
     /**
-     * ApiWrapper constructor.
+     * Constructor.
      *
      * @param mixed $data
      * @param array $meta
@@ -99,6 +99,17 @@ class ApiWrapper
             }
 
             $this->data               = $results;
+            $this->meta['pagination'] = $pagination;
+
+            return true;
+        } elseif ($data instanceof OffsetList) {
+            $pagination = [
+                'total'    => $data->getTotal(),
+                'per_page' => $data->getCount(),
+                'offset'   => $data->getOffset(),
+            ];
+
+            $this->data               = $data->getData();
             $this->meta['pagination'] = $pagination;
 
             return true;

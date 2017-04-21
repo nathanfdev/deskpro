@@ -141,7 +141,8 @@ class TicketsController extends AbstractTicketsController
         // if the "ids" param is provided, then just use it to select tickets
         $ids = $request->query->get('ids');
         if ($ids) {
-            $currentPage = $request->query->getInt('page', 1);
+            $offset      = $request->query->getInt('offset');
+            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
             $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
             $ids         = !empty($ids) ? explode(',', $ids) : [];
             $total       = count($ids);
@@ -211,7 +212,8 @@ class TicketsController extends AbstractTicketsController
             /** @var DbalTermEngine $engine */
             $engine      = $this->get('term_engine.dbal.engine');
             $context     = new TermEngineContext($this->getUser());
-            $currentPage = $request->query->getInt('page', 1);
+            $offset      = $request->query->getInt('offset');
+            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
             $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
 
             /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $ticketsQuery */
@@ -219,12 +221,19 @@ class TicketsController extends AbstractTicketsController
             $total        = $ticketsQuery->fetchCount();
             $ticketsQuery->setCount($maxPerPage);
             $ticketsQuery->setPage($currentPage);
+            $ticketsQuery->setOffset($offset);
             $ticketsQuery->addOrderBy($orderBy, $orderDir);
 
             $ids = $ticketsQuery->fetchIds();
         }
 
-        return View::create($this->wrap($this->getTicketsPager($total, $ids, $currentPage, $maxPerPage)));
+        if ($offset) {
+            $result = $this->getTicketsOffsetList($total, $ids, $offset, $maxPerPage);
+        } else {
+            $result = $this->getTicketsPager($total, $ids, $currentPage, $maxPerPage);
+        }
+
+        return View::create($this->wrap($result));
     }
 
     /**
