@@ -28,6 +28,7 @@
 
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
+use Application\LegacyApiBundle\Form\CustomField\Model\TextField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**
@@ -41,6 +42,7 @@ class TextFieldType extends CustomFieldTypeAbstract
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('clickable_links', 'text', ['required' => false]);
         $builder->add('min_length', 'text', ['required' => false]);
         $builder->add('max_length', 'text', ['required' => false]);
         $builder->add('regex', 'text', ['required' => false]);
@@ -58,7 +60,7 @@ class TextFieldType extends CustomFieldTypeAbstract
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextField',
+            'data_class' => TextField::class,
         ];
     }
 }
