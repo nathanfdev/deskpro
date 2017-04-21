@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { defineMessages, injectIntl, intlShape, FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
 import classNames from 'classnames';
-import { Segment, Segments } from 'DeskPRO/Component/Semantic/Segment';
+import { Segment, SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Message } from 'DeskPRO/Component/Semantic/Message';
 import * as card from 'DeskPRO/Component/Form/Card';
@@ -79,7 +79,7 @@ class ExtendTrial extends React.Component {
     cardNumber: ''
   };
 
-  getState = () => {
+  getAddressState = () => {
     const { formatMessage } = this.props.intl;
     const { states, country, onChangeState } = this.props;
 
@@ -126,7 +126,9 @@ class ExtendTrial extends React.Component {
   getVatId = () => {
     const { euCountries, country, vatId, onChangeVatId } = this.props;
     if (euCountries.indexOf(country) === -1) {
-      return null;
+      return (
+        <noscript />
+      );
     }
     return (
       <Field field="vat_id" errors={this.props.errors}>
@@ -149,7 +151,9 @@ class ExtendTrial extends React.Component {
         </Message>
       );
     }
-    return null;
+    return (
+      <noscript />
+    );
   };
 
   render() {
@@ -178,7 +182,7 @@ class ExtendTrial extends React.Component {
     ];
 
     return (
-      <Segments className="extend-trial horizontal">
+      <SegmentsGroup className="extend-trial horizontal">
         <Segment className="extend-trial-form">
           <h3>
             <FormattedMessage
@@ -191,13 +195,14 @@ class ExtendTrial extends React.Component {
               id="cloud.demo_expired.extend_trial_desc"
               defaultMessage="Get {period} by entering your details below."
               values={{
-                period:
+                period: (
                   <span className="green">
                     <FormattedMessage
                       id="cloud.demo_expired.extend_trial_period"
                       defaultMessage="14 extra days"
                     />
                   </span>
+                )
               }}
             />
           </p>
@@ -208,7 +213,7 @@ class ExtendTrial extends React.Component {
             />
           </Message>
           {this.getError()}
-          <Segments className="horizontal">
+          <SegmentsGroup className="horizontal">
             <Segment className="address">
               <Form>
                 <h4>
@@ -259,7 +264,7 @@ class ExtendTrial extends React.Component {
                     value={this.props.postCode}
                   />
                 </Field>
-                {this.getState()}
+                {this.getAddressState()}
                 <Field field="country" errors={this.props.errors}>
                   <label htmlFor="country">
                     <FormattedMessage
@@ -398,7 +403,7 @@ class ExtendTrial extends React.Component {
                 </p>
               </Form>
             </Segment>
-          </Segments>
+          </SegmentsGroup>
         </Segment>
         <Segment className="extend-trial-side-bar">
           <div className="offer">
@@ -446,7 +451,7 @@ class ExtendTrial extends React.Component {
           questionOpened={this.props.questionOpened}
           submit={this.props.submitQuestion}
         />
-      </Segments>
+      </SegmentsGroup>
     );
   }
 }
