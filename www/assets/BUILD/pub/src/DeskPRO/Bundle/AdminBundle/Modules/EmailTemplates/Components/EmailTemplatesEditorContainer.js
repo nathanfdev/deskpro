@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
@@ -13,6 +13,7 @@ import LanguageSelector from './Menus/LanguageSelector';
 import * as actions from '../Actions/templatesActions';
 import PreviewEmail from './PreviewEmail';
 import Editor from './Editor';
+import NewCustomTemplate from './NewCustomTemplate';
 
 @connect(state => ({
   emailTemplates: state.EmailTemplates.templates
@@ -30,6 +31,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       undoSubmit:           false,
       resetSubmit:          false,
       previewSubmit:        false,
+      addingNewTemplate:    false,
       emailAccounts:        [],
       selectedEmailAccount: '',
       previewEmailAddress:  '',
@@ -64,14 +66,37 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.cleanState);
   }
 
+  addTemplate = (name) => {
+    this.setState({
+      addingNewTemplate: true
+    });
+    const template = {
+      subject:    '',
+      body:       '',
+      create_new: true,
+    };
+    return this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)).then(
+      () => {
+        this.setState({
+          addingNewTemplate: false
+        });
+        this.props.dispatch(actions.loadTemplates());
+        this.selectTemplateGroup('custom');
+      }
+    );
+  };
+
   selectTemplateGroup = (group) => {
     this.props.dispatch(actions.setCurrentTemplateGroup(group));
     const lang = this.props.emailTemplates.get('currentLanguage');
     this.props.dispatch(actions.loadPhrases(group, lang));
+    this.props.dispatch(actions.unselectTemplate());
+    this.props.dispatch(actions.deletePreview());
+    this.props.dispatch(actions.setCurrentTemplate(null));
   };
 
-  changeTemplateSubject = (event) => {
-    this.props.dispatch(actions.updateTemplateSubject(event.target.value));
+  changeTemplateSubject = (value) => {
+    this.props.dispatch(actions.updateTemplateSubject(value));
   };
 
   changeTemplateBody = (value) => {
@@ -86,7 +111,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.updateTemplateBody(value));
   };
 
-  previewTemplate = debounce(function (viewModel, group, value, variables, lang) {
+  previewTemplate = debounce((viewModel, group, value, variables, lang) => {
     this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang));
   }, 400);
 
@@ -231,10 +256,12 @@ class EmailTemplatesEditorContainer extends React.Component {
       insertPhrase={this.insertPhrase}
       insertVariable={this.insertVariable}
       sendPreview={this.sendPreview}
+      addTemplate={this.addTemplate}
       previewSubmit={this.state.previewSubmit}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
       undoSubmit={this.state.undoSubmit}
+      addingNewTemplate={this.state.addingNewTemplate}
       ref={(c) => { this.editor = c; }}
     />);
   }
@@ -260,20 +287,24 @@ class EmailTemplatesEditor extends React.Component {
     insertPhrase:           PropTypes.func,
     insertVariable:         PropTypes.func,
     sendPreview:            PropTypes.func,
+    addTemplate:            PropTypes.func,
     previewSubmit:          PropTypes.bool,
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
     undoSubmit:             PropTypes.bool,
+    addingNewTemplate:      PropTypes.bool,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      currentTemplate:  'Select a template',
-      templateSubject:  '',
-      templateBody:     '',
-      templatesGroups:  [],
-      textareaDisabled: true,
+      currentTemplate:         'Select a template',
+      templateSubject:         '',
+      templateBody:            '',
+      templatesGroups:         [],
+      contentChanged:          false,
+      textareaDisabled:        true,
+      newCustomTemplateOpened: false,
     };
   }
 
@@ -288,12 +319,27 @@ class EmailTemplatesEditor extends React.Component {
   compileProps = (emailTemplates) => {
     const templatesGroups = [];
     if (emailTemplates && emailTemplates.get('info').get('list')) {
-      emailTemplates.get('info').get('list').valueSeq().forEach((group) => {
-        templatesGroups.push({
-          value: group.get('typeId'),
-          label: group.get('title')
+      emailTemplates.get('info').get('list').valueSeq()
+        .filter((group) => {
+          if (group.get('typeId') === 'layout') {
+            return false;
+          }
+          if (group.get('typeId') === 'custom') {
+            return group
+                .get('groups')
+                .get('custom')
+                .get('subGroups')
+                .get('primary')
+                .get('templates').size > 0;
+          }
+          return true;
+        })
+        .forEach((group) => {
+          templatesGroups.push({
+            value: group.get('typeId'),
+            label: group.get('title')
+          });
         });
-      });
     }
     this.setState({
       templatesGroups
@@ -303,9 +349,13 @@ class EmailTemplatesEditor extends React.Component {
       this.setState({
         currentTemplate: emailTemplates.get('currentTemplate').get('title')
       });
+    } else {
+      this.setState({
+        currentTemplate: 'Select a template'
+      });
     }
 
-    if (emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
+    if (emailTemplates.get('currentTemplate') && emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
       this.setState({
         templateSubject:  emailTemplates.get('template').get('template_code').get('subject'),
         templateBody:     emailTemplates.get('template').get('template_code').get('body'),
@@ -318,6 +368,43 @@ class EmailTemplatesEditor extends React.Component {
         textareaDisabled: true
       });
     }
+  };
+
+  handleChangeBody = (value) => {
+    if (this.props.emailTemplates.get('template')) {
+      this.props.changeTemplateBody(value);
+      if (this.props.emailTemplates.get('template').get('original_code')
+        && this.props.emailTemplates.get('template').get('original_code').get('body') !== value) {
+        this.setState({
+          contentChanged: true
+        });
+      } else {
+        this.setState({
+          contentChanged: false
+        });
+      }
+    }
+  };
+
+  handleChangeSubject = (value) => {
+    this.props.changeTemplateSubject(value);
+    if (this.props.emailTemplates.get('template') && this.props.emailTemplates.get('template').get('original_code')
+      && this.props.emailTemplates.get('template').get('original_code').get('subject') !== value) {
+      this.setState({
+        contentChanged: true
+      });
+    } else {
+      this.setState({
+        contentChanged: false
+      });
+    }
+  };
+
+  handleSelectTemplateGroup = (value) => {
+    if (!this.state.contentChanged || confirm('Changes on the current template will be overwritten')) {
+      this.props.selectTemplateGroup(value);
+    }
+    return false;
   };
 
   closeMediaMenu = () => {
@@ -336,6 +423,20 @@ class EmailTemplatesEditor extends React.Component {
     this.variablesMenu.closeMenu();
   };
 
+  openNewTemplateDialog = () => {
+    if (!this.state.contentChanged || confirm('Changes on the current template will be overwritten')) {
+      this.setState({
+        newCustomTemplateOpened: true
+      });
+    }
+  };
+
+  closeNewTemplateDialog = () => {
+    this.setState({
+      newCustomTemplateOpened: false
+    });
+  };
+
   render() {
     return (
       <div className="dp-email-templates">
@@ -347,15 +448,24 @@ class EmailTemplatesEditor extends React.Component {
                   <Select
                     options={this.state.templatesGroups}
                     className="group-select basic"
-                    onChange={this.props.selectTemplateGroup}
+                    onChange={this.handleSelectTemplateGroup}
                     value={this.props.emailTemplates.get('currentTemplateGroup')}
                   />
                 </div>
               </div>
               <LanguageSelector languages={window.DP_ENABLED_LANGS} />
-              <button className="ui right floated button">
+              <Button
+                className="right floated"
+                onClick={this.openNewTemplateDialog}
+              >
                 + New Template
-              </button>
+              </Button>
+              <NewCustomTemplate
+                opened={this.state.newCustomTemplateOpened}
+                addingNewTemplate={this.props.addingNewTemplate}
+                close={this.closeNewTemplateDialog}
+                addTemplate={this.props.addTemplate}
+              />
             </div>
             <div>
               <div className="top-menu">
@@ -421,21 +531,21 @@ class EmailTemplatesEditor extends React.Component {
             disabled={this.state.textareaDisabled}
             body={this.state.templateBody}
             subject={this.state.templateSubject}
-            changeTemplateSubject={this.props.changeTemplateSubject}
-            changeTemplateBody={this.props.changeTemplateBody}
+            changeTemplateSubject={this.handleChangeSubject}
+            changeTemplateBody={this.handleChangeBody}
             ref={(c) => { this.editor = c; }}
           />
           <div className="footer">
             <Button
               className={classNames('primary small', { loading: this.props.saveSubmit })}
-              disabled={this.state.textareaDisabled}
+              disabled={this.state.textareaDisabled || !this.state.contentChanged}
               onClick={this.props.saveTemplate}
             >
               Save changes
             </Button>
             <Button
               className={classNames('basic small', { loading: this.props.undoSubmit })}
-              disabled={this.state.textareaDisabled}
+              disabled={this.state.textareaDisabled || !this.state.contentChanged}
               onClick={this.props.undoChanges}
               confirm
             >

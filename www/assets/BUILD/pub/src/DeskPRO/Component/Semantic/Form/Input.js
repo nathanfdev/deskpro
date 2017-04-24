@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import ReactFormInput from '../ReactForm/Input';
 
 class Input extends React.Component {
   static propTypes = {
@@ -46,7 +47,7 @@ class Input extends React.Component {
     const { placeholder, icon, iconPosition, id, maxLength, name, type, value } = this.props;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
-        <input
+        <ReactFormInput
           id={id}
           value={value}
           ref={(c) => { this.input = c; }}

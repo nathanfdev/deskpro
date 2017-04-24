@@ -26,27 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\SendmailBundle\View\Model\CustomTemplate;
 
-/**
- * Class EmailTemplateType.
- */
-class EmailTemplateType extends AbstractType
+class CustomViewModelFactory extends AbstractViewModelFactory
 {
     /**
-     * {@inheritdoc}
+     * @return CustomTemplate
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function createCustomTemplateModel(Ticket $ticket)
     {
-        $builder
-            ->add('subject', TextareaType::class)
-            ->add('body', TextareaType::class, ['filter_clean' => false])
-            ->add('create_new', HiddenType::class, ['required' => false])
-        ;
+        $arguments = $this->getTicketArguments($ticket);
+
+        return $this->convertParameters(CustomTemplate::class, $arguments);
     }
 }

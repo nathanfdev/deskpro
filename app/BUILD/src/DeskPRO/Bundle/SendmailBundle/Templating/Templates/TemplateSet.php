@@ -40,6 +40,7 @@ use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use Doctrine\ORM\EntityManager;
+use InvalidArgumentException;
 use Orb\Util\Strings;
 use Twig_Environment;
 
@@ -77,6 +78,9 @@ class TemplateSet
             $template = TemplateCustom::createFromEntity($custom);
         } else {
             $template = new TemplateFile($name);
+            if (!file_exists($template->getFilePath())) {
+                throw new InvalidArgumentException('File does not exists');
+            }
         }
 
         return $template;
@@ -119,14 +123,15 @@ class TemplateSet
 
     /**
      * @param string $name
+     * @param null   $customType
      *
      * @return TemplateCustom
      */
-    public function createCustomTemplate($name)
+    public function createCustomTemplate($name, $customType = null)
     {
         $entity       = new TemplateEntity();
         $entity->name = $name;
-        $custom       = TemplateCustom::createFromEntity($entity);
+        $custom       = TemplateCustom::createFromEntity($entity, $customType);
 
         return $custom;
     }

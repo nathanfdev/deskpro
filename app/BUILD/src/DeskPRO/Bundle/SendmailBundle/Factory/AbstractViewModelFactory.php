@@ -144,4 +144,19 @@ abstract class AbstractViewModelFactory
 
         return $reflection->newInstanceArgs($arguments);
     }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
+    protected function getTicketArguments($ticket)
+    {
+        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+
+        $ticketPerson = $ticket->getPerson();
+        $ticketAgent  = $ticket->getAgent();
+
+        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink];
+    }
 }

@@ -76,22 +76,31 @@ class EmailsBlocksController extends BaseController
         $list['custom']['groups']['custom'] = [
             'groupId'   => 'custom',
             'title'     => 'Custom Emails',
-            'templates' => [],
+            'subGroups' => [
+                'primary' => [
+                    'subGroupId' => 'primary',
+                    'templates'  => [],
+                    'title'      => 'Custom templates',
+                ],
+            ],
         ];
 
         $customEmails = $this->get('database_connection')
-            ->fetchAll("SELECT id, name FROM templates WHERE name LIKE 'DeskPRO:emails_custom:%'");
+            ->fetchAll("SELECT id, name FROM templates WHERE name LIKE 'SendmailBundle:emails_custom:%'");
         foreach ($customEmails as $tpl) {
-            $name = Strings::extractRegexMatch('#^DeskPRO:emails_custom:(.*?).html.twig$#', $tpl['name'], 1).'.html';
+            $name = Strings::extractRegexMatch('#^SendmailBundle:emails_custom:(.*?).html.twig$#', $tpl['name'], 1).'.html';
 
-            $list['custom']['groups']['custom']['templates'][] = [
-                'typeId'    => 'custom',
-                'groupId'   => 'custom',
-                'is_custom' => true,
-                'title'     => $name,
-                'desc'      => '',
-                'name'      => $tpl['name'],
-                'showName'  => 'emails_custom/'.$name,
+            $list['custom']['groups']['custom']['subGroups']['primary']['templates'][] = [
+                'typeId'      => 'custom',
+                'subGroupId'  => 'primary',
+                'groupId'     => 'custom',
+                'is_custom'   => true,
+                'title'       => $name,
+                'desc'        => '',
+                'name'        => $tpl['name'],
+                'newTemplate' => $tpl['name'],
+                'showName'    => 'emails_custom/'.$name,
+                'viewModel'   => 'CustomTemplate',
             ];
         }
 

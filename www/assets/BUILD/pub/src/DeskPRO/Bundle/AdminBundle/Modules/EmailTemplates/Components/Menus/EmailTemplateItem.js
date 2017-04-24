@@ -18,13 +18,14 @@ class EmailTemplateItem extends React.Component {
     this.cancelToolTip();
   }
 
-  templateToolTip = () => {
-    this.toolTipTimeOutId = setTimeout(() => {
-      if (this.templatePopup) {
-        this.templatePopup.openPopup();
-      }
-    }, 500);
-  };
+  getMenuItem = () => (<MenuItem
+    label={this.props.label}
+    icon={this.props.icon}
+    className={this.props.className}
+    onClick={this.props.onClick}
+    onMouseOver={this.templateToolTip}
+    onMouseOut={this.cancelToolTip}
+  />);
 
   cancelToolTip = () => {
     if (this.toolTipTimeOutId) {
@@ -36,27 +37,31 @@ class EmailTemplateItem extends React.Component {
     }
   };
 
+  templateToolTip = () => {
+    this.toolTipTimeOutId = setTimeout(() => {
+      if (this.templatePopup) {
+        this.templatePopup.openPopup();
+      }
+    }, 500);
+  };
+
   render() {
-    return (
-      <PopUp
-        positionMy="left top-15px"
-        positionAt="right top"
-        zIndex={99999}
-        content={this.props.desc}
-        ref={(c) => { this.templatePopup = c; }}
-        className="template-item"
-        autoOpen={false}
-      >
-        <MenuItem
-          label={this.props.label}
-          icon={this.props.icon}
-          className={this.props.className}
-          onClick={this.props.onClick}
-          onMouseOver={this.templateToolTip}
-          onMouseOut={this.cancelToolTip}
-        />
-      </PopUp>
-    );
+    if (this.props.desc) {
+      return (
+        <PopUp
+          positionMy="left top-15px"
+          positionAt="right top"
+          zIndex={99999}
+          content={this.props.desc}
+          ref={(c) => { this.templatePopup = c; }}
+          className="template-item"
+          autoOpen={false}
+        >
+          {this.getMenuItem()}
+        </PopUp>
+      );
+    }
+    return this.getMenuItem();
   }
 }
 export default EmailTemplateItem;

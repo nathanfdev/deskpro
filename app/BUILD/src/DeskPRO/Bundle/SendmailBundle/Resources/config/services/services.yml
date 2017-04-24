@@ -8,6 +8,10 @@ services:
     class: DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory
     arguments: ["@router", "@object_router", "@service_container"]
 
+  email.custom_viewmodel_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\CustomViewModelFactory
+    arguments: ["@router", "@object_router", "@service_container"]
+
   email.email_renderer:
     class: DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer
     arguments: ["@serializer", "@templating.new_email.twig.engine", "@service_container"]

@@ -11,6 +11,7 @@ class CodeMirror extends React.Component {
   };
   static defaultProps = {
     onChange() {},
+    value: '',
   };
 
   constructor(props) {

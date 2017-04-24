@@ -53,12 +53,17 @@ class TemplateCustom extends Template
 
     /**
      * @param TemplateEntity $entity
+     * @param null|string    $customType
      *
      * @return TemplateCustom
      */
-    public static function createFromEntity(TemplateEntity $entity)
+    public static function createFromEntity(TemplateEntity $entity, $customType = null)
     {
         $obj = new self($entity->name, $entity);
+
+        if ($customType) {
+            $obj->custom_type = $customType;
+        }
 
         return $obj;
     }

@@ -49,6 +49,8 @@ export default createReducer(initialState, {
   [actions.removeVariables]:         state => state.set('variables', null),
   [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),
   [actions.setCurrentTemplate]:      (state, payload) => state.set('currentTemplate', payload),
+  [actions.unselectTemplate]:        state => state.delete('template'),
+  [actions.deletePreview]:           state => state.delete('preview'),
   [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),
   [actions.updateTemplateSubject]:   (state, payload) => state.setIn(['template', 'template_code', 'subject'], payload),
   [actions.updateTemplateBody]:      (state, payload) => state.setIn(['template', 'template_code', 'body'], payload),

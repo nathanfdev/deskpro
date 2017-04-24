@@ -205,12 +205,18 @@ class Select extends React.Component {
   };
 
   selectValue = (value) => {
-    this.props.onChange(value.value);
-    this.setState({
-      value,
-      inputValue: '',
-      isOpen:     false
-    });
+    if (this.props.onChange(value.value) !== false) {
+      this.setState({
+        value,
+        inputValue: '',
+        isOpen:     false
+      });
+    } else {
+      this.setState({
+        inputValue: '',
+        isOpen:     false
+      });
+    }
   };
 
   updateFilter = (event) => {

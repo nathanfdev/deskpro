@@ -214,6 +214,22 @@
   .dropdown.email-account {
     width: 100%;
   }
+  .new-custom-template {
+    position: absolute;
+    background-color: white;
+    top: calc(50% - 250px);
+    z-index: 10;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid $dp-sonic-primary;
+    min-width: 500px;
+    min-height: 400px;
+    .close {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+    }
+  }
 }
 .email-dropdown-menu {
     .ui.bottom.left.popup:before {

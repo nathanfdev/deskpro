@@ -156,7 +156,7 @@ class TemplateController extends BaseController
         }
 
         if (!$template) {
-            $template = $set->createCustomTemplate($name);
+            $template = $set->createCustomTemplate($name, 'email');
         }
 
         $templateCode = $template->getTemplateCode();
@@ -282,6 +282,8 @@ class TemplateController extends BaseController
      * @Rest\Post("/send_preview")
      *
      * @param Request $request
+     *
+     * @return View
      */
     public function postSendPreviewEmailAction(Request $request)
     {

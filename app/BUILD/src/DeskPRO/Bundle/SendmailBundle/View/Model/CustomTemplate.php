@@ -26,27 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormBuilderInterface;
-
-/**
- * Class EmailTemplateType.
- */
-class EmailTemplateType extends AbstractType
+class CustomTemplate extends TicketEmailType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('subject', TextareaType::class)
-            ->add('body', TextareaType::class, ['filter_clean' => false])
-            ->add('create_new', HiddenType::class, ['required' => false])
-        ;
-    }
+    protected $templateFile = 'emails_user:ticket_new_autoreply.html.twig';
 }

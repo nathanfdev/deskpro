@@ -616,19 +616,4 @@ class UserViewModelFactory extends AbstractViewModelFactory
     {
         return $this->convertParameters(EmailTooBig::class, [$subject, $maxSize]);
     }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @return array
-     */
-    protected function getTicketArguments($ticket)
-    {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
-
-        $ticketPerson = $ticket->getPerson();
-        $ticketAgent  = $ticket->getAgent();
-
-        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink];
-    }
 }

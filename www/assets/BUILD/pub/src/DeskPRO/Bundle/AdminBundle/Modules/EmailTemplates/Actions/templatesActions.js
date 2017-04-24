@@ -69,6 +69,12 @@ export const loadTemplate = createAction(
     repository('EmailTemplates').loadTemplate(name).then((promise) => {
       const res = promise.getData();
 
+      res.original_code = {
+        body:    res.template_code.body,
+        code:    res.template_code.code,
+        subject: res.template_code.subject,
+      };
+
       resolve(res);
     });
   })
@@ -91,10 +97,20 @@ export const resetTemplate = createAction(
     repository('EmailTemplates').resetTemplate(name).then((promise) => {
       const res = promise.getData();
 
+      res.original_code = {
+        body:    res.template_code.body,
+        code:    res.template_code.code,
+        subject: res.template_code.subject,
+      };
+
       resolve(res);
     });
   })
 );
+
+export const unselectTemplate = createAction('EMAIL_TEMPLATES_UNSELECT_TEMPLATE');
+
+export const deletePreview = createAction('EMAIL_TEMPLATES_DELETE_PREVIEW');
 
 export const previewTemplate = createAction(
   'EMAIL_TEMPLATES_PREVIEW_TEMPLATE',
