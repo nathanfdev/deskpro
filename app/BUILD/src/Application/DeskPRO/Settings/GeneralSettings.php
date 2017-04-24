@@ -33,15 +33,23 @@
 namespace Application\DeskPRO\Settings;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\EntityRepository\BrandSetting;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
+use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use Orb\Util\Arrays;
 
 class GeneralSettings
 {
     /**
-     * @var Settings
+     * @var BrandAwareSettingsResolver
      */
     private $settings;
+
+    /**
+     * @var BrandSetting
+     */
+    private $brandSettingsRepository;
 
     /** @var string */
     public $deskpro_name;
@@ -58,7 +66,7 @@ class GeneralSettings
     /** @var string */
     public $site_url;
 
-    /** @var string */
+    /** @var array */
     public $default_from_email;
 
     /** @var string */
@@ -101,11 +109,17 @@ class GeneralSettings
     protected $isCloud;
 
     /**
-     * @param Settings $settings
+     * @param BrandAwareSettingsResolver $settings
+     * @param BrandSetting               $brandSettingsRepository
      */
-    public function __construct(Settings $settings)
-    {
-        $this->settings = $settings;
+    public function __construct(
+        BrandAwareSettingsResolver $settings,
+        BrandSetting $brandSettingsRepository,
+        Settings $globalSettings
+    ) {
+        $this->settings                = $settings;
+        $this->brandSettingsRepository = $brandSettingsRepository;
+        $this->globalSettings          = $globalSettings;
         $this->resetSettings();
 
         // todo inject. maybe to Settings?
@@ -117,34 +131,37 @@ class GeneralSettings
      */
     public function resetSettings()
     {
-        $this->deskpro_name            = $this->settings->get('core.deskpro_name');
-        $this->deskpro_url_autocorrect = (bool) $this->settings->get('core.deskpro_url_autocorrect');
-        $this->deskpro_url             = $this->settings->get('core.deskpro_url');
+        $this->deskpro_name            = $this->settings->getSetting('core.deskpro_name');
+        $this->deskpro_url_autocorrect = (bool) $this->settings->getSetting('core.deskpro_url_autocorrect');
+        $this->deskpro_url             = $this->settings->getSetting('core.deskpro_url');
 
-        $this->helpdesk_disabled         = (bool) $this->settings->get('core.helpdesk_disabled');
-        $this->helpdesk_disabled_message = $this->settings->get('core.helpdesk_disabled_message');
+        $this->helpdesk_disabled         = (bool) $this->settings->getSetting('core.helpdesk_disabled');
+        $this->helpdesk_disabled_message = $this->settings->getSetting('core.helpdesk_disabled_message');
 
-        $this->site_name = $this->settings->get('core.site_name');
-        $this->site_url  = $this->settings->get('core.site_url');
+        $this->site_name = $this->settings->getSetting('core.site_name');
+        $this->site_url  = $this->settings->getSetting('core.site_url');
 
-        $this->default_from_email = $this->settings->get('core.default_from_email');
+        $this->default_from_email = $this->settings->getAllBrandsSettings('core.default_from_email');
+        if (!$this->default_from_email[$this->settings->getSetting('portal.default_brand')]) {
+            $this->default_from_email[$this->settings->getSetting('portal.default_brand')] = $this->settings->getSetting('core.default_from_email');
+        }
 
-        $this->default_timezone   = $this->settings->get('core.default_timezone');
-        $this->task_reminder_time = $this->settings->get('core.task_reminder_time');
+        $this->default_timezone   = $this->settings->getSetting('core.default_timezone');
+        $this->task_reminder_time = $this->settings->getSetting('core.task_reminder_time');
 
-        $this->date_fulltime  = $this->settings->get('core.date_fulltime');
-        $this->date_full      = $this->settings->get('core.date_full');
-        $this->date_day       = $this->settings->get('core.date_day');
-        $this->date_day_short = $this->settings->get('core.date_day_short');
-        $this->date_time      = $this->settings->get('core.date_time');
+        $this->date_fulltime  = $this->settings->getSetting('core.date_fulltime');
+        $this->date_full      = $this->settings->getSetting('core.date_full');
+        $this->date_day       = $this->settings->getSetting('core.date_day');
+        $this->date_day_short = $this->settings->getSetting('core.date_day_short');
+        $this->date_time      = $this->settings->getSetting('core.date_time');
 
-        $this->attach_user_maxsize   = $this->settings->get('core.attach_user_maxsize');
-        $this->attach_user_must_exts = $this->settings->get('core.attach_user_must_exts');
+        $this->attach_user_maxsize   = $this->settings->getSetting('core.attach_user_maxsize');
+        $this->attach_user_must_exts = $this->settings->getSetting('core.attach_user_must_exts');
         if ($this->attach_user_must_exts) {
             $this->attach_user_must_exts = explode(',', $this->attach_user_must_exts);
             $this->attach_user_must_exts = $this->cleanExtsArray($this->attach_user_must_exts);
         } else {
-            $this->attach_user_not_exts = $this->settings->get('core.attach_user_not_exts');
+            $this->attach_user_not_exts = $this->settings->getSetting('core.attach_user_not_exts');
             if ($this->attach_user_not_exts) {
                 $this->attach_user_not_exts = explode(',', $this->attach_user_not_exts);
                 $this->attach_user_not_exts = $this->cleanExtsArray($this->attach_user_not_exts);
@@ -158,13 +175,13 @@ class GeneralSettings
             $this->attach_user_not_exts = [];
         }
 
-        $this->attach_agent_maxsize   = $this->settings->get('core.attach_agent_maxsize');
-        $this->attach_agent_must_exts = $this->settings->get('core.attach_agent_must_exts');
+        $this->attach_agent_maxsize   = $this->settings->getSetting('core.attach_agent_maxsize');
+        $this->attach_agent_must_exts = $this->settings->getSetting('core.attach_agent_must_exts');
         if ($this->attach_agent_must_exts) {
             $this->attach_agent_must_exts = explode(',', $this->attach_agent_must_exts);
             $this->attach_agent_must_exts = $this->cleanExtsArray($this->attach_agent_must_exts);
         } else {
-            $this->attach_agent_not_exts = $this->settings->get('core.attach_agent_not_exts');
+            $this->attach_agent_not_exts = $this->settings->getSetting('core.attach_agent_not_exts');
             if ($this->attach_agent_not_exts) {
                 $this->attach_agent_not_exts = explode(',', $this->attach_agent_not_exts);
                 $this->attach_agent_not_exts = $this->cleanExtsArray($this->attach_agent_not_exts);
@@ -178,8 +195,8 @@ class GeneralSettings
             $this->attach_agent_not_exts = [];
         }
 
-        $this->rate_limit_disabled = (bool) $this->settings->get(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED);
-        $this->rate_limit_ips      = json_decode($this->settings->get(AntiAbuse::SETTING_IP_WHITELIST, 1) ?: []);
+        $this->rate_limit_disabled = (bool) $this->settings->getSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED);
+        $this->rate_limit_ips      = json_decode($this->settings->getSetting(AntiAbuse::SETTING_IP_WHITELIST, null, 1) ?: []);
     }
 
     /**
@@ -252,26 +269,32 @@ class GeneralSettings
         if ($this->deskpro_url) {
             $this->deskpro_url = App::$container->get('url_host_checker')->simplifyUrl($this->deskpro_url, true);
             $this->deskpro_url = rtrim($this->deskpro_url, '/').'/';
-            $this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
+            $this->globalSettings->setSetting('core.deskpro_url', $this->deskpro_url);
         }
 
         if (!$this->isCloud) {
-            $this->settings->setSetting('core.deskpro_url_autocorrect', (bool) $this->deskpro_url_autocorrect);
-            $this->settings->setSetting('core.helpdesk_disabled', (bool) $this->helpdesk_disabled);
-            $this->settings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
+            $this->globalSettings->setSetting('core.deskpro_url_autocorrect', (bool) $this->deskpro_url_autocorrect);
+            $this->globalSettings->setSetting('core.helpdesk_disabled', (bool) $this->helpdesk_disabled);
+            $this->globalSettings->setSetting('core.helpdesk_disabled_message', $this->helpdesk_disabled_message);
 
             @file_put_contents(App::$container->getParameter('dp.user.cache_dir').'/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
         }
 
         $this->site_url = App::$container->get('url_host_checker')->simplifyUrl($this->site_url, true);
 
-        $this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
-        $this->settings->setSetting('core.site_url', $this->site_url);
-        $this->settings->setSetting('core.site_name', $this->site_name);
-        $this->settings->setSetting('core.default_from_email', $this->default_from_email);
+        $this->globalSettings->setSetting('core.deskpro_name', $this->deskpro_name);
+        $this->globalSettings->setSetting('core.site_url', $this->site_url);
+        $this->globalSettings->setSetting('core.site_name', $this->site_name);
+        $this->globalSettings->setSetting('core.default_from_email', $this->default_from_email[$this->settings->getSetting('portal.default_brand')]);
 
-        $this->settings->setSetting('core.default_timezone', $this->default_timezone ?: 'UTC');
-        $this->settings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');
+        $brandRepo = App::$container->get('doctrine.orm.default_entity_manager')->getRepository(Brand::class);
+        foreach ($this->default_from_email as $brand => $email) {
+            $brand = $brandRepo->find($brand);
+            $this->brandSettingsRepository->updateSetting('core.default_from_email', $email, $brand);
+        }
+
+        $this->globalSettings->setSetting('core.default_timezone', $this->default_timezone ?: 'UTC');
+        $this->globalSettings->setSetting('core.task_reminder_time', $this->task_reminder_time ?: '09:30');
 
         $db    = App::$container->get('database_connection');
         $brand = App::$container->getBrandStack()->getDefaultBrand();
@@ -297,7 +320,7 @@ class GeneralSettings
             $p   = 'date_'.$p;
             $val = trim($this->$p) ?: null;
 
-            $this->settings->setSetting("core.$p", $val);
+            $this->globalSettings->setSetting("core.$p", $val);
         }
 
         if ($this->attach_user_must_exts) {
@@ -307,9 +330,9 @@ class GeneralSettings
             $this->attach_user_must_exts = [];
             $this->attach_user_not_exts  = $this->cleanExtsArray($this->attach_user_not_exts);
         }
-        $this->settings->setSetting('core.attach_user_maxsize', (int) $this->attach_user_maxsize);
-        $this->settings->setSetting('core.attach_user_must_exts', $this->attach_user_must_exts ? implode(',', $this->attach_user_must_exts) : null);
-        $this->settings->setSetting('core.attach_user_not_exts', $this->attach_user_not_exts ? implode(',', $this->attach_user_not_exts) : null);
+        $this->globalSettings->setSetting('core.attach_user_maxsize', (int) $this->attach_user_maxsize);
+        $this->globalSettings->setSetting('core.attach_user_must_exts', $this->attach_user_must_exts ? implode(',', $this->attach_user_must_exts) : null);
+        $this->globalSettings->setSetting('core.attach_user_not_exts', $this->attach_user_not_exts ? implode(',', $this->attach_user_not_exts) : null);
 
         if ($this->attach_agent_must_exts) {
             $this->attach_agent_must_exts = $this->cleanExtsArray($this->attach_agent_must_exts);
@@ -318,14 +341,14 @@ class GeneralSettings
             $this->attach_agent_must_exts = [];
             $this->attach_agent_not_exts  = $this->cleanExtsArray($this->attach_agent_not_exts);
         }
-        $this->settings->setSetting('core.attach_agent_maxsize', (int) $this->attach_agent_maxsize);
-        $this->settings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
-        $this->settings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
+        $this->globalSettings->setSetting('core.attach_agent_maxsize', (int) $this->attach_agent_maxsize);
+        $this->globalSettings->setSetting('core.attach_agent_must_exts', $this->attach_agent_must_exts ? implode(',', $this->attach_agent_must_exts) : null);
+        $this->globalSettings->setSetting('core.attach_agent_not_exts', $this->attach_agent_not_exts ? implode(',', $this->attach_agent_not_exts) : null);
 
-        $this->settings->setSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED, (bool) $this->rate_limit_disabled);
+        $this->globalSettings->setSetting(AntiAbuse::SETTING_RATE_LIMIT_IS_DISABLED, (bool) $this->rate_limit_disabled);
         if (!is_array($this->rate_limit_ips)) {
             $this->rate_limit_ips = [];
         }
-        $this->settings->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode($this->rate_limit_ips));
+        $this->globalSettings->setSetting(AntiAbuse::SETTING_IP_WHITELIST, json_encode($this->rate_limit_ips));
     }
 }

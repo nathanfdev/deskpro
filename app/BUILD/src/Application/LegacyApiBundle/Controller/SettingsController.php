@@ -33,6 +33,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\GeneralPortalSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
@@ -176,10 +177,13 @@ class SettingsController extends AbstractController implements ProtectedControll
 
     public function generalSettingsAction()
     {
-        $general_settings = new GeneralSettings($this->settings);
+        /** @var \Application\DeskPRO\EntityRepository\BrandSetting $brandSettingsRepository */
+        $brandSettingsRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(BrandSetting::class);
+        $settings                = new GeneralSettings($this->get('brand_aware_settings_resolver'),
+            $brandSettingsRepository, $this->settings);
 
         return $this->createApiResponse([
-            'general_settings' => $general_settings->toArray(),
+            'general_settings' => $settings->toArray(),
             'max_filesize'     => Env::getEffectiveMaxUploadSize(),
         ]);
     }
@@ -191,7 +195,13 @@ class SettingsController extends AbstractController implements ProtectedControll
     public function saveGeneralSettingsAction()
     {
         try {
-            $settings = new GeneralSettings($this->settings);
+            /** @var \Application\DeskPRO\EntityRepository\BrandSetting $brandSettingsRepository */
+            $brandSettingsRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(BrandSetting::class);
+            $settings                = new GeneralSettings(
+                $this->get('brand_aware_settings_resolver'),
+                $brandSettingsRepository,
+                $this->settings
+            );
             $settings->setArray($this->in->getArrayValue('general_settings'));
             $settings->saveSettings();
 

@@ -221,4 +221,20 @@ class BrandAwareSettingsResolver
 
         return $this->brands;
     }
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return array
+     */
+    public function getAllBrandsSettings($name, $default = null)
+    {
+        $result = [];
+        foreach ($this->getBrands() as $brand) {
+            $result[$brand->getId()] = $this->getBrandSetting($name, $brand, $default);
+        }
+
+        return $result;
+    }
 }
