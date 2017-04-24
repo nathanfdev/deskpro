@@ -7,7 +7,7 @@ services:
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationManagerService]
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
 
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder

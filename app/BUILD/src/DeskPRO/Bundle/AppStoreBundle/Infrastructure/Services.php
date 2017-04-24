@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
 use JsonSchema\Validator;
 use Doctrine\ORM;
@@ -36,11 +37,12 @@ class Services
 {
     /**
      * @param ORM\EntityManager $entityManager
+     * @param DeskproBlobStorage $blobStorage
      * @return ApplicationManagerService
      */
-    public static function createApplicationManagerService(ORM\EntityManager $entityManager)
+    public static function createApplicationManagerService(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage)
     {
-        return new ApplicationManagerService($entityManager);
+        return new ApplicationManagerService($entityManager, $blobStorage);
     }
 
     /**

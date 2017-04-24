@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
@@ -38,14 +39,17 @@ class ApplicationManagerService implements Domain\ApplicationManager
     /** @var ORM\EntityManager */
     private $entityManager;
 
+    /** @var DeskproBlobStorage */
+    private $blobStorage;
+
     /**
      * ApplicationService constructor.
      * @param ORM\EntityManager $entityManager
+     * @param DeskproBlobStorage $blobStorage
      */
-    public function __construct(
-        ORM\EntityManager $entityManager
-    ) {
+    public function __construct(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage) {
         $this->entityManager = $entityManager;
+        $this->blobStorage = $blobStorage;
     }
 
     /**

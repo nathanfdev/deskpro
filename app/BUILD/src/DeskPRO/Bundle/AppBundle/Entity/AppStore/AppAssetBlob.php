@@ -28,15 +28,38 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
+
 /**
  * @ORM\Entity()
- * @ORM\Table(name="app2_app_asset")
+ * @ORM\Table(name="app2_app_asset_blob")
  */
-class AppAsset implements Domain\ApplicationAsset
+class AppAssetBlob implements Domain\ApplicationAsset
 {
+    /** @var DeskproBlobStorage */
+    static private $blobStorageService;
+
+    /**
+     * @return DeskproBlobStorage
+     */
+    public static function getBlobStorageService()
+    {
+        return self::$blobStorageService;
+    }
+
+    /**
+     * @param DeskproBlobStorage $blobStorageService
+     */
+    public static function setBlobStorageService(DeskproBlobStorage $blobStorageService)
+    {
+        self::$blobStorageService = $blobStorageService;
+    }
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
@@ -63,9 +86,21 @@ class AppAsset implements Domain\ApplicationAsset
     private $path;
 
     /**
-     * @ORM\Column(type="text", nullable=false)
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="blob_id", referencedColumnName="id")
+     * @var Blob
      */
-    private $content;
+    private $blob;
+
+    /**
+     * @ORM\Column(name="blob_id", type="integer", nullable=false)
+     */
+    private $blobId;
+
+    /**
+     * @ORM\Column(name="blob_authcode", type="string", nullable=false)
+     */
+    private $blobAuthcode;
 
     /**
      * @return App
@@ -101,18 +136,41 @@ class AppAsset implements Domain\ApplicationAsset
     }
 
     /**
-     * @return mixed
+     * @param Blob $blob
+     * @return AppAssetBlob
      */
-    public function getRawContent()
+    public function setBlob(Blob $blob)
     {
-        return $this->content;
+        $this->blob = $blob;
+        $this->blobId = null;
+        $this->blobAuthcode = $blob->getAuthcode();
+        return $this;
     }
 
     /**
-     * @param mixed $content
+     * Returns the system identifier for the application
+     *
+     * @return string
      */
-    public function setContent($content)
+    function getBlobId()
     {
-        $this->content = $content;
+        if (empty($this->blobId) && !empty($this->blob)) {
+            return $this->blob->getId();
+        }
+
+        return $this->blobId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRawContent()
+    {
+        if ($this->blob) {
+            $blobStorage = self::getBlobStorageService();
+            return $blobStorage->copyBlobRecordToString($this->blob);
+        }
+
+        return null;
     }
 }

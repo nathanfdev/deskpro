@@ -38,5 +38,5 @@ interface ApplicationAsset
     /**
      * @return string
      */
-    public function getContent();
+    public function getRawContent();
 }
