@@ -33,7 +33,7 @@ Feature: /mass_actions/tickets endpoint
   "params":{"set_status": "awaiting_agent"}
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets"
     Then the JSON node "data" should have 2 elements
@@ -49,7 +49,7 @@ Feature: /mass_actions/tickets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "message" should be equal to 'The option "set_status" with value "1" is invalid. Accepted values are: "awaiting_agent", "awaiting_user", "resolved", "archived".'
+    And the JSON node "errors.fields.params.fields.set_status.errors[0].code" should be equal to "bad_choice"
 
   Scenario Outline: I set an object
     And only the following <entity_type> records exist:
@@ -64,7 +64,7 @@ Feature: /mass_actions/tickets endpoint
   "params":{"set_<prop>":~o2~}
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/{t1}"
     And the JSON node "data.<prop>" should be equal to "{o2}"
@@ -87,8 +87,7 @@ Feature: /mass_actions/tickets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should contain "doesn't exists"
+    And the JSON node "errors.fields.params.fields.set_<prop>.errors[0].code" should be equal to "bad_choice"
 
     Examples:
       | prop     | entity_type    |
@@ -111,7 +110,7 @@ Feature: /mass_actions/tickets endpoint
   "params":{"assign": {"<set_prop>": ~o2~}}
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/{t1}"
     And the JSON node "data.<ticket_prop>" should be equal to "{o2}"
@@ -132,8 +131,7 @@ Feature: /mass_actions/tickets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should contain "doesn't exists"
+    And the JSON node "errors.fields.params.fields.assign.fields.<prop>.errors[0].code" should be equal to "bad_choice"
 
     Examples:
       | prop       | entity_type    |
@@ -150,7 +148,7 @@ Feature: /mass_actions/tickets endpoint
   }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets?status=hidden"
     Then the JSON node "data" should have 2 elements
@@ -172,7 +170,7 @@ Feature: /mass_actions/tickets endpoint
   }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/{t1}"
     Then the response status code should be 200
@@ -193,7 +191,7 @@ Feature: /mass_actions/tickets endpoint
   }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/{t1}"
     Then the response status code should be 200
@@ -220,7 +218,7 @@ Feature: /mass_actions/tickets endpoint
   }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/{t3}"
     Then the response status code should be 200

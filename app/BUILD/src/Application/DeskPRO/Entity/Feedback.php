@@ -688,6 +688,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $this->hidden_status = $value;
         $this->_onPropertyChanged('hidden_status', $last_hidden_status, $value);
 
+        if ($value) {
+            $this->setModelField('status', self::STATUS_HIDDEN);
+        }
+
         return $this;
     }
 

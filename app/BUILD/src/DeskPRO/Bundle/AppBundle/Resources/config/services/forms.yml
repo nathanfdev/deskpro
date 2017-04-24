@@ -339,3 +339,17 @@ services:
       - "@brand_form_helper"
     tags:
       - { name: form.type }
+
+  form.mass_actions.base:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionsType
+    arguments:
+      - "@form.factory"
+    tags:
+      - { name: form.type }
+
+  form.mass_actions.feedback_params:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Feedback\FeedbackMassActionParamsType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }

@@ -19,8 +19,8 @@ Feature: /mass_actions/feedback endpoint
     And only the following "Feedback" records exist:
       | #        | status_category | category | person  | is_reviewed | slug      | title     | content   | status |
       | feedback | {fsc1}          | {fc1}    | {admin} | 0           | feedback1 | Feedback1 | Feedback1 | active |
-  Scenario: I set incorrect hidden_status for feedback
 
+  Scenario: I set incorrect hidden_status for feedback
     When I send a POST request to "/api/v2/mass_actions/feedback" with body:
     """
 {
@@ -29,24 +29,23 @@ Feature: /mass_actions/feedback endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "set_hidden_status" with value "incorrect" is invalid. Accepted values are: "deleted", "draft", "spam", "unpublished".'
+    And the JSON node "errors.fields.params.fields.set_hidden_status.errors[0].code" should be equal to "bad_choice"
 
-  Scenario: I set incorrect status category for feedback
+  Scenario Outline: I set incorrect status category for feedback
     When I send a POST request to "/api/v2/mass_actions/feedback" with body:
     """
 {
   "ids": [~feedback~],
-  "params":{"set_status_category": 1000}
+  "params":{"set_status_category": <value>}
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Status category with ID=1000 doesn't exists"
+    And the JSON node "errors.fields.params.fields.set_status_category.errors[0].code" should be equal to "bad_choice"
+
+    Examples:
+      | value      |
+      | -1         |
+      | "anything" |
 
   Scenario: I set incorrect status category for feedback
     When I send a POST request to "/api/v2/mass_actions/feedback" with body:
@@ -57,24 +56,7 @@ Feature: /mass_actions/feedback endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "set_status_category" with value array is expected to be of type "string" or "int", but is of type "array".'
-
-  Scenario: I set incorrect status category for feedback
-    When I send a POST request to "/api/v2/mass_actions/feedback" with body:
-    """
-{
-  "ids": [~feedback~],
-  "params":{"set_status_category": "anything"}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "set_status_category" with value "anything" is invalid.'
+    And the JSON node "errors.fields.params.fields.set_status_category.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: I try to add incorrect labels to feedback
     When I send a POST request to "/api/v2/mass_actions/feedback" with body:
@@ -85,10 +67,7 @@ Feature: /mass_actions/feedback endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "add_labels" with value "1" is expected to be of type "array", but is of type "string".'
+    And the JSON node "errors.fields.params.fields.add_labels.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: I try to remove incorrect labels to feedback with ID=1
     When I send a POST request to "/api/v2/mass_actions/feedback" with body:
@@ -99,10 +78,7 @@ Feature: /mass_actions/feedback endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "remove_labels" with value "1" is expected to be of type "array", but is of type "string".'
+    And the JSON node "errors.fields.params.fields.remove_labels.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: I apply set of actions on feedback
     Given only the following custom feedback fields exist:
@@ -123,12 +99,11 @@ Feature: /mass_actions/feedback endpoint
   }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/feedback/{feedback}"
     Then the response status code should be 200
     And the response should be in JSON
-    And print last JSON response
     And the JSON node "data" should exist
     And the JSON node "data.id" should be equal to "{feedback}"
     And the JSON node "data.category" should be equal to "{fc2}"
@@ -136,7 +111,6 @@ Feature: /mass_actions/feedback endpoint
     And the JSON node "data.fields.{cdf1}.value" should be equal to "1"
     And the JSON node "data.labels[0]" should be equal to "first"
     And the JSON node "data.labels[1]" should be equal to "second"
-
 
   Scenario: I apply set of actions on feedback
     Given only the following "LabelDef" records exist:
@@ -159,7 +133,7 @@ Feature: /mass_actions/feedback endpoint
   }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
 
     When I send a GET request to "/api/v2/feedback/{feedback}"
     Then the response status code should be 200

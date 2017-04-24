@@ -89,4 +89,5 @@ return [
     'api.error_codes.unique_entity'                  => 'This value already exists in the system.',
     'api.error_codes.not_an_image'                   => 'Uploaded file is not an image',
     'api.error_codes.invalid_account_credentials'    => 'The settings you entered appear to be incorrect.',
+    'api.error_codes.no_permission'                  => 'You have no permission to modify "{{ value }}" object(s).',
 ];
