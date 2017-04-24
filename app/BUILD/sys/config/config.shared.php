@@ -597,7 +597,6 @@ $container->loadFromExtension(
                                 'tokenizer' => 'standard',
                                 'filter'    => [
                                     'standard',
-                                    'stop',
                                     'lowercase',
                                     'asciifolding',
                                 ],
@@ -605,7 +604,7 @@ $container->loadFromExtension(
                             'text_content_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => ['standard', 'stop', 'lowercase', 'asciifolding'],
+                                'filter'    => ['standard', 'lowercase', 'asciifolding'],
                             ],
                             'name_analyzer' => [
                                 'type'      => 'custom',
