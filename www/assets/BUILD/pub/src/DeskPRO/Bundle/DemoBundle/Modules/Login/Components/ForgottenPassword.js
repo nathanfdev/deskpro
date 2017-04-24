@@ -95,7 +95,7 @@ export class ForgottenPassword extends React.Component {
         <p className="description">
           <FormattedMessage
             id="cloud.demo_expired.forgot_password_desc"
-            defaultMessage="Enter your email address to receive instructions on how to reset your password:"
+            defaultMessage="Enter your email address to receive a new password:"
           />
         </p>
         <Form onSubmit={this.props.onEmailInstructions}>
@@ -120,7 +120,7 @@ export class ForgottenPassword extends React.Component {
         <Button onClick={this.props.onEmailInstructions}>
           <FormattedMessage
             id="cloud.demo_expired.email_instructions"
-            defaultMessage="Email instructions"
+            defaultMessage="Email me a new password"
           />
           {this.props.submit && <span> <i className="fa fa-spinner fa-pulse fa-fw margin-bottom" /></span>}
         </Button>

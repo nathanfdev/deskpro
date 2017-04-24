@@ -46,7 +46,6 @@ class DpAppContainer extends React.Component {
           name="forgot_password"
           path="/forgot-password"
           component={ForgottenPasswordContainer}
-          onEnter={this.requireAuth}
         />
         <Route
           name="extend-trial"
