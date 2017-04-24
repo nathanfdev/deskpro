@@ -49,7 +49,7 @@ class EmailAccountManagerService
 
         $manager = new EmailAccountManager($repos, $tr_factory, $fetcher_factory, $container->get('dp_enc'));
 
-        $default_addr = $container->getSetting('core.default_from_email');
+        $default_addr = $container->get('brand_aware_settings_resolver')->getSetting('core.default_from_email');
         $account      = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
         if ($account) {
             $manager->setDefaultOutAccount($account);
