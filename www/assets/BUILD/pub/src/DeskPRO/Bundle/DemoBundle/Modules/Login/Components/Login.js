@@ -13,6 +13,10 @@ const messages = defineMessages({
   billing_credentials_error: {
     id:             'cloud.demo_expired.billing_credentials_error',
     defaultMessage: 'You need billing credentials to extend your demo'
+  },
+  credentials_error: {
+    id:             'cloud.demo_expired.credentials_error',
+    defaultMessage: 'Your email address or password is incorrect. Please try again.'
   }
 });
 
@@ -108,11 +112,11 @@ export class LoginContainer extends React.Component {
           }
         }
       },
-      (response) => {
+      () => {
         if (this.mounted) {
           this.setState({
             submit: false,
-            errors: response.getData().errors
+            errors: { message: formatMessage(messages.credentials_error) }
           });
         }
       }
@@ -186,6 +190,7 @@ export class Login extends React.Component {
               iconPosition="left"
               value={this.props.email}
               onChange={this.props.onChangeEmail}
+              onEnterKey={this.props.onLogin}
             />
           </Field>
           <Field field="password" errors={this.props.errors}>
@@ -202,6 +207,7 @@ export class Login extends React.Component {
               iconPosition="left"
               value={this.props.password}
               onChange={this.props.onChangePassword}
+              onEnterKey={this.props.onLogin}
             />
           </Field>
         </Form>

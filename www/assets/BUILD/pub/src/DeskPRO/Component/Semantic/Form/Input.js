@@ -11,11 +11,15 @@ class Input extends React.Component {
     placeholder:  PropTypes.string,
     value:        PropTypes.string,
     type:         PropTypes.string,
-    onChange:     PropTypes.func
+    onChange:     PropTypes.func,
+    onKeyPress:   PropTypes.func,
+    onEnterKey:   PropTypes.func
   };
   static defaultProps = {
     type: 'text',
-    onChange() {}
+    onChange() {},
+    onKeyPress() {},
+    onEnterKey() {}
   };
 
   getIcon = () => {
@@ -27,6 +31,14 @@ class Input extends React.Component {
 
   handleChange = (event) => {
     this.props.onChange(event.target.value);
+  };
+
+  keyPress = (event) => {
+    this.props.onKeyPress(event.target.value);
+
+    if (event.key === 'Enter') {
+      this.props.onEnterKey(event.target.value);
+    }
   };
 
   render() {
@@ -41,6 +53,7 @@ class Input extends React.Component {
           name={name}
           maxLength={maxLength}
           onChange={this.handleChange}
+          onKeyPress={this.keyPress}
           placeholder={placeholder}
         />
         {this.getIcon()}
