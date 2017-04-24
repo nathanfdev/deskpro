@@ -4208,12 +4208,8 @@ class TicketController extends AbstractController
             'type'    => $type,
         ];
 
-        $message_raw = $message->message_raw ?: '';
-        if (!$message_raw) {
-            $message_raw = $message->message_full;
-            if (!$message_raw) {
-                $message_raw = $message->message;
-            }
+        if (!$message_raw = $message->message_raw ?: '') {
+            $message_raw = $message->message_full ?: $message->message;
         }
 
         switch ($type) {

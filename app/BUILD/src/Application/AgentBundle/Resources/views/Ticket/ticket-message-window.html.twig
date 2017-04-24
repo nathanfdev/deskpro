@@ -5,7 +5,9 @@
 			<li {% if type == 'normal' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'normal', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.normal_message') }}</a></li>
 			<li {% if type == 'raw' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'raw', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.raw_message') }}</a></li>
 			<li {% if type == 'raw2' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'raw2', _rt: security_token('request_token', 10800)}) }}" onclick="return confirm('{{ phrase('agent.tickets.unsanitized_message_confirm') }}');">{{ phrase('agent.tickets.unsanitized_message') }}</a></li>
-			<li {% if type == 'source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'source', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.general.source_code') }}</a></li>
+			{% if message.email_source %} %}
+				<li {% if type == 'source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'source', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.general.email_source') }}</a></li>
+			{% endif %}
 		</ul>
 	</nav>
 
