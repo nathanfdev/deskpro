@@ -37,6 +37,7 @@ Feature: /mass_actions/tickets endpoint
 {
   "ids": [1,2],
   "params":{
+     "set_priority": 2,
      "set_category": 1,
      "set_product": 1,
      "set_language": 1,
@@ -169,6 +170,7 @@ Feature: /mass_actions/tickets endpoint
     And the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.status" should be equal to "hidden.spam"
+    And the JSON node "data.priority" should be equal to 2
     And the JSON node "data.product" should be equal to 1
     And the JSON node "data.agent" should be equal to 1
     And the JSON node "data.agent_team" should be equal to 1
