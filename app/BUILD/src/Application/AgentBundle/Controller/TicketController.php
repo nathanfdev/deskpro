@@ -4233,7 +4233,7 @@ class TicketController extends AbstractController
                 $message_raw = $purifier->purify($message_raw, $config);
                 break;
 
-            case 'source':
+            case 'email_source':
 
                 $message = $this->em->getRepository(TicketMessage::class)->find($message_id);
 

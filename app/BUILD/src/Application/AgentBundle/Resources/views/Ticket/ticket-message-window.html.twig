@@ -6,7 +6,9 @@
 			<li {% if type == 'raw' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'raw', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.raw_message') }}</a></li>
 			<li {% if type == 'raw2' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'raw2', _rt: security_token('request_token', 10800)}) }}" onclick="return confirm('{{ phrase('agent.tickets.unsanitized_message_confirm') }}');">{{ phrase('agent.tickets.unsanitized_message') }}</a></li>
 			{% if message.email_source %} %}
-				<li {% if type == 'source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'source', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.general.email_source') }}</a></li>
+				<li {% if type == 'email_source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'email_source', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.general.email_source') }}</a></li>
+			{% else %}
+				<li {% if type == 'html_source' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: message.id, type: 'html_source', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.general.html_source') }}</a></li>
 			{% endif %}
 		</ul>
 	</nav>
@@ -26,7 +28,17 @@
 	</div>
 
 	{##################################################################################################################}
-	{% elseif type == 'source' %}
+	{% elseif type == 'html_source' %}
+		<div style="background-color: #fff; padding: 10px;">
+			{% if message_raw %}
+				<strong>{{ phrase('agent.tickets.html_body') }}:</strong><br/>
+				<textarea style="width: 98%; height: 300px; font-family: Monaco, Consolas, monospace; font-size: 12px; color:#000;">{{ message_raw }}</textarea>
+				<br/><br/>
+			{% endif %}
+		</div>
+
+	{##################################################################################################################}
+	{% elseif type == 'email_source' %}
 
 	<div style="background-color: #fff; padding: 10px;">
 		{% if body_html %}
