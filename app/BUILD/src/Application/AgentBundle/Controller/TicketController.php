@@ -4208,12 +4208,8 @@ class TicketController extends AbstractController
             'type'    => $type,
         ];
 
-        $message_raw = $message->message_raw ?: '';
-        if (!$message_raw) {
-            $message_raw = $message->message_full;
-            if (!$message_raw) {
-                $message_raw = $message->message;
-            }
+        if (!$message_raw = $message->message_raw ?: '') {
+            $message_raw = $message->message_full ?: $message->message;
         }
 
         switch ($type) {
@@ -4237,7 +4233,7 @@ class TicketController extends AbstractController
                 $message_raw = $purifier->purify($message_raw, $config);
                 break;
 
-            case 'source':
+            case 'email_source':
 
                 $message = $this->em->getRepository(TicketMessage::class)->find($message_id);
 

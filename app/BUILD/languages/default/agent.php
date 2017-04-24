@@ -963,6 +963,8 @@ return [
     'agent.general.sort_desc'                                  => 'DESC',
     'agent.general.sort_desc_highlow'                          => 'Highest-Lowest',
     'agent.general.source_code'                                => 'Source Code',
+    'agent.general.email_source'                               => 'Email source',
+    'agent.general.html_source'                                => 'HTML source',
     'agent.general.spam'                                       => 'Spam',
     'agent.general.start'                                      => 'Start',
     'agent.general.status'                                     => 'Status',
