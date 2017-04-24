@@ -84,6 +84,25 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
         return $result;
     }
 
+    /**
+     * @param string $applicationName
+     * @return Entity\AppStore\AppInstance[]
+     */
+    function findByApplication($applicationName) {
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppInstance::class, 'i')
+            ->select('i, a')
+            ->innerJoin('i.app', 'a')
+            ->where('a.name = :name')
+            ->setParameter('name', $applicationName)
+        ;
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+
     function findByFilter(Domain\SearchApplicationInstanceFilter $filter)
     {
         if ($filter->isEmpty()) {

@@ -83,8 +83,8 @@ class InstallAppCommand extends ContainerAwareCommand
             return 1;
         }
 
-        /** @var AppStoreBundle\Domain\ApplicationInstanceCreator $instanceCreator */
-        $instanceCreator = $this->getContainer()->get(AppStoreBundle\Domain\ApplicationInstanceCreator::class);
+        /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
+        $instanceCreator = $this->getContainer()->get(AppStoreBundle\Domain\ApplicationManager::class);
         $instance = $instanceCreator->createFirstInstance($bundle);
 
         $output->writeln(sprintf("Successfully created application id : %s</error>", $instance->id));

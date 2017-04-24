@@ -53,6 +53,11 @@ class AppAsset implements Domain\ApplicationAsset
     private $app;
 
     /**
+     * @ORM\Column(name="app_id", type="integer", nullable=false)
+     */
+    private $appId;
+
+    /**
      * @ORM\Column(type="string", nullable=false)
      */
     private $path;
@@ -76,6 +81,7 @@ class AppAsset implements Domain\ApplicationAsset
     public function setApp(App $app)
     {
         $this->app = $app;
+        $this->appId = null;
     }
 
     /**

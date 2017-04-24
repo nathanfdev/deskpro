@@ -4,9 +4,9 @@ services:
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createAppBundleValidator]
     arguments: ["@file_locator"]
 
-  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceCreator:
-    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceCreator
-    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationInstanceService]
+  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager:
+    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationManagerService]
     arguments: ["@doctrine.orm.default_entity_manager"]
 
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder:

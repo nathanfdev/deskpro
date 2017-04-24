@@ -36,11 +36,11 @@ class Services
 {
     /**
      * @param ORM\EntityManager $entityManager
-     * @return ApplicationInstanceService
+     * @return ApplicationManagerService
      */
-    public static function createApplicationInstanceService(ORM\EntityManager $entityManager)
+    public static function createApplicationManagerService(ORM\EntityManager $entityManager)
     {
-        return new ApplicationInstanceService($entityManager);
+        return new ApplicationManagerService($entityManager);
     }
 
     /**

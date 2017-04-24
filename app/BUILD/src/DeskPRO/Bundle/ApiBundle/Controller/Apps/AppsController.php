@@ -130,8 +130,8 @@ class AppsController extends FOSRestController
             throw new UnprocessableEntityHttpException('invalid bundle');
         }
 
-        /** @var AppStoreBundle\Domain\ApplicationInstanceCreator $instanceCreator */
-        $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationInstanceCreator::class);
+        /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
+        $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationManager::class);
         $instance = $instanceCreator->createFirstInstance($bundle);
 
         return $instance;
@@ -173,12 +173,17 @@ class AppsController extends FOSRestController
     /**
      * @Rest\Delete("/{application}")
      *
-     * @param Entity\AppStore\AppInstance $instance
+     * @param Entity\AppStore\AppInstance $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     * @return AppStoreBundle\Domain\ApplicationInstance
      */
-    public function deleteApplicationAction(Entity\AppStore\AppInstance $instance)
+    public function deleteApplicationAction(Entity\AppStore\AppInstance $application)
     {
-        throw new ServiceUnavailableHttpException('endpoint not available');
+        /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
+        $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationManager::class);
+        $instance = $instanceCreator->deleteInstance($application);
+
+        return $instance;
     }
 
     /**
