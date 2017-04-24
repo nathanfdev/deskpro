@@ -39,6 +39,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			getFieldValue: function(name) {
 				var $holders = self.page.getEl('field_holders');
 				var $field = $('[name="' + name + '"]', $holders);
+
+				// field is not present on the form
+				// e.g. org field if user doesn't belogn to a org
+				if (!$field.length) {
+					return null;
+				}
+
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}

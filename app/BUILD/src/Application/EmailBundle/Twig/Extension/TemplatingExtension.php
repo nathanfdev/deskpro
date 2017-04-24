@@ -1434,6 +1434,8 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     /**
      * @param array $display_array
      * @param array $vars
+     *
+     * @return array
      */
     public function renderCustomField($display_array, array $vars = [])
     {

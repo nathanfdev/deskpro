@@ -26,14 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\LegacyApiBundle\Form\CustomField\Model;
 
 use Orb\Util\Strings;
 
+/**
+ * Class TextField.
+ */
 class TextField extends CustomFieldAbstract
 {
     /**
@@ -73,7 +72,7 @@ class TextField extends CustomFieldAbstract
 
     /**
      * @var string
-     * */
+     */
     public $agent_regex;
 
     /**
@@ -81,9 +80,21 @@ class TextField extends CustomFieldAbstract
      */
     public $agent_regex_required = false;
 
+    /**
+     * @var bool
+     */
+    public $clickable_links = false;
+
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
-        $this->default_value = $this->_field->default_value;
+        $this->default_value = $this->_field->getDefaultValue();
+
+        if ($this->_field->getOption('clickable_links')) {
+            $this->clickable_links = true;
+        }
 
         if ($this->_field->getOption('min_length')) {
             $this->validation_type = 'required';
@@ -117,11 +128,15 @@ class TextField extends CustomFieldAbstract
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function setFieldProperties()
     {
         $field = $this->_field;
 
-        $field->default_value = $this->default_value;
+        $field->setDefaultValue($this->default_value);
+        $field->setOption('clickable_links', $this->clickable_links);
 
         if ($this->min_length || $this->max_length) {
             $this->validation_type = 'required';

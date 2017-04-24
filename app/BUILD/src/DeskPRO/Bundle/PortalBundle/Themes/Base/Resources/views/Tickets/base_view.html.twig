@@ -175,10 +175,15 @@
                                 <ul>
                                     {# see the TicketViewDataService in AppBundle's data services #}
                                     {% for property in ticket_view.properties %}
+                                        {% set propValue = property.value|smart_wrap(35) %}
                                         {% if property.isVisible %}
                                             <li>
                                                 <h3>{{ property.label }}</h3>
-                                                <p>{{ property.value|smart_wrap(35) }}</p>
+                                                {% if property.isLinkify %}
+                                                    <p>{{ propValue|safe_link_urls }}</p>
+                                                {% else %}
+                                                    <p>{{ propValue }}</p>
+                                                {% endif %}
                                             </li>
                                         {% endif %}
                                     {% endfor %}

@@ -28,6 +28,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           agent_regex:              '',
           agent_regex_required:     false,
           agent_validation_resolve: false,
+          clickable_links:          false
         },
         toggle: {
           label_text: '',
@@ -127,6 +128,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
             if fieldModel.default_value
               formTypeOpts.default_value = fieldModel.default_value
+            if fieldModel.options.clickable_links
+              formTypeOpts.clickable_links = !!fieldModel.options.clickable_links
 
           when "choice"
             if fieldModel.options.expanded
@@ -240,6 +243,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea'
 
           postData.default_value = formTypeOpts.default_value
+          postData.clickable_links = formTypeOpts.clickable_links
 
           if formTypeOpts.user_validation == 'required'
             postData.validation_type = 'required'
