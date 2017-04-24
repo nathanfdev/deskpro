@@ -104,7 +104,7 @@ class EmailRateLimitFactory
                 ];
             } else {
                 return [
-                    ['time' => 5       /* 5s */, 'count' => 25, 'actions' => ['cancel_site']],
+                    ['time' => 5       /* 5s */, 'count' => 25, 'actions' => ['rate_limit', 'log_suspicious']],
                     ['time' => 900     /* 15m */, 'count' => 25, 'actions' => ['rate_limit', 'log_suspicious']],
                     ['time' => 86400   /* 24h */, 'count' => 50, 'actions' => ['rate_limit', 'log_suspicious']],
                     ['time' => 1209600 /* 14d */, 'count' => 300, 'actions' => ['rate_limit', 'log_suspicious']],
@@ -124,7 +124,7 @@ class EmailRateLimitFactory
                 ];
             } else {
                 return [
-                    ['time' => 5       /* 5s */, 'count' => 30, 'actions' => ['cancel_site']],
+                    ['time' => 5       /* 5s */, 'count' => 30, 'actions' => ['log_account_warning']],
                     ['time' => 900     /* 15m */, 'count' => 40, 'actions' => ['log_account_warning']],
                     ['time' => 3600    /* 1h */, 'count' => min(100, max(DPC_AGENTS * 4, 50)), 'actions' => ['rate_limit', 'log_suspicious']],
                 ];
