@@ -306,6 +306,19 @@ class ExtendTrialContainer extends React.Component {
       submit: true
     });
 
+    let cardType;
+    const cardNumber = this.state.cardNumber;
+
+    if (card.isCardAmex(cardNumber)) {
+      cardType = 'AMEX';
+    } else if (card.isCardVisa(cardNumber)) {
+      cardType = 'VISA';
+    } else if (card.isCardMasterCard(cardNumber)) {
+      cardType = 'MC';
+    } else {
+      cardType = '??';
+    }
+
     const promise = dispatch(actions.extendTrial({
       address:      this.state.address,
       city:         this.state.city,
@@ -315,7 +328,8 @@ class ExtendTrialContainer extends React.Component {
       vatId:        this.state.vatId,
       schedule:     this.state.schedule,
       cardName:     this.state.cardName,
-      cardNumber:   this.state.cardNumber,
+      cardNumber,
+      cardType,
       expiryMonth:  this.state.expiryMonth,
       expiryYear:   this.state.expiryYear,
       securityCode: this.state.securityCode

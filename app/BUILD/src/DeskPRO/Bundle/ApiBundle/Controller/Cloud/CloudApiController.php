@@ -134,7 +134,7 @@ class CloudApiController extends BaseController
 
         $data = $request->request->all();
 
-        $result = $this->callMa('set_site_cc_extendk', [
+        $result = $this->callMa('set_site_cc_extend', [
             'form' => $data,
         ]);
 
@@ -311,9 +311,9 @@ class CloudApiController extends BaseController
 
         $tmpdata = new TmpData();
         $tmpdata->setType('dpc_'.$actionId);
-        $tmpdata->setData('by_person', $person->getId());
-        $tmpdata->setData('by_person_name', $person->getName());
-        $tmpdata->setData('by_person_email', $person->getPrimaryEmailAddress());
+        $tmpdata->setData('person_id', $person->getId());
+        $tmpdata->setData('person_name', $person->getName());
+        $tmpdata->setData('person_email', $person->getPrimaryEmailAddress());
         $tmpdata->setData('data', $data);
         $tmpdata->date_expire = new \DateTime('+10 minutes');
 
