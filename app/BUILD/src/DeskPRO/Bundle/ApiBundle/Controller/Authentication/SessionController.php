@@ -95,7 +95,9 @@ class SessionController extends BaseController
         $online_data = $this->get('data.agent')->getAgentsOnlineStatus();
         $this->get('event_dispatcher')->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($online_data));
 
-        $response = new JsonResponse();
+        $response = new JsonResponse([
+            'sessionId' => $session->getSessionCode(),
+        ]);
         $response->headers->setCookie(new Cookie('dpsid-agent', $session->getSessionCode()));
 
         return $response;

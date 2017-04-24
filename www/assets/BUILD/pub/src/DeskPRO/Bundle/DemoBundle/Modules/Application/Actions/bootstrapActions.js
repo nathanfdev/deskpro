@@ -6,7 +6,7 @@ import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 export const getGeoIp = createAction(
   'EXTEND_GET_GEO_IP',
   () =>
-    api.sendGet('/cloud/api/geo_ip', { dataType: 'json' })
+    api.sendGet('DP_API/cloud/geo_ip', { dataType: 'json' })
 );
 export const loadGeoIp = createAction(
   'DEMO_LOAD_GEO_IP',
