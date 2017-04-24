@@ -70,6 +70,7 @@ class ExtendTrial extends React.Component {
     question:             PropTypes.string,
     questionOpened:       PropTypes.bool,
     submitQuestion:       PropTypes.bool,
+    questionSent:         PropTypes.bool,
     onChangeQuestion:     PropTypes.func,
     onOpenQuestion:       PropTypes.func,
     onCloseQuestion:      PropTypes.func,
@@ -424,13 +425,20 @@ class ExtendTrial extends React.Component {
               />
             </div>
           </div>
-          <Button className="questions" onClick={this.props.onOpenQuestion}>
-            <i className="icon comments outline" />
-            <FormattedMessage
-              id="cloud.demo_expired.got_questions"
-              defaultMessage="Got questions? Just ask..."
-            />
-          </Button>
+          { !this.props.questionSent ? (
+            <Button className="questions" onClick={this.props.onOpenQuestion}>
+              <i className="icon comments outline" />
+              <FormattedMessage
+                id="cloud.demo_expired.got_questions"
+                defaultMessage="Got questions? Just ask..."
+              />
+            </Button>
+          ) : (
+            <p>
+              <br />
+              Your question has been sent. We will respond as soon as we can.
+            </p>
+          ) }
           <Button className="delete secondary" onClick={this.props.onOpenDeleteConfirm}>
             <FormattedMessage
               id="cloud.demo_expired.delete"

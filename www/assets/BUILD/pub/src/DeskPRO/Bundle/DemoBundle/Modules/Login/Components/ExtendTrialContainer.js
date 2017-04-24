@@ -47,6 +47,7 @@ class ExtendTrialContainer extends React.Component {
       submitQuestion:    false,
       deleteConfirmOpen: false,
       questionOpened:    false,
+      questionSent:      false
     };
   }
 
@@ -284,6 +285,8 @@ class ExtendTrialContainer extends React.Component {
       () => {
         this.setState({
           submitQuestion: false,
+          questionOpened: false,
+          questionSent:   true
         });
       },
       (response) => {
