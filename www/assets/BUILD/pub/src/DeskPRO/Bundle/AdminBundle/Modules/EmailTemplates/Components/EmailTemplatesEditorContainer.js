@@ -156,7 +156,23 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   insertVariable = (variable) => {
-    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(variable);
+    const codeMirror = this.editor.editor.bodyEditor.getCodeMirror();
+    codeMirror.replaceSelection(variable);
+    const doc = codeMirror.getDoc();
+    const start = doc.getCursor();
+
+    setTimeout(() => {
+      doc.markText({
+        line: start.line,
+        ch:   start.ch - variable.length
+      }, {
+        line: start.line,
+        ch:   start.ch
+      }, {
+        className: 'twig-variable',
+        atomic:    true
+      });
+    }, 100);
   };
 
   sendPreview = () => {
