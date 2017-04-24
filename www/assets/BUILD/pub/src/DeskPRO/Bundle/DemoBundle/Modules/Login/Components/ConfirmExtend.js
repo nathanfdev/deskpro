@@ -35,16 +35,9 @@ export class ConfirmExtendContainer extends React.Component {
       submit: true
     });
 
-    const promise = dispatch(actions.preserveData({}));
-
-    promise.then(
-      () => {
-
-      },
-      () => {
-
-      }
-    );
+    dispatch(actions.preserveData())
+      .then((response) => { window.location.href = response.data.agentUrl; })
+      .catch(window.location.href = '/');
   };
 
   render() {

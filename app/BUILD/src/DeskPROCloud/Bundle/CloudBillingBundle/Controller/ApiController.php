@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentServi
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class ApiController.
@@ -111,7 +112,9 @@ class ApiController extends Controller
      */
     public function postPreserveDataAction()
     {
-        return new Response('OK');
+        return $this->createJsonResponse([
+            'agentUrl' => $this->get('router')->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
     }
 
     /**
@@ -141,6 +144,9 @@ class ApiController extends Controller
      */
     public function postResetTrialAction()
     {
-        return new Response('OK');
+        return $this->createJsonResponse([
+            'didReset' => true,
+            'agentUrl' => $this->get('router')->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL),
+        ]);
     }
 }

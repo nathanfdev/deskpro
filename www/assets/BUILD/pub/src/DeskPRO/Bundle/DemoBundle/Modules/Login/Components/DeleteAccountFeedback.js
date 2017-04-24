@@ -19,6 +19,7 @@ export class DeleteAccountFeedbackContainer extends React.Component {
     this.state = {
       feedback: '',
       submit:   false,
+      done:     false,
       errors:   null
     };
   }
@@ -43,7 +44,7 @@ export class DeleteAccountFeedbackContainer extends React.Component {
     promise.then(
       () => {
         this.setState({
-          submit: false,
+          done: true,
         });
       },
       (response) => {
@@ -56,6 +57,10 @@ export class DeleteAccountFeedbackContainer extends React.Component {
   };
 
   render() {
+    if (this.state.done) {
+      return (<DeleteAccountDone />);
+    }
+
     return (<DeleteAccountFeedback
       onSubmit={this.postDeleteFeedback}
       onChangeFeedback={this.onChangeFeedback}
@@ -73,7 +78,7 @@ const messages = defineMessages({
 });
 
 @injectIntl
-export class DeleteAccountFeedback extends React.Component {
+class DeleteAccountFeedback extends React.Component {
   static propTypes = {
     intl:             intlShape.isRequired,
     feedback:         PropTypes.string,
@@ -95,12 +100,6 @@ export class DeleteAccountFeedback extends React.Component {
         </h3>
         <p>
           <FormattedMessage
-            id="cloud.demo_expired.delete_account_desc"
-            defaultMessage="Your data will be erased in the next 7 days."
-          />
-        </p>
-        <p>
-          <FormattedMessage
             id="cloud.demo_expired.delete_account_feedback"
             defaultMessage="We're always looking to improve our product and would love to hear your feedback."
           />
@@ -113,12 +112,33 @@ export class DeleteAccountFeedback extends React.Component {
             rows={4}
           />
         </Form>
-        <Button onClick={this.props.onSubmit} className={classNames({ loading: this.props.submit })}>
+        <Button onClick={this.props.onSubmit} className={classNames('negative', { loading: this.props.submit })}>
           <FormattedMessage
-            id="cloud.demo_expired.delete_account_submit"
-            defaultMessage="Submit feedback"
+            id="cloud.demo_expired.delete_account_feedback_submit"
+            defaultMessage="Submit Feedback &amp; Delete Account"
           />
         </Button>
+      </Segment>
+    );
+  }
+}
+
+class DeleteAccountDone extends React.Component {
+  render() {
+    return (
+      <Segment className="delete-account-feedback">
+        <h3>
+          <FormattedMessage
+            id="cloud.demo_expired.delete_done_title"
+            defaultMessage="Your account has been deleted"
+          />
+        </h3>
+        <p>
+          <FormattedMessage
+            id="cloud.demo_expired.delete_done_info"
+            defaultMessage="Your account has been deleted. All data will be purged from our systems within 7 days."
+          />
+        </p>
       </Segment>
     );
   }
