@@ -112,7 +112,6 @@ class TicketsDataService extends AbstractDataService
                         $qb->andWhere('t.person = :person')->setParameter('person', $person);
                     } else {
                         if (!$person->organization || !$person->organization_manager) {
-                            $ids = [];
                             $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
                             $params[] = $person->id;
 
@@ -271,9 +270,22 @@ class TicketsDataService extends AbstractDataService
                     $qb->andWhere('t.person = :person')->setParameter('person', $person);
                 } else {
                     if (!$person->organization || !$person->organization_manager) {
-                        //  show non-agents the tickets they participate in
-                        $qb->leftJoin('t.participants', 'part');
-                        $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                        $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
+                        $params[] = $person->id;
+
+                        if (!$person->is_agent) {
+                            $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
+                            $params[] = $person->id;
+                        }
+
+                        $partsUnion = implode("\nUNION\n", $parts);
+
+                        $ids = $em->getConnection()->fetchAllCol(
+                            "SELECT DISTINCT id FROM ($partsUnion) AS t",
+                            $params
+                        );
+                        $qb->andWhere('t.id IN (:ids)');
+                        $qb->setParameter('ids', $ids);
                     } else {
                         // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
                         $qb->leftJoin('t.participants', 'part');
