@@ -539,10 +539,10 @@ gulp.task('bundle:dev-server:demo', () => {
 });
 
 gulp.task('compile-zurb', () => {
-  // Refresh zurb-fondation email
-  console.log('Writing zurb-fondation.css:');
-  const faInPath  = `${__dirname}/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-fondation.scss`;
-  const faOutPath = `${__dirname}/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-fondation.css`;
+  // Refresh zurb-foundation email
+  console.log('Writing zurb-foundation.css:');
+  const faInPath  = `${__dirname}/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.scss`;
+  const faOutPath = `${__dirname}/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.css`;
   const faResult  = sass.renderSync({
     file:         faInPath,
     outFile:      faOutPath,

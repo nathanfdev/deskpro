@@ -48,6 +48,8 @@ use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
+use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
+use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -261,7 +263,7 @@ class TemplateController extends BaseController
     public function postRenderTemplateAction(Request $request)
     {
         $code    = $request->request->get('code');
-        $tplName = uniqid('string_template_', true);
+        $tplName = uniqid('SendmailBundle:emails_', true);
 
         $viewModel = $request->request->get('template');
         $group     = $request->request->get('group');
@@ -290,7 +292,7 @@ class TemplateController extends BaseController
     {
         $body    = $request->request->get('body');
         $subject = $request->request->get('subject');
-        $tplName = uniqid('string_template_', true);
+        $tplName = uniqid('SendmailBundle:emails_', true);
 
         $viewModel   = $request->request->get('viewModel');
         $group       = $request->request->get('group');
@@ -362,20 +364,28 @@ class TemplateController extends BaseController
         $model->setSiteName($this->container->getBrandSetting('core.site_name'));
         $model->setDeskproUrl($this->container->getBrandSetting('core.deskpro_url'));
 
+        $preProcessor = new EmailPreProcessor();
+        $code         = $preProcessor->process($code, $tplName);
+
         $twig = clone $this->get('templating.new_email.twig');
         $twig->setCache(false);
         $stringLoader = new \Twig_Loader_Array([
-            $tplName                                    => $code,
-            'SendmailBundle:blocks:resources.html.twig' => '',
-            'SendmailBundle:blocks:header.html.twig'    => '',
-            'SendmailBundle:blocks:footer.html.twig'    => '',
+            $tplName => $code,
+//            'SendmailBundle:blocks:resources.html.twig' => '',
+//            'SendmailBundle:blocks:header.html.twig'    => '',
+//            'SendmailBundle:blocks:footer.html.twig'    => '',
         ]);
-        $loader = new Twig_Loader_Chain([$stringLoader]);
+        $hybridLoader = $this->get('templating.new_email.twig.loader');
+        $loader       = new Twig_Loader_Chain([$stringLoader, $hybridLoader]);
         $twig->setLoader($loader);
+
+        /** @var TwigEngine $twigEngine */
+        $twigEngine = $this->get('templating.new_email.twig.engine');
+        $twigEngine->setEnvironment($twig);
 
         /** @var EmailRenderer $renderer */
         $renderer = $this->get('email.email_renderer');
-        $renderer->setTemplateEngine($twig);
+        $renderer->setTemplateEngine($twigEngine);
 
         $view = null;
         $this->get('translator')->setTemporaryLanguage(

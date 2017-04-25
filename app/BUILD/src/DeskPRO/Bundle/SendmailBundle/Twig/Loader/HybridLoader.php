@@ -77,7 +77,7 @@ class HybridLoader extends FilesystemLoader
 
         $strName = (string) $name;
         if (!isset($this->crashedCustomTemplates[$strName]) && isset($this->templateInfo[$strName])) {
-            return App::getDb()->fetchColumn(
+            $source = App::getDb()->fetchColumn(
                 '
                 SELECT template_code
                 FROM templates
@@ -85,9 +85,9 @@ class HybridLoader extends FilesystemLoader
             ',
                 [$this->templateInfo[$name]['id']]
             );
+        } else {
+            $source = file_get_contents($this->findTemplate($name));
         }
-
-        $source = file_get_contents($this->findTemplate($name));
 
         if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'SendmailBundle:') !== false) {
             $proc   = new EmailPreProcessor();

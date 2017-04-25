@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
 import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
-import { Frame } from 'Ampliflux/common/components/Frame';
+import Frame from 'Ampliflux/common/components/SimpleFrame';
 
 class PreviewEmail extends React.Component {
   static propTypes = {
@@ -50,12 +50,12 @@ class PreviewEmail extends React.Component {
               height:   '100%',
               position: 'absolute',
               padding:  '30px',
-              top:      0
+              top:      0,
+              left:     0,
             }}
+            content={code}
             isVisible
-          >
-            <div dangerouslySetInnerHTML={{ __html: code }} />
-          </Frame>
+          />
         </div>
         {this.getPreviewAttachments()}
       </div>

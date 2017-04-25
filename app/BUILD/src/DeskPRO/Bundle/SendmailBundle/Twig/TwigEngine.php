@@ -37,6 +37,10 @@ use DpSys\LowError\SystemErrorHandler;
 
 class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
 {
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
+    }
     public function render($name, array $parameters = [])
     {
         // An object so that sets against it are

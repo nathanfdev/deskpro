@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\SendmailBundle\Twig\Extension;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Assetic\AsseticManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -85,7 +86,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     {
         return [
             'app'         => new GlobalVariables($this->container),
-            'default_css' => 'test',
+            'default_css' => $this->getDefaultCss(),
         ];
     }
 
@@ -264,6 +265,13 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
             new SpacerParser(),
             new WrapperParser(),
         ];
+    }
+
+    public function getDefaultCss()
+    {
+        $emailFoundation = file_get_contents(DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.css');
+
+        return '<style>'.$emailFoundation.'</style>';
     }
 
     /**
@@ -669,6 +677,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getAssetic($name)
     {
+        /** @var AsseticManager $asseticManager */
         $asseticManager = $this->container->getSystemService('assetic_manager');
 
         return $asseticManager->getUrl($name);
@@ -681,6 +690,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function getAsseticRaw($name)
     {
+        /** @var AsseticManager $asseticManager */
         $asseticManager = $this->container->getSystemService('assetic_manager');
 
         return $asseticManager->getRawUrls($name);
