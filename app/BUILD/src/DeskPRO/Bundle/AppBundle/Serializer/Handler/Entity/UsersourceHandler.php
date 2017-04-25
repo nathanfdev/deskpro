@@ -120,6 +120,15 @@ class UsersourceHandler extends AbstractEntityHandler
 
         if ($entity->getOption('login_custom_text')) {
             $options['button_label'] = $entity->getOption('login_custom_text');
+        } else {
+            // social type fallback
+            if (in_array($entity->getSourceType(), [UsersourceAdapter\GooglePlus::class, UsersourceAdapter\Google::class])) {
+                $options['button_label'] = 'Log in with Google';
+            } elseif ($entity->getSourceType() === UsersourceAdapter\Facebook::class) {
+                $options['button_label'] = 'Log in with Facebook';
+            } elseif ($entity->getSourceType() === UsersourceAdapter\Twitter::class) {
+                $options['button_label'] = 'Log in with Twitter';
+            }
         }
 
         $adapter = $this->container->getSystemService('usersource_auth_adapter_factory')->getAuthAdapter($entity);
