@@ -28,7 +28,7 @@ class DpAppRouteContainer extends React.Component {
         <footer>
           <FormattedMessage
             id="cloud.demo_expired.footer"
-            defaultMessage="These great organisations rely on our helpdesk:"
+            defaultMessage="These great organisations rely on our helpdesk software:"
           />
           <div className="logos">
             <Isvg src={hmrcLogoSvg} />

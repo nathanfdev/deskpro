@@ -39,7 +39,6 @@ class ExtendTrial extends React.Component {
     state:                PropTypes.string,
     country:              PropTypes.string,
     vatId:                PropTypes.string,
-    schedule:             PropTypes.string,
     cardName:             PropTypes.string,
     cardNumber:           PropTypes.string,
     expiryMonth:          PropTypes.string,
@@ -57,7 +56,6 @@ class ExtendTrial extends React.Component {
     onChangeState:        PropTypes.func,
     onChangeCountry:      PropTypes.func,
     onChangeVatId:        PropTypes.func,
-    onChangeSchedule:     PropTypes.func,
     onChangeCardName:     PropTypes.func,
     onChangeCardNumber:   PropTypes.func,
     onChangeExpiryMonth:  PropTypes.func,
@@ -171,17 +169,6 @@ class ExtendTrial extends React.Component {
       });
     }
 
-    const schedules = [
-      {
-        value: 'monthly',
-        label: 'Monthly'
-      },
-      {
-        value: 'yearly',
-        label: 'Yearly'
-      }
-    ];
-
     return (
       <SegmentsGroup className="extend-trial horizontal">
         <Segment className="extend-trial-form">
@@ -293,20 +280,6 @@ class ExtendTrial extends React.Component {
                     defaultMessage="Credit card details"
                   />
                 </h4>
-                <Field field="schedule" errors={this.props.errors}>
-                  <label htmlFor="schedule">
-                    <FormattedMessage
-                      id="cloud.demo_expired.schedule"
-                      defaultMessage="Schedule"
-                    />
-                  </label>
-                  <Select
-                    options={schedules}
-                    placeholder={formatMessage(messages.select_placeholder)}
-                    onChange={this.props.onChangeSchedule}
-                    value={this.props.schedule}
-                  />
-                </Field>
                 <Field field="card_name" errors={this.props.errors}>
                   <label htmlFor="card_holder">
                     <FormattedMessage
@@ -387,24 +360,31 @@ class ExtendTrial extends React.Component {
                     alt="Back of card"
                   />
                 </Field>
-                <Button
-                  onClick={this.props.onResumeTrial}
-                  className={classNames('positive', { loading: this.props.submit })}
-                >
-                  <FormattedMessage
-                    id="cloud.demo_expired.extend_trial_resume"
-                    defaultMessage="Resume free trial"
-                  />
-                </Button>
-                <p className="reinsurance">
-                  <FormattedMessage
-                    id="cloud.demo_expired.extend_trial_reinsurance"
-                    defaultMessage="You won't be charged until date. You can cancel anytime time"
-                  />
-                </p>
               </Form>
             </Segment>
           </SegmentsGroup>
+          <div>
+            {this.props.errors && this.props.errors.processor_error ? (
+              <Message className="negative">Our payment processor could not process your form. Please try again.</Message>
+            ) : null }
+            <Button
+              onClick={this.props.onResumeTrial}
+              className={classNames('positive', { loading: this.props.submit })}
+            >
+              <FormattedMessage
+                id="cloud.demo_expired.extend_trial_resume"
+                defaultMessage="Resume free trial"
+              />
+            </Button>
+            <br />
+            <br />
+            <p className="reinsurance">
+              <FormattedMessage
+                id="cloud.demo_expired.extend_trial_reinsurance"
+                defaultMessage="You won't be charged until the end of your trial. You can cancel anytime time."
+              />
+            </p>
+          </div>
         </Segment>
         <Segment className="extend-trial-side-bar">
           <div className="offer">

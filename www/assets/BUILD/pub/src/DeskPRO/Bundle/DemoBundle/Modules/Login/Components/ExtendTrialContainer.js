@@ -1,3 +1,4 @@
+import objGet from 'lodash/object/get';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import * as card from 'DeskPRO/Component/Form/Card';
@@ -155,12 +156,6 @@ class ExtendTrialContainer extends React.Component {
   onChangeVatId = (value) => {
     this.setState({
       vatId: value
-    });
-  };
-
-  onChangeSchedule = (value) => {
-    this.setState({
-      schedule: value
     });
   };
 
@@ -326,7 +321,7 @@ class ExtendTrialContainer extends React.Component {
       state:        this.state.state,
       country:      this.state.country,
       vatId:        this.state.vatId,
-      schedule:     this.state.schedule,
+      schedule:     'monthly',
       cardName:     this.state.cardName,
       cardNumber,
       cardType,
@@ -335,24 +330,96 @@ class ExtendTrialContainer extends React.Component {
       securityCode: this.state.securityCode
     }));
 
+    const translateErrorCode = (code) => {
+      let parts;
+      switch (code) {
+        case 'card.name':   return ['card_name',     { code: 'required', message: 'This field is required' }];
+        case 'card.number': return ['card_number',   { code: 'invalid', message: 'Please enter a valid number' }];
+        case 'card.exp_mm': return ['card_expiry',   { code: 'required', message: 'This field is required' }];
+        case 'card.exp_yy': return ['card_expiry',   { code: 'required', message: 'This field is required' }];
+        case 'card.sec':    return ['security_code', { code: 'required', message: 'This field is required' }];
+
+        case 'user.address':    return ['address',  { code: 'required', message: 'This field is required' }];
+        case 'user.city':       return ['city',     { code: 'required', message: 'This field is required' }];
+        case 'user.post_code':  return ['postcode', { code: 'required', message: 'This field is required' }];
+        case 'user.country':    return ['country',  { code: 'required', message: 'This field is required' }];
+        case 'user.state':      return ['state',    { code: 'required', message: 'This field is required' }];
+        case 'user.vat_id':     return ['vat_id',   { code: 'invalid', message: 'Please enter a valid VAT ID' }];
+
+        case 'processor_error': return [
+          'processor_error',
+          {
+            code:    'error',
+            message: 'There was a problem trying to process your payment, please try again'
+          }
+        ];
+
+        default:
+          parts = code.split('.');
+          parts.pop();
+          if (parts.length) {
+            return translateErrorCode(parts.join('.'));
+          }
+
+          return null;
+      }
+    };
+
+    const errorCodeMapper = (errors) => {
+      const errorMap = {};
+      errors.forEach((code) => {
+        const info = translateErrorCode(code);
+        if (info) {
+          errorMap[info[0]] = {
+            errors: [info[1]]
+          };
+        }
+      });
+
+      return {
+        fields: errorMap
+      };
+    };
+
+    const handleResponse = (response) => {
+      const data = response.getData();
+      if (objGet(data, 'data.success') === true) {
+        this.context.router.push('/confirm-extend');
+      } else if (objGet(data, 'data.error_info.form_errors')) {
+        this.setState({
+          submit: false,
+          errors: errorCodeMapper(objGet(data, 'data.error_info.form_errors'))
+        });
+      } else {
+        this.setState({
+          submit: false,
+          errors: errorCodeMapper(['processor_error'])
+        });
+      }
+    };
+
     promise.then(
       (response) => {
         if (this.mounted) {
           this.setState({
-            submit: false,
-            errors: null
+            submit: false
           });
-          if (response.getData() === 'OK') {
-            this.context.router.push('/confirm-extend');
-          }
+          handleResponse(response);
         }
       },
       (response) => {
         if (this.mounted) {
           this.setState({
-            submit: false,
-            errors: response.getData().errors
+            submit: false
           });
+          if (response) {
+            handleResponse(response);
+          } else {
+            this.setState({
+              submit: false,
+              errors: errorCodeMapper(['processor_error'])
+            });
+          }
         }
       }
     );
@@ -367,7 +434,6 @@ class ExtendTrialContainer extends React.Component {
         onChangeState={this.onChangeState}
         onChangeCountry={this.onChangeCountry}
         onChangeVatId={this.onChangeVatId}
-        onChangeSchedule={this.onChangeSchedule}
         onChangeCardName={this.onChangeCardName}
         onChangeCardNumber={this.onChangeCardNumber}
         onChangeExpiryMonth={this.onChangeExpiryMonth}

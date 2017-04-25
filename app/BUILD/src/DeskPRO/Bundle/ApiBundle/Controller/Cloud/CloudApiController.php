@@ -295,7 +295,7 @@ class CloudApiController extends BaseController
         // these all only matter in demo mode
         // so prevent calling them any other time as a precaution
         if (!defined('DPC_DEMO_EXPIRE') || !DPC_DEMO_EXPIRE) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('demo only');
         }
     }
 
