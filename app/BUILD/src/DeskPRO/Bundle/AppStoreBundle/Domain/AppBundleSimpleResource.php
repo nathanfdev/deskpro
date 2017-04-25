@@ -51,4 +51,14 @@ class AppBundleSimpleResource implements AppBundleResource
     {
         return $this->content;
     }
+
+    function getFileExtension()
+    {
+        return pathinfo($this->path, PATHINFO_EXTENSION);
+    }
+
+    function getFileName()
+    {
+        return pathinfo($this->path, PATHINFO_FILENAME);
+    }
 }

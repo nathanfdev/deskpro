@@ -38,6 +38,20 @@ interface AppBundleResource
     function getPath();
 
     /**
+     * Returns the filename extension of this file
+     *
+     * @return string
+     */
+    function getFileExtension();
+
+    /**
+     * Returns the filename
+     *
+     * @return string
+     */
+    function getFileName();
+
+    /**
      * Returns the content of the file
      *
      * @return string

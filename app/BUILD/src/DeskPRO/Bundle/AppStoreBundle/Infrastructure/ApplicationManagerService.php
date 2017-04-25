@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Doctrine\ORM;
+use Orb\Data\ContentTypes;
 
 class ApplicationManagerService implements Domain\ApplicationManager
 {
@@ -125,7 +126,13 @@ class ApplicationManagerService implements Domain\ApplicationManager
     {
         $blobs = [];
         foreach ($bundle->listAllResources() as $resource) {
-            $contentType = 'application/octet-stream';
+            $fileExtension = $resource->getFileExtension();
+            $contentType = ContentTypes::getContentTypeFromExtension($fileExtension);
+            if (empty($contentType)) {
+                // could be a problem for js.map files which get ther file extension as map instead of js.map,
+                // but see http://stackoverflow.com/questions/19911929/what-mime-type-should-i-use-for-javascript-source-map-files
+                $contentType = 'application/octet-stream';
+            }
             $blob = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
             $blobs[] = $blob;
         }
