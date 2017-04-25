@@ -59,9 +59,9 @@ class ApiControllersFinder
             }
 
             foreach (get_declared_classes() as $class) {
-                if (0 === strpos($class, 'DeskPRO/Bundle/ApiBundle/Controller')) {
+                if (0 === strpos($class, 'DeskPRO\\Bundle\\ApiBundle\\Controller')) {
                     $this->classes[] = $class;
-                } elseif (0 === strpos($class, 'Application/LegacyApiBundle/Controller')) {
+                } elseif (0 === strpos($class, 'Application\\LegacyApiBundle\\Controller')) {
                     $this->classes[] = $class;
                 }
             }
