@@ -36,7 +36,6 @@ use Application\DeskPRO\App;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 
 /**
  * Class Environment.
@@ -215,13 +214,5 @@ class Environment extends \Twig_Environment
         $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
 
         return !$key ? false : $key;
-    }
-
-    /**
-     * @return EventLogger
-     */
-    private function getLogger()
-    {
-        return App::$container->get('dp_sys.alerts.event_logger');
     }
 }
