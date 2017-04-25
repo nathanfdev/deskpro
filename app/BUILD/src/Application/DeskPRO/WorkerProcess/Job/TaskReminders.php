@@ -145,6 +145,7 @@ class TaskReminders extends AbstractJob
                     ++$alerts;
                 }
 
+                // task is the thing that only agents see - so no matter which brand to use, pick default one
                 $email_accounts = App::$container->getEmailAccountManager();
                 $out            = $email_accounts->getDefaultOutAccountWithFallback();
                 $from_email     = $out->getUseEmailAddress();

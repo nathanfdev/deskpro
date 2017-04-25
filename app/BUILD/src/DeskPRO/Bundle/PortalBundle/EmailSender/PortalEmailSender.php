@@ -276,7 +276,8 @@ class PortalEmailSender
 
     public function getDefaultOutgoingEmailAddress()
     {
-        $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback();
+        $activeBrand = App::$container->get('brand_stack')->getActive()->getBrand();
+        $account     = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback($activeBrand);
 
         return $account->getUseEmailAddress();
     }
