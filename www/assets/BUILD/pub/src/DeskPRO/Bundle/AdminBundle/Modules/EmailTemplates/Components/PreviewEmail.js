@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
 import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
+import { Frame } from 'Ampliflux/common/components/Frame';
 
 class PreviewEmail extends React.Component {
   static propTypes = {
@@ -41,8 +42,21 @@ class PreviewEmail extends React.Component {
     }
 
     return (
-      <div className={classNames('email-preview', { 'with-attachment': attachments })}>
-        <div className="email" dangerouslySetInnerHTML={{ __html: code }} />
+      <div className={classNames('email-preview', { 'with-attachment': attachments && attachments.size > 0 })}>
+        <div className="email">
+          <Frame
+            frameStyles={{
+              width:    '100%',
+              height:   '100%',
+              position: 'absolute',
+              padding:  '30px',
+              top:      0
+            }}
+            isVisible
+          >
+            <div dangerouslySetInnerHTML={{ __html: code }} />
+          </Frame>
+        </div>
         {this.getPreviewAttachments()}
       </div>
     );

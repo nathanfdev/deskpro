@@ -52,6 +52,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Twig_Loader_Chain;
 
 /**
  * API access to person settings.
@@ -363,12 +364,14 @@ class TemplateController extends BaseController
 
         $twig = clone $this->get('templating.new_email.twig');
         $twig->setCache(false);
-        $twig->setLoader(new \Twig_Loader_Array([
+        $stringLoader = new \Twig_Loader_Array([
             $tplName                                    => $code,
             'SendmailBundle:blocks:resources.html.twig' => '',
             'SendmailBundle:blocks:header.html.twig'    => '',
             'SendmailBundle:blocks:footer.html.twig'    => '',
-        ]));
+        ]);
+        $loader = new Twig_Loader_Chain([$stringLoader]);
+        $twig->setLoader($loader);
 
         /** @var EmailRenderer $renderer */
         $renderer = $this->get('email.email_renderer');
