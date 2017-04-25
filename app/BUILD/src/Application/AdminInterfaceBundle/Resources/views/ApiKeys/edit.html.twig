@@ -189,6 +189,11 @@
 								<div class="col-lg-10">
 									<div class="inner-group" >
 										<textarea style="width: 400px; height: 150px;" ng-model="EditCtrl.tags"></textarea>
+										<span class="help-block">
+											Enter comma separated list of tags. Putting <code>-</code> before tags will disallow action.<br/>
+											Note that system will automatically optimize entered tags, so <code>*,tags.list</code> would be optimized to <code>*</code>.<br/>
+											Please refer to <a href="http://api.deskpro.com/#access-control">documentation</a> for more information.
+										</span>
 									</div>
 								</div>
 							</div>
