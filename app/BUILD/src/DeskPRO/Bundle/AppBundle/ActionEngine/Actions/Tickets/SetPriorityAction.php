@@ -26,36 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\Tickets;
+namespace DeskPRO\Bundle\AppBundle\ActionEngine\Actions\Tickets;
 
-use Application\DeskPRO\Entity\Product;
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\ActionEngine\Applicators\ActionInitializationInterface;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\AbstractAction;
+use DeskPRO\Bundle\AppBundle\ActionEngine\Actions\ActionWithOptionsInterface;
+use DeskPRO\Bundle\AppBundle\ActionEngine\OptionsResolver\ActionOptionsResolver;
 
 /**
- * Class ApplySetProductAction.
+ * Class SetPriorityAction.
  */
-class ApplySetProductAction extends AbstractTicketApplicator implements ActionInitializationInterface
+class SetPriorityAction extends AbstractAction implements ActionWithOptionsInterface
 {
     /**
-     * @var Product
+     * {@inheritdoc}
      */
-    private $product;
-
-    public function init()
+    public static function configureOptions(ActionOptionsResolver $resolver)
     {
-        $this->product = $this->em->getRepository(Product::class)->find($this->options['set_product']);
-        if (!$this->product) {
-            throw new BadRequestHttpException('Product with ID='.$this->options['set_product']." doesn't exists");
-        }
-    }
-
-    /**
-     * @param Ticket $ticket
-     */
-    public function apply($ticket)
-    {
-        $ticket->setProduct($this->product);
+        $resolver->setRequired('set_priority');
+        $resolver->setAllowedTypes('set_priority', ['string', 'int']);
+        $resolver->setAllowedValues('set_priority', function ($value) {
+            return (is_int($value) && $value > 0) || ctype_digit($value);
+        });
     }
 }

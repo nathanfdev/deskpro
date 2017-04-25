@@ -149,7 +149,7 @@ class OrganizationSearchController extends AbstractController
             }
         }
 
-        $order_by = $this->person->getPref('agent.ui.org-filter-order-by.0');
+        $order_by = $this->person->getPref('agent.ui.org-filter-order-by.0', 'organization.name:asc');
 
         //------------------------------
         // If there's no result set, we're running it for the first time
