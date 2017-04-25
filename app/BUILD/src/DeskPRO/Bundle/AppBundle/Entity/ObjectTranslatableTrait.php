@@ -94,6 +94,9 @@ trait ObjectTranslatableTrait
 
             // look by lang code
             foreach ($translations as $translation) {
+                if (!$translation->getLanguage()) {
+                    continue;
+                }
                 if ($translation->getLanguage()->getLangCode() === $language->getLangCode()) {
                     return $translation;
                 }

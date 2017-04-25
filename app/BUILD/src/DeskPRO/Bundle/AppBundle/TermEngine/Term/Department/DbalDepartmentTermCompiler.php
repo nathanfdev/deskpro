@@ -41,16 +41,14 @@ class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $ids = $term->getOption('department_ids');
-
-        $query_part = $this->getEntityHelper()->buildQueryPart(
+        $qp = $this->getEntityHelper()->buildQueryPart(
             'ticket.department_id',
             $term->getOp(),
-            $ids
+            $term->getOption('department_ids')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

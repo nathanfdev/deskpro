@@ -181,6 +181,9 @@ abstract class AbstractTerm implements TermInterface
         $this->options[$option] = $value;
     }
 
+    /**
+     * @return array
+     */
     public function getOptionConstraints()
     {
         return static::getOptionsResolver()->getConstraints();

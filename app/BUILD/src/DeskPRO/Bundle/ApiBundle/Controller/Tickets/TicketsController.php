@@ -106,6 +106,7 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="[\w+]"},
+     *          {"name"="not_status", "description"="not status filter", "dataType"="integer", "pattern"="[\w+]"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
@@ -179,6 +180,7 @@ class TicketsController extends AbstractTicketsController
                     'total_user_waiting',
                     'subject',
                     'status',
+                    'not_status',
                     'sla',
                     'sla_status',
                 ];

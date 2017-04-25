@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\EventListener;
 
-use DeskPRO\Bundle\ApiBundle\Routing\ApiVersionInfo;
+use DeskPRO\Bundle\ApiBundle\Request\ApiVersionInfo;
 use DeskPRO\Bundle\AppBundle\Routing\RequestMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;

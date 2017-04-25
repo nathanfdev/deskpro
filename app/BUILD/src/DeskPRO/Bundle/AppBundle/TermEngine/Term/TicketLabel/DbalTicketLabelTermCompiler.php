@@ -41,7 +41,7 @@ class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = $this->getJoinedHelper()->buildQueryPart(
+        $qp = $this->getJoinedHelper()->buildQueryPart(
             'labels_tickets.label',
             'labels_tickets',
             'ticket.id = labels_tickets.ticket_id',
@@ -50,6 +50,6 @@ class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
             false
         );
 
-        return $query_part;
+        return $qp;
     }
 }

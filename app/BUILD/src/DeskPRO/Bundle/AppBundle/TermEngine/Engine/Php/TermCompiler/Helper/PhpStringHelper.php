@@ -26,31 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class PhpStringHelper.
+ */
 class PhpStringHelper extends AbstractPhpHelper
 {
     /**
-     * An identifier for this helper.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getId()
     {
         return 'string';
     }
 
+    /**
+     * @param $field_name
+     * @param $op
+     * @param array $strings
+     * @param bool  $wildcard_prefix
+     * @param bool  $wildcard_postfix
+     *
+     * @return PhpCheck
+     */
     public function buildQueryPart($field_name, $op, array $strings, $wildcard_prefix = false, $wildcard_postfix = false)
     {
-        $expression = '';
-
         $strings = array_unique(array_map('strval', $strings));
 
         if ($wildcard_prefix || $wildcard_postfix) {
@@ -81,8 +85,6 @@ class PhpStringHelper extends AbstractPhpHelper
 
         $parts = $values = [];
         foreach ($strings as $k => $string) {
-            $sub_expression = '';
-
             // All regex-based matching logic.
             if ($wildcard_prefix || $wildcard_postfix
                 || TermInterface::OP_HAS === $op || TermInterface::OP_NOT_HAS === $op) {

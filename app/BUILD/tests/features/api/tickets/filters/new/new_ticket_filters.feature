@@ -6,6 +6,12 @@ Feature: /new/ticket_filters endpoint
   Background:
     Given I install the api data set
     And my request is authenticated
+    And agent and user exist
+    And only the following Ticket records exist:
+      | #  | Subject  | Person |
+      | t1 | Ticket 1 | {user} |
+      | t2 | Ticket 2 | {user} |
+      | t3 | Ticket 3 | {user} |
 
   Scenario: I retrieve list of ticket filters
     When I send a GET request to "/api/v2/new/ticket_filters"
@@ -70,12 +76,12 @@ Feature: /new/ticket_filters endpoint
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should have 3 elements
-    And the JSON node "data[0].id" should be equal to 2
-    And the JSON node "data[0].subject" should be equal to "Ticket #1"
-    And the JSON node "data[1].id" should be equal to 3
-    And the JSON node "data[1].subject" should be equal to "Ticket #2"
-    And the JSON node "data[2].id" should be equal to 4
-    And the JSON node "data[2].subject" should be equal to "Ticket #3"
+    And the JSON node "data[0].id" should be equal to "{t1}"
+    And the JSON node "data[0].subject" should be equal to "Ticket 1"
+    And the JSON node "data[1].id" should be equal to "{t2}"
+    And the JSON node "data[1].subject" should be equal to "Ticket 2"
+    And the JSON node "data[2].id" should be equal to "{t3}"
+    And the JSON node "data[2].subject" should be equal to "Ticket 3"
 
   Scenario: I try to create a new ticket filter with empty request
     When I send a POST request to "/api/v2/new/ticket_filters"

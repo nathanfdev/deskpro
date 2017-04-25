@@ -42,18 +42,9 @@ class PhpPersonEmailTermCompiler extends AbstractPhpTermCompiler
      */
     protected function doCompile(TermInterface $term)
     {
-        $op    = $term->getOp();
-        $email = $term->getOption('email');
-
-        $check = 'ticket.getPersonEmailAddress()';
-        $check .= $this->isOp($op, TermInterface::OP_IS) ? ' == ' : ' != ';
-        $check .= ':email';
-
-        return new PhpCheck(
-            $check,
-            [
-                'email' => $email,
-            ]
-        );
+        return new PhpCheck('check_contains(ticket.getPersonEmailAddress(), :op, :email)', [
+            'op'    => $term->getOp(),
+            'email' => $term->getOption('email'),
+        ]);
     }
 }

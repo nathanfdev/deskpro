@@ -1,191 +1,172 @@
+@new
 Feature: /mass_actions/tickets endpoint
   To complete mass actions on tickets list
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
+    And agent and user exist
+    And I have only default brand
+    And only the following TicketCategory records exist:
+      | #  | Title      |
+      | c1 | Category 1 |
+      | c2 | Category 2 |
+    And only the following AgentTeam records exist:
+      | #   | Name   |
+      | at1 | Team 1 |
+      | at2 | Team 2 |
+    And only the following Department records exist:
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
+      | d2 | Department 2 | [{defaultBrand}] | 1                  |
+    And only the following Ticket records exist:
+      | #  | Subject   | Status       |
+      | t1 | Ticket 1 | awaiting_user |
+      | t2 | Ticket 2 | awaiting_user |
 
-  Scenario: I get ticket with ID=1 and it's status should be equal 'awaiting_user'
-    When I send a GET request to "/api/v2/tickets/1"
-    Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.status" should be equal to "awaiting_user"
-
-  Scenario: I apply set of actions on ticket with ID=1,2
+  Scenario: I change status
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [1,2],
+  "ids": [~t1~, ~t2~],
   "params":{"set_status": "awaiting_agent"}
 }
     """
     Then the response status code should be 200
 
-  Scenario: I get ticket with ID=1 and it's status should be equal 'awaiting_agent'
-    When I send a GET request to "/api/v2/tickets/1"
-    Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.status" should be equal to "awaiting_agent"
+    When I send a GET request to "/api/v2/tickets"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].status" should be equal to "awaiting_agent"
+    And the JSON node "data[1].status" should be equal to "awaiting_agent"
 
-  Scenario: I apply set of actions on tickets with ID=1,2
+  Scenario: I set incorrect status
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [1,2],
+  "ids": [~t1~],
+  "params":{"set_status":1}
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "message" should be equal to 'The option "set_status" with value "1" is invalid. Accepted values are: "awaiting_agent", "awaiting_user", "resolved", "archived".'
+
+  Scenario Outline: I set an object
+    And only the following <entity_type> records exist:
+      | #  | Title    |
+      | o1 | Object 1 |
+      | o2 | Object 2 |
+
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t1~],
+  "params":{"set_<prop>":~o2~}
+}
+    """
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    And the JSON node "data.<prop>" should be equal to "{o2}"
+
+    Examples:
+      | prop     | entity_type    |
+      | language | Language       |
+      | product  | Product        |
+      | category | TicketCategory |
+      | workflow | TicketWorkflow |
+      | priority | TicketPriority |
+
+  Scenario Outline: I try to set a non-existing object
+    Given no <entity_type> records exist
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t1~],
+  "params": {"set_<prop>": 1}
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "message" should contain "doesn't exists"
+
+    Examples:
+      | prop     | entity_type    |
+      | language | Language       |
+      | product  | Product        |
+      | category | TicketCategory |
+      | workflow | TicketWorkflow |
+      | priority | TicketPriority |
+
+  Scenario Outline: I assign an object
+    And only the following <entity_type> records exist:
+      | #  | <title>  |
+      | o1 | Object 1 |
+      | o2 | Object 2 |
+
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t1~],
+  "params":{"assign": {"<set_prop>": ~o2~}}
+}
+    """
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    And the JSON node "data.<ticket_prop>" should be equal to "{o2}"
+
+    Examples:
+      | set_prop   | ticket_prop | entity_type | title |
+      | agent      | agent       | Agent       | Name  |
+      | team       | agent_team  | AgentTeam   | Name  |
+      | department | department  | Department  | Title |
+
+  Scenario Outline: I try to assign a non-existing object
+    Given no <entity_type> records exist
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t1~],
+  "params": {"assign":{"<prop>":1}}
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "status" should be equal to 400
+    And the JSON node "message" should contain "doesn't exists"
+
+    Examples:
+      | prop       | entity_type    |
+      | team       | AgentTeam      |
+      | department | Department     |
+
+  Scenario: I delete tickets
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t1~,~t2~],
   "params":{
-     "set_priority": 2,
-     "set_category": 1,
-     "set_product": 1,
-     "set_language": 1,
-     "set_workflow": 1,
-     "set_followers": [1, 2, 1000],
-     "assign": {
-        "agent": 1,
-        "team": 1,
-        "department": 3
-     },
-     "set_of_actions": ["mark_as_spam"]
+     "set_of_actions": ["delete"]
   }
 }
     """
     Then the response status code should be 200
 
-  Scenario: I set incorrect status = 1 for ticket with ID=1
+    When I send a GET request to "/api/v2/tickets?status=hidden"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].status" should be equal to "hidden.deleted"
+    And the JSON node "data[1].status" should be equal to "hidden.deleted"
+
+  Scenario: I unassign participants
+    Given only the following TicketParticipant records exist:
+      | #  | Ticket | Person  |
+      | p1 | {t1}   | {admin} |
+      | p2 | {t2}   | {admin} |
+
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [1],
-  "params":{"set_status":1}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'The option "set_status" with value "1" is invalid. Accepted values are: "awaiting_agent", "awaiting_user", "resolved", "archived".'
-
-  Scenario: I try to set non-existing product for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"set_product":2000}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should be equal to "Product with ID=2000 doesn't exists"
-
-  Scenario: I try to set non-existing agent for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"assign":{"agent":2000}}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Agent with ID=2000 doesn't exists"
-
-  Scenario: I try to set non-existing agents team for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"assign":{"team":2000}}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Agents team with ID=2000 doesn't exists"
-
-  Scenario: I try to set non-existing department for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"assign":{"department":2000}}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Department with ID=2000 doesn't exists"
-
-  Scenario: I try to set non-existing category for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"set_category":2000}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Category with ID=2000 doesn't exists"
-
-  Scenario: I try to set non-existing language for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"set_language":2000}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Language with ID=2000 doesn't exists"
-
-  Scenario: I try to set non-existing workflow for ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{"set_workflow":2000}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Workflow with ID=2000 doesn't exists"
-
-  Scenario: I get ticket with ID=1 and check if all mass actions was applied
-    When I send a GET request to "/api/v2/tickets/1"
-    Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.status" should be equal to "hidden.spam"
-    And the JSON node "data.priority" should be equal to 2
-    And the JSON node "data.product" should be equal to 1
-    And the JSON node "data.agent" should be equal to 1
-    And the JSON node "data.agent_team" should be equal to 1
-    And the JSON node "data.department" should be equal to 3
-    And the JSON node "data.category" should be equal to 1
-    And the JSON node "data.language" should be equal to 1
-    And the JSON node "data.cc" should have 2 elements
-    And the JSON node "data.cc[0]" should be equal to 1
-    And the JSON node "data.cc[1]" should be equal to 2
-
-  Scenario: I apply unassign followers on ticket with ID=1
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
+  "ids": [~t1~],
   "params":{
      "set_followers": []
   }
@@ -193,25 +174,43 @@ Feature: /mass_actions/tickets endpoint
     """
     Then the response status code should be 200
 
-  Scenario: I get ticket with ID=1 and check if all mass actions was applied
-    When I send a GET request to "/api/v2/tickets/1"
+    When I send a GET request to "/api/v2/tickets/{t1}"
     Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.status" should be equal to "hidden.spam"
-    And the JSON node "data.product" should be equal to 1
-    And the JSON node "data.agent" should be equal to 1
-    And the JSON node "data.agent_team" should be equal to 1
-    And the JSON node "data.department" should be equal to 3
-    And the JSON node "data.category" should be equal to 1
-    And the JSON node "data.language" should be equal to 1
     And the JSON node "data.cc" should have 0 element
 
-  Scenario: I apply unassign action on ticket with ID=1
+  Scenario: I apply set of actions
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
-  "ids": [1],
+  "ids": [~t1~],
+  "params":{
+     "set_category": ~c2~,
+     "assign": {
+        "agent": ~admin~,
+        "team": ~at1~,
+        "department": ~d2~
+     }
+  }
+}
+    """
+    Then the response status code should be 200
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the response status code should be 200
+    And the JSON node "data.category" should be equal to "{c2}"
+    And the JSON node "data.agent" should be equal to "{admin}"
+    And the JSON node "data.agent_team" should be equal to "{at1}"
+    And the JSON node "data.department" should be equal to "{d2}"
+
+  Scenario: I apply unassign action on ticket
+    Given the following Ticket records exist:
+      | #  | Subject   | Status        | Agent   | AgentTeam | Department |
+      | t3 | Ticket 3  | awaiting_user | {admin} | {at1}     | {d2}       |
+
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t3~],
   "params":{
      "assign": {
         "agent":      null,
@@ -223,37 +222,10 @@ Feature: /mass_actions/tickets endpoint
     """
     Then the response status code should be 200
 
-  Scenario: I get ticket with ID=1 and check if unassign mass actions was applied
-    When I send a GET request to "/api/v2/tickets/1"
+    When I send a GET request to "/api/v2/tickets/{t3}"
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "data" should exist
     And the JSON node "data.agent" should be null
     And the JSON node "data.agent_team" should be null
-    And the JSON node "data.department" should be equal to 1
-
-  Scenario: I delete ticket with ID=3,4
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [2,3],
-  "params":{
-     "set_of_actions": ["delete"]
-  }
-}
-    """
-    Then the response status code should be 200
-
-  Scenario: I get ticket with ID=3 and check if delete mass actions was applied
-    When I send a GET request to "/api/v2/tickets/2"
-    Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.status" should be equal to "hidden.deleted"
-
-  Scenario: I get ticket with ID=4 and check if delete mass actions was applied
-    When I send a GET request to "/api/v2/tickets/3"
-    Then the response status code should be 200
-    And the response should be in JSON
-    And the JSON node "data" should exist
-    And the JSON node "data.status" should be equal to "hidden.deleted"
+    And the JSON node "data.department" should be equal to "{d1}"

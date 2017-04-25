@@ -29,6 +29,7 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Ticket;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
 use DpBehat\BaseContext;
@@ -71,6 +72,9 @@ class CustomDataContext extends BaseContext
 
         if (!method_exists($entity, 'getCustomData') || !method_exists($entity, 'addCustomData')) {
             throw new \Exception("$entityRef doesn't support custom data");
+        }
+        if ($entity instanceof Ticket) {
+            $entity->disableAutoTicketProcess();
         }
 
         if ($customDef->isChoiceType()) {

@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
@@ -48,6 +49,28 @@ class TicketFlaggedTerm extends AbstractTerm
                 new Assert\NotBlank(),
             ],
         ]);
+        $resolver->setNormalizer(
+            'flag',
+            function ($options, $value) {
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+
+                $value = array_map('strtolower', $value);
+                $colors = [];
+                foreach ($value as $color) {
+                    if (is_numeric($color)) {
+                        if (isset(TicketFlagged::$colorMap[$color])) {
+                            $colors[] = TicketFlagged::$colorMap[$color];
+                        }
+                    } else {
+                        $colors[] = $color;
+                    }
+                }
+
+                return $colors;
+            }
+        );
     }
 
     /**

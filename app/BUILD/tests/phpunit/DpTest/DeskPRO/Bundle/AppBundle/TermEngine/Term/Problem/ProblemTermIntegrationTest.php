@@ -26,15 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\TermIntegrationTest;
 
+/**
+ * Class ProblemTermIntegrationTest.
+ */
 class ProblemTermIntegrationTest extends TermIntegrationTest
 {
     private $firstProblem;

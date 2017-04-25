@@ -43,7 +43,6 @@ class DbalAgentTermCompiler extends AbstractDbalTermCompiler
     public function doCompile(TermInterface $term)
     {
         $ids = [];
-
         foreach ($term->getOption('agent_ids') as $agentId) {
             if ($agentId === AgentTerm::ID_ME) {
                 $ids[] = new TermEngineExpression('agent.getId()');
@@ -52,14 +51,14 @@ class DbalAgentTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        $query_part = $this->getEntityHelper()->buildQueryPart(
+        $qp = $this->getEntityHelper()->buildQueryPart(
             'ticket.agent_id',
             $term->getOp(),
             $ids
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

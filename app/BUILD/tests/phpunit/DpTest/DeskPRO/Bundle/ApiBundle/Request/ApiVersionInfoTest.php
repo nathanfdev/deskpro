@@ -26,9 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\ApiBundle\Routing;
+namespace DpTest\DeskPRO\Bundle\ApiBundle\Request;
 
-use DeskPRO\Bundle\ApiBundle\Routing\ApiVersionInfo;
+use DeskPRO\Bundle\ApiBundle\Request\ApiVersionInfo;
 
 /**
  * Class ApiVersionInfoTest.

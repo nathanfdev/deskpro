@@ -43,8 +43,7 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
-
+        $qp    = new DbalQueryPart();
         $op    = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
@@ -68,29 +67,29 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
 
         // only non hidden
         if (count($non_hidden) && !count($hidden)) {
-            $query_part->setParameter('status', $non_hidden);
+            $qp->setParameter('status', $non_hidden);
 
             $where = sprintf(
                 'ticket.status %s (:status)',
                 $isser
             );
 
-            $query_part->setWhereString(
+            $qp->setWhereString(
                 $where
             );
 
-            $this->logQueryPart($query_part);
+            $this->logQueryPart($qp);
 
-            return $query_part;
+            return $qp;
         }
 
         // both
         if (count($non_hidden) && count($hidden)) {
-            $query_part->setParameter('status', $non_hidden);
-            $query_part->setParameter('status_hidden', Ticket::STATUS_HIDDEN);
-            $query_part->setParameter('hidden_status', $hidden);
+            $qp->setParameter('status', $non_hidden);
+            $qp->setParameter('status_hidden', Ticket::STATUS_HIDDEN);
+            $qp->setParameter('hidden_status', $hidden);
 
-            $query_part->setWhereString(
+            $qp->setWhereString(
                 sprintf(
                     'ticket.status %s (:status) OR (ticket.status = :status_hidden AND ticket.hidden_status %s (:hidden_status))',
                     $isser,
@@ -98,32 +97,32 @@ class DbalTicketStatusTermCompiler extends AbstractDbalTermCompiler
                 )
             );
 
-            $this->logQueryPart($query_part);
+            $this->logQueryPart($qp);
 
-            return $query_part;
+            return $qp;
         }
 
         // only hidden
         if (!count($non_hidden) && count($hidden)) {
-            $query_part->setParameter('status_hidden', Ticket::STATUS_HIDDEN);
-            $query_part->setParameter('hidden_status', $hidden);
+            $qp->setParameter('status_hidden', Ticket::STATUS_HIDDEN);
+            $qp->setParameter('hidden_status', $hidden);
 
             if ($this->isOp($op, TermInterface::OP_NOT)) {
-                $query_part->setWhereString(
+                $qp->setWhereString(
                     'ticket.status != :status_hidden OR (ticket.status = :status_hidden AND ticket.hidden_status NOT IN (:hidden_status))'
                 );
 
-                $this->logQueryPart($query_part);
+                $this->logQueryPart($qp);
 
-                return $query_part;
+                return $qp;
             } else {
-                $query_part->setWhereString(
+                $qp->setWhereString(
                     'ticket.status = :status_hidden AND ticket.hidden_status IN (:hidden_status)'
                 );
 
-                $this->logQueryPart($query_part);
+                $this->logQueryPart($qp);
 
-                return $query_part;
+                return $qp;
             }
         }
     }

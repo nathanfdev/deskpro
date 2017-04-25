@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\DependencyInjection;
 
-use DeskPRO\Bundle\ApiBundle\Routing\ApiVersionInfo;
+use DeskPRO\Bundle\ApiBundle\Request\ApiVersionInfo;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;

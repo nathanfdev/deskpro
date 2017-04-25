@@ -47,172 +47,164 @@ services:
   #
 
   term_engine.php_ticket_checker.term_compiler:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler
-      abstract: true
-      calls:
-        - ['setHelperPool', ["@term_engine.php.helper_pool"]]
-        - ['setLogger', ["@monolog.logger.dp.tickets.filters.tengine.php.compiler"]]
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler
+    abstract: true
+    calls:
+      - ['setHelperPool', ["@term_engine.php.helper_pool"]]
+      - ['setLogger', ["@monolog.logger.dp.tickets.filters.tengine.php.compiler"]]
 
   term_engine.php_ticket_checker.compiler.agent:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\PhpAgentTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\PhpAgentTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Agent\AgentTerm'
 
   term_engine.php_ticket_checker.compiler.person:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PhpPersonTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PhpPersonTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Person\PersonTerm'
 
   term_engine.php_ticket_checker.compiler.ticket_status:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\PhpTicketStatusTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\PhpTicketStatusTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketStatus\TicketStatusTerm'
 
   term_engine.php_ticket_checker.compiler.department:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\PhpDepartmentTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\PhpDepartmentTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Department\DepartmentTerm'
 
   term_engine.php_ticket_checker.compiler.agent_team:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\PhpAgentTeamTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\PhpAgentTeamTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam\AgentTeamTerm'
 
   term_engine.php_ticket_checker.compiler.custom_data:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\PhpCustomDataTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\PhpCustomDataTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\CustomData\CustomDataTerm'
 
   term_engine.php_ticket_checker.compiler.person_email:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PhpPersonEmailTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PhpPersonEmailTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm'
 
   term_engine.php_ticket_checker.compiler.ticket_participant:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\PhpTicketParticipantTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\TicketParticipantTerm'
-
-  term_engine.php_ticket_checker.compiler.ticket_custom_data:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\PhpTicketCustomDataTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketCustomData\TicketCustomDataTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\PhpTicketParticipantTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant\TicketParticipantTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_language:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\PhpTicketLanguageTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\PhpTicketLanguageTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm'
 
   term_engine.php_ticket_checker.compiler.organization:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\PhpOrganizationTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\PhpOrganizationTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization\OrganizationTerm'
 
   term_engine.php_ticket_checker.compiler.problem:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\PhpProblemTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\PhpProblemTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem\ProblemTerm'
 
   term_engine.php_ticket_checker.compiler.ticket_urgency:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\PhpTicketUrgencyTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\PhpTicketUrgencyTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency\TicketUrgencyTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_num_user_replies:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserReplies\PhpTicketNumUserRepliesTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserRepliesTerm\TicketNumUserRepliesTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserReplies\PhpTicketNumUserRepliesTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumUserRepliesTerm\TicketNumUserRepliesTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_num_agent_replies:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies\PhpTicketNumAgentRepliesTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentRepliesTerm\TicketNumAgentRepliesTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies\PhpTicketNumAgentRepliesTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentRepliesTerm\TicketNumAgentRepliesTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_date_created:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\PhpTicketDateCreatedTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm\TicketDateCreatedTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreated\PhpTicketDateCreatedTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateCreatedTerm\TicketDateCreatedTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_date_resolved:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved\PhpTicketDateResolvedTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolvedTerm\TicketDateResolvedTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved\PhpTicketDateResolvedTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolvedTerm\TicketDateResolvedTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_date_archived:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchived\PhpTicketDateArchivedTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchivedTerm\TicketDateArchivedTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchived\PhpTicketDateArchivedTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateArchivedTerm\TicketDateArchivedTerm'
   
   
   term_engine.php_ticket_checker.compiler.ticket_date_last_user_reply:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastUserReply\PhpTicketDateLastUserReplyTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastUserReplyTerm\TicketDateLastUserReplyTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastUserReply\PhpTicketDateLastUserReplyTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastUserReplyTerm\TicketDateLastUserReplyTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_date_last_agent_reply:
-      class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply\PhpTicketDateLastAgentReplyTermCompiler
-      parent: term_engine.php_ticket_checker.term_compiler
-      tags:
-        ticket_filter:
-          name: php_ticket_checker_compiler
-          term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReplyTerm\TicketDateLastAgentReplyTerm'
+    class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReply\PhpTicketDateLastAgentReplyTermCompiler
+    parent: term_engine.php_ticket_checker.term_compiler
+    tags:
+      ticket_filter:
+        name: php_ticket_checker_compiler
+        term: 'DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateLastAgentReplyTerm\TicketDateLastAgentReplyTerm'
   
   term_engine.php_ticket_checker.compiler.ticket_date_first_agent_reply:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateFirstAgentReply\PhpTicketDateFirstAgentReplyTermCompiler
@@ -299,24 +291,22 @@ services:
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\MethodCheckHelper
     tags:
       - { name: php_term_engine_helper }
-  
+
   term_engine.php.date_helper:
     parent: term_engine.php.abstract_helper
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpDateHelper
     tags:
       - { name: php_term_engine_helper }
-      
+
   term_engine.php.string_helper:
     parent: term_engine.php.abstract_helper
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpStringHelper
     tags:
       - { name: php_term_engine_helper }
-  
+
   term_engine.php.agent_helper:
     parent: term_engine.php.abstract_helper
     class: DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper\PhpAgentHelper
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: php_term_engine_helper }
-  
-  

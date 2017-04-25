@@ -57,11 +57,15 @@ class DbalEntityHelper extends AbstractDbalHelper
      *
      * @return DbalQueryPart
      */
-    public function buildQueryPart($field_name, $op, array $ids)
+    public function buildQueryPart($field_name, $op, $ids)
     {
         $part = new DbalQueryPart();
 
         // filter ids, which makes sure 0 is used for all null cases, etc
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
         $ids = $this->filterIds($ids);
 
         // determine what we will assert

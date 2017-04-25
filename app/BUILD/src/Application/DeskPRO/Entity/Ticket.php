@@ -4556,6 +4556,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param ArrayCollection $problems
+     *
+     * @return $this
+     */
+    public function setProblems($problems)
+    {
+        $this->setModelField('problems', $problems);
+
+        return $this;
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getProblems()

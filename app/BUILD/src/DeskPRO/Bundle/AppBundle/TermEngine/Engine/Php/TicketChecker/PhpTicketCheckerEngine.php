@@ -26,14 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TicketChecker;
 
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngine;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEngineEvents;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePostCompileEvent;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpEnginePreCompileEvent;
@@ -44,7 +39,10 @@ use DeskPRO\Bundle\AppBundle\Util\SimpleTimer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class PhpTicketCheckerEngine extends PhpEngine
+/**
+ * Class PhpTicketCheckerEngine.
+ */
+class PhpTicketCheckerEngine
 {
     /**
      * @var PhpTicketCheckerEngineCompiler
@@ -71,12 +69,21 @@ class PhpTicketCheckerEngine extends PhpEngine
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param PhpTicketCheckerEngineCompiler $compiler
+     * @param TermEngineExpressionLanguage   $expression_language
+     * @param EventDispatcherInterface       $event_dispatcher
+     * @param TermCompilerHelperPool         $helper_pool
+     * @param LoggerInterface                $logger
+     */
     public function __construct(
         PhpTicketCheckerEngineCompiler $compiler,
-        TermEngineExpressionLanguage $expression_language,
-        EventDispatcherInterface $event_dispatcher,
-        TermCompilerHelperPool $helper_pool,
-        LoggerInterface $logger
+        TermEngineExpressionLanguage   $expression_language,
+        EventDispatcherInterface       $event_dispatcher,
+        TermCompilerHelperPool         $helper_pool,
+        LoggerInterface                $logger
     ) {
         $this->compiler            = $compiler;
         $this->expression_language = $expression_language;

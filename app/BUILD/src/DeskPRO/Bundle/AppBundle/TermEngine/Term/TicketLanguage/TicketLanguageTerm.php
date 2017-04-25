@@ -53,6 +53,16 @@ class TicketLanguageTerm extends AbstractTerm
                 'table' => 'languages',
             ]),
         ]);
+        $resolver->setNormalizer(
+            'language',
+            function ($options, $value) {
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+
+                return $value;
+            }
+        );
     }
 
     /**

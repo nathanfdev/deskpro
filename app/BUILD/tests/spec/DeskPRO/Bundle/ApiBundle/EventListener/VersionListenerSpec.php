@@ -28,7 +28,7 @@
 
 namespace spec\DeskPRO\Bundle\ApiBundle\EventListener;
 
-use DeskPRO\Bundle\ApiBundle\Routing\ApiVersionInfo;
+use DeskPRO\Bundle\ApiBundle\Request\ApiVersionInfo;
 use DeskPRO\Bundle\AppBundle\Routing\RequestMatcher;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\ParameterBag;

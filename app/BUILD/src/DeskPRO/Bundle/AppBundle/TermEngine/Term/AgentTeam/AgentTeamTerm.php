@@ -52,7 +52,6 @@ class AgentTeamTerm extends AbstractTerm
         $resolver->setDefaults([
             'agent_team_ids' => [],
         ]);
-
         $resolver->setConstraints([
             'agent_team_ids' => [
                 new Assert\NotBlank(),
@@ -63,6 +62,16 @@ class AgentTeamTerm extends AbstractTerm
                 ]),
             ],
         ]);
+        $resolver->setNormalizer(
+            'agent_team_ids',
+            function ($options, $value) {
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+
+                return $value;
+            }
+        );
     }
 
     /**

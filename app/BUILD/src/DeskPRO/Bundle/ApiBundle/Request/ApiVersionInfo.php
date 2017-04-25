@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Routing;
+namespace DeskPRO\Bundle\ApiBundle\Request;
 
 /**
  * Class ApiVersionInfo.
