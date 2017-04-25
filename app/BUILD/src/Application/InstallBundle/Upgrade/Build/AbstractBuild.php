@@ -480,11 +480,11 @@ abstract class AbstractBuild
     {
         $db = $this->container->getDb();
 
-        return $db->fetchAllKeyValue('
+        return array_merge(array_fill_keys($names, null), $db->fetchAllKeyValue('
             SELECT name, value
             FROM settings
             WHERE name IN (?)
-        ', [$names], [Connection::PARAM_STR_ARRAY]);
+        ', [$names], [Connection::PARAM_STR_ARRAY]));
     }
 
     /**

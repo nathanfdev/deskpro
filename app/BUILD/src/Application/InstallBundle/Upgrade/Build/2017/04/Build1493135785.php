@@ -29,10 +29,12 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 use Aws\S3\S3Client;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
+use DpSys\LowError\SystemErrorHandler;
 
-class Build1492540356 extends AbstractBuild implements SkipPostBuildInterface
+// This is a blocking build for the possibility that the fs adapter may
+// revert to db after if the region lookup fails
+
+class Build1493135785 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
@@ -44,13 +46,23 @@ class Build1492540356 extends AbstractBuild implements SkipPostBuildInterface
 
     public function run()
     {
-        $settingsBag = $this->container->get('settings_resolver')->getGlobalSettings();
+        if (defined('DPC_IS_CLOUD')) {
+            return;
+        }
 
-        if ($settingsBag->get('core.filestorage_method') === 's3' && !$settingsBag->get('core.filestorage_s3_region')) {
+        $settings = $this->readMultiSetting([
+            'core.filestorage_s3_region',
+            'core.filestorage_s3_bucket',
+            'core.filestorage_s3_key',
+            'core.filestorage_s3_secret',
+            'core.filestorage_method',
+        ]);
+
+        if ($settings['core.filestorage_method'] === 's3' && !$settings['core.filestorage_s3_region']) {
             $s3Config = [
                 'credentials' => [
-                    'key'    => $settingsBag->get('core.filestorage_s3_key'),
-                    'secret' => $settingsBag->get('core.filestorage_s3_secret'),
+                    'key'    => $settings['core.filestorage_s3_key'],
+                    'secret' => $settings['core.filestorage_s3_secret'],
                 ],
                 'region'  => 'us-west-2', // sic(!) we are just using it as default cause we need one
                 'version' => 'latest',
@@ -58,30 +70,22 @@ class Build1492540356 extends AbstractBuild implements SkipPostBuildInterface
 
             try {
                 $s3Client   = new S3Client($s3Config);
-                $bucketName = $settingsBag->get('core.filestorage_s3_bucket');
+                $bucketName = $settings['core.filestorage_s3_bucket'];
 
                 if ($bucketName && $bucketLocation = $s3Client->getBucketLocation(['Bucket' => $bucketName])->get('LocationConstraint')) {
-                    $this->getDbConnection('default')->insert('settings', [
-                        'name'  => 'core.filestorage_s3_region',
-                        'value' => $bucketLocation,
-                    ]);
+                    $this->saveSetting('core.filestorage_s3_region', $bucketLocation);
                 } else {
                     throw new \RuntimeException();
                 }
             } catch (\Exception $e) {
-                /** @var LoggerInterface $logger */
-                $logger = $this->container->get('logger');
-                $logger->log(
-                    LogLevel::ERROR,
-                    'We cant update your s3 settings automatically. 
-                     Filestorage switched to db now. 
-                     Please fix s3 config manually with Admin->Server->FileUploads section'
+                $e = new \Exception(
+                    'We cant update your s3 settings automatically. '
+                     .'Filestorage switched to db now. '
+                     .'Please fix s3 config manually with Admin->Server->FileUploads section'
                 );
-                $this->getDbConnection('default')->update(
-                    'settings',
-                    ['value' => 'db'],
-                    ['name'  => 'core.filestorage_method']
-                );
+                SystemErrorHandler::logException($e);
+                $this->out($e->getMessage());
+                $this->saveSetting('core.filestorage_method', 'db');
             }
         }
     }
