@@ -173,4 +173,12 @@ class AppAssetBlob implements Domain\ApplicationAsset
 
         return null;
     }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
+    }
 }

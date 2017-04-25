@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
@@ -43,14 +44,22 @@ class ApplicationManagerService implements Domain\ApplicationManager
     private $blobStorage;
 
     /**
+     * @var EntityIdentityMapResolver
+     */
+    private $entityResolver;
+
+    /**
      * ApplicationService constructor.
      * @param ORM\EntityManager $entityManager
      * @param DeskproBlobStorage $blobStorage
+     * @param EntityIdentityMapResolver $entityResolver
      */
-    public function __construct(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage) {
+    public function __construct(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage, EntityIdentityMapResolver $entityResolver) {
         $this->entityManager = $entityManager;
         $this->blobStorage = $blobStorage;
+        $this->entityResolver = $entityResolver;
     }
+
 
     /**
      * @param Domain\AppBundle $bundle
@@ -58,37 +67,95 @@ class ApplicationManagerService implements Domain\ApplicationManager
      */
     public function createFirstInstance(Domain\AppBundle $bundle)
     {
-        $entities = [];
-        $appEntity = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
-        $entities[] = $appEntity;
+        //save app
+        $appEntity = $this->createAppEntity($bundle);
 
-        foreach ($bundle->listAllResources() as $resource) {
-            $asset = new Entity\AppStore\AppAsset();
-            $asset->setApp($appEntity);
+        //save assets
+        $this->createAssetEntityList($bundle, $appEntity);
 
-            $entities[] = $this->mapBundleResourceToAsset($resource, $asset);
-        }
+        //save blob assets
+        $blobs = $this->createBlobEntityList($bundle);
+        $this->createAssetBlobEntityList($bundle, $blobs, $appEntity);
 
-        $instanceEntity = new Entity\AppStore\AppInstance();
-        $instanceEntity->setApp($appEntity);
-        $this->mapApplicationToInstance($appEntity, $instanceEntity);
-        $entities[] = $instanceEntity;
-
-        $this->persist($entities);
+        $instanceEntity = $this->createInstance($appEntity);
         return $instanceEntity;
     }
 
     /**
-     * @param $entities
+     * @param Domain\AppBundle $bundle
+     * @return Entity\AppStore\App
      */
-    private function persist($entities)
+    private function createAppEntity(Domain\AppBundle $bundle)
     {
-        foreach ($entities as $entity) {
-            $this->entityManager->persist($entity);
+        $entities = [];
+        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
+
+        //save app and instance
+
+        $appEntity = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
+        $entities[] = $appEntity;
+        $this->executeEntityOperationTransaction($entities, $entityOperation);
+
+        return $appEntity;
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
+     * @param Entity\AppStore\App $app
+     */
+    private function createAssetEntityList(Domain\AppBundle $bundle, $app)
+    {
+        $entities = [];
+        foreach ($bundle->listAllResources() as $resource) {
+            $asset = new Entity\AppStore\AppAsset();
+            $asset->setApp($app);
+
+            $entities[] = $this->mapBundleResourceToAsset($resource, $asset);
         }
 
+        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
+        $this->executeEntityOperationTransaction($entities, $entityOperation);
+    }
 
-        $this->entityManager->flush();
+    /**
+     * @param Domain\AppBundle $bundle
+     * @return DeskPRO\Entity\Blob[]
+     */
+    private function createBlobEntityList(Domain\AppBundle $bundle)
+    {
+        $blobs = [];
+        foreach ($bundle->listAllResources() as $resource) {
+            $contentType = 'application/octet-stream';
+            $blob = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
+            $blobs[] = $blob;
+        }
+
+        return $blobs;
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
+     * @param DeskPRO\Entity\Blob[] $blobs
+     * @param Entity\AppStore\App $app
+     */
+    private function createAssetBlobEntityList(Domain\AppBundle $bundle, $blobs, $app) {
+        $entities = [];
+        foreach ($bundle->listAllResources() as $resource) {
+            $asset = new Entity\AppStore\AppAssetBlob();
+            $asset->setApp($app);
+
+            $path = $resource->getPath();
+            $asset->setPath( $path );
+
+            $blob = current($blobs);
+            next($blobs);
+            $asset->setBlob($blob);
+
+            $entities[] = $asset;
+        }
+
+        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
+        $this->executeEntityOperationTransaction($entities, $entityOperation);
     }
 
     private function mapBundleResourceToAsset(Domain\AppBundleResource $resource, Entity\AppStore\AppAsset $asset)
@@ -124,7 +191,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
      */
     public function createInstance(Domain\Application $application, $settings = null)
     {
-        $applicationEntity = $this->resolveApplicationEntity($application);
+        $applicationEntity = $this->entityResolver->resolveApplicationEntity($application);
         if (empty($applicationEntity)) {
             throw new \RuntimeException('Could not find an application entity');
         }
@@ -137,13 +204,15 @@ class ApplicationManagerService implements Domain\ApplicationManager
             $instanceEntity->setSettings($settings);
         }
 
-        $this->persistInstance($instanceEntity);
+        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
+        $this->executeEntityOperationTransaction([$instanceEntity], $entityOperation);
+
         return $instanceEntity;
     }
 
     public function deleteInstance(Domain\ApplicationInstance $instance) {
 
-        $applicationInstanceEntity = $this->resolveApplicationInstance($instance);
+        $applicationInstanceEntity = $this->entityResolver->resolveApplicationInstance($instance);
         $isSingleInstance = $this->getIsSingleInstanceProperty($applicationInstanceEntity);
 
         if ($isSingleInstance) {
@@ -168,70 +237,103 @@ class ApplicationManagerService implements Domain\ApplicationManager
             ->getQuery()
         ;
 
-        $this->executeTransaction($deleteQueries);
+        $this->executeQueryTransaction($deleteQueries);
         return $instance;
-    }
-
-    /**
-     * @param $queries ORM\Query[]
-     * @throws \Exception
-     */
-    private function executeTransaction($queries)
-    {
-        $connection = $this->entityManager->getConnection();
-        $connection->beginTransaction();
-        try {
-            foreach ($queries as $query) {
-                $query->execute();
-            }
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollback();
-            throw $e;
-        }
     }
 
     public function deleteApplication(Domain\Application $application)
     {
-        $applicationEntity = $this->resolveApplicationEntity($application);
+        $applicationEntity = $this->entityResolver->resolveApplicationEntity($application);
+
+        $assetFinder = new AssetDoctrineFinder($this->entityManager);
+        $assetList = $assetFinder->findAllApplicationAssets($application);
+        $this->deleteAssetBlobList($applicationEntity, $assetList);
+
+        $this->deleteAssetList($applicationEntity);
+
         $instanceFinder = new ApplicationInstanceDoctrineFinder($this->entityManager);
-        $applicationInstances = $instanceFinder->findByApplication($applicationEntity->getName());
+        $instanceList = $instanceFinder->findByApplication($applicationEntity->getName());
+        $this->deleteInstanceList($applicationEntity, $instanceList);
 
-        $applicationInstanceIds = array_map(
-            function (Entity\AppStore\AppInstance $instance) { return $instance->getId(); }
-            , $applicationInstances
-        );
-
-        $deleteQueries = [];
-        // create delete instance state by id
-        $deleteQueries[] = $this->entityManager->createQueryBuilder()
-            ->delete(Entity\AppStore\AppState::class, 's')
-            ->where('s.appInstanceId IN (:idList)')->setParameter('idList', $applicationInstanceIds)
-            ->getQuery()
-        ;
-        // create delete instance by id
-        $deleteQueries[] = $this->entityManager->createQueryBuilder()
-            ->delete(Entity\AppStore\AppInstance::class, 'a')
-            ->where('a.id IN (:idList)')->setParameter('idList', $applicationInstanceIds)
-            ->getQuery()
-        ;
-        // create delete assets by id
-        $deleteQueries[] = $this->entityManager->createQueryBuilder()
-            ->delete(Entity\AppStore\AppAsset::class, 'a')
-            ->where('a.appId = :appId')->setParameter('appId', $application->getId())
-            ->getQuery()
-        ;
         // create delete app by id
+        $deleteQueries = [];
         $deleteQueries[] = $this->entityManager->createQueryBuilder()
             ->delete(Entity\AppStore\App::class, 'a')
             ->where('a.id = :id')->setParameter('id', $application->getId())
             ->getQuery()
         ;
 
-        $this->executeTransaction($deleteQueries);
+        $this->executeQueryTransaction($deleteQueries);
         return $application;
     }
 
+    /**
+     * @param Entity\AppStore\App $app
+     * @param Entity\AppStore\AppAssetBlob[] $assetList
+     */
+    private function deleteAssetBlobList(Entity\AppStore\App $app, $assetList)
+    {
+        /** @var DeskPRO\Entity\Blob $blobs */
+        $blobs = array_map(
+            function (Entity\AppStore\AppAssetBlob $asset) { return $asset->getBlob(); }
+            , $assetList
+        );
+        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->remove($entity); };
+        $this->executeEntityOperationTransaction($assetList, $entityOperation);
+
+        foreach ($blobs as $blob) {
+            $this->blobStorage->deleteBlobRecord($blob, false);
+        }
+    }
+
+    /**
+     * @param Entity\AppStore\App $app
+     */
+    private function deleteAssetList(Entity\AppStore\App $app)
+    {
+        $deleteQueries = [];
+        // create delete assets by id
+        $deleteQueries[] = $this->entityManager->createQueryBuilder()
+            ->delete(Entity\AppStore\AppAsset::class, 'a')
+            ->where('a.appId = :appId')->setParameter('appId', $app->getId())
+            ->getQuery()
+        ;
+
+        $this->executeQueryTransaction($deleteQueries);
+    }
+
+    /**
+     * @param Entity\AppStore\App $app
+     * @param Entity\AppStore\AppInstance[] $instanceList
+     */
+    private function deleteInstanceList(Entity\AppStore\App $app, $instanceList)
+    {
+        $instanceIdList = array_map(
+            function (Entity\AppStore\AppInstance $instance) { return $instance->getId(); }
+            , $instanceList
+        );
+
+        $deleteQueries = [];
+        // create delete instance state by id (this can cause table locks because we're using a non-unique index in where)
+        $deleteQueries[] = $this->entityManager->createQueryBuilder()
+            ->delete(Entity\AppStore\AppState::class, 's')
+            ->where('s.appInstanceId IN (:idList)')->setParameter('idList', $instanceIdList)
+            ->getQuery()
+        ;
+        // create delete instance by id
+        $deleteQueries[] = $this->entityManager->createQueryBuilder()
+            ->delete(Entity\AppStore\AppInstance::class, 'a')
+            ->where('a.id IN (:idList)')->setParameter('idList', $instanceIdList)
+            ->getQuery()
+        ;
+
+        $this->executeQueryTransaction($deleteQueries);
+    }
+
+    /**
+     * @param Entity\AppStore\AppInstance $appInstance
+     * @return bool
+     */
     private function getIsSingleInstanceProperty(Entity\AppStore\AppInstance $appInstance)
     {
         $qb = $this->entityManager->createQueryBuilder();
@@ -249,39 +351,9 @@ class ApplicationManagerService implements Domain\ApplicationManager
     }
 
     /**
-     * @param Domain\ApplicationInstance $instance
-     * @return Entity\AppStore\AppInstance
+     * @param Domain\Application $app
+     * @param Entity\AppStore\AppInstance $instance
      */
-    private function resolveApplicationInstance(Domain\ApplicationInstance $instance)
-    {
-        if ($instance instanceof Entity\AppStore\AppInstance) {
-            return $instance;
-        }
-
-        $entityId = $instance->getId();
-        $entity = $this->entityManager->getRepository(Entity\AppStore\AppInstance::class)->find($entityId);
-        return $entity;
-    }
-
-    /**
-     * Retrieves the corresponding persistence entity for the given application domain entity
-     *
-     * @param Domain\Application $application
-     * @return Entity\AppStore\App
-     */
-    private function resolveApplicationEntity(Domain\Application $application)
-    {
-        /** @var Entity\AppStore\App $entity */
-        $entity = $application;
-        if ($entity instanceof Entity\AppStore\App) {
-            return $entity;
-
-        }
-        $entityId = $application->getId();
-        $entity = $this->entityManager->getRepository(Entity\AppStore\App::class)->find($entityId);
-        return $entity;
-    }
-
     private function mapApplicationToInstance(Domain\Application $app, Entity\AppStore\AppInstance $instance)
     {
         //TODO: inject a manifest reader and properly handle this operation
@@ -294,13 +366,45 @@ class ApplicationManagerService implements Domain\ApplicationManager
     }
 
     /**
-     * @param Entity\AppStore\AppInstance $instance
+     * @param array $entities
+     * @param \Closure $entityOperation
+     * @throws \Exception
      */
-    private function persistInstance(Entity\AppStore\AppInstance $instance)
-    {
-        $this->entityManager->persist($instance);
-        $this->entityManager->flush();
+    private function executeEntityOperationTransaction($entities, $entityOperation) {
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
+        try {
+            foreach ($entities as $entity) {
+                $entityOperation($this->entityManager, $entity);
+            }
+
+            $this->entityManager->flush();
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollback();
+            throw $e;
+        }
     }
+
+    /**
+     * @param $queries ORM\Query[]
+     * @throws \Exception
+     */
+    private function executeQueryTransaction($queries)
+    {
+        $connection = $this->entityManager->getConnection();
+        $connection->beginTransaction();
+        try {
+            foreach ($queries as $query) {
+                $query->execute();
+            }
+            $connection->commit();
+        } catch (\Exception $e) {
+            $connection->rollback();
+            throw $e;
+        }
+    }
+
 }
 
 

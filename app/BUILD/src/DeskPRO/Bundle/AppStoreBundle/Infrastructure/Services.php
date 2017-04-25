@@ -42,7 +42,11 @@ class Services
      */
     public static function createApplicationManagerService(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage)
     {
-        return new ApplicationManagerService($entityManager, $blobStorage);
+        return new ApplicationManagerService(
+            $entityManager,
+            $blobStorage,
+            new EntityIdentityMapResolver($entityManager)
+        );
     }
 
     /**

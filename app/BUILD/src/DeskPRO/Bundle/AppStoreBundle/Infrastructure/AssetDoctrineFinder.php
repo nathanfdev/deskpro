@@ -44,6 +44,26 @@ class AssetDoctrineFinder implements Domain\AssetFinder
 
     /**
      * @param Domain\Application $application
+     * @return Entity\AppStore\AppAssetBlob[]
+     */
+    function findAllApplicationAssets(Domain\Application $application)
+    {
+        $qb = $this->entityManager->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppAssetBlob::class, 'asset')
+            ->select('asset')
+            ->innerJoin('asset.app', 'app')
+            ->innerJoin('asset.blob', 'blob')
+            ->where('app = :app')
+            ->setParameter('app', $application->getId())
+        ;
+
+        $result = $qb->getQuery()->getResult();
+        return $result;
+    }
+
+    /**
+     * @param Domain\Application $application
      * @param Domain\SearchAssetFilter $assetFilter
      * @return Domain\ApplicationAsset[]
      */
