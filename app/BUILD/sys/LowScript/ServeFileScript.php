@@ -169,6 +169,8 @@ class ServeFileScript extends LowScriptAbstract
                 $this->handleGradientRequest();
             } elseif (preg_match('#^/apps/([a-zA-Z0-9_\-\.]+)/(app|js|css|html|res)/(.*?)$#', $pathinfo, $m)) {
                 $this->handleAppsRequest($m[1], $m[2], $m[3]);
+            } elseif (preg_match('#^/apps/([^/]+)/assets/(.+)$#', $pathinfo, $m)) {
+                $this->handleAppsV2AssetRequest($m[1], $m[2]);
             } else {
                 if ($this->error_mode == 'exception') {
                     throw new \Exception('File not found. (bad_route)', 400);
@@ -1056,6 +1058,22 @@ class ServeFileScript extends LowScriptAbstract
         $new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
         return $new_blob_info;
+    }
+
+    /**
+     * Serves a v2 application asset
+     *
+     * @param string $appId
+     * @param string $assetPath
+     */
+    public function handleAppsV2AssetRequest($appId, $assetPath) {
+        $statement = 'SELECT blob_id, blob_authcode FROM app2_app_asset_blob WHERE app_id = :appId AND path =:assetPath LIMIT 1';
+        $pdoStatement = $this->getPdoRead()->prepare($statement);
+        $pdoStatement->execute(['appId' => $appId, 'assetPath' => $assetPath]);
+        $blobInfo = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (! empty($blobInfo)) {
+            $this->showBlob($blobInfo['blob_id'], null, $blobInfo['blob_authcode']);
+        }
     }
 
     /**
