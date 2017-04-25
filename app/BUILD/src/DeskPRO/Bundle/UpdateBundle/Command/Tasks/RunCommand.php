@@ -285,13 +285,12 @@ class RunCommand extends ContainerAwareCommand
             return 0;
         }
 
-        $dbVersion     = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
         $dbVersionName = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build_num'");
 
-        if ($dbVersion && $dbVersion <= 1463676536) {
+        if (version_compare($dbVersionName, '442.0', '<')) {
             $output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
             $output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
-            $output->writeln('Read more: https://manuals.deskpro.com/html/sysadmin/upgrade-new-portal/upgrade-new-portal.html');
+            $output->writeln('Read more: https://support.deskpro.com/en_GB/guides/sysadmin-guide/upgrading-2/upgrade-to-deskpro-v5');
 
             return 1;
         }
@@ -299,28 +298,37 @@ class RunCommand extends ContainerAwareCommand
         // 443, we need to reset version back in a time a bit before running the
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
-        if ($dbVersion == '1470650875' || $dbVersion == '1471618600' || strpos($dbVersionName, '443.') === 0) {
-            // Sanity check -- make sure someone didnt import a database dump over a new database
-            // mysqldump uses 'drop table if exists' by default, so it would work if someone
-            // tried to restore a dump into an existing database (e.g. from a fresh install).
-            // if the user faield to clean the database, then NEW tables in v5 will still exist,
-            // and cause the upgrade scripts to fail.
-            $tables = $this->getContainer()->getDb()->fetchAllCol('SHOW TABLES');
-            if (in_array('articles_slug_history', $tables)) {
-                $output->writeln('<error>Tables from v5 already exist in your database</error>');
-                $output->writeln('The most common cause of this is if you restored a MySQL dump onto an existing v5 install');
-                $output->writeln('without first performing the clean command.');
-                $output->writeln('');
-                $output->writeln('The process should look something like this:');
-                $output->writeln('<info>$ php bin/console install:clean --keep-config</info>');
-                $output->writeln('<info>$ mysql -uyouruser -p your_db_name < your-dump.sql</info>');
-                $output->writeln('<info>$ php bin/console dp:upgrade</info>');
-                $output->writeln('');
+        if (strpos($dbVersionName, '443.') === 0) {
+            $hasStarted = $this->getContainer()->get('database_connection')->fetchColumn("
+                SELECT data
+                FROM install_data
+                WHERE build = '1460678400' AND name = 'has_run'
+            ");
 
-                return 1;
+            // This only matters if the upgrade hasnt started yet
+            if (!$hasStarted) {
+                // Sanity check -- make sure someone didnt import a database dump over a new database
+                // mysqldump uses 'drop table if exists' by default, so it would work if someone
+                // tried to restore a dump into an existing database (e.g. from a fresh install).
+                // if the user faield to clean the database, then NEW tables in v5 will still exist,
+                // and cause the upgrade scripts to fail.
+                $tables = $this->getContainer()->get('database_connection')->fetchAllCol('SHOW TABLES');
+                if (in_array('articles_slug_history', $tables)) {
+                    $output->writeln('<error>Tables from v5 already exist in your database</error>');
+                    $output->writeln('The most common cause of this is if you restored a MySQL dump onto an existing v5 install');
+                    $output->writeln('without first performing the clean command.');
+                    $output->writeln('');
+                    $output->writeln('The process should look something like this:');
+                    $output->writeln('<info>$ php bin/console install:clean --keep-config</info>');
+                    $output->writeln('<info>$ mysql -uyouruser -p your_db_name < your-dump.sql</info>');
+                    $output->writeln('<info>$ php bin/console dp:upgrade</info>');
+                    $output->writeln('');
+
+                    return 1;
+                }
+
+                $this->getContainer()->getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
             }
-
-            $this->getContainer()->getDb()->update('settings', ['value' => '1459273988'], ['name' => 'core.deskpro_build']);
         }
 
         return 0;
