@@ -39,8 +39,8 @@ export class ConfirmResetContainer extends React.Component {
     const promise = dispatch(actions.resetTrial());
 
     promise.then(
-      (response) => {
-        window.location.href = response.getData().agentUrl;
+      () => {
+        window.location.href = window.DESKPRO_BASE_URL;
       },
       (response) => {
         if (this.mounted) {

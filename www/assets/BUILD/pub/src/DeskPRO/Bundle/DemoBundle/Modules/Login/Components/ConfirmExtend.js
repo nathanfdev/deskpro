@@ -36,7 +36,7 @@ export class ConfirmExtendContainer extends React.Component {
     });
 
     dispatch(actions.preserveData())
-      .then((response) => { window.location.href = response.data.agentUrl; })
+      .then(() => { window.location.href = window.DESKPRO_BASE_URL; })
       .catch(window.location.href = '/');
   };
 

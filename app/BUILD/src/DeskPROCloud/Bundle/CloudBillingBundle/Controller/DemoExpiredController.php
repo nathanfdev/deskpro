@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,6 +41,10 @@ class DemoExpiredController extends BaseController
      */
     public function indexAction()
     {
+        if (!defined('DPC_DEMO_EXPIRE') || !DPC_DEMO_EXPIRE) {
+            return $this->redirectToRoute('agent');
+        }
+
         return $this->render('CloudBillingBundle:DemoExpired:index.html.twig');
     }
 }

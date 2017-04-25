@@ -364,8 +364,8 @@ class ExtendTrial extends React.Component {
             </Segment>
           </SegmentsGroup>
           <div>
-            {this.props.errors && this.props.errors.processor_error ? (
-              <Message className="negative">Our payment processor could not process your form. Please try again.</Message>
+            {this.props.errors && this.props.errors.fields && this.props.errors.fields.processor_error ? (
+              <Message className="negative">Our payment processor could not process your form. Please check your details and try again.</Message>
             ) : null }
             <Button
               onClick={this.props.onResumeTrial}

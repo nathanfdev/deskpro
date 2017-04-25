@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Cloud;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -36,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -137,6 +139,8 @@ class CloudApiController extends BaseController
         $result = $this->callMa('set_site_cc_extend', [
             'form' => $data,
         ]);
+
+        $this->getDoctrine()->getManager()->getRepository(Setting::class)->updateSetting('demo_was_extended', time());
 
         return $this->wrap($result);
     }
@@ -247,16 +251,16 @@ class CloudApiController extends BaseController
             if (!$jobs = $rep->findBy(['type' => 'reset.'.$type], ['date_created' => 'desc'], 1)) {
                 continue;
             }
-            $status = $jobs[0]['status'];
-            if (in_array($status, ['rejected', 'aborted'])) {
-                $status = 'error';
+            $s = $jobs[0]['status'];
+            if (in_array($s, ['rejected', 'aborted'])) {
+                $s = 'error';
             }
             if (in_array($status, ['inserting', 'reserved', 'processing'])) {
-                $status = 'waiting';
+                $s = 'waiting';
             }
-            $status[$type] = $status;
+            $status[$type] = $s;
 
-            if ('waiting' === $status) {
+            if ('waiting' === $s) {
                 $status['waiting'] = true;
             }
         }
@@ -284,10 +288,10 @@ class CloudApiController extends BaseController
 
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->wrap([
-            'didReset' => true,
+        return new View($this->wrap([
+            'success'  => true,
             'agentUrl' => $this->get('router')->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL),
-        ]);
+        ]));
     }
 
     private function assertValidDemoCall()
@@ -295,7 +299,10 @@ class CloudApiController extends BaseController
         // these all only matter in demo mode
         // so prevent calling them any other time as a precaution
         if (!defined('DPC_DEMO_EXPIRE') || !DPC_DEMO_EXPIRE) {
-            throw $this->createNotFoundException('demo only');
+            $extendedAt = $this->get('settings_resolver')->getGlobalSettings()->get('demo_was_extended');
+            if (!$extendedAt || $extendedAt < (time() - 18000)) {
+                throw $this->createNotFoundException('demo only');
+            }
         }
     }
 
