@@ -128,7 +128,7 @@ class UsersourceHandler extends AbstractEntityHandler
                 'deskpro_api_authentication_apitokens_usersourcelogin',
                 [
                     'usersource' => $entity->getId(),
-                    'format'     => $context->getRequest()->query->getAlpha('format', 'default'),
+                    'format'     => $context->getRequest()->query->get('format', 'default'),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL)
             ;
