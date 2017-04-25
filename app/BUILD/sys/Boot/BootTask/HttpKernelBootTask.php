@@ -132,6 +132,9 @@ class HttpKernelBootTask implements BootTaskInterface
         if ($this->isUrlSegmentPrefix($path, '/admin')) {
             return 'admin';
         }
+        if ($this->isUrlSegmentPrefix($path, '/cloud')) {
+            return 'admin';
+        }
         if ($this->isUrlSegmentPrefix($path, '/reports')) {
             return 'reports';
         }

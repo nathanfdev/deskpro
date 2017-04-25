@@ -19,6 +19,10 @@ dp_routes:
 dpkernel_routes:
     resource: "@DeskPRO/Resources/config/dp-routing.php"
 
+
+#cloud_billing_routing:
+#    resource: "@CloudBillingBundle/Resources/config/routing.yml"
+
 nelmio_api_doc_index:
     path: /api/v2/doc/{view}
     defaults: { _controller: ApiBundle:ApiMan:doc, view: 'default' }

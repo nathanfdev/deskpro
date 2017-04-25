@@ -1153,7 +1153,7 @@ class Countries
      *
      * @return array
      */
-    public static function getContientArray()
+    public static function getContinentArray()
     {
         return self::$code_to_continent;
     }
@@ -1229,12 +1229,15 @@ class Countries
             'AT', // Austria
             'BE', // Belgium
             'CY', // Cyprus
+            'EE', // Estonia
             'FI', // Finland
             'FR', // France
             'DE', // Germany
             'GR', // Greece
             'IE', // Ireland
             'IT', // Italy
+            'LV', // Latvia
+            'LT', // Lithuania
             'LU', // Luxembourg
             'MT', // Malta
             'NL', // Netherlands
@@ -1242,6 +1245,40 @@ class Countries
             'SK', // Slovakia
             'SI', // Slovenia
             'ES', // Spain
+        ];
+    }
+
+    public static function getEuCountries()
+    {
+        return [
+            'AT', // Austria
+            'BE', // Belgium
+            'BG', // Bulgaria
+            'HR', // Croatia
+            'CY', // Cyprus
+            'CZ', // Czech Republic
+            'DK', // Denmark
+            'EE', // Estonia
+            'FI', // Finland
+            'FR', // France
+            'DE', // Germany
+            'GR', // Greece
+            'HU', // Hungary
+            'IE', // Ireland
+            'IT', // Italy
+            'LV', // Latvia
+            'LT', // Lithuania
+            'LU', // Luxembourg
+            'MT', // Malta
+            'NL', // Netherlands
+            'PL', // Poland
+            'PT', // Portugal
+            'RO', // Romania
+            'SK', // Slovakia
+            'SI', // Slovenia
+            'ES', // Spain
+            'SE', // Sweden
+            'UK', // United Kingdom at the moment
         ];
     }
 

@@ -88,7 +88,7 @@ export function getFormDataErrors(formData) {
  * @deprecated use getErrorsByPropertyPath instead
  */
 export function getErrors(response, name) {
-  const errors = response ? response.fields : {};
+  const errors = (response && response.fields) || {};
   return errors[name] ? errors[name].errors : [];
 }
 

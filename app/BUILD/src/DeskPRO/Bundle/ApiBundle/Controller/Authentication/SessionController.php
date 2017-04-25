@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -69,7 +70,7 @@ class SessionController extends BaseController
         $email = $form->getData()['email'];
 
         /** @var \Application\DeskPRO\EntityRepository\Person $person_repository */
-        $person_repository = $this->getRepository('DeskPRO:Person');
+        $person_repository = $this->getRepository(Person::class);
         $person            = $person_repository->findOneByEmail($email);
 
         $session_code = $request->cookies->get('dpsid-agent');
@@ -78,7 +79,7 @@ class SessionController extends BaseController
         $data = session_encode();
 
         /** @var \Application\DeskPRO\EntityRepository\Session $session_repository */
-        $session_repository = $this->getDoctrine()->getRepository('DeskPRO:Session');
+        $session_repository = $this->getDoctrine()->getRepository(Session::class);
         $session            = $session_repository->getSessionFromCode($session_code);
         if (!$session) {
             $session = new Session();
@@ -94,7 +95,9 @@ class SessionController extends BaseController
         $online_data = $this->get('data.agent')->getAgentsOnlineStatus();
         $this->get('event_dispatcher')->dispatch(UpdateOnlineEvent::EVENT_NAME, new UpdateOnlineEvent($online_data));
 
-        $response = new JsonResponse();
+        $response = new JsonResponse([
+            'sessionId' => $session->getSessionCode(),
+        ]);
         $response->headers->setCookie(new Cookie('dpsid-agent', $session->getSessionCode()));
 
         return $response;

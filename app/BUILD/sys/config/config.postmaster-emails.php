@@ -45,4 +45,7 @@ return [
     // xyz@postmaster.something.com
     // Seen by some automated systems where the bit before the @ is a special code
     'postmaster_domain' => '#@postmaster\..*?$#i',
+
+    // E.g. mailer-daemon@googlemail.com
+    'mailer_daemon' => '#mailer-daemon#i',
 ];

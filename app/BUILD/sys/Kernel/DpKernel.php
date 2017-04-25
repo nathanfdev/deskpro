@@ -148,6 +148,7 @@ class DpKernel extends BaseKernel
             $bundles = array_merge($bundles, [
                 new \Cloud\LegacyApiBundle\CloudLegacyApiBundle(),
                 new \Cloud\AdminInterfaceBundle\CloudAdminInterfaceBundle(),
+                new \DeskPROCloud\Bundle\CloudBillingBundle\CloudBillingBundle(),
             ]);
         }
 

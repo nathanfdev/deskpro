@@ -55,6 +55,7 @@ use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\Connection;
+use DpSys\License;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -203,9 +204,18 @@ class MainController extends AbstractController
         $ticket_snippet_cats           = $textSnippetCategoryRepository->getCatsForAgent('tickets', $this->person);
         $chat_snippet_cats             = $textSnippetCategoryRepository->getCatsForAgent('chat', $this->person);
 
+        $is_billing_error = false;
+        $lic              = License::getLicense();
+        if ($lic->isPastExpireDate()) {
+            $is_billing_error = true;
+        } elseif (defined('DPC_IS_CLOUD') && DPC_BILL_FAILED) {
+            $is_billing_error = true;
+        }
+
         return $this->render('AgentBundle:Main:index.html.twig', [
             'has_raw_assets'      => $has_raw_assets,
             'is_demo'             => $this->in->checkIsset('show-demo-bar'),
+            'is_billing_error'    => $is_billing_error,
             'last_message_id'     => $last_message_id,
             'js_debug'            => App::getConfig('debug.js', []),
             'is_first_login'      => $is_first_login,
