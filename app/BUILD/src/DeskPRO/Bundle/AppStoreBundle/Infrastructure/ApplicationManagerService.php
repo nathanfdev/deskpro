@@ -71,9 +71,6 @@ class ApplicationManagerService implements Domain\ApplicationManager
         //save app
         $appEntity = $this->createAppEntity($bundle);
 
-        //save assets
-        $this->createAssetEntityList($bundle, $appEntity);
-
         //save blob assets
         $blobs = $this->createBlobEntityList($bundle);
         $this->createAssetBlobEntityList($bundle, $blobs, $appEntity);
@@ -98,24 +95,6 @@ class ApplicationManagerService implements Domain\ApplicationManager
         $this->executeEntityOperationTransaction($entities, $entityOperation);
 
         return $appEntity;
-    }
-
-    /**
-     * @param Domain\AppBundle $bundle
-     * @param Entity\AppStore\App $app
-     */
-    private function createAssetEntityList(Domain\AppBundle $bundle, $app)
-    {
-        $entities = [];
-        foreach ($bundle->listAllResources() as $resource) {
-            $asset = new Entity\AppStore\AppAsset();
-            $asset->setApp($app);
-
-            $entities[] = $this->mapBundleResourceToAsset($resource, $asset);
-        }
-
-        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
-        $this->executeEntityOperationTransaction($entities, $entityOperation);
     }
 
     /**
@@ -163,14 +142,6 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
         $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
         $this->executeEntityOperationTransaction($entities, $entityOperation);
-    }
-
-    private function mapBundleResourceToAsset(Domain\AppBundleResource $resource, Entity\AppStore\AppAsset $asset)
-    {
-        $asset->setPath( $resource->getPath() );
-        $asset->setContent( $resource->getContent() );
-
-        return $asset;
     }
 
     /**

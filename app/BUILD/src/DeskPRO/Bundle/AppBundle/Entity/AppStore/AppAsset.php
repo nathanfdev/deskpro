@@ -34,6 +34,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app_asset")
+ * @deprecated soon to be replaced with AppAssetBlob
  */
 class AppAsset implements Domain\ApplicationAsset
 {

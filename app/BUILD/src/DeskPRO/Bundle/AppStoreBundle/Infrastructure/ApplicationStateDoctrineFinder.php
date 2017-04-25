@@ -45,7 +45,7 @@ class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
 
     /**
      * @param Domain\ApplicationStateId $id
-     * @return Entity\AppStore\AppAsset
+     * @return Entity\AppStore\AppState
      */
     public function find(Domain\ApplicationStateId $id)
     {
@@ -66,7 +66,7 @@ class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
             return null;
         }
 
-        /** @var Entity\AppStore\AppAsset $instance */
+        /** @var Entity\AppStore\AppState $instance */
         $instance = array_pop($result);
         return $instance;
     }

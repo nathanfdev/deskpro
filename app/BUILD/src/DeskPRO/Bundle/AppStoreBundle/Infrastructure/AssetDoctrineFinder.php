@@ -71,7 +71,7 @@ class AssetDoctrineFinder implements Domain\AssetFinder
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb
-            ->from(Entity\AppStore\AppAsset::class, 'asset')
+            ->from(Entity\AppStore\AppAssetBlob::class, 'asset')
             ->select('asset')
             ->innerJoin('asset.app', 'app')
             ->where('app = :app')
