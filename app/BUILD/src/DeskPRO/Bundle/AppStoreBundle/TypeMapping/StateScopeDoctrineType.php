@@ -11,7 +11,8 @@ class StateScopeDoctrineType extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
+
+        return $platform->getVarcharTypeDeclarationSQL($fieldDeclaration);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)

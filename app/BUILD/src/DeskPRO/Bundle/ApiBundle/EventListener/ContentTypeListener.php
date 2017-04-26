@@ -65,6 +65,8 @@ class ContentTypeListener implements EventSubscriberInterface
      */
     public function onRequest(GetResponseEvent $event)
     {
+        $request = $event->getRequest();
+
         $contentType = $request->headers->get('Content-Type');
         if (!empty($contentType)) {
             $requestFormatName = $request->getFormat($contentType);
