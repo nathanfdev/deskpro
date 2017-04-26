@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO;
+use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
@@ -44,10 +45,14 @@ class ApplicationManagerService implements Domain\ApplicationManager
     /** @var DeskproBlobStorage */
     private $blobStorage;
 
-    /**
-     * @var EntityIdentityMapResolver
-     */
+    /** @var EntityIdentityMapResolver */
     private $entityResolver;
+
+    /** @var \Closure */
+    private $persistEntityOperation;
+
+    /** @var \Closure */
+    private $removeEntityOperation;
 
     /**
      * ApplicationService constructor.
@@ -59,6 +64,14 @@ class ApplicationManagerService implements Domain\ApplicationManager
         $this->entityManager = $entityManager;
         $this->blobStorage = $blobStorage;
         $this->entityResolver = $entityResolver;
+
+        $this->persistEntityOperation = function (ORM\EntityManager $entityManager, $entity) {
+            $entityManager->persist($entity);
+        };
+
+        $this->removeEntityOperation = function (ORM\EntityManager $entityManager, $entity) {
+            $entityManager->remove($entity);
+        };
     }
 
 
@@ -86,13 +99,11 @@ class ApplicationManagerService implements Domain\ApplicationManager
     private function createAppEntity(Domain\AppBundle $bundle)
     {
         $entities = [];
-        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
-
         //save app and instance
 
         $appEntity = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
         $entities[] = $appEntity;
-        $this->executeEntityOperationTransaction($entities, $entityOperation);
+        $this->executeEntityOperationTransaction($entities, $this->persistEntityOperation);
 
         return $appEntity;
     }
@@ -140,8 +151,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
             $entities[] = $asset;
         }
 
-        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
-        $this->executeEntityOperationTransaction($entities, $entityOperation);
+        $this->executeEntityOperationTransaction($entities, $this->persistEntityOperation);
     }
 
     /**
@@ -182,8 +192,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
             $instanceEntity->setSettings($settings);
         }
 
-        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->persist($entity); };
-        $this->executeEntityOperationTransaction([$instanceEntity], $entityOperation);
+        $this->executeEntityOperationTransaction([$instanceEntity], $this->persistEntityOperation);
 
         return $instanceEntity;
     }
@@ -214,8 +223,10 @@ class ApplicationManagerService implements Domain\ApplicationManager
             ->setParameter('applicationId', $instance->getId())
             ->getQuery()
         ;
-
         $this->executeQueryTransaction($deleteQueries);
+
+        $this->sendUIClientReloadSignal();
+
         return $instance;
     }
 
@@ -240,9 +251,27 @@ class ApplicationManagerService implements Domain\ApplicationManager
             ->where('a.id = :id')->setParameter('id', $application->getId())
             ->getQuery()
         ;
-
         $this->executeQueryTransaction($deleteQueries);
+
+        $this->sendUIClientReloadSignal();
+
         return $application;
+    }
+
+    private function sendUIClientReloadSignal()
+    {
+        $cm = new ClientMessage();
+        $cm->fromArray([
+            'channel' => 'agent.ui.reload',
+            'data'    => [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+            ],
+        ]);
+
+        $this->entityManager->persist($cm);
+        $this->entityManager->flush();
     }
 
     /**
@@ -256,8 +285,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
             function (Entity\AppStore\AppAssetBlob $asset) { return $asset->getBlob(); }
             , $assetList
         );
-        $entityOperation = function (ORM\EntityManager $entityManager, $entity) { $entityManager->remove($entity); };
-        $this->executeEntityOperationTransaction($assetList, $entityOperation);
+        $this->executeEntityOperationTransaction($assetList, $this->removeEntityOperation);
 
         foreach ($blobs as $blob) {
             $this->blobStorage->deleteBlobRecord($blob, false);
