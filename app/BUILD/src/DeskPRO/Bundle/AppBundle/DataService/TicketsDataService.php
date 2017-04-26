@@ -129,10 +129,23 @@ class TicketsDataService extends AbstractDataService
                             $qb->andWhere('t.id IN (:ids)');
                             $qb->setParameter('ids', $ids);
                         } else {
-                            // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
-                            $qb->leftJoin('t.participants', 'part');
-                            $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
-                            $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                            $parts[] = '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)';
+                            $params[] = $person->id;
+                            $params[] = $person->organization;
+
+                            if (!$person->is_agent) {
+                                $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)';
+                                $params[] = $person->id;
+                            }
+
+                            $partsUnion = implode("\nUNION\n", $parts);
+
+                            $ids = $em->getConnection()->fetchAllCol(
+                                "SELECT DISTINCT id FROM ($partsUnion) AS t",
+                                $params
+                            );
+                            $qb->andWhere('t.id IN (:ids)');
+                            $qb->setParameter('ids', $ids);
                         }
                     }
                 } else {
@@ -287,10 +300,23 @@ class TicketsDataService extends AbstractDataService
                         $qb->andWhere('t.id IN (:ids)');
                         $qb->setParameter('ids', $ids);
                     } else {
-                        // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
-                        $qb->leftJoin('t.participants', 'part');
-                        $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
-                        $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                        $parts[] = '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)';
+                        $params[] = $person->getId();
+                        $params[] = $person->getOrganization()->getId();
+
+                        if (!$person->isActiveAgent()) {
+                            $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)';
+                            $params[] = $person->getId();
+                        }
+
+                        $partsUnion = implode("\nUNION\n", $parts);
+
+                        $ids = $em->getConnection()->fetchAllCol(
+                            "SELECT DISTINCT id FROM ($partsUnion) AS t",
+                            $params
+                        );
+                        $qb->andWhere('t.id IN (:ids)');
+                        $qb->setParameter('ids', $ids);
                     }
                 }
 
