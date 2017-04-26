@@ -78,6 +78,9 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected $error_mode = 'error';
 
+    /** @var bool this setting is only overwritten by the apps v2 asset serving router */
+    private $alwaysForceDownloadOfHtmlFiles = true;
+
     /**
      * @var bool
      */
@@ -845,7 +848,8 @@ class ServeFileScript extends LowScriptAbstract
         header('Content-Type: '.$blob['content_type'].'; filename="'.addslashes($blob['filename']).'"');
         header('Content-Length: '.$blob['filesize']);
 
-        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'], true, $blob['filename'])) {
+        $safeInlineContent = $this->alwaysForceDownloadOfHtmlFiles;
+        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
             header('Content-Disposition: inline; filename="'.addslashes($blob['filename']).'"');
         } else {
             header('Content-Disposition: attachment; filename="'.addslashes($blob['filename_safe']).'"');
@@ -1072,6 +1076,7 @@ class ServeFileScript extends LowScriptAbstract
         $pdoStatement->execute(['appId' => $appId, 'assetPath' => $assetPath]);
         $blobInfo = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
         if (! empty($blobInfo)) {
+            $this->alwaysForceDownloadOfHtmlFiles = false;
             $this->showBlob($blobInfo['blob_id'], null, $blobInfo['blob_authcode']);
         }
     }
