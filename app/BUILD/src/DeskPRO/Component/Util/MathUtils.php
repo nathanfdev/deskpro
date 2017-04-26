@@ -147,4 +147,40 @@ class MathUtils
 
         //TODO support others
     }
+
+    /**
+     * @param string $hex
+     *
+     * @return string
+     */
+    public static function normalizeHex($hex)
+    {
+        $hex = strtolower($hex);
+        $hex = preg_replace('#[^0-9a-f]#', '', $hex);
+
+        if (strlen($hex) > 2 && strlen($hex) < 6) {
+            $hex = $hex[0] + $hex[0] + $hex[1] + $hex[1] + $hex[2] + $hex[2];
+        }
+
+        return $hex;
+    }
+
+    /**
+     * @see https://www.w3.org/TR/AERT#color-contrast
+     *
+     * @param string $hex
+     *
+     * @return bool
+     */
+    public static function isDarkBg($hex)
+    {
+        $hex = self::normalizeHex($hex);
+
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+        $o = round((($r * 299) + ($g * 587) + ($b * 114)) / 1000);
+
+        return $o < 125;
+    }
 }
