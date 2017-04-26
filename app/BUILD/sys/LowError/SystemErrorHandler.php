@@ -862,11 +862,10 @@ class SystemErrorHandler
 
             if (self::$bugsnagConfig['app_version']) {
                 self::$bugsnagClient->setAppVersion(self::$bugsnagConfig['app_version']);
-            } else {
-                $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
-                if (file_exists($buildNumFile)) {
-                    self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
-                }
+            } elseif (($buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-name.txt') && file_exists($buildNumFile)) {
+                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+            } elseif (($buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt') && file_exists($buildNumFile)) {
+                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
             }
         }
 
