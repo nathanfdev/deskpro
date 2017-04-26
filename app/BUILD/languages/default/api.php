@@ -50,6 +50,7 @@ return [
     'api.error_codes.invalid_authorization_header'   => 'Invalid Authorization header (type can be one of "key" or "token").',
     'api.error_codes.invalid_charset'                => 'This value does not match the expected {{ charset }} charset.',
     'api.error_codes.invalid_data_type'              => 'This data type was not expected.',
+    'api.error_codes.email_not_found'                => 'Email "{{ value }}" was not found.',
     'api.error_codes.invalid_email'                  => 'This value "{{ value }}" is not a valid email address.',
     'api.error_codes.invalid_input'                  => 'Request input is invalid.',
     'api.error_codes.invalid_json_body'              => 'The request JSON body is not valid JSON.',

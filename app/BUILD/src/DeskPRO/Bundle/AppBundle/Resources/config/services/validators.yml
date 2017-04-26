@@ -7,6 +7,20 @@ services:
     tags:
       - { name: validator.constraint_validator, alias: 'primary_key_exists_validator' }
 
+  validator.person_type:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\PersonTypeValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.exist_email:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\ExistEmailValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
   validator.free_email:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\FreeEmailValidator
     arguments:

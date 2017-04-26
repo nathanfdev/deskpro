@@ -115,6 +115,7 @@ return [
     'portal.account.welcome-back'                           => 'Welcome back',
     'portal.account.your-emails'                            => 'Your Email Addresses',
     'portal.account.your-pending-email-addresses'           => 'Your Pending Email Addresses',
+    'portal.account.link-expired'                           => 'Your link was already clicked or expired.',
     'portal.articles.by-line'                               => 'By {{name}} on {{date}}',
     'portal.articles.link'                                  => 'Link: <a href="{{link}}">{{link}}</a>',
     'portal.articles.none'                                  => 'No articles yet',
