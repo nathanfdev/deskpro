@@ -40,8 +40,9 @@ export const loadPhrases = createAction(
     repository('Languages').loadEmailPhrases(templateGroup, languageId).then((promise) => {
       const res = promise.getData();
 
-      const phrases = {};
+      const phrases = { all: { title: 'all', phrases: {} } };
       Object.keys(res).forEach((key) => {
+        phrases.all.phrases[key] = res[key];
         if ({}.hasOwnProperty.call(res, key)) {
           const keySections = key.split('.');
           const group = keySections[1];

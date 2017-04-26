@@ -105,23 +105,34 @@
         box-shadow: none;
         outline:0 !important;
       }
+      .CodeMirror {
+        user-select: none;
+        span.twig-variable {
+          color: $dp-sonic-primary;
+          border: solid 1px $dp-sonic-primary;
+          padding: 0 2px;
+        }
+        span.twig-phrase {
+          color: $dp-knuckles-primary;
+          border: solid 1px $dp-knuckles-primary;
+          padding: 0 2px;
+        }
+        span.twig-include {
+          color: $dp-emerald-primary;
+          border: solid 1px $dp-emerald-primary;
+          padding: 0 2px;
+        }
+      }
       .subject {
-        height: 90px;
+        height: 60px;
         .CodeMirror {
-          height: 60px;
+          height: 30px;
         }
       }
       .body {
-        height: calc(100% - 115px);
+        height: calc(100% - 85px);
         .CodeMirror {
           height: 100%;
-          span.cm-tag.twig-variable {
-            display: none;
-          }
-          span.cm-variable.twig-variable {
-            color: $dp-sonic-primary;
-            border: solid 1px $dp-sonic-primary;
-          }
         }
       }
       .email-body {

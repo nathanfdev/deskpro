@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react';
 import CM from 'codemirror';
 import 'codemirror/mode/twig/twig';
-import 'codemirror/mode/htmlembedded/htmlembedded';
-import 'codemirror/addon/mode/overlay';
-import $ from 'jquery';
 
 class CodeMirror extends React.Component {
   static propTypes = {
@@ -25,25 +22,15 @@ class CodeMirror extends React.Component {
 
   componentDidMount() {
     this.codeMirror = CM.fromTextArea(this.codeMirrorNode, this.getOptions());
-    this.codeMirror.on('change', this.codemirrorValueChanged);
+    this.codeMirror.on('change', this.codeMirrorValueChanged);
     this.codeMirror.on('focus', this.focusChanged.bind(this, true));
     this.codeMirror.on('blur', this.focusChanged.bind(this, false));
     this.currentCodemirrorValue = this.props.value;
-
     const that = this;
+
     setTimeout(() => {
       that.codeMirror.refresh();
     }, 1);
-
-    this.codeMirror.on('beforeChange', (event) => {
-      console.log('beforeChange event');
-      console.log(event);
-    });
-
-    $('.dp-code-editor').on('click', '.twig-variable', (e) => {
-      console.log(e);
-      console.log(e.target);
-    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -84,10 +71,9 @@ class CodeMirror extends React.Component {
     this.setState({ isFocused: focused });
   }
 
-  codemirrorValueChanged = (doc) => {
-    const newValue = doc.getValue();
-    this.currentCodemirrorValue = newValue;
-    this.props.onChange(newValue);
+  codeMirrorValueChanged = (cm, change) => {
+    this.currentCodemirrorValue = cm.getValue();
+    this.props.onChange(cm, change);
   };
 
   render() {

@@ -519,6 +519,7 @@ class EmailTemplatesEditor extends React.Component {
             changeTemplateSubject={this.handleChangeSubject}
             changeTemplateBody={this.handleChangeBody}
             ref={(c) => { this.editor = c; }}
+            phrases={this.props.emailTemplates.get('phrases')}
           />
           <div className="footer">
             <Button

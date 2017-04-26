@@ -29,7 +29,12 @@ export class PhrasesMenuContainer extends React.Component {
   render() {
     let phrases = null;
     if (this.props.emailTemplates) {
-      phrases = this.props.emailTemplates.get('phrases');
+      phrases = this.props.emailTemplates.get('phrases').filter((group) => {
+        if (group.get('title') === 'all') {
+          return false;
+        }
+        return true;
+      });
     }
     return (<PhrasesMenu
       phrases={phrases}
@@ -126,24 +131,14 @@ export class PhrasesMenu extends React.Component {
         (a, b) => a.get('key').localeCompare(b.get('key'))
       )
       .map(
-        (phrase, key) => {
-          if (
-            this.state.filter
-            && phrase.get('phrase').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-            && phrase.get('key').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-            && this.state.selectedLeft.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
-          ) {
-            return null;
-          }
-          return (<MenuItem key={key} onClick={() => this.selectPhrase(phrase)}>
-            <span className="phrase">{phrase.get('phrase')}</span>
-            <br />
-            <span className="phrase-key">
-              {phrase.get('key')}
-            </span>
+        (phrase, key) => (<MenuItem key={key} onClick={() => this.selectPhrase(phrase)}>
+          <span className="phrase">{phrase.get('phrase')}</span>
+          <br />
+          <span className="phrase-key">
+            {phrase.get('key')}
+          </span>
 
-          </MenuItem>);
-        });
+        </MenuItem>));
     return (
       <MenuWrapper className="right-panel">
         <Menu>
