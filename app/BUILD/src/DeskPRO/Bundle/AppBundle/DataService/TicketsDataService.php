@@ -40,6 +40,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Psr\Log\LoggerInterface;
 
 class TicketsDataService extends AbstractDataService
 {
@@ -49,16 +50,23 @@ class TicketsDataService extends AbstractDataService
     private $brandStack;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * TicketsDataService constructor.
      *
-     * @param EntityManager $em
-     * @param BrandStack    $brandStack
+     * @param EntityManager   $em
+     * @param BrandStack      $brandStack
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, BrandStack $brandStack)
+    public function __construct(EntityManager $em, BrandStack $brandStack, LoggerInterface $logger)
     {
         parent::__construct($em);
 
         $this->brandStack = $brandStack;
+        $this->logger     = $logger;
     }
 
     protected function ignoreTicketsWithOnlyAgentNotes(QueryBuilder $qb)
@@ -94,7 +102,6 @@ class TicketsDataService extends AbstractDataService
             ],
             function () use ($em, $person, $filter, $page, $maxPerPage, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
-
                 $qb->select('t')
                     ->from(Ticket::class, 't')
                     ->join('t.person', 'p')
@@ -115,10 +122,8 @@ class TicketsDataService extends AbstractDataService
                             $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
                             $params[] = $person->id;
 
-                            if (!$person->is_agent) {
-                                $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
-                                $params[] = $person->id;
-                            }
+                            $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
+                            $params[] = $person->id;
 
                             $partsUnion = implode("\nUNION\n", $parts);
 
@@ -253,7 +258,8 @@ class TicketsDataService extends AbstractDataService
             ],
             function () use ($em, $person, $status, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
-
+                $time = microtime(true);
+                $this->logger->debug('[TicketsDataService] Count started');
                 if ('open' === $status) {
                     $statusList = [
                         Ticket::STATUS_AWAITING_AGENT,
@@ -280,16 +286,17 @@ class TicketsDataService extends AbstractDataService
                 }
 
                 if ($person->is_agent) {
+                    $this->logger->debug('[TicketsDataService] Agent tickets counting');
                     $qb->andWhere('t.person = :person')->setParameter('person', $person);
                 } else {
                     if (!$person->organization || !$person->organization_manager) {
-                        $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
+                        $this->logger->debug('[TicketsDataService] No organization count, using UNION');
+
+                        $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC)';
                         $params[] = $person->id;
 
-                        if (!$person->is_agent) {
-                            $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
-                            $params[] = $person->id;
-                        }
+                        $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)';
+                        $params[] = $person->id;
 
                         $partsUnion = implode("\nUNION\n", $parts);
 
@@ -300,6 +307,7 @@ class TicketsDataService extends AbstractDataService
                         $qb->andWhere('t.id IN (:ids)');
                         $qb->setParameter('ids', $ids);
                     } else {
+                        $this->logger->debug('[TicketsDataService] Organization count, using UNION');
                         $parts[] = '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)';
                         $params[] = $person->getId();
                         $params[] = $person->getOrganization()->getId();
@@ -322,7 +330,12 @@ class TicketsDataService extends AbstractDataService
 
                 $qb->distinct(true);
 
-                return $qb->getQuery()->getSingleScalarResult();
+                $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
+
+                $this->logger->debug('[TicketsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time));
+                $this->logger->debug("[TicketsDataService] Count: $singleScalarResult");
+
+                return $singleScalarResult;
             }
         );
     }
