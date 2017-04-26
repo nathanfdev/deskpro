@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import CodeMirror from './CodeMirror';
+import { PhraseWidget, TemplateWidget, VariableWidget } from './Editor/';
 
 class Editor extends React.Component {
   static propTypes = {
@@ -40,62 +41,50 @@ class Editor extends React.Component {
           text = change.text;
           break;
       }
+      const widgets = [];
       text.forEach((content, line) => {
         let match;
         let re;
         re = /{{\s*([a-z0-9_.]+)\s*}}/g;
         match = re.exec(content);
         while (match !== null) {
-          const element = document.createElement('span');
-          element.innerHTML = match[1];
-          element.className = 'twig-variable';
-          element.onclick = this.onClickVariable;
-          doc.markText({
-            line: line + from.line,
-            ch:   match.index
-          }, {
-            line: line + from.line,
-            ch:   match.index + match[0].length
-          }, {
-            atomic:       true,
-            replacedWith: element,
-          });
+          widgets.push(new VariableWidget(
+            cm,
+            {
+              line: line + from.line,
+              ch:   match.index
+            },
+            match[0],
+            match[1]
+          ));
           match = re.exec(content);
         }
-        re = /{{\s*phrase\('([^)]+)'\)\s*}}/g;
+        re = /{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/g;
         match = re.exec(content);
         while (match !== null) {
-          const element = document.createElement('span');
-          element.innerHTML = this.findPhrase(match[1]);
-          element.className = 'twig-phrase';
-          doc.markText({
-            line: line + from.line,
-            ch:   match.index
-          }, {
-            line: line + from.line,
-            ch:   match.index + match[0].length
-          }, {
-            atomic:       true,
-            replacedWith: element,
-          });
+          widgets.push(new PhraseWidget(
+            cm,
+            {
+              line: line + from.line,
+              ch:   match.index
+            },
+            match[0],
+            this.findPhrase(match[1])
+          ));
           match = re.exec(content);
         }
         re = /{%\s*include\s*'([^)]+)'\s*%}/g;
         match = re.exec(content);
         while (match !== null) {
-          const element = document.createElement('span');
-          element.innerHTML = match[1].replace(/^SendmailBundle:/, '');
-          element.className = 'twig-include';
-          doc.markText({
-            line: line + from.line,
-            ch:   match.index
-          }, {
-            line: line + from.line,
-            ch:   match.index + match[0].length
-          }, {
-            atomic:       true,
-            replacedWith: element,
-          });
+          widgets.push(new TemplateWidget(
+            cm,
+            {
+              line: line + from.line,
+              ch:   match.index
+            },
+            match[0],
+            match[1]
+          ));
           match = re.exec(content);
         }
       });
