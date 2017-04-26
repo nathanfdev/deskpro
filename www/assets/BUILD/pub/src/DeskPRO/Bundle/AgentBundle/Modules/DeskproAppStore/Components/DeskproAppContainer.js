@@ -56,7 +56,7 @@ class DeskproAppContainer extends React.Component {
     const { widgets } = this.props;
     const components = widgets.map( widget => this.createReactElement(widget.id, widget.config));
 
-    return (<div> {components} </div> );
+    return React.createElement('div', {}, components);
   }
 
   /**

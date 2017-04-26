@@ -236,8 +236,8 @@ function getWebpackConfig(mode, isProd) {
           test:   /\.json/,
           loader: 'json-loader'
         },
-        // { test: require.resolve("react"), loader: "expose-loader?React" },
-        // { test: require.resolve("react-dom"), loader: "expose-loader?ReactDOM" },
+        { test: require.resolve("react"), loader: "expose-loader?React" },
+        { test: require.resolve("react-dom"), loader: "expose-loader?ReactDOM" },
       ],
       noParse: [/(^(froala|jquery\.mark))\.min\.js/, /xcomponent/]
     },
