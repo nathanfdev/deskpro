@@ -49,6 +49,8 @@ class UsersourcesController extends CrudController
 {
     public static $exposeOnly = ['get', 'list', 'count'];
     public static $entity     = Usersource::class;
+    public static $listSort   = 'display_order';
+    public static $listOrder  = 'asc';
 
     /**
      * {@inheritdoc}
