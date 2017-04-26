@@ -1347,5 +1347,5 @@ body.outlook p {
     table.button.small-expanded center {
       min-width: 0; } }
 
-body {
+body, html {
   background-color: #FEFEFE; }

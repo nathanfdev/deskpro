@@ -115,6 +115,13 @@
         height: calc(100% - 115px);
         .CodeMirror {
           height: 100%;
+          span.cm-tag.twig-variable {
+            display: none;
+          }
+          span.cm-variable.twig-variable {
+            color: $dp-sonic-primary;
+            border: solid 1px $dp-sonic-primary;
+          }
         }
       }
       .email-body {
