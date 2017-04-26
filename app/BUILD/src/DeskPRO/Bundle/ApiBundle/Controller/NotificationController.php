@@ -113,7 +113,7 @@ class NotificationController extends BaseController
      *     section="Notifications and alerts",
      *     resourceDescription="Operations about action alerts",
      *     statusCodes={
-     *         200="Returned if everything is ok"
+     *         204="Returned if everything is ok"
      *     },
      *     noInput=true
      * )
@@ -130,7 +130,7 @@ class NotificationController extends BaseController
     {
         $this->doHeartbeat($request);
 
-        return View::create(null, Response::HTTP_ACCEPTED);
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
