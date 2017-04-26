@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -114,41 +115,33 @@ class TicketsDataService extends AbstractDataService
 
                 // type
                 if (TicketFilter::TYPE_OWN === $filter->getType()) {
-                    if ($person->is_agent) {
+                    if ($person->isAgent()) {
                         // agents only their own tickets
                         $qb->andWhere('t.person = :person')->setParameter('person', $person);
                     } else {
-                        if (!$person->organization || !$person->organization_manager) {
-                            $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
-                            $params[] = $person->id;
+                        /** @var Connection $connection */
+                        $connection = $em->getConnection();
+                        if (!$person->getOrganization() || !$person->isOrganizationManager()) {
+                            $parts = [
+                                '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)',
+                                '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)',
+                            ];
 
-                            $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
-                            $params[] = $person->id;
-
+                            $params = [$person->getId(), $person->getId()];
                             $partsUnion = implode("\nUNION\n", $parts);
+                            $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
 
-                            $ids = $em->getConnection()->fetchAllCol(
-                                "SELECT DISTINCT id FROM ($partsUnion) AS t",
-                                $params
-                            );
                             $qb->andWhere('t.id IN (:ids)');
                             $qb->setParameter('ids', $ids);
                         } else {
-                            $parts[] = '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)';
-                            $params[] = $person->id;
-                            $params[] = $person->organization;
-
-                            if (!$person->is_agent) {
-                                $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)';
-                                $params[] = $person->id;
-                            }
-
+                            $parts = [
+                                '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)',
+                                '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
+                            ];
+                            $params = [$person->getId(), $person->getOrganization(), $person->getId()];
                             $partsUnion = implode("\nUNION\n", $parts);
+                            $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
 
-                            $ids = $em->getConnection()->fetchAllCol(
-                                "SELECT DISTINCT id FROM ($partsUnion) AS t",
-                                $params
-                            );
                             $qb->andWhere('t.id IN (:ids)');
                             $qb->setParameter('ids', $ids);
                         }
@@ -156,7 +149,7 @@ class TicketsDataService extends AbstractDataService
                 } else {
                     // its assumed that if you send in a person with an "organization" type filter that they have an
                     // organization and are a manger. ensure the controller/calling-code has this secured
-                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->getOrganization());
                 }
 
                 // category
@@ -285,44 +278,36 @@ class TicketsDataService extends AbstractDataService
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
-                if ($person->is_agent) {
+                if ($person->isAgent()) {
                     $this->logger->debug('[TicketsDataService] Agent tickets counting');
                     $qb->andWhere('t.person = :person')->setParameter('person', $person);
                 } else {
-                    if (!$person->organization || !$person->organization_manager) {
+                    /** @var Connection $connection */
+                    $connection = $em->getConnection();
+                    if (!$person->getOrganization() || !$person->isOrganizationManager()) {
                         $this->logger->debug('[TicketsDataService] No organization count, using UNION');
 
-                        $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC)';
-                        $params[] = $person->id;
-
-                        $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)';
-                        $params[] = $person->id;
-
+                        $parts = [
+                            '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC)',
+                            '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
+                        ];
+                        $params = [$person->getId(), $person->getId()];
                         $partsUnion = implode("\nUNION\n", $parts);
+                        $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
 
-                        $ids = $em->getConnection()->fetchAllCol(
-                            "SELECT DISTINCT id FROM ($partsUnion) AS t",
-                            $params
-                        );
                         $qb->andWhere('t.id IN (:ids)');
                         $qb->setParameter('ids', $ids);
                     } else {
                         $this->logger->debug('[TicketsDataService] Organization count, using UNION');
-                        $parts[] = '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)';
-                        $params[] = $person->getId();
-                        $params[] = $person->getOrganization()->getId();
 
-                        if (!$person->isActiveAgent()) {
-                            $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)';
-                            $params[] = $person->getId();
-                        }
-
+                        $parts = [
+                            '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)',
+                            '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
+                        ];
+                        $params = [$person->getId(), $person->getOrganization()->getId(), $person->getId()];
                         $partsUnion = implode("\nUNION\n", $parts);
+                        $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
 
-                        $ids = $em->getConnection()->fetchAllCol(
-                            "SELECT DISTINCT id FROM ($partsUnion) AS t",
-                            $params
-                        );
                         $qb->andWhere('t.id IN (:ids)');
                         $qb->setParameter('ids', $ids);
                     }
@@ -391,8 +376,8 @@ class TicketsDataService extends AbstractDataService
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
-                if ($person->organization && $person->organization_manager) {
-                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+                if ($person->getOrganization() && $person->isOrganizationManager()) {
+                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->getOrganization());
                 }
 
                 $qb->distinct(true);
