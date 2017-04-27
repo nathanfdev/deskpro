@@ -22,8 +22,8 @@ class PopUp extends React.Component {
     allowCloseOnClickOut: PropTypes.bool,
     manual:               PropTypes.bool,
     className:            PropTypes.string,
+    style:                PropTypes.object,
     innerClassName:       PropTypes.string,
-
   };
 
   static defaultProps = {
@@ -114,11 +114,12 @@ class PopUp extends React.Component {
 
   render() {
     const { isOpen } = this.state;
-    const { children, className } = this.props;
+    const { children, className, style } = this.props;
 
     return (
       <div
         className={classNames({ active: isOpen }, className)}
+        style={style}
         ref={(c) => { this.button = c; }}
         onClick={!this.props.manual && this.openPopup}
         onMouseEnter={this.onMouseEnter}

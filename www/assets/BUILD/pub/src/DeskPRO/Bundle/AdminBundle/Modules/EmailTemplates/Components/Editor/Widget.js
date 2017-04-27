@@ -4,7 +4,7 @@ class Widget {
     this.pos = pos;
   }
 
-  setMark = (domNode) => {
+  setMark = (domNode, code) => {
     const doc = this.cm.getDoc();
     this.mark = doc.markText({
       line: this.pos.line,
@@ -12,7 +12,7 @@ class Widget {
     },
       {
         line: this.pos.line,
-        ch:   this.pos.ch + this.code.length
+        ch:   this.pos.ch + code.length
       },
       {
         atomic:       true,

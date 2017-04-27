@@ -64,6 +64,15 @@ export const loadPhrases = createAction(
   })
 );
 
+export const loadTranslations = createAction(
+  'EMAIL_TEMPLATE_LOAD_TRANSLATIONS',
+  code => new Promise((resolve) => {
+    repository('Languages').loadTranslations(code).then((promise) => {
+      resolve(promise.getData());
+    });
+  })
+);
+
 export const loadTemplate = createAction(
   'EMAIL_TEMPLATES_LOAD_TEMPLATE',
   name => new Promise((resolve) => {

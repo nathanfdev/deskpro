@@ -108,19 +108,22 @@
       .CodeMirror {
         user-select: none;
         span.twig-variable {
-          color: $dp-sonic-primary;
-          border: solid 1px $dp-sonic-primary;
-          padding: 0 2px;
-        }
-        span.twig-phrase {
           color: $dp-knuckles-primary;
           border: solid 1px $dp-knuckles-primary;
           padding: 0 2px;
+          cursor: pointer;
+        }
+        span.twig-phrase {
+          color: $dp-sonic-primary;
+          border: solid 1px $dp-sonic-primary;
+          padding: 0 2px;
+          cursor: pointer;
         }
         span.twig-include {
           color: $dp-emerald-primary;
           border: solid 1px $dp-emerald-primary;
           padding: 0 2px;
+          cursor: pointer;
         }
       }
       .subject {
@@ -503,5 +506,32 @@
         }
       }
     }
+  }
+}
+.variable-popup {
+  width: 700px;
+  .phrase {
+    margin-left: 5px;
+    font-family: Courier, monospace;
+    color: $dp-sonic-primary;
+  }
+  .field {
+    label {
+      width: 25%;
+      line-height: 37px;
+      padding-left: 5px;
+      background-color: $dp-greyscale-250;
+      border-radius: 2px 0 0 2px;
+    }
+    .ui.input {
+      width: 75%;
+      input {
+        border-radius: 0 2px 2px 0;
+      }
+    }
+  }
+  .variables {
+    width: auto;
+    height: auto;
   }
 }

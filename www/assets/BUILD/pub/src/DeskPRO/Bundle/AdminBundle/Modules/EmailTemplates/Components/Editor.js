@@ -5,22 +5,19 @@ import { PhraseWidget, TemplateWidget, VariableWidget } from './Editor/';
 
 class Editor extends React.Component {
   static propTypes = {
-    disabled:              PropTypes.bool,
-    subject:               PropTypes.string,
-    body:                  PropTypes.string,
-    changeTemplateBody:    PropTypes.func,
-    changeTemplateSubject: PropTypes.func,
-    phrases:               PropTypes.object,
+    disabled:               PropTypes.bool,
+    subject:                PropTypes.string,
+    body:                   PropTypes.string,
+    changeTemplateBody:     PropTypes.func,
+    changeTemplateSubject:  PropTypes.func,
+    getPhraseTranslations:  PropTypes.func,
+    savePhraseTranslations: PropTypes.func,
+    phrases:                PropTypes.object,
   };
   static defaultProps = {
     disabled: false,
     changeTemplateBody() {},
     changeTemplateSubject() {},
-  };
-
-  onClickVariable = (e) => {
-    console.log(e);
-    console.log(e.target);
   };
 
   findPhrase = key => this.props.phrases.getIn(['all', 'phrases', key], key);
@@ -69,7 +66,9 @@ class Editor extends React.Component {
               ch:   match.index
             },
             match[0],
-            this.findPhrase(match[1])
+            this.findPhrase(match[1]),
+            this.props.getPhraseTranslations,
+            this.props.savePhraseTranslations
           ));
           match = re.exec(content);
         }
@@ -88,9 +87,6 @@ class Editor extends React.Component {
           match = re.exec(content);
         }
       });
-      setTimeout(() => {
-        cm.refresh();
-      }, 1);
     }
     return true;
   };

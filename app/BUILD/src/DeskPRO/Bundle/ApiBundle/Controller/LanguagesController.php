@@ -351,8 +351,6 @@ class LanguagesController extends CrudController
      * @param $languageId
      *
      * @return View
-     *
-     * @internal param Request $request
      */
     public function emailPhrasesAction($group, $languageId)
     {
@@ -424,6 +422,36 @@ class LanguagesController extends CrudController
         $phrases = $translate->getArrayPhraseTexts($phrases, $language);
 
         return new View($phrases);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide translation of a phrase",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     output="array"
+     * )
+     * @Rest\Get("/translations/{phraseName}")
+     * @Feature("email_templates")
+     *
+     * @param $phraseName
+     *
+     * @return View
+     */
+    public function getTranslationsAction($phraseName)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        $languages = $translate->getAllLanguages();
+        $translations = [];
+        foreach ($languages as $language) {
+            $translations[$language->getLocale()] = $translate->getPhraseText($phraseName, $language, true);
+        }
+        return new View($translations);
     }
 
     /**

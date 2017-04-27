@@ -7,18 +7,11 @@ class Input extends React.Component {
   static propTypes = {
     icon:         PropTypes.string,
     iconPosition: PropTypes.string,
-    id:           PropTypes.string,
-    maxLength:    PropTypes.number,
-    name:         PropTypes.string,
-    placeholder:  PropTypes.string,
-    value:        PropTypes.string,
-    type:         PropTypes.string,
     onChange:     PropTypes.func,
     onKeyPress:   PropTypes.func,
     onEnterKey:   PropTypes.func
   };
   static defaultProps = {
-    type: 'text',
     onChange() {},
     onKeyPress() {},
     onEnterKey() {}
@@ -44,19 +37,16 @@ class Input extends React.Component {
   };
 
   render() {
-    const { placeholder, icon, iconPosition, id, maxLength, name, type, value } = this.props;
+    const { icon, iconPosition, ...rest } = this.props;
+    const divProps = Object.assign({}, rest);
+    delete divProps.onEnterKey;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
         <ReactFormInput
-          id={id}
-          value={value}
           ref={(c) => { this.input = c; }}
-          type={type}
-          name={name}
-          maxLength={maxLength}
           onChange={this.handleChange}
           onKeyPress={this.keyPress}
-          placeholder={placeholder}
+          {...divProps}
         />
         {this.getIcon()}
       </div>

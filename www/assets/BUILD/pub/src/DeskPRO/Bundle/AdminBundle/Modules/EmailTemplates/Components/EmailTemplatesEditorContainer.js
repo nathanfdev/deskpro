@@ -62,9 +62,26 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.emailTemplates.get('phrases') !== this.props.emailTemplates.get('phrases')) {
+      const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
+      const subject = this.props.emailTemplates.getIn(['template', 'template_code', 'subject'], '');
+      this.previewTemplate(body, nextProps.emailTemplates.get('currentLanguage'));
+
+      this.props.dispatch(actions.updateTemplateBody(''));
+      this.props.dispatch(actions.updateTemplateSubject(''));
+      setTimeout(() => {
+        this.props.dispatch(actions.updateTemplateBody(body));
+        this.props.dispatch(actions.updateTemplateSubject(subject));
+      }, 1);
+    }
+  }
+
   componentWillUnmount() {
     this.props.dispatch(actions.cleanState);
   }
+
+  getPhraseTranslations = code => this.props.dispatch(actions.loadTranslations(code));;
 
   addTemplate = (name) => {
     this.setState({
@@ -100,18 +117,18 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   changeTemplateBody = (value) => {
+    const lang = this.props.emailTemplates.get('currentLanguage');
+    this.previewTemplate(value, lang);
+    this.props.dispatch(actions.updateTemplateBody(value));
+  };
+
+  previewTemplate = debounce(function (value, lang) {
     const variables = [];
     if (this.props.emailTemplates.get('exampleTicket')) {
       variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
     }
-    const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
+    const viewModel = this.props.emailTemplates.getIn(['currentTemplate', 'viewModel']);
     const group = this.props.emailTemplates.get('currentTemplateGroup');
-    const lang = this.props.emailTemplates.get('currentLanguage');
-    this.previewTemplate(viewModel, group, value, variables, lang);
-    this.props.dispatch(actions.updateTemplateBody(value));
-  };
-
-  previewTemplate = debounce((viewModel, group, value, variables, lang) => {
     this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang));
   }, 400);
 
@@ -215,6 +232,9 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
   };
 
+  savePhraseTranslations = () => {
+  };
+
   handleEmailAddress = (e) => {
     this.setState({
       previewEmailAddress: e.target.value
@@ -242,6 +262,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       insertVariable={this.insertVariable}
       sendPreview={this.sendPreview}
       addTemplate={this.addTemplate}
+      getPhraseTranslations={this.getPhraseTranslations}
+      savePhraseTranslations={this.savePhraseTranslations}
       previewSubmit={this.state.previewSubmit}
       resetSubmit={this.state.resetSubmit}
       saveSubmit={this.state.saveSubmit}
@@ -273,6 +295,8 @@ class EmailTemplatesEditor extends React.Component {
     insertVariable:         PropTypes.func,
     sendPreview:            PropTypes.func,
     addTemplate:            PropTypes.func,
+    getPhraseTranslations:  PropTypes.func,
+    savePhraseTranslations: PropTypes.func,
     previewSubmit:          PropTypes.bool,
     resetSubmit:            PropTypes.bool,
     saveSubmit:             PropTypes.bool,
@@ -330,29 +354,15 @@ class EmailTemplatesEditor extends React.Component {
       templatesGroups
     });
 
-    if (emailTemplates.get('currentTemplate')) {
-      this.setState({
-        currentTemplate: emailTemplates.get('currentTemplate').get('title')
-      });
-    } else {
-      this.setState({
-        currentTemplate: 'Select a template'
-      });
-    }
+    this.setState({
+      currentTemplate: emailTemplates.getIn(['currentTemplate', 'title'], 'Select a template')
+    });
 
-    if (emailTemplates.get('currentTemplate') && emailTemplates.get('template') && emailTemplates.get('template').get('template_code')) {
-      this.setState({
-        templateSubject:  emailTemplates.get('template').get('template_code').get('subject'),
-        templateBody:     emailTemplates.get('template').get('template_code').get('body'),
-        textareaDisabled: false
-      });
-    } else {
-      this.setState({
-        templateSubject:  '',
-        templateBody:     '',
-        textareaDisabled: true
-      });
-    }
+    this.setState({
+      templateSubject:  emailTemplates.getIn(['template', 'template_code', 'subject'], ''),
+      templateBody:     emailTemplates.getIn(['template', 'template_code', 'body'], ''),
+      textareaDisabled: !emailTemplates.get('currentTemplate')
+    });
   };
 
   handleChangeBody = (value) => {
@@ -520,6 +530,8 @@ class EmailTemplatesEditor extends React.Component {
             changeTemplateBody={this.handleChangeBody}
             ref={(c) => { this.editor = c; }}
             phrases={this.props.emailTemplates.get('phrases')}
+            getPhraseTranslations={this.props.getPhraseTranslations}
+            savePhraseTranslations={this.props.savePhraseTranslations}
           />
           <div className="footer">
             <Button
