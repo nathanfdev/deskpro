@@ -3,6 +3,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS = 'DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
+export const DESKPRO_APPSTORE_LOAD_DEV_APPS = 'DESKPRO_APPSTORE_LOAD_DEV_APPS';
 export const DESKPRO_APPSTORE_APP_MOUNTED = 'DESKPRO_APPSTORE_APP_MOUNTED';
 
 export const DESKPRO_APPSTORE_STATE_FIND = 'DESKPRO_APPSTORE__STATE_FIND';
@@ -36,6 +37,15 @@ export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAG
 export const mountPageFragmentContainers = createAction(DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS, () => {
 
 });
+
+/**
+ * creates an action that will load the app configuration for the current security principal
+ */
+export const loadDevApp = createAction(
+  DESKPRO_APPSTORE_LOAD_DEV_APPS,
+  //TODO put this together with the other constants
+  (api, manifestUrl) =>  api.sendGet(manifestUrl).then(httpResponse => httpResponse.data)
+);
 
 /**
  * creates an action that will load the app configuration for the current security principal

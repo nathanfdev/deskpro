@@ -15,10 +15,30 @@ const initialState = Immutable.fromJS({
  * @param {Object} action
  * @returns {Object}
  */
+function loadDevAppHandler(state, payload, action) {
+  switch(action.meta.sequence) {
+    case 'done' :
+    const newState = Immutable.fromJS({
+      apps: { environment: 'development', manifests: [payload] }
+    });
+    return state.merge(newState);
+    default:
+      return state;
+  }
+}
+
+/**
+ * @param {Object} state
+ * @param {Array} payload
+ * @param {Object} action
+ * @returns {Object}
+ */
 function loadAppsHandler(state, payload, action) {
   switch(action.meta.sequence) {
     case 'done' :
-    const newState = Immutable.fromJS({ apps: payload });
+    const newState = Immutable.fromJS({
+      apps: { environment: 'production', manifests: payload }
+    });
     return state.merge(newState);
     default:
       return state;
@@ -79,6 +99,7 @@ export default createReducer(
     [actions.mountPageFragmentContainers] : mountPageFragmentContainersHandler,
     [actions.loadPageFragmentApps]: loadPageFragmentAppsHandler,
     [actions.appMounted]: appMountedHandler,
-    [actions.loadApps]: loadAppsHandler
+    [actions.loadApps]: loadAppsHandler,
+    [actions.loadDevApp]: loadDevAppHandler
   }
 );

@@ -5,12 +5,19 @@ import uuid from 'node-uuid';
 class DeskproAppRegistry
 {
   /**
-   * @param {Array<Object>} jsList
+   * @param {Array<Object>} rawManifests
+   * @param {DeskproAppStoreConfiguration} config
    * @return { DeskproAppRegistry }
    */
-  static fromJS(jsList) {
-    // TODO validate with a schema
-    const appList = jsList.map(js => AppConfiguration.fromJS(js));
+  static fromJS(rawManifests, config) {
+    let manifests;
+    if (config.environment == 'development') {
+      manifests = rawManifests.map(manifest => ({ id: 1, application_id: 1, baseUrl: config.endpoint, ...manifest }));
+    } else {
+      manifests = rawManifests.map(manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.id}/files`, ...manifest}))
+    }
+
+    const appList = manifests.map(manifest => AppConfiguration.fromJS(manifest));
     return new DeskproAppRegistry(appList);
   }
 
@@ -47,7 +54,7 @@ class DeskproAppRegistry
     //const tag = `${target}-${appId}`;
     //TODO the tag set here needs to match the tag set in the iframe by the SDK otherwise communication will not happen
     const tag = target;
-    const url = `http://127.0.0.1:31080/${app.getUrl(target)}`;
+    const url = app.getUrl(target);
 
     const xconfig = {
       tag,
@@ -58,16 +65,8 @@ class DeskproAppRegistry
       timeout: 3000, // millis
       // The properties they can (or must) pass down to my component
       props: {
-
-        widgetId: {
-          type: 'string',
-          required: true
-        },
-
-        onDpMessage: {
-          type: 'function',
-          required: true
-        }
+        widgetId: { type: 'string', required: true },
+        onDpMessage: { type: 'function', required: true }
       }
     };
 

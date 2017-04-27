@@ -5,8 +5,8 @@ class AppConfiguration
    * @return {AppConfiguration}
    */
   static fromJS(config) {
-    const { id, application_id, settings, targets } = config;
-    return new AppConfiguration(id.toString(), application_id.toString(), settings, targets);
+    const { id, application_id, settings, targets, baseUrl } = config;
+    return new AppConfiguration(id.toString(), application_id.toString(), settings, targets, baseUrl);
   }
 
   /**
@@ -14,12 +14,14 @@ class AppConfiguration
    * @param {String} applicationId
    * @param {Array} settings
    * @param {Array} targets
+   * @param {String} baseUrl
    */
-  constructor(id, applicationId, settings, targets) {
+  constructor(id, applicationId, settings, targets, baseUrl) {
     this.id = id;
     this.applicationId = applicationId;
     this.settings = settings;
     this.targets = targets;
+    this.baseUrl = baseUrl;
   }
 
   /**
@@ -41,7 +43,7 @@ class AppConfiguration
       return null;
     }
 
-    return targetDefs[0].url;
+    return this.baseUrl + "/" + targetDefs[0].url;
   };
 
   toJS = () => {

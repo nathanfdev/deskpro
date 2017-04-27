@@ -69,7 +69,8 @@ export const preloadData    = createAction(
       dispatch(loadAgentPhraseTranslations());
 
       //bootstrap deskpro app store
-      DeskproAppStore.dispatchLoadApps(dispatch, api);
+      const configuration = DeskproAppStore.configurationFromLocation(window.location);
+      DeskproAppStore.dispatchLoadAppManifestsAction(dispatch, api, configuration);
 
       api.sendGet(api.prepareParams(batchComponents))
         .success(({ responses }) => {
