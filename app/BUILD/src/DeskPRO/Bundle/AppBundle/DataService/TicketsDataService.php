@@ -134,16 +134,11 @@ class TicketsDataService extends AbstractDataService
                             $qb->andWhere('t.id IN (:ids)');
                             $qb->setParameter('ids', $ids);
                         } else {
-                            $parts = [
-                                '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)',
-                                '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
-                            ];
-                            $params = [$person->getId(), $person->getOrganization(), $person->getId()];
-                            $partsUnion = implode("\nUNION\n", $parts);
-                            $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
 
-                            $qb->andWhere('t.id IN (:ids)');
-                            $qb->setParameter('ids', $ids);
+                            // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
+                            $qb->leftJoin('t.participants', 'part');
+                            $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
+                            $qb->setParameter('person', $person)->setParameter('organization', $person->getOrganization());
                         }
                     }
                 } else {
@@ -298,18 +293,12 @@ class TicketsDataService extends AbstractDataService
                         $qb->andWhere('t.id IN (:ids)');
                         $qb->setParameter('ids', $ids);
                     } else {
-                        $this->logger->debug('[TicketsDataService] Organization count, using UNION');
+                        $this->logger->debug('[TicketsDataService] Organization count, using JOIN');
 
-                        $parts = [
-                            '(SELECT id FROM tickets WHERE person_id = ? AND (organization_id != ? OR organization_id IS NULL) ORDER BY id DESC)',
-                            '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
-                        ];
-                        $params = [$person->getId(), $person->getOrganization()->getId(), $person->getId()];
-                        $partsUnion = implode("\nUNION\n", $parts);
-                        $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
-
-                        $qb->andWhere('t.id IN (:ids)');
-                        $qb->setParameter('ids', $ids);
+                        // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
+                        $qb->leftJoin('t.participants', 'part');
+                        $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
+                        $qb->setParameter('person', $person)->setParameter('organization', $person->getOrganization());
                     }
                 }
 
@@ -317,7 +306,8 @@ class TicketsDataService extends AbstractDataService
 
                 $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
 
-                $this->logger->debug('[TicketsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time));
+                $str = '[TicketsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time);
+                $this->logger->debug($str);
                 $this->logger->debug("[TicketsDataService] Count: $singleScalarResult");
 
                 return $singleScalarResult;
