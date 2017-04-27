@@ -14,44 +14,67 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       return
 
     initialLoad: ->
-      promise = @Api.sendDataGet({
-        apps: '/apps',
-      }).then( (result) =>
+      @apps = [];
+      @apps_v2 = [];
+
+      appsPromise = @Api.sendDataGet({ apps: '/apps' })
+      appsPromise.then( (result) =>
         @packages = result.data.apps.packages
 
         # Dont list custom apps as "packages"
         @packages = @packages.filter((x) -> !x.is_custom)
 
-        @apps = result.data.apps.apps.filter((x) -> !x.package.is_custom)
+        result.data.apps.apps.filter((x) -> !x.package.is_custom).forEach((app) => @apps.push(app))
         @custom_apps = result.data.apps.apps.filter((x) -> x.package.is_custom)
       )
-      return promise
 
-    addAppInstance: (instanceInfo) ->
-      if not @apps then @apps = []
-      @apps.push(instanceInfo)
+      apps2Promise = @Api2.sendGet('/apps?include=app&inline_sideloads=true')
+      apps2Promise.then( (result) =>
+        result.data.data.forEach((instance) =>
+          instance.app.icon_32 = instance.app.icon_url;
+          instance.app.icon_32 = instance.app.icon_32.replace('{{size}}', 32);
+          instance.app.icon_32 = instance.app.icon_32.replace(encodeURIComponent('{{size}}'), 32);
 
-      for p in @packages
-        if p.name == instanceInfo.package.name
-          if not p.apps then p.apps = []
-          p.apps.push(instanceInfo)
-          p.is_installed = true
-          break
+          @apps_v2.push(instance)
+        )
+      )
 
-    removeAppInstance: (instanceId) ->
-      app = @apps.find((x) -> return x.id == instanceId)
-      @apps = @apps.filter((x) -> return x.id != instanceId)
-      @custom_apps = @custom_apps.filter((x) -> return x.id != instanceId)
+      return @$q.all([appsPromise, apps2Promise])
 
-      # we just removed an app so we might need to switch the
-      # is_installed flag on the package so it appears back in the list
-      if app
-        hasOtherApp = false
-        @apps.map((x) -> if x.package.name == app.package.name then hasOtherApp = true)
-        if not hasOtherApp
-          p = @packages.find((x) -> x.name == app.package.name)
-          if p
-            p.is_installed = false
+    addAppInstance: (instanceInfo, isNew = false) ->
+      if isNew
+        instanceInfo.app.icon_32 = instanceInfo.app.icon_url;
+        instanceInfo.app.icon_32 = instanceInfo.app.icon_32.replace('{{size}}', 32);
+        instanceInfo.app.icon_32 = instanceInfo.app.icon_32.replace(encodeURIComponent('{{size}}'), 32);
+
+        @apps_v2.push(instanceInfo)
+      else
+        @apps.push(instanceInfo)
+
+        for p in @packages
+          if p.name == instanceInfo.package.name
+            if not p.apps then p.apps = []
+            p.apps.push(instanceInfo)
+            p.is_installed = true
+            break
+
+    removeAppInstance: (instanceId, isNew = false) ->
+      if isNew
+        @apps_v2 = @apps_v2.filter((x) -> return x.id != instanceId)
+      else
+        app = @apps.find((x) -> return x.id == instanceId)
+        @apps = @apps.filter((x) -> return x.id != instanceId)
+        @custom_apps = @custom_apps.filter((x) -> return x.id != instanceId)
+
+        # we just removed an app so we might need to switch the
+        # is_installed flag on the package so it appears back in the list
+        if app
+          hasOtherApp = false
+          @apps.map((x) -> if x.package.name == app.package.name then hasOtherApp = true)
+          if not hasOtherApp
+            p = @packages.find((x) -> x.name == app.package.name)
+            if p
+              p.is_installed = false
 
 
     updateAppTitle: (id, title) ->

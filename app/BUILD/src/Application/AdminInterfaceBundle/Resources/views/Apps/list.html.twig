@@ -16,7 +16,7 @@
 	</article>
 </section>
 
-<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length">
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length || ListCtrl.apps_v2.length">
 	<header>
 		<h3 style="margin-bottom: 0;">Installed Apps</h3>
 	</header>
@@ -34,7 +34,22 @@
 						</a>
 					</h4>
 					<p class="info">
-						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}">Website</a>
+						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}" target="_blank">Website</a>
+					</p>
+				</div>
+			</li>
+			<li ng-repeat="app in ListCtrl.apps_v2" dp-state-mark="apps.apps.instance_v2.{{ ng_var('app.id') }}">
+				<aside ng-if="!app.package.is_usersource_app">
+					<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}"><img ng-src="{{ ng_var('app.app.icon_32') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content" ng-if="!app.package.is_usersource_app">
+					<h4>
+						<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}">
+							<span class="title-text">{{ ng_var('app.name') }}</span>
+						</a>
+					</h4>
+					<p class="info">
+						by {{ ng_var('app.app.manifest.author.name') }} &bull; <a ng-href="{{ ng_var('app.app.manifest.author.url') }}" target="_blank">Website</a>
 					</p>
 				</div>
 			</li>

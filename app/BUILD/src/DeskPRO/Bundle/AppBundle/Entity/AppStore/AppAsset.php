@@ -28,16 +28,22 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app_asset")
+ *
  * @deprecated soon to be replaced with AppAssetBlob
  */
-class AppAsset implements Domain\ApplicationAsset
+class AppAsset implements Domain\ApplicationAsset, EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
@@ -54,11 +60,6 @@ class AppAsset implements Domain\ApplicationAsset
     private $app;
 
     /**
-     * @ORM\Column(name="app_id", type="integer", nullable=false)
-     */
-    private $appId;
-
-    /**
      * @ORM\Column(type="string", nullable=false)
      */
     private $path;
@@ -69,9 +70,17 @@ class AppAsset implements Domain\ApplicationAsset
     private $content;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return App
      */
-    public function getApp(): App
+    public function getApp()
     {
         return $this->app;
     }
@@ -79,10 +88,9 @@ class AppAsset implements Domain\ApplicationAsset
     /**
      * @param App $app
      */
-    public function setApp(App $app)
+    public function setApp(App $app = null)
     {
-        $this->app = $app;
-        $this->appId = null;
+        $this->setModelField('app', $app);
     }
 
     /**
@@ -98,7 +106,7 @@ class AppAsset implements Domain\ApplicationAsset
      */
     public function setPath($path)
     {
-        $this->path = $path;
+        $this->setModelField('path', $path);
     }
 
     /**
@@ -114,6 +122,6 @@ class AppAsset implements Domain\ApplicationAsset
      */
     public function setContent($content)
     {
-        $this->content = $content;
+        $this->setModelField('content', $content);
     }
 }

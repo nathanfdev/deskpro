@@ -30,49 +30,58 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 
+/**
+ * Class AppZipArchiveBundle.
+ */
 class AppZipArchiveBundle implements Domain\AppBundle
 {
-    /** @var \ZipArchive  */
+    /**
+     * @var \ZipArchive
+     */
     private $archive;
 
-    /** @var \SplFileInfo  */
+    /**
+     * @var \SplFileInfo
+     */
     private $fileInfo;
 
+    /**
+     * Constructor.
+     *
+     * @param \ZipArchive  $archive
+     * @param \SplFileInfo $fileInfo
+     */
     public function __construct(\ZipArchive $archive, \SplFileInfo $fileInfo)
     {
-        $this->archive = $archive;
+        $this->archive  = $archive;
         $this->fileInfo = $fileInfo;
     }
 
     /**
      * @return string
      */
-    function getManifestAsString()
+    public function getManifestAsString()
     {
-        $path = $this->fileInfo->getRealPath();
-        try {
-            $resource = $this->archive->open($path, \ZipArchive::CREATE);
-            if (true === $resource) {
-                $manifest = $this->archive->getFromName(Domain\Constants::BUNDLE_MANIFEST_PATH);
-                if (!is_null($manifest) && is_string($manifest)) {
-                    return $manifest;
-                }
-            }
-        } finally {
-            $this->archive->close();
-        }
+        return $this->getResourceByPath(Domain\Constants::BUNDLE_MANIFEST_PATH);
+    }
 
-        return null;
+    /**
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->getResourceByPath('assets/icon.png');
     }
 
     /**
      * @return Domain\AppBundleResource[];
      */
-    function listAllResources()
+    public function listAllResources()
     {
         // skip folders, accept only file entries
         $acceptor = function ($index, \ZipArchive $archive) {
             $path = $archive->getNameIndex($index);
+
             return '/' != substr($path, -1);
         };
 
@@ -81,9 +90,11 @@ class AppZipArchiveBundle implements Domain\AppBundle
 
     /**
      * @param \Closure $acceptor
+     *
      * @return array|Domain\AppBundleResource[]
      */
-    private function collectResources(\Closure $acceptor) {
+    private function collectResources(\Closure $acceptor)
+    {
         $collectedResources = [];
 
         $archivePath = $this->fileInfo->getRealPath();
@@ -92,11 +103,10 @@ class AppZipArchiveBundle implements Domain\AppBundle
             if (true === $resource) {
                 //online docs for ziparchive claim getNameIndex and getFromIndex leak memory in long running loops.
                 //TODO investigate
-                for($i = 0; $i < $this->archive->numFiles; $i++) {
-
+                for ($i = 0; $i < $this->archive->numFiles; ++$i) {
                     if ($acceptor($i, $this->archive)) {
-                        $path = $this->archive->getNameIndex($i);
-                        $content = $this->archive->getFromIndex($i);
+                        $path                 = $this->archive->getNameIndex($i);
+                        $content              = $this->archive->getFromIndex($i);
                         $collectedResources[] = new Domain\AppBundleSimpleResource($path, $content);
                     }
                 }
@@ -108,4 +118,22 @@ class AppZipArchiveBundle implements Domain\AppBundle
         return $collectedResources;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return string
+     */
+    private function getResourceByPath($path)
+    {
+        try {
+            $resource = $this->archive->open($this->fileInfo->getRealPath(), \ZipArchive::CREATE);
+            if (true === $resource) {
+                return $this->archive->getFromName($path);
+            }
+        } finally {
+            $this->archive->close();
+        }
+
+        return;
+    }
 }

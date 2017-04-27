@@ -2319,6 +2319,13 @@ define(function() {
   });
 
   routes.push({
+    id: 'apps.apps.instance_v2',
+    url: '/{id:v2_\\d+}',
+    templateName: 'Apps/instance_v2.html',
+    controller: 'Admin_Apps_Ctrl_EditInstanceV2'
+  });
+
+  routes.push({
     id: 'apps.apps.custom_instance',
     url: '/{custom_id:custom_\\d+}',
     templateName: 'Apps/custom-instance.html',

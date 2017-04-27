@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
@@ -56,13 +56,15 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
     /**
      * ApplicationService constructor.
-     * @param ORM\EntityManager $entityManager
-     * @param DeskproBlobStorage $blobStorage
+     *
+     * @param ORM\EntityManager         $entityManager
+     * @param DeskproBlobStorage        $blobStorage
      * @param EntityIdentityMapResolver $entityResolver
      */
-    public function __construct(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage, EntityIdentityMapResolver $entityResolver) {
-        $this->entityManager = $entityManager;
-        $this->blobStorage = $blobStorage;
+    public function __construct(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage, EntityIdentityMapResolver $entityResolver)
+    {
+        $this->entityManager  = $entityManager;
+        $this->blobStorage    = $blobStorage;
         $this->entityResolver = $entityResolver;
 
         $this->persistEntityOperation = function (ORM\EntityManager $entityManager, $entity) {
@@ -74,9 +76,9 @@ class ApplicationManagerService implements Domain\ApplicationManager
         };
     }
 
-
     /**
      * @param Domain\AppBundle $bundle
+     *
      * @return Domain\ApplicationInstance
      */
     public function createFirstInstance(Domain\AppBundle $bundle)
@@ -85,15 +87,31 @@ class ApplicationManagerService implements Domain\ApplicationManager
         $appEntity = $this->createAppEntity($bundle);
 
         //save blob assets
-        $blobs = $this->createBlobEntityList($bundle);
-        $this->createAssetBlobEntityList($bundle, $blobs, $appEntity);
+        foreach ($bundle->listAllResources() as $resource) {
+            $fileExtension = $resource->getFileExtension();
+            $contentType   = ContentTypes::getContentTypeFromExtension($fileExtension);
+            if (empty($contentType)) {
+                // could be a problem for js.map files which get ther file extension as map instead of js.map,
+                // but see http://stackoverflow.com/questions/19911929/what-mime-type-should-i-use-for-javascript-source-map-files
+                $contentType = 'application/octet-stream';
+            }
+
+            $blob  = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
+            $asset = new Entity\AppStore\AppAssetBlob();
+            $asset->setPath($resource->getPath());
+            $asset->setBlob($blob);
+
+            $appEntity->addAsset($asset);
+        }
 
         $instanceEntity = $this->createInstance($appEntity);
+
         return $instanceEntity;
     }
 
     /**
      * @param Domain\AppBundle $bundle
+     *
      * @return Entity\AppStore\App
      */
     private function createAppEntity(Domain\AppBundle $bundle)
@@ -101,7 +119,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
         $entities = [];
         //save app and instance
 
-        $appEntity = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
+        $appEntity  = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
         $entities[] = $appEntity;
         $this->executeEntityOperationTransaction($entities, $this->persistEntityOperation);
 
@@ -109,60 +127,15 @@ class ApplicationManagerService implements Domain\ApplicationManager
     }
 
     /**
-     * @param Domain\AppBundle $bundle
-     * @return DeskPRO\Entity\Blob[]
-     */
-    private function createBlobEntityList(Domain\AppBundle $bundle)
-    {
-        $blobs = [];
-        foreach ($bundle->listAllResources() as $resource) {
-            $fileExtension = $resource->getFileExtension();
-            $contentType = ContentTypes::getContentTypeFromExtension($fileExtension);
-            if (empty($contentType)) {
-                // could be a problem for js.map files which get ther file extension as map instead of js.map,
-                // but see http://stackoverflow.com/questions/19911929/what-mime-type-should-i-use-for-javascript-source-map-files
-                $contentType = 'application/octet-stream';
-            }
-            $blob = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
-            $blobs[] = $blob;
-        }
-
-        return $blobs;
-    }
-
-    /**
-     * @param Domain\AppBundle $bundle
-     * @param DeskPRO\Entity\Blob[] $blobs
+     * @param string              $manifestString
      * @param Entity\AppStore\App $app
-     */
-    private function createAssetBlobEntityList(Domain\AppBundle $bundle, $blobs, $app) {
-        $entities = [];
-        foreach ($bundle->listAllResources() as $resource) {
-            $asset = new Entity\AppStore\AppAssetBlob();
-            $asset->setApp($app);
-
-            $path = $resource->getPath();
-            $asset->setPath( $path );
-
-            $blob = current($blobs);
-            next($blobs);
-            $asset->setBlob($blob);
-
-            $entities[] = $asset;
-        }
-
-        $this->executeEntityOperationTransaction($entities, $this->persistEntityOperation);
-    }
-
-    /**
-     * @param string $manifestString
-     * @param Entity\AppStore\App $app
+     *
      * @return Entity\AppStore\App
      */
     private function mapManifestStringToApp($manifestString, Entity\AppStore\App $app)
     {
         $manifestReader = new Infrastructure\AppManifestJsonReader();
-        $manifest = $manifestReader->readManifest($manifestString);
+        $manifest       = $manifestReader->readManifest($manifestString);
 
         $app->setManifest($manifestString);
 
@@ -174,8 +147,9 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
     /**
      * @param Domain\Application $application
-     * @param string|null $settings
-     * @return  Entity\AppStore\AppInstance
+     * @param string|null        $settings
+     *
+     * @return Entity\AppStore\AppInstance
      */
     public function createInstance(Domain\Application $application, $settings = null)
     {
@@ -186,9 +160,10 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
         $instanceEntity = new Entity\AppStore\AppInstance();
         $instanceEntity->setApp($applicationEntity);
+        $instanceEntity->setName($applicationEntity->getName());
 
         $this->mapApplicationToInstance($application, $instanceEntity);
-        if (! is_null($settings)) {
+        if (!is_null($settings)) {
             $instanceEntity->setSettings($settings);
         }
 
@@ -197,55 +172,22 @@ class ApplicationManagerService implements Domain\ApplicationManager
         return $instanceEntity;
     }
 
-    public function deleteInstance(Domain\ApplicationInstance $instance) {
-
-        $applicationInstanceEntity = $this->entityResolver->resolveApplicationInstance($instance);
-        $isSingleInstance = $this->getIsSingleInstanceProperty($applicationInstanceEntity);
-
-        if ($isSingleInstance) {
-            $application = $applicationInstanceEntity->getApp();
-            $this->deleteApplication($application);
-            return $instance;
-        }
-
-        $deleteQueries = [];
-        // create delete instance state by id
-        $deleteQueries[] = $this->entityManager->createQueryBuilder()
-            ->delete(Entity\AppStore\AppState::class, 's')
-            ->where('s.appInstanceId = :appInstanceId')
-            ->setParameter('applicationId', $instance->getId())
-            ->getQuery()
-        ;
-        // create delete instance by id
-        $deleteQueries[] = $this->entityManager->createQueryBuilder()
-            ->delete(Entity\AppStore\AppInstance::class, 'a')
-            ->where('a.id = :appInstanceId')
-            ->setParameter('applicationId', $instance->getId())
-            ->getQuery()
-        ;
-        $this->executeQueryTransaction($deleteQueries);
-
-        $this->sendUIClientReloadSignal();
-
-        return $instance;
-    }
-
     public function deleteApplication(Domain\Application $application)
     {
         $applicationEntity = $this->entityResolver->resolveApplicationEntity($application);
 
         $assetFinder = new AssetDoctrineFinder($this->entityManager);
-        $assetList = $assetFinder->findAllApplicationAssets($application);
+        $assetList   = $assetFinder->findAllApplicationAssets($application);
         $this->deleteAssetBlobList($applicationEntity, $assetList);
 
         $this->deleteAssetList($applicationEntity);
 
         $instanceFinder = new ApplicationInstanceDoctrineFinder($this->entityManager);
-        $instanceList = $instanceFinder->findByApplication($applicationEntity->getName());
+        $instanceList   = $instanceFinder->findByApplication($applicationEntity->getName());
         $this->deleteInstanceList($applicationEntity, $instanceList);
 
         // create delete app by id
-        $deleteQueries = [];
+        $deleteQueries   = [];
         $deleteQueries[] = $this->entityManager->createQueryBuilder()
             ->delete(Entity\AppStore\App::class, 'a')
             ->where('a.id = :id')->setParameter('id', $application->getId())
@@ -275,15 +217,16 @@ class ApplicationManagerService implements Domain\ApplicationManager
     }
 
     /**
-     * @param Entity\AppStore\App $app
+     * @param Entity\AppStore\App            $app
      * @param Entity\AppStore\AppAssetBlob[] $assetList
      */
     private function deleteAssetBlobList(Entity\AppStore\App $app, $assetList)
     {
         /** @var DeskPRO\Entity\Blob $blobs */
         $blobs = array_map(
-            function (Entity\AppStore\AppAssetBlob $asset) { return $asset->getBlob(); }
-            , $assetList
+            function (Entity\AppStore\AppAssetBlob $asset) {
+                return $asset->getBlob();
+            }, $assetList
         );
         $this->executeEntityOperationTransaction($assetList, $this->removeEntityOperation);
 
@@ -301,7 +244,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
         // create delete assets by id
         $deleteQueries[] = $this->entityManager->createQueryBuilder()
             ->delete(Entity\AppStore\AppAsset::class, 'a')
-            ->where('a.appId = :appId')->setParameter('appId', $app->getId())
+            ->where('a.app = :appId')->setParameter('appId', $app->getId())
             ->getQuery()
         ;
 
@@ -309,14 +252,15 @@ class ApplicationManagerService implements Domain\ApplicationManager
     }
 
     /**
-     * @param Entity\AppStore\App $app
+     * @param Entity\AppStore\App           $app
      * @param Entity\AppStore\AppInstance[] $instanceList
      */
     private function deleteInstanceList(Entity\AppStore\App $app, $instanceList)
     {
         $instanceIdList = array_map(
-            function (Entity\AppStore\AppInstance $instance) { return $instance->getId(); }
-            , $instanceList
+            function (Entity\AppStore\AppInstance $instance) {
+                return $instance->getId();
+            }, $instanceList
         );
 
         $deleteQueries = [];
@@ -338,6 +282,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
     /**
      * @param Entity\AppStore\AppInstance $appInstance
+     *
      * @return bool
      */
     private function getIsSingleInstanceProperty(Entity\AppStore\AppInstance $appInstance)
@@ -353,11 +298,12 @@ class ApplicationManagerService implements Domain\ApplicationManager
         ;
 
         $applicationInstancesCount = $qb->getQuery()->getSingleScalarResult();
+
         return intval($applicationInstancesCount, 10) === 1;
     }
 
     /**
-     * @param Domain\Application $app
+     * @param Domain\Application          $app
      * @param Entity\AppStore\AppInstance $instance
      */
     private function mapApplicationToInstance(Domain\Application $app, Entity\AppStore\AppInstance $instance)
@@ -367,16 +313,18 @@ class ApplicationManagerService implements Domain\ApplicationManager
         $manifestObject = $manifestReader->readManifest($app->getManifest());
 
         $settings = $manifestObject->getDefaultSettings();
-        $instance->setSettings( json_encode($settings) );
-        $instance->setScope( $manifestObject->getScope() );
+        $instance->setSettings(json_encode($settings));
+        $instance->setScope($manifestObject->getScope());
     }
 
     /**
-     * @param array $entities
+     * @param array    $entities
      * @param \Closure $entityOperation
+     *
      * @throws \Exception
      */
-    private function executeEntityOperationTransaction($entities, $entityOperation) {
+    private function executeEntityOperationTransaction($entities, $entityOperation)
+    {
         $connection = $this->entityManager->getConnection();
         $connection->beginTransaction();
         try {
@@ -394,6 +342,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
     /**
      * @param $queries ORM\Query[]
+     *
      * @throws \Exception
      */
     private function executeQueryTransaction($queries)
@@ -410,7 +359,4 @@ class ApplicationManagerService implements Domain\ApplicationManager
             throw $e;
         }
     }
-
 }
-
-

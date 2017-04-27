@@ -28,32 +28,40 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
+use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 
 class AppManifestJsonReader
 {
     /**
      * @param $jsonString
+     *
      * @return Domain\AppManifest
      */
     public function readManifest($jsonString)
     {
         $manifestMap = json_decode($jsonString, true);
-        $manifest = new Domain\AppManifest();
+        $manifest    = new Domain\AppManifest();
 
         $this->mapManifestMapToObject($manifestMap, $manifest);
+
         return $manifest;
     }
 
     private function mapManifestMapToObject(array $manifestMap, Domain\AppManifest $manifest)
     {
-        $value = $manifestMap['name'];
-        $manifest->setName($value);
+        // temp get serializer from static container
+        // temp manifest setters
+        // todo refactor
+        $serializer = App::$container->get('serializer');
 
-        $value = $manifestMap['scope'];
-        $manifest->setScope($value);
+        $manifest->setName($manifestMap['name']);
+        $manifest->setDescription($manifestMap['description']);
+        $manifest->setScope($manifestMap['scope']);
+        $manifest->setAuthor($serializer->fromArray($manifestMap['author'], Domain\AppManifestAuthor::class));
+        $manifest->setSettings($serializer->fromArray($manifestMap['settings'], 'array<'.Domain\AppManifestSetting::class.'>'));
 
-        $value = $manifestMap['settings'];
+        $value           = $manifestMap['settings'];
         $defaultSettings = [];
         foreach ($value as $setting) {
             if (
@@ -65,6 +73,5 @@ class AppManifestJsonReader
             }
         }
         $manifest->setDefaultSettings($defaultSettings);
-
     }
 }

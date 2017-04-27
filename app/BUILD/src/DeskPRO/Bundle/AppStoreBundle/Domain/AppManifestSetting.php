@@ -31,9 +31,9 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Representation of an application's manifest. This is a mutable class to be used when creating other objects, like Application.
+ * Class AppManifestSetting.
  */
-class AppManifest
+class AppManifestSetting
 {
     /**
      * @JMS\Type("string")
@@ -47,35 +47,28 @@ class AppManifest
      *
      * @var string
      */
-    private $description;
+    private $type;
 
     /**
      * @JMS\Type("string")
      *
      * @var string
      */
-    private $scope;
+    private $defaultValue;
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestSetting>")
+     * @JMS\Type("boolean")
      *
-     * @var AppManifestSetting[]
+     * @var bool
      */
-    private $settings = [];
+    private $isPrivate;
 
     /**
      * @JMS\Type("array")
      *
      * @var array
      */
-    private $defaultSettings;
-
-    /**
-     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestAuthor")
-     *
-     * @var AppManifestAuthor
-     */
-    private $author;
+    private $options;
 
     /**
      * @return string
@@ -87,109 +80,73 @@ class AppManifest
 
     /**
      * @param string $name
-     *
-     * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
-
-        return $this;
     }
 
     /**
      * @return string
      */
-    public function getDescription()
+    public function getType()
     {
-        return $this->description;
+        return $this->type;
     }
 
     /**
-     * @param string $description
-     *
-     * @return $this
+     * @param string $type
      */
-    public function setDescription($description)
+    public function setType($type)
     {
-        $this->description = $description;
-
-        return $this;
+        $this->type = $type;
     }
 
     /**
      * @return string
      */
-    public function getScope()
+    public function getDefaultValue()
     {
-        return $this->scope;
+        return $this->defaultValue;
     }
 
     /**
-     * @param string $scope
-     *
-     * @return $this
+     * @param string $defaultValue
      */
-    public function setScope($scope)
+    public function setDefaultValue($defaultValue)
     {
-        $this->scope = $scope;
+        $this->defaultValue = $defaultValue;
+    }
 
-        return $this;
+    /**
+     * @return bool
+     */
+    public function isPrivate()
+    {
+        return $this->isPrivate;
+    }
+
+    /**
+     * @param bool $isPrivate
+     */
+    public function setIsPrivate($isPrivate)
+    {
+        $this->isPrivate = $isPrivate;
     }
 
     /**
      * @return array
      */
-    public function getDefaultSettings()
+    public function getOptions()
     {
-        return $this->defaultSettings;
+        return $this->options;
     }
 
     /**
-     * @param array $defaultSettings
-     *
-     * @return $this
+     * @param array $options
      */
-    public function setDefaultSettings(array $defaultSettings)
+    public function setOptions($options)
     {
-        $this->defaultSettings = $defaultSettings;
-
-        return $this;
-    }
-
-    /**
-     * @return AppManifestAuthor
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * @param AppManifestAuthor $author
-     *
-     * @return $this
-     */
-    public function setAuthor(AppManifestAuthor $author = null)
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * @return AppManifestSetting[]
-     */
-    public function getSettings()
-    {
-        return $this->settings;
-    }
-
-    /**
-     * @param AppManifestSetting[] $settings
-     */
-    public function setSettings(array $settings)
-    {
-        $this->settings = $settings;
+        $this->options = $options;
     }
 }

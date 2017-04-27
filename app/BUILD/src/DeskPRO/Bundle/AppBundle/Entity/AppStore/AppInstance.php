@@ -28,41 +28,63 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app_instance")
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class AppInstance implements Domain\ApplicationInstance
+class AppInstance implements Domain\ApplicationInstance, EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     private $id;
 
     /**
+     * @ORM\Column(type="string", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
+    private $name;
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
      * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AppStore\App>")
      *
      * @var App
      */
     private $app;
 
     /**
-     * @ORM\Column(name="app_id", type="integer", nullable=false)
-     */
-    private $appId;
-
-    /**
      * @ORM\Column(type="string", nullable=false, length=100)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     private $scope;
 
     /**
+     * todo change type to array.
+     *
      * @ORM\Column(type="text", nullable=true)
      */
     private $settings;
@@ -74,8 +96,47 @@ class AppInstance implements Domain\ApplicationInstance
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     private $createdAt;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
 
     /**
      * @return App
@@ -83,32 +144,34 @@ class AppInstance implements Domain\ApplicationInstance
     public function getApp()
     {
         return $this->app;
-
     }
 
     /**
      * @param App $app
+     *
+     * @return $this
      */
-    public function setApp(App $app)
+    public function setApp(App $app = null)
     {
-        $this->app = $app;
-        $this->appId = null;
+        $this->setModelField('app', $app);
+
+        return $this;
     }
 
     /**
-     * Returns the system identifier for the application
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("settings")
      *
-     * @return string
+     * @return array
      */
-    function getApplicationId()
+    public function getSettingsArray()
     {
-        if (empty($this->appId) && !empty($this->app)) {
-            return $this->app->getId();
-        }
-
-        return $this->appId;
+        return $this->settings ? json_decode($this->settings, true) : [];
     }
 
+    /**
+     * @return mixed
+     */
     public function getSettings()
     {
         return $this->settings;
@@ -116,20 +179,14 @@ class AppInstance implements Domain\ApplicationInstance
 
     /**
      * @param string $settings
+     *
+     * @return $this
      */
     public function setSettings($settings)
     {
-        $this->settings = $settings;
-    }
+        $this->setModelField('settings', $settings);
 
-    /**
-     * Returns the system identifier assigned to the instance
-     *
-     * @return string
-     */
-    function getId()
-    {
-        return $this->id;
+        return $this;
     }
 
     /**
@@ -141,10 +198,45 @@ class AppInstance implements Domain\ApplicationInstance
     }
 
     /**
-     * @param mixed $scope
+     * @param string $scope
+     *
+     * @return $this
      */
     public function setScope($scope)
     {
-        $this->scope = $scope;
+        $this->setModelField('scope', $scope);
+
+        return $this;
+    }
+
+    /**
+     * Returns the system identifier for the application.
+     * todo remove, BC.
+     *
+     * @JMS\VirtualProperty()
+     *
+     * @return string
+     */
+    public function getApplicationId()
+    {
+        return $this->app ? $this->app->getId() : null;
+    }
+
+    /**
+     * todo remove, BC.
+     *
+     * @JMS\VirtualProperty()
+     *
+     * @return array
+     */
+    public function getTargets()
+    {
+        if (!$this->app) {
+            return [];
+        }
+
+        $manifest = json_decode($this->app->getManifest(), true);
+
+        return isset($manifest['targets']) ? $manifest['targets'] : [];
     }
 }

@@ -4,6 +4,7 @@ define([
 
   'Admin/Apps/Ctrl/List',
   'Admin/Apps/Ctrl/EditInstance',
+  'Admin/Apps/Ctrl/EditInstanceV2',
   'Admin/Apps/Ctrl/EditCustomInstance',
   'Admin/Apps/Ctrl/InstallProgress',
   'Admin/Apps/Ctrl/PackageInfo',

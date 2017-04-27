@@ -28,30 +28,35 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
-use DeskPRO\Bundle\AppStoreBundle;
-use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
+use DeskPRO\Bundle\AppStoreBundle;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation as DeskproAnnotations;
-
 /**
- * Class AppsController
+ * Class AppsController.
  *
- * @DeskproAnnotations\ApiModes("standard")
+ * @ApiModes("standard")
  * @Rest\Route("/apps")
+ * @ApiUnstable()
  */
-class AppsController extends FOSRestController
+class AppsController extends BaseController
 {
     /**
+     * @ApiDoc(section="Apps")
+     *
      * @Rest\Get("")
      *
      * @param HttpFoundation\Request $request
+     *
      * @return string
      */
     public function listApplicationAction(HttpFoundation\Request $request)
@@ -60,79 +65,54 @@ class AppsController extends FOSRestController
         $searchFilter = new AppStoreBundle\Domain\SearchApplicationInstanceFilter();
         $parameterBag = $request->attributes;
         if ($parameterBag->has('scope')) {
-            $searchFilter->setScope( $parameterBag->get('scope') );
+            $searchFilter->setScope($parameterBag->get('scope'));
         }
 
         /** @var AppStoreBundle\Domain\ApplicationInstanceFinder $instanceFinder */
         $instanceFinder = $this->container->get(AppStoreBundle\Domain\ApplicationInstanceFinder::class);
-        if ($searchFilter->isEmpty()) { //
+        if ($searchFilter->isEmpty()) {
             $instances = $instanceFinder->findAll();
         } else {
             $instances = $instanceFinder->findByFilter($searchFilter);
         }
 
-        if (empty($instances)) {
-            return [];
-        }
-
-        //retrieve the application manifests for the instances we found
-        /** @var AppStoreBundle\Domain\ApplicationFinder $applicationFinder */
-        $applicationFinder = $this->container->get(AppStoreBundle\Domain\ApplicationFinder::class);
-        $applications = $applicationFinder->findAllById(
-            array_map(
-                function(AppStoreBundle\Domain\ApplicationInstance $instance) { return $instance->getApplicationId(); }
-                , $instances
-            )
-        );
-        $manifestMap = array_reduce(
-            $applications
-            , function (array $carry, AppStoreBundle\Domain\Application $app) { $carry[$app->getId()] = json_decode($app->getManifest(), $assoc = true); return $carry; }
-            , []
-        );
-
-        $converter = function(AppStoreBundle\Domain\ApplicationInstance $instance) use ($manifestMap) {
-            return [
-                'id' => $instance->getId(),
-                'application_id' => $instance->getApplicationId(),
-                'settings' => json_decode($instance->getSettings(), $assoc = true),
-                'targets' => $manifestMap[$instance->getApplicationId()]['targets']
-            ];
-        };
-        return array_map($converter, $instances);
+        return $this->wrap($instances);
     }
 
-
     /**
-     * @Rest\Get("/{application}")
+     * @Rest\Get("/{application}", name="api_get_app_instance")
      *
      * @param Entity\AppStore\AppInstance $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
      * @return string
      */
     public function getApplicationAction(Entity\AppStore\AppInstance $application)
     {
-        return $application;
+        return $this->wrap($application);
     }
 
     /**
      * @Rest\Post("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
+     *
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
+     *
      * @return string
      */
     public function createFromZipFileAction(AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
         /** @var AppStoreBundle\Domain\AppBundleValidator $bundleValidator */
         $bundleValidator = $this->container->get(AppStoreBundle\Domain\AppBundleValidator::class);
-        $validBundle = $bundleValidator->validateBundle($bundle);
+        $validBundle     = $bundleValidator->validateBundle($bundle);
 
-        if (! $validBundle) { //TODO provide a more elaborate exception body
+        if (!$validBundle) { //TODO provide a more elaborate exception body
             throw new UnprocessableEntityHttpException('invalid bundle');
         }
 
         /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
         $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationManager::class);
-        $instance = $instanceCreator->createFirstInstance($bundle);
+        $instance        = $instanceCreator->createFirstInstance($bundle);
 
         return $instance;
     }
@@ -141,8 +121,10 @@ class AppsController extends FOSRestController
      * @Rest\Post("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
-     * @param Entity\AppStore\AppInstance $application
+     *
+     * @param Entity\AppStore\AppInstance                       $application
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
+     *
      * @return string
      */
     public function updateFromZipFileAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
@@ -153,6 +135,7 @@ class AppsController extends FOSRestController
     /**
      * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/json#i'")
      * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
+     *
      * @return string
      */
     public function createFromUrlAction()
@@ -163,6 +146,7 @@ class AppsController extends FOSRestController
     /**
      * @Rest\Post("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     *
      * @param Entity\AppStore\App $application
      */
     public function updateAppFromUrlAction(Entity\AppStore\App $application)
@@ -175,21 +159,24 @@ class AppsController extends FOSRestController
      *
      * @param Entity\AppStore\AppInstance $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
      * @return AppStoreBundle\Domain\ApplicationInstance
      */
     public function deleteApplicationAction(Entity\AppStore\AppInstance $application)
     {
-        /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
-        $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationManager::class);
-        $instance = $instanceCreator->deleteInstance($application);
+        $em = $this->getManager();
+        $em->remove($application);
+        $em->remove(($application->getApp()));
+        $em->flush();
 
-        return $instance;
+        return new View(null, HttpFoundation\Response::HTTP_NO_CONTENT);
     }
 
     /**
      * @Rest\Get("/{application}/manifest")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     *
      * @param Entity\AppStore\App $application
      *
      * @return array
@@ -198,7 +185,7 @@ class AppsController extends FOSRestController
     {
         //TODO getManifest should return an object
         $manifestString = $application->getManifest();
-        $manifestArray = json_decode($manifestString, true);
+        $manifestArray  = json_decode($manifestString, true);
 
         return $manifestArray;
     }
@@ -207,6 +194,7 @@ class AppsController extends FOSRestController
      * @Rest\Get("/{application}/settings")
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
      * @param Entity\AppStore\AppInstance $application
      *
      * @return array
@@ -215,7 +203,7 @@ class AppsController extends FOSRestController
     {
         //TODO getSettings should return an object
         $settingsString = $application->getSettings();
-        $settingsArray = json_decode($settingsString, true);
+        $settingsArray  = json_decode($settingsString, true);
 
         return $settingsArray;
     }
@@ -226,14 +214,14 @@ class AppsController extends FOSRestController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
      * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter")
      *
-     * @param Entity\AppStore\App $application
+     * @param Entity\AppStore\App                     $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
      */
     public function listAssetsAction(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
     {
         /** @var AppStoreBundle\Domain\AssetFinder $assetFinder */
         $assetFinder = $this->container->get(AppStoreBundle\Domain\AssetFinder::class);
-        $assets = $assetFinder->findApplicationAssets($application, $searchFilter);
+        $assets      = $assetFinder->findApplicationAssets($application, $searchFilter);
 
         return $assets;
     }

@@ -28,21 +28,27 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
-
-use DeskPRO\Bundle\AppStoreBundle\Domain;
-use Doctrine\ORM\Mapping as ORM;
-
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app_asset_blob")
+ *
+ * @JMS\ExclusionPolicy("all")
  */
-class AppAssetBlob implements Domain\ApplicationAsset
+class AppAssetBlob implements Domain\ApplicationAsset, EntityInterface, NotifyPropertyChanged
 {
+    use NotifyPropertyChangedTrait;
+
     /** @var DeskproBlobStorage */
-    static private $blobStorageService;
+    private static $blobStorageService;
 
     /**
      * @return DeskproBlobStorage
@@ -64,6 +70,9 @@ class AppAssetBlob implements Domain\ApplicationAsset
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     private $id;
 
@@ -76,26 +85,23 @@ class AppAssetBlob implements Domain\ApplicationAsset
     private $app;
 
     /**
-     * @ORM\Column(name="app_id", type="integer", nullable=false)
-     */
-    private $appId;
-
-    /**
      * @ORM\Column(type="string", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     private $path;
 
     /**
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="blob_id", referencedColumnName="id")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
      * @var Blob
      */
     private $blob;
-
-    /**
-     * @ORM\Column(name="blob_id", type="integer", nullable=false)
-     */
-    private $blobId;
 
     /**
      * @ORM\Column(name="blob_authcode", type="string", nullable=false)
@@ -103,9 +109,17 @@ class AppAssetBlob implements Domain\ApplicationAsset
     private $blobAuthcode;
 
     /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * @return App
      */
-    public function getApp(): App
+    public function getApp()
     {
         return $this->app;
     }
@@ -113,10 +127,9 @@ class AppAssetBlob implements Domain\ApplicationAsset
     /**
      * @param App $app
      */
-    public function setApp(App $app)
+    public function setApp(App $app = null)
     {
         $this->app = $app;
-        $this->appId = null;
     }
 
     /**
@@ -137,28 +150,25 @@ class AppAssetBlob implements Domain\ApplicationAsset
 
     /**
      * @param Blob $blob
+     *
      * @return AppAssetBlob
      */
     public function setBlob(Blob $blob)
     {
-        $this->blob = $blob;
-        $this->blobId = null;
+        $this->blob         = $blob;
         $this->blobAuthcode = $blob->getAuthcode();
+
         return $this;
     }
 
     /**
-     * Returns the system identifier for the application
+     * Returns the system identifier for the application.
      *
      * @return string
      */
-    function getBlobId()
+    public function getBlobId()
     {
-        if (empty($this->blobId) && !empty($this->blob)) {
-            return $this->blob->getId();
-        }
-
-        return $this->blobId;
+        return $this->blob ? $this->blob->getId() : null;
     }
 
     /**
@@ -168,6 +178,7 @@ class AppAssetBlob implements Domain\ApplicationAsset
     {
         if ($this->blob) {
             $blobStorage = self::getBlobStorageService();
+
             return $blobStorage->copyBlobRecordToString($this->blob);
         }
 
