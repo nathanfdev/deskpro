@@ -39,7 +39,7 @@ class PhrasePopup extends React.Component {
         {this.getTranslations()}
         {this.getVariables()}
         <Button onClick={this.saveChanges}>Submit</Button>
-        <Button className="basic" onClick={this.closeMenu}>Cancel</Button>
+        <Button className="basic" onClick={this.closePopup}>Cancel</Button>
       </div>
     );
   };
@@ -92,7 +92,7 @@ class PhrasePopup extends React.Component {
     });
   };
 
-  openMenu = () => {
+  openPopup = () => {
     this.props.getPhraseTranslations(this.props.phrase).then(
       (result) => {
         this.setState({
@@ -103,7 +103,7 @@ class PhrasePopup extends React.Component {
     this.popup.openPopup();
   };
 
-  closeMenu = () => {
+  closePopup = () => {
     this.props.getPhraseTranslations(this.props.phrase).then(
       (result) => {
         this.setState({
@@ -159,7 +159,7 @@ class PhrasePopup extends React.Component {
         manual
       >
         <span
-          onClick={this.openMenu}
+          onClick={this.openPopup}
         >
           {this.props.text}
         </span>

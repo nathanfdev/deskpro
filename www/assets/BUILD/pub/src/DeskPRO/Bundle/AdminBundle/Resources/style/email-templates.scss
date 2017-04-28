@@ -535,3 +535,9 @@
     height: auto;
   }
 }
+.template-popup {
+  width: 700px;
+  .CodeMirror {
+    margin-bottom: 5px;
+  }
+}
