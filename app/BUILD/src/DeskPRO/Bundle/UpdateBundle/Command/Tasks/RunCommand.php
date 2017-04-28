@@ -287,7 +287,7 @@ class RunCommand extends ContainerAwareCommand
 
         $dbVersionName = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build_num'");
 
-        if (version_compare($dbVersionName, '442.0', '<')) {
+        if ($dbVersionName && version_compare($dbVersionName, '442.0', '<')) {
             $output->writeln('<error>You must update to DeskPRO #443 before attempting to upgrade</error>');
             $output->writeln('The version of DeskPRO you are currently using is too old to be upgraded directly. You need to update to version #443 first.');
             $output->writeln('Read more: https://support.deskpro.com/en_GB/guides/sysadmin-guide/upgrading-2/upgrade-to-deskpro-v5');
@@ -298,7 +298,7 @@ class RunCommand extends ContainerAwareCommand
         // 443, we need to reset version back in a time a bit before running the
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
-        if (strpos($dbVersionName, '443.') === 0) {
+        if ($dbVersionName && strpos($dbVersionName, '443.') === 0) {
             $hasStarted = $this->getContainer()->get('database_connection')->fetchColumn("
                 SELECT data
                 FROM install_data
