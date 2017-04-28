@@ -285,6 +285,12 @@ class RunCommand extends ContainerAwareCommand
             return 0;
         }
 
+        $dbVersion = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+
+        if ($dbVersion > 1473329441) {
+            return 0;
+        }
+
         $dbVersionName = $this->getContainer()->getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build_num'");
 
         if ($dbVersionName && version_compare($dbVersionName, '442.0', '<')) {
