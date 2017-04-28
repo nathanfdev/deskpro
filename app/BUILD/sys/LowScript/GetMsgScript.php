@@ -847,7 +847,7 @@ class GetMsgScript extends LowScriptAbstract
         if (!$person || !isset($_REQUEST['last_alert'])) {
             return [];
         }
-        $last = new \DateTime('@'.(int) $_REQUEST['last_alert']);
+        $last = (int) $_REQUEST['last_alert'];
 
         return $this->transformData($this->fetch($last, $person->getId()));
     }
@@ -858,23 +858,23 @@ class GetMsgScript extends LowScriptAbstract
         if (!$person || !isset($_REQUEST['last_notify'])) {
             return [];
         }
-        $last = new \DateTime('@'.(int) $_REQUEST['last_notify']);
+        $last = (int) $_REQUEST['last_notify'];
 
         return $this->transformData($this->fetch($last, $person->getId(), 'notifications'));
     }
 
-    protected function fetch(\DateTime $date, $targetId, $type = 'action_alerts')
+    protected function fetch($last, $targetId, $type = 'action_alerts')
     {
         $tableName = 'notify_'.$type;
         $sql       = <<<SQL
 SELECT * FROM `{$tableName}`
 WHERE `target_id` = :target_id 
-  AND `date_created` > :date_created
+  AND `id` > :last
 SQL;
         $stmnt = $this->getPdoRead()->prepare($sql);
         $stmnt->execute([
-            'target_id'    => $targetId,
-            'date_created' => $date->format('Y-m-d H:i:s'),
+            'target_id' => $targetId,
+            'last'      => $last,
         ]);
 
         return $stmnt->fetchAll(\PDO::FETCH_ASSOC);

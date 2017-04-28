@@ -31,8 +31,8 @@ export default class LegacyClient extends AbstractClient {
 
     if (response.action_alerts) {
       const last = response.action_alerts[response.action_alerts.length - 1];
-      if (last && last.timestamp) {
-        that.options.last_alert = last.timestamp;
+      if (last && last.id) {
+        that.options.last_alert = last.id;
         response.action_alerts.map((datum) => {
           if (datum.target_id === that.options.me) {
             that.options.dispatcher('action_alert', datum);
@@ -48,8 +48,8 @@ export default class LegacyClient extends AbstractClient {
     const that = this;
     if (response.notifications) {
       const last = response.notifications[response.notifications.length - 1];
-      if (last && last.timestamp) {
-        that.options.last_notify = last.timestamp;
+      if (last && last.id) {
+        that.options.last_notify = last.id;
         response.notifications.map((datum) => {
           if (datum.target_id === that.options.me) {
             that.options.dispatcher('user_notify', datum);
