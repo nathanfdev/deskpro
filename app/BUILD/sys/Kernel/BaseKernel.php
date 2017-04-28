@@ -270,6 +270,9 @@ abstract class BaseKernel extends Kernel
         }
 
         $parts = preg_split('/\s*private \$parameters;/', $content);
+        if (count($parts) !== 2) {
+            throw new \Exception("Unable to dump $class $baseClass container");
+        }
 
         $getter = <<<'CODE'
     private $dpBuildId = null;
