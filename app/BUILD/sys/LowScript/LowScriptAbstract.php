@@ -87,6 +87,10 @@ abstract class LowScriptAbstract
     {
         $this->dpEnv   = $dpEnv;
         $this->request = $request;
+
+        if (extension_loaded('newrelic')) {
+            newrelic_name_transaction($request->getPathInfo());
+        }
     }
 
     public function run()
