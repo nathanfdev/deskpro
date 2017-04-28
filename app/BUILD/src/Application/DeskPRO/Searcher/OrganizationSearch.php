@@ -360,7 +360,7 @@ class OrganizationSearch extends SearcherAbstract
                                         $choice
                                     ).')',
                                 ];
-                                $wheres[] = "$join_name.person_id IS NULL";
+                                $wheres[] = "$join_name.organization_id IS NULL";
                                 break;
                             case self::OP_CONTAINS:
                                 $joins[] = [
