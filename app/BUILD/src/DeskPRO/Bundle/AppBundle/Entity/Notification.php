@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @todo process it same as ActionAlert with JMS
  * @ORM\Entity
- * @ORM\Table(name="notify_notifications")
+ * @ORM\Table(name="notify_notifications", indexes={@ORM\Index(name="target_id", columns={"target_id"})})
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *
@@ -54,7 +54,7 @@ class Notification implements EntityInterface, NotifyPropertyChanged, Notificati
     /**
      * @var int
      * @ORM\Id()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
