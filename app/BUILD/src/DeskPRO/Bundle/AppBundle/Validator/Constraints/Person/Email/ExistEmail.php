@@ -26,35 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class PersonRole.
+ * Class ExistEmail.
  *
  * @Annotation
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
  */
-class PersonType extends Constraint
+class ExistEmail extends Constraint
 {
-    const PERSON_NOT_USER  = 'person_not_user';
-    const PERSON_NOT_AGENT = 'person_not_agent';
-
-    /**
-     * Could be agent or user.
-     *
-     * @var string
-     */
-    public $type;
+    const NON_EXISTING_EMAIL = 'email_not_found';
 
     /**
      * @var string
      */
-    public $notUserMessage = 'Person with identifier "{{ value }}" is not a user.';
-
-    /**
-     * @var string
-     */
-    public $notAgentMessage = 'Person with identifier "{{ value }}" is not an agent.';
+    public $notFoundMessage = 'Email "{{ value }}" not found.';
 }

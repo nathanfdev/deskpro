@@ -206,6 +206,7 @@ class PersonAssignType extends AbstractType
             ])
             ->setAllowedTypes('person', ['null', Person::class])
             ->setAllowedTypes('allow_create', 'boolean')
+            ->setAllowedTypes('available_fields', 'array')
         ;
     }
 }
