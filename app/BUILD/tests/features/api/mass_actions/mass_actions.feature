@@ -15,11 +15,7 @@ Feature: /mass_actions endpoint
   "params":{"set_status":1}
 }
     """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to 'You try to apply mass actions for non-existent type of content (`something`)'
+    Then the response status code should be 404
 
   Scenario: I try to apply non-existed action on tickets
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
@@ -30,10 +26,6 @@ Feature: /mass_actions endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "Action class 'non_existed' doesn't exists"
 
   Scenario: I post mass actions request with empty ids
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
@@ -44,10 +36,7 @@ Feature: /mass_actions endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "You must select tickets for mass action apply"
+    And the JSON node "errors.fields.ids.errors[0].code" should be equal to "too_few_elements"
 
   Scenario: I post mass actions request without ids
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
@@ -57,34 +46,4 @@ Feature: /mass_actions endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "You must select tickets for mass action apply"
-
-  Scenario: I post mass actions request with empty actions
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1],
-  "params":{}
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "You must define parameters for one or more actions"
-
-  Scenario: I post mass actions request without actions
-    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
-    """
-{
-  "ids": [1]
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "status" should exist
-    And the JSON node "status" should be equal to 400
-    And the JSON node "message" should exist
-    And the JSON node "message" should be equal to "You must define parameters for one or more actions"
+    And the JSON node "errors.fields.ids.errors[0].code" should be equal to "too_few_elements"

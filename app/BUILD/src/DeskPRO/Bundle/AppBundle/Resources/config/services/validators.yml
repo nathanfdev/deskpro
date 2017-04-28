@@ -86,3 +86,10 @@ services:
       - "@twilio_adapter"
     tags:
       - { name: validator.constraint_validator }
+
+  validator.permission:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\PermissionValidator
+    arguments:
+      - "@security.authorization_checker"
+    tags:
+      - { name: validator.constraint_validator }

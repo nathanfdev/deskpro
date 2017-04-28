@@ -68,8 +68,9 @@ class FormValidatorChecker
 
     /**
      * @param FormInterface $form
+     * @param bool          $clearChildren
      */
-    public static function clearFormErrors(FormInterface $form)
+    public static function clearFormErrors(FormInterface $form, $clearChildren = true)
     {
         if (!$form instanceof Form) {
             return;
@@ -80,8 +81,10 @@ class FormValidatorChecker
         $property->setValue($form, []);
         $property->setAccessible(false);
 
-        foreach ($form->all() as $child) {
-            self::clearFormErrors($child);
+        if ($clearChildren) {
+            foreach ($form->all() as $child) {
+                self::clearFormErrors($child);
+            }
         }
     }
 }
