@@ -28,20 +28,35 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1476272788 extends AbstractBuild
+class Build1493393091 extends AbstractBuild implements OnlineBuildInterface
 {
+    public function addNewTables()
+    {
+    }
+
+    public function runAlters()
+    {
+    }
+
     public function run()
     {
         $this->out('Changing portal.chat.enabled => core.apps_chat');
         $connection = $this->getDbConnection('default');
 
+        $hasSetting = $connection->fetchAll('SELECT * FROM `settings_brand` WHERE `name` = "core.apps_chat"');
+        if (!empty($hasSetting)) {
+            return;
+        }
+
         //lets find already defined portal.chat.enabled
-        $globalPortalChatEnabled = $connection->fetchAll(
-            'SELECT * FROM `settings` WHERE `name` = "portal.chat.enabled"');
+        $globalPortalChatEnabled = $connection->fetchAll('SELECT * FROM `settings` WHERE `name` = "portal.chat.enabled"');
+        if (empty($globalPortalChatEnabled)) {
+            return;
+        }
 
-        $globalValue = !empty($globalPortalChatEnabled) ? array_pop($globalPortalChatEnabled) : 0;
+        $globalValue = array_pop($globalPortalChatEnabled);
 
-        //update existing portal.chat.enabled to core.apps_chat
+        // update existing portal.chat.enabled to core.apps_chat
         $this->execDbQuery(
             'default',
             "UPDATE `settings_brand` SET `name` = 'core.apps_chat' WHERE `name` = 'portal.chat.enabled'"
@@ -62,5 +77,6 @@ SQL;
         }
 
         $this->execDbQuery('default', 'DELETE FROM `settings` WHERE `name` = "core.apps_chat"');
+        $this->execDbQuery('default', 'DELETE FROM `settings` WHERE `name` = "portal.chat.enabled"');
     }
 }
