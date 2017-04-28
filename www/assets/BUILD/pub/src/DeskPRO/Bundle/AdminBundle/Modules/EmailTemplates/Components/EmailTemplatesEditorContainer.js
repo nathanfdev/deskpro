@@ -81,7 +81,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.cleanState);
   }
 
-  getPhraseTranslations = code => this.props.dispatch(actions.loadTranslations(code));;
+  getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
 
   addTemplate = (name) => {
     this.setState({
@@ -232,8 +232,15 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
   };
 
-  savePhraseTranslations = () => {
-  };
+  savePhraseTranslations = (phraseName, translations) => this.props.dispatch(actions.saveTranslations(phraseName, translations))
+      .then(() => {
+        const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
+        this.previewTemplate(body, this.props.emailTemplates.get('currentLanguage'));
+        this.props.dispatch(actions.loadPhrases(
+          this.props.emailTemplates.get('currentTemplateGroup'),
+          this.props.emailTemplates.get('currentLanguage')
+        ));
+      });
 
   handleEmailAddress = (e) => {
     this.setState({

@@ -446,12 +446,71 @@ class LanguagesController extends CrudController
         /** @var Translate $translate */
         $translate = $this->container->get('deskpro.core.translate');
 
-        $languages = $translate->getAllLanguages();
+        $languages    = $translate->getAllLanguages();
         $translations = [];
         foreach ($languages as $language) {
             $translations[$language->getLocale()] = $translate->getPhraseText($phraseName, $language, true);
         }
+
         return new View($translations);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide translation of a phrase",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     output="array"
+     * )
+     * @Rest\Post("/translations/{phraseName}")
+     * @Feature("email_templates")
+     *
+     * @param Request $request
+     * @param $phraseName
+     *
+     * @return View
+     */
+    public function postTranslationsAction(Request $request, $phraseName)
+    {
+        $translations = $request->get('translations');
+
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        foreach ($translations as $locale => $translation) {
+            $language    = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $locale]);
+            $translation = trim($translation);
+            if ($translation != $translate->getPhraseText($phraseName, $language, true)) {
+                $phrase = $this->getManager()->getRepository(Phrase::class)
+                    ->getPhraseForLanguage($phraseName, $language);
+                if (!$translation) {
+                    if ($phrase) {
+                        $this->getManager()->remove($phrase);
+                    }
+                } else {
+                    if (!$phrase) {
+                        $phrase = new Phrase();
+                        $phrase->setLanguage($language);
+                        $phrase->setName($phraseName);
+                        $phrase->setOriginalPhrase('');
+                        $phrase->setOriginalHash(md5(null));
+                    }
+
+                    if (!$phrase->getOriginalPhrase()) {
+                        $phrase->setOriginalPhrase('');
+                        $phrase->setOriginalHash(md5(null));
+                    }
+                    $phrase->setPhrase($translation);
+                    $this->getManager()->persist($phrase);
+                }
+            }
+        }
+        $this->getManager()->flush();
+
+        return new View('OK');
     }
 
     /**

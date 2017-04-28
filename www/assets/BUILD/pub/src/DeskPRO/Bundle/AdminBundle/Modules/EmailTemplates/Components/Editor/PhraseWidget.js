@@ -11,24 +11,23 @@ class PhrasePopup extends React.Component {
     text:                   PropTypes.string,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
+    getText:                PropTypes.func,
+    setText:                PropTypes.func,
     variables:              PropTypes.object,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      translations: {}
+      translations: {},
+      variables:    {}
     };
   }
 
   componentWillMount() {
-    this.props.getPhraseTranslations(this.props.phrase).then(
-      (result) => {
-        this.setState({
-          translations: result
-        });
-      }
-    );
+    this.setState({
+      variables: this.props.variables
+    });
   }
 
   getPopUp = () => {
@@ -45,28 +44,24 @@ class PhrasePopup extends React.Component {
     );
   };
 
-  getTranslations = () => {
-    this.translationInputs = [];
-    return (
-      <div className="translations">
-        {window.DP_ENABLED_LANGS.map(language =>
-          <Field key={`language_${language.locale}`} field={`phrase_${language.locale}`} errors={null}>
-            <label htmlFor={`phrase_${language.locale}`}>{language.title}</label>
-            <Input
-              id={`phrase_${language.locale}`}
-              name={`phrase_${language.locale}`}
-              defaultValue={this.state.translations[language.locale]}
-              ref={(c) => { this.translationInputs.push(c); }}
-            />
-          </Field>
+  getTranslations = () => (
+    <div className="translations">
+      {window.DP_ENABLED_LANGS.map(language =>
+        <Field key={`language_${language.locale}`} field={`phrase_${language.locale}`} errors={null}>
+          <label htmlFor={`phrase_${language.locale}`}>{language.title}</label>
+          <Input
+            id={`phrase_${language.locale}`}
+            name={`phrase_${language.locale}`}
+            value={this.state.translations[language.locale]}
+            onChange={(value) => { this.handleChangeTranslation(value, language.locale); }}
+          />
+        </Field>
         )}
-      </div>
-
+    </div>
     );
-  };
 
   getVariables = () => {
-    const { variables } = this.props;
+    const { variables } = this.state;
     if (Object.keys(variables).length === 0) {
       return null;
     }
@@ -89,21 +84,66 @@ class PhrasePopup extends React.Component {
     );
   };
 
+  handleChangeTranslation = (value, locale) => {
+    const translations = this.state.translations;
+    translations[locale] = value;
+    this.setState({
+      translations
+    });
+  };
+
   openMenu = () => {
+    this.props.getPhraseTranslations(this.props.phrase).then(
+      (result) => {
+        this.setState({
+          translations: result
+        });
+      }
+    );
     this.popup.openPopup();
   };
 
   closeMenu = () => {
+    this.props.getPhraseTranslations(this.props.phrase).then(
+      (result) => {
+        this.setState({
+          translations: result
+        });
+      }
+    );
     this.popup.closePopup();
   };
 
   saveChanges = () => {
-    for (const field of this.variableInputs) {
-      if (field && field.input.input.value) {
-        // phrase[field.input.name] = field.input.value;
+    this.props.savePhraseTranslations(this.props.phrase, this.state.translations).then(() => {
+      if (this.variableInputs) {
+        const variableCode = [];
+        const variables = {};
+        for (const field of this.variableInputs) {
+          if (field) {
+            const key = field.input.name.replace(/^variable_/, '');
+            if (field.input.value) {
+              const value = field.input.value;
+              variableCode.push(`${key}: ${value}`);
+              variables[key] = value;
+            } else {
+              variables[key] = '';
+            }
+          }
+        }
+        this.setState({
+          variables
+        });
+        let text = this.props.getText();
+        if (variableCode.length) {
+          text = text.replace(/(\('[^']+')[^)]*(\))/, `$1, { ${variableCode.join(', ')} }$2`);
+        } else {
+          text = text.replace(/(\('[^']+')[^)]*(\))/, '$1$2');
+        }
+        this.props.setText(text, 'popup');
       }
-    }
-    this.props.savePhraseTranslations();
+      this.popup.closePopup();
+    });
   };
 
   render() {
@@ -115,7 +155,7 @@ class PhrasePopup extends React.Component {
         content={this.getPopUp()}
         ref={(c) => { this.popup = c; }}
         style={{ display: 'inline-block' }}
-        autoOpen={false}
+        clickOut={false}
         manual
       >
         <span
@@ -164,6 +204,8 @@ class PhraseWidget extends Widget {
           variables={variables}
           getPhraseTranslations={getPhraseTranslations}
           savePhraseTranslations={savePhraseTranslations}
+          setText={this.setText}
+          getText={this.getText}
         />,
         element
       );

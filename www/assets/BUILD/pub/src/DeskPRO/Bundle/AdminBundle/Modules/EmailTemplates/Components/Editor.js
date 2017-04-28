@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import CodeMirror from './CodeMirror';
-import { PhraseWidget, TemplateWidget, VariableWidget } from './Editor/';
+import { PhraseWidget, TemplateWidget } from './Editor/';
 
 class Editor extends React.Component {
   static propTypes = {
@@ -29,6 +29,7 @@ class Editor extends React.Component {
       const from = change.from;
       switch (change.origin) {
         case '+input':
+        case 'popup':
           text = [doc.getLine(from.line)];
           break;
         case 'undo':
@@ -42,20 +43,21 @@ class Editor extends React.Component {
       text.forEach((content, line) => {
         let match;
         let re;
-        re = /{{\s*([a-z0-9_.]+)\s*}}/g;
-        match = re.exec(content);
-        while (match !== null) {
-          widgets.push(new VariableWidget(
-            cm,
-            {
-              line: line + from.line,
-              ch:   match.index
-            },
-            match[0],
-            match[1]
-          ));
-          match = re.exec(content);
-        }
+        // Variable Widget is disabled at the moment
+        // re = /{{\s*([a-z0-9_.]+)\s*}}/g;
+        // match = re.exec(content);
+        // while (match !== null) {
+        //   widgets.push(new VariableWidget(
+        //     cm,
+        //     {
+        //       line: line + from.line,
+        //       ch:   match.index
+        //     },
+        //     match[0],
+        //     match[1]
+        //   ));
+        //   match = re.exec(content);
+        // }
         re = /{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/g;
         match = re.exec(content);
         while (match !== null) {

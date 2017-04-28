@@ -64,15 +64,6 @@ export const loadPhrases = createAction(
   })
 );
 
-export const loadTranslations = createAction(
-  'EMAIL_TEMPLATE_LOAD_TRANSLATIONS',
-  code => new Promise((resolve) => {
-    repository('Languages').loadTranslations(code).then((promise) => {
-      resolve(promise.getData());
-    });
-  })
-);
-
 export const loadTemplate = createAction(
   'EMAIL_TEMPLATES_LOAD_TEMPLATE',
   name => new Promise((resolve) => {
@@ -90,13 +81,29 @@ export const loadTemplate = createAction(
   })
 );
 
+export const loadTranslations = createAction(
+  'EMAIL_TEMPLATE_LOAD_TRANSLATIONS',
+  phraseName => new Promise((resolve) => {
+    repository('Languages').loadTranslations(phraseName).then((promise) => {
+      resolve(promise.getData());
+    });
+  })
+);
+
 export const saveTemplate = createAction(
   'EMAIL_TEMPLATES_SAVE_TEMPLATE',
   (name, template) => new Promise((resolve) => {
     repository('EmailTemplates').saveTemplate(name, template).then((promise) => {
-      const res = promise.getData();
+      resolve(promise.getData());
+    });
+  })
+);
 
-      resolve(res);
+export const saveTranslations = createAction(
+  'EMAIL_TEMPLATE_SAVE_TRANSLATIONS',
+  (phraseName, translations) => new Promise((resolve) => {
+    repository('Languages').saveTranslations(phraseName, translations).then((promise) => {
+      resolve(promise.getData());
     });
   })
 );
@@ -125,7 +132,10 @@ export const deletePreview = createAction('EMAIL_TEMPLATES_DELETE_PREVIEW');
 export const previewTemplate = createAction(
   'EMAIL_TEMPLATES_PREVIEW_TEMPLATE',
   (template, group, code, variables, lang) => new Promise((resolve) => {
-    repository('EmailTemplates').previewTemplate(template, group, code, variables, lang).then((promise) => {
+    if (code === '') {
+      return resolve('');
+    }
+    return repository('EmailTemplates').previewTemplate(template, group, code, variables, lang).then((promise) => {
       const res = promise.getData();
 
       resolve(res);

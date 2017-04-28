@@ -5,12 +5,16 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendGet(`DP_API/${this.url}/email_phrases/${group}/${languageId}`);
   }
 
-  loadTranslations(code) {
-    return this.api.sendGet(`DP_API/${this.url}/translations/${code}`);
+  loadTranslations(phraseName) {
+    return this.api.sendGet(`DP_API/${this.url}/translations/${phraseName}`);
   }
 
   saveCustomPhrase(phrase) {
     return this.api.sendPost(`DP_API/${this.url}/custom_phrase`, phrase);
+  }
+
+  saveTranslations(phraseName, translations) {
+    return this.api.sendPost(`DP_API/${this.url}/translations/${phraseName}`, { translations });
   }
 }
 export default EmailTemplatesRepository;

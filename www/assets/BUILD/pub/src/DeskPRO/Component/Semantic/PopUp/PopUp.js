@@ -21,6 +21,7 @@ class PopUp extends React.Component {
     autoOpen:             PropTypes.bool,
     allowCloseOnClickOut: PropTypes.bool,
     manual:               PropTypes.bool,
+    clickOut:             PropTypes.bool,
     className:            PropTypes.string,
     style:                PropTypes.object,
     innerClassName:       PropTypes.string,
@@ -34,6 +35,7 @@ class PopUp extends React.Component {
     autoOpen:             false,
     allowCloseOnClickOut: true,
     manual:               false,
+    clickOut:             true,
   };
 
   constructor(props) {
@@ -103,13 +105,18 @@ class PopUp extends React.Component {
   renderBody() {
     const { content, positionAt, elementId, innerClassName } = this.props;
 
-    return (
-      <ClickOut onClickOut={this.clickOutClosePopup} additionalNodes={['.ReactModalPortal']}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
-          {content}
-        </div>
-      </ClickOut>
-    );
+    if (this.props.clickOut) {
+      return (
+        <ClickOut onClickOut={this.clickOutClosePopup} additionalNodes={['.ReactModalPortal']}>
+          <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
+            {content}
+          </div>
+        </ClickOut>
+      );
+    }
+    return (<div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
+      {content}
+    </div>);
   }
 
   render() {

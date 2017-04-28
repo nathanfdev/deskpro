@@ -23,9 +23,9 @@ class Widget {
 
   range = () => this.mark.find();
 
-  setText = (text) => {
+  setText = (text, origin) => {
     const r = this.range();
-    this.cm.replaceRange(text, r.from, r.to);
+    this.cm.replaceRange(text, r.from, r.to, origin);
   };
 
   getText = () => {

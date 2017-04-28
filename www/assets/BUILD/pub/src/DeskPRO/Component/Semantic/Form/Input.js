@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import ReactFormInput from '../ReactForm/Input';
 
 class Input extends React.Component {
   static propTypes = {
@@ -40,9 +39,11 @@ class Input extends React.Component {
     const { icon, iconPosition, ...rest } = this.props;
     const divProps = Object.assign({}, rest);
     delete divProps.onEnterKey;
+    delete divProps.onChange;
+    delete divProps.onKeyPress;
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
-        <ReactFormInput
+        <input
           ref={(c) => { this.input = c; }}
           onChange={this.handleChange}
           onKeyPress={this.keyPress}

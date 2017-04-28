@@ -21,7 +21,7 @@ class NewCustomTemplate extends React.Component {
   };
 
   handleAddTemplate = () => {
-    this.props.addTemplate(this.nameInput.input.input.value)
+    this.props.addTemplate(this.nameInput.input.value)
     .then(() => {
       this.props.close();
     });
