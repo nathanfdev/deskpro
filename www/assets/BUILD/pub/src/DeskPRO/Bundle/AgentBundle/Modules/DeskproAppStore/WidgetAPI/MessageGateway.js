@@ -117,6 +117,10 @@ class MessageGateway
       return this.deleteAppState(widget);
     }
 
+    if (eventName === Messages.EVENT_USER_GET) {
+      return this.getUser(widget);
+    }
+
     throw new Error(`Could not find a message channel for event ${eventName}`);
   };
 
@@ -254,6 +258,25 @@ class MessageGateway
     const defaultHandler = (widget, state, reply) => {
       const { name } = state;
       appstoreDispatcher.dispatchDeleteAppState(widget.appConfig.id, name, (app, state) => reply(state))
+    };
+
+    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
+  };
+
+  /**
+   * @param {WidgetConfiguration} widget
+   * @return {MessageChannel}
+   */
+  getUser = (widget) => {
+    const messageType = Messages.EVENT_USER_GET;
+
+    const replyHandler = (widget, widgetWindow, user) => {
+      postRobot.send(widgetWindow, messageType, user);
+    };
+
+    const { appstoreDispatcher } = this;
+    const defaultHandler = (widget, message, reply) => {
+      appstoreDispatcher.dispatchGetUser(widget.appConfig.id, (app, user) => reply(user));
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);

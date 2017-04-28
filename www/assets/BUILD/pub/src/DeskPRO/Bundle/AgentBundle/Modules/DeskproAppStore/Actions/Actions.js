@@ -10,6 +10,8 @@ export const DESKPRO_APPSTORE_STATE_FIND = 'DESKPRO_APPSTORE__STATE_FIND';
 export const DESKPRO_APPSTORE_STATE_GET = 'DESKPRO_APPSTORE_STATE_GET';
 export const DESKPRO_APPSTORE_STATE_DELETE = 'DESKPRO_APPSTORE_STATE_DELETE';
 
+export const DESKPRO_APPSTORE_USER_GET = 'DESKPRO_APPSTORE_USER_GET';
+
 
 /**
 * @param {DeskPRO.Agent.PageFragment.Basic} page
@@ -158,4 +160,9 @@ export const createAppState = createAction(
   (appId, state, callback, api) =>  api.sendPost(`DP_API/apps/${appId}/state`, state)
     .then(httpResponse => httpResponse.data)
     .then(response => { callback(appId, state); return state; } )
+);
+
+export const getUser = createAction(
+  DESKPRO_APPSTORE_USER_GET,
+  (appId, callback, api) => callback(appId, { id: window.DP_PERSON_ID, email: window.DP_PERSON_EMAIL })
 );

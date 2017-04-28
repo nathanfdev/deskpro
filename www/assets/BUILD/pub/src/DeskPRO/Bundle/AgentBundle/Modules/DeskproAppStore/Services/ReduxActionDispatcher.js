@@ -86,6 +86,12 @@ class ReduxActionDispatcher
     const { reduxDispatch, api } = this;
     reduxDispatch(Actions.deleteAppState(appId, name, callback, api));
   };
+
+  dispatchGetUser = (appId, callback) =>
+  {
+    const { reduxDispatch, api} = this;
+    reduxDispatch(Actions.getUser(appId, callback, api));
+  };
 }
 
 export default ReduxActionDispatcher;

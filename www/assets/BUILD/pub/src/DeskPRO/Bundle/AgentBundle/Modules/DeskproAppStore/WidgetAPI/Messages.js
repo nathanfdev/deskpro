@@ -14,6 +14,8 @@ export const EVENT_STATE_CREATE = 'create-state';
 
 export const EVENT_STATE_UPDATE = 'update-state';
 
+export const EVENT_USER_GET = 'get-user';
+
 export const eventNames = [
   EVENT_MOUNT,
 
@@ -29,7 +31,9 @@ export const eventNames = [
 
   EVENT_STATE_SAVE,
 
-  EVENT_STATE_UPDATE
+  EVENT_STATE_UPDATE,
+
+  EVENT_USER_GET
 ];
 
 export const isEventName = name => eventNames.indexOf(name) !== -1;
