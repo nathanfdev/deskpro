@@ -32,7 +32,7 @@ export default class LegacyClient extends AbstractClient {
     if (response.action_alerts) {
       const last = response.action_alerts[response.action_alerts.length - 1];
       if (last && last.id) {
-        that.options.last_alert = last.id;
+        that.options.last_alert = last.id > that.options.last_alert ? last.id : that.options.last_alert;
         response.action_alerts.map((datum) => {
           if (datum.target_id === that.options.me) {
             datum.data = JSON.parse(datum.data);
@@ -50,7 +50,7 @@ export default class LegacyClient extends AbstractClient {
     if (response.notifications) {
       const last = response.notifications[response.notifications.length - 1];
       if (last && last.id) {
-        that.options.last_notify = last.id;
+        that.options.last_notify = last.id > that.options.last_notify ? last.id : that.options.last_notify;
         response.notifications.map((datum) => {
           if (datum.target_id === that.options.me) {
             datum.data = JSON.parse(datum.data);

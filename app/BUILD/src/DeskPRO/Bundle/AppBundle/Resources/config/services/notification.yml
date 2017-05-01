@@ -60,6 +60,7 @@ services:
 
   #
   # notification handlers
+  # todo: tag generators - move this stuff to compiler pass
   #
   deskpro.notification.notify_handler.action_alert:
     class: DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler
@@ -68,6 +69,7 @@ services:
       - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_chat_mark_message"]]
       - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_update_online"]]
       - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_chat_mark_all_messages"]]
+      - [attachGenerator, ["@deskpro.notification.generator.action_alert.read_notifications"]]
 
   deskpro.notification.notify_handler.user_notify:
       class: DeskPRO\Bundle\AppBundle\Notification\UserNotificationHandler
@@ -108,6 +110,12 @@ services:
 
   deskpro.notification.generator.action_alert.agent_update_online:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\UpdateOnlineMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+
+  deskpro.notification.generator.action_alert.read_notifications:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\ReadNotificationsMessageGenerator
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"

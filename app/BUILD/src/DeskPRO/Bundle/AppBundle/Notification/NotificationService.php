@@ -34,6 +34,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use DeskPRO\Component\Util\RandUtils;
@@ -101,7 +102,7 @@ class NotificationService
      */
     public function lastNotify()
     {
-        $notificationRepo = $this->em->getRepository(ActionAlert::class);
+        $notificationRepo = $this->em->getRepository(Notification::class);
         $qb               = $notificationRepo->createQueryBuilder('n');
         $notification     = $qb->orderBy('n.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
 

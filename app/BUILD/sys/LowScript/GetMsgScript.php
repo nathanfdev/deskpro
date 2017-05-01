@@ -353,8 +353,18 @@ class GetMsgScript extends LowScriptAbstract
                     ");
                 }
             }
+
             $data['action_alerts'] = $this->getActionAlerts();
-            $data['notifications'] = $this->getNotifications();
+            $readNotifications     = false;
+            foreach ($data['action_alerts'] as $k => $actionAlert) {
+                if ($actionAlert['type'] === 'read.notifications.alert') {
+                    $readNotifications = true;
+                    // we're processing it further to avoid sending read notifications.alert data
+                    unset($data['action_alerts'][$k]);
+                }
+            }
+            $data['action_alerts'] = array_values($data['action_alerts']);
+            $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
 
             header('Content-Type: application/json');
             echo json_encode($data);
@@ -870,6 +880,7 @@ class GetMsgScript extends LowScriptAbstract
 SELECT * FROM `{$tableName}`
 WHERE `target_id` = :target_id 
   AND `id` > :last
+ORDER BY `id` ASC
 SQL;
         $stmnt = $this->getPdoRead()->prepare($sql);
         $stmnt->execute([
@@ -877,7 +888,9 @@ SQL;
             'last'      => $last,
         ]);
 
-        return $stmnt->fetchAll(\PDO::FETCH_ASSOC);
+        $all = $stmnt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $all;
     }
 
     protected function transformData($data)
