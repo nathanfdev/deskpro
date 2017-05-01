@@ -56,8 +56,9 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getId()->shouldBeCalled();
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
-        $pusher->trigger('private-channel-1', PusherDeliveryHandler::CHANNEL_ACTION_ALERT, Argument::any())->shouldBeCalled();
+
+        $pusher->triggerBatch(Argument::type('array'))->shouldBeCalled();
         $this->schedule($actionAlert);
-        $this->deliver($actionAlert);
+        $this->deliver();
     }
 }

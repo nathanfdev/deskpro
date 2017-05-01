@@ -40,10 +40,17 @@ class DeliveryServiceSpec extends ObjectBehavior
 {
     public function let(
         DeliveryHandlerInterface $delivery_handler,
-        DeliveryHandlerInterface $another_delivery_handler
+        DeliveryHandlerInterface $another_delivery_handler,
+        MessageInterface $message
     ) {
         $delivery_handler->getType()->willReturn('delivery_handler');
         $another_delivery_handler->getType()->willReturn('another_delivery_handler');
+
+        $delivery_handler->schedule($message)->willReturn(null);
+        $another_delivery_handler->schedule($message)->willReturn(null);
+
+        $delivery_handler->deliver()->willReturn(null);
+        $another_delivery_handler->deliver()->willReturn(null);
     }
 
     public function it_can_attach_handlers(
@@ -73,8 +80,11 @@ class DeliveryServiceSpec extends ObjectBehavior
     ) {
         $this->attachHandler($delivery_handler);
         $this->attachHandler($another_delivery_handler);
+        $this->schedule($message);
         $delivery_handler->schedule($message)->shouldBeCalled();
         $another_delivery_handler->schedule($message)->shouldBeCalled();
-        $this->deliver($message);
+        $this->deliver();
+        $delivery_handler->deliver()->shouldBeCalled();
+        $another_delivery_handler->deliver()->shouldBeCalled();
     }
 }
