@@ -46,11 +46,19 @@ class DeliveryService
     /**
      * @param MessageInterface $message
      */
-    public function deliver(MessageInterface $message)
+    public function schedule(MessageInterface $message)
     {
         foreach ($this->collection as $handler) {
             /* @var DeliveryHandlerInterface $handler */
-            $handler->deliver($message);
+            $handler->schedule($message);
+        }
+    }
+
+    public function deliver()
+    {
+        foreach ($this->collection as $handler) {
+            /* @var DeliveryHandlerInterface $handler */
+            $handler->deliver();
         }
     }
 

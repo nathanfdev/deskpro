@@ -73,8 +73,8 @@ class DeliveryServiceSpec extends ObjectBehavior
     ) {
         $this->attachHandler($delivery_handler);
         $this->attachHandler($another_delivery_handler);
-        $delivery_handler->deliver($message)->shouldBeCalled();
-        $another_delivery_handler->deliver($message)->shouldBeCalled();
+        $delivery_handler->schedule($message)->shouldBeCalled();
+        $another_delivery_handler->schedule($message)->shouldBeCalled();
         $this->deliver($message);
     }
 }

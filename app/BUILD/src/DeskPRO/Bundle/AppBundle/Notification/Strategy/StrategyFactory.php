@@ -110,7 +110,10 @@ class StrategyFactory
     {
         switch ($strategy_name) {
             case 'immediate':
-                return new ImmediateStrategy();
+                $immediateStrategy = new ImmediateStrategy();
+                $this->container->get('deskpro.notification.immediate_listener')->pushStrategy($immediateStrategy);
+
+                return $immediateStrategy;
             case 'deferred':
                 return new DeferredStrategy();
             default:
