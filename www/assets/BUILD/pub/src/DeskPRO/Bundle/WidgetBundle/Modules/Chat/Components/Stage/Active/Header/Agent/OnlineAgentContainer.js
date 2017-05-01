@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { loadAll, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentAcceptTimeoutSelector } from '../../../../../../Application/Selectors/dpWindow';
 import {
   agentIdSelector,
   chatIdSelector,
   agentNameSelector,
   agentAvatarSelector,
-  departmentNameSelector,
+  departmentSelector,
   hasAssignedMessageSelector
 } from '../../../../../Selectors/chat';
 import { OnlineAgent } from './OnlineAgent';
@@ -21,12 +22,14 @@ import { WaitingLoader } from '../../Disconnect/WaitingLoader';
   acceptTimeout:      agentAcceptTimeoutSelector(state),
   agentName:          agentNameSelector(state),
   agentAvatar:        agentAvatarSelector(state),
-  departmentName:     departmentNameSelector(state),
+  departmentId:       departmentSelector(state),
+  allChatDepartments: collectionSelectorFactory('ChatDepartment', 'all')(state),
   hasAssignedMessage: hasAssignedMessageSelector(state)
 }))
 export class OnlineAgentContainer extends React.Component {
 
   static propTypes = {
+    dispatch:           PropTypes.func,
     agentId:            PropTypes.number,
     agentName:          PropTypes.string,
     agentAvatar:        PropTypes.object,
@@ -38,6 +41,10 @@ export class OnlineAgentContainer extends React.Component {
     this.state = {
       disconnected: false
     };
+  }
+
+  componentDidMount() {
+    this.props.dispatch(loadAll('ChatDepartment'));
   }
 
   componentWillReceiveProps(props) {

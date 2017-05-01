@@ -26,16 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Translate\Translate;
+use Doctrine\ORM\EntityManager;
 
+/**
+ * Class LanguageManager.
+ */
 class LanguageManager
 {
     /**
@@ -46,24 +45,31 @@ class LanguageManager
     /**
      * @var LanguageStack
      */
-    private $language_stack;
+    private $languageStack;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\Language
+     * @var EntityManager
      */
-    private $language_repo;
+    private $em;
 
     /**
      * @var bool
      */
-    private $multi_langauge;
+    private $multiLanguage;
 
-    public function __construct(Translate $translate, LanguageStack $language_stack, LanguageRepo $language_repo)
+    /**
+     * Constructor.
+     *
+     * @param Translate     $translate
+     * @param LanguageStack $languageStack
+     * @param EntityManager $em
+     */
+    public function __construct(Translate $translate, LanguageStack $languageStack, EntityManager $em)
     {
-        $this->translate      = $translate;
-        $this->language_stack = $language_stack;
-        $this->language_repo  = $language_repo;
-        $this->multi_langauge = null;
+        $this->translate     = $translate;
+        $this->languageStack = $languageStack;
+        $this->em            = $em;
+        $this->multiLanguage = null;
     }
 
     /**
@@ -71,11 +77,11 @@ class LanguageManager
      */
     public function isMultiLanguagePortal()
     {
-        if ($this->multi_langauge !== null) {
-            return $this->multi_langauge;
+        if ($this->multiLanguage !== null) {
+            return $this->multiLanguage;
         }
 
-        return $this->multi_langauge = ($this->language_repo->countPortalLanguages() > 1);
+        return $this->multiLanguage = ($this->em->getRepository(Language::class)->countPortalLanguages() > 1);
     }
 
     /**
@@ -99,7 +105,7 @@ class LanguageManager
     {
         $lang_code = $this->normalizeLanguageCode($lang_code);
 
-        return $this->language_repo->getForLangCode($lang_code);
+        return $this->em->getRepository(Language::class)->getForLangCode($lang_code);
     }
 
     /**
@@ -109,7 +115,7 @@ class LanguageManager
      */
     public function getLanguageBySystemName($sys_name)
     {
-        return $this->language_repo->findOneBy(['sys_name' => $sys_name]);
+        return $this->em->getRepository(Language::class)->findOneBy(['sys_name' => $sys_name]);
     }
 
     /**
@@ -129,7 +135,7 @@ class LanguageManager
      */
     public function getLanguageStack()
     {
-        return $this->language_stack;
+        return $this->languageStack;
     }
 
     /**
@@ -137,7 +143,7 @@ class LanguageManager
      */
     public function getEnabledLanguages()
     {
-        return $this->language_repo->getPortalLanguages();
+        return $this->em->getRepository(Language::class)->getPortalLanguages();
     }
 
     /**
@@ -150,8 +156,8 @@ class LanguageManager
     public function getTranslator($lang = null)
     {
         if (!$lang) {
-            if (!$lang = $this->language_stack->getActive()) {
-                $lang = $this->language_stack->getDefaultLanguage();
+            if (!$lang = $this->languageStack->getActive()) {
+                $lang = $this->languageStack->getDefaultLanguage();
             }
         } elseif (!$lang instanceof Language) {
             $lang = $this->getLanguage($lang);

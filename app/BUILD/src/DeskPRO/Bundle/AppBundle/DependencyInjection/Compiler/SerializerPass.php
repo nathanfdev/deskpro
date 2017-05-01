@@ -26,23 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 /**
- * DeskPRO.
- *
- * @category DependencyInjection
+ * Class SerializerPass.
  */
-
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
-
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Usersource\UsersourceManager;
-
-class UsersourceManagerService
+class SerializerPass implements CompilerPassInterface
 {
-    public static function create(DeskproContainer $container)
+    /**
+     * {@inheritdoc}
+     */
+    public function process(ContainerBuilder $container)
     {
-        $usm = new UsersourceManager($container->getEm(), $container);
-
-        return $usm;
+        $def = $container->getDefinition('jms_serializer.doctrine_proxy_subscriber');
+        $def->addArgument(true); // disable proxy loading of entity<class>
     }
 }
