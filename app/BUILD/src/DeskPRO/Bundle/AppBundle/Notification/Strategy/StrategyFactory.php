@@ -58,9 +58,10 @@ class StrategyFactory
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
-        $global_settings = $this->container->get('settings_resolver')->getGlobalSettings();
-        $this->config    = $global_settings->get(
+        $this->container  = $container;
+        $this->cliProcess = php_sapi_name() === 'cli';
+        $global_settings  = $this->container->get('settings_resolver')->getGlobalSettings();
+        $this->config     = $global_settings->get(
             'notification.settings.strategies',
             $this->container->getParameter('notification.settings')
         );
@@ -139,7 +140,7 @@ class StrategyFactory
      */
     private function buildDeliveryService($config)
     {
-        $delivery_service       = new DeliveryService();
+        $delivery_service       = new DeliveryService($this->cliProcess);
         $handler_alias_template = 'deskpro.notification.delivery.handler.%s';
         foreach ($config as $handler_alias) {
             $handler_id = sprintf($handler_alias_template, $handler_alias);

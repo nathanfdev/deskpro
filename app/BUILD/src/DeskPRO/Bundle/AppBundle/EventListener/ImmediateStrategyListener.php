@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\ImmediateStrategy;
-use DpSys\License;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -54,7 +53,7 @@ class ImmediateStrategyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::FINISH_REQUEST => ['onFinishRequest', 500],
+            KernelEvents::TERMINATE => ['onFinishRequest', 2],
         ];
     }
 

@@ -36,11 +36,20 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
  */
 class DeliveryService
 {
+    /**
+     * @var DeliveryHandlerCollection
+     */
     protected $collection;
 
-    public function __construct()
+    /**
+     * @var bool
+     */
+    protected $immediateDelivery;
+
+    public function __construct($immediateDeliver = false)
     {
-        $this->collection = new DeliveryHandlerCollection();
+        $this->immediateDelivery = $immediateDeliver;
+        $this->collection        = new DeliveryHandlerCollection();
     }
 
     /**
@@ -51,6 +60,9 @@ class DeliveryService
         foreach ($this->collection as $handler) {
             /* @var DeliveryHandlerInterface $handler */
             $handler->schedule($message);
+        }
+        if ($this->immediateDelivery) {
+            $this->deliver();
         }
     }
 
