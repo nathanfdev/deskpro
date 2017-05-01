@@ -65,21 +65,12 @@ services:
 
   #
   # notification handlers
-  # todo: tag generators - move this stuff to compiler pass
   #
   deskpro.notification.notify_handler.action_alert:
     class: DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler
-    calls:
-      - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_chat_new_message"]]
-      - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_chat_mark_message"]]
-      - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_update_online"]]
-      - [attachGenerator, ["@deskpro.notification.generator.action_alert.agent_chat_mark_all_messages"]]
-      - [attachGenerator, ["@deskpro.notification.generator.action_alert.read_notifications"]]
 
   deskpro.notification.notify_handler.user_notify:
       class: DeskPRO\Bundle\AppBundle\Notification\UserNotificationHandler
-      calls:
-        - [attachGenerator, ["@deskpro.notification.generator.user_notify.agent_chat_new_message"]]
 
   #
   # UserNotification message generators
@@ -90,6 +81,8 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.user_notify.generator }
 
   #
   # ActionAlert message generators
@@ -100,27 +93,37 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@jms_serializer.serializer"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
 
   deskpro.notification.generator.action_alert.agent_chat_mark_message:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\MarkAgentChatMessageGenerator
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
 
   deskpro.notification.generator.action_alert.agent_chat_mark_all_messages:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\MarkAllAgentChatMessagesGenerator
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
 
   deskpro.notification.generator.action_alert.agent_update_online:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\UpdateOnlineMessageGenerator
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
 
   deskpro.notification.generator.action_alert.read_notifications:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\ReadNotificationsMessageGenerator
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
