@@ -891,7 +891,6 @@ SQL;
             $date                  = new \DateTime($datum['date_created']);
             $datum['date_created'] = $date->format(\DateTime::ISO8601);
             $datum['timestamp']    = $date->getTimestamp();
-            $datum['data']         = json_decode($datum['data'], true);
         }
 
         return $data;
