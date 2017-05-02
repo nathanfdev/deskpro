@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\BuildActivate;
 
-use Application\DeskPRO\Command\UpgradeCommand;
 use DeskPRO\Bundle\UpdateBundle\BuildActivate\HelpdeskState\HelpdeskStateModifierInterface;
 use DeskPRO\Bundle\UpdateBundle\BuildActivate\ReqCheck\ReqCheckInterface;
 use DeskPRO\Bundle\UpdateBundle\BuildActivate\RunActivator\RunActivatorInterface;
@@ -178,11 +177,6 @@ class BuildActivator implements LoggerAwareInterface
                 '[upgradeRunner] finished with error: '.$e->getMessage(),
                 ['keyEvent' => LogKeyEvent::createForException('BuildActivator.upgradeRunner.error', $e)]
             );
-
-            if ($e->getCode() == UpgradeCommand::ERR_BAD_PATHS) {
-                $this->logger->info('[upgradeRunner] exited due to invalid paths; nothing done so will re-enable the helpdesk');
-                $this->helpdeskState->enableHelpdeskFromUpdate();
-            }
 
             throw $e;
         } finally {
