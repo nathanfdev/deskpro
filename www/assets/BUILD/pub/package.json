@@ -101,7 +101,7 @@
     "striptags": "2.1.1",
     "to-markdown": "^3.0.3",
     "toastr": "^2.1.2",
-    "xcomponent": "^1.0.121"
+    "xcomponent": "1.0.125"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.3.0",
