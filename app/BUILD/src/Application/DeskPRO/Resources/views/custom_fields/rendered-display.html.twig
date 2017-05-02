@@ -18,13 +18,13 @@
 		{% if nl2br is defined and nl2br %}
 			{% set propValue = field_rendered|escape|nl2br %}
 		{% else %}
-			{% set propValue = field_rendered|raw %}
+			{% set propValue = field_rendered|escape %}
 		{% endif %}
 
 		{% if field_def.getOption('clickable_links') %}
 			{{ propValue|safe_link_urls_html }}
 		{% else %}
-			{{ propValue }}
+			{{ propValue|raw }}
 		{% endif %}
 
 		{{ field_def.getHtmlOption()|raw }}
