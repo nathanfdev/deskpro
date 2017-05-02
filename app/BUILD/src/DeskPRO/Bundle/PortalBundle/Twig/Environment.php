@@ -65,10 +65,7 @@ class Environment extends \Twig_Environment
     }
 
     /**
-     * @param string $name
-     * @param null   $index
-     *
-     * @return \Twig_TemplateInterface
+     * {@inheritdoc}
      */
     public function loadTemplate($name, $index = null)
     {
