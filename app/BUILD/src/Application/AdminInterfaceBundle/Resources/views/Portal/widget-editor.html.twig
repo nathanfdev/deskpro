@@ -16,7 +16,7 @@
                     <div class="element">
                         <div class="title" ng-class="{'active': section == 'button_settings'}" ng-click="section = 'button_settings'">
                             <i class="dropdown icon"></i>
-                            {{ phrase('admin.widget.button_settings') }}
+                            {{ phrase('admin.widget.widget_settings') }}
                         </div>
                         <div class="content" ng-class="{'active': section == 'button_settings'}" data-target="button_settings">
                             <div class="field">
@@ -102,6 +102,20 @@
                                     }"
                                     ></spectrum-colorpicker>
                                     <label for="background_color">{{ phrase('admin.widget.text_icon_color') }}</label>
+                                </div>
+                                <div class="inline field">
+                                    <spectrum-colorpicker
+                                            ng-model="brand_settings.widget.primary_color"
+                                            format="'hex'"
+                                            class="color-picker"
+                                            options="{
+                                        showPalette: true,
+                                        palette: ['#ffffff'],
+                                        showSelectionPalette: false,
+                                        showInput: true
+                                    }"
+                                    ></spectrum-colorpicker>
+                                    <label for="background_color">{{ phrase('admin.widget.primary_color') }}</label>
                                 </div>
                             </div>
                             <div class="field">
