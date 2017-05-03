@@ -34,6 +34,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use DeskPRO\Component\Util\RandUtils;
@@ -74,10 +75,9 @@ class NotificationService
     {
         $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
         $qb              = $actionAlertRepo->createQueryBuilder('aa');
-        $date            = new \DateTime('@'.$last);
-        $result          = $qb->where('aa.date_created > (:last)')
+        $result          = $qb->where('aa.id > :last')
             ->andWhere('aa.target_id = :target_id')
-            ->setParameter('last', $date->format('Y-m-d H:i:s'))
+            ->setParameter('last', $last)
             ->setParameter('target_id', $user->getId())
             ->getQuery()
             ->getResult();
@@ -90,9 +90,11 @@ class NotificationService
      */
     public function lastAlert()
     {
-        $date = new \DateTime();
+        $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
+        $qb              = $actionAlertRepo->createQueryBuilder('aa');
+        $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
 
-        return $date->getTimestamp();
+        return $alert ? $alert->getId() : 0;
     }
 
     /**
@@ -100,9 +102,11 @@ class NotificationService
      */
     public function lastNotify()
     {
-        $date = new \DateTime();
+        $notificationRepo = $this->em->getRepository(Notification::class);
+        $qb               = $notificationRepo->createQueryBuilder('n');
+        $notification     = $qb->orderBy('n.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
 
-        return $date->getTimestamp();
+        return $notification ? $notification->getId() : 0;
     }
 
     /**

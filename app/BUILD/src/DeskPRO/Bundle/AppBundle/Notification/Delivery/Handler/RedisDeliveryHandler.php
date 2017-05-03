@@ -49,6 +49,11 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
     protected $client;
 
     /**
+     * @var array
+     */
+    private $messages = [];
+
+    /**
      * @param Client $client
      */
     public function __construct(Client $client)
@@ -62,7 +67,7 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
      *
      * @return bool
      */
-    public function deliver(MessageInterface $message)
+    public function schedule(MessageInterface $message)
     {
         $data = json_encode(
             [
@@ -73,7 +78,14 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
             ] + $message->getData()
         );
 
-        return (bool) $this->client->publish($this->getChannel($message), $data);
+        $this->messages[] = ['channel' => $this->getChannel($message), 'data' => $data];
+    }
+
+    public function deliver()
+    {
+        foreach ($this->messages as $message) {
+            $this->client->publish($message['channel'], $message['data']);
+        }
     }
 
     /**

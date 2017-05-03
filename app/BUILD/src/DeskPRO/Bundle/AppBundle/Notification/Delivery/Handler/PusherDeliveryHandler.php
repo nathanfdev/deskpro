@@ -49,6 +49,11 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     protected $pusher;
 
     /**
+     * @var array
+     */
+    private $messages = [];
+
+    /**
      * @param Pusher $pusher
      */
     public function __construct(Pusher $pusher)
@@ -61,7 +66,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      *
      * @return bool
      */
-    public function deliver(MessageInterface $message)
+    public function schedule(MessageInterface $message)
     {
         $data = [
                 'target' => $message->getTarget(),
@@ -70,7 +75,16 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                 'type'   => $message->getType(),
             ] + $message->getData();
 
-        return (bool) $this->pusher->trigger('private-channel-'.$message->getTarget(), $this->getChannel($message), $data);
+        $this->messages[] = [
+            'channel' => 'private-channel-'.$message->getTarget(),
+            'name'    => $this->getChannel($message),
+            'data'    => $data,
+        ];
+    }
+
+    public function deliver()
+    {
+        $this->pusher->triggerBatch($this->messages);
     }
 
     /**

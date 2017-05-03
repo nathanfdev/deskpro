@@ -26,29 +26,36 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
+
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Interface DeliveryHandlerInterface.
+ * Class NotificationCompilerPass.
  */
-interface DeliveryHandlerInterface
+class NotificationCompilerPass implements CompilerPassInterface
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getType();
+    public function process(ContainerBuilder $container)
+    {
+        $actionAlertHandler = $container->getDefinition('deskpro.notification.notify_handler.action_alert');
 
-    /**
-     * @param MessageInterface $message
-     *
-     * @return bool
-     */
-    public function schedule(MessageInterface $message);
+        foreach ($container->findTaggedServiceIds('deskpro.notification.action_alert.generator') as $id => $tags) {
+            $actionAlertHandler->addMethodCall('attachGenerator', [new Reference($id)]);
+        }
 
-    /**
-     * @return mixed
-     */
-    public function deliver();
+        $userNotifyHandler = $container->getDefinition('deskpro.notification.notify_handler.user_notify');
+
+        foreach ($container->findTaggedServiceIds('deskpro.notification.user_notify.generator') as $id => $tags) {
+            $userNotifyHandler->addMethodCall('attachGenerator', [new Reference($id)]);
+        }
+    }
 }

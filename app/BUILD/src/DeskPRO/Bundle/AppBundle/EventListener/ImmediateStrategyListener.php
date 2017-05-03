@@ -26,29 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Strategy\ImmediateStrategy;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-/**
- * Interface DeliveryHandlerInterface.
- */
-interface DeliveryHandlerInterface
+class ImmediateStrategyListener implements EventSubscriberInterface
 {
     /**
-     * @return string
+     * @var ImmediateStrategy[]
      */
-    public function getType();
+    private $strategies = [];
 
     /**
-     * @param MessageInterface $message
-     *
-     * @return bool
+     * @param ImmediateStrategy $strategy
      */
-    public function schedule(MessageInterface $message);
+    public function pushStrategy(ImmediateStrategy $strategy)
+    {
+        $this->strategies[] = $strategy;
+    }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function deliver();
+    public static function getSubscribedEvents()
+    {
+        return [
+            KernelEvents::TERMINATE => ['onFinishRequest', 2],
+        ];
+    }
+
+    /**
+     * Deliver sheduled messages in immediate strategy.
+     */
+    public function onFinishRequest()
+    {
+        foreach ($this->strategies as $strategy) {
+            $strategy->deliver();
+        }
+    }
 }
