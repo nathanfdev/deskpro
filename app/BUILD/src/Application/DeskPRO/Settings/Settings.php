@@ -39,7 +39,6 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\AuditBundle\Document\AuditLogData;
 use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
-use DeskPRO\Bundle\AuditBundle\Log\AuditLogService;
 use DeskPRO\Component\Util\TypeUtils;
 
 /**
@@ -66,7 +65,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 
     /**
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
-     * @var array
      */
     private $new_settings_resolver;
 
@@ -74,11 +72,6 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      * @var \Application\DeskPRO\DBAL\Connection
      */
     private $db;
-
-    /**
-     * @var AuditLogService
-     */
-    private $auditService;
 
     /**
      * DEPRECEATED way of getting settings.
@@ -92,10 +85,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
     public function __construct($default_settings_file, Connection $db = null)
     {
         $this->new_settings_resolver = App::getSystemService('settings_resolver');
-        $this->settings              = $this->new_settings_resolver->getGlobalSettings();
-        $this->default_settings      = $this->new_settings_resolver->getDefaultSettings();
         $this->db                    = $db;
-        $this->auditService          = App::get('audit_log.service');
     }
 
     /**
@@ -104,8 +94,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function reloadSettings()
     {
-        $this->settings         = $this->new_settings_resolver->getGlobalSettings(true);
-        $this->default_settings = $this->new_settings_resolver->getDefaultSettings(true);
+        $this->settings         = null;
+        $this->default_settings = null;
     }
 
     /**
@@ -122,12 +112,15 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             return $default;
         }
 
-        return $this->settings->get($name, $default);
+        return $this->getSettings()->get($name, $default);
     }
 
+    /**
+     * @return array
+     */
     public function getAll()
     {
-        return $this->settings->toArray();
+        return $this->getSettings()->toArray();
     }
 
     /**
@@ -135,12 +128,11 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      *
      * @param string $name
      *
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Exception
+     * @return mixed
      */
     public function getDefault($name)
     {
-        return $this->default_settings->get($name);
+        return $this->getDefaultSettings()->get($name);
     }
 
     /**
@@ -156,7 +148,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function getDefaultGroup($group, $short = true)
     {
-        $this->default_settings->getGroup($group, $short);
+        $this->getDefaultSettings()->getGroup($group, $short);
     }
 
     /**
@@ -171,7 +163,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function getGroup($group)
     {
-        return $this->settings->getGroup($group);
+        return $this->getSettings()->getGroup($group);
     }
 
     /**
@@ -186,10 +178,8 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     public function setTemporarySettingValues(array $settings)
     {
-
         // left for BC
-
-        $this->settings->setArray(array_merge($this->settings->toArray(), $settings));
+        $this->getSettings()->setArray(array_merge($this->getSettings()->toArray(), $settings));
     }
 
     /**
@@ -251,7 +241,7 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
             ->setData($auditLogData)
             ->setPerformerName(App::getCurrentPerson() ? App::getCurrentPerson()->getDisplayName() : '');
 
-        $this->auditService->write($auditLog);
+        App::get('audit_log.service')->write($auditLog);
     }
 
     /**
@@ -270,33 +260,75 @@ class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this->new_settings_resolver->getGlobalSettings()->get('core.deskpro_url');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function offsetExists($offset)
     {
-        return $this->settings->has($offset);
+        return $this->getSettings()->has($offset);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function offsetSet($offset, $value)
     {
         throw new \BadMethodCallException('You cannot set settings');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function offsetGet($offset)
     {
-        return $this->settings->get($offset);
+        return $this->getSettings()->get($offset);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function offsetUnset($offset)
     {
         throw new \BadMethodCallException('You cannot unset settings');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function count()
     {
-        return count($this->settings);
+        return count($this->getSettings());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getIterator()
     {
-        return $this->settings->getIterator();
+        return $this->getSettings()->getIterator();
+    }
+
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    public function getSettings()
+    {
+        if (null === $this->settings) {
+            $this->settings = $this->new_settings_resolver->getGlobalSettings();
+        }
+
+        return $this->settings;
+    }
+
+    /**
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    public function getDefaultSettings()
+    {
+        if (null === $this->default_settings) {
+            $this->default_settings = $this->new_settings_resolver->getDefaultSettings();
+        }
+
+        return $this->default_settings;
     }
 }

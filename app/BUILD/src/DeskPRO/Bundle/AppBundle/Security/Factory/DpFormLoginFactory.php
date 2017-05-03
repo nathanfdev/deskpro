@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Factory;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
@@ -37,6 +33,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class DpFormLoginFactory.
+ */
 class DpFormLoginFactory extends AbstractFactory
 {
     protected $defaultFailureHandlerOptions = [
@@ -46,57 +45,44 @@ class DpFormLoginFactory extends AbstractFactory
         'failure_path_parameter' => '_failure_path',
     ];
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPosition()
     {
         return 'form';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getKey()
     {
         return 'deskpro_form_login';
     }
 
     /**
-     * Subclasses must return the id of a service which implements the
-     * AuthenticationProviderInterface.
-     *
-     * @param ContainerBuilder $container
-     * @param string           $id             The unique id of the firewall
-     * @param array            $config         The options array for this listener
-     * @param string           $userProviderId The id of the user provider
-     *
-     * @return string never null, the id of the authentication provider
+     * {@inheritdoc}
      */
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
         $providerId = 'dp_security.auth.provider.form_login.'.$id;
-        $container
-            ->setDefinition($providerId, new DefinitionDecorator('dp_security.form_login.provider'))
-            ->replaceArgument(1, new Reference($userProviderId));
+        $container->setDefinition($providerId, new DefinitionDecorator('dp_security.form_login.provider'));
 
         return $providerId;
     }
 
     /**
-     * Subclasses must return the id of the listener template.
-     *
-     * Listener definitions should inherit from the AbstractAuthenticationListener
-     * like this:
-     *
-     *    <service id="my.listener.id"
-     *             class="My\Concrete\Classname"
-     *             parent="security.authentication.listener.abstract"
-     *             abstract="true" />
-     *
-     * In the above case, this method would return "my.listener.id".
-     *
-     * @return string
+     * {@inheritdoc}
      */
     protected function getListenerId()
     {
         return 'dp_security.form_login.listener';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
     {
         $entryPointId = 'security.authentication.dp_form_entry_point.'.$id;

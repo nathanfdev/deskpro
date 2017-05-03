@@ -26,13 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Brand;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Doctrine\ORM\EntityManager;
@@ -53,25 +48,17 @@ class BrandContainerFactory
     private $em;
 
     /**
-     * @var DeskproBlobStorage
-     */
-    private $bs;
-
-    /**
      * Constructor.
      *
-     * @param SettingsResolver   $settings_resolver
-     * @param EntityManager      $em
-     * @param DeskproBlobStorage $bs
+     * @param SettingsResolver $settings_resolver
+     * @param EntityManager    $em
      */
     public function __construct(
         SettingsResolver $settings_resolver,
-        EntityManager $em,
-        DeskproBlobStorage $bs
+        EntityManager $em
     ) {
         $this->settings_resolver = $settings_resolver;
         $this->em                = $em;
-        $this->bs                = $bs;
     }
 
     /**

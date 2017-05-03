@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace spec\DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -46,32 +43,38 @@ class LanguageManagerSpec extends ObjectBehavior
     public function let(
         Translate $translate,
         \DeskPRO\Bundle\AppBundle\Language\LanguageStack $language_stack,
-        LanguageRepo $language_repo
+        EntityManager $em
     ) {
-        $this->beConstructedWith($translate, $language_stack, $language_repo);
+        $this->beConstructedWith($translate, $language_stack, $em);
     }
 
     public function it_knows_if_is_multi_langauge_portal(
-        LanguageRepo $language_repo
+        EntityManager $em,
+        LanguageRepo  $language_repo
     ) {
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->countPortalLanguages()->willReturn(2);
 
         $this->isMultiLanguagePortal()->shouldBe(true);
     }
 
     public function it_knows_if_NOT_multi_langauge_portal(
-        LanguageRepo $language_repo
+        EntityManager $em,
+        LanguageRepo  $language_repo
     ) {
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->countPortalLanguages()->willReturn(1);
 
         $this->isMultiLanguagePortal()->shouldBe(false);
     }
 
     public function it_can_tell_you_if_a_lang_code_is_supported_by_this_portal(
+        EntityManager $em,
         LanguageRepo $language_repo,
         Language $en,
         Language $fr
     ) {
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->getForLangCode('en')->willReturn($en);
         $language_repo->getForLangCode('fr')->willReturn($fr);
         $language_repo->getForLangCode('it')->willReturn(null);
@@ -88,6 +91,7 @@ class LanguageManagerSpec extends ObjectBehavior
     }
 
     public function it_will_give_you_an_array_of_all_enabled_languages(
+        EntityManager $em,
         LanguageRepo $language_repo,
         Language $en,
         Language $fr,
@@ -95,6 +99,7 @@ class LanguageManagerSpec extends ObjectBehavior
     ) {
         $supported = [$en, $fr, $it];
 
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->getPortalLanguages()->willReturn($supported);
 
         $this->getEnabledLanguages()->shouldReturn($supported);

@@ -115,9 +115,9 @@ export const agentTypingDateSelector = createSelector(
   chatInfo => chatInfo.get('date_agent_typing')
 );
 
-export const departmentNameSelector = createSelector(
+export const departmentSelector = createSelector(
   chatInfoSelector,
-  chatInfo => chatInfo.get('department_name')
+  chatInfo => chatInfo.get('department')
 );
 
 export const authorIdSelector = createSelector(

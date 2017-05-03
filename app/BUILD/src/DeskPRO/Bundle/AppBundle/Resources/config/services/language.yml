@@ -33,11 +33,11 @@ services:
 
   language_manager:
     class: DeskPRO\Bundle\AppBundle\Language\LanguageManager
-    arguments: ["@deskpro.core.translate", "@language_stack", "@language_repository"]
+    arguments: ["@deskpro.core.translate", "@language_stack", "@doctrine.orm.default_entity_manager"]
 
   language_stack:
     class: DeskPRO\Bundle\AppBundle\Language\LanguageStack
-    arguments: [ "@settings_resolver", "@language_repository" ]
+    arguments: [ "@settings_resolver", "@doctrine.orm.default_entity_manager" ]
 
   language_repository:
     class: Application\DeskPRO\EntityRepository\Language

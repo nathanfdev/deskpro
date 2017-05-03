@@ -26,14 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use DeskPRO\Bundle\AppBundle\Security\DpTransferSessionAuthToken;
 use Doctrine\ORM\EntityManager;
@@ -42,17 +37,15 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
+/**
+ * Class TransferSessionAuthProvider.
+ */
 class TransferSessionAuthProvider implements AuthenticationProviderInterface
 {
     /**
-     * @var \Application\DeskPRO\Auth\AuthenticationManager
-     */
-    private $dp_auth_manager;
-
-    /**
      * @var \DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
      */
-    private $dp_person_provider;
+    private $dpPersonProvider;
 
     /**
      * @var Session
@@ -64,22 +57,22 @@ class TransferSessionAuthProvider implements AuthenticationProviderInterface
      */
     private $em;
 
-    public function __construct(DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session, EntityManager $em)
+    /**
+     * Constructor.
+     *
+     * @param DpPersonUserProvider $dpPersonProvider
+     * @param Session              $session
+     * @param EntityManager        $em
+     */
+    public function __construct(DpPersonUserProvider $dpPersonProvider, Session $session, EntityManager $em)
     {
-        $this->dp_auth_manager    = $dp_auth_manager;
-        $this->dp_person_provider = $dp_person_provider;
-        $this->session            = $session;
-        $this->em                 = $em;
+        $this->dpPersonProvider = $dpPersonProvider;
+        $this->session          = $session;
+        $this->em               = $em;
     }
 
     /**
-     * Attempts to authenticate a TokenInterface object.
-     *
-     * @param DpTransferSessionAuthToken $token The TokenInterface instance to authenticate
-     *
-     * @throws AuthenticationException if the authentication fails
-     *
-     * @return DpTransferSessionAuthToken An authenticated TokenInterface instance, never null
+     * {@inheritdoc}
      */
     public function authenticate(TokenInterface $token)
     {
@@ -118,11 +111,7 @@ class TransferSessionAuthProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * Checks whether this provider supports the given token.
-     *
-     * @param TokenInterface $token A TokenInterface instance
-     *
-     * @return bool true if the implementation supports the Token, false otherwise
+     * {@inheritdoc}
      */
     public function supports(TokenInterface $token)
     {

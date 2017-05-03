@@ -26,23 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Chats;
+
 /**
- * DeskPRO.
- *
- * @category DependencyInjection
+ * Class WidgetChat.
  */
-
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
-
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Usersource\UsersourceManager;
-
-class UsersourceManagerService
+class WidgetChat extends AbstractChat
 {
-    public static function create(DeskproContainer $container)
-    {
-        $usm = new UsersourceManager($container->getEm(), $container);
-
-        return $usm;
-    }
 }

@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
@@ -58,6 +59,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 /**
  * Class ChatController.
  *
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\ChatConversation": "DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\WidgetChat"
+ * })
  * @Rest\Route("/portal/api/chats")
  */
 class ChatController extends AbstractApiController

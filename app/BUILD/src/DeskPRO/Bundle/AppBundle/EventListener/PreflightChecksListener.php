@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -48,13 +44,18 @@ class PreflightChecksListener implements EventSubscriberInterface
      */
     private $container;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
@@ -63,6 +64,11 @@ class PreflightChecksListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     */
     public function onPreRequest(GetResponseEvent $event)
     {
         // Missing PDO
