@@ -35,7 +35,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
  */
 class TicketUpdatedEvent extends AbstractSystemEvent
 {
-    const EVENT_NAME = 'notification.ticket.updated';
+    const EVENT_NAME = 'legacy.ticket.updated';
 
     /** @var int */
     protected $ticket_id;

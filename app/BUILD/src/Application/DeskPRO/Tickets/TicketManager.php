@@ -47,7 +47,6 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -401,11 +400,6 @@ class TicketManager
                 'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
                 'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
             ];
-
-            $this->container->get('event_dispatcher')->dispatch(
-                TicketUpdatedEvent::EVENT_NAME,
-                new TicketUpdatedEvent($ticket->getId(), $data)
-            );
 
             $this->db->insert('client_messages', [
                 'channel'      => 'agent.ticket-updated',

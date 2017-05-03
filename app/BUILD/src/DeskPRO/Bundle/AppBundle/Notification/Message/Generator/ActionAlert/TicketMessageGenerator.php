@@ -59,18 +59,20 @@ class TicketMessageGenerator extends AbstractGenerator
 
     protected function getTargets(TicketUpdatedEvent $event)
     {
-        $message = $this->getTicket($event);
-        $targets = [];
-        foreach ($message->getAgentParticipants() as $target) {
-            $targets[] = $target->getId();
-        }
-
-        return $targets;
+        return [$event->getData()['target']->getId()];
     }
 
     protected function getData(TicketUpdatedEvent $event)
     {
-        return json_encode($event->getData());
+        $eventData = $event->getData();
+        $data      = [
+            'ticket_id' => $event->getTicketId(),
+            'filter_id' => $eventData['filter_id'],
+            'op'        => $eventData['op'],
+            'type'      => $eventData['type'],
+        ];
+
+        return $data;
     }
 
     /**

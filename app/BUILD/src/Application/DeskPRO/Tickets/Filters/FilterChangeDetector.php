@@ -43,6 +43,7 @@ use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class FilterChangeDetector.
@@ -58,6 +59,11 @@ class FilterChangeDetector
      * @var Connection
      */
     private $connection;
+
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
 
     /**
      * Add a filter check for an agent explicitly. Usually this only goes through
@@ -106,12 +112,14 @@ class FilterChangeDetector
     /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager            $em
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher)
     {
-        $this->em         = $em;
-        $this->connection = $this->em->getConnection();
+        $this->em              = $em;
+        $this->connection      = $this->em->getConnection();
+        $this->eventDispatcher = $eventDispatcher;
 
         $this->explicitFilterIds = $this->connection->fetchAllCol('
             SELECT DISTINCT filter_id FROM ticket_filter_subscriptions WHERE email_property_change = 1 OR alert_property_change = 1
@@ -455,7 +463,14 @@ class FilterChangeDetector
         $logger->debug(sprintf('[FilterChangeDetector] The following filters could not be optimised: %s', implode(', ', $not_cachable_filters)));
         $logger->info(sprintf('[FilterChangeDetector] Found %d filters in %d iterations (%d of those were cached). Time: %.4fs', count($changed_filters), $scope_counts, $scope_cached_counts, microtime(true) - $time));
 
-        $set = new FilterChangeSet($ticket, $state->getStateVersion(), $checker->getAffectedFilters(), $changed_filters, $checker->getNewestFieldVersions());
+        $set = new FilterChangeSet(
+            $ticket,
+            $state->getStateVersion(),
+            $checker->getAffectedFilters(),
+            $changed_filters,
+            $checker->getNewestFieldVersions(),
+            $this->eventDispatcher
+        );
 
         if ($context) {
             $context->getVars()->set('filter_change_set', $set);

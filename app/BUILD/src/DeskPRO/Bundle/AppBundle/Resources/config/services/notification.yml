@@ -127,3 +127,11 @@ services:
       - "@security.token_storage"
     tags:
       - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\TicketMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }

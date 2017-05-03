@@ -38,12 +38,18 @@ class ActionAlertsHandler {
         });
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
+      case 'legacy.ticket.updated':
+        ActionAlertsHandler.handleLegacyTicketUpdate(payload.data);
+        break;
       default:
         break;
     }
     this.options.dispatch(newActionAlerts(payload));
   }
+
+  static handleLegacyTicketUpdate(payload) {
+    DeskPRO_Window.messageBroker.sendMessage(payload.type, payload); // eslint-disable-line no-undef
+  }
 }
 
 export default ActionAlertsHandler;
-
