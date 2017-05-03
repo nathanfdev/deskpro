@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -40,6 +41,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Psr\Log\LoggerInterface;
 
 class TicketsDataService extends AbstractDataService
 {
@@ -49,16 +51,23 @@ class TicketsDataService extends AbstractDataService
     private $brandStack;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * TicketsDataService constructor.
      *
-     * @param EntityManager $em
-     * @param BrandStack    $brandStack
+     * @param EntityManager   $em
+     * @param BrandStack      $brandStack
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManager $em, BrandStack $brandStack)
+    public function __construct(EntityManager $em, BrandStack $brandStack, LoggerInterface $logger)
     {
         parent::__construct($em);
 
         $this->brandStack = $brandStack;
+        $this->logger     = $logger;
     }
 
     protected function ignoreTicketsWithOnlyAgentNotes(QueryBuilder $qb)
@@ -94,7 +103,6 @@ class TicketsDataService extends AbstractDataService
             ],
             function () use ($em, $person, $filter, $page, $maxPerPage, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
-
                 $qb->select('t')
                     ->from(Ticket::class, 't')
                     ->join('t.person', 'p')
@@ -107,39 +115,36 @@ class TicketsDataService extends AbstractDataService
 
                 // type
                 if (TicketFilter::TYPE_OWN === $filter->getType()) {
-                    if ($person->is_agent) {
+                    if ($person->isAgent()) {
                         // agents only their own tickets
                         $qb->andWhere('t.person = :person')->setParameter('person', $person);
                     } else {
-                        if (!$person->organization || !$person->organization_manager) {
-                            $ids = [];
-                            $parts[] = '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)';
-                            $params[] = $person->id;
+                        /** @var Connection $connection */
+                        $connection = $em->getConnection();
+                        if (!$person->getOrganization() || !$person->isOrganizationManager()) {
+                            $parts = [
+                                '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC LIMIT 2000)',
+                                '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)',
+                            ];
 
-                            if (!$person->is_agent) {
-                                $parts[] = '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC LIMIT 2000)';
-                                $params[] = $person->id;
-                            }
-
+                            $params = [$person->getId(), $person->getId()];
                             $partsUnion = implode("\nUNION\n", $parts);
+                            $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
 
-                            $ids = $em->getConnection()->fetchAllCol(
-                                "SELECT DISTINCT id FROM ($partsUnion) AS t",
-                                $params
-                            );
                             $qb->andWhere('t.id IN (:ids)');
                             $qb->setParameter('ids', $ids);
                         } else {
+
                             // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
                             $qb->leftJoin('t.participants', 'part');
                             $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
-                            $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                            $qb->setParameter('person', $person)->setParameter('organization', $person->getOrganization());
                         }
                     }
                 } else {
                     // its assumed that if you send in a person with an "organization" type filter that they have an
                     // organization and are a manger. ensure the controller/calling-code has this secured
-                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->getOrganization());
                 }
 
                 // category
@@ -241,7 +246,8 @@ class TicketsDataService extends AbstractDataService
             ],
             function () use ($em, $person, $status, $ignoreOnlyNotes, $brand) {
                 $qb = $em->createQueryBuilder();
-
+                $time = microtime(true);
+                $this->logger->debug('[TicketsDataService] Count started');
                 if ('open' === $status) {
                     $statusList = [
                         Ticket::STATUS_AWAITING_AGENT,
@@ -267,24 +273,44 @@ class TicketsDataService extends AbstractDataService
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
-                if ($person->is_agent) {
+                if ($person->isAgent()) {
+                    $this->logger->debug('[TicketsDataService] Agent tickets counting');
                     $qb->andWhere('t.person = :person')->setParameter('person', $person);
                 } else {
-                    if (!$person->organization || !$person->organization_manager) {
-                        //  show non-agents the tickets they participate in
-                        $qb->leftJoin('t.participants', 'part');
-                        $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                    /** @var Connection $connection */
+                    $connection = $em->getConnection();
+                    if (!$person->getOrganization() || !$person->isOrganizationManager()) {
+                        $this->logger->debug('[TicketsDataService] No organization count, using UNION');
+
+                        $parts = [
+                            '(SELECT id FROM tickets WHERE person_id = ? ORDER BY id DESC)',
+                            '(SELECT ticket_id FROM tickets_participants WHERE person_id = ? ORDER BY ticket_id DESC)',
+                        ];
+                        $params = [$person->getId(), $person->getId()];
+                        $partsUnion = implode("\nUNION\n", $parts);
+                        $ids = $connection->fetchAllCol("SELECT DISTINCT id FROM ($partsUnion) AS t", $params);
+
+                        $qb->andWhere('t.id IN (:ids)');
+                        $qb->setParameter('ids', $ids);
                     } else {
+                        $this->logger->debug('[TicketsDataService] Organization count, using JOIN');
+
                         // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
                         $qb->leftJoin('t.participants', 'part');
                         $qb->andWhere('t.person = :person OR (part.person = :person AND (t.organization != :organization OR t.organization IS NULL))');
-                        $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                        $qb->setParameter('person', $person)->setParameter('organization', $person->getOrganization());
                     }
                 }
 
                 $qb->distinct(true);
 
-                return $qb->getQuery()->getSingleScalarResult();
+                $singleScalarResult = $qb->getQuery()->getSingleScalarResult();
+
+                $str = '[TicketsDataService] Time taken: '.sprintf('%.5f', microtime(true) - $time);
+                $this->logger->debug($str);
+                $this->logger->debug("[TicketsDataService] Count: $singleScalarResult");
+
+                return $singleScalarResult;
             }
         );
     }
@@ -340,8 +366,8 @@ class TicketsDataService extends AbstractDataService
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
-                if ($person->organization && $person->organization_manager) {
-                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+                if ($person->getOrganization() && $person->isOrganizationManager()) {
+                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->getOrganization());
                 }
 
                 $qb->distinct(true);

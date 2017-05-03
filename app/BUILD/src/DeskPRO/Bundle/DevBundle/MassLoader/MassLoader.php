@@ -429,13 +429,16 @@ class MassLoader
 
             $refs[]    = $ref;
             $tickets[] = [
-                'subject'      => $this->faker->title,
-                'ref'          => $ref,
-                'date_created' => $dateCreated,
-                'person_id'    => $this->faker->randomElement($this->fetchAllIds('people')),
-                'agent_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
-                'status'       => $this->faker->randomElement($statuses),
-                'ticket_hash'  => md5($ref.$dateCreated),
+                'subject'               => $this->faker->title,
+                'ref'                   => $ref,
+                'date_created'          => $dateCreated,
+                'person_id'             => $this->faker->randomElement($this->fetchAllIds('people')),
+                'agent_id'              => $this->faker->randomElement($this->fetchAllIds('people')),
+                'status'                => $this->faker->randomElement($statuses),
+                'ticket_hash'           => md5($ref.$dateCreated),
+                'brand_id'              => $this->faker->randomElement($this->connection->fetchAllCol('SELECT id FROM brands')),
+                'date_last_user_reply'  => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
+                'date_last_agent_reply' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
             ];
         }
 
