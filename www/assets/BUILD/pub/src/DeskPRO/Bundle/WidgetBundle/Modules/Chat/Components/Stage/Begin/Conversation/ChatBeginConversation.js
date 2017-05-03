@@ -57,6 +57,7 @@ export class ChatBeginConversation extends React.Component {
         errors={props.errors}
         onSubmit={this.onSubmit}
         field="chat_department"
+        primaryColor={props.primaryColor}
       >
         <CustomFieldSingleChoice
           name="chat_department"
@@ -67,7 +68,7 @@ export class ChatBeginConversation extends React.Component {
   }
 
   prepareFormFields(props) {
-    const { customFields, widgetLanguage, errors, submit, loggedIn } = props;
+    const { customFields, widgetLanguage, errors, submit, loggedIn, primaryColor } = props;
     const { chatRequiredName, chatRequiredEmail } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
@@ -88,6 +89,7 @@ export class ChatBeginConversation extends React.Component {
           field="name"
           errors={errors}
           required={chatRequiredName}
+          primaryColor={primaryColor}
         >
           {hiddenFields}
           <Field select="name">
@@ -103,6 +105,7 @@ export class ChatBeginConversation extends React.Component {
           field="email"
           errors={errors}
           required={chatRequiredEmail}
+          primaryColor={primaryColor}
         >
           {hiddenFields}
           <Field select="email">

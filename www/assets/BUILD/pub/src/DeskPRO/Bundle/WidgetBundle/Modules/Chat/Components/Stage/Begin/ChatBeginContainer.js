@@ -13,7 +13,8 @@ import {
   chatSelectDepartmentTypeSelector,
   chatDefaultDepartmentSelector,
   chatRequiredNameSelector,
-  chatRequiredEmailSelector
+  chatRequiredEmailSelector,
+  primaryColorSelector
 } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
@@ -37,7 +38,8 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   chatRequiredEmail:        chatRequiredEmailSelector(state),
   widgetLanguage:           widgetLanguageSelector(state),
   loggedIn:                 widgetSessionIsLoginSelector(state),
-  defaultValues:            chatFormDefaultValuesSelector(state)
+  defaultValues:            chatFormDefaultValuesSelector(state),
+  primaryColor:             primaryColorSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
@@ -116,11 +118,14 @@ export class ChatBeginContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, liveDemo } = this.props;
 
-    dispatch(loadAll('CustomDefChat'));
-    dispatch(loadAll('ChatDepartment'));
-    dispatch(loadWithParams('ChatDepartment', { online: true }, 'online'));
+    // don't make api calls on live demo
+    if (!liveDemo) {
+      dispatch(loadAll('CustomDefChat'));
+      dispatch(loadAll('ChatDepartment'));
+      dispatch(loadWithParams('ChatDepartment', { online: true }, 'online'));
+    }
 
     this.mounted = true;
   }

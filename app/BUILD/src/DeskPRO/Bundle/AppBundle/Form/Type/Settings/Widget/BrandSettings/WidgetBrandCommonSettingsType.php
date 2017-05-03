@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetB
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -65,6 +66,9 @@ class WidgetBrandCommonSettingsType extends AbstractType
                 'property_path' => 'agentPollingTimeout',
             ])
             ->add('enabled', ApiBooleanType::class)
+            ->add('primary_color', TextType::class, [
+                'property_path' => 'primaryColor',
+            ])
         ;
     }
 

@@ -12,17 +12,20 @@ import { MessageContent } from './Message/MessageContent';
 import { MessageFooter } from './Message/MessageFooter';
 import { authorNameSelector } from '../../../../Selectors/chat';
 import { peopleSelector } from '../../../../../Application/Selectors/peopleSelectors';
+import { primaryColorSelector } from '../../../../../Application/Selectors/dpWindow';
 
 @connect(state => ({
   chatAuthorName: authorNameSelector(state),
-  people:         peopleSelector(state)
+  people:         peopleSelector(state),
+  primaryColor:   primaryColorSelector(state)
 }))
 export class MessageFactoryContainer extends React.Component {
 
   static propTypes = {
     chatAuthorName: PropTypes.string,
     people:         PropTypes.object,
-    message:        PropTypes.object
+    message:        PropTypes.object,
+    primaryColor:   PropTypes.string
   };
 
   getAuthor() {
@@ -70,7 +73,7 @@ export class MessageFactoryContainer extends React.Component {
   }
 
   renderMessage() {
-    const { message } = this.props;
+    const { message, primaryColor } = this.props;
     const metadata = this.getMetadata();
     const author = this.getAuthor();
     const authorName = this.getAuthorName();
@@ -81,7 +84,7 @@ export class MessageFactoryContainer extends React.Component {
     return (
       <Message isUser={message.get('is_user')}>
         <AvatarResolver avatar={author.get('avatar')} size={40}>
-          <MessageAvatar />
+          <MessageAvatar primaryColor={primaryColor} />
         </AvatarResolver>
         <MessageBody>
           {metadata.get('type') === 'file'

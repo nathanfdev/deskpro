@@ -103,6 +103,11 @@ export const widgetEnabledSelector = createSelector(
   options => options.get('enabled')
 );
 
+export const primaryColorSelector = createSelector(
+  widgetBaseOptionsSelector,
+  options => options.get('primary_color')
+);
+
 export const widgetPositionSelector = createSelector(
   widgetRawPositionSelector,
   position => `bottom.${position || 'right'}`
