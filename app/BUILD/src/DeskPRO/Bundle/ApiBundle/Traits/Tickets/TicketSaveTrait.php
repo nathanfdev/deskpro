@@ -45,8 +45,9 @@ trait TicketSaveTrait
      * Save the ticket via ticket manager with proper context.
      *
      * @param Ticket $ticket
+     * @param array  $options
      */
-    protected function saveTicket(Ticket $ticket)
+    protected function saveTicket(Ticket $ticket, array $options = [])
     {
         $manager = $this->getContainer()->getTicketManager();
         $changes = $ticket->getStateChangeRecorder();
@@ -66,6 +67,11 @@ trait TicketSaveTrait
             $eventMethod = ExecutorContext::METHOD_MOBILE;
         }
 
-        $manager->saveTicket($ticket, $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod));
+        $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod);
+        if (isset($options['suppress_user_notify']) && $options['suppress_user_notify']) {
+            $context->getVars()->set('mute_user_emails', true);
+        }
+
+        $manager->saveTicket($ticket, $context);
     }
 }

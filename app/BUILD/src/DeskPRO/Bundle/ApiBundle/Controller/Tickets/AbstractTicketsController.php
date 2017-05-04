@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Class AbstractTicketsController.
@@ -46,9 +47,14 @@ abstract class AbstractTicketsController extends CrudController
      *
      * @param Ticket $entity
      */
-    protected function persistModel($entity)
+    protected function persistModel($entity, FormInterface $form = null)
     {
-        $this->saveTicket($entity);
+        $options = [];
+        if ($form->has('suppress_user_notify')) {
+            $options['suppress_user_notify'] = $form->get('suppress_user_notify')->getData();
+        }
+
+        $this->saveTicket($entity, $options);
 
         return $entity;
     }

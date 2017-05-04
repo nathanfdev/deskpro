@@ -44,6 +44,7 @@ use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -281,9 +282,9 @@ class UserChatsController extends CrudController
     /**
      * @param ChatConversation $model
      *
-     * @return ChatConversation
+     * {@inheritdoc}
      */
-    protected function persistModel($model)
+    protected function persistModel($model, FormInterface $form = null)
     {
         parent::persistModel($model);
         $this->get('event_dispatcher')->dispatch(UserChatEvent::STARTED, new UserChatEvent($model));
