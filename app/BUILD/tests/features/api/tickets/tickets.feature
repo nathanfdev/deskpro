@@ -216,3 +216,16 @@ Feature: /tickets endpoint
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].person" should be equal to "{user2@deskpro.dev}"
+
+  Scenario: I create a ticket with labels
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "labels": ["label1", "label2"]
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.labels[0]" should be equal to "label1"
+    And the JSON node "data.labels[1]" should be equal to "label2"
