@@ -48,11 +48,13 @@ class ContentAbstractType extends AbstractType
         $builder
             ->add('title', TextType::class)
             ->add('content', TextareaType::class)
-            ->add('person', PersonAssignType::class)
+            ->add('person', PersonAssignType::class, ['required' => false])
             ->add('language', EntityType::class, [
-                'class' => Language::class,
+                'class'    => Language::class,
+                'required' => false,
             ])
             ->add('content_input_type', ChoiceType::class, [
+                'required'          => false,
                 'multiple'          => false,
                 'expanded'          => false,
                 'choices_as_values' => true,
