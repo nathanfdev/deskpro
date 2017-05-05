@@ -42,6 +42,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
@@ -872,14 +873,14 @@ JS;
 
         \Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
 
-        // Also send our status
-        //agent.ui.user-chat-status
-        $cm             = new Entity\ClientMessage();
-        $cm->channel    = 'agent.ui.user-chat-status';
-        $cm->for_person = $this->person;
-        $cm->data       = ['is_online' => $this->in->getBool('is_chat_available')];
-        $this->em->persist($cm);
-        $this->em->flush();
+        $this->container->get('event_dispatcher')->dispatch(
+            AgentStatusChangedEvent::EVENT_NAME,
+            new AgentStatusChangedEvent(
+                'agent.ui.user-chat-status',
+                $this->person,
+                $this->in->getBool('is_chat_available')
+            )
+        );
 
         return $this->createJsonResponse(['success' => true, 'status' => $status]);
     }

@@ -28,46 +28,54 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Event\People;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractLegacyEvent;
 
-/**
- * Class UpdateOnlineEvent.
- */
-class UpdateOnlineEvent extends AbstractSystemEvent
+class AgentStatusChangedEvent extends AbstractLegacyEvent
 {
-    const EVENT_NAME = 'agents.update_online';
-
-    /** @var array */
-    protected $agents_online_status;
+    const EVENT_NAME = 'agent.update_status';
 
     /**
-     * @param array $agents_online_status
+     * @var int
      */
-    public function __construct(array $agents_online_status)
+    private $personId;
+
+    /**
+     * @var bool
+     */
+    private $online;
+
+    /**
+     * AgentStatusChangedEvent constructor.
+     *
+     * @param $type
+     * @param $personId
+     * @param $online
+     */
+    public function __construct($type, $personId, $online)
     {
-        $this->agents_online_status = $agents_online_status;
+        parent::__construct($type);
+        $this->personId = $personId;
+        $this->online   = $online;
     }
 
     /**
-     * @return array
+     * @return int
      */
-    public function getAgentsOnlineStatus()
+    public function getPersonId()
     {
-        return $this->agents_online_status;
+        return $this->personId;
     }
 
-    public function getOnlineAgents()
+    /**
+     * @return bool
+     */
+    public function getOnline()
     {
-        return $this->agents_online_status['online'];
-    }
-
-    public function getOfflineStatus()
-    {
-        return $this->agents_online_status['offline'];
+        return $this->online;
     }
 
     public function __sleep()
     {
-        return ['agents_online_status'];
+        return ['personId', 'online'];
     }
 }

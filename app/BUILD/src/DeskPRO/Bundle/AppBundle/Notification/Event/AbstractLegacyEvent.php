@@ -26,48 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\People;
-
-use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
+namespace DeskPRO\Bundle\AppBundle\Notification\Event;
 
 /**
- * Class UpdateOnlineEvent.
+ * Class AbstractSystemEvent.
  */
-class UpdateOnlineEvent extends AbstractSystemEvent
+abstract class AbstractLegacyEvent extends AbstractSystemEvent implements SystemEventInterface
 {
-    const EVENT_NAME = 'agents.update_online';
-
-    /** @var array */
-    protected $agents_online_status;
-
     /**
-     * @param array $agents_online_status
+     * @var string
      */
-    public function __construct(array $agents_online_status)
+    protected $type;
+
+    public function __construct($type)
     {
-        $this->agents_online_status = $agents_online_status;
+        $this->type = $type;
     }
 
-    /**
-     * @return array
-     */
-    public function getAgentsOnlineStatus()
+    public function getType()
     {
-        return $this->agents_online_status;
-    }
-
-    public function getOnlineAgents()
-    {
-        return $this->agents_online_status['online'];
-    }
-
-    public function getOfflineStatus()
-    {
-        return $this->agents_online_status['offline'];
-    }
-
-    public function __sleep()
-    {
-        return ['agents_online_status'];
+        return $this->type;
     }
 }

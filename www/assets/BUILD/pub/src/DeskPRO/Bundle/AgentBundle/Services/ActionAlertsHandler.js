@@ -29,7 +29,7 @@ class ActionAlertsHandler {
           this.options.dispatch(startChat(null, data.chat, true));
         }
         break;
-      case 'notification.agents.update_online':
+      case 'agents.update_online':
         payload.data.online.forEach((item) => {
           records.push({ id: item, online: true });
         });
@@ -38,16 +38,13 @@ class ActionAlertsHandler {
         });
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
-      case 'legacy.ticket.updated':
-        ActionAlertsHandler.handleLegacyTicketUpdate(payload.data);
-        break;
       default:
-        break;
+        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
     }
     this.options.dispatch(newActionAlerts(payload));
   }
 
-  static handleLegacyTicketUpdate(payload) {
+  static handleLegacyClientMessage(payload) {
     DeskPRO_Window.messageBroker.sendMessage(payload.type, payload); // eslint-disable-line no-undef
   }
 }
