@@ -26,11 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRecaptcha2;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ValidRecaptcha2;
 use ReCaptchaSecureToken\ReCaptchaToken;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormInterface;

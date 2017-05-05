@@ -37,7 +37,7 @@ use Application\DeskPRO\EntityRepository\ApiToken as ApiTokenRepository;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepository;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

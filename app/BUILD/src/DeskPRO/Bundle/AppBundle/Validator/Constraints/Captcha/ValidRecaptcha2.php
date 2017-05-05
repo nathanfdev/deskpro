@@ -26,26 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha;
+
+use Symfony\Component\Validator\Constraint;
+
 /**
- * DeskPRO.
+ * @Annotation
  */
-
-namespace DeskPRO\Bundle\ApiBundle\View\Representation;
-
-class BatchRepresentation
+class ValidRecaptcha2 extends Constraint
 {
-    /**
-     * @var array
-     */
-    private $responses;
-
-    public function __construct(array $responses)
-    {
-        $this->responses = $responses;
-    }
-
-    public function getResponses()
-    {
-        return $this->responses;
-    }
+    public $message = 'portal.forms.error_captcha';
 }

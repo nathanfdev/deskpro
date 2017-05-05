@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\PortalBundle\Form\Form\Extension;
 
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractTypeExtension;

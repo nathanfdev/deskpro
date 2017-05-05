@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;

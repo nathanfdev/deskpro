@@ -26,15 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType;
 use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
+/**
+ * Class ValidRecaptcha2Validator.
+ */
 class ValidRecaptcha2Validator extends ConstraintValidator
 {
     /**
@@ -47,6 +50,12 @@ class ValidRecaptcha2Validator extends ConstraintValidator
      */
     private $request_stack;
 
+    /**
+     * Constructor.
+     *
+     * @param BrandStack   $brand_stack
+     * @param RequestStack $request_stack
+     */
     public function __construct(BrandStack $brand_stack, RequestStack $request_stack)
     {
         $this->brand_stack   = $brand_stack;

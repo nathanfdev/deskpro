@@ -1,5 +1,6 @@
 imports:
     - { resource: ../config.shared.php }
+    - { resource: ../config.captcha.yml }
     - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
 # Keeping all parameter changes here rather than in various bundles
 parameters:
@@ -156,10 +157,6 @@ white_october_pagerfanta:
 jms_serializer:
     metadata:
         cache: none
-
-gregwar_captcha:
-    reload: true
-    expiration: 120
 
 fos_rest:
     routing_loader:

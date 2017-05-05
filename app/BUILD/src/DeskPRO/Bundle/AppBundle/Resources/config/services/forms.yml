@@ -309,8 +309,14 @@ services:
       - { name: form.type }
 
   form.recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType
     arguments: ["@settings_resolver", "@language_manager"]
+    tags:
+      - { name: form.type }
+
+  form.captcha:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType
+    arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
     tags:
       - { name: form.type }
 

@@ -91,4 +91,6 @@ return [
     'api.error_codes.not_an_image'                   => 'Uploaded file is not an image',
     'api.error_codes.invalid_account_credentials'    => 'The settings you entered appear to be incorrect.',
     'api.error_codes.no_permission'                  => 'You have no permission to modify "{{ value }}" object(s).',
+    'api.error_codes.captcha_required'               => 'The CAPTCHA value is required.',
+    'api.error_codes.captcha'                        => 'The CAPTCHA value was incorrect',
 ];
