@@ -77,6 +77,8 @@ class TicketMessagesController extends CrudSubController
             'person'                 => $this->getUser(),
             'has_attachments'        => true,
             'with_ticket_validation' => $request->get('with_ticket_validation'),
+            'allow_set_status'       => true,
+            'allow_apply_macros'     => true,
         ]);
 
         return parent::handleForm($model, $request, $options);

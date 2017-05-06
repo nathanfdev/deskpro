@@ -30,7 +30,11 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
+use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
+use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
@@ -43,6 +47,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessag
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -149,6 +156,35 @@ class TicketMessageType extends AbstractType
             ]);
         }
 
+        if ($options['allow_set_status']) {
+            $builder->add('status', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => Ticket::getTicketStatuses(),
+                'mapped'            => false,
+                'required'          => false,
+            ]);
+
+            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetStatus'], 100);
+        }
+        if ($options['allow_apply_macros']) {
+            $builder->add('macros', EntityType::class, [
+                'class'         => TicketMacro::class,
+                'multiple'      => true,
+                'mapped'        => false,
+                'required'      => false,
+                'query_builder' => function (EntityRepository $repo) use ($options) {
+                    return $repo
+                        ->createQueryBuilder('e')
+                        ->select('e')
+                        ->andWhere('e.is_global = 1 OR e.person = :user_id')
+                        ->setParameter('user_id', $options['person'])
+                    ;
+                },
+            ]);
+
+            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onApplyMacros'], 100);
+        }
+
         if ($options['with_ticket_validation']) {
             $builder->add('ticket', TicketWithLayoutsApiType::class, [
                 'person'              => $options['person'],
@@ -202,6 +238,8 @@ class TicketMessageType extends AbstractType
                 'with_ticket_validation' => false,
                 'ctrl_enter_submit'      => false,
                 'allow_set_person'       => $this->tokenStorage->getToken() instanceof ApiKeySecurityToken,
+                'allow_set_status'       => false,
+                'allow_apply_macros'     => false,
                 'message_constraints'    => [],
                 'error_mapping'          => [
                     // we use custom setters to modify message,
@@ -223,6 +261,8 @@ class TicketMessageType extends AbstractType
             ->setAllowedValues('format', ['', 'html', 'text'])
             ->setAllowedTypes('ctrl_enter_submit', 'bool')
             ->setAllowedTypes('allow_set_person', 'bool')
+            ->setAllowedTypes('allow_set_status', 'bool')
+            ->setAllowedTypes('allow_apply_macros', 'bool')
         ;
     }
 
@@ -351,5 +391,63 @@ class TicketMessageType extends AbstractType
         $data['message'] = nl2br($message);
 
         $event->setData($data);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetStatus(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var Ticket $ticket */
+        $ticket = $config->getOption('ticket');
+        $status = $form->get('status')->getData();
+        if ($status) {
+            $ticket->setStatus($status);
+        }
+    }
+
+    /**
+     * Apply a list of macros on reply submission.
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onApplyMacros(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+
+        /** @var Ticket $ticket */
+        $ticket = $config->getOption('ticket');
+        $person = $config->getOption('person');
+        $macros = $form->get('macros')->getData();
+
+        if (!$macros instanceof ArrayCollection) {
+            return;
+        }
+
+        foreach ($macros as $macro) {
+            if (!$macro instanceof TicketMacro) {
+                continue;
+            }
+
+            $actions = new ActionsCollection();
+            foreach ($macro->getActionsCollection()->getActions() as $action) {
+                // skip reply and status actions
+                if ($action instanceof ReplyAction || $action instanceof StatusAction) {
+                    continue;
+                }
+
+                $actions->add($action);
+            }
+
+            $actions->apply($ticket->getTicketLogger(), $ticket, $person);
+        }
     }
 }
