@@ -50,7 +50,8 @@ export const preloadData    = createAction(
         ticket_departments:    { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
         my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
         chat_departments:      { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
-        onboardings:           { endpoint: 'people/onboarding/pending' }
+        onboardings:           { endpoint: 'people/onboarding/pending' },
+        alerts:                { endpoint: 'notify/setup/action-alerts' }
       };
 
       if (window.DP_HAS_VOICE) {
@@ -60,7 +61,6 @@ export const preloadData    = createAction(
       }
 
       if (window.DP_HAS_NEW_IM) {
-        batchComponents.alerts = { endpoint: 'notify/setup/action-alerts' };
         batchComponents.defaultBrand  = { endpoint: 'brands/default' };
       }
 
@@ -78,6 +78,7 @@ export const preloadData    = createAction(
           dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
           dispatch(setCollection('Language', 'all', data.languages));
           dispatch(setCollection('UserGroup', 'all', data.user_groups));
+          dispatch(setupActionAlerts(data.alerts));
 
           if (data.onboardings) {
             dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
@@ -102,10 +103,8 @@ export const preloadData    = createAction(
 
           if (window.DP_HAS_NEW_IM) {
             dispatch(setImMe(data.me.person));
-            dispatch(setupActionAlerts(data.alerts));
             dispatch(loadDrafts());
             dispatch(setCollection('Brand', 'default', [data.defaultBrand]));
-            // a simple way to subscribe TabBars events
           }
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));
