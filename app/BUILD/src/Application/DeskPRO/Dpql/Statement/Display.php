@@ -225,6 +225,7 @@ class Display
         'news'                        => 'DeskPRO:News',
         'news_categories'             => 'DeskPRO:NewsCategory',
         'news_comments'               => 'DeskPRO:NewsComment',
+        'object_lang'                 => 'DeskPRO:ObjectLang',
         'organizations'               => 'DeskPRO:Organization',
         'organization_email_domains'  => 'DeskPRO:OrganizationEmailDomain',
         'organization_files'          => 'DeskPRO:OrganizationFile',
