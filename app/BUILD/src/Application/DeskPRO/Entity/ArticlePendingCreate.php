@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -117,17 +118,13 @@ class ArticlePendingCreate extends DomainObject
 
     public function _sendUpdates()
     {
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel' => 'agent.ui.new-pending',
-            'data'    => [
+        App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.ui.new-pending',
+            [
                 'id'        => $this->id,
                 'ticket_id' => $this->ticket ? $this->ticket->getId() : 0,
-            ],
-        ]);
-
-        App::getOrm()->persist($cm);
-        App::getOrm()->flush();
+            ]
+        ));
     }
 
     //###########################################################################

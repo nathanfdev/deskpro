@@ -59,7 +59,7 @@ class LegacySystemEvent extends AbstractLegacyEvent
      */
     public function getData()
     {
-        return $this->data;
+        return array_merge($this->data, ['type' => $this->type]);
     }
 
     public function __sleep()
