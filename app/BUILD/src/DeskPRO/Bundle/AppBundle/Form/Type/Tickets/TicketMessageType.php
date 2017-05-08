@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
@@ -50,6 +51,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -63,6 +65,11 @@ class TicketMessageType extends AbstractType
     private $languageManager;
 
     /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * @var ApiClientInfo
      */
     private $apiClientInfo;
@@ -71,11 +78,13 @@ class TicketMessageType extends AbstractType
      * Constructor.
      *
      * @param LanguageManager $languageManager
+     * @param TokenStorage    $tokenStorage
      * @param ApiClientInfo   $apiClientInfo
      */
-    public function __construct(LanguageManager $languageManager, ApiClientInfo $apiClientInfo = null)
+    public function __construct(LanguageManager $languageManager, TokenStorage $tokenStorage, ApiClientInfo $apiClientInfo = null)
     {
         $this->languageManager = $languageManager;
+        $this->tokenStorage    = $tokenStorage;
         $this->apiClientInfo   = $apiClientInfo;
     }
 
@@ -111,6 +120,11 @@ class TicketMessageType extends AbstractType
         }
 
         $ticketMessage = $options['ticket_message'] ?: $builder->getData();
+        if (!$ticketMessage) {
+            // no message fallback
+            $builder->setData(new TicketMessage());
+            $ticketMessage = $builder->getData();
+        }
 
         if ($options['render_is_note']) {
             $builder->add('is_note', ApiBooleanType::class, [
@@ -187,7 +201,7 @@ class TicketMessageType extends AbstractType
                 'format'                 => '',
                 'with_ticket_validation' => false,
                 'ctrl_enter_submit'      => false,
-                'allow_set_person'       => false,
+                'allow_set_person'       => $this->tokenStorage->getToken() instanceof ApiKeySecurityToken,
                 'message_constraints'    => [],
                 'error_mapping'          => [
                     // we use custom setters to modify message,

@@ -229,3 +229,77 @@ Feature: /tickets endpoint
     Then the response status code should be 201
     And the JSON node "data.labels[0]" should be equal to "label1"
     And the JSON node "data.labels[1]" should be equal to "label2"
+
+  Scenario: I create a ticket with messages within single request
+    Given "user2@deskpro.dev" user exists
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "messages": [
+    {
+      "person": "user2@deskpro.dev",
+      "message": "message 1"
+    },
+    {
+      "message": "message 2"
+    }
+  ]
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+
+    And the JSON node "data[0].person" should be equal to "{user2@deskpro.dev}"
+    And the JSON node "data[0].message" should be equal to "message 1"
+    And the JSON node "data[0].is_agent_note" should be equal to 0
+
+    And the JSON node "data[1].person" should be equal to "{admin}"
+    And the JSON node "data[1].message" should be equal to "message 2"
+    And the JSON node "data[1].is_agent_note" should be equal to 0
+
+  Scenario: I create a note and message
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "messages": [
+    {
+      "message": "message"
+    },
+    {
+      "message": "note",
+      "is_note": 1
+    }
+  ]
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+
+    And the JSON node "data[0].person" should be equal to "{admin}"
+    And the JSON node "data[0].message" should be equal to "message"
+    And the JSON node "data[0].is_agent_note" should be equal to 0
+
+    And the JSON node "data[1].person" should be equal to "{admin}"
+    And the JSON node "data[1].message" should be equal to "note"
+    And the JSON node "data[1].is_agent_note" should be equal to 1
+
+  Scenario: I suppress user notify
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "suppress_user_notify": true
+}
+    """
+    Then the response status code should be 201

@@ -45,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -479,11 +480,12 @@ abstract class CrudController extends BaseController
      *
      * This method is called on a valid entity to persist it. May be overwritten in child controllers.
      *
-     * @param object $model
+     * @param object        $model
+     * @param FormInterface $form
      *
      * @return object The passed model
      */
-    protected function persistModel($model)
+    protected function persistModel($model, FormInterface $form = null)
     {
         $em = $this->getManager();
         $em->persist($model);
@@ -543,7 +545,7 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($model);
+        $this->persistModel($model, $form);
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
         if ($this->isExposed('get')) {
