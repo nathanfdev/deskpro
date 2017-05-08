@@ -38,6 +38,9 @@ class ActionAlertsHandler {
         });
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
+      case 'organization.added':
+        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        break;
       default:
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);
     }

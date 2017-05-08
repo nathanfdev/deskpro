@@ -39,13 +39,13 @@ use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -292,15 +292,12 @@ class UserChatController extends AbstractController
 
         $agent = $this->em->find('DeskPRO:Person', $agent_id);
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => 'chat.invited',
-            'data'              => $convo->getInfo(),
-            'for_person'        => $agent,
-            'created_by_client' => $this->session->getId(),
-        ]);
-        $this->em->persist($cm);
-        $this->em->flush();
+        $eventData           = $convo->getInfo();
+        $eventData['target'] = $agent;
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('chat.invited', $eventData)
+        );
 
         return $this->createJsonResponse(['success' => true]);
     }

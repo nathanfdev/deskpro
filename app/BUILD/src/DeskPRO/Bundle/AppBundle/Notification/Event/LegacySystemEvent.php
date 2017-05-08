@@ -28,28 +28,42 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Event;
 
-/**
- * Class AbstractSystemEvent.
- */
-abstract class AbstractLegacyEvent extends AbstractSystemEvent implements SystemEventInterface
+class LegacySystemEvent extends AbstractLegacyEvent
 {
-    /**
-     * @var string
-     */
-    protected $type;
+    const EVENT_NAME = 'system.event';
 
-    public function __construct($type)
+    private $data;
+
+    /**
+     * AgentStatusChangedEvent constructor.
+     *
+     * @param string $type
+     * @param array  $data
+     */
+    public function __construct($type, $data)
     {
-        $this->type = $type;
+        parent::__construct($type);
+        $this->data = $data;
     }
 
-    public function getType()
+    /**
+     * @return int
+     */
+    public function getTarget()
     {
-        return $this->type;
+        return isset($this->data['target']) ? $this->data['target'] : null;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     public function __sleep()
     {
-        return ['type'];
+        return array_merge(parent::__sleep(), ['data']);
     }
 }
