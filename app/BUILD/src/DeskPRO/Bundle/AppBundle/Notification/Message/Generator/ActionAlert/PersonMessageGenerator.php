@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\PersonCreatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
@@ -38,9 +38,9 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class OrganizationMessageGenerator.
+ * Class PersonMessageGenerator.
  */
-class OrganizationMessageGenerator extends AbstractGenerator
+class PersonMessageGenerator extends AbstractGenerator
 {
     /**
      * @var AgentDataService
@@ -48,7 +48,7 @@ class OrganizationMessageGenerator extends AbstractGenerator
     private $agentDataService;
 
     /**
-     * OrganizationMessageGenerator constructor.
+     * PersonMessageGenerator constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
@@ -86,7 +86,7 @@ class OrganizationMessageGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof OrganizationCreatedEvent) {
+        if ($event instanceof PersonCreatedEvent) {
             return true;
         }
 
@@ -108,12 +108,12 @@ class OrganizationMessageGenerator extends AbstractGenerator
      */
     public function getData(SystemEventInterface $event)
     {
-        if ($event instanceof OrganizationCreatedEvent) {
+        if ($event instanceof PersonCreatedEvent) {
             return [
-                'type'              => $event->getType(),
-                'organization_id'   => $event->getOrganizationId(),
-                'organization_name' => $event->getOrganizationName(),
-                'date_created'      => $event->getOrganizationDateCreated(),
+                'type'         => $event->getType(),
+                'person_id'    => $event->getPersonId(),
+                'person_name'  => $event->getPersonName(),
+                'date_created' => $event->getPersonDateCreated(),
             ];
         }
 

@@ -1585,11 +1585,7 @@ class PersonController extends AbstractController
 
             $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
-            // Notify about new person
-            foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                $this->em->persist($cm);
-            }
-            $this->em->flush();
+            $this->get('event_dispatcher')->dispatch(PersonCreatedEvent::EVENT_NAME, new PersonCreatedEvent($person));
 
             if ($this->in->getString('newperson.send_welcome_email')) {
                 $trans = $this->container->getTranslator();

@@ -153,3 +153,12 @@ services:
         - "@data.agent"
       tags:
         - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.person:
+      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\PersonMessageGenerator
+      arguments:
+        - "@doctrine.orm.default_entity_manager"
+        - "@security.token_storage"
+        - "@data.agent"
+      tags:
+        - { name: deskpro.notification.action_alert.generator }

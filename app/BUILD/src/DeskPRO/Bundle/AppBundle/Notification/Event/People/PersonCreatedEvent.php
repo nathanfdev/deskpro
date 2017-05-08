@@ -26,66 +26,66 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\Organization;
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\People;
 
-use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractLegacyEvent;
 
 /**
- * Class OrganizationCreatedEvent.
+ * Class PersonCreatedEvent.
  */
-class OrganizationCreatedEvent extends AbstractLegacyEvent
+class PersonCreatedEvent extends AbstractLegacyEvent
 {
-    const EVENT_NAME = 'organization.created';
+    const EVENT_NAME = 'person.created';
 
     /**
      * @var int
      */
-    protected $organizationId;
+    protected $personId;
 
     /**
      * @var string
      */
-    protected $organizationName;
+    protected $personName;
 
     /**
      * @var int
      */
-    protected $organizationDateCreated;
+    protected $personDateCreated;
 
     /**
-     * @param Organization $organization
+     * @param Person $person
      */
-    public function __construct(Organization $organization)
+    public function __construct(Person $person)
     {
-        parent::__construct('agent.org.added');
-        $this->organizationId          = $organization->getId();
-        $this->organizationName        = $organization->getName();
-        $this->organizationDateCreated = $organization->getDateCreated()->getTimestamp();
+        parent::__construct('person.created');
+        $this->personId          = $person->getId();
+        $this->personName        = $person->getName();
+        $this->personDateCreated = $person->getDateCreated()->getTimestamp();
     }
 
     /**
      * @return int
      */
-    public function getOrganizationId()
+    public function getPersonId()
     {
-        return $this->organizationId;
+        return $this->personId;
     }
 
     /**
      * @return string
      */
-    public function getOrganizationName()
+    public function getPersonName()
     {
-        return $this->organizationName;
+        return $this->personName;
     }
 
     /**
      * @return int
      */
-    public function getOrganizationDateCreated()
+    public function getPersonDateCreated()
     {
-        return $this->organizationDateCreated;
+        return $this->personDateCreated;
     }
 
     /**
@@ -96,9 +96,9 @@ class OrganizationCreatedEvent extends AbstractLegacyEvent
         return array_merge(
             parent::__sleep(),
             [
-                'organizationId',
-                'organizationName',
-                'organizationDateCreated',
+                'personId',
+                'personName',
+                'personDateCreated',
             ]
         );
     }
