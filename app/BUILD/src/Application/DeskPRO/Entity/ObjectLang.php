@@ -250,6 +250,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ObjectLang';
         $metadata->setPrimaryTable(
             [
                 'name'    => 'object_lang',
