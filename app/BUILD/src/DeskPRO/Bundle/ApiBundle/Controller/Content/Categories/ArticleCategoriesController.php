@@ -39,7 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *
  * @ApiModes("all")
  * @Rest\Route("/article_categories")
- * @ApiDoc(target="all", section="Content", output="Application\DeskPRO\Entity\ArticleCategory")
+ * @ApiDoc(target="all", section="Content", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories\ArticleCategory")
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

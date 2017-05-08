@@ -93,14 +93,17 @@ class ObjectLangRepository
             if (App::getCurrentPerson()) {
                 $l = App::getCurrentPerson()->getRealLanguage();
                 if ($l) {
-                    $try_langs[$l->id] = $l;
+                    $try_langs[$l->getId()] = $l;
                 }
             }
             if ($l = App::getTranslator()->getLanguage()) {
-                $try_langs[$l->id] = $l;
+                $try_langs[$l->getId()] = $l;
             }
-            $l                 = App::getContainer()->getLanguageData()->getDefault();
-            $try_langs[$l->id] = $l;
+
+            $l = App::getContainer()->getLanguageData()->getDefault();
+            if ($l) {
+                $try_langs[$l->getId()] = $l;
+            }
 
             return $try_langs;
         }

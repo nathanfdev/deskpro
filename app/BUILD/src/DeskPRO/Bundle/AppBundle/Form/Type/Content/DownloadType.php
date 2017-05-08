@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Content;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
@@ -37,6 +36,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class DownloadType.
+ */
 class DownloadType extends AbstractType
 {
     /**

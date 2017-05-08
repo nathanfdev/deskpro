@@ -39,6 +39,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class GuideType.
+ */
 class GuideType extends AbstractType
 {
     /**
@@ -72,6 +75,9 @@ class GuideType extends AbstractType
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver

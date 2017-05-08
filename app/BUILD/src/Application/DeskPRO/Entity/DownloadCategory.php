@@ -38,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_downloads_browse", route_param_map={"slug":"slug"})
@@ -49,49 +48,41 @@ class DownloadCategory extends CategoryAbstract
     /**
      * Category`s parent.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("entity<Application\DeskPRO\Entity\DownloadCategory>")
+     * @var DownloadCategory
      */
     protected $parent;
 
     /**
      * Category`s children.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\DownloadCategory>>")
+     * @var DownloadCategory[]
      */
     protected $children;
 
     /**
      * Downloads belong this category.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\DownloadCategory>>")
-     *
-     * @var ArrayCollection
+     * @var ArrayCollection|Download[]
      */
     protected $downloads;
 
     /**
      * Usergroups that has access to this category.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
-     *
-     * @var ArrayCollection
+     * @var ArrayCollection|Usergroup[]
      */
     protected $usergroups;
 
     /**
      * Brand linked to the category.
      *
-     * @JMS\Groups("download_categories")
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
-     *
      * @var Brand
      */
     protected $brand;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->usergroups = new ArrayCollection();
@@ -133,6 +124,14 @@ class DownloadCategory extends CategoryAbstract
         if (!$this->usergroups->contains($usergroup)) {
             $this->usergroups->add($usergroup);
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDownloads()
+    {
+        return $this->downloads;
     }
 
     //###########################################################################

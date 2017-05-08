@@ -26,16 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 
 use Application\DeskPRO\Entity\ObjectLang;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -61,7 +58,7 @@ class ObjectLangCollectionType extends AbstractType
      */
     public function getParent()
     {
-        return 'collection';
+        return CollectionType::class;
     }
 
     /**
@@ -94,6 +91,8 @@ class ObjectLangCollectionType extends AbstractType
     /**
      * Load related entity property translations.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onLoadData(FormEvent $event)
@@ -114,6 +113,8 @@ class ObjectLangCollectionType extends AbstractType
      * Set updated translations.
      * Will be saved after entity persist via object translatable lifecycle callback.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onMergeData(FormEvent $event)
@@ -121,21 +122,21 @@ class ObjectLangCollectionType extends AbstractType
         $context = new ObjectLangContext($event);
         $owner   = $context->getOwner();
 
-        $all_objects  = $owner->getObjectPropsTranslations();
-        $prop_objects = $event->getData();
+        $allObjects  = $owner->getObjectPropsTranslations();
+        $propObjects = $event->getData();
 
-        /** @var ObjectLang $object_lang */
-        foreach ($prop_objects as $object_lang) {
-            if (!$all_objects->contains($object_lang)) {
-                $all_objects->add($object_lang);
+        /** @var ObjectLang $objectLang */
+        foreach ($propObjects as $objectLang) {
+            if (!$allObjects->contains($objectLang)) {
+                $allObjects->add($objectLang);
             }
         }
-        foreach ($all_objects as $object_lang) {
-            if ($object_lang->getPropName() === $context->getPropName() && !$prop_objects->contains($object_lang)) {
-                $all_objects->removeElement($object_lang);
+        foreach ($allObjects as $objectLang) {
+            if ($objectLang->getPropName() === $context->getPropName() && !$propObjects->contains($objectLang)) {
+                $allObjects->removeElement($objectLang);
             }
         }
 
-        $event->setData($all_objects);
+        $event->setData($allObjects);
     }
 }

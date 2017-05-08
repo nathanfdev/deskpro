@@ -5,8 +5,9 @@ Feature: /articles endpoint
   I want an API endpoint
 
   Background:
-    Given agent and user exist
-    Given I'm authenticated as agent
+    Given no Article records exist
+    And I'm authenticated as agent
+    And agent and user exist
     And I have permissions to use Articles
 
   Scenario: I create an article
@@ -85,3 +86,53 @@ Feature: /articles endpoint
     Then the response status code should be 200
     And I send a GET request to "{lastRequestUrl}"
     And the response status code should be 404
+
+  Scenario: I set article translations
+    Given only the following Language records exist:
+      | #  | Sys Name |
+      | l1 | Lang 1   |
+      | l2 | Lang 2   |
+      | l3 | Lang 3   |
+    Given the following Article records exist:
+      | #  | title                 | content             | status | hidden_status |
+      | a1 | Some article for view | <p>Some content</p> | hidden | draft         |
+
+    When I send a PUT request to "/api/v2/articles/{a1}" with body:
+    """
+{
+  "title_translations": [
+    {
+      "language": ~l1~,
+      "value": "title lang 1"
+    },
+    {
+      "language": ~l2~,
+      "value": "title lang 2"
+    }
+  ],
+  "content_translations": [
+      {
+      "language": ~l2~,
+      "value": "content lang 2"
+    },
+    {
+      "language": ~l3~,
+      "value": "content lang 3"
+    }
+  ]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/articles/{a1}"
+    Then the JSON node "data.title_translations" should have 2 elements
+    And the JSON node "data.title_translations[0].language" should be equal to "{l1}"
+    And the JSON node "data.title_translations[0].value" should be equal to the string "title lang 1"
+    And the JSON node "data.title_translations[1].language" should be equal to "{l2}"
+    And the JSON node "data.title_translations[1].value" should be equal to the string "title lang 2"
+
+    And the JSON node "data.content_translations" should have 2 elements
+    And the JSON node "data.content_translations[0].language" should be equal to "{l2}"
+    And the JSON node "data.content_translations[0].value" should be equal to the string "content lang 2"
+    And the JSON node "data.content_translations[1].language" should be equal to "{l3}"
+    And the JSON node "data.content_translations[1].value" should be equal to the string "content lang 3"
