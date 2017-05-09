@@ -34,9 +34,9 @@ namespace Application\DeskPRO\Chat;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
  * Actions to do with AgentChat.
@@ -89,19 +89,20 @@ class AgentChat
             $em->flush();
         });
 
+        $container       = App::getContainer();
+        $eventDispatcher = $container->get('event_dispatcher');
+
         foreach ($conversation->participants as $part) {
             if ($part['id'] == $this->person['id']) {
                 continue;
             }
-
             $date = clone $chat_message['date_created'];
             $date->setTimeZone($part->getDateTimezone());
-            $time = App::getContainer()->getTranslator()->date('g:ia', $date, 'agent.time');
+            $time = $container->getTranslator()->date('g:ia', $date, 'agent.time');
 
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel' => $channel,
-                'data'    => [
+            $eventDispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent($channel, [
                     'conversation_id' => $conversation['id'],
                     'participant_ids' => $part_ids,
                     'message_id'      => $chat_message['id'],
@@ -109,19 +110,9 @@ class AgentChat
                     'message'         => $chat_message['content'],
                     'date_created'    => $chat_message['date_created']->getTimestamp(),
                     'time'            => $time,
-                ],
-                'created_by_client' => $this->session['id'],
-                'for_person'        => $part,
-            ]);
-
-            $client_messages[] = $cm;
-        }
-
-        if ($client_messages) {
-            foreach ($client_messages as $cm) {
-                App::getOrm()->persist($cm);
-            }
-            App::getOrm()->flush();
+                    'target'          => $part->getId(),
+                ]
+            ));
         }
 
         // If any of the targets are not online, we might need to nofigy them of the message via email
