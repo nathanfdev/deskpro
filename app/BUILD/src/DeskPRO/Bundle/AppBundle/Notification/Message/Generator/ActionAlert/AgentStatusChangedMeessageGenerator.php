@@ -51,7 +51,7 @@ class AgentStatusChangedMeessageGenerator extends AbstractGenerator
             new ActionAlert(
                 $event->getPersonId(),
                 [
-                    'type'      => $event->getType(),
+                    'type'      => $event->getEventType(),
                     'is_online' => $event->getOnline(),
                 ],
                 $event->getName()

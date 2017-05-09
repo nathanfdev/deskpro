@@ -52,7 +52,7 @@ class ActionAlertsHandler {
   }
 
   static handleLegacyClientMessage(payload) {
-    DeskPRO_Window.messageBroker.sendMessage(payload.type, payload); // eslint-disable-line no-undef
+    DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
   }
 }
 

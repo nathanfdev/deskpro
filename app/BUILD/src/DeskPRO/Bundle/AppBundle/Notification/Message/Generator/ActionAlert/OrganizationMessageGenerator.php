@@ -110,7 +110,7 @@ class OrganizationMessageGenerator extends AbstractGenerator
     {
         if ($event instanceof OrganizationCreatedEvent) {
             return [
-                'type'              => $event->getType(),
+                'type'              => $event->getEventType(),
                 'organization_id'   => $event->getOrganizationId(),
                 'organization_name' => $event->getOrganizationName(),
                 'date_created'      => $event->getOrganizationDateCreated(),

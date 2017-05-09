@@ -36,20 +36,20 @@ abstract class AbstractLegacyEvent extends AbstractSystemEvent implements System
     /**
      * @var string
      */
-    protected $type;
+    protected $eventType;
 
-    public function __construct($type)
+    public function __construct($eventType)
     {
-        $this->type = $type;
+        $this->eventType = $eventType;
     }
 
-    public function getType()
+    public function getEventType()
     {
-        return $this->type;
+        return $this->eventType;
     }
 
     public function __sleep()
     {
-        return ['type'];
+        return ['eventType'];
     }
 }

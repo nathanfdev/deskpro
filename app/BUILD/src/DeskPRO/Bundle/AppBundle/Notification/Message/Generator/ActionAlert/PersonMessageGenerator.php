@@ -110,7 +110,7 @@ class PersonMessageGenerator extends AbstractGenerator
     {
         if ($event instanceof PersonCreatedEvent) {
             return [
-                'type'         => $event->getType(),
+                'type'         => $event->getEventType(),
                 'person_id'    => $event->getPersonId(),
                 'person_name'  => $event->getPersonName(),
                 'date_created' => $event->getPersonDateCreated(),
