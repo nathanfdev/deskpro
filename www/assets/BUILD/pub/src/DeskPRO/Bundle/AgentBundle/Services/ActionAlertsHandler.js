@@ -30,12 +30,16 @@ class ActionAlertsHandler {
         }
         break;
       case 'agents.update_online':
-        payload.data.online.forEach((item) => {
-          records.push({ id: item, online: true });
-        });
-        payload.data.offline.forEach((item) => {
-          records.push({ id: item, online: false });
-        });
+        if (payload.data.online) {
+          payload.data.online.forEach((item) => {
+            records.push({ id: item, online: true });
+          });
+        }
+        if (payload.data.offline) {
+          payload.data.offline.forEach((item) => {
+            records.push({ id: item, online: false });
+          });
+        }
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
       case 'organization.added':
