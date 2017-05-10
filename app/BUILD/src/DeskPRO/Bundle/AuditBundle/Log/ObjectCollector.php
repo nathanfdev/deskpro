@@ -105,4 +105,13 @@ class ObjectCollector
 
         return [];
     }
+
+    /**
+     * Clear collector on flush.
+     */
+    public function clear()
+    {
+        $this->collectedOwners = [];
+        $this->collectedParts  = [];
+    }
 }
