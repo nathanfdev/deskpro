@@ -43,31 +43,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Chat
 {
-    public static function createNewChatMessages($byClientId, ChatConversation $conversation, ChatMessage $chatMessage)
-    {
-        if ($conversation['is_agent']) {
-            $channel = 'agent_chat.new-chat';
-        } else {
-            $channel = 'chat.new-chat';
-        }
-
-        $newChatCm = new ClientMessage();
-        $newChatCm->fromArray([
-            'channel' => $channel,
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'message_id'      => $chatMessage['id'],
-                'author_id'       => $chatMessage['author_id'],
-                'author_name'     => $chatMessage['author_name'],
-                'message'         => $chatMessage['content'],
-                'date_created'    => $chatMessage['date_created']->getTimestamp(),
-            ],
-            'created_by_client' => $byClientId,
-        ]);
-
-        return [$newChatCm];
-    }
-
     public static function createNewAddedPartMessage(
         ChatConversation $conversation,
         Person $agent,
@@ -90,23 +65,6 @@ class Chat
                     'target'          => $agent->getId(),
                 ]
         ));
-    }
-
-    public static function createChatEndedMessages($byClientId, ChatConversation $conversation)
-    {
-        $channel = 'chat.chat-ended';
-
-        $chatCm = new ClientMessage();
-        $chatCm->fromArray([
-            'channel' => $channel,
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'date_created'    => time(),
-            ],
-            'created_by_client' => $byClientId,
-        ]);
-
-        return [$chatCm];
     }
 
     public static function createPartisipatedUpdatedMessages(
@@ -137,26 +95,6 @@ class Chat
                 array_merge($cmData, ['target' => $participant->getId()])
             ));
         }
-    }
-
-    public static function createNewChatRoundRobinMessages($byClientId, ChatConversation $conversation, ChatMessage $chatMessage)
-    {
-        $newChatCm = new ClientMessage();
-        $newChatCm->fromArray([
-            'channel' => 'chat.new-chat-assigned',
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'message_id'      => $chatMessage['id'],
-                'author_id'       => $chatMessage['author_id'],
-                'author_name'     => $chatMessage['author_name'],
-                'message'         => $chatMessage['content'],
-                'date_created'    => $chatMessage['date_created']->getTimestamp(),
-            ],
-            'created_by_client' => $byClientId,
-            'for_person'        => $conversation['agent'],
-        ]);
-
-        return [$newChatCm];
     }
 
     public static function createNewMessageMessages(ChatMessage $chatMessage, EventDispatcherInterface $eventDispatcher)
