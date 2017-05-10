@@ -55,6 +55,13 @@ class ContentTypeListener implements EventSubscriberInterface
         $request = $event->getRequest();
         $content = $request->getContent();
 
+        if (preg_match('#^/api/v2/twilio_callbacks/#', $request->getPathInfo())) {
+            return;
+        }
+        if (preg_match('#^/api/v2/blobs#', $request->getPathInfo())) {
+            return;
+        }
+
         // 'Content-Type' header could be `text/plain` so force `application/json` format
         // if we get valid json body content
         // otherwise we will get unsupported format exception
