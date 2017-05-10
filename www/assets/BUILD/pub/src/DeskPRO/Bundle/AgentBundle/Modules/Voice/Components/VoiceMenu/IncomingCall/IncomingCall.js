@@ -35,8 +35,7 @@ class IncomingCall extends React.Component {
     }
   }
 
-  onAccept = (event) => {
-    event.preventDefault();
+  onAccept = () => {
     this.props.onAccept();
   };
 
