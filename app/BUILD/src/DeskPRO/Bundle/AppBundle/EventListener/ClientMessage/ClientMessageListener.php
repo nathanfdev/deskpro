@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
-use Application\DeskPRO\Entity\ClientMessage;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
@@ -85,14 +85,7 @@ class ClientMessageListener implements EventSubscriberInterface
             $data = $this->serializer->toArray($data, new SideloadSerializationContext());
         }
 
-        $client_message = new ClientMessage();
-        $client_message
-            ->setChannel($event->getChannel())
-            ->setData($data ?: [])
-            ->setCreatedByClient($event->getCreatedBy())
-        ;
-
-        $this->em->persist($client_message);
-        $this->em->flush();
+        $dispatcher = $event->getDispatcher();
+        $dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent($event->getChannel(), $data ?: []));
     }
 }

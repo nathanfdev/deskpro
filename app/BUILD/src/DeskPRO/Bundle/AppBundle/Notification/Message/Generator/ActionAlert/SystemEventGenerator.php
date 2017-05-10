@@ -67,7 +67,7 @@ class SystemEventGenerator extends AbstractGenerator
         /* @var LegacySystemEvent $event */
         $messages = [];
         foreach ($this->getTarget($event) as $agent) {
-            $messages[] = new ActionAlert($agent, $event->getData(), $event->getName());
+            $messages[] = new ActionAlert((int) $agent, $event->getData(), $event->getName());
         }
 
         return $messages;

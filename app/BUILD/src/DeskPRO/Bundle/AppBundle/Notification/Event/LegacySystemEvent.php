@@ -51,7 +51,7 @@ class LegacySystemEvent extends AbstractLegacyEvent
      */
     public function getTarget()
     {
-        return isset($this->data['target']) ? $this->data['target'] : null;
+        return isset($this->data['target']) ? (int) $this->data['target'] : null;
     }
 
     /**
