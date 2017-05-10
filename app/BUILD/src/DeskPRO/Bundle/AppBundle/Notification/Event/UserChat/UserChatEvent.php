@@ -26,61 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event;
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\UserChat;
 
-/**
- * Class LegacySystemEvent.
- */
-class LegacySystemEvent extends AbstractLegacyEvent
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+
+class UserChatEvent extends LegacySystemEvent
 {
-    const EVENT_NAME = 'system.event';
-
-    /**
-     * @var array
-     */
-    private $data;
-
-    /**
-     * AgentStatusChangedEvent constructor.
-     *
-     * @param string $type
-     * @param array  $data
-     */
-    public function __construct($type, $data)
-    {
-        parent::__construct($type);
-        $this->data = $data;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->getEventType() ?: parent::getName();
-    }
-
-    /**
-     * @return int
-     */
-    public function getTarget()
-    {
-        return isset($this->data['target']) ? (int) $this->data['target'] : null;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData()
-    {
-        return array_merge($this->data, ['eventType' => $this->eventType]);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function __sleep()
-    {
-        return array_merge(parent::__sleep(), ['data']);
-    }
+    const EVENT_NAME = 'legacy.user.chat';
 }
+
+//$waiting_secs = time() - $convo->date_created->getTimestamp();
+
+//$url = null;
+
+//return $this->_getContainer()->getTemplating()->render('AgentBundle:UserChat:chat-alert.html.twig', [
+//    'convo'        => $convo,
+//    'person'       => $convo->person,
+//    'tickets'      => $tickets,
+//    'session'      => $convo->session,
+//    'visitor_id'   => $convo->visitor_id,
+//    'waiting_secs' => $waiting_secs,
+//    'url'          => $url,
+//]);

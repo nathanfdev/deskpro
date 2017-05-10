@@ -28,39 +28,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as TemplatingEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class SystemEventGenerator.
+ * Class UserChatMessageGenerator.
  */
-class SystemEventGenerator extends AbstractGenerator
+class UserChatMessageGenerator extends SystemEventGenerator
 {
     /**
-     * @var AgentDataService
+     * @var TemplatingEngine
      */
-    private $agentDataService;
+    private $templating;
 
-    /**
-     * SystemEventGenerator constructor.
-     *
-     * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
-     * @param AgentDataService      $agentDataService
-     */
     public function __construct(
         EntityManager $em,
         TokenStorageInterface $token_storage,
-        AgentDataService $agentDataService
+        AgentDataService $agentDataService,
+        TemplatingEngine $templating
     ) {
-        parent::__construct($em, $token_storage);
-        $this->agentDataService = $agentDataService;
+        parent::__construct($em, $token_storage, $agentDataService);
+        $this->templating = $templating;
     }
 
     /**
@@ -71,40 +67,49 @@ class SystemEventGenerator extends AbstractGenerator
     public function createMessages(SystemEventInterface $event)
     {
         $event->getName();
-        /* @var LegacySystemEvent $event */
+        /* @var UserChatEvent $event */
         $messages = [];
         foreach ($this->getTarget($event) as $agent) {
-            $messages[] = new ActionAlert((int) $agent, $event->getData(), $event->getName());
+            $messages[] = new ActionAlert((int) $agent, $this->getData($event), $event->getName());
         }
 
         return $messages;
     }
 
-    /**
-     * @param SystemEventInterface $event
-     *
-     * @return bool
-     */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof LegacySystemEvent) {
-            return true;
-        }
-
-        return false;
+        return $event instanceof UserChatEvent;
     }
 
-    /**
-     * @param LegacySystemEvent $event
-     *
-     * @return array|\int[]
-     */
-    protected function getTarget(LegacySystemEvent $event)
+    private function getData(UserChatEvent $event)
     {
-        if ($target = $event->getTarget()) {
-            return [$target];
+        $data = $event->getData();
+        if ($event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
+            $convo = $this->em->find(ChatConversation::class, $data['conversation_id']);
+            if (!$convo) {
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            }
+
+            $tickets = null;
+            if ($convo->person) {
+                $tickets = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($convo->person, 5, true);
+            }
+
+            $waiting_secs = time() - $convo->date_created->getTimestamp();
+
+            $url = null;
+
+            $data['html'] = $this->templating->render('AgentBundle:UserChat:chat-alert.html.twig', [
+                'convo'        => $convo,
+                'person'       => $convo->person,
+                'tickets'      => $tickets,
+                'session'      => $convo->session,
+                'visitor_id'   => $convo->visitor_id,
+                'waiting_secs' => $waiting_secs,
+                'url'          => $url,
+            ]);
         }
 
-        return $this->agentDataService->getOnlineAgentIds();
+        return $data;
     }
 }

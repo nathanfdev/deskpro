@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -60,6 +61,7 @@ class EventManager implements EventSubscriberInterface
             AgentStatusChangedEvent::EVENT_NAME  => 'handleEvent',
             LegacySystemEvent::EVENT_NAME        => 'handleEvent',
             OrganizationCreatedEvent::EVENT_NAME => 'handleEvent',
+            UserChatEvent::EVENT_NAME            => 'handleEvent',
         ];
     }
 

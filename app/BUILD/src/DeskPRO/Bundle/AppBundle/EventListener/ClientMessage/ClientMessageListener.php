@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\ClientMessage;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
@@ -86,6 +86,6 @@ class ClientMessageListener implements EventSubscriberInterface
         }
 
         $dispatcher = $event->getDispatcher();
-        $dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent($event->getChannel(), $data ?: []));
+        $dispatcher->dispatch(UserChatEvent::EVENT_NAME, new UserChatEvent($event->getChannel(), $data ?: []));
     }
 }
