@@ -1,6 +1,6 @@
 import AppConfiguration from './AppConfiguration'
 import WidgetConfiguration from './WidgetConfiguration'
-import uuid from 'node-uuid';
+
 
 class DeskproAppRegistry
 {
@@ -59,6 +59,8 @@ class DeskproAppRegistry
     const xconfig = {
       tag,
       url,
+      defaultContext: 'iframe',
+      parentTemplate: '<div class="{CLASS.ELEMENT}"/>', // TODO: this should not be necessary when rendering as iframe. Dig into xcomponent's code to understand why the template mechanism is activated
       scrolling: false,
       autoResize: true,
       dimensions: { width: '100%', height: 1000 },
