@@ -47,7 +47,6 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Draft;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -1667,15 +1666,6 @@ class TicketController extends AbstractController
             );
         }
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since') > 0) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
         $close_tab = $this->in->getBool('options.close_tab');
 
         $data = $this->_getMessageBlockInfo(
@@ -1792,7 +1782,7 @@ class TicketController extends AbstractController
                 'status'                         => $ticket['status'],
                 'close_tab'                      => $close_tab,
                 'refresh_tab'                    => $refresh_tab,
-                'client_messages'                => $client_messages,
+                'client_messages'                => false,
                 'cc_list'                        => $cc_list,
                 'error_messages'                 => $error_messages ?: false,
                 'notified_agents'                => $notify_agent_ids,
@@ -2457,19 +2447,6 @@ class TicketController extends AbstractController
         $data['data']['reload'] = (($was_rtl && !$is_rtl) || (!$was_rtl && $is_rtl));
         $data['holders']        = $this->getDataHolders($ticket);
         $data['labels']         = $ticket->getLabelManager()->getLabelsArray();
-
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since')) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
-        if ($client_messages) {
-            $data['client_messages'] = $client_messages;
-        }
 
         $data['data']['can_view'] = $this->person->PermissionsManager->TicketChecker->canView($ticket);
 
@@ -3328,19 +3305,6 @@ class TicketController extends AbstractController
             $data = ['inserted' => false];
         }
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since')) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
-        if ($client_messages) {
-            $data['client_messages'] = $client_messages;
-        }
-
         return $this->createJsonResponse($data);
     }
 
@@ -3366,19 +3330,6 @@ class TicketController extends AbstractController
         $data = [
             'success' => true,
         ];
-
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since')) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
-        if ($client_messages) {
-            $data['client_messages'] = $client_messages;
-        }
 
         return $this->createJsonResponse($data);
     }
@@ -5556,16 +5507,6 @@ CSS;
         $this->em->flush($problem);
 
         $data = [];
-        if ($this->in->getUInt('client_messages_since')) {
-            if ($client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            )
-            ) {
-                $data['client_messages'] = $client_messages;
-            }
-        }
 
         return $this->createJsonResponse($data);
     }
@@ -5591,16 +5532,6 @@ CSS;
         $this->em->flush($problem);
 
         $data = [];
-        if ($this->in->getUInt('client_messages_since')) {
-            if ($client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            )
-            ) {
-                $data['client_messages'] = $client_messages;
-            }
-        }
 
         return $this->createJsonResponse($data);
     }

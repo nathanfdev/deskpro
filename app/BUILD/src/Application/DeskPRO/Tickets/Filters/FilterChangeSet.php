@@ -138,17 +138,9 @@ class FilterChangeSet
      * Get an array of client messages to send to clients about lists updating.
      *
      * @param array $onlineAgentsIds
-     *
-     * @return \Application\DeskPRO\Entity\ClientMessage[]
      */
     public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
-        $messages = [];
-
-        //------------------------------
-        // CMs for filters
-        //------------------------------
-
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
@@ -193,7 +185,5 @@ class FilterChangeSet
                 );
             }
         }
-
-        return $messages;
     }
 }
