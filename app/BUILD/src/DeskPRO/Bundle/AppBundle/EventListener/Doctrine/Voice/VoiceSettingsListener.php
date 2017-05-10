@@ -28,11 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Permission;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class VoiceSettingsListener.
@@ -45,13 +46,20 @@ class VoiceSettingsListener
     private $em;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager            $em
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher)
     {
-        $this->em = $em;
+        $this->em              = $em;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -75,15 +83,13 @@ class VoiceSettingsListener
             return;
         }
 
-        $cm = new ClientMessage();
-        $cm->setChannel('agent.voice.calls_enabled');
-        $cm->setData([
-            'person_id'           => $agent->getId(),
-            'agent_calls_enabled' => $agentData->isAgentCallsEnabled(),
-        ]);
-
-        $this->em->persist($cm);
-        $uow->computeChangeSet($this->em->getClassMetadata(get_class($cm)), $cm);
+        $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.calls_enabled',
+            [
+                'person_id'           => $agent->getId(),
+                'agent_calls_enabled' => $agentData->isAgentCallsEnabled(),
+            ]
+        ));
     }
 
     /**

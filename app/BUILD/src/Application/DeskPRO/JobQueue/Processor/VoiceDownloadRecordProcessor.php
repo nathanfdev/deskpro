@@ -29,8 +29,8 @@
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\DBAL\Connection;
@@ -38,6 +38,7 @@ use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use JMS\Serializer\Serializer;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -63,6 +64,11 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     private $serializer;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * Constructor.
      *
      * @param Connection         $connection
@@ -70,13 +76,19 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      * @param DeskproBlobStorage $blobStorage
      * @param Serializer         $serializer
      */
-    public function __construct(Connection $connection, EntityManager $em, DeskproBlobStorage $blobStorage, Serializer $serializer)
-    {
+    public function __construct(
+        Connection $connection,
+        EntityManager $em,
+        DeskproBlobStorage $blobStorage,
+        Serializer $serializer,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         parent::__construct($connection);
 
-        $this->em          = $em;
-        $this->blobStorage = $blobStorage;
-        $this->serializer  = $serializer;
+        $this->em              = $em;
+        $this->blobStorage     = $blobStorage;
+        $this->serializer      = $serializer;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -108,14 +120,12 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                     ])
                 );
 
-                $cm = new ClientMessage();
-                $cm->setChannel('agent.voice.voicemail.new-message');
-                $cm->setData([
-                    'data' => $serializedData,
-                ]);
-
-                $this->em->persist($cm);
-                $this->em->flush();
+                $this->eventDispatcher->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent(
+                        'agent.voice.voicemail.new-message',
+                        ['data' => $serializedData]
+                ));
             }
 
             $this->runSuccessHandler($job);

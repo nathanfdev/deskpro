@@ -36,7 +36,6 @@ namespace Application\DeskPRO\ClientMessage\Generator;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
