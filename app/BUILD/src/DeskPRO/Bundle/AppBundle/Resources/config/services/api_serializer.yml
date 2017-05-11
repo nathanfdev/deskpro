@@ -176,6 +176,13 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.ticket_log:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketLogHandler
+    arguments:
+      - "@twig"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.agent_team:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentTeamHandler
     arguments:

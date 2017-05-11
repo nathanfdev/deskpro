@@ -237,6 +237,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.ticket_logs:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketLogsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.client_devices:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\ClientDeviceVoter
     tags:
