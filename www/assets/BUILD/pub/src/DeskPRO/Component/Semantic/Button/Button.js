@@ -40,7 +40,7 @@ class Button extends React.Component {
     e.preventDefault();
     if (!this.props.disabled) {
       if (!this.props.confirm || this.state.confirm) {
-        this.props.onClick();
+        this.props.onClick(e);
         this.setState({
           confirm: false
         });
