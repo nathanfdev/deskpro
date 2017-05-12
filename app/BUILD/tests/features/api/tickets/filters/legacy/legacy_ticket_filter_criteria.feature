@@ -5,6 +5,10 @@ Feature: /ticket_filters endpoint
   Background:
     Given there are no Person records
     And I'm authenticated as admin
+    And only the following Department records exist:
+      | #  | Title        | Is Tickets Enabled |
+      | d1 | Department 1 | 1                  |
+      | d2 | Department 2 | 1                  |
     Given only the following LegacyTicketFilter records exist:
       | #  | Title    | Is Enabled | Is Global | Sys Name | Display Order | Terms                                                                                                                    |
       | f1 | Filter 1 | 1          | 1         | agent    | 1             | [{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}] |
