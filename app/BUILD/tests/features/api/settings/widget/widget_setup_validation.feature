@@ -127,6 +127,10 @@ Feature: Widget Setup Validation
     And the JSON node "errors.fields.settings.fields.brand.fields.chat.fields.waiting_timeout.errors[0].message" should be equal to "Please enter a number, with no other characters."
 
   Scenario: I validate duplicate translations
+    Given only the following Language records exist:
+      | # | Sys Name |
+      | l1 | lang_1  |
+      | l2 | lang_2  |
     When I send a POST request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup" with body:
     """
 {
@@ -146,12 +150,12 @@ Feature: Widget Setup Validation
         "popup": {
           "translations": [
             {
-              "language": 2,
+              "language": ~l2~,
               "title": "Title",
               "message": "Message"
             },
             {
-              "language": 2,
+              "language": ~l2~,
               "title": "Title",
               "message": "Message"
             }
