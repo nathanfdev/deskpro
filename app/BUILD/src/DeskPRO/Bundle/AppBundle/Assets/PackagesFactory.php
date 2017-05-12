@@ -184,7 +184,7 @@ class PackagesFactory
             case PathMapInfo::BUILD_VERSION:
                 if ($this->appEnv->getConfig('paths.asset_version')) {
                     $version = new DpStaticVersionStrategy($this->appEnv->getConfig('paths.asset_version'));
-                } elseif (defined(DP_BUILD_TIME)) {
+                } elseif (defined('DP_BUILD_TIME')) {
                     $version = new DpStaticVersionStrategy(DP_BUILD_TIME);
                 } else {
                     $version = new DpStaticVersionStrategy(time());
