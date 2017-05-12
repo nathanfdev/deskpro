@@ -2,7 +2,7 @@ import ContainerDOMScanner from './Services/ContainerDOMScanner';
 import ContainerMounter from './Services/ContainerMounter';
 import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
 import ReduxActionDispatcher from './Services/ReduxActionDispatcher';
-import { filterAppManifestsConfig, contextsStateSelector } from './Selectors/Main';
+import { filterAppManifestsConfig, newContextsStateSelector } from './Selectors/Main';
 import DeskproAppRegistry from './Domain/DeskproAppRegistry';
 import { loadApps, loadDevApp } from './Actions/Actions'
 import * as WidgetAPI from './WidgetAPI'
@@ -61,26 +61,6 @@ class DeskproAppStore
   {
     const action = config.environment === 'development' ? loadDevApp(api, DeskproAppStoreConfiguration.devAppManifestUrl) : loadApps(api);
     reduxDispatch(action);
-  }
-
-  /**
-   * Creates a redux store subscriber that dispatches actions when some app store state properties change
-   *
-   * @param reduxStore
-   * @param {ReduxActionDispatcher} reduxActionDispatcher
-   * @return {function()}
-   */
-  static createReduxSubscriber(reduxStore, reduxActionDispatcher)
-  {
-    let contexts = contextsStateSelector(reduxStore.getState());
-
-    return () => {
-      const newContexts = contextsStateSelector(reduxStore.getState());
-      if (contexts !== newContexts) {
-        contexts = newContexts;
-        reduxActionDispatcher.dispatchMountPageFragmentContainers();
-      }
-    };
   }
 
   /**
@@ -146,8 +126,11 @@ class DeskproAppStore
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
     containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry);
 
-    const reduxSubscriber = this.createReduxSubscriber(reduxStore, reduxDispatcher);
-    reduxStore.subscribe( reduxSubscriber );
+    // subscribe to redux store changes
+    reduxStore.subscribe( () => {
+      const contexts = newContextsStateSelector(reduxStore.getState());
+      if (contexts) { reduxDispatcher.dispatchMountPageFragmentContainers(contexts); }
+    });
 
     const validTargets = DeskproAppStoreConfiguration.validTargets;
     const domScanner = list => ContainerDOMScanner.fromAttributeName('data-deskproapp').filterAllByTargetTypeList(list, validTargets);

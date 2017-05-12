@@ -21,10 +21,13 @@ class ReduxActionDispatcher
     this.reduxDispatch = reduxDispatch;
   }
 
-  dispatchMountPageFragmentContainers = () =>
+  /**
+   * @param {Map} contexts a map of context configurations to mount
+   */
+  dispatchMountPageFragmentContainers = (contexts) =>
   {
     const { reduxDispatch } = this;
-    reduxDispatch(Actions.mountPageFragmentContainers());
+    reduxDispatch(Actions.mountPageFragmentContainers(contexts));
   };
 
   /**

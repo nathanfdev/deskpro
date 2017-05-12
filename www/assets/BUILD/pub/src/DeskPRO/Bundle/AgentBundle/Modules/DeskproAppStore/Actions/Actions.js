@@ -36,9 +36,7 @@ function pageToContext(page) {
 }
 export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, pageToContext);
 
-export const mountPageFragmentContainers = createAction(DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS, () => {
-
-});
+export const mountPageFragmentContainers = createAction(DESKPRO_APPSTORE_MOUNT_PAGE_FRAGMENT_CONTAINERS, context => context);
 
 /**
  * creates an action that will load the app configuration for the current security principal
