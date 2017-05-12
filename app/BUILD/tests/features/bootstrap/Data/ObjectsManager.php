@@ -74,6 +74,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
@@ -371,6 +372,7 @@ class ObjectsManager
             'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
             'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
             'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
+            'Phrase'                   => [Factory\SimpleFactory::class, 'create', Phrase::class],
         ];
     }
 
@@ -480,6 +482,7 @@ class ObjectsManager
             'TextSnippet'              => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],
+            'Phrase'                   => [$this, 'find', Phrase::class],
         ];
     }
 }

@@ -53,7 +53,8 @@ class ObjectLangType extends AbstractType
             ->add('language', EntityType::class, [
                 'class' => Language::class,
             ])
-            ->add('value', HtmlTextareaType::class);
+            ->add('value', HtmlTextareaType::class)
+        ;
 
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetRelations']);
     }
@@ -63,7 +64,6 @@ class ObjectLangType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        /* @var OptionsResolver $resolver */
         $resolver
             ->setDefaults([
                 'data_class'     => ObjectLang::class,
@@ -80,16 +80,19 @@ class ObjectLangType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetRelations(FormEvent $event)
     {
         $context = new ObjectLangContext($event);
 
-        /* @var ObjectLang $object_lang */
+        /* @var ObjectLang $data */
         $data = $event->getData();
         $data
             ->setObject($context->getOwner())
-            ->setPropName($context->getPropName());
+            ->setPropName($context->getPropName())
+        ;
     }
 }
