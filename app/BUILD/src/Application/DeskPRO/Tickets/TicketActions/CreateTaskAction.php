@@ -77,7 +77,7 @@ class CreateTaskAction extends AbstractAction implements PermissionableAction
      */
     public function __construct($title, $date_due, $creator, $assignee, $public)
     {
-        $this->title    = $date_due;
+        $this->title    = $title;
         $this->dateDue  = $date_due;
         $this->creator  = $creator;
         $this->assignee = $assignee;
