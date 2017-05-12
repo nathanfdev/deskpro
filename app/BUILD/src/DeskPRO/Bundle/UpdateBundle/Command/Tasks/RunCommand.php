@@ -208,9 +208,7 @@ class RunCommand extends ContainerAwareCommand
             passthru($cmd, $ret);
 
             if ($ret) {
-                $logger->notice("--> Error status: $ret");
-
-                return $ret;
+                $logger->warn("--> dp:update:tasks:run-sync exited with error status: $ret");
             }
         }
 
