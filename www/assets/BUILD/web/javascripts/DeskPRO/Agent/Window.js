@@ -2434,10 +2434,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	handleSoundElements: function(el) {
 		var self = this;
 		if ($(el).is('[data-play-sound]')) {
-			self.playLibrarySound($(el).data('play-sound'), {appendTo: el});
+			self.playLibrarySound($(el).data('play-sound'), {appendTo: el, loop: true});
 		} else {
 			$('[data-play-sound]', el).each(function() {
-				self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
+				self.playLibrarySound($(this).data('play-sound'), {appendTo: el, loop: true});
 			});
 		}
 	},
