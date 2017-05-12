@@ -1,11 +1,11 @@
 class DeskproWindowMessageBrokerAdapter
 {
   /**
-   * @return {string}
+   * @return {Array<String>}
    */
-  static get EVENTPATTERN()
+  static get EVENTPATTERNS()
   {
-    return 'agent.ui.tabinit.*';
+    return [ 'agent.ui.tabinit.*' ];
   }
 
   /**
@@ -16,9 +16,10 @@ class DeskproWindowMessageBrokerAdapter
   {
       return (store, domScanner) => {
         const listener = this.createMessageListener(store, domScanner);
-        const pattern  = this.EVENTPATTERN;
-        messageBroker.addMessageListener(pattern, listener);
-      } ;
+        for (const pattern of this.EVENTPATTERNS) {
+          messageBroker.addMessageListener(pattern, listener);
+        }
+      };
   }
 
   /**
