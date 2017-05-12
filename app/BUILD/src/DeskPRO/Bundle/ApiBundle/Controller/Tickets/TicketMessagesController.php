@@ -63,9 +63,12 @@ class TicketMessagesController extends CrudSubController
     public static $entity         = TicketMessage::class;
     public static $type           = TicketMessageType::class;
     public static $parentProperty = 'ticket';
-    public static $sortOptions    = ['date' => 'date_created'];
     public static $listSort       = 'id';
     public static $listOrder      = 'asc';
+    public static $sortOptions    = [
+        'date_created' => 'date_created',
+        'date'         => 'date_created', // alias
+    ];
 
     /**
      * {@inheritdoc}
