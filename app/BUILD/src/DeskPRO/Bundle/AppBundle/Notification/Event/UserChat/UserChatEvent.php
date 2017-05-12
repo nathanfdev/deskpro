@@ -34,17 +34,3 @@ class UserChatEvent extends LegacySystemEvent
 {
     const EVENT_NAME = 'legacy.user.chat';
 }
-
-//$waiting_secs = time() - $convo->date_created->getTimestamp();
-
-//$url = null;
-
-//return $this->_getContainer()->getTemplating()->render('AgentBundle:UserChat:chat-alert.html.twig', [
-//    'convo'        => $convo,
-//    'person'       => $convo->person,
-//    'tickets'      => $tickets,
-//    'session'      => $convo->session,
-//    'visitor_id'   => $convo->visitor_id,
-//    'waiting_secs' => $waiting_secs,
-//    'url'          => $url,
-//]);

@@ -69,7 +69,7 @@ class TicketMessageGenerator extends AbstractGenerator
             'ticket_id' => $event->getTicketId(),
             'filter_id' => $eventData['filter_id'],
             'op'        => $eventData['op'],
-            'type'      => $eventData['type'],
+            'eventType' => $event->getEventType(),
         ];
 
         return $data;

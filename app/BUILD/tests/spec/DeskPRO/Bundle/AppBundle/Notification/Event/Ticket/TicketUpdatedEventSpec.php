@@ -38,7 +38,7 @@ class TicketUpdatedEventSpec extends ObjectBehavior
 {
     public function let()
     {
-        $this->beConstructedWith(1, ['test_data' => 2]);
+        $this->beConstructedWith('some.event', 1, ['test_data' => 2]);
     }
 
     public function it_can_return_ticket_id()

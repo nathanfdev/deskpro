@@ -155,9 +155,9 @@ class FilterChangeSet
                 $this->eventDispatcher->dispatch(
                     TicketUpdatedEvent::EVENT_NAME,
                     new TicketUpdatedEvent(
+                        'agent.filter-update',
                         $ticketId,
                         [
-                            'type'      => 'agent.filter-update',
                             'op'        => 'add',
                             'filter_id' => $filterId,
                             'target'    => $agent,
@@ -174,9 +174,9 @@ class FilterChangeSet
                 $this->eventDispatcher->dispatch(
                     TicketUpdatedEvent::EVENT_NAME,
                     new TicketUpdatedEvent(
+                        'agent.filter-update',
                         $ticketId,
                         [
-                            'type'      => 'agent.filter-update',
                             'op'        => 'del',
                             'filter_id' => $filterId,
                             'target'    => $agent,
