@@ -60,13 +60,12 @@ class DeskproAppRegistry
       tag,
       url,
       defaultContext: 'iframe',
-      parentTemplate: '<div class="{CLASS.ELEMENT}"/>', // TODO: this should not be necessary when rendering as iframe. Dig into xcomponent's code to understand why the template mechanism is activated
+      parentTemplate: '<div class="{CLASS.ELEMENT}" />', // TODO: this should not be necessary when rendering as iframe. Dig into xcomponent's code to understand why the template mechanism is activated
       scrolling: false,
       autoResize: true,
-      dimensions: { width: '100%', height: 1000 },
+      dimensions: { width: '100%', height: '100%' },
       timeout: 3000, // millis
-      // The properties they can (or must) pass down to my component
-      props: {
+      props: { // The properties they can (or must) pass down to my component
         widgetId: { type: 'string', required: true },
         onDpMessage: { type: 'function', required: true }
       }
