@@ -1,13 +1,11 @@
-function hideAll(root, selector)
-{
+function hideAll(root, selector) {
   const matched = root.querySelectorAll(selector);
   for (let i = 0; i < matched.length; i++) {
     matched.item(i).style.display = 'none';
   }
 }
 
-function showAll(root, selector)
-{
+function showAll(root, selector) {
   const matched = root.querySelectorAll(selector);
   for (let i = 0; i < matched.length; i++) {
     matched.item(i).style.display = 'block';
@@ -17,26 +15,21 @@ function showAll(root, selector)
 /**
  * A bridge to the legacy app sidebar
  */
-class LegacyAppSidebar
-{
+class LegacyAppSidebar {
   /**
    * @param {String} selector
    * @return {LegacyAppSidebar}
    */
   static fromSelector(selector) {
-
     const domRoot = window.document.querySelector(selector);
     return new LegacyAppSidebar(domRoot);
   }
 
-  constructor(domRoot)
-  {
+  constructor(domRoot) {
     this.domRoot = domRoot;
   }
 
-  getContentRoot = () => {
-    return this.domRoot.querySelector('.dp-app-context[data-deskproapp-marker]');
-  };
+  getContentRoot = () => this.domRoot.querySelector('.dp-app-context[data-deskproapp-marker]');
 
   isLocked = () => {
     const sidebarLockedIcon = this.domRoot.querySelector('i.fa.fa-lock');

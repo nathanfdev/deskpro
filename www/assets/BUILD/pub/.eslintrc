@@ -55,6 +55,7 @@
     "comma-dangle": 0,
     "new-cap": 0,
     "no-console": 0,
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "indent": [
       2,
       2,
