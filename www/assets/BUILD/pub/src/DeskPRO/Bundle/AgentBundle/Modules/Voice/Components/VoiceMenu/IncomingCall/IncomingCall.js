@@ -17,7 +17,7 @@ class IncomingCall extends React.Component {
     incomingCall:  PropTypes.object,
     onAccept:      PropTypes.func,
     onDecline:     PropTypes.func,
-    ringingVolume: PropTypes.string
+    ringingVolume: PropTypes.number
   };
 
   static defaultProps = {
