@@ -301,6 +301,7 @@
 					<div class="bound-fade"></div>
 				</a></li>
 
+
                         </script>
                     </div>
                 {% endif %}
@@ -421,7 +422,7 @@
                         <ul>
                             <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
                             {% if linked_tickets.count %}
-                                <li data-tab-for="#{{ baseId }}_linked_wrap"><i
+                            <li data-tab-for="#{{ baseId }}_linked_wrap"><i
                                       class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
                                       id="{{ baseId }}_linked_count"
                                       data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)
@@ -1041,6 +1042,7 @@
 		</tr>
 	</table>
 
+
             </script>
             <script type="text/x-deskpro-plain" id="{{ baseId }}_fields_display_main_edit_tpl">
 	<div class="fields-edit-container">
@@ -1056,6 +1058,7 @@
 		</div>
 	</div>
 
+
             </script>
             <script type="text/x-deskpro-plain" id="{{ baseId }}_fields_display_main_edit_row_tpl">
 	<table class="prop-table display-item" cellpadding="0" cellspacing="0" width="100%">
@@ -1064,6 +1067,7 @@
 			<td class="display-content"></td>
 		</tr>
 	</table>
+
 
             </script>
 
@@ -1074,11 +1078,13 @@
 		<a>{title}</a>
 	</li>
 
+
             </script>
             <script type="text/x-deskpro-plain" class="tpl-fields-maintabs-content"
                     id="{{ baseId }}_fields_display_tabs_content_tpl">
 	<div class="full-container-tabbed-contents tab-content field-tab-content {id}">
 	</div>
+
 
             </script>
             <script type="text/x-deskpro-plain" id="{{ baseId }}_fields_display_tabs_wrap_tpl">
@@ -1086,6 +1092,7 @@
 		<dt class="display-title"></dt>
 		<dd class="display-content"></dd>
 	</dl>
+
 
             </script>
 
