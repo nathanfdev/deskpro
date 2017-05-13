@@ -37,6 +37,7 @@
 
 {# Box Contact #}
 {{ dp_app_loc(baseId, 'contact.before') }}
+<div data-deskproapp="person-contact-before"></div>
 <div class="profile-box-container dp-simpletab-container summary">
 	<header>
 		{% if perms.edit %}<span class="edit-gear contact-edit"></span>{% endif %}
@@ -57,11 +58,13 @@
 </div>
 <div id="{{baseId}}_contact_outside"></div>
 {{ dp_app_loc(baseId, 'contact.after') }}
+<div data-deskproapp="person-contact-after"></div>
 {# /Box Contact #}
 
 {# Organization Box #}
 {% if person.organization or perms.edit %}
 	{{ dp_app_loc(baseId, 'org.before') }}
+	<div data-deskproapp="person-org-before"></div>
 	<div class="profile-box-container summary dp-simpletab-container" id="{{baseId}}_org_box">
 		<header id="{{baseId}}_org_display_header">
 			{% if perms.edit %}
@@ -145,11 +148,13 @@
 		</section>
 	</div>
 	{{ dp_app_loc(baseId, 'org.after') }}
+	<div data-deskproapp="person-org-after"></div>
 {% endif %}
 {# /Organization Box #}
 
 {# Usergroups #}
 {{ dp_app_loc(baseId, 'usergroups.before') }}
+<div data-deskproapp="person-usergroups-before"></div>
 <div class="profile-box-container dp-simpletab-container summary" id="{{baseId}}_ug_box">
 	<header>
 		{% if perms.edit %}
@@ -199,6 +204,7 @@
 	</section>
 </div>
 {{ dp_app_loc(baseId, 'usergroups.after') }}
+<div data-deskproapp="person-usergroups-after"></div>
 {# /Usergroups #}
 
 

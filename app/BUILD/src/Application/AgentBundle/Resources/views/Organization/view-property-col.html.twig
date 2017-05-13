@@ -2,6 +2,8 @@
 
 {# Box Contact #}
 {{ dp_app_loc(baseId, 'contact.before') }}
+<div data-deskproapp="org-contact-before"></div>
+
 <div class="profile-box-container contact">
 	<header>
 		{% if app.user.hasPerm('agent_org.edit') %}
@@ -23,10 +25,12 @@
 	</section>
 </div>
 {{ dp_app_loc(baseId, 'contact.after') }}
+<div data-deskproapp="org-contact-after"></div>
 {# /Box Contact #}
 
 {# Properties Box #}
 {{ dp_app_loc(baseId, 'properties.before') }}
+<div data-deskproapp="org-properties-before"></div>
 <div class="profile-box-container properties" id="{{baseId}}_properties_box">
 	<header>
 		{% if app.user.hasPerm('agent_org.edit') %}
@@ -70,18 +74,24 @@
 	{{ dp_app_loc(baseId, 'properties.tab') }}
 </div>
 {{ dp_app_loc(baseId, 'properties.after') }}
+<div data-deskproapp="org-properties-after"></div>
 {# /Properties Box #}
 
 {# Email Associations Box #}
 {{ dp_app_loc(baseId, 'email_assoc.before') }}
+<div data-deskproapp="org-email-assoc-before"></div>
+
 <div id="{{baseId}}_email_assoc_box">
 	{% include 'AgentBundle:Organization:orgemail-display.html.twig' %}
 </div>
 {{ dp_app_loc(baseId, 'email_assoc.after') }}
+<div data-deskproapp="org-email-assoc-after"></div>
 
 {# Usergroup Box #}
 {% if app.usergroups.getUserUsergroups() %}
 	{{ dp_app_loc(baseId, 'usergroups.before') }}
+	<div data-deskproapp="org-usergroups-before"></div>
+
 	<div class="profile-box-container summary {% if org.getUsergroups()|length < 1 %}no-section{% endif %}" id="{{baseId}}_ug_box">
 		<header>
 			{% if app.user.hasPerm('agent_org.edit') %}
@@ -136,9 +146,11 @@
 		{{ dp_app_loc(baseId, 'usergroups.tab') }}
 	</div>
 	{{ dp_app_loc(baseId, 'usergroups.after') }}
+	<div data-deskproapp="org-usergroups-after"></div>
 {% endif %}
 {# /Usergroup Box #}
 
+<div data-deskproapp="org-hierarchy-before"></div>
 <div class="profile-box-container summary" id="{{baseId}}_hierarchy_box">
 	<header>
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
@@ -222,5 +234,6 @@
 	</section>
 	{{ dp_app_loc(baseId, 'usergroups.tab') }}
 </div>
+<div data-deskproapp="org-hierarchy-after"></div>
 
 {{ dp_app_loc(baseId, 'right_col.bottom') }}

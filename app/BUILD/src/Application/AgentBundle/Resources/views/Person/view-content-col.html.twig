@@ -12,9 +12,11 @@
 	}
 </style>
 {{ dp_app_loc(baseId, 'left_col.top') }}
+<div data-deskproapp="person-content-before"></div>
 
 {# Box Summary #}
 {{ dp_app_loc(baseId, 'summary.before') }}
+<div data-deskproapp="person-summary-before"></div>
 {% if person.summary|length or perms.edit %}
 	<div class="profile-box-container dp-simpletab-container dp-simpletab-container summary"
 		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
@@ -44,10 +46,12 @@
 	</div>
 {% endif %}
 {{ dp_app_loc(baseId, 'summary.after') }}
+<div data-deskproapp="person-summary-after"></div>
 {# /Box Summary #}
 
 {# Properties Box #}
 {{ dp_app_loc(baseId, 'properties.before') }}
+<div data-deskproapp="person-properties-before"></div>
 <div class="profile-box-container dp-simpletab-container properties" id="{{baseId}}_properties_box">
 	<header>
 		{% if perms.edit %}
@@ -79,6 +83,7 @@
 	</section>
 </div>
 {{ dp_app_loc(baseId, 'properties.after') }}
+<div data-deskproapp="person-properties-after"></div>
 {# /Properties Box #}
 
 {# Interaction Tabs #}
@@ -339,6 +344,7 @@
 
 {# Info Tabs #}
 {{ dp_app_loc(baseId, 'details.before') }}
+<div data-deskproapp="person-notes-before"></div>
 <div class="profile-box-container dp-simpletab-container tabbed">
 	<header>
 		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
@@ -516,6 +522,9 @@
 	</section>
 </div>
 {{ dp_app_loc(baseId, 'details.after') }}
+<div data-deskproapp="person-notes-after"></div>
+
 {# /Info Tabs #}
 
 {{ dp_app_loc(baseId, 'left_col.bottom') }}
+<div data-deskproapp="person-content-after"></div>
