@@ -5,6 +5,10 @@ const configPropertiesToAttributesMap = {
   renderIconsContainer: 'data-deskproapp-render-icons',
 };
 
+const defaultValues = {
+  renderType: 'inplace'
+};
+
 class ContainerConfiguration
 {
   /**
@@ -20,6 +24,12 @@ class ContainerConfiguration
       }
       return configuration;
     }, {});
+
+    Object.keys(configPropertiesToAttributesMap).forEach(propWithDefaultVal => {
+      if (!configuration.hasOwnProperty(propWithDefaultVal)) {
+        configuration[propWithDefaultVal] = defaultValues[propWithDefaultVal];
+      }
+    });
 
     return ContainerConfiguration.fromJS(configuration);
   }
