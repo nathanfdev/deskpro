@@ -1,3 +1,10 @@
+const configPropertiesToAttributesMap = {
+  type: 'data-deskproapp',
+  renderType: 'data-deskproapp-render',
+  renderSidebarContainer: 'data-deskproapp-render-sidebar',
+  renderIconsContainer: 'data-deskproapp-render-icons',
+};
+
 class ContainerConfiguration
 {
   /**
@@ -6,15 +13,8 @@ class ContainerConfiguration
    */
   static fromDOM(domNode)
   {
-    const configAttributesMap = {
-      type: 'data-deskproapp',
-      renderType: 'data-deskproapp-render',
-      renderSidebarContainer: 'data-deskproapp-render-sidebar',
-      renderIconsContainer: 'data-deskproapp-render-icons',
-    };
-
-    const configuration = Object.keys(configAttributesMap).reduce(function (configuration, key) {
-      const attributeName = configAttributesMap[key];
+    const configuration = Object.keys(configPropertiesToAttributesMap).reduce(function (configuration, key) {
+      const attributeName = configPropertiesToAttributesMap[key];
       if (domNode.hasAttribute(attributeName)) {
         configuration[key] = domNode.getAttribute(attributeName);
       }
@@ -30,7 +30,7 @@ class ContainerConfiguration
    */
   static fromJS(config) {
     const { type, renderType, renderSidebarContainer, renderIconsContainer } = config;
-    return new ContainerConfiguration(type, renderType, renderSidebarContainer, renderIconsContainer);
+    return new ContainerConfiguration({ type, renderType, renderSidebarContainer, renderIconsContainer });
   }
 
   /**
@@ -39,7 +39,7 @@ class ContainerConfiguration
    * @param {String} renderSidebarContainer
    * @param {String} renderIconsContainer
    */
-  constructor(type, renderType, renderSidebarContainer, renderIconsContainer)
+  constructor({ type, renderType, renderSidebarContainer, renderIconsContainer })
   {
     this.targetType = type;
     this.renderType = renderType;

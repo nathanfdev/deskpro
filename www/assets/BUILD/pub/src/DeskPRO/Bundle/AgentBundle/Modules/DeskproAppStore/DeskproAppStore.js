@@ -8,8 +8,29 @@ import { loadApps, loadDevApp } from './Actions/Actions'
 import * as WidgetAPI from './WidgetAPI'
 import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
 
-let containerMounter;
-const loaderQueue = [];
+/**
+ * @param contexts
+ * @return {Map}
+ */
+const eachTabPageFragmentContainer = (contexts, forEach) =>
+{
+  const mountableContexts = new Map();
+
+  for (const context of contexts.values()) {
+    if (context.has('page')) { //page fragment
+      const routeUrl = context.get('page').get('routeUrl');
+      const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
+      if (tab) {
+        mountableContexts.set(context.toJS(), tab.page);
+      } else {
+        // TODO handle closing of tabs, unmounting of components
+        console.log('found a context (tab) which was closed without any cleanup actions executed afterwards. please fix this');
+      }
+    }
+  }
+
+  mountableContexts.forEach(forEach);
+};
 
 class DeskproAppStore
 {
@@ -64,47 +85,15 @@ class DeskproAppStore
   }
 
   /**
-   * Creates a loader for app containers loaded in a page fragment context
-   *
    * @param {Object} context
-   * @param {DeskPRO.Agent.PageFragment.Basic} page
-   * @param {Function} onSuccess
-   * @param {Function} onError
-   * @return {function()}
+   * @param {DOMNode} domNode
+   * @param {ContainerMounter} containerMounter
    */
-  static createPageFragmentLoader(context, page, onSuccess, onError)
+  static mountDOMNodeContainers(context, domNode, containerMounter)
   {
-    const validTargets = DeskproAppStoreConfiguration.validTargets;
-
-    return () => {
-      const dom = page.fragmentElement.get()[0];
-      const domNodeList = ContainerDOMScanner.fromAttributeName('data-deskproapp').filterByTargetTypeList(dom, validTargets);
-      containerMounter.mount(domNodeList, context);
-      onSuccess();
-    };
-  }
-
-  /**
-   * Loads a page fragment app container asynchronously
-   *
-   * @param {Immutable.Map} context
-   * @param {DeskPRO.Agent.PageFragment.Basic} page
-   * @return {SyncPromise|Promise}
-   */
-  static asyncLoadPageFragment(context, page)
-  {
-    if (containerMounter) {
-      return new Promise((resolve, reject) => {
-        const onSuccess = () => { page.updateAppsSidebar(); resolve(); };
-        DeskproAppStore.createPageFragmentLoader(context.toJS(), page, onSuccess, reject)();
-      })
-    }
-
-    return new Promise((resolve, reject) => {
-      const onSuccess = () => { page.updateAppsSidebar(); resolve(); };
-      const loader = DeskproAppStore.createPageFragmentLoader(context.toJS(), page, onSuccess, reject)();
-      loaderQueue.push(loader);
-    });
+    const { validTargets } = DeskproAppStoreConfiguration;
+    const domNodeList = ContainerDOMScanner.fromAttributeName('data-deskproapp').filterByTargetTypeList(domNode, validTargets);
+    containerMounter.mount(domNodeList, context);
   }
 
   /**
@@ -124,24 +113,22 @@ class DeskproAppStore
 
     const manifests = filterAppManifestsConfig(reduxStore.getState());
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
-    containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry);
+    const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry);
 
     // subscribe to redux store changes
     reduxStore.subscribe( () => {
       const contexts = newContextsStateSelector(reduxStore.getState());
-      if (contexts) { reduxDispatcher.dispatchMountPageFragmentContainers(contexts); }
+      if (contexts) {
+        eachTabPageFragmentContainer(contexts, (page, context) => {
+          DeskproAppStore.mountDOMNodeContainers(context, page.fragmentElement.get()[0], containerMounter);
+          page.updateAppsSidebar();
+        });
+      }
     });
 
     const validTargets = DeskproAppStoreConfiguration.validTargets;
     const domScanner = list => ContainerDOMScanner.fromAttributeName('data-deskproapp').filterAllByTargetTypeList(list, validTargets);
     DeskproWindowMessageBrokerAdapter.registerListener(messageBroker)(reduxDispatcher, domScanner);
-
-    //empty the loaders queue
-    while (loaderQueue.length) {
-      const loader = loaderQueue.pop();
-      loader();
-    }
-
   }
 }
 

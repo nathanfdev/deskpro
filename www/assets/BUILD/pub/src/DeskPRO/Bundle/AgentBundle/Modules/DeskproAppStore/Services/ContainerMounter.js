@@ -43,7 +43,7 @@ class ContainerMounter
 
   /**
    * @param {Array} domNodeList
-   * @param context
+   * @param {Object} context
    * @return {*}
    */
   mount = (domNodeList, context) =>
@@ -67,9 +67,7 @@ class ContainerMounter
 
     //transform the list of maps into a list of entries for easier rendering
     const entries = renderMaps.reduce(function (acc, renderMap) {
-        for (let entry of renderMap.entries()) {
-          acc.push(entry);
-        }
+        for (let entry of renderMap.entries()) { acc.push(entry); }
         return acc;
     }, []);
 

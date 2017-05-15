@@ -22,15 +22,6 @@ class ReduxActionDispatcher
   }
 
   /**
-   * @param {Map} contexts a map of context configurations to mount
-   */
-  dispatchMountPageFragmentContainers = (contexts) =>
-  {
-    const { reduxDispatch } = this;
-    reduxDispatch(Actions.mountPageFragmentContainers(contexts));
-  };
-
-  /**
    * @param {DeskPRO.Agent.PageFragment.Basic} page
    */
   dispatchLoadPageFragmentApps = (page) =>
