@@ -155,7 +155,7 @@ class MessageGateway
     //TODO handler postMessages without a payload (second argument)
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, message, reply) => {
-      appstoreDispatcher.dispatchFindAppState(widget.appConfig.id, (app, state) => reply(state))
+      appstoreDispatcher.dispatchFindAppState(widget.appConfig.instanceId, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -176,7 +176,7 @@ class MessageGateway
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
       const { name, scope } = state;
-      appstoreDispatcher.dispatchGetAppState(widget.appConfig.id, name, scope, (app, state) => { reply(state); });
+      appstoreDispatcher.dispatchGetAppState(widget.appConfig.instanceId, name, scope, (app, state) => { reply(state); });
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -196,7 +196,7 @@ class MessageGateway
 
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchSaveAppState(widget.appConfig.id, state, (app, state) => reply(state))
+      appstoreDispatcher.dispatchSaveAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -216,7 +216,7 @@ class MessageGateway
 
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchCreateAppState(widget.appConfig.id, state, (app, state) => reply(state))
+      appstoreDispatcher.dispatchCreateAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -236,7 +236,7 @@ class MessageGateway
 
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchUpdateAppState(widget.appConfig.id, state, (app, state) => reply(state))
+      appstoreDispatcher.dispatchUpdateAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -257,7 +257,7 @@ class MessageGateway
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
       const { name } = state;
-      appstoreDispatcher.dispatchDeleteAppState(widget.appConfig.id, name, (app, state) => reply(state))
+      appstoreDispatcher.dispatchDeleteAppState(widget.appConfig.instanceId, name, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
@@ -276,7 +276,7 @@ class MessageGateway
 
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, message, reply) => {
-      appstoreDispatcher.dispatchGetUser(widget.appConfig.id, (app, user) => reply(user));
+      appstoreDispatcher.dispatchGetUser(widget.appConfig.instanceId, (app, user) => reply(user));
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);

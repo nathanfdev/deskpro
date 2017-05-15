@@ -5,8 +5,8 @@ class AppConfiguration
    * @return {AppConfiguration}
    */
   static fromJS(config) {
-    const { id, application_id, settings, targets, baseUrl } = config;
-    return new AppConfiguration(id.toString(), application_id.toString(), settings, targets, baseUrl);
+    const { id, application_id, settings, targets, baseUrl, title, name } = config;
+    return new AppConfiguration(id.toString(), application_id.toString(), settings, targets, baseUrl, title, name);
   }
 
   /**
@@ -15,14 +15,34 @@ class AppConfiguration
    * @param {Array} settings
    * @param {Array} targets
    * @param {String} baseUrl
+   * @param {String} title
+   * @param {String} packageName
    */
-  constructor(id, applicationId, settings, targets, baseUrl) {
-    this.id = id;
-    this.applicationId = applicationId;
-    this.settings = settings;
-    this.targets = targets;
-    this.baseUrl = baseUrl;
+  constructor(id, applicationId, settings, targets, baseUrl, title, packageName) {
+    this.props = {
+      instanceId: id,
+      applicationId,
+      settings,
+      targets,
+      baseUrl,
+      title,
+      packageName
+    };
   }
+
+  get instanceId() { return this.props.instanceId; }
+
+  get applicationId() { return this.props.applicationId; }
+
+  get applicationTitle() { return this.props.title; }
+
+  get applicationPackageName() { return this.props.packageName; }
+
+  get settings() { return this.props.settings; }
+
+  get targets() { return this.props.targets; }
+
+  get baseUrl() { return this.props.baseUrl; }
 
   /**
    * @param {String} target
@@ -47,7 +67,7 @@ class AppConfiguration
   };
 
   toJS = () => {
-    const js = { id: this.id, applicationId: this.applicationId, settings: this.settings, targets: this.targets };
+    const js = { id: this.instanceId, applicationId: this.applicationId, settings: this.settings, targets: this.targets };
     return JSON.parse(JSON.stringify(js));
   }
 }

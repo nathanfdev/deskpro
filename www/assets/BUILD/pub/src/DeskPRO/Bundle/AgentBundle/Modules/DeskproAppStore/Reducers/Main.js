@@ -34,9 +34,24 @@ function loadDevAppHandler(state, payload, action) {
  */
 function loadAppsHandler(state, payload, action) {
   switch(action.meta.sequence) {
+
     case 'done' :
+
+    const manifests = payload.data.map( instance => {
+      const { app } = instance;
+      const { manifest } = payload.linked.app[app];
+
+      manifest['application_id'] = instance['application_id'];
+      manifest['id'] = instance['id'];
+      manifest['targets'] = instance['targets'];
+      manifest['title'] = manifest['name'];
+
+      return manifest;
+    });
+
+
     const newState = Immutable.fromJS({
-      apps: { environment: 'production', manifests: payload }
+      apps: { environment: 'production', manifests }
     });
     return state.merge(newState);
     default:

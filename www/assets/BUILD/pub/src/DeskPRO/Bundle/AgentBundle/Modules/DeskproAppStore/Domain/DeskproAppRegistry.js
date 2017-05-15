@@ -1,7 +1,6 @@
 import AppConfiguration from './AppConfiguration'
 import WidgetConfiguration from './WidgetConfiguration'
 
-
 class DeskproAppRegistry
 {
   /**
@@ -66,7 +65,31 @@ class DeskproAppRegistry
       dimensions: { width: '100%', height: '100%' },
       timeout: 3000, // millis
       props: { // The properties they can (or must) pass down to my component
-        widgetId: { type: 'string', required: true },
+        widgetId: {
+          type: 'string',
+          required: true
+        },
+
+        appId: {
+          type: 'string',
+          required: true
+        },
+
+        appTitle: {
+          type: 'string',
+          required: true
+        },
+
+        appPackageName: {
+          type: 'string',
+          required: true
+        },
+
+        instanceId: {
+          type: 'string',
+          required: true
+        },
+
         onDpMessage: { type: 'function', required: true }
       }
     };

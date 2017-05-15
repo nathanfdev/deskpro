@@ -49,8 +49,8 @@ export const loadDevApp = createAction(
  */
 export const loadApps = createAction(
   DESKPRO_APPSTORE_LOAD_APPS,
-  api =>  api.sendGet('DP_API/apps')
-    .then(httpResponse => httpResponse.data.data)
+  api =>  api.sendGet('DP_API/apps?include=app')
+    .then(httpResponse => httpResponse.data)
 );
 
 /**

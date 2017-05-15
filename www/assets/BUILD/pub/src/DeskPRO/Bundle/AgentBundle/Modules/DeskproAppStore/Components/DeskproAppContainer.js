@@ -8,8 +8,8 @@ import { Messages } from '../WidgetAPI'
  * It handles a list of apps within the same app context, managing their lifecycle and communication, behaving in this
  * respect as a router (routing and transforming deskpro events / messages to app components)
  */
-class DeskproAppContainer extends React.Component {
-
+class DeskproAppContainer extends React.Component
+{
   static propTypes = {
     context: PropTypes.object.isRequired
     , configuration: PropTypes.object.isRequired
@@ -67,12 +67,16 @@ class DeskproAppContainer extends React.Component {
   createReactElement = (widgetId, widgetConfig) =>
   {
     const { widgetMessageRouter } = this.props;
+
     const reactClass = xcomponent.create(widgetConfig.xcomponentConfig).react;
     const reactProps = {
       key: widgetId,
-      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
-      //app: widgetConfig.appConfig.id,
       widgetId,
+      appId: widgetConfig.appConfig.applicationId,
+      appTitle: widgetConfig.appConfig.applicationTitle,
+      appPackageName: widgetConfig.appConfig.applicationPackageName,
+      instanceId: widgetConfig.appConfig.instanceId,
+      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
       onDpMessage: (eventName, message) => widgetMessageRouter(eventName, message)
     };
 

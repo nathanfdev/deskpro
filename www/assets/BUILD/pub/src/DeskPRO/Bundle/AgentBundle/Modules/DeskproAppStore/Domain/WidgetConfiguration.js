@@ -6,14 +6,22 @@ class WidgetConfiguration
    * @param {Object} xcomponentConfig
    */
   constructor(target, appConfig, xcomponentConfig) {
-    this.target = target;
-    this.appConfig = appConfig;
-    this.xcomponentConfig = xcomponentConfig;
+
+    this.props = {
+      target,
+      appConfig,
+      xcomponentConfig
+    };
   }
 
-  get applicationId() {
-    return this.appConfig.applicationId;
-  }
+  get target() { return this.props.target; }
+
+  /**
+   * @return {AppConfiguration}
+   */
+  get appConfig() { return this.props.appConfig; }
+
+  get xcomponentConfig() { return this.props.xcomponentConfig; }
 }
 
 export default WidgetConfiguration;
