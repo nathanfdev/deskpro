@@ -33,6 +33,7 @@
             <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
                 <ul>
                     <li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
+                    <div data-deskproapp="person-summary-new-tab"></div>
                 </ul>
             </nav>
         </header>
@@ -67,6 +68,7 @@
         <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
             <ul>
                 <li data-tab-for="#{{ baseId }}_properties_body">{{ phrase('agent.general.properties') }}</li>
+                <div data-deskproapp="person-summary-new-tab"></div>
             </ul>
         </nav>
     </header>
@@ -125,6 +127,7 @@
 						</span>
                         </li>
                     {% endif %}
+                    <div data-deskproapp="person-content-box-new-tab"></div>
                 </ul>
             </nav>
             <button
@@ -385,6 +388,7 @@
                     <li
                     data-tab-for="#{{ baseId }}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
                 <li data-tab-for="#{{ baseId }}_tracking_tab">{{ phrase('agent.general.detail') }}</li>
+                <div data-deskproapp="person-notes-new-tab"></div>
             </ul>
         </nav>
     </header>

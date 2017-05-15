@@ -33,6 +33,7 @@
             <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
                 <ul>
                     <li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
+                    <div data-deskproapp="org-summary-new-tab"></div>
                 </ul>
             </nav>
         </header>
@@ -71,6 +72,7 @@
                 {% if org_charges %}
                     <li data-tab-for="#{{ baseId }}_billing_tab">Billing <span
                           class="count">{{ org_charge_totals.count }}</span></li>{% endif %}
+                <div data-deskproapp="org-content-box-new-tab"></div>
             </ul>
         </nav>
     </header>
@@ -360,6 +362,7 @@
                     {% if activity_stream|length %}
                         <li
                         data-tab-for="#{{ baseId }}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
+                    <div data-deskproapp="org-notes-new-tab"></div>
                 </ul>
             </nav>
         </header>
