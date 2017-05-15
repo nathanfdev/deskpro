@@ -17,12 +17,12 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendDelete(`DP_API/${this.url}/template/${name}`);
   }
 
-  previewTemplate(template, group, code, variables, lang) {
-    return this.api.sendPost(`DP_API/${this.url}/render_template`, { template, group, code, variables, lang });
+  previewTemplate(template, group, code, variables, lang, extraTemplates) {
+    return this.api.sendPost(`DP_API/${this.url}/render_template`, { template, group, code, variables, lang, extraTemplates });
   }
 
-  sendPreviewEmail(viewModel, group, subject, body, variables, lang, from, to) {
-    return this.api.sendPost(`DP_API/${this.url}/send_preview`, { viewModel, group, subject, body, variables, lang, from, to });
+  sendPreviewEmail(viewModel, group, subject, body, variables, lang, from, to, extraTemplates) {
+    return this.api.sendPost(`DP_API/${this.url}/send_preview`, { viewModel, group, subject, body, variables, lang, from, to, extraTemplates });
   }
 
   loadVariables(viewModel) {

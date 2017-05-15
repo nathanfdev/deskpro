@@ -265,11 +265,12 @@ class TemplateController extends BaseController
         $code    = $request->request->get('code');
         $tplName = uniqid('SendmailBundle:emails_', true);
 
-        $viewModel = $request->request->get('template');
-        $group     = $request->request->get('group');
-        $lang      = $request->request->get('lang');
+        $viewModel      = $request->request->get('template');
+        $group          = $request->request->get('group');
+        $lang           = $request->request->get('lang');
+        $extraTemplates = $request->request->get('extraTemplates');
 
-        $view = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang);
+        $view = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $extraTemplates);
 
         return new View($view);
     }
@@ -294,17 +295,18 @@ class TemplateController extends BaseController
         $subject = $request->request->get('subject');
         $tplName = uniqid('SendmailBundle:emails_', true);
 
-        $viewModel   = $request->request->get('viewModel');
-        $group       = $request->request->get('group');
-        $lang        = $request->request->get('lang');
-        $fromAccount = $request->request->get('from');
-        $to          = $request->request->get('to');
+        $viewModel      = $request->request->get('viewModel');
+        $group          = $request->request->get('group');
+        $lang           = $request->request->get('lang');
+        $fromAccount    = $request->request->get('from');
+        $to             = $request->request->get('to');
+        $extraTemplates = $request->request->get('extraTemplates');
 
         $code = '<dp:subject>'.$subject.'</dp:subject>'."\n\n".$body;
 
         /** @var Message $message */
         $message   = $this->get('mailer')->createMessage();
-        $emailCode = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang);
+        $emailCode = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $extraTemplates);
         $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
         foreach ($emailCode->getAttachments() as $blob) {
@@ -328,10 +330,11 @@ class TemplateController extends BaseController
      * @param string  $viewModel
      * @param string  $group
      * @param string  $lang
+     * @param array   $templates
      *
      * @return EmailTemplateCode
      */
-    private function renderPreview($request, $code, $tplName, $viewModel, $group, $lang)
+    private function renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $templates)
     {
         /** @var Language $language */
         $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $lang]);
@@ -369,14 +372,10 @@ class TemplateController extends BaseController
 
         $twig = clone $this->get('templating.new_email.twig');
         $twig->setCache(false);
-        $stringLoader = new \Twig_Loader_Array([
-            $tplName => $code,
-//            'SendmailBundle:blocks:resources.html.twig' => '',
-//            'SendmailBundle:blocks:header.html.twig'    => '',
-//            'SendmailBundle:blocks:footer.html.twig'    => '',
-        ]);
-        $hybridLoader = $this->get('templating.new_email.twig.loader');
-        $loader       = new Twig_Loader_Chain([$stringLoader, $hybridLoader]);
+        $templates[$tplName] = $code;
+        $stringLoader        = new \Twig_Loader_Array($templates);
+        $hybridLoader        = $this->get('templating.new_email.twig.loader');
+        $loader              = new Twig_Loader_Chain([$stringLoader, $hybridLoader]);
         $twig->setLoader($loader);
 
         /** @var TwigEngine $twigEngine */

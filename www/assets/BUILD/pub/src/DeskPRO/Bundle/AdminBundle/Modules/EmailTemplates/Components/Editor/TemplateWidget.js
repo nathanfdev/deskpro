@@ -7,13 +7,27 @@ import CodeMirror from '../CodeMirror';
 
 class TemplatePopup extends React.Component {
   static propTypes = {
-    text: PropTypes.string,
+    text:         PropTypes.string,
+    loadTemplate: PropTypes.func,
+    setValue:     PropTypes.func,
   };
+  static defaultProps = {
+    loadTemplate() {},
+    setValue() {},
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      contentLoaded: false,
+      content:       ''
+    };
+  }
 
   getPopUp = () => (
     <div className="template-popup">
       <CodeMirror
-        value="Content to load from API"
+        value={this.state.content}
         onChange={this.handleChange}
       />
       <Button onClick={this.saveChanges}>Submit</Button>
@@ -21,15 +35,36 @@ class TemplatePopup extends React.Component {
     </div>
     );
 
-  handleChange = () => {
+  handleChange = (cm) => {
+    this.setState({
+      content: cm.getValue()
+    });
+  };
 
+  loadContent = () => {
+    this.props.loadTemplate(this.props.text).then(
+      (content) => {
+        this.setState({
+          content:       content.template_code.code,
+          contentLoaded: true
+        });
+      }
+    );
   };
 
   openPopup = () => {
+    if (!this.state.contentLoaded) {
+      this.loadContent();
+    }
     this.popup.openPopup();
   };
 
   closePopup = () => {
+    this.popup.closePopup();
+  };
+
+  saveChanges = () => {
+    this.props.setValue(this.props.text, this.state.content);
     this.popup.closePopup();
   };
 
@@ -48,14 +83,14 @@ class TemplatePopup extends React.Component {
         <span
           onClick={this.openPopup}
         >
-          {this.props.text}
+          {this.props.text.replace(/^SendmailBundle:/, '')}
         </span>
       </PopUp>
     );
   }
 }
 class TemplateWidget extends Widget {
-  constructor(cm, pos, code, text) {
+  constructor(cm, pos, code, text, loadTemplate, setValue) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -64,7 +99,9 @@ class TemplateWidget extends Widget {
 
       render(
         <TemplatePopup
-          text={text.replace(/^SendmailBundle:/, '')}
+          text={text}
+          loadTemplate={loadTemplate}
+          setValue={setValue}
         />,
         element
       );

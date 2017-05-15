@@ -28,9 +28,7 @@ export default createReducer(initialState, {
   [actions.loadPhrases]: async({
     success: setFullPayload('phrases')
   }),
-  [actions.loadTemplate]: async({
-    success: setFullPayload('template')
-  }),
+  [actions.setTemplate]:   setFullPayload('template'),
   [actions.loadTemplates]: async({
     success: setFullPayload('info')
   }),
@@ -49,6 +47,7 @@ export default createReducer(initialState, {
   [actions.removeVariables]:         state => state.set('variables', null),
   [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),
   [actions.setCurrentTemplate]:      (state, payload) => state.set('currentTemplate', payload),
+  [actions.setExtraTemplate]:        (state, payload) => state.setIn(['template', 'extra_templates', payload.name], payload.code),
   [actions.unselectTemplate]:        state => state.delete('template'),
   [actions.deletePreview]:           state => state.delete('preview'),
   [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),

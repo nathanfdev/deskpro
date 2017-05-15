@@ -12,6 +12,8 @@ class Editor extends React.Component {
     changeTemplateSubject:  PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
+    loadTemplate:           PropTypes.func,
+    setTemplateValue:       PropTypes.func,
     phrases:                PropTypes.object,
   };
   static defaultProps = {
@@ -84,7 +86,9 @@ class Editor extends React.Component {
               ch:   match.index
             },
             match[0],
-            match[1]
+            match[1],
+            this.props.loadTemplate,
+            this.props.setTemplateValue
           ));
           match = re.exec(content);
         }

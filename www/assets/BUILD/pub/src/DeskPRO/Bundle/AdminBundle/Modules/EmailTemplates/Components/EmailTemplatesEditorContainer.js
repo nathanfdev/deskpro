@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { fromJS } from 'immutable';
 import debounce from 'lodash/debounce';
 import { Select } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
@@ -83,6 +84,13 @@ class EmailTemplatesEditorContainer extends React.Component {
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
 
+  setTemplateValue = (name, code) => {
+    this.props.dispatch(actions.setExtraTemplate({ name, code }));
+
+    const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
+    this.previewTemplate(body, this.props.emailTemplates.get('currentLanguage'));
+  };
+
   addTemplate = (name) => {
     this.setState({
       addingNewTemplate: true
@@ -103,15 +111,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     );
   };
 
-  selectTemplateGroup = (group) => {
-    this.props.dispatch(actions.setCurrentTemplateGroup(group));
-    const lang = this.props.emailTemplates.get('currentLanguage');
-    this.props.dispatch(actions.loadPhrases(group, lang));
-    this.props.dispatch(actions.unselectTemplate());
-    this.props.dispatch(actions.deletePreview());
-    this.props.dispatch(actions.setCurrentTemplate(null));
-  };
-
   changeTemplateSubject = (value) => {
     this.props.dispatch(actions.updateTemplateSubject(value));
   };
@@ -120,61 +119,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     const lang = this.props.emailTemplates.get('currentLanguage');
     this.previewTemplate(value, lang);
     this.props.dispatch(actions.updateTemplateBody(value));
-  };
-
-  previewTemplate = debounce(function (value, lang) {
-    const variables = [];
-    if (this.props.emailTemplates.get('exampleTicket')) {
-      variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
-    }
-    const viewModel = this.props.emailTemplates.getIn(['currentTemplate', 'viewModel']);
-    const group = this.props.emailTemplates.get('currentTemplateGroup');
-    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang));
-  }, 400);
-
-  saveTemplate = () => {
-    this.setState({
-      saveSubmit: true
-    });
-    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
-    const template = {
-      subject: this.props.emailTemplates.get('template').get('template_code').get('subject'),
-      body:    this.props.emailTemplates.get('template').get('template_code').get('body'),
-    };
-    this.props.dispatch(actions.saveTemplate(name, template)).then(
-      () => {
-        this.setState({
-          saveSubmit: false
-        });
-      }
-    );
-  };
-
-  resetTemplate = () => {
-    this.setState({
-      resetSubmit: true
-    });
-    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
-    this.props.dispatch(actions.resetTemplate(name)).then(
-      () => {
-        this.setState({
-          resetSubmit: false
-        });
-      }
-    );
-  };
-
-  undoChanges = () => {
-    this.setState({
-      undoSubmit: true
-    });
-    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.get('currentTemplate').get('newTemplate'))).then(
-      () => {
-        this.setState({
-          undoSubmit: false
-        });
-      }
-    );
   };
 
   insertInlineImage = (file) => {
@@ -202,6 +146,73 @@ class EmailTemplatesEditorContainer extends React.Component {
     codeMirror.replaceSelection(variable);
   };
 
+  loadTemplate = name => this.props.dispatch(actions.loadTemplate(name));
+
+  previewTemplate = debounce(function (value, lang) {
+    const variables = [];
+    if (this.props.emailTemplates.get('exampleTicket')) {
+      variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
+    }
+    const viewModel = this.props.emailTemplates.getIn(['currentTemplate', 'viewModel']);
+    const group = this.props.emailTemplates.get('currentTemplateGroup');
+    const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({})).toObject();
+    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang, extraTemplates));
+  }, 400);
+
+  resetTemplate = () => {
+    this.setState({
+      resetSubmit: true
+    });
+    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
+    this.props.dispatch(actions.resetTemplate(name)).then(
+      () => {
+        this.setState({
+          resetSubmit: false
+        });
+      }
+    );
+  };
+
+  saveTemplate = () => {
+    this.setState({
+      saveSubmit: true
+    });
+    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
+    const template = {
+      subject: this.props.emailTemplates.get('template').get('template_code').get('subject'),
+      body:    this.props.emailTemplates.get('template').get('template_code').get('body'),
+    };
+    this.props.dispatch(actions.saveTemplate(name, template)).then(
+      () => {
+        this.setState({
+          saveSubmit: false
+        });
+      }
+    );
+  };
+
+  selectTemplateGroup = (group) => {
+    this.props.dispatch(actions.setCurrentTemplateGroup(group));
+    const lang = this.props.emailTemplates.get('currentLanguage');
+    this.props.dispatch(actions.loadPhrases(group, lang));
+    this.props.dispatch(actions.unselectTemplate());
+    this.props.dispatch(actions.deletePreview());
+    this.props.dispatch(actions.setCurrentTemplate(null));
+  };
+
+  undoChanges = () => {
+    this.setState({
+      undoSubmit: true
+    });
+    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.get('currentTemplate').get('newTemplate'))).then(
+      () => {
+        this.setState({
+          undoSubmit: false
+        });
+      }
+    );
+  };
+
   sendPreview = () => {
     this.setState({
       previewSubmit: true
@@ -217,7 +228,8 @@ class EmailTemplatesEditorContainer extends React.Component {
     const body = this.props.emailTemplates.get('template').get('template_code').get('body');
     const from = this.state.selectedEmailAccount;
     const to   = this.state.previewEmailAddress;
-    this.props.dispatch(actions.sendPreview(viewModel, group, subject, body, variables, lang, from, to)).then(
+    const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({})).toObject();
+    this.props.dispatch(actions.sendPreview(viewModel, group, subject, body, variables, lang, from, to, extraTemplates)).then(
       () => {
         this.setState({
           previewSubmit: false
@@ -269,6 +281,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       insertVariable={this.insertVariable}
       sendPreview={this.sendPreview}
       addTemplate={this.addTemplate}
+      loadTemplate={this.loadTemplate}
+      setTemplateValue={this.setTemplateValue}
       getPhraseTranslations={this.getPhraseTranslations}
       savePhraseTranslations={this.savePhraseTranslations}
       previewSubmit={this.state.previewSubmit}
@@ -302,6 +316,8 @@ class EmailTemplatesEditor extends React.Component {
     insertVariable:         PropTypes.func,
     sendPreview:            PropTypes.func,
     addTemplate:            PropTypes.func,
+    loadTemplate:           PropTypes.func,
+    setTemplateValue:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
     previewSubmit:          PropTypes.bool,
@@ -539,6 +555,8 @@ class EmailTemplatesEditor extends React.Component {
             phrases={this.props.emailTemplates.get('phrases')}
             getPhraseTranslations={this.props.getPhraseTranslations}
             savePhraseTranslations={this.props.savePhraseTranslations}
+            loadTemplate={this.props.loadTemplate}
+            setTemplateValue={this.props.setTemplateValue}
           />
           <div className="footer">
             <Button
