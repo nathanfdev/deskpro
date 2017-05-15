@@ -1,6 +1,7 @@
 import Immutable from 'immutable';
 import { createSelector } from 'reselect';
-import { sessionLanguageSelector } from './bootstrap';
+import { sessionLanguageSelector, widgetHasChatSelector } from './bootstrap';
+import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 
 export const translationsSelectorFactory = (property, defaultValue) => (options, language) => {
   const translations = options.get('translations') || [];
@@ -152,10 +153,26 @@ export const widgetLanguageSelector = createSelector(
   }
 );
 
-export const helpButtonNameSelector = createSelector(
+export const chatNowButtonNameSelector = createSelector(
   helpButtonSelector,
   widgetLanguageSelector,
-  translationsSelectorFactory('name', 'Help')
+  translationsSelectorFactory('name', 'Chat Now')
+);
+
+export const contactUsButtonNameSelector = createSelector(
+  helpButtonSelector,
+  widgetLanguageSelector,
+  translationsSelectorFactory('contact_us', 'Contact Us')
+);
+
+export const helpButtonNameSelector = createSelector(
+  chatNowButtonNameSelector,
+  contactUsButtonNameSelector,
+  liveDemoSelector,
+  widgetHasChatSelector,
+  onlineAgentsCountSelector,
+  (chatNowName, contactUsName, liveDemo, widgetHasChat, agentsCounts) =>
+    (widgetHasChat && (liveDemo || agentsCounts > 0) ? chatNowName : contactUsName)
 );
 
 export const helpButtonColorsSelector = createSelector(
