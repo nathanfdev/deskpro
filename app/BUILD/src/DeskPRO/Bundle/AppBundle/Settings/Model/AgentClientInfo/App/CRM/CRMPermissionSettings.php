@@ -26,35 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class PublishSettings.
+ * Class CRMPermissionSettings.
  */
-class PublishSettings extends AbstractAppSettings
+class CRMPermissionSettings
 {
     /**
-     * @var PublishPermissionSettings
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMPeoplePermissionSettings")
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\PublishPermissionSettings")
+     * @var CRMPeoplePermissionSettings
      */
-    private $permissions;
+    private $person;
+
+    /**
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMOrganizationPermissionSettings")
+     *
+     * @var CRMOrganizationPermissionSettings
+     */
+    private $organization;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->permissions = new PublishPermissionSettings();
+        $this->person       = new CRMPeoplePermissionSettings();
+        $this->organization = new CRMOrganizationPermissionSettings();
     }
 
     /**
-     * @return PublishPermissionSettings
+     * @return CRMPeoplePermissionSettings
      */
-    public function getPermissions()
+    public function getPerson()
     {
-        return $this->permissions;
+        return $this->person;
+    }
+
+    /**
+     * @return CRMOrganizationPermissionSettings
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
     }
 }

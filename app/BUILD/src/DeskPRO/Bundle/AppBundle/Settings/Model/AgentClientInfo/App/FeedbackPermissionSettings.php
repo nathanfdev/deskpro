@@ -31,30 +31,34 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class PublishSettings.
+ * Class FeedbackPermissionSettings.
  */
-class PublishSettings extends AbstractAppSettings
+class FeedbackPermissionSettings
 {
     /**
-     * @var PublishPermissionSettings
+     * @JMS\Type("boolean")
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\PublishPermissionSettings")
+     * @var bool
      */
-    private $permissions;
+    private $createLabels;
 
     /**
-     * Constructor.
+     * @return bool
      */
-    public function __construct()
+    public function isCreateLabels()
     {
-        $this->permissions = new PublishPermissionSettings();
+        return $this->createLabels;
     }
 
     /**
-     * @return PublishPermissionSettings
+     * @param bool $createLabels
+     *
+     * @return $this
      */
-    public function getPermissions()
+    public function setCreateLabels($createLabels)
     {
-        return $this->permissions;
+        $this->createLabels = $createLabels;
+
+        return $this;
     }
 }
