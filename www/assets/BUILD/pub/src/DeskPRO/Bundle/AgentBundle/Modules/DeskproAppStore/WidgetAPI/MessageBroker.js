@@ -10,7 +10,13 @@ class MessageBroker
     this.gateway = gateway;
   }
 
-  bindWidget = (widget, widgetWindow, subscriptionId, subscribeToEventsList) => {
+  /**
+   * @param {WidgetConfiguration} widget
+   * @param widgetWindow
+   * @param subscribeToEventsList
+   * @return {boolean}
+   */
+  bindWidget = (widget, widgetWindow, subscribeToEventsList) => {
 
     const validSubscriptions = subscribeToEventsList.filter(subscription => this.isValidMessageSubscription(subscription));
     if (validSubscriptions.length === 0) {
@@ -23,11 +29,11 @@ class MessageBroker
       const eventName = typeof subscription == 'string' ? subscription : subscription.eventName;
 
       if (typeof subscription == 'string') {
-        gateway.messageChannelForEvent(eventName, widget).bind(widgetWindow, subscriptionId);
+        gateway.messageChannelForEvent(eventName, widget).bind(widgetWindow, widget.id);
       } else {
         gateway.messageChannelForEvent(eventName, widget).bindWithHandler(
           widgetWindow
-          , subscriptionId
+          , widget.id
           , subscription.requestHandler
         );
       }

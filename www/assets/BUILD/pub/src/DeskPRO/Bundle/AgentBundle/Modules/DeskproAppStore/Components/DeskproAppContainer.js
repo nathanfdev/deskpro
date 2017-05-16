@@ -54,24 +54,23 @@ class DeskproAppContainer extends React.Component
    */
   renderApp() {
     const { widgets } = this.props;
-    const components = widgets.map( widget => this.createReactElement(widget.id, widget.config));
+    const components = widgets.map( widget => this.createReactElement(widget));
 
     return React.createElement('div', {}, components);
   }
 
   /**
-   * @param {String} widgetId
    * @param {WidgetConfiguration} widgetConfig
    * @return {ReactElement}
    */
-  createReactElement = (widgetId, widgetConfig) =>
+  createReactElement = (widgetConfig) =>
   {
     const { widgetMessageRouter } = this.props;
 
     const reactClass = xcomponent.create(widgetConfig.xcomponentConfig).react;
     const reactProps = {
-      key: widgetId,
-      widgetId,
+      key: widgetConfig.id,
+      widgetId: widgetConfig.id,
       appId: widgetConfig.appConfig.applicationId,
       appTitle: widgetConfig.appConfig.applicationTitle,
       appPackageName: widgetConfig.appConfig.applicationPackageName,
@@ -110,7 +109,7 @@ class DeskproAppContainer extends React.Component
     //TODO handle case for uknown parentComponent widget
 
     this.components.set(widgetId, parentComponent);
-    appstoreDispatcher.dispatchAppMounted(configuration.targetType, widget.config, widget.id);
+    appstoreDispatcher.dispatchAppMounted(configuration.targetType, widget);
 
     const subscribeTo = [
       { eventName: Messages.EVENT_CONTEXTINIT, requestHandler: this.onXComponentDPContextInit },
@@ -122,7 +121,7 @@ class DeskproAppContainer extends React.Component
       Messages.EVENT_STATE_UPDATE,
       Messages.EVENT_USER_GET
     ];
-    widgetMessageBroker(widget.config, widgetWindow, widgetId, subscribeTo);
+    widgetMessageBroker(widget, widgetWindow, subscribeTo);
   };
 
   /**

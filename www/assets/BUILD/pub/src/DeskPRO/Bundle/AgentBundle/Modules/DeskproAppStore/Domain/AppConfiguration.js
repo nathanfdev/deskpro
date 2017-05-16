@@ -1,3 +1,5 @@
+import { AppUrlBuilder } from './AppUrlBuilder'
+
 class AppConfiguration
 {
   /**
@@ -55,15 +57,19 @@ class AppConfiguration
 
   /**
    * @param {String} target
-   * @return {String|null}
+   * @return {AppUrlBuilder|null}
    */
-  getUrl = (target) => {
+  getUrlBuilder = (target) => {
     const targetDefs = this.targets.filter( targetDef => targetDef.target === target );
     if (targetDefs.length === 0) {
       return null;
     }
 
-    return this.baseUrl + "/" + targetDefs[0].url;
+    const { baseUrl } = this.props;
+    const builder = new AppUrlBuilder({ baseUrl });
+    builder.setBundlePath(targetDefs[0].url);
+
+    return builder;
   };
 
   toJS = () => {

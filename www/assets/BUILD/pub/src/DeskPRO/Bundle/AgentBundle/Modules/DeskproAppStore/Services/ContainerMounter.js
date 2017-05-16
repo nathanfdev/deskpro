@@ -6,7 +6,6 @@ import LegacyAppSidebar from '../Components/LegacyAppSidebar';
 
 import ContainerConfiguration from './ContainerConfiguration';
 import { Provider } from 'react-redux';
-import uuid from 'node-uuid';
 
 /**
  * This class mounts the react container components
@@ -34,9 +33,8 @@ class ContainerMounter
       const { appstoreDispatcher, appRegistry, widgetMessageRouter, widgetMessageBroker } = this;
 
       const targetType = configuration.targetType;
-      const widgetConfigurationList = appRegistry.getWidgetConfigByTargetType(targetType);
+      const widgets = appRegistry.getWidgetConfigByTargetType(targetType);
 
-      const widgets = widgetConfigurationList.map(configuration => { return { id: uuid.v4(), config: configuration }; });
       return { context, appstoreDispatcher, configuration, widgets, widgetMessageRouter, widgetMessageBroker } ;
   };
 

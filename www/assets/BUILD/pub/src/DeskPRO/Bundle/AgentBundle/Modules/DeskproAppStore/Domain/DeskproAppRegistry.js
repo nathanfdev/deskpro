@@ -1,5 +1,6 @@
 import AppConfiguration from './AppConfiguration'
 import WidgetConfiguration from './WidgetConfiguration'
+import uuid from 'node-uuid';
 
 class DeskproAppRegistry
 {
@@ -50,10 +51,11 @@ class DeskproAppRegistry
    */
   static createWidget(target, app)
   {
-    //const tag = `${target}-${appId}`;
     //TODO the tag set here needs to match the tag set in the iframe by the SDK otherwise communication will not happen
-    const tag = target;
-    const url = app.getUrl(target);
+
+    const id = uuid.v4();
+    const tag = [target, app.instanceId, id].join('-');
+    const url = app.getUrlBuilder(target).setXconfTag(tag).build();
 
     const xconfig = {
       tag,
@@ -94,7 +96,7 @@ class DeskproAppRegistry
       }
     };
 
-    return new WidgetConfiguration(target, app, xconfig);
+    return new WidgetConfiguration(id, target, app, xconfig);
   }
 }
 
