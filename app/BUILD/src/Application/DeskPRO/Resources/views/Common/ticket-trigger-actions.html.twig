@@ -301,6 +301,77 @@
 {% endfor %}
 
 {##################################################################################################################}
+{# Tasks #}
+{##################################################################################################################}
+
+<div class="builder-type" title="{{ phrase('agent.general.create_task') }}" data-rule-type="create_task" data-rule-group="Task">
+	<div class="builder-options">
+		<table class="display-table spaced" width="100%">
+			<tr>
+				<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+					Task Title:
+				</td>
+				<td>
+					<input type="text" name="title" class="form-control" />
+				</td>
+			</tr>
+			<tr>
+				<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+					Due Date:
+				</td>
+				<td>
+					<input name="date_due" type="text" class="date-input" />
+				</td>
+			</tr>
+			<tr>
+				<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+					Public:
+				</td>
+				<td>
+					<select name="public">
+						<option value="0">Private</option>
+						<option value="1">Public</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+					Creator:
+				</td>
+				<td>
+					<select ui-select2="{dropdownAutoWidth:true}" name="creator"
+							style="min-width: 200px;">
+						{% for agent in app.agents.getAgents() %}
+							<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td style="vertical-align: top; white-space: nowrap" nowrap width="100">
+					Assignee:
+				</td>
+				<td>
+					<select ui-select2="{dropdownAutoWidth:true}" name="assignee"
+							style="min-width: 200px;">
+						<optgroup label="Agents">
+							{% for agent in app.agents.getAgents() %}
+								<option value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+							{% endfor %}
+						</optgroup>
+						<optgroup label="Teams">
+							{% for id,title in app.agent_teams.getTeamNames() %}
+								<option value="team:{{id}}">{{title}}</option>
+							{% endfor %}
+						</optgroup>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+{##################################################################################################################}
 {# Integrations #}
 {##################################################################################################################}
 
