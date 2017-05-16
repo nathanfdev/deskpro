@@ -192,7 +192,7 @@ services:
       - { name: form.type }
 
   form.web_attachment_accepter:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\WebAcceptAttachmentType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType
     arguments: ["@blob.storage", "@attachment_accepter"]
     tags:
       - { name: form.type }

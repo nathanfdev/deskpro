@@ -262,4 +262,23 @@ class BaseController extends FOSRestController
     {
         SystemErrorHandler::logException($exception);
     }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function getRequestData(Request $request)
+    {
+        $params = $request->request->all();
+        $files  = $request->files->all();
+
+        if (is_array($params) && is_array($files)) {
+            $data = array_replace_recursive($params, $files);
+        } else {
+            $data = $params ?: $files;
+        }
+
+        return $data;
+    }
 }
