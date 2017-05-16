@@ -1,6 +1,8 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
+export const cleanExtraTemplates = createAction('EMAIL_TEMPLATE_CLEAN_EXTRA_TEMPLATE');
+
 export const cleanState = createAction('EMAIL_TEMPLATES_CLEAN_STATE');
 
 export const deleteAsset = createAction(

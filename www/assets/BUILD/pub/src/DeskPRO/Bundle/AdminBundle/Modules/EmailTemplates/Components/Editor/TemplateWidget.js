@@ -19,8 +19,7 @@ class TemplatePopup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      contentLoaded: false,
-      content:       ''
+      content: ''
     };
   }
 
@@ -45,17 +44,14 @@ class TemplatePopup extends React.Component {
     this.props.loadTemplate(this.props.text).then(
       (content) => {
         this.setState({
-          content:       content.template_code.code,
-          contentLoaded: true
+          content,
         });
       }
     );
   };
 
   openPopup = () => {
-    if (!this.state.contentLoaded) {
-      this.loadContent();
-    }
+    this.loadContent();
     this.popup.openPopup();
   };
 

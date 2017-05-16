@@ -53,5 +53,6 @@ export default createReducer(initialState, {
   [actions.setCurrentTemplateGroup]: (state, payload) => state.set('currentTemplateGroup', payload),
   [actions.updateTemplateSubject]:   (state, payload) => state.setIn(['template', 'template_code', 'subject'], payload),
   [actions.updateTemplateBody]:      (state, payload) => state.setIn(['template', 'template_code', 'body'], payload),
-  [actions.cleanState]:              state => state.clear()
+  [actions.cleanState]:              state => state.clear(),
+  [actions.cleanExtraTemplates]:     state => state.deleteIn(['template', 'extra_templates'])
 });

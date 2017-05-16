@@ -168,6 +168,8 @@ class TemplateController extends BaseController
         if ($template->getType() == 'email') {
             $templateCode->setSubject($data['subject']);
             $templateCode->setBody($data['body']);
+        } elseif (preg_match('#^(DeskPRO|SendmailBundle):blocks#', $template->getName())) {
+            $templateCode->setCode($data['body']);
         } else {
             throw new Exception('Only "email" templates can be updated '.$template->getType());
         }

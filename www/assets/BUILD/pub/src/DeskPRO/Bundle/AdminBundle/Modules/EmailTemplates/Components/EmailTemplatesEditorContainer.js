@@ -146,7 +146,18 @@ class EmailTemplatesEditorContainer extends React.Component {
     codeMirror.replaceSelection(variable);
   };
 
-  loadTemplate = name => this.props.dispatch(actions.loadTemplate(name));
+  loadTemplate = name => new Promise((resolve) => {
+    const template = this.props.emailTemplates.getIn(['template', 'extra_templates', name], null);
+    if (template !== null) {
+      resolve(template);
+    } else {
+      this.props.dispatch(actions.loadTemplate(name)).then((content) => {
+        const code = content.template_code.code;
+        this.props.dispatch(actions.setExtraTemplate({ name, code }));
+        resolve(code);
+      });
+    }
+  });
 
   previewTemplate = debounce(function (value, lang) {
     const variables = [];
@@ -163,9 +174,10 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.setState({
       resetSubmit: true
     });
-    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
+    const name = this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']);
     this.props.dispatch(actions.resetTemplate(name)).then(
       () => {
+        this.props.dispatch(actions.cleanExtraTemplates());
         this.setState({
           resetSubmit: false
         });
@@ -177,16 +189,26 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.setState({
       saveSubmit: true
     });
-    const name = this.props.emailTemplates.get('currentTemplate').get('newTemplate');
+    const name = this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']);
     const template = {
-      subject: this.props.emailTemplates.get('template').get('template_code').get('subject'),
-      body:    this.props.emailTemplates.get('template').get('template_code').get('body'),
+      subject: this.props.emailTemplates.getIn(['template', 'template_code', 'subject']),
+      body:    this.props.emailTemplates.getIn(['template', 'template_code', 'body']),
     };
-    this.props.dispatch(actions.saveTemplate(name, template)).then(
+
+    const promises = [];
+    promises.push(this.props.dispatch(actions.saveTemplate(name, template)));
+
+    const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({})).toObject();
+
+    Object.keys(extraTemplates).forEach((key) => {
+      promises.push(this.props.dispatch(actions.saveTemplate(key, { body: extraTemplates[key] })));
+    });
+    Promise.all(promises).then(
       () => {
         this.setState({
           saveSubmit: false
         });
+        this.props.dispatch(actions.cleanExtraTemplates());
       }
     );
   };
@@ -200,18 +222,23 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.props.dispatch(actions.setCurrentTemplate(null));
   };
 
-  undoChanges = () => {
+  undoChanges = () => new Promise((resolve) => {
     this.setState({
       undoSubmit: true
     });
-    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.get('currentTemplate').get('newTemplate'))).then(
+    this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']))).then(
       () => {
         this.setState({
           undoSubmit: false
         });
+        this.props.dispatch(actions.cleanExtraTemplates());
+
+        const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
+        this.previewTemplate(body, this.props.emailTemplates.get('currentLanguage'));
+        resolve();
       }
     );
-  };
+  });
 
   sendPreview = () => {
     this.setState({
@@ -221,11 +248,11 @@ class EmailTemplatesEditorContainer extends React.Component {
     if (this.props.emailTemplates.get('exampleTicket')) {
       variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
     }
-    const viewModel = this.props.emailTemplates.get('currentTemplate').get('viewModel');
+    const viewModel = this.props.emailTemplates.getIn(['currentTemplate', 'viewModel']);
     const group = this.props.emailTemplates.get('currentTemplateGroup');
     const lang = this.props.emailTemplates.get('currentLanguage');
-    const subject = this.props.emailTemplates.get('template').get('template_code').get('subject');
-    const body = this.props.emailTemplates.get('template').get('template_code').get('body');
+    const subject = this.props.emailTemplates.getIn(['template', 'template_code', 'subject']);
+    const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body']);
     const from = this.state.selectedEmailAccount;
     const to   = this.state.previewEmailAddress;
     const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({})).toObject();
@@ -348,10 +375,15 @@ class EmailTemplatesEditor extends React.Component {
     this.compileProps(nextProps.emailTemplates);
   }
 
+  setTemplateValue = (name, code) => {
+    this.props.setTemplateValue(name, code);
+    this.checkChanges();
+  };
+
   compileProps = (emailTemplates) => {
     const templatesGroups = [];
-    if (emailTemplates && emailTemplates.get('info').get('list')) {
-      emailTemplates.get('info').get('list').valueSeq()
+    if (emailTemplates && emailTemplates.getIn(['info', 'list'])) {
+      emailTemplates.getIn(['info', 'list']).valueSeq()
         .filter((group) => {
           if (group.get('typeId') === 'layout') {
             return false;
@@ -391,31 +423,13 @@ class EmailTemplatesEditor extends React.Component {
   handleChangeBody = (value) => {
     if (this.props.emailTemplates.get('template')) {
       this.props.changeTemplateBody(value);
-      if (this.props.emailTemplates.get('template').get('original_code')
-        && this.props.emailTemplates.get('template').get('original_code').get('body') !== value) {
-        this.setState({
-          contentChanged: true
-        });
-      } else {
-        this.setState({
-          contentChanged: false
-        });
-      }
+      this.checkChanges();
     }
   };
 
   handleChangeSubject = (value) => {
     this.props.changeTemplateSubject(value);
-    if (this.props.emailTemplates.get('template') && this.props.emailTemplates.get('template').get('original_code')
-      && this.props.emailTemplates.get('template').get('original_code').get('subject') !== value) {
-      this.setState({
-        contentChanged: true
-      });
-    } else {
-      this.setState({
-        contentChanged: false
-      });
-    }
+    this.checkChanges();
   };
 
   handleSelectTemplateGroup = (value) => {
@@ -452,6 +466,29 @@ class EmailTemplatesEditor extends React.Component {
   closeNewTemplateDialog = () => {
     this.setState({
       newCustomTemplateOpened: false
+    });
+  };
+
+  checkChanges = () => {
+    const body = this.props.emailTemplates.getIn(['template', 'original_code', 'body'], '');
+    const subject = this.props.emailTemplates.getIn(['template', 'original_code', 'subject'], '');
+    const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({}));
+
+
+    if (subject !== this.state.templateSubject || body !== this.state.templateBody || extraTemplates.size) {
+      this.setState({
+        contentChanged: true
+      });
+    } else {
+      this.setState({
+        contentChanged: false
+      });
+    }
+  };
+
+  undoChanges = () => {
+    this.props.undoChanges().then(() => {
+      this.checkChanges();
     });
   };
 
@@ -556,7 +593,7 @@ class EmailTemplatesEditor extends React.Component {
             getPhraseTranslations={this.props.getPhraseTranslations}
             savePhraseTranslations={this.props.savePhraseTranslations}
             loadTemplate={this.props.loadTemplate}
-            setTemplateValue={this.props.setTemplateValue}
+            setTemplateValue={this.setTemplateValue}
           />
           <div className="footer">
             <Button
@@ -569,7 +606,7 @@ class EmailTemplatesEditor extends React.Component {
             <Button
               className={classNames('basic small', { loading: this.props.undoSubmit })}
               disabled={this.state.textareaDisabled || !this.state.contentChanged}
-              onClick={this.props.undoChanges}
+              onClick={this.undoChanges}
               confirm
             >
               Undo changes
