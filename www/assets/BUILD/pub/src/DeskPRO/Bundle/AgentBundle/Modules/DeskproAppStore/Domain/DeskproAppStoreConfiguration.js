@@ -1,7 +1,6 @@
 class DeskproAppStoreConfiguration {
   static get validTargets() {
     return [
-      'top-bar',
       'ticket-sidebar', 'ticket-header-top', 'ticket-header-bottom', 'ticket-header-after',
       'ticket-properties-before', 'ticket-properties-after', 'ticket-replybox-before', 'ticket-replybox-after',
       'ticket-messages-before', 'ticket-messages-after', 'ticket-footer',
