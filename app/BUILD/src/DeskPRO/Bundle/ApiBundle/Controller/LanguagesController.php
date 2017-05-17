@@ -446,7 +446,7 @@ class LanguagesController extends CrudController
         /** @var Translate $translate */
         $translate = $this->container->get('deskpro.core.translate');
 
-        $languages    = $translate->getAllLanguages();
+        $languages    = $this->getManager()->getRepository(Language::class)->findAll();
         $translations = [];
         foreach ($languages as $language) {
             $translations[$language->getLocale()] = $translate->getPhraseText($phraseName, $language, true);

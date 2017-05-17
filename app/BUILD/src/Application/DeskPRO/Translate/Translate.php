@@ -46,6 +46,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -111,12 +112,12 @@ class Translate implements PersonContextInterface, TranslatorInterface
     /**
      * See getCountPhraseSelector().
      *
-     * @var \Symfony\Component\Translation\MessageSelector
+     * @var MessageSelector
      */
     protected $_phrase_selector = null;
 
     /**
-     * @var \Application\DeskPRO\Translate\ObjectPhraseNamer
+     * @var ObjectPhraseNamer
      */
     protected $_phrase_object_namer = null;
 
@@ -289,16 +290,16 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $language = $this->_default_language;
         }
 
-        $last_id = null;
+        $lastId = null;
         if ($this->_language) {
-            $last_id = $this->_language['id'];
+            $lastId = $this->_language['id'];
         }
 
         $this->_language                          = $language;
         $this->_loaded_languages[$language['id']] = $language;
 
-        if ($last_id and $load_previous_groups and isset($this->_loaded_groups[$last_id])) {
-            $this->loadPhraseGroups($this->_loaded_groups[$last_id], $language);
+        if ($lastId and $load_previous_groups and isset($this->_loaded_groups[$lastId])) {
+            $this->loadPhraseGroups($this->_loaded_groups[$lastId], $language);
         }
     }
 
@@ -432,15 +433,15 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $language = $this->_language;
         }
 
-        $language_id = $language->getId();
+        $languageId = $language->getId();
 
-        if (!isset($this->_pending_groups[$language_id])) {
-            $this->_pending_groups[$language_id] = [];
+        if (!isset($this->_pending_groups[$languageId])) {
+            $this->_pending_groups[$languageId] = [];
         }
 
         foreach ($groups as $group) {
             if (!in_array($group, $this->_loaded_groups)) {
-                $this->_pending_groups[$language_id][] = $group;
+                $this->_pending_groups[$languageId][] = $group;
             }
         }
     }
@@ -455,29 +456,29 @@ class Translate implements PersonContextInterface, TranslatorInterface
             return;
         }
 
-        foreach ($this->_pending_groups as $language_id => $groups) {
+        foreach ($this->_pending_groups as $languageId => $groups) {
             $groups = array_unique($groups);
             $groups = Arrays::removeFalsey($groups);
 
-            if (!isset($this->_loaded_languages[$language_id])) {
-                $this->_loaded_languages[$language_id] = App::getEntityRepository(Language::class)->find(
-                    $language_id
+            if (!isset($this->_loaded_languages[$languageId])) {
+                $this->_loaded_languages[$languageId] = App::getEntityRepository(Language::class)->find(
+                    $languageId
                 );
             }
-            $language = $this->_loaded_languages[$language_id];
+            $language = $this->_loaded_languages[$languageId];
 
-            if (!isset($this->_phrases[$language_id])) {
-                $this->_phrases[$language_id] = [];
+            if (!isset($this->_phrases[$languageId])) {
+                $this->_phrases[$languageId] = [];
             }
-            $this->_phrases[$language_id] = array_merge(
-                $this->_phrases[$language_id],
+            $this->_phrases[$languageId] = array_merge(
+                $this->_phrases[$languageId],
                 $this->loader->load($groups, $language)
             );
 
-            if (!isset($this->_loaded_groups[$language_id])) {
-                $this->_loaded_groups[$language_id] = [];
+            if (!isset($this->_loaded_groups[$languageId])) {
+                $this->_loaded_groups[$languageId] = [];
             }
-            $this->_loaded_groups[$language_id] = array_merge($this->_loaded_groups[$language_id], $groups);
+            $this->_loaded_groups[$languageId] = array_merge($this->_loaded_groups[$languageId], $groups);
         }
 
         $this->_pending_groups = [];
@@ -487,27 +488,27 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * Get the phrase group from the name of a phrase. The phrase "deskpro.example_phrase"
      * has the group named "deskpro".
      *
-     * @param string $phrase_name The name of the phrase
+     * @param string $phraseName The name of the phrase
      *
      * @return string
      */
-    public function getPhraseGroupFromName($phrase_name)
+    public function getPhraseGroupFromName($phraseName)
     {
-        if (!is_string($phrase_name)) {
+        if (!is_string($phraseName)) {
             return false;
         }
 
-        $pos = strpos($phrase_name, '.');
+        $pos = strpos($phraseName, '.');
         if ($pos === false) {
             return '__default__';
         }
 
-        if ($phrase_name[0] == '/') {
-            $phrase_name = substr($phrase_name, 1);
-            $phrase_name = str_replace('\.', '.', $phrase_name);
+        if ($phraseName[0] == '/') {
+            $phraseName = substr($phraseName, 1);
+            $phraseName = str_replace('\.', '.', $phraseName);
         }
 
-        $parts = Strings::rexplode('.', $phrase_name, 2);
+        $parts = Strings::rexplode('.', $phraseName, 2);
 
         return $parts[0];
     }
@@ -611,65 +612,65 @@ class Translate implements PersonContextInterface, TranslatorInterface
         }
 
         if (Numbers::isInteger($language)) {
-            $language_id = $language;
+            $languageId = $language;
         } else {
-            $language_id = $language['id'];
+            $languageId = $language['id'];
         }
 
-        if ($language_id !== $this->_language->getId()) {
-            $language = $this->_loaded_languages[$language_id] = App::getEntityRepository(Language::class)->find(
-                $language_id
+        if ($languageId !== $this->_language->getId()) {
+            $language = $this->_loaded_languages[$languageId] = App::getEntityRepository(Language::class)->find(
+                $languageId
             );
         }
 
-        $preload_groups = [];
+        $preloadGroups = [];
 
-        $star_patterns  = [];
-        $regex_patterns = [];
-        $phrase_ids     = [];
+        $starPatterns  = [];
+        $regexPatterns = [];
+        $phraseIds     = [];
 
-        foreach ($phrase_names as $phrase_name) {
-            $preload_groups[] = $this->getPhraseGroupFromName($phrase_name);
+        foreach ($phrase_names as $phraseName) {
+            $preloadGroups[] = $this->getPhraseGroupFromName($phraseName);
 
             // A regex pattern like /admin\.general\.default.*?/
-            if ($phrase_name[0] == '/' && substr($phrase_name, -1, 1) == '/') {
-                $regex_patterns[] = $phrase_name;
+            if ($phraseName[0] == '/' && substr($phraseName, -1, 1) == '/') {
+                $regexPatterns[] = $phraseName;
 
                 // A simplified star pattern like admin.general.default*
-            } elseif (strpos($phrase_name, '*') !== false) {
-                $star_patterns[] = $phrase_name;
+            } elseif (strpos($phraseName, '*') !== false) {
+                $starPatterns[] = $phraseName;
 
                 // A fully-qualified phrase name
             } else {
-                $phrase_ids[] = $phrase_name;
+                $phraseIds[] = $phraseName;
             }
         }
 
-        $this->loadPhraseGroups($preload_groups, $language);
+        $this->loadPhraseGroups($preloadGroups, $language);
 
-        $phrase_texts = [];
-        foreach ($phrase_ids as $phrase_name) {
-            $text                       = $this->getPhraseText($phrase_name, $language, true);
-            $phrase_texts[$phrase_name] = $text;
+        $phraseTexts = [];
+        foreach ($phraseIds as $phraseName) {
+            $text                     = $this->getPhraseText($phraseName, $language, true);
+            $phraseTexts[$phraseName] = $text;
         }
 
-        if ($star_patterns || $regex_patterns) {
+        if ($starPatterns || $regexPatterns) {
             $this->_loadPendingPhraseGroups();
-            foreach ($this->_phrases[$language_id] as $phrase_name => $text) {
-                foreach ($star_patterns as $pattern) {
-                    if (Strings::isStarMatch($pattern, $phrase_name)) {
-                        $phrase_texts[$phrase_name] = $text;
+            foreach ($this->_phrases[$languageId] as $phraseName => $text) {
+                foreach ($starPatterns as $pattern) {
+                    if (Strings::isStarMatch($pattern, $phraseName)) {
+                        $phraseTexts[$phraseName] = $text;
                     }
                 }
-                foreach ($regex_patterns as $pattern) {
-                    if (preg_match($pattern, $phrase_name)) {
-                        $phrase_texts[$phrase_name] = $text;
+                foreach ($regexPatterns as $pattern) {
+                    if (preg_match($pattern, $phraseName)) {
+                        $phraseTexts[$phraseName] = $text;
                     }
                 }
             }
         }
 
-        return $phrase_texts;
+        return $phraseTexts;
     }
 
     /**
@@ -717,8 +718,8 @@ class Translate implements PersonContextInterface, TranslatorInterface
      */
     public function getPhraseTextCount($phrase_name, $count, $language = null)
     {
-        $phrase_text = $this->getPhraseText($phrase_name);
-        if (!$phrase_text) {
+        $phraseText = $this->getPhraseText($phrase_name);
+        if (!$phraseText) {
             return;
         }
 
@@ -729,13 +730,13 @@ class Translate implements PersonContextInterface, TranslatorInterface
         }
 
         try {
-            $phrase = $this->getCountPhraseSelector()->choose($phrase_text, $count, $language->getLocale());
+            $phrase = $this->getCountPhraseSelector()->choose($phraseText, $count, $language->getLocale());
         } catch (\InvalidArgumentException $e) {
             try {
                 // Try again with en_US locale in case
                 // Could be an untranslated phrase (which defaults to eng), but then the locale would be passed as the lang,
                 // which could use different rules and cause the chooser to fail.
-                $phrase = $this->getCountPhraseSelector()->choose($phrase_text, $count, 'en_US');
+                $phrase = $this->getCountPhraseSelector()->choose($phraseText, $count, 'en_US');
             } catch (\InvalidArgumentException $e) {
                 $phrase = $e->getMessage();
             }
@@ -766,32 +767,32 @@ class Translate implements PersonContextInterface, TranslatorInterface
         if ($object instanceof DelegatePhraseInterface) {
             return $object->getPhrase($this, $language);
         } elseif ($object instanceof HasPhraseName) {
-            $phrase_name_raw = $object->getPhraseName($property, $this);
-            $phrase_text     = false;
-            $phrase_name     = false;
+            $phraseNameRaw = $object->getPhraseName($property, $this);
+            $phraseText    = false;
+            $phraseName    = false;
 
-            if (!is_array($phrase_name_raw)) {
-                $phrase_name_raw = [$phrase_name_raw];
+            if (!is_array($phraseNameRaw)) {
+                $phraseNameRaw = [$phraseNameRaw];
             }
 
-            foreach ($phrase_name_raw as $use_phrase_name) {
-                if ($use_phrase_name && $this->hasPhrase($use_phrase_name, $language)) {
-                    $phrase_text = $this->phrase($use_phrase_name, [], $language);
-                    $phrase_name = $use_phrase_name;
+            foreach ($phraseNameRaw as $usePhraseName) {
+                if ($usePhraseName && $this->hasPhrase($usePhraseName, $language)) {
+                    $phraseText = $this->phrase($usePhraseName, [], $language);
+                    $phraseName = $usePhraseName;
                     break;
                 }
             }
 
-            if (!$phrase_text) {
+            if (!$phraseText) {
                 if ($fallback_default) {
-                    $phrase_text = $object->getPhraseDefault($property, $this);
+                    $phraseText = $object->getPhraseDefault($property, $this);
                 } else {
                     return '';
                 }
             }
 
-            if ($phrase_text) {
-                return $phrase_text;
+            if ($phraseText) {
+                return $phraseText;
             }
 
             return '';
@@ -801,20 +802,20 @@ class Translate implements PersonContextInterface, TranslatorInterface
         // Phrase namer inspects objects..
         //------------------------------
 
-        $namer       = $this->getObjectPhraseNamer();
-        $phrase_name = $namer->getPhraseName($object, $property);
-        $phrase_text = false;
+        $namer      = $this->getObjectPhraseNamer();
+        $phraseName = $namer->getPhraseName($object, $property);
+        $phraseText = false;
 
-        if ($phrase_name && $this->hasPhrase($phrase_name, $language)) {
-            $phrase_text = $this->phrase($phrase_name, [], $language);
+        if ($phraseName && $this->hasPhrase($phraseName, $language)) {
+            $phraseText = $this->phrase($phraseName, [], $language);
         }
 
-        if (!$phrase_text) {
-            $phrase_text = $this->getObjectPhraseNamer()->getPhraseDefault($object, $property);
+        if (!$phraseText) {
+            $phraseText = $this->getObjectPhraseNamer()->getPhraseDefault($object, $property);
         }
 
-        if ($phrase_text) {
-            return $phrase_text;
+        if ($phraseText) {
+            return $phraseText;
         }
 
         // No phrase
@@ -864,49 +865,49 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 $property = null;
             }
 
-            $phrase_text = $this->getPhraseObject($object, $property, $language);
+            $phraseText = $this->getPhraseObject($object, $property, $language);
         } elseif (isset($vars['count'])) {
             try {
-                $phrase_text = $this->getPhraseTextCount($phrase_name, $vars['count'], $language);
+                $phraseText = $this->getPhraseTextCount($phrase_name, $vars['count'], $language);
             } catch (\Exception $e) {
                 // Fall back on just using a normal phrase without any pluralising
                 // In case user modified phrase to remove the plural syntax
-                $phrase_text = $this->getPhraseText($phrase_name, $language);
+                $phraseText = $this->getPhraseText($phrase_name, $language);
             }
         } else {
-            $phrase_text = $this->getPhraseText($phrase_name, $language);
+            $phraseText = $this->getPhraseText($phrase_name, $language);
         }
 
-        if (!$phrase_text) {
-            $phrase_text = '';
+        if (!$phraseText) {
+            $phraseText = '';
         }
 
-        $phrase_text = $this->replaceVarsInString($phrase_text, $vars);
+        $phraseText = $this->replaceVarsInString($phraseText, $vars);
 
         // A second pass detects phrase. replacements that might've been put in by replacements themselves
         $m = null;
-        if (preg_match_all('#{{phrase\.([a-zA-Z0-9\-_\.]+)}}#', $phrase_text, $m)) {
-            foreach ($m[1] as $sub_phrase_name) {
-                if ($sub_phrase_name == $phrase_name) {
+        if (preg_match_all('#{{phrase\.([a-zA-Z0-9\-_\.]+)}}#', $phraseText, $m)) {
+            foreach ($m[1] as $subPhraseName) {
+                if ($subPhraseName == $phrase_name) {
                     continue;
                 } //prevent loops
-                $sub_phrase_text = $this->phrase($sub_phrase_name, $vars, $language);
-                $phrase_text     = str_replace("{{phrase.$sub_phrase_name}}", $sub_phrase_text, $phrase_text);
+                $subPhraseText = $this->phrase($subPhraseName, $vars, $language);
+                $phraseText    = str_replace("{{phrase.$subPhraseName}}", $subPhraseText, $phraseText);
             }
         }
 
         // Pass to detect which should be output as ng_Vars
         $m = null;
-        if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phrase_text, $m, \PREG_SET_ORDER)) {
+        if (preg_match_all('#ng_var\(([a-zA-Z0-9\-_\.]+)\)#', $phraseText, $m, \PREG_SET_ORDER)) {
             foreach ($m as $match) {
-                $phrase_text = str_replace($match[0], '{{'.$match[1].'}}', $phrase_text);
+                $phraseText = str_replace($match[0], '{{'.$match[1].'}}', $phraseText);
             }
         }
 
         if ($debug === 'dev_blankout') {
             $output = '';
 
-            $len = min(4, strlen($phrase_text));
+            $len = min(4, strlen($phraseText));
 
             for ($i = 0; $i < $len; ++$i) {
                 $output .= '█';
@@ -915,14 +916,14 @@ class Translate implements PersonContextInterface, TranslatorInterface
             return $output;
         } elseif ($debug === 'dev_longstring') {
             // strings that are generally titles or button text etc, lets make them long to test overflow
-            $len = strlen($phrase_text);
+            $len = strlen($phraseText);
             if ($len < 25) {
                 $more = 25 - $len;
-                $phrase_text .= Strings::randomPronounceable($more, 3);
+                $phraseText .= Strings::randomPronounceable($more, 3);
             }
         }
 
-        return $phrase_text;
+        return $phraseText;
     }
 
     /**
@@ -994,15 +995,15 @@ class Translate implements PersonContextInterface, TranslatorInterface
     /**
      * Replaces {{vars}} form $vars in $phrase_text.
      *
-     * @param       $phrase_text
+     * @param       $phraseText
      * @param array $vars
      *
      * @return string
      */
-    public function replaceVarsInString($phrase_text, array $vars = [])
+    public function replaceVarsInString($phraseText, array $vars = [])
     {
         if ($vars) {
-            $phrase_text = preg_replace_callback(
+            $phraseText = preg_replace_callback(
                 '#\{\{\s*([a-zA-Z0-9_]+)\s*\}\}#',
                 function ($m) use ($vars) {
                     $name = $m[1];
@@ -1015,10 +1016,10 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
                     return '';
                 },
-                $phrase_text
+                $phraseText
             );
 
-            $phrase_text = preg_replace_callback(
+            $phraseText = preg_replace_callback(
                 '#\{\{\s*([a-zA-Z0-9_]+)\.([a-zA-Z0-9_]+)\s*\}\}#',
                 function ($m) use ($vars) {
                     $name = $m[1];
@@ -1046,35 +1047,35 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
                     return $m[0];
                 },
-                $phrase_text
+                $phraseText
             );
         }
 
-        return $phrase_text;
+        return $phraseText;
     }
 
     /**
      * Just like date() except D, l, F and M are replaced by translated strings.
      *
-     * @param string        $format     A date format string
-     * @param int|\DateTime $date_or_ts A DateTime object or a timestamp
+     * @param string        $format   A date format string
+     * @param int|\DateTime $dateOrTs A DateTime object or a timestamp
      * @param string        $prefix
      *
      * @return string
      */
-    public function date($format, $date_or_ts = null, $prefix = 'user.time.')
+    public function date($format, $dateOrTs = null, $prefix = 'user.time.')
     {
-        if (!$date_or_ts) {
-            $date_or_ts = time();
+        if (!$dateOrTs) {
+            $dateOrTs = time();
         }
 
-        $ts = $date_or_ts;
+        $ts = $dateOrTs;
         if ($ts instanceof \DateTime) {
-            $tz_offset = $ts->format('P');
+            $tzOffset = $ts->format('P');
 
             // getTimestamp will return the underlaying timestamp of the Date,
             // it doesnt apply any timezone offsets. So we'll need to convert it now
-            $ts = \Orb\Util\Dates::makeUtcDateTime($date_or_ts);
+            $ts = \Orb\Util\Dates::makeUtcDateTime($dateOrTs);
 
             if (!$ts) {
                 return 'invalid_date';
@@ -1082,7 +1083,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
             $ts = $ts->getTimestamp();
         } else {
-            $tz_offset = '+00:00';
+            $tzOffset = '+00:00';
         }
 
         // D: Mon
@@ -1096,28 +1097,28 @@ class Translate implements PersonContextInterface, TranslatorInterface
         $tr   = $this;
         $date = preg_replace_callback(
             '#DP\-([DlFMP])#',
-            function ($m) use ($prefix, $tr, $ts, $tz_offset) {
+            function ($m) use ($prefix, $tr, $ts, $tzOffset) {
                 switch ($m[1]) {
                     case 'D':
-                        $phrase_name = $prefix.'short-day_'.strtolower(date('l', $ts));
+                        $phraseName = $prefix.'short-day_'.strtolower(date('l', $ts));
                         break;
                     case 'l':
-                        $phrase_name = $prefix.'long-day_'.strtolower(date('l', $ts));
+                        $phraseName = $prefix.'long-day_'.strtolower(date('l', $ts));
                         break;
                     case 'F':
-                        $phrase_name = $prefix.'long-month_'.strtolower(date('F', $ts));
+                        $phraseName = $prefix.'long-month_'.strtolower(date('F', $ts));
                         break;
                     case 'M':
-                        $phrase_name = $prefix.'short-month_'.strtolower(date('F', $ts));
+                        $phraseName = $prefix.'short-month_'.strtolower(date('F', $ts));
                         break;
                     case 'P':
-                        return $tz_offset;
+                        return $tzOffset;
                     default:
                         // never matches
                         return 'unkown segment';
                 }
 
-                return $tr->getPhraseText($phrase_name);
+                return $tr->getPhraseText($phraseName);
             },
             $date
         );
@@ -1142,7 +1143,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
     }
 
     /**
-     * @return \Symfony\Component\Translation\MessageSelector
+     * @return MessageSelector
      */
     public function getCountPhraseSelector()
     {
@@ -1150,13 +1151,13 @@ class Translate implements PersonContextInterface, TranslatorInterface
             return $this->_phrase_selector;
         }
 
-        $this->_phrase_selector = new \Symfony\Component\Translation\MessageSelector();
+        $this->_phrase_selector = new MessageSelector();
 
         return $this->_phrase_selector;
     }
 
     /**
-     * @return \Application\DeskPRO\Translate\ObjectPhraseNamer
+     * @return ObjectPhraseNamer
      */
     public function getObjectPhraseNamer()
     {
@@ -1164,7 +1165,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
             return $this->_phrase_object_namer;
         }
 
-        $this->_phrase_object_namer = new \Application\DeskPRO\Translate\ObjectPhraseNamer();
+        $this->_phrase_object_namer = new ObjectPhraseNamer();
 
         return $this->_phrase_object_namer;
     }
@@ -1178,11 +1179,11 @@ class Translate implements PersonContextInterface, TranslatorInterface
      *
      * @param mixed  $object
      * @param string $property
-     * @param array  $lang_priority
+     * @param array  $langPriority
      *
      * @return string
      */
-    public function objectChoosePhraseText($object, $property, $lang_priority)
+    public function objectChoosePhraseText($object, $property, $langPriority)
     {
         $args = func_get_args();
         array_shift($args);
@@ -1194,7 +1195,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
         // Verifies lang params, converts lang IDs to objects
 
-        $lang_priority = [];
+        $langPriority = [];
         foreach ($args as $arg) {
             if (!is_array($arg)) {
                 $arg = [$arg];
@@ -1210,7 +1211,7 @@ class Translate implements PersonContextInterface, TranslatorInterface
                 }
 
                 if ($l instanceof Language) {
-                    $lang_priority[] = $l;
+                    $langPriority[] = $l;
                 }
             }
         }
@@ -1219,13 +1220,13 @@ class Translate implements PersonContextInterface, TranslatorInterface
         // Pick the lang text
         //------------------------------
 
-        $obj_lang_repos = App::getContainer()->getObjectLangRepository();
+        $objLangRepos = App::getContainer()->getObjectLangRepository();
 
-        foreach ($lang_priority as $lang) {
-            $obj_lang_repos->preloadObject($lang, $object);
+        foreach ($langPriority as $lang) {
+            $objLangRepos->preloadObject($lang, $object);
         }
 
-        $rec = $obj_lang_repos->getRec($lang_priority, $object, $property, true);
+        $rec = $objLangRepos->getRec($langPriority, $object, $property, true);
 
         if (!$rec) {
             return '';

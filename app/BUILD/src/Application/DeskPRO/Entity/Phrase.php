@@ -236,14 +236,6 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('original_hash', $originalHash);
     }
 
-    /**
-     * @return Language
-     */
-    public function getLanguage()
-    {
-        return $this->language;
-    }
-
     public function incUpdatedAt()
     {
         $this->setModelField('updated_at', new \DateTime());
