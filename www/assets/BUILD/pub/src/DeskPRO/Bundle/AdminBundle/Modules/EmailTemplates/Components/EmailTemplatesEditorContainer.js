@@ -36,6 +36,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       emailAccounts:        [],
       selectedEmailAccount: '',
       previewEmailAddress:  '',
+      editor:               null,
+      currentWidget:        null,
     };
   }
 
@@ -63,6 +65,14 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
   }
 
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        editor: this.editor.editor.bodyEditor
+      });
+    }, 100);
+  }
+
   componentWillReceiveProps(nextProps) {
     if (nextProps.emailTemplates.get('phrases') !== this.props.emailTemplates.get('phrases')) {
       const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
@@ -83,6 +93,23 @@ class EmailTemplatesEditorContainer extends React.Component {
   }
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
+
+  setCurrentWidget = (popup, editor) => {
+    if (this.state.currentWidget) {
+      this.state.currentWidget.closePopup();
+    }
+    if (editor) {
+      this.setState({
+        currentWidget: popup,
+        editor
+      });
+    } else {
+      this.setState({
+        currentWidget: popup,
+        editor:        this.editor.editor.bodyEditor
+      });
+    }
+  };
 
   setTemplateValue = (name, code) => {
     this.props.dispatch(actions.setExtraTemplate({ name, code }));
@@ -123,27 +150,26 @@ class EmailTemplatesEditorContainer extends React.Component {
 
   insertInlineImage = (file) => {
     const tag = `<img src="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}" alt="" />`;
-    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
+    this.state.editor.getCodeMirror().replaceSelection(tag);
   };
 
   insertAttachment = (file) => {
     const tag = `<attachment id="${file.get('blob_id')}" filename="${file.get('name')}" />`;
-    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
+    this.state.editor.getCodeMirror().replaceSelection(tag);
   };
 
   insertAttachmentAsLink = (e, file) => {
     e.stopPropagation();
     const tag = `<a href="{{ url('serve_blob', {'blob_auth_id': '${file.get('blob_id')}', 'filename': '${file.get('name')}'}) }}">${file.get('name')}</a>`;
-    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(tag);
+    this.state.editor.getCodeMirror().replaceSelection(tag);
   };
 
   insertPhrase = (phrase) => {
-    this.editor.editor.bodyEditor.getCodeMirror().replaceSelection(phrase);
+    this.state.editor.getCodeMirror().replaceSelection(phrase);
   };
 
   insertVariable = (variable) => {
-    const codeMirror = this.editor.editor.bodyEditor.getCodeMirror();
-    codeMirror.replaceSelection(variable);
+    this.state.editor.getCodeMirror().replaceSelection(variable);
   };
 
   loadTemplate = name => new Promise((resolve) => {
@@ -159,7 +185,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     }
   });
 
-  previewTemplate = debounce(function (value, lang) {
+  previewTemplate = debounce(function previewDebounce(value, lang) {
     const variables = [];
     if (this.props.emailTemplates.get('exampleTicket')) {
       variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
@@ -256,22 +282,18 @@ class EmailTemplatesEditorContainer extends React.Component {
     const from = this.state.selectedEmailAccount;
     const to   = this.state.previewEmailAddress;
     const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({})).toObject();
-    this.props.dispatch(actions.sendPreview(viewModel, group, subject, body, variables, lang, from, to, extraTemplates)).then(
-      () => {
-        this.setState({
-          previewSubmit: false
-        });
-      }
-    );
+    this.props.dispatch(actions.sendPreview(viewModel, group, subject, body, variables, lang, from, to, extraTemplates))
+      .then(
+        () => {
+          this.setState({
+            previewSubmit: false
+          });
+        }
+      );
   };
 
-  selectEmailAccount = (account) => {
-    this.setState({
-      selectedEmailAccount: account
-    });
-  };
-
-  savePhraseTranslations = (phraseName, translations) => this.props.dispatch(actions.saveTranslations(phraseName, translations))
+  savePhraseTranslations = (phraseName, translations) =>
+    this.props.dispatch(actions.saveTranslations(phraseName, translations))
       .then(() => {
         const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
         this.previewTemplate(body, this.props.emailTemplates.get('currentLanguage'));
@@ -280,6 +302,12 @@ class EmailTemplatesEditorContainer extends React.Component {
           this.props.emailTemplates.get('currentLanguage')
         ));
       });
+
+  selectEmailAccount = (account) => {
+    this.setState({
+      selectedEmailAccount: account
+    });
+  };
 
   handleEmailAddress = (e) => {
     this.setState({
@@ -309,6 +337,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       sendPreview={this.sendPreview}
       addTemplate={this.addTemplate}
       loadTemplate={this.loadTemplate}
+      setCurrentWidget={this.setCurrentWidget}
       setTemplateValue={this.setTemplateValue}
       getPhraseTranslations={this.getPhraseTranslations}
       savePhraseTranslations={this.savePhraseTranslations}
@@ -345,6 +374,7 @@ class EmailTemplatesEditor extends React.Component {
     addTemplate:            PropTypes.func,
     loadTemplate:           PropTypes.func,
     setTemplateValue:       PropTypes.func,
+    setCurrentWidget:       PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     savePhraseTranslations: PropTypes.func,
     previewSubmit:          PropTypes.bool,
@@ -566,7 +596,12 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: !this.props.emailTemplates.get('variables') })}>
+              <div
+                className={classNames(
+                  'top-menu right floated',
+                  { disabled: !this.props.emailTemplates.get('variables') }
+                )}
+              >
                 <DropDownMenu
                   icon="dollar"
                   label="Variables"
@@ -592,6 +627,7 @@ class EmailTemplatesEditor extends React.Component {
             phrases={this.props.emailTemplates.get('phrases')}
             getPhraseTranslations={this.props.getPhraseTranslations}
             savePhraseTranslations={this.props.savePhraseTranslations}
+            setCurrentWidget={this.props.setCurrentWidget}
             loadTemplate={this.props.loadTemplate}
             setTemplateValue={this.setTemplateValue}
           />

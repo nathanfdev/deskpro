@@ -10,8 +10,9 @@ class PhrasePopup extends React.Component {
     phrase:                 PropTypes.string,
     text:                   PropTypes.string,
     getPhraseTranslations:  PropTypes.func,
-    savePhraseTranslations: PropTypes.func,
     getText:                PropTypes.func,
+    savePhraseTranslations: PropTypes.func,
+    setCurrentWidget:       PropTypes.func,
     setText:                PropTypes.func,
     variables:              PropTypes.object,
   };
@@ -101,6 +102,7 @@ class PhrasePopup extends React.Component {
       }
     );
     this.popup.openPopup();
+    this.props.setCurrentWidget(this.popup, null);
   };
 
   closePopup = () => {
@@ -112,6 +114,7 @@ class PhrasePopup extends React.Component {
       }
     );
     this.popup.closePopup();
+    this.props.setCurrentWidget(null, null);
   };
 
   saveChanges = () => {
@@ -168,7 +171,7 @@ class PhrasePopup extends React.Component {
   }
 }
 class PhraseWidget extends Widget {
-  constructor(cm, pos, code, text, getPhraseTranslations, savePhraseTranslations) {
+  constructor(cm, pos, code, text, setCurrentWidget, getPhraseTranslations, savePhraseTranslations) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -204,6 +207,7 @@ class PhraseWidget extends Widget {
           variables={variables}
           getPhraseTranslations={getPhraseTranslations}
           savePhraseTranslations={savePhraseTranslations}
+          setCurrentWidget={setCurrentWidget}
           setText={this.setText}
           getText={this.getText}
         />,

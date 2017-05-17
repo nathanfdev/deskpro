@@ -7,9 +7,10 @@ import CodeMirror from '../CodeMirror';
 
 class TemplatePopup extends React.Component {
   static propTypes = {
-    text:         PropTypes.string,
-    loadTemplate: PropTypes.func,
-    setValue:     PropTypes.func,
+    text:             PropTypes.string,
+    loadTemplate:     PropTypes.func,
+    setCurrentWidget: PropTypes.func,
+    setValue:         PropTypes.func,
   };
   static defaultProps = {
     loadTemplate() {},
@@ -28,6 +29,7 @@ class TemplatePopup extends React.Component {
       <CodeMirror
         value={this.state.content}
         onChange={this.handleChange}
+        ref={(c) => { this.widgetEditor = c; }}
       />
       <Button onClick={this.saveChanges}>Submit</Button>
       <Button className="basic" onClick={this.closePopup}>Cancel</Button>
@@ -53,10 +55,14 @@ class TemplatePopup extends React.Component {
   openPopup = () => {
     this.loadContent();
     this.popup.openPopup();
+    setTimeout(() => {
+      this.props.setCurrentWidget(this.popup, this.widgetEditor);
+    }, 100);
   };
 
   closePopup = () => {
     this.popup.closePopup();
+    this.props.setCurrentWidget(null, null);
   };
 
   saveChanges = () => {
@@ -86,7 +92,7 @@ class TemplatePopup extends React.Component {
   }
 }
 class TemplateWidget extends Widget {
-  constructor(cm, pos, code, text, loadTemplate, setValue) {
+  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, setValue) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -97,6 +103,7 @@ class TemplateWidget extends Widget {
         <TemplatePopup
           text={text}
           loadTemplate={loadTemplate}
+          setCurrentWidget={setCurrentWidget}
           setValue={setValue}
         />,
         element

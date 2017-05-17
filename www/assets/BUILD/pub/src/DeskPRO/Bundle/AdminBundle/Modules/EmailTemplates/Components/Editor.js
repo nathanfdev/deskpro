@@ -11,8 +11,9 @@ class Editor extends React.Component {
     changeTemplateBody:     PropTypes.func,
     changeTemplateSubject:  PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
-    savePhraseTranslations: PropTypes.func,
     loadTemplate:           PropTypes.func,
+    savePhraseTranslations: PropTypes.func,
+    setCurrentWidget:       PropTypes.func,
     setTemplateValue:       PropTypes.func,
     phrases:                PropTypes.object,
   };
@@ -71,6 +72,7 @@ class Editor extends React.Component {
             },
             match[0],
             this.findPhrase(match[1]),
+            this.props.setCurrentWidget,
             this.props.getPhraseTranslations,
             this.props.savePhraseTranslations
           ));
@@ -87,6 +89,7 @@ class Editor extends React.Component {
             },
             match[0],
             match[1],
+            this.props.setCurrentWidget,
             this.props.loadTemplate,
             this.props.setTemplateValue
           ));
