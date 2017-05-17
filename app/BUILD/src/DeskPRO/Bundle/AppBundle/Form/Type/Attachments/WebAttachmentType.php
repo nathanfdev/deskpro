@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -71,8 +71,10 @@ class WebAttachmentType extends AbstractType
         if ($data->getBlob()) {
             $this->renderDeleteCheckbox($form);
         } else {
-            $form->add('blob', WebAcceptAttachmentType::class, [
-                'label' => false,
+            $form->add('blob', AcceptAttachmentType::class, [
+                'label'          => false,
+                'field_name'     => 'upload',
+                'upload_context' => 'user',
             ]);
         }
     }
