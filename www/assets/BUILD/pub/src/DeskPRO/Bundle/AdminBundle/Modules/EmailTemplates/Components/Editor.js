@@ -25,7 +25,7 @@ class Editor extends React.Component {
 
   findPhrase = key => this.props.phrases.getIn(['all', 'phrases', key], key);
 
-  addMarks = (cm, change) => {
+  addMarks = (cm, change, setCurrentWidget) => {
     if (change.text.length) {
       let text = [];
       const doc = cm.getDoc();
@@ -72,7 +72,7 @@ class Editor extends React.Component {
             },
             match[0],
             this.findPhrase(match[1]),
-            this.props.setCurrentWidget,
+            setCurrentWidget,
             this.props.getPhraseTranslations,
             this.props.savePhraseTranslations
           ));
@@ -89,7 +89,7 @@ class Editor extends React.Component {
             },
             match[0],
             match[1],
-            this.props.setCurrentWidget,
+            setCurrentWidget,
             this.props.loadTemplate,
             this.props.setTemplateValue
           ));
@@ -102,12 +102,12 @@ class Editor extends React.Component {
 
   handleSubjectChange = (cm, change) => {
     this.props.changeTemplateSubject(cm.getValue());
-    this.addMarks(cm, change);
+    this.addMarks(cm, change, this.props.setCurrentWidget);
   };
 
   handleBodyChange = (cm, change) => {
     this.props.changeTemplateBody(cm.getValue());
-    this.addMarks(cm, change);
+    this.addMarks(cm, change, this.props.setCurrentWidget);
   };
 
   render() {

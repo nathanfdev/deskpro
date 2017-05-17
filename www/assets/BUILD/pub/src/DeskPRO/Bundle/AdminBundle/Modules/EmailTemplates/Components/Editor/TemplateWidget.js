@@ -20,9 +20,20 @@ class TemplatePopup extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: ''
+      content:       '',
+      currentWidget: ''
     };
   }
+
+  // Local function to deal with widget inception
+  setCurrentWidget = (popup) => {
+    if (this.state.currentWidget && this.state.currentWidget !== popup) {
+      this.state.currentWidget.closePopup();
+    }
+    this.setState({
+      currentWidget: popup
+    });
+  };
 
   getPopUp = () => (
     <div className="template-popup">
@@ -36,7 +47,8 @@ class TemplatePopup extends React.Component {
     </div>
     );
 
-  handleChange = (cm) => {
+  handleChange = (cm, change) => {
+    this.props.addMarks(cm, change, this.setCurrentWidget);
     this.setState({
       content: cm.getValue()
     });
@@ -68,6 +80,7 @@ class TemplatePopup extends React.Component {
   saveChanges = () => {
     this.props.setValue(this.props.text, this.state.content);
     this.popup.closePopup();
+    this.props.setCurrentWidget(null, null);
   };
 
   render() {
@@ -102,6 +115,7 @@ class TemplateWidget extends Widget {
       render(
         <TemplatePopup
           text={text}
+          addMarks={addMarks}
           loadTemplate={loadTemplate}
           setCurrentWidget={setCurrentWidget}
           setValue={setValue}
