@@ -37,8 +37,11 @@
     <span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
     <div class="dp-app-context" data-deskproapp-marker style="width: 100%; margin: 30px auto auto;"></div>
 </div>
+
+<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>
+
 {# Page Containers #}
-<div class="profile layout-content {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
+<div id="{{ baseId }}_layout_content" class="profile layout-content {% if not perms.edit %}perm-no-edit{% endif %} {% if not perms.delete %}perm-no-delete{% endif %}">
     <div class="dp-page-content">
         {# /Page Containers #}
 
