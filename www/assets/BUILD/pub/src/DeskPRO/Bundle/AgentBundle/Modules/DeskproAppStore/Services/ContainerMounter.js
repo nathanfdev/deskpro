@@ -28,6 +28,11 @@ class ContainerMounter
     this.appRegistry = appRegistry;
   }
 
+  /**
+   * @param {ContainerConfiguration} configuration
+   * @param {Context} context
+   * @return {{context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *, widgets: Array.<WidgetConfiguration>, widgetMessageRouter: ContainerMounter.widgetMessageRouter, widgetMessageBroker: ContainerMounter.widgetMessageBroker}}
+   */
   createProps = (configuration, context) =>
   {
       const { appstoreDispatcher, appRegistry, widgetMessageRouter, widgetMessageBroker } = this;
@@ -38,81 +43,63 @@ class ContainerMounter
       return { context, appstoreDispatcher, configuration, widgets, widgetMessageRouter, widgetMessageBroker } ;
   };
 
-
   /**
-   * @param {Array} domNodeList
-   * @param {Object} context
+   * @param {Context} context
+   * @param {Object} domNode
    * @return {*}
    */
-  mount = (domNodeList, context) =>
+  mountAt = (context, domNode) =>
   {
-    // based on each container's rendering strategy, build a list of render maps for each dom node
-    // a render map is map of dom nodes and their corresponding react elements
-    const renderMaps = domNodeList.map(dom => {
-      const configuration = ContainerConfiguration.fromDOM(dom);
-      const props = this.createProps(configuration, context);
+    const configuration = ContainerConfiguration.fromDOM(domNode);
+    const props = this.createProps(configuration, context);
 
-      if (configuration.renderType === 'inplace') {
-        return this.createInPlaceReactElement(dom, configuration, props);
-      }
-
-      if (configuration.renderType === 'legacy-sidebar') {
-        return this.createLegacySidebarReactElement(dom, configuration, props);
-      }
-
-      throw new Error('unknown render strategy');
-    });
-
-    //transform the list of maps into a list of entries for easier rendering
-    const entries = renderMaps.reduce(function (acc, renderMap) {
-        for (let entry of renderMap.entries()) { acc.push(entry); }
-        return acc;
-    }, []);
-
-    const reactElementList = [];
-    for (let i = 0; i < entries.length; i++) {
-      const reactElement = entries[i][1];
-      reactElementList.push(reactElement);
-      ReactDOM.render(reactElement, entries[i][0]);
+    let reactElement = null;
+    const { renderType: renderStrategy } = configuration;
+    if (renderStrategy === 'inplace') {
+      reactElement = this.renderInplace(domNode, configuration, props);
+    } else if (renderStrategy === 'legacy-sidebar') {
+      reactElement = this.renderLegacySidebar(domNode, configuration, props);
     }
 
-    return reactElementList;
+    if (!reactElement) {
+      throw new Error(`unknown render strategy: ${renderStrategy}`);
+    }
+
+    ReactDOM.render(reactElement, domNode);
   };
 
   /**
    * @param dom
    * @param {ContainerConfiguration} config
    * @param {Object} props
-   * @return {Map}
+   * @return {XML}
    */
-  createInPlaceReactElement = (dom, config, props) => {
+  renderInplace = (dom, config, props) => {
     const reactContainer = dom;
     const appContainer = React.createElement(DeskproAppContainer, props);
     const { reduxStore } = this;
 
     const reactElement = <Provider store={ reduxStore }>{ appContainer }</Provider>;
+    ReactDOM.render(reactElement, reactContainer);
 
-    const renderMap = new Map();
-    renderMap.set(reactContainer, reactElement);
-    return renderMap;
+    return reactElement;
   };
 
   /**
    * @param dom
    * @param {ContainerConfiguration} config
    * @param {Object} props
-   * @return {Map}
+   * @return {XML}
    */
-  createLegacySidebarReactElement = (dom, config, props) => {
+  renderLegacySidebar = (dom, config, props) => {
     const { reduxStore } = this;
     const reactContainer = LegacyAppSidebar.fromSelector(config.renderSidebarContainer).getContentRoot();
 
     const container = React.createElement(LegacySidebarContainer, props);
     const reactElement = <Provider store={ reduxStore }>{ container }</Provider>;
 
-    const renderMap = new Map();
-    renderMap.set(reactContainer, reactElement);
-    return renderMap;
+    ReactDOM.render(reactElement, reactContainer);
+    return reactElement;
   };
 }
 

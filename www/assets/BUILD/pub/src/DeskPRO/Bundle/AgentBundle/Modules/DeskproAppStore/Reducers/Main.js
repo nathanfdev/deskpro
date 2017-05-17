@@ -76,13 +76,16 @@ function appMountedHandler(state, payload, action) {
 
 /**
  * @param {Object} state
- * @param {Object} contextJS
+ * @param {Array<Context>} contextList
  * @param {Object} action
  * @returns {Object}
  */
-function loadPageFragmentAppsHandler(state, contextJS, action) {
-  const newContext = Immutable.fromJS (contextJS);
-  const allContexts = state.get('contexts').set(contextJS.page.pageUid, newContext);
+function loadPageFragmentAppsHandler(state, contextList, action)
+{
+  if (contextList.length === 0) { return state; }
+
+  const newContexts = contextList.reduce((acc, context) => { acc[context.id] = context; return acc; }, {});
+  const allContexts = state.get('contexts').merge(newContexts);
   return state.set('contexts', allContexts);
 }
 

@@ -65,18 +65,31 @@ class DeskproAppContainer extends React.Component
    */
   createReactElement = (widgetConfig) =>
   {
-    const { widgetMessageRouter } = this.props;
+    const { widgetMessageRouter, context } = this.props;
 
     const reactClass = xcomponent.create(widgetConfig.xcomponentConfig).react;
     const reactProps = {
       key: widgetConfig.id,
+
+      // widget properties
+
       widgetId: widgetConfig.id,
+      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
+      onDpMessage: (eventName, message) => widgetMessageRouter(eventName, message),
+
+      // instance properties
+
       appId: widgetConfig.appConfig.applicationId,
       appTitle: widgetConfig.appConfig.applicationTitle,
       appPackageName: widgetConfig.appConfig.applicationPackageName,
       instanceId: widgetConfig.appConfig.instanceId,
-      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
-      onDpMessage: (eventName, message) => widgetMessageRouter(eventName, message)
+
+      // context properties
+
+      contextType: context.type.toString(),
+      contextEntityId: context.entityId.toString(),
+      contextLocationId: context.locationId.toString(),
+      contextTabId: context.tabId.toString()
     };
 
     return React.createElement(reactClass, reactProps);
@@ -90,7 +103,7 @@ class DeskproAppContainer extends React.Component
   onXComponentDPContextInit = (widget, msg, reply) =>
   {
     const { context } = this.props;
-    reply(context);
+    reply( context.toJS() );
   };
 
   /**

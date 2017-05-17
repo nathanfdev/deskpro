@@ -1,4 +1,5 @@
-import ContainerDOMScanner from './Services/ContainerDOMScanner';
+import { ContainerDOM } from './Services/ContainerDOM';
+
 import ContainerMounter from './Services/ContainerMounter';
 import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
 import ReduxActionDispatcher from './Services/ReduxActionDispatcher';
@@ -10,6 +11,7 @@ import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration'
 
 /**
  * @param contexts
+ * @param {Function} forEach
  * @return {Map}
  */
 const eachTabPageFragmentContainer = (contexts, forEach) =>
@@ -85,26 +87,14 @@ class DeskproAppStore
   }
 
   /**
-   * @param {Object} context
-   * @param {DOMNode} domNode
-   * @param {ContainerMounter} containerMounter
-   */
-  static mountDOMNodeContainers(context, domNode, containerMounter)
-  {
-    const { validTargets } = DeskproAppStoreConfiguration;
-    const domNodeList = ContainerDOMScanner.fromAttributeName('data-deskproapp').filterByTargetTypeList(domNode, validTargets);
-    containerMounter.mount(domNodeList, context);
-  }
-
-  /**
    * Initializes the components of the app store in the deskpro context
    *
    * @param {DpApi} api
    * @param {DeskPRO.MessageBroker} messageBroker
    * @param {Object} reduxStore
-   * @param {DeskproAppStoreConfiguration} config
+   * @param {Window} window
    */
-  static bootstrap(api, messageBroker, reduxStore, config)
+  static bootstrap(api, messageBroker, reduxStore, window)
   {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
 
@@ -112,23 +102,30 @@ class DeskproAppStore
     const widgetMessageBroker = WidgetAPI.MessageGateway.messageBroker(reduxDispatcher);
 
     const manifests = filterAppManifestsConfig(reduxStore.getState());
+
+    const config = DeskproAppStore.configurationFromLocation(window.location);
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
+
     const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry);
+    const containerDOM = ContainerDOM.fromAttributeName('data-deskproapp');
 
     // subscribe to redux store changes
     reduxStore.subscribe( () => {
       const contexts = newContextsStateSelector(reduxStore.getState());
       if (contexts) {
-        eachTabPageFragmentContainer(contexts, (page, context) => {
-          DeskproAppStore.mountDOMNodeContainers(context, page.fragmentElement.get()[0], containerMounter);
-          page.updateAppsSidebar();
-        });
+        for (const context of contexts.values()) {
+          containerMounter.mountAt(context, containerDOM.findById(context.id, window.document));
+
+          // TODO do not trigger blindly the apps sidebar
+          const tab = DeskPRO_Window.TabBar.getTab(context.tabId);
+          tab.page.updateAppsSidebar();
+        }
       }
     });
 
-    const validTargets = DeskproAppStoreConfiguration.validTargets;
-    const domScanner = list => ContainerDOMScanner.fromAttributeName('data-deskproapp').filterAllByTargetTypeList(list, validTargets);
-    DeskproWindowMessageBrokerAdapter.registerListener(messageBroker)(reduxDispatcher, domScanner);
+    // const validTargets = DeskproAppStoreConfiguration.validTargets;
+    // const domScanner = list => ContainerDOMScanner.fromAttributeName('data-deskproapp').filterAllByTargetTypeList(list, validTargets);
+    DeskproWindowMessageBrokerAdapter.registerListener(messageBroker)(reduxDispatcher);
   }
 }
 

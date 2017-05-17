@@ -58,19 +58,34 @@ class DeskproAppRegistry
     const url = app.getUrlBuilder(target).setXconfTag(tag).build();
 
     const xconfig = {
+      // TODO: this should not be necessary when rendering as iframe. Dig into xcomponent's code to understand why the template mechanism is activated
+      defaultContext: 'iframe',
+      parentTemplate: '<div class="{CLASS.ELEMENT}" />',
+
+      autoResize: true,
+      scrolling: false,
       tag,
       url,
-      defaultContext: 'iframe',
-      parentTemplate: '<div class="{CLASS.ELEMENT}" />', // TODO: this should not be necessary when rendering as iframe. Dig into xcomponent's code to understand why the template mechanism is activated
-      scrolling: false,
-      autoResize: true,
+
       dimensions: { width: '100%', height: '100%' },
+
       timeout: 3000, // millis
-      props: { // The properties they can (or must) pass down to my component
+      // The properties they can (or must) pass down to my component
+      props: {
+
+        // WIDGET PROPERTIES
+
         widgetId: {
           type: 'string',
           required: true
         },
+
+        onDpMessage: {
+          type: 'function',
+          required: true
+        },
+
+        // INSTANCE PROPERTIES
 
         appId: {
           type: 'string',
@@ -92,7 +107,27 @@ class DeskproAppRegistry
           required: true
         },
 
-        onDpMessage: { type: 'function', required: true }
+        // CONTEXT PROPERTIES
+
+        contextType: {
+          type: 'string',
+          required: true
+        },
+
+        contextEntityId: {
+          type: 'string',
+          required: true
+        },
+
+        contextLocationId: {
+          type: 'string',
+          required: true
+        },
+
+        contextTabId: {
+          type: 'string',
+          required: true
+        }
       }
     };
 

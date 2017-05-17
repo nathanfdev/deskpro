@@ -1,4 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
+import { ContainerDOM } from '../Services/ContainerDOM'
+import { Context } from '../Domain/Context'
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
@@ -14,24 +16,34 @@ export const DESKPRO_APPSTORE_USER_GET = 'DESKPRO_APPSTORE_USER_GET';
 
 /**
 * @param {DeskPRO.Agent.PageFragment.Basic} page
+* @return Array<Context>
 */
 function pageToContext(page) {
+
+  const { fragmentElement } = page;
+  const dom = ContainerDOM.fromAttributeName('data-deskproapp');
+  const foundNodes = dom.findAll( fragmentElement.get() );
+  if (foundNodes.length === 0) { return []; }
+
   const { TYPENAME, pageUid } = page;
   const metadata = page.getMetaData(TYPENAME);
+  const routeUrl = page.getMetaData('routeUrl');
+  const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
 
-  return {
-    id: pageUid,
-    objectId: metadata.id,
-    objectType: TYPENAME,
-    object: {
-      id: metadata.id,
-      type: TYPENAME
-    },
-    page: {
-      pageUid: page.pageUid,
-      routeUrl: page.getMetaData('routeUrl')
-    }
-  }
+  // make sure all dom nodes have an id
+  dom.assignIds(foundNodes);
+  const configAttributesList = dom.extractConfigAttributes(foundNodes);
+  const contextList = configAttributesList.map(
+    attributes => new Context({
+      id: attributes.id,
+      type: TYPENAME,
+      entityId: metadata.id,
+      locationId: attributes['data-deskproapp'],
+      tabId: tab.id
+    })
+  );
+
+  return contextList;
 }
 export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, pageToContext);
 
