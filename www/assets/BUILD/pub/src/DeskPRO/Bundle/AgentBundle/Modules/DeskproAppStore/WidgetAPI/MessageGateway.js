@@ -89,10 +89,6 @@ class MessageGateway
       throw new Error(`${eventName} is not a known event name`);
     }
 
-    if (eventName === Messages.EVENT_CONTEXTINIT) {
-      return this.contextInit(widget);
-    }
-
     if (eventName === Messages.EVENT_STATE_FIND) {
       return this.findAppState(widget);
     }
@@ -101,43 +97,20 @@ class MessageGateway
       return this.getAppState(widget);
     }
 
-    if (eventName === Messages.EVENT_STATE_SAVE) {
-      return this.saveAppState(widget);
-    }
-
-    if (eventName === Messages.EVENT_STATE_CREATE) {
-      return this.createAppState(widget);
-    }
-
-    if (eventName === Messages.EVENT_STATE_UPDATE) {
-      return this.updateAppState(widget);
+    if (eventName === Messages.EVENT_STATE_SET) {
+      return this.setAppState(widget);
     }
 
     if (eventName === Messages.EVENT_STATE_DELETE) {
       return this.deleteAppState(widget);
     }
 
+
     if (eventName === Messages.EVENT_USER_GET) {
       return this.getUser(widget);
     }
 
     throw new Error(`Could not find a message channel for event ${eventName}`);
-  };
-
-  /**
-   * @param {WidgetConfiguration} widget
-   * @return {MessageChannel}
-   */
-  contextInit = (widget) => {
-    const messageType = Messages.EVENT_CONTEXTINIT;
-
-    const replyHandler = (widget, widgetWindow, context) => {
-      const value = context ? context : null;
-      postRobot.send(widgetWindow, messageType, value);
-    };
-
-    const defaultHandler = (widget, message, reply) => reply(null);
-    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
   };
 
   /**
@@ -186,8 +159,8 @@ class MessageGateway
    * @param {WidgetConfiguration} widget
    * @return {MessageChannel}
    */
-  saveAppState = (widget) => {
-    const messageType = Messages.EVENT_STATE_SAVE;
+  setAppState = (widget) => {
+    const messageType = Messages.EVENT_STATE_SET;
 
     const replyHandler = (widget, widgetWindow, state) => {
       const value = state ? JSON.parse(state.value) : null;
@@ -196,47 +169,7 @@ class MessageGateway
 
     const { appstoreDispatcher } = this;
     const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchSaveAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
-    };
-
-    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
-  };
-
-  /**
-   * @param {WidgetConfiguration} widget
-   * @return {MessageChannel}
-   */
-  createAppState = (widget) => {
-    const messageType = Messages.EVENT_STATE_CREATE;
-
-    const replyHandler = (widget, widgetWindow, state) => {
-      const value = state ? JSON.parse(state.value) : null;
-      postRobot.send(widgetWindow, messageType, value);
-    };
-
-    const { appstoreDispatcher } = this;
-    const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchCreateAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
-    };
-
-    return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);
-  };
-
-  /**
-   * @param {WidgetConfiguration} widget
-   * @return {MessageChannel}
-   */
-  updateAppState = (widget) => {
-    const messageType = Messages.EVENT_STATE_UPDATE;
-
-    const replyHandler = (widget, widgetWindow, state) => {
-      const value = state ? JSON.parse(state.value) : null;
-      postRobot.send(widgetWindow, messageType, value);
-    };
-
-    const { appstoreDispatcher } = this;
-    const defaultHandler = (widget, state, reply) => {
-      appstoreDispatcher.dispatchUpdateAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
+      appstoreDispatcher.dispatchSetAppState(widget.appConfig.instanceId, state, (app, state) => reply(state))
     };
 
     return new MessageGateway.MessageChannel(messageType, widget, replyHandler, defaultHandler, registerRequestHandler);

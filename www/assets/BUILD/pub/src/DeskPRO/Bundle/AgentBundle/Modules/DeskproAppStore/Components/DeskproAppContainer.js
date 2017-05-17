@@ -96,17 +96,6 @@ class DeskproAppContainer extends React.Component
   };
 
   /**
-   * @param {WidgetConfiguration} widget
-   * @param {Object} msg
-   * @param {Function} reply
-   */
-  onXComponentDPContextInit = (widget, msg, reply) =>
-  {
-    const { context } = this.props;
-    reply( context.toJS() );
-  };
-
-  /**
    * Handler for the onEnter event sent by the parentComponent of an xcomponent
    *
    * @param {ParentComponent} parentComponent
@@ -125,13 +114,10 @@ class DeskproAppContainer extends React.Component
     appstoreDispatcher.dispatchAppMounted(configuration.targetType, widget);
 
     const subscribeTo = [
-      { eventName: Messages.EVENT_CONTEXTINIT, requestHandler: this.onXComponentDPContextInit },
       Messages.EVENT_STATE_GET,
-      Messages.EVENT_STATE_SAVE,
+      Messages.EVENT_STATE_SET,
       Messages.EVENT_STATE_FIND,
       Messages.EVENT_STATE_DELETE,
-      Messages.EVENT_STATE_CREATE,
-      Messages.EVENT_STATE_UPDATE,
       Messages.EVENT_USER_GET
     ];
     widgetMessageBroker(widget, widgetWindow, subscribeTo);

@@ -146,27 +146,33 @@ export const deleteAppState = createAction(
 );
 
 /**
- * creates an action that will load the app configuration for the current security principal
+ * creates an action that will try to update a state variable if it exists, otherwise will attempt to create it
  */
-export const saveAppState = createAction(
-  DESKPRO_APPSTORE_LOAD_APPS,
-  (appId, state, callback, api) =>  api.sendPost(`DP_API/apps/${appId}/state`, state)
-    .then(httpResponse => httpResponse.data)
-    .then(response => { callback(appId, state); return state; } )
-);
-
-export const updateAppState = createAction(
+export const setAppState = createAction(
   DESKPRO_APPSTORE_LOAD_APPS,
   (appId, stateName, state, callback, api) =>  api.sendPut(`DP_API/apps/${appId}/state/${stateName}`, state)
     .then(httpResponse => httpResponse.data)
-    .then(response => { callback(appId, state); return state; } )
-);
+    .catch(httpResponse => {
+      if (httpResponse instanceof Error) {
+        return httpResponse;
+      }
 
-export const createAppState = createAction(
-  DESKPRO_APPSTORE_LOAD_APPS,
-  (appId, state, callback, api) =>  api.sendPost(`DP_API/apps/${appId}/state`, state)
-    .then(httpResponse => httpResponse.data)
+      // no previous state at that key, let's try and create it
+      if (404 === httpResponse.data.status) {
+          return api.sendPost(`DP_API/apps/${appId}/state`, state).then(httpResponse => httpResponse.data);
+      }
+
+      return new Error('failed to set app state');
+    })
     .then(response => { callback(appId, state); return state; } )
+    .then(data => {
+      if (data instanceof Error) {
+        callback(appId, null);
+        throw data;
+      }
+      callback(appId, data);
+      return data;
+    })
 );
 
 export const getUser = createAction(

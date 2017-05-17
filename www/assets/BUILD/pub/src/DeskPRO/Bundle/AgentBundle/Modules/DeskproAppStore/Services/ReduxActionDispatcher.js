@@ -56,23 +56,11 @@ class ReduxActionDispatcher
     reduxDispatch(Actions.getAppState(appId, name, scope, callback, api));
   };
 
-  dispatchSaveAppState = (appId, state, callback) =>
-  {
-    const { reduxDispatch, api } = this;
-    reduxDispatch(Actions.saveAppState(appId, state, callback, api));
-  };
-
-  dispatchUpdateAppState = (appId, state, callback) =>
+  dispatchSetAppState = (appId, state, callback) =>
   {
     const { reduxDispatch, api } = this;
     const { name } = state;
-    reduxDispatch(Actions.updateAppState(appId, name, state, callback, api));
-  };
-
-  dispatchCreateAppState = (appId, state, callback) =>
-  {
-    const { reduxDispatch, api } = this;
-    reduxDispatch(Actions.createAppState(appId, state, callback, api));
+    reduxDispatch(Actions.setAppState(appId, name, state, callback, api));
   };
 
   dispatchDeleteAppState = (appId, name, callback) =>
@@ -80,6 +68,7 @@ class ReduxActionDispatcher
     const { reduxDispatch, api } = this;
     reduxDispatch(Actions.deleteAppState(appId, name, callback, api));
   };
+
 
   dispatchGetUser = (appId, callback) =>
   {
