@@ -149,6 +149,9 @@ class TicketLog extends DomainObject
      */
     public $grouped = [];
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
@@ -163,6 +166,26 @@ class TicketLog extends DomainObject
     }
 
     /**
+     * @return TicketLog
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param TicketLog $parent
+     *
+     * @return $this
+     */
+    public function setParent(TicketLog $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
+    /**
      * @param Person $person
      *
      * @return $this
@@ -172,6 +195,14 @@ class TicketLog extends DomainObject
         $this->setModelField('person', $person);
 
         return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
     }
 
     public function getPersonId()
@@ -191,6 +222,14 @@ class TicketLog extends DomainObject
         return $this;
     }
 
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
     public function getTicketId()
     {
         return $this->ticket['id'];
@@ -206,6 +245,14 @@ class TicketLog extends DomainObject
         $this->setModelField('action_type', $action_type);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionType()
+    {
+        return $this->action_type;
     }
 
     public function setDetails(array $details)
@@ -249,6 +296,14 @@ class TicketLog extends DomainObject
         }
 
         return $details;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     //###########################################################################

@@ -86,6 +86,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
@@ -333,6 +334,7 @@ class ObjectsManager
             'TicketMacro'              => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
             'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
             'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
+            'TicketLog'                => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
@@ -402,6 +404,7 @@ class ObjectsManager
             'TicketMacro'              => [$this, 'find', TicketMacro::class],
             'TicketFilter'             => [$this, 'find', TicketFilter::class],
             'TicketSla'                => [$this, 'find', TicketSla::class],
+            'TicketLog'                => [$this, 'find', TicketLog::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],

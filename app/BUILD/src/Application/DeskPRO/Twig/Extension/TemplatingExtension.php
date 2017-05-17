@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
@@ -788,7 +789,12 @@ class TemplatingExtension extends \Twig_Extension
 
     public function securityToken($name = '', $timeout = 43200)
     {
-        return $this->container->getSession()->getEntity()->generateSecurityToken($name, $timeout);
+        $session = $this->container->getSession();
+        if ($session instanceof Session) {
+            return $session->getEntity()->generateSecurityToken($name, $timeout);
+        }
+
+        return;
     }
 
     public function staticSecurityToken($name = '', $timeout = 18000)

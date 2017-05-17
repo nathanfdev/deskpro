@@ -26,32 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLogs;
 
-use Application\DeskPRO\Entity\TicketParticipant;
-use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TicketParticipant.
+ * Class TicketLogDetailsType.
  */
-class TicketParticipantHandler extends AbstractEntityHandler
+class TicketLogDetailsType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public static function getClassNames()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return TicketParticipant::class;
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
      * {@inheritdoc}
-     *
-     * @param TicketParticipant $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return $entity->getPerson();
+        $resolver->setDefaults([
+            'error_bubbling'     => false,
+            'allow_extra_fields' => true,
+            'compound'           => true,
+        ]);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        $event->setData($event->getForm()->getExtraData());
     }
 }
