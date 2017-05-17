@@ -70,9 +70,7 @@ class AgentLegacyApp {
         }
       }
 
-      //register a listener for any loaded content so we can instantiate any apps
-      const configuration = DeskproAppStore.configurationFromLocation(window.location);
-      DeskproAppStore.bootstrap(api, messageBroker, this.store, configuration);
+      DeskproAppStore.bootstrap(api, messageBroker, this.store, window);
     }
   }
 
