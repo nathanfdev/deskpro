@@ -509,11 +509,11 @@ class Html extends AbstractRenderer
                 $cells[] = "<td>$value</td>";
 
                 if ($totalType) {
-                    $rowTotal += str_replace(',', '', $value);
+                    $rowTotal += (int) str_replace(',', '', $value);
                     if (!isset($columnTotals[$xPath])) {
                         $columnTotals[$xPath] = 0;
                     }
-                    $columnTotals[$xPath] += str_replace(',', '', $value);
+                    $columnTotals[$xPath] += (int) str_replace(',', '', $value);
                 }
             }
 
