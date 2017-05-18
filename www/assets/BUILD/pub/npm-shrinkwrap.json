@@ -2986,6 +2986,12 @@
       "from": "eventemitter2@0.4.14",
       "resolved": "https://registry.npmjs.org/eventemitter2/-/eventemitter2-0.4.14.tgz"
     },
+    "eventemitter3": {
+      "version": "2.0.3",
+      "from": "eventemitter3@2.0.3",
+      "resolved": "https://registry.npmjs.org/eventemitter3/-/eventemitter3-2.0.3.tgz",
+      "dev": true
+    },
     "events": {
       "version": "1.1.1",
       "from": "events@>=1.0.0 <2.0.0",
@@ -8488,6 +8494,12 @@
       "version": "0.0.7",
       "from": "sequencify@>=0.0.7 <0.1.0",
       "resolved": "https://registry.npmjs.org/sequencify/-/sequencify-0.0.7.tgz",
+      "dev": true
+    },
+    "serialize-error": {
+      "version": "2.1.0",
+      "from": "serialize-error@latest",
+      "resolved": "https://registry.npmjs.org/serialize-error/-/serialize-error-2.1.0.tgz",
       "dev": true
     },
     "serve-favicon": {

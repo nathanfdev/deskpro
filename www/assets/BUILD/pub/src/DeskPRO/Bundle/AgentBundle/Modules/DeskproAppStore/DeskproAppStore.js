@@ -1,4 +1,4 @@
-import { ContainerDOM } from './Services/ContainerDOM';
+import * as WidgetDOM from './WidgetDOM';
 
 import ContainerMounter from './Services/ContainerMounter';
 import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
@@ -6,33 +6,12 @@ import ReduxActionDispatcher from './Services/ReduxActionDispatcher';
 import { filterAppManifestsConfig, newContextsStateSelector } from './Selectors/Main';
 import DeskproAppRegistry from './Domain/DeskproAppRegistry';
 import { loadApps, loadDevApp } from './Actions/Actions'
-import * as WidgetAPI from './WidgetAPI'
+
 import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
+import {AppServices} from './Services/AppServices';
+import {registerWidgetRequestListeners} from './WidgetMessage';
+import {RequestEventDispatcher} from './Services/EventDispatcher';
 
-/**
- * @param contexts
- * @param {Function} forEach
- * @return {Map}
- */
-const eachTabPageFragmentContainer = (contexts, forEach) =>
-{
-  const mountableContexts = new Map();
-
-  for (const context of contexts.values()) {
-    if (context.has('page')) { //page fragment
-      const routeUrl = context.get('page').get('routeUrl');
-      const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
-      if (tab) {
-        mountableContexts.set(context.toJS(), tab.page);
-      } else {
-        // TODO handle closing of tabs, unmounting of components
-        console.log('found a context (tab) which was closed without any cleanup actions executed afterwards. please fix this');
-      }
-    }
-  }
-
-  mountableContexts.forEach(forEach);
-};
 
 class DeskproAppStore
 {
@@ -97,24 +76,22 @@ class DeskproAppStore
   static bootstrap(api, messageBroker, reduxStore, window)
   {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
-
-    const widgetMessageRouter = WidgetAPI.MessageGateway.messageRouter(reduxDispatcher);
-    const widgetMessageBroker = WidgetAPI.MessageGateway.messageBroker(reduxDispatcher);
+    const appServices = new AppServices({ api, window });
+    registerWidgetRequestListeners(RequestEventDispatcher, appServices);
 
     const manifests = filterAppManifestsConfig(reduxStore.getState());
 
     const config = DeskproAppStore.configurationFromLocation(window.location);
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
 
-    const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry);
-    const containerDOM = ContainerDOM.fromAttributeName('data-deskproapp');
+    const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, appRegistry);
 
     // subscribe to redux store changes
     reduxStore.subscribe( () => {
       const contexts = newContextsStateSelector(reduxStore.getState());
       if (contexts) {
         for (const context of contexts.values()) {
-          containerMounter.mountAt(context, containerDOM.findById(context.id, window.document));
+          containerMounter.mountAt(context, WidgetDOM.container.findContainerById(context.id, window.document));
 
           // TODO do not trigger blindly the apps sidebar
           const tab = DeskPRO_Window.TabBar.getTab(context.tabId);

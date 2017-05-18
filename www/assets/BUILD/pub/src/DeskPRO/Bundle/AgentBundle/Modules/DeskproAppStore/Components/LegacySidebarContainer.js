@@ -6,12 +6,11 @@ import LegacyAppIcons from './LegacyAppIcons';
 class LegacySidebarContainer extends React.Component
 {
   static propTypes = {
-    widgets: PropTypes.array.isRequired
+    widgetsConfigList: PropTypes.array.isRequired
+    , dispatchWidgetRequestEvent: PropTypes.func.isRequired
+
     , context: PropTypes.object.isRequired
-    , appstoreDispatcher: PropTypes.object.isRequired
     , configuration: PropTypes.object.isRequired
-    , widgetMessageRouter: PropTypes.func.isRequired
-    , widgetMessageBroker: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -80,12 +79,10 @@ class LegacySidebarContainer extends React.Component
    */
   render() {
     return (<DeskproAppContainer
-      widgets={this.props.widgets}
-      context={this.props.context}
-      appstoreDispatcher={this.props.appstoreDispatcher}
-      configuration={this.props.configuration}
-      widgetMessageRouter={this.props.widgetMessageRouter}
-      widgetMessageBroker={this.props.widgetMessageBroker}
+      widgetsConfigList = {this.props.widgetsConfigList}
+      dispatchWidgetRequestEvent = {this.props.dispatchWidgetRequestEvent}
+      context = {this.props.context}
+      configuration = {this.props.configuration}
     />);
   }
 }

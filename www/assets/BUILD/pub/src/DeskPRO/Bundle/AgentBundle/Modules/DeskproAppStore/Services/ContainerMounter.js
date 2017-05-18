@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import DeskproAppContainer from '../Components/DeskproAppContainer';
 import LegacySidebarContainer from '../Components/LegacySidebarContainer';
 import LegacyAppSidebar from '../Components/LegacyAppSidebar';
 
 import ContainerConfiguration from './ContainerConfiguration';
+import { dispatchWidgetRequestEvent } from '../WidgetMessage';
+
 import { Provider } from 'react-redux';
 
 /**
@@ -15,32 +18,31 @@ class ContainerMounter
   /**
    * @param reduxStore
    * @param {ReduxActionDispatcher} appstoreDispatcher
-   * @param {Function} widgetMessageRouter
-   * @param {Function} widgetMessageBroker
    * @param {DeskproAppRegistry} appRegistry
    */
-  constructor(reduxStore, appstoreDispatcher, widgetMessageRouter, widgetMessageBroker, appRegistry)
+  constructor(reduxStore, appstoreDispatcher, appRegistry)
   {
     this.reduxStore = reduxStore;
     this.appstoreDispatcher = appstoreDispatcher;
-    this.widgetMessageRouter = widgetMessageRouter;
-    this.widgetMessageBroker = widgetMessageBroker;
     this.appRegistry = appRegistry;
   }
 
   /**
    * @param {ContainerConfiguration} configuration
    * @param {Context} context
-   * @return {{context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *, widgets: Array.<WidgetConfiguration>, widgetMessageRouter: ContainerMounter.widgetMessageRouter, widgetMessageBroker: ContainerMounter.widgetMessageBroker}}
+   * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchWidgetRequestEvent, context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *}}
    */
   createProps = (configuration, context) =>
   {
-      const { appstoreDispatcher, appRegistry, widgetMessageRouter, widgetMessageBroker } = this;
+      const { appstoreDispatcher, appRegistry } = this;
 
       const targetType = configuration.targetType;
-      const widgets = appRegistry.getWidgetConfigByTargetType(targetType);
+      const widgetsConfigList = appRegistry.getWidgetConfigByTargetType(targetType);
 
-      return { context, appstoreDispatcher, configuration, widgets, widgetMessageRouter, widgetMessageBroker } ;
+      return {
+        widgetsConfigList, dispatchWidgetRequestEvent
+        , context, appstoreDispatcher, configuration
+      };
   };
 
   /**

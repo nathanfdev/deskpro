@@ -31,7 +31,7 @@ class DeskproWindowMessageBrokerAdapter
     return (page, ...args) => {
       if (page instanceof window.DeskPRO.Agent.PageFragment.Basic) {
 
-        const { TYPENAME, fragmentElement, pageUid } = page;
+        const { TYPENAME } = page;
 
         const metadata = page.getMetaData(TYPENAME);
         if (!metadata || !metadata.id) {

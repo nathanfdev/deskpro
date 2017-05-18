@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { ContainerDOM } from '../Services/ContainerDOM'
+import * as WidgetDOM from '../WidgetDOM'
 import { Context } from '../Domain/Context'
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
@@ -18,33 +18,30 @@ export const DESKPRO_APPSTORE_USER_GET = 'DESKPRO_APPSTORE_USER_GET';
 * @param {DeskPRO.Agent.PageFragment.Basic} page
 * @return Array<Context>
 */
-function pageToContext(page) {
-
+function pageToContext(page)
+{
   const { fragmentElement } = page;
-  const dom = ContainerDOM.fromAttributeName('data-deskproapp');
-  const foundNodes = dom.findAll( fragmentElement.get() );
+  const foundNodes = WidgetDOM.container.findAllFromList( fragmentElement.get() );
   if (foundNodes.length === 0) { return []; }
 
-  const { TYPENAME, pageUid } = page;
-  const metadata = page.getMetaData(TYPENAME);
+  // make sure all dom nodes have an id
+  WidgetDOM.container.ensureContainerIds(foundNodes);
+
+  // extract tab props
+  const { TYPENAME: type } = page;
+  const metadata = page.getMetaData(type);
   const routeUrl = page.getMetaData('routeUrl');
   const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
+  const tabProps = { type, entityId: metadata.id, tabId: tab.id };
 
-  // make sure all dom nodes have an id
-  dom.assignIds(foundNodes);
-  const configAttributesList = dom.extractConfigAttributes(foundNodes);
-  const contextList = configAttributesList.map(
-    attributes => new Context({
-      id: attributes.id,
-      type: TYPENAME,
-      entityId: metadata.id,
-      locationId: attributes['data-deskproapp'],
-      tabId: tab.id
-    })
-  );
+  // extract container props
+  const attributeToProp = ({ id, 'data-deskproapp': locationId }) => ({id, locationId});
+  const containerPropList = WidgetDOM.container.extractConfigurationFromList(foundNodes, attributeToProp);
 
-  return contextList;
+  // create context list
+  return containerPropList.map(containerProps => new Context(Object.assign({}, tabProps, containerProps)));
 }
+
 export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, pageToContext);
 
 /**

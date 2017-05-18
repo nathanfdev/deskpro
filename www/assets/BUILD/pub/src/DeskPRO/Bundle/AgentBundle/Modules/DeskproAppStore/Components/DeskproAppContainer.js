@@ -1,7 +1,19 @@
 import React, { PropTypes } from 'react';
 import * as xcomponent from 'xcomponent/src';
 
-import { Messages } from '../WidgetAPI'
+import { Widget } from '../Domain/Widget'
+import { WidgetMessage } from '../WidgetMessage'
+
+/**
+ * @param {ParentComponent} parentComponent
+ * @param {WidgetConfiguration} widgetConfig
+ * @return {Widget}
+ */
+export const createWidget = (parentComponent, widgetConfig) =>
+{
+  const windowId = ['xcomponent', parentComponent.props.uid].join('-');
+  return new Widget({ configuration: widgetConfig, windowId });
+};
 
 /**
  * This container represents the integration point between an external app and deskpro.
@@ -11,18 +23,37 @@ import { Messages } from '../WidgetAPI'
 class DeskproAppContainer extends React.Component
 {
   static propTypes = {
-    context: PropTypes.object.isRequired
+    widgetsConfigList: PropTypes.array.isRequired
+    , dispatchWidgetRequestEvent: PropTypes.func.isRequired
+    , context: PropTypes.object.isRequired
     , configuration: PropTypes.object.isRequired
-    , appstoreDispatcher: PropTypes.object.isRequired
-    , widgets: PropTypes.array.isRequired
-    , widgetMessageRouter: PropTypes.func.isRequired
-    , widgetMessageBroker: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.components = new Map();
+    //this.components = new Map();
+    this.widgets = [];
   }
+
+  /**
+   * @param {String} id
+   * @return {WidgetConfiguration|null}
+   */
+  findWidgetConfigByWidgetId = id => {
+    const { widgetsConfigList } = this.props;
+    const found = widgetsConfigList.filter(widget => widget.id === id);
+
+    return found.length === 1 ? found[0] : null;
+  };
+
+  /**
+   * @param {WidgetConfiguration} widgetConfig
+   * @return {Widget}
+   */
+  findWidgetByWidgetConfig = widgetConfig => {
+    const found = this.widgets.filter(widget =>  widget.configuration === widgetConfig);
+    return found.length === 1 ? found[0] : null;
+  };
 
   /**
    * Renders the container and all the apps
@@ -30,8 +61,8 @@ class DeskproAppContainer extends React.Component
    * @returns {XML}
    */
   render() {
-    const { widgets } = this.props;
-    if (widgets) {
+    const { widgetsConfigList } = this.props;
+    if (widgetsConfigList && widgetsConfigList.length > 0) {
       return this.renderApp();
     }
 
@@ -43,9 +74,7 @@ class DeskproAppContainer extends React.Component
    *
    * @returns {XML}
    */
-  renderEmpty() {
-    return (<div></div>)
-  }
+  renderEmpty() { return (<div />); }
 
   /**
    * Renders all the apps
@@ -53,8 +82,8 @@ class DeskproAppContainer extends React.Component
    * @returns {XML}
    */
   renderApp() {
-    const { widgets } = this.props;
-    const components = widgets.map( widget => this.createReactElement(widget));
+    const { widgetsConfigList } = this.props;
+    const components = widgetsConfigList.map(widget => this.createReactElement(widget));
 
     return React.createElement('div', {}, components);
   }
@@ -65,34 +94,61 @@ class DeskproAppContainer extends React.Component
    */
   createReactElement = (widgetConfig) =>
   {
-    const { widgetMessageRouter, context } = this.props;
+    // widget properties
 
-    const reactClass = xcomponent.create(widgetConfig.xcomponentConfig).react;
-    const reactProps = {
-      key: widgetConfig.id,
-
-      // widget properties
-
+    const onEnter = this.onXComponentEnter.bind(this);
+    const widgetProps = {
       widgetId: widgetConfig.id,
-      onEnter: DeskproAppContainer.createOnXComponentEnterListener(this),
-      onDpMessage: (eventName, message) => widgetMessageRouter(eventName, message),
+      // xcomponent changes the scope of the onEnter callback to that of the ParentComponent instance and does not provide
+      // any other parameters so we resort to this type of closure to get a hold of the ParentComponent instance
+      onEnter: function () { onEnter(this) },
+      onDpMessage: this.onXComponentMessage.bind(this, widgetConfig),
+    };
 
-      // instance properties
+    // instance properties
 
+    const instanceProps = {
       appId: widgetConfig.appConfig.applicationId,
       appTitle: widgetConfig.appConfig.applicationTitle,
       appPackageName: widgetConfig.appConfig.applicationPackageName,
       instanceId: widgetConfig.appConfig.instanceId,
+    };
 
-      // context properties
+    // context properties
 
+    const { context } = this.props;
+    const contextProps = {
       contextType: context.type.toString(),
       contextEntityId: context.entityId.toString(),
       contextLocationId: context.locationId.toString(),
       contextTabId: context.tabId.toString()
     };
 
+    const reactProps = { key: widgetConfig.id, ...widgetProps, ...instanceProps, ...contextProps };
+
+    const xcomponentInstance = xcomponent.create(widgetConfig.xcomponentConfig);
+    const reactClass = xcomponentInstance.react;
     return React.createElement(reactClass, reactProps);
+  };
+
+  /**
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {String} eventName
+   * @param {*} widgetMessage
+   */
+  onXComponentMessage = (widgetConfiguration, eventName, widgetMessage) =>
+  {
+    const { dispatchWidgetRequestEvent } = this.props;
+    const widget = this.findWidgetByWidgetConfig(widgetConfiguration);
+
+    const { args, messageId, widgetId } = widgetMessage;
+    // TODO check widgetIds match
+
+    dispatchWidgetRequestEvent(
+      eventName
+      , widget
+      , new WidgetMessage({ body: args[0], id: messageId })
+    );
   };
 
   /**
@@ -102,40 +158,13 @@ class DeskproAppContainer extends React.Component
    */
   onXComponentEnter = (parentComponent) =>
   {
-    const widgetWindow = parentComponent.iframe.contentWindow;
     const { widgetId } = parentComponent.props;
+    // TODO handle case for uknown parentComponent widget
+    const widgetConfiguration = this.findWidgetConfigByWidgetId(widgetId);
 
-    const { configuration, appstoreDispatcher, widgetMessageBroker, widgets } = this.props;
-    const widget = widgets.filter(widget => widget.id === widgetId)[0];
-
-    //TODO handle case for uknown parentComponent widget
-
-    this.components.set(widgetId, parentComponent);
-    appstoreDispatcher.dispatchAppMounted(configuration.targetType, widget);
-
-    const subscribeTo = [
-      Messages.EVENT_STATE_GET,
-      Messages.EVENT_STATE_SET,
-      Messages.EVENT_STATE_FIND,
-      Messages.EVENT_STATE_DELETE,
-      Messages.EVENT_USER_GET
-    ];
-    widgetMessageBroker(widget, widgetWindow, subscribeTo);
+    const widget = createWidget(parentComponent, widgetConfiguration);
+    this.widgets.push(widget);
   };
-
-  /**
-   * Creates an onEnter callback for xcomponent
-   *
-   * xcomponent changes the scope of the onEnter callback to that of the ParentComponent instance and does not provide
-   * any other parameters so we resort to this type of closure to get a hold of the ParentComponent instance
-   *
-   * @param {DeskproAppContainer} container
-   * @returns {Function}
-   */
-  static createOnXComponentEnterListener(container)
-  {
-    return function () { container.onXComponentEnter(this); }
-  }
 }
 
 export default DeskproAppContainer;
