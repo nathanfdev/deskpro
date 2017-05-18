@@ -156,7 +156,7 @@ class TicketIncomingEmailMessage
         if ($ticket_email->force_reply_cutter) {
             $this->logMessage('[TicketIncomingEmailMessage] do_cut=true because force_reply_cutter is on');
             $do_cut = true;
-        } elseif ($ticket_email->force_reply_cutter) {
+        } elseif ($ticket_email->force_no_reply_cutter) {
             $this->logMessage('[TicketIncomingEmailMessage] do_cut=false because force_no_reply_cutter is on');
             $do_cut = false;
         } elseif ($mode == self::MODE_NEWREPLY) {
@@ -406,7 +406,13 @@ class TicketIncomingEmailMessage
                     }
                 }
 
-                $this->body .= $generic_cutter->cutBottomBlock($this->body_raw, true);
+                if (!trim(strip_tags($this->body))) {
+                    $this->logMessage('We lost anything except tags after cutting. Fallback to raw text body to have something');
+                    $this->body = nl2br($ticket_email->email_body_text); // this is an emergency case when nothing was
+                    // replied
+                } else {
+                    $this->body .= $generic_cutter->cutBottomBlock($this->body_raw, true);
+                }
             }
         }
 
