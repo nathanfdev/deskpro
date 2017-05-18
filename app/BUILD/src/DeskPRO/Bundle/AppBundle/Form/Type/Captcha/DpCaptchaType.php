@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -79,9 +79,10 @@ class DpCaptchaType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $form = $event->getForm();
+            $config = $form->getRoot()->getConfig();
 
             // if saved_form_subrequest option is true on the root form, ignore all captcha (don't add it!)
-            if ($form->getRoot()->getConfig()->getOption('saved_form_subrequest', false)) {
+            if ($config->hasOption('saved_form_subrequest') && $config->getOption('saved_form_subrequest', false)) {
                 $form->getRoot()->remove($form->getName());
 
                 return;
@@ -129,7 +130,7 @@ class DpCaptchaType extends AbstractType
                 // if its a saved form subrequest, allow extra fields
                 // this is because we disable things like catpcha, and csrf, and they may
                 // be present in the form data even though we've removed them from the actual form
-                return $options['saved_form_subrequest'];
+                return isset($options['saved_form_subrequest']) && $options['saved_form_subrequest'];
             },
         ]);
     }

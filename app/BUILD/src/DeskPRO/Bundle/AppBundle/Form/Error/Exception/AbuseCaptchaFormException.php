@@ -26,14 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
+namespace DeskPRO\Bundle\AppBundle\Form\Error\Exception;
 
-use Symfony\Component\Validator\Constraint;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
- * @Annotation
+ * Class AbuseCaptchaFormException.
  */
-class ValidRecaptcha2 extends Constraint
+class AbuseCaptchaFormException extends BadRequestHttpException implements FormExceptionInterface
 {
-    public $message = 'portal.forms.error_captcha';
+    /**
+     * @var FormInterface
+     */
+    protected $form;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(FormInterface $form, \Exception $previous = null, $code = 0)
+    {
+        $this->form = $form;
+
+        parent::__construct(ErrorsCodes::CAPTCHA_REQUIRED, $previous, $code);
+    }
+
+    /**
+     * @return FormInterface
+     */
+    public function getForm()
+    {
+        return $this->form;
+    }
 }

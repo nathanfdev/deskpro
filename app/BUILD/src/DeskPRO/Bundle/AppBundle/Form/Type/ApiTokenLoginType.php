@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class AuthenticationRequestType.
  */
-class AuthenticationRequestType extends AbstractType
+class ApiTokenLoginType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -57,6 +57,8 @@ class AuthenticationRequestType extends AbstractType
                 ],
             ])
         ;
+
+        $builder->addEventSubscriber(new ApiCaptchaListener());
     }
 
     /**

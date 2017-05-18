@@ -26,19 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha;
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * A service that can use a FormContext to manipulate/add/delete fields from the form.
- *
- * This service offers the calling code an easy to use API.
- *
- * This is used almost exclusively by form types themselves ro reduce code reuse accross different forms.
+ * Class ApiCaptcha.
  */
-class FormManipulator
+class ApiCaptcha extends Constraint
 {
+    const CAPTCHA = 'captcha';
+
+    public $message = 'The CAPTCHA value was incorrect';
 }

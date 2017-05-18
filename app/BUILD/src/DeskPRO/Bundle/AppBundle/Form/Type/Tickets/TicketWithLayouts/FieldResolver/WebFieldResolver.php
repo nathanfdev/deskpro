@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
@@ -45,7 +46,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -94,13 +94,10 @@ class WebFieldResolver extends AbstractFieldResolver
         // NOTE: you may want to view TicketLayoutFactory.
         // In TicketLayoutFactory we can, at times, add a CAPTCHA to the ticket
         // layout under certain circumstances (when anti-abuse is violated, for example).
-
-        $options = [
+        return new FormField(DpCaptchaType::class, [
             'mapped'         => false,
             'error_bubbling' => false,
-        ];
-
-        return new FormField(DpCaptchaType::class, $options);
+        ]);
     }
 
     /**

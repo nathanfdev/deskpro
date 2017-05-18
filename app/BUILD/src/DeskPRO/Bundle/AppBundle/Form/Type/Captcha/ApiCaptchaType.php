@@ -26,66 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
+
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
- * DeskPRO.
+ * Class ApiCaptchaType.
  */
-
-namespace DeskPRO\Bundle\ApiBundle\View\Representation;
-
-use JMS\Serializer\Annotation as Serializer;
-
-/**
- * @Serializer\ExclusionPolicy("ALL")
- */
-class StandardRepresentation
+class ApiCaptchaType extends AbstractType
 {
     /**
-     * @var mixed
-     * @Serializer\Expose()
+     * {@inheritdoc}
      */
-    protected $data;
-
-    /**
-     * @var array
-     * @Serializer\Expose()
-     */
-    protected $meta;
-
-    public function __construct($data = null, array $meta = [])
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->data = $data;
-        $this->meta = $meta;
+        $builder
+            ->add('token', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
+            ])
+            ->add('phrase', TextType::class, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                ],
+            ])
+        ;
     }
 
     /**
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function getData()
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return $this->data;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    /**
-     * @return array
-     */
-    public function getMeta()
-    {
-        return $this->meta;
-    }
-
-    /**
-     * @param array $meta
-     */
-    public function setMeta(array $meta)
-    {
-        $this->meta = $meta;
+        $resolver->setDefaults([
+            'constraints' => [
+                new AppAssert\Captcha\ApiCaptcha(),
+            ],
+        ]);
     }
 }

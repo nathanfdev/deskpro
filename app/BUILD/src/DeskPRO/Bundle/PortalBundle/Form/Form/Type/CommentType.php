@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonGuest;
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;

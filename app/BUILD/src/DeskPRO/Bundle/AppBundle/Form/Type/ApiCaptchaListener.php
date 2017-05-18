@@ -26,25 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ApiCaptchaType;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+
 /**
- * DeskPRO.
+ * Class ApiCaptchaListener.
  */
-
-namespace spec\DeskPRO\Bundle\ApiBundle\View\Representation;
-
-use PhpSpec\ObjectBehavior;
-
-/**
- * @mixin \DeskPRO\Bundle\ApiBundle\View\Representation\BatchRepresentation
- */
-class BatchRepresentationSpec extends ObjectBehavior
+class ApiCaptchaListener implements EventSubscriberInterface
 {
-    public function it_holds_responses()
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
     {
-        $responses = ['response1', 'response2', 'etc'];
+        return [
+            FormEvents::PRE_SUBMIT => 'onPreSubmit',
+        ];
+    }
 
-        $this->beConstructedWith($responses);
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
 
-        $this->getResponses()->shouldReturn($responses);
+        if (isset($data['captcha'])) {
+            $form->add('captcha', ApiCaptchaType::class);
+        }
     }
 }

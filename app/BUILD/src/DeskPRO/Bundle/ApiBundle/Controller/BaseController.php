@@ -75,17 +75,17 @@ class BaseController extends FOSRestController
      * @param $status
      * @param $code
      * @param $message
-     * @param array|FormInterface $errors_data
+     * @param array|FormInterface $errorsData
      *
      * @return array
      */
-    protected function createErrorRepresentation($status, $code, $message, $errors_data = [])
+    protected function createErrorRepresentation($status, $code, $message, $errorsData = [])
     {
         return $this->get('api_view_representation_factory')->createErrorRepresentation(
             $status,
             $code,
             $message,
-            $errors_data
+            $errorsData
         );
     }
 

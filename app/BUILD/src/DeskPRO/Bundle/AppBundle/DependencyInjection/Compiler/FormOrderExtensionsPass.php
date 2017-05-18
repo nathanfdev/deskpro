@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler;
 
 use DeskPRO\Component\Util\MapUtils;
@@ -41,7 +37,7 @@ use Symfony\Component\DependencyInjection\Definition;
  * We have a few extensions that implement configureOptions() to set new defaults
  * on known form options:.
  *
- * - DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
+ * - DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension
  * - DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproFormExtension
  *
  * This requires our ext to be added first (so options are configured first).
@@ -54,6 +50,9 @@ use Symfony\Component\DependencyInjection\Definition;
  */
 class FormOrderExtensionsPass implements CompilerPassInterface
 {
+    /**
+     * {@inheritdoc}
+     */
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasDefinition('form.extension')) {

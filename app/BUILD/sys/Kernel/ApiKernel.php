@@ -26,14 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * Class ApiKernel.
+ */
 class ApiKernel extends BaseKernel
 {
     /**
@@ -58,6 +57,7 @@ class ApiKernel extends BaseKernel
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new \RMS\PushNotificationsBundle\RMSPushNotificationsBundle(),
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
