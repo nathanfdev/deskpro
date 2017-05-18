@@ -113,3 +113,18 @@ services:
       - "@security.authorization_checker"
     tags:
       - { name: validator.constraint_validator }
+
+  validator.custom_field_date:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateValidator
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: validator.constraint_validator }
+
+
+  validator.custom_field_datetime:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateTimeValidator
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: validator.constraint_validator }
