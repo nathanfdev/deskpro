@@ -180,6 +180,9 @@ define [
 
       form = Util.clone(@form, true)
 
+      if !form.with_email_aliases
+        form.other_addresses = ''
+
       if form.incoming_type == 'gmail'
         form.in_gmail_account.user = form.address
         if form.in_gmail_account.read_mailbox_type == 'inbox' or form.in_gmail_account.read_mailbox == ''

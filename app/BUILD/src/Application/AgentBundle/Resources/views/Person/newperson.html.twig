@@ -190,7 +190,7 @@
                                                     <th>{{ phrase('agent.general.usergroups') }}</th>
                                                     <td>
                                                         <div id="{{ baseId }}_ug_container">
-                                                            <select name="newperson[usergroups][]" class="dpe_select">
+                                                            <select name="newperson[usergroup_ids][]" class="dpe_select">
                                                                 {% for id,name in usergroup_names %}
                                                                     <option value="{{ id }}">{{ name }}</option>
                                                                 {% endfor %}

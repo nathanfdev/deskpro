@@ -1084,6 +1084,18 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param string
+     *
+     * @return $this
+     */
+    public function setCreationSystem($creationSystem = null)
+    {
+        $this->setModelField('creation_system', $creationSystem);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getCreationSystem()
@@ -1542,10 +1554,14 @@ class Person extends DomainObject implements
      * Set the raw password field (ie already hashed).
      *
      * @param $password
+     *
+     * @return $this
      */
     public function setRawPassword($password)
     {
         $this->setModelField('password', $password);
+
+        return $this;
     }
 
     /**

@@ -797,7 +797,7 @@ class UserChatController extends AbstractController
         $searcher = new ChatConversationSearch();
         $searcher->setPersonContext($this->person);
         $searcher->setColumns('IF(department_id, department_id, -1) AS department_id, COUNT(*) AS count');
-        $searcher->setGroupBy('chat_conversations.agent_id');
+        $searcher->setGroupBy('chat_conversations.department_id');
         $searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
         $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
 
