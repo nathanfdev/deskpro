@@ -272,7 +272,11 @@ class TemplateController extends BaseController
         $lang           = $request->request->get('lang');
         $extraTemplates = $request->request->get('extraTemplates');
 
-        $view = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $extraTemplates);
+        try {
+            $view = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $extraTemplates);
+        } catch (\Twig_Error $e) {
+            return new View(['error' => $e->getRawMessage(), 'line' => $e->getTemplateLine()]);
+        }
 
         return new View($view);
     }

@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { render } from 'react-dom';
+import classNames from 'classnames';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Widget from './Widget';
@@ -9,6 +10,7 @@ class TemplatePopup extends React.Component {
   static propTypes = {
     text:             PropTypes.string,
     loadTemplate:     PropTypes.func,
+    resetTemplate:    PropTypes.func,
     setCurrentWidget: PropTypes.func,
     setValue:         PropTypes.func,
   };
@@ -21,7 +23,8 @@ class TemplatePopup extends React.Component {
     super(props);
     this.state = {
       content:       '',
-      currentWidget: ''
+      currentWidget: '',
+      resetSubmit:   false
     };
   }
 
@@ -42,8 +45,18 @@ class TemplatePopup extends React.Component {
         onChange={this.handleChange}
         ref={(c) => { this.widgetEditor = c; }}
       />
-      <Button onClick={this.saveChanges}>Submit</Button>
-      <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+      <div className="footer">
+        <Button onClick={this.saveChanges}>Submit</Button>
+        <Button className="basic" onClick={this.closePopup}>Cancel</Button>
+        <Button
+          className={classNames('right floated basic small', { loading: this.state.resetSubmit })}
+          disabled={this.state.resetSubmit}
+          onClick={this.resetTemplate}
+          confirm
+        >
+          Reset template
+        </Button>
+      </div>
     </div>
     );
 
@@ -77,6 +90,22 @@ class TemplatePopup extends React.Component {
     this.props.setCurrentWidget(null, null);
   };
 
+  resetTemplate = () => {
+    this.setState({
+      resetSubmit: true
+    });
+    this.props.resetTemplate(this.props.text).then(
+      (payload) => {
+        const content = payload.template_code.code;
+        this.props.setValue(this.props.text, content);
+        this.setState({
+          resetSubmit: false,
+          content
+        });
+      }
+    );
+  };
+
   saveChanges = () => {
     this.props.setValue(this.props.text, this.state.content);
     this.popup.closePopup();
@@ -105,7 +134,7 @@ class TemplatePopup extends React.Component {
   }
 }
 class TemplateWidget extends Widget {
-  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, setValue) {
+  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, resetTemplate, setValue) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
@@ -117,6 +146,7 @@ class TemplateWidget extends Widget {
           text={text}
           addMarks={addMarks}
           loadTemplate={loadTemplate}
+          resetTemplate={resetTemplate}
           setCurrentWidget={setCurrentWidget}
           setValue={setValue}
         />,

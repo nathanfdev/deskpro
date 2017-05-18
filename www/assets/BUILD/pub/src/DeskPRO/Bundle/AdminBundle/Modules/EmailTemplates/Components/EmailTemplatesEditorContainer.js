@@ -39,6 +39,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       editor:               null,
       currentWidget:        null,
     };
+    this.lineWidgets = [];
   }
 
   componentWillMount() {
@@ -193,7 +194,26 @@ class EmailTemplatesEditorContainer extends React.Component {
     const viewModel = this.props.emailTemplates.getIn(['currentTemplate', 'viewModel']);
     const group = this.props.emailTemplates.get('currentTemplateGroup');
     const extraTemplates = this.props.emailTemplates.getIn(['template', 'extra_templates'], fromJS({})).toObject();
-    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang, extraTemplates));
+    const cm = this.editor.editor.bodyEditor.getCodeMirror();
+    this.props.dispatch(actions.previewTemplate(viewModel, group, value, variables, lang, extraTemplates)).then(
+      (payload) => {
+        this.lineWidgets.forEach((lineWidget) => {
+          cm.removeLineWidget(lineWidget);
+        });
+        this.lineWidgets = [];
+        if (payload.error) {
+          const msg = document.createElement('div');
+          const icon = msg.appendChild(document.createElement('span'));
+          icon.innerHTML = '!';
+          icon.className = 'lint-error-icon';
+          msg.appendChild(document.createTextNode(payload.error));
+          msg.className = 'lint-error';
+          this.lineWidgets.push(cm.addLineWidget(payload.line - 2, msg, { coverGutter: false, noHScroll: true }));
+        } else {
+          this.props.dispatch(actions.setPreview(payload));
+        }
+      }
+    );
   }, 400);
 
   resetTemplate = () => {
@@ -202,7 +222,8 @@ class EmailTemplatesEditorContainer extends React.Component {
     });
     const name = this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']);
     this.props.dispatch(actions.resetTemplate(name)).then(
-      () => {
+      (payload) => {
+        this.props.dispatch(actions.setTemplate(payload));
         this.props.dispatch(actions.cleanExtraTemplates());
         this.setState({
           resetSubmit: false
@@ -210,6 +231,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       }
     );
   };
+
+  resetTemplateAction = name => this.props.dispatch(actions.resetTemplate(name));
 
   saveTemplate = () => {
     this.setState({
@@ -328,6 +351,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       changeTemplateSubject={this.changeTemplateSubject}
       saveTemplate={this.saveTemplate}
       resetTemplate={this.resetTemplate}
+      resetTemplateAction={this.resetTemplateAction}
       undoChanges={this.undoChanges}
       insertInlineImage={this.insertInlineImage}
       insertAttachment={this.insertAttachment}
@@ -364,6 +388,7 @@ class EmailTemplatesEditor extends React.Component {
     changeTemplateBody:     PropTypes.func,
     saveTemplate:           PropTypes.func,
     resetTemplate:          PropTypes.func,
+    resetTemplateAction:    PropTypes.func,
     undoChanges:            PropTypes.func,
     insertAttachment:       PropTypes.func,
     insertAttachmentAsLink: PropTypes.func,
@@ -626,9 +651,10 @@ class EmailTemplatesEditor extends React.Component {
             ref={(c) => { this.editor = c; }}
             phrases={this.props.emailTemplates.get('phrases')}
             getPhraseTranslations={this.props.getPhraseTranslations}
+            loadTemplate={this.props.loadTemplate}
+            resetTemplate={this.props.resetTemplateAction}
             savePhraseTranslations={this.props.savePhraseTranslations}
             setCurrentWidget={this.props.setCurrentWidget}
-            loadTemplate={this.props.loadTemplate}
             setTemplateValue={this.setTemplateValue}
           />
           <div className="footer">

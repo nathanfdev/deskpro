@@ -32,15 +32,10 @@ export default createReducer(initialState, {
   [actions.loadTemplates]: async({
     success: setFullPayload('info')
   }),
-  [actions.resetTemplate]: async({
-    success: setFullPayload('template')
-  }),
   [actions.loadVariables]: async({
     success: setFullPayload('variables')
   }),
-  [actions.previewTemplate]: async({
-    success: setFullPayload('preview')
-  }),
+  [actions.setPreview]:        setFullPayload('preview'),
   [actions.loadExampleTicket]: async({
     success: setFullPayload('exampleTicket')
   }),

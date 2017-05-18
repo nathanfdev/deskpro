@@ -31,6 +31,20 @@ class PhrasePopup extends React.Component {
     });
   }
 
+  getAdvanced = () => (
+    <div className="advanced">
+      <div className="ui horizontal divider">Advanced</div>
+      <Field field="advanced" errors={null}>
+        <label htmlFor="advanced">Raw value</label>
+        <Input
+          id="advanced"
+          name="advanced"
+          value={this.props.getText()}
+        />
+      </Field>
+    </div>
+    );
+
   getPopUp = () => {
     const { phrase } = this.props;
     return (
@@ -39,6 +53,7 @@ class PhrasePopup extends React.Component {
         <div className="ui horizontal divider">Translations</div>
         {this.getTranslations()}
         {this.getVariables()}
+        {this.getAdvanced()}
         <Button onClick={this.saveChanges}>Submit</Button>
         <Button className="basic" onClick={this.closePopup}>Cancel</Button>
       </div>
@@ -106,13 +121,13 @@ class PhrasePopup extends React.Component {
   };
 
   closePopup = () => {
-    this.props.getPhraseTranslations(this.props.phrase).then(
-      (result) => {
-        this.setState({
-          translations: result
-        });
-      }
-    );
+    // this.props.getPhraseTranslations(this.props.phrase).then(
+    //   (result) => {
+    //     this.setState({
+    //       translations: result
+    //     });
+    //   }
+    // );
     this.popup.closePopup();
     this.props.setCurrentWidget(null, null);
   };

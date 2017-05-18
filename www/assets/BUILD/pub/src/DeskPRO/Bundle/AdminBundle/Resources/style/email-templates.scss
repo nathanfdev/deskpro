@@ -252,6 +252,43 @@
     }
   }
 }
+.dp-email-templates .editor,
+.template-popup {
+  .CodeMirror {
+    user-select: none;
+    span.twig-variable {
+      color: $dp-knuckles-primary;
+      border: solid 1px $dp-knuckles-primary;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+    span.twig-phrase {
+      color: $dp-sonic-primary;
+      border: solid 1px $dp-sonic-primary;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+    span.twig-include {
+      color: $dp-emerald-primary;
+      border: solid 1px $dp-emerald-primary;
+      padding: 0 2px;
+      cursor: pointer;
+    }
+    .lint-error {
+      background: #ffa;
+      color: #a00;
+      padding: 2px 5px 3px;
+      .lint-error-icon {
+        color: white;
+        background-color: red;
+        font-weight: bold;
+        border-radius: 50%;
+        padding: 0 3px;
+        margin-right: 7px;
+      }
+    }
+  }
+}
 .email-dropdown-menu {
     .ui.bottom.left.popup:before {
       display: none;
@@ -539,5 +576,12 @@
   width: 700px;
   .CodeMirror {
     margin-bottom: 5px;
+  }
+  .footer {
+    position: relative;
+    height: 35px;
+    div.right.floated {
+      float: right;
+    }
   }
 }

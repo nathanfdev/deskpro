@@ -218,6 +218,8 @@ export const setCurrentTemplateGroup = createAction(
 
 export const setExtraTemplate = createAction('EMAIL_TEMPLATE_SET_EXTRA_TEMPLATE');
 
+export const setPreview = createAction('EMAIL_TEMPLATES_SET_PREVIEW');
+
 export const setTemplate = createAction('EMAIL_TEMPLATES_SET_TEMPLATE');
 
 export const unselectTemplate = createAction('EMAIL_TEMPLATES_UNSELECT_TEMPLATE');

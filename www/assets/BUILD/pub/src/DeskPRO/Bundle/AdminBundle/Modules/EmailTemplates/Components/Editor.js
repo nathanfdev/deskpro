@@ -12,6 +12,7 @@ class Editor extends React.Component {
     changeTemplateSubject:  PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
     loadTemplate:           PropTypes.func,
+    resetTemplate:          PropTypes.func,
     savePhraseTranslations: PropTypes.func,
     setCurrentWidget:       PropTypes.func,
     setTemplateValue:       PropTypes.func,
@@ -91,6 +92,7 @@ class Editor extends React.Component {
             match[1],
             setCurrentWidget,
             this.props.loadTemplate,
+            this.props.resetTemplate,
             this.props.setTemplateValue
           ));
           match = re.exec(content);
