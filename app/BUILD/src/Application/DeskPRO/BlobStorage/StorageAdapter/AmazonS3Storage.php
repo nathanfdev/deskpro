@@ -34,7 +34,6 @@ namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 
 use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\BlobStorage\BlobStorageException;
-use Aws\S3\Enum\CannedAcl;
 use Aws\S3\S3Client;
 
 class AmazonS3Storage extends AbstractStorageAdapter
@@ -69,14 +68,19 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     protected $retry_sleep = 1;
 
+    protected $cumulativeTimeout = 10;
+
+    protected $timePass = 0;
+
     protected function init()
     {
-        $this->s3              = $this->options->get('s3_client');
-        $this->bucket          = $this->options->get('bucket');
-        $this->file_url_domain = $this->options->get('file_url_domain');
-        $this->base_path       = rtrim($this->options->get('base_path', ''), '/\\');
-        $this->attempts        = $this->options->get('attempts', 1);
-        $this->retry_sleep     = $this->options->get('retry_sleep', 1);
+        $this->s3                = $this->options->get('s3_client');
+        $this->bucket            = $this->options->get('bucket');
+        $this->file_url_domain   = $this->options->get('file_url_domain');
+        $this->base_path         = rtrim($this->options->get('base_path', ''), '/\\');
+        $this->attempts          = $this->options->get('attempts', 1);
+        $this->retry_sleep       = $this->options->get('retry_sleep', 1);
+        $this->cumulativeTimeout = $this->options->get('cumulative_timeout', null);
 
         if (!$this->s3 || !($this->s3 instanceof S3Client)) {
             throw new \InvalidArgumentException('s3_client must be an instance of Aws\\S3\\S3Client');
@@ -116,9 +120,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function resolvePath($path)
     {
-        $path = trim($path, '/\\');
-
-        return $this->base_path.DIRECTORY_SEPARATOR.$path;
+        return $this->base_path.DIRECTORY_SEPARATOR.trim($path, '/\\');
     }
 
     /**
@@ -152,8 +154,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param $data
+     * @param Blob   $blob
+     * @param string $data
      *
      * @return mixed
      */
@@ -163,17 +165,20 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
         $disposition = $blob->getMeta('content_disposition') ?: 'attachment';
         $disposition .= '; filename="'.str_replace(['\'', '"'], '-', $blob->getFilename()).'"';
-
         $try = $this->attempts;
         while (--$try >= 0) {
+            if ($this->cumulativeTimeout && $this->timePass > $this->cumulativeTimeout) {
+                throw new BlobStorageException('Cumulative timeout exceeded: '.$this->cumulativeTimeout, BlobStorageException::CUMULATIVE_TIMEOUT_EXCEEDED);
+            }
+            $time = microtime(true);
             try {
                 $this->s3->putObject([
                     'Bucket'             => $this->bucket,
                     'Body'               => $data,
-                    'Key'                => $this->resolvePath($blob->getPath()),
+                    'Key'                => ltrim($path, '/'),
                     'ContentType'        => $blob->getContentType(),
                     'ContentDisposition' => $disposition,
-                    'ACL'                => CannedAcl::PUBLIC_READ,
+                    'ACL'                => 'public-read',
                 ]);
                 break;
             } catch (\Exception $e) {
@@ -183,6 +188,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 if ($this->retry_sleep) {
                     sleep($this->retry_sleep);
                 }
+            } finally {
+                $this->timePass += microtime(true) - $time;
             }
         }
 
@@ -196,8 +203,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param resource                              $data
+     * @param Blob     $blob
+     * @param resource $fp_source
      *
      * @return int
      */
@@ -220,7 +227,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
     /**
      * Loads the entire blob into a string.
      *
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
+     * @param Blob $blob
      *
      * @return string
      */
@@ -259,8 +266,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     }
 
     /**
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param resource                              $data
+     * @param Blob     $blob
+     * @param resource $fp_target
      *
      * @return int
      */

@@ -39,6 +39,8 @@ use Orb\Util\OptionsArray;
 
 abstract class AbstractStorageAdapter implements Loggable
 {
+    const REQUIRES_CACHE = true;
+
     /**
      * @var \Orb\Util\OptionsArray
      */
@@ -170,6 +172,16 @@ abstract class AbstractStorageAdapter implements Loggable
      * @return int
      */
     abstract public function readBlobToStream(Blob $blob, $fp_target);
+
+    /**
+     * indicates if temp cache is required for optimization purposes.
+     *
+     * @return bool
+     */
+    public function requiresTempCache()
+    {
+        return static::REQUIRES_CACHE;
+    }
 
     /**
      * How many failures this adapter can have before the system begins to skip it.
