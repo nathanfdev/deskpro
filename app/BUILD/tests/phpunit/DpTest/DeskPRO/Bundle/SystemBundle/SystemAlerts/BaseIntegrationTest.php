@@ -125,11 +125,11 @@ abstract class BaseIntegrationTest extends ApiTestCase
     /**
      * @return Incident|StatefulIncident
      */
-    protected function findSingleIncident()
+    protected function findSingleIncident($turnedOn = true)
     {
         $incidents = $this->em->getRepository(AbstractIncident::class)->findAll();
-        $this->assertCount(1, $incidents);
+        $this->assertCount($turnedOn ? 1 : 0, $incidents);
 
-        return $incidents[0];
+        return isset($incidents[0]) ? $incidents[0] : null;
     }
 }

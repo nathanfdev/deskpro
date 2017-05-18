@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
@@ -624,6 +625,11 @@ class Person extends DomainObject implements
     protected $voiceQueues;
 
     /**
+     * @var PersonOnboarding[]|ArrayCollection
+     */
+    protected $onboarding;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -705,6 +711,7 @@ class Person extends DomainObject implements
         $this->tickets                = new ArrayCollection();
         $this->chats                  = new ArrayCollection();
         $this->voiceQueues            = new ArrayCollection();
+        $this->onboarding             = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -895,6 +902,18 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param bool $isUser
+     *
+     * @return $this
+     */
+    public function setIsUser($isUser)
+    {
+        $this->setModelField('is_user', $isUser);
+
+        return $this;
+    }
+
+    /**
      * True if the Person has every confirmed themselves. A user is confirmed by
      * clicking a link in their email at least once.
      *
@@ -1068,6 +1087,18 @@ class Person extends DomainObject implements
     public function getRealCanBilling()
     {
         return $this->can_billing;
+    }
+
+    /**
+     * @param string
+     *
+     * @return $this
+     */
+    public function setCreationSystem($creationSystem = null)
+    {
+        $this->setModelField('creation_system', $creationSystem);
+
+        return $this;
     }
 
     /**
@@ -1529,10 +1560,14 @@ class Person extends DomainObject implements
      * Set the raw password field (ie already hashed).
      *
      * @param $password
+     *
+     * @return $this
      */
     public function setRawPassword($password)
     {
         $this->setModelField('password', $password);
+
+        return $this;
     }
 
     /**
@@ -2742,6 +2777,11 @@ class Person extends DomainObject implements
      */
     public function addLabel(Label $label)
     {
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                return;
+            }
+        }
         $label['person'] = $this;
         $this->labels->add($label);
         $this->_onPropertyChanged('labels', $this->labels, $this->labels);
@@ -3525,6 +3565,21 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param AgentTeam $agentTeam
+     *
+     * @return $this
+     */
+    public function setPrimaryTeam(AgentTeam $agentTeam = null)
+    {
+        $this->setModelField('primary_team', $agentTeam);
+        if ($agentTeam) {
+            $this->addTeam($agentTeam);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return \Application\DeskPRO\Entity\AgentTeam
      */
     public function getPrimaryTeam()
@@ -3538,6 +3593,27 @@ class Person extends DomainObject implements
         }
 
         return;
+    }
+
+    /**
+     * @param PersonOnboarding $onboarding
+     *
+     * @return $this
+     */
+    public function addOnboarding(PersonOnboarding $onboarding)
+    {
+        $existing = $this->onboarding->filter(function (PersonOnboarding $existOnboarding) use ($onboarding) {
+            return $onboarding->getOnboardingClass() === $existOnboarding->getOnboardingClass();
+        });
+
+        if (!$existing->count()) {
+            $onboarding->setPerson($this);
+            $this->onboarding->add($onboarding);
+
+            $this->_onPropertyChanged('onboarding', $this->onboarding, $this->onboarding);
+        }
+
+        return $this;
     }
 
     /**
@@ -3791,10 +3867,6 @@ class Person extends DomainObject implements
      */
     public function setAgentData(AgentData $agentData = null)
     {
-        if ($agentData) {
-            $agentData->setPerson($this);
-        }
-
         $this->setModelField('agentData', $agentData);
 
         return $this;
@@ -3851,7 +3923,7 @@ class Person extends DomainObject implements
                     'on'.ucfirst($event)
                 );
             }
-            foreach ([Events::prePersist, Events::preUpdate, Events::preFlush] as $event) {
+            foreach ([Events::prePersist, Events::preUpdate] as $event) {
                 $metadata->addEntityListener(
                     $event,
                     PersonOnboardingListener::class,
@@ -4528,10 +4600,21 @@ class Person extends DomainObject implements
         );
 
         $metadata->mapOneToOne([
-            'fieldName'    => 'agentData',
-            'targetEntity' => AgentData::class,
-            'mappedBy'     => 'person',
-            'cascade'      => ['persist', 'remove'],
+            'fieldName'     => 'agentData',
+            'targetEntity'  => AgentData::class,
+            'inversedBy'    => 'person',
+            'cascade'       => ['persist', 'remove'],
+            'orphanRemoval' => true,
+            'joinColumns'   => [
+                [
+                    'name'                 => 'agent_data_id',
+                    'referencedColumnName' => 'id',
+                    'unique'               => true,
+                    'nullable'             => true,
+                    'columnDefinition'     => null,
+                    'onDelete'             => 'set null',
+                ],
+            ],
         ]);
 
         $metadata->mapManyToMany([
@@ -4539,6 +4622,14 @@ class Person extends DomainObject implements
             'targetEntity' => VoiceQueue::class,
             'mappedBy'     => 'agents',
             'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+        ]);
+
+        $metadata->mapOneToMany([
+            'fieldName'     => 'onboarding',
+            'targetEntity'  => PersonOnboarding::class,
+            'mappedBy'      => 'person',
+            'orphanRemoval' => true,
+            'cascade'       => ['persist', 'remove', 'merge'],
         ]);
     }
 

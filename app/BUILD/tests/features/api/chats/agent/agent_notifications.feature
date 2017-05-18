@@ -4,6 +4,7 @@ Feature: Notifications Api feature
 
   Background:
     Given I'm authenticated as "admin"
+    And the setting "beta_features.agent_chat" is set to 1
 
   Scenario: I get basic settings for action-alerts
     When I send a GET request to "/api/v2/notify/setup/action-alerts"
@@ -39,7 +40,7 @@ Feature: Notifications Api feature
     # Actually I don't know how to avoid this big test. By this we just checking that endpoint creates proper notifications
     When I send a GET request to "/api/v2/notify/action-alerts/0"
     Then the response status code should be 200
-    And the JSON node "data" should have 1 element
+    And the JSON node "data" should have 2 element
     And the JSON node "data[0].data" should have 3 elements
     And the JSON node "data[0].data.data.chat" should be equal to "{everyone-chat}"
     And the JSON node "data[0].data.data.person" should be equal to "{admin}"

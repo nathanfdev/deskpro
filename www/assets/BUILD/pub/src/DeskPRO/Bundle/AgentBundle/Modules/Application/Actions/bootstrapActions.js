@@ -6,7 +6,7 @@ import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
-import { hideChat } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
 
@@ -37,7 +37,7 @@ export const loadAgentPhraseTranslations = createAction(
 export const donePreloading = createAction('APP_BOOTSTRAP_DONE_PRELOADING');
 export const preloadData    = createAction(
   'BOOTSTRAP_PRELOAD_DATA',
-  () => dispatch => new Promise(
+  () => (dispatch, getState) => new Promise(
     (resolve) => {
       const batchComponents = {
         agents:                { endpoint: 'agents' },
@@ -47,9 +47,9 @@ export const preloadData    = createAction(
         me:                    { endpoint: 'me' },
         agent_teams:           { endpoint: 'agent_teams' },
         my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
-        ticket_departments:    { endpoint: 'ticket_departments' },
-        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true' },
-        chat_departments:      { endpoint: 'chat_departments', query: 'include=agents' },
+        ticket_departments:    { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
+        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
+        chat_departments:      { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
         onboardings:           { endpoint: 'people/onboarding/pending' }
       };
 
@@ -61,6 +61,7 @@ export const preloadData    = createAction(
 
       if (window.DP_HAS_NEW_IM) {
         batchComponents.alerts = { endpoint: 'notify/setup/action-alerts' };
+        batchComponents.defaultBrand  = { endpoint: 'brands/default' };
       }
 
       dispatch(loadAgentPhraseTranslations());
@@ -69,9 +70,9 @@ export const preloadData    = createAction(
         .success(({ responses }) => {
           const data = flattenBatchResponses(responses);
 
+          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
           dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
-          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
           dispatch(setCollection('Person', 'agents', data.agents));
           dispatch(setCollection('AgentTeam', 'all', data.agent_teams));
           dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
@@ -82,14 +83,19 @@ export const preloadData    = createAction(
             dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
           }
 
-          const linked = getLinkedData(responses, 'chat_departments', 'agents');
-          for (const dep of data.chat_departments) {
-            if (linked[dep.id]) {
-              dep.agents = linked[dep.id];
-            } else {
-              dep.agents = [];
+          // group agents by departments
+          const agents = agentsSelector(getState());
+
+          ['chat_departments', 'ticket_departments'].forEach((depType) => {
+            const linked = getLinkedData(responses, depType, 'department_agent_ids');
+            for (const dep of data[depType]) {
+              const agentIds = linked[dep.id];
+              if (agentIds) {
+                const depAgents = agentIds.map(id => agents.get(id)).filter(agent => !!agent);
+                dispatch(setCollection('Person', `department_${dep.id}`, depAgents));
+              }
             }
-          }
+          });
 
           dispatch(setAgentSettings(data.settings));
           dispatch(setCollection('Person', 'me', [data.me.person]));
@@ -98,12 +104,8 @@ export const preloadData    = createAction(
             dispatch(setImMe(data.me.person));
             dispatch(setupActionAlerts(data.alerts));
             dispatch(loadDrafts());
-            const hiddenChats = localStorage.getItem('hiddenChats') ? JSON.parse(localStorage.getItem('hiddenChats')) : {};
-            Object.keys(hiddenChats).forEach((key) => {
-              if (Object.prototype.hasOwnProperty.call(hiddenChats, key)) {
-                dispatch(hideChat(key, hiddenChats[key]));
-              }
-            });
+            dispatch(setCollection('Brand', 'default', [data.defaultBrand]));
+            // a simple way to subscribe TabBars events
           }
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));

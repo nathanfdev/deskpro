@@ -1,14 +1,22 @@
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { setFullPayload, pushPayloadToCollection, deletePayloadFromCollection, setValue } from 'DeskPRO/Component/Ampliflux/reducers/handlers';
 import * as actions from '../Actions/clientActions';
+
+let ringingVolume = 100;
+if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ringingVolume') !== null) {
+  ringingVolume = localStorage.getItem('dpAgent.voice.ringingVolume');
+}
 
 const initialState = {
   tokens:         {},
   activities:     {},
   incomingCalls:  [],
+  outgoingCall:   null,
   connections:    [],
-  outboundNumber: null
+  outboundNumber: null,
+  ringingVolume
 };
 
 export default createReducer(initialState, {
@@ -48,8 +56,11 @@ export default createReducer(initialState, {
 
     return state.set('incomingCalls', incomingCalls);
   },
-  [actions.addConnection]:    pushPayloadToCollection('connections'),
-  [actions.removeConnection]: deletePayloadFromCollection('connections'),
-  [actions.openDialpad]:      setFullPayload('outboundNumber'),
-  [actions.dialpadOpened]:    setValue('outboundNumber', null)
+  [actions.addConnection]:     pushPayloadToCollection('connections'),
+  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
+  [actions.openDialpad]:       setFullPayload('outboundNumber'),
+  [actions.dialpadOpened]:     setValue('outboundNumber', null),
+  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]: setValue('outgoingCall', null),
+  [actions.setRingingVolume]:  setFullPayload('ringingVolume')
 });

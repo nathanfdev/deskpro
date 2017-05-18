@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Attachments;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\MimeType\MimeTypeExtensionGuesser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -80,7 +81,13 @@ class RestrictionSet
         $ext  = Strings::getExtension($file->getFilename());
 
         if ($file instanceof UploadedFile) {
-            $ext = Strings::getExtension($file->getClientOriginalName());
+            if ($file->getClientOriginalName() === 'blob') {
+                //workaround for images pasted directly from clipboard
+                $guesser = new MimeTypeExtensionGuesser();
+                $ext     = $guesser->guess($file->getClientMimeType());
+            } else {
+                $ext = Strings::getExtension($file->getClientOriginalName());
+            }
         }
 
         return $this->getErrorForProperties([

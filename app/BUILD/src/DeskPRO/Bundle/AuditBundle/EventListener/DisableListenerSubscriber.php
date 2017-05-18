@@ -32,8 +32,8 @@
 
 namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
-use Application\DeskPRO\Command\UpgradeCommand;
 use DeskPRO\Bundle\InstallBundle\Command\InstallCommand;
+use DeskPRO\Bundle\UpdateBundle\Command\UpdateCommand;
 use Doctrine\Bundle\FixturesBundle\Command\LoadDataFixturesDoctrineCommand;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -69,7 +69,7 @@ class DisableListenerSubscriber implements EventSubscriberInterface
     {
         $cmd = $event->getCommand();
 
-        if ($cmd instanceof InstallCommand || $cmd instanceof LoadDataFixturesDoctrineCommand || $cmd instanceof UpgradeCommand) {
+        if ($cmd instanceof InstallCommand || $cmd instanceof LoadDataFixturesDoctrineCommand || $cmd instanceof UpdateCommand) {
             $this->disableListener();
         }
     }

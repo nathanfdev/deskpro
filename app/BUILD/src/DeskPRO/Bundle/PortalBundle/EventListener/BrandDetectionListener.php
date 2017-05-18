@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
@@ -39,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
@@ -69,9 +66,9 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
     private $brandRepository;
 
     /**
-     * @var \Application\DeskPRO\Entity\Brand
+     * @var DefaultBrandFinder
      */
-    private $defaultBrand;
+    private $defaultBrandFinder;
 
     /**
      * @var LoggerInterface
@@ -88,24 +85,38 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
      */
     private $modeStorage;
 
+    /**
+     * Constructor.
+     *
+     * @param BrandStack         $brandStack
+     * @param SettingsResolver   $settingsResolver
+     * @param Brand              $brandRepository
+     * @param DefaultBrandFinder $defaultBrandFinder
+     * @param PortalModeStorage  $modeStorage
+     * @param LoggerInterface    $logger
+     * @param UrlHostChecker     $urlHostChecker
+     */
     public function __construct(
-        BrandStack $brandStack,
-        SettingsResolver $settingsResolver,
-        Brand $brandRepository,
-        BrandEntity $defaultBrand,
-        PortalModeStorage $modeStorage,
-        LoggerInterface $logger,
-        UrlHostChecker $urlHostChecker
+        BrandStack         $brandStack,
+        SettingsResolver   $settingsResolver,
+        Brand              $brandRepository,
+        DefaultBrandFinder $defaultBrandFinder,
+        PortalModeStorage  $modeStorage,
+        LoggerInterface    $logger,
+        UrlHostChecker     $urlHostChecker
     ) {
-        $this->brandStack       = $brandStack;
-        $this->settingsResolver = $settingsResolver;
-        $this->brandRepository  = $brandRepository;
-        $this->defaultBrand     = $defaultBrand;
-        $this->modeStorage      = $modeStorage;
-        $this->logger           = $logger;
-        $this->urlHostChecker   = $urlHostChecker;
+        $this->brandStack         = $brandStack;
+        $this->settingsResolver   = $settingsResolver;
+        $this->brandRepository    = $brandRepository;
+        $this->defaultBrandFinder = $defaultBrandFinder;
+        $this->modeStorage        = $modeStorage;
+        $this->logger             = $logger;
+        $this->urlHostChecker     = $urlHostChecker;
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequest(GetResponseEvent $event)
     {
         $brand = null;
@@ -177,9 +188,12 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
         return $brand;
     }
 
+    /**
+     * @return BrandEntity
+     */
     protected function getDefaultBrand()
     {
-        return $this->defaultBrand;
+        return $this->defaultBrandFinder->getDefaultBrand();
     }
 
     /**

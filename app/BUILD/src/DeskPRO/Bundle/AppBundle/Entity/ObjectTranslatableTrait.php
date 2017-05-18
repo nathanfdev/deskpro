@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Language;
@@ -67,11 +63,11 @@ trait ObjectTranslatableTrait
      *
      * @return ArrayCollection|ObjectLang[]
      */
-    public function getObjectPropTranslations($prop_name)
+    public function getObjectPropTranslations($propName)
     {
         $filtered = $this
             ->props_translations
-            ->matching(new Criteria(Criteria::expr()->eq('propName', $prop_name)))
+            ->matching(new Criteria(Criteria::expr()->eq('propName', $propName)))
         ;
 
         return new ArrayCollection($filtered->getValues());
@@ -80,9 +76,9 @@ trait ObjectTranslatableTrait
     /**
      * {@inheritdoc}
      */
-    public function getObjectPropLanguageTranslation($prop_name, Language $language = null)
+    public function getObjectPropLanguageTranslation($propName, Language $language = null)
     {
-        $translations = $this->getObjectPropTranslations($prop_name);
+        $translations = $this->getObjectPropTranslations($propName);
 
         if ($language) {
             // look by language id
@@ -94,6 +90,9 @@ trait ObjectTranslatableTrait
 
             // look by lang code
             foreach ($translations as $translation) {
+                if (!$translation->getLanguage()) {
+                    continue;
+                }
                 if ($translation->getLanguage()->getLangCode() === $language->getLangCode()) {
                     return $translation;
                 }
@@ -107,9 +106,9 @@ trait ObjectTranslatableTrait
     /**
      * {@inheritdoc}
      */
-    public function getObjectPropLanguageTranslationValue($prop_name, Language $language = null)
+    public function getObjectPropLanguageTranslationValue($propName, Language $language = null)
     {
-        $translation = $this->getObjectPropLanguageTranslation($prop_name, $language);
+        $translation = $this->getObjectPropLanguageTranslation($propName, $language);
 
         return $translation ? $translation->getValue() : '';
     }

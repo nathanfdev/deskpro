@@ -117,12 +117,12 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
      */
     public function onPreSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
+        $form    = $event->getForm();
+        $data    = $event->getData();
+        $options = $form->getConfig()->getOptions();
 
-        if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
-            $formConfig  = $form->getConfig();
-            $cookieName  = $formConfig->getOption('csrf_double_submit_cookie_name');
+        if ($form->isRoot() && $options['compound'] && !$options['csrf_double_submit_skip_check']) {
+            $cookieName  = $options['csrf_double_submit_cookie_name'];
             $cookieValue = $this->requestStack->getCurrentRequest()->cookies->get($cookieName, null);
 
             // token must be present in submitted data, and exactly equal to the request cookie value
@@ -133,7 +133,7 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
                 || strlen($cookieValue) < 5
                 || $data[$cookieName] !== $cookieValue
             ) {
-                $form->addError(new FormError($formConfig->getOption('csrf_double_submit_error_code')));
+                $form->addError(new FormError($options['csrf_double_submit_error_code']));
             }
 
             if (is_array($data)) {
@@ -157,10 +157,12 @@ class CsrfDoubleSubmitExtension extends AbstractTypeExtension
                 'csrf_double_submit_protection'  => true,
                 'csrf_double_submit_cookie_name' => self::COOKIE_NAME,
                 'csrf_double_submit_error_code'  => ErrorsCodes::CSRF,
+                'csrf_double_submit_skip_check'  => false,
             ])
             ->setAllowedTypes('csrf_double_submit_protection', 'bool')
             ->setAllowedTypes('csrf_double_submit_cookie_name', 'string')
             ->setAllowedTypes('csrf_double_submit_error_code', 'string')
+            ->setAllowedTypes('csrf_double_submit_skip_check', 'bool')
         ;
     }
 

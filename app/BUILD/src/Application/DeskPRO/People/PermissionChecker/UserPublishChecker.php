@@ -58,7 +58,7 @@ class UserPublishChecker extends AbstractChecker
         }
 
         // Only agents can view non-published
-        if ($article->status != 'published' && $article->status != 'archived' && !$this->person->is_agent) {
+        if ($article->getStatus() != 'published' && $article->getStatus() != 'archived' && !$this->person->is_agent) {
             return false;
         }
 
@@ -90,7 +90,7 @@ class UserPublishChecker extends AbstractChecker
         }
 
         // Only agents can view non-published
-        if ($news->status != 'published' && $news->status != 'archived' && !$this->person->is_agent) {
+        if ($news->getStatus() != 'published' && $news->getStatus() != 'archived' && !$this->person->is_agent) {
             return false;
         }
 
@@ -113,11 +113,34 @@ class UserPublishChecker extends AbstractChecker
         }
 
         // Only agents can view non-published
-        if ($download->status != 'published' && $download->status != 'archived' && !$this->person->is_agent) {
+        if ($download->getStatus() != 'published' && $download->getStatus() != 'archived' && !$this->person->is_agent) {
             return false;
         }
 
         if (!$download->category || $this->person->PermissionsManager->DownloadCategories->isCategoryAllowed($download->category->getId())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Topic $topic
+     *
+     * @return bool
+     */
+    public function canViewTopic($topic)
+    {
+        if (!$this->person->hasPerm('guides.use')) {
+            return false;
+        }
+
+        // Only agents can view non-published
+        if ($topic->getStatus() != 'published' && $topic->getStatus() != 'archived' && !$this->person->is_agent) {
+            return false;
+        }
+
+        if (!$topic->getGuide() || $this->person->PermissionsManager->Guides->isCategoryAllowed($topic->getGuide()->getId())) {
             return true;
         }
 
@@ -136,7 +159,7 @@ class UserPublishChecker extends AbstractChecker
         }
 
         // Only agents can view non-published
-        if ($feedback->status == 'hidden' && !$this->person->is_agent) {
+        if ($feedback->getStatus() == 'hidden' && !$this->person->is_agent) {
             // But still show the user their own submitted feedback
             if ($feedback->person && $feedback->person->getId() == $this->person->getId()) {
                 return true;

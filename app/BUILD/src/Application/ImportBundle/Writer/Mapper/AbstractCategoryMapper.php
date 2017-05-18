@@ -43,4 +43,12 @@ abstract class AbstractCategoryMapper extends AbstractContainerMapper implements
             'parent' => $parentId,
         ]);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultCategory()
+    {
+        return $this->em->getRepository(static::getMapperEntityClass())->findOneBy([]);
+    }
 }

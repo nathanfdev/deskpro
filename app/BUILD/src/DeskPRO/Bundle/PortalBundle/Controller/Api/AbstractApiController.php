@@ -212,4 +212,12 @@ abstract class AbstractApiController extends FOSRestController
 
         return;
     }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Person
+     */
+    protected function getPersonRepository()
+    {
+        return $this->getDoctrine()->getRepository(Person::class);
+    }
 }

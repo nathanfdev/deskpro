@@ -63,13 +63,13 @@ class AddTicketsCommand extends AbstractLoadDataCommand
         $batchSize   = (int) $input->getOption('batch-size');
         $includeFile = $input->getOption('include');
 
-        if (!file_exists($includeFile)) {
-            $output->writeln("<error>File does not exist: $includeFile</error>");
-
-            return 1;
-        }
-
         if ($includeFile) {
+            if (!file_exists($includeFile)) {
+                $output->writeln("<error>File does not exist: $includeFile</error>");
+
+                return 1;
+            }
+
             require $includeFile;
             if (!function_exists('post_ticket_batch')) {
                 $output->writeln('<error>Custom include file does not define post_ticket_batch</error>');

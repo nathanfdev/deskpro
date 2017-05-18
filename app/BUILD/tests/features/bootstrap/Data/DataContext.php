@@ -388,7 +388,7 @@ class DataContext extends BaseContext
 
             // Resolve references to other objects
             foreach ($data as &$value) {
-                if (self::isArray($value)) {
+                if (self::isArray($value) && !json_decode($value)) {
                     $arrayValue = [];
                     foreach (self::transformToArray($value) as $item) {
                         if (self::isReference($item)) {
@@ -401,6 +401,8 @@ class DataContext extends BaseContext
                     $value = new ArrayCollection($arrayValue);
                 } elseif (self::isReference($value)) {
                     $value = self::resolveReference($value);
+                } elseif (is_string($value)) {
+                    $value = self::replace($value, true);
                 }
             }
 
@@ -441,6 +443,17 @@ class DataContext extends BaseContext
         $record = self::resolveReference($ref);
         if (self::isReference($value)) {
             $value = self::resolveReference($value);
+        } elseif (self::isArray($value)) {
+            $arrayValue = [];
+            foreach (self::transformToArray($value) as $item) {
+                if (self::isReference($item)) {
+                    $arrayValue[] = self::resolveReference($item);
+                } else {
+                    $arrayValue[] = $item;
+                }
+            }
+
+            $value = new ArrayCollection($arrayValue);
         } else {
             $value = self::replace($value);
         }
@@ -515,7 +528,7 @@ class DataContext extends BaseContext
     private static function replacePlaceholders($content, $isJson)
     {
         foreach (self::$placeholders as $name => $value) {
-            if (!$isJson) {
+            if (!$isJson && !json_decode($content)) {
                 $content = str_replace('{'.$name.'}', $value, $content);
             }
 
@@ -569,7 +582,7 @@ class DataContext extends BaseContext
             return $reflectionProperty->getValue($object);
         };
 
-        if (!$isJson) {
+        if (!$isJson && !json_decode($content)) {
             $content = preg_replace_callback('/\{(.+)\}.*/U', $callback, $content);
         }
 

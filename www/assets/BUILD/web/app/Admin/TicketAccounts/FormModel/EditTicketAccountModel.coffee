@@ -157,6 +157,7 @@ define [
           @form.out_smtp_account.user        = @account.outgoing_account.user
           @form.out_smtp_account.password    = @account.outgoing_account.password
           if @form.out_smtp_account.secure_mode and @form.out_smtp_account.secure_mode != ''
+            @form.out_smtp_account.disable_cert_validation = @account.outgoing_account.disable_cert_validation
             @form.out_smtp_account.secure = true
 
         if @form.outgoing_type == 'gmail'
@@ -178,6 +179,9 @@ define [
     getFormData: ->
 
       form = Util.clone(@form, true)
+
+      if !form.with_email_aliases
+        form.other_addresses = ''
 
       if form.incoming_type == 'gmail'
         form.in_gmail_account.user = form.address

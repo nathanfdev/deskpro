@@ -101,23 +101,18 @@ class SettingsResolver
             $this->cache->delete(static::CACHE_KEY_GLOBAL);
         }
 
-        $that             = $this;
-        $virtual_settings = $this->virtual_settings;
-
         return $this->cache->get(
             static::CACHE_KEY_GLOBAL,
-            function () use ($that, $force, $virtual_settings) {
-                $global_settings_array = [];
-
-                foreach ($that->getLoaders() as $loader) {
-                    $global_settings_array = array_merge($global_settings_array, $loader->load($force));
+            function () use ($force) {
+                $settings = [];
+                foreach ($this->getLoaders() as $loader) {
+                    $settings = array_merge($settings, $loader->load($force));
+                }
+                foreach ($this->virtual_settings as $key => $callable) {
+                    $settings[$key] = call_user_func($callable, $settings);
                 }
 
-                foreach ($virtual_settings as $key => $callable) {
-                    $global_settings_array[$key] = call_user_func($callable, $global_settings_array);
-                }
-
-                return new SettingsBag($global_settings_array);
+                return new SettingsBag($settings);
             }
         );
     }

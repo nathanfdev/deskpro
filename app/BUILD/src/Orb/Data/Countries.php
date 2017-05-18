@@ -262,7 +262,6 @@ class Countries
         'UG' => 'Uganda',
         'UA' => 'Ukraine',
         'AE' => 'United Arab Emirates',
-        'UK' => 'United Kingdom',
         'GB' => 'United Kingdom',
         'US' => 'United States',
         'UM' => 'United States Minor Outlying Islands',
@@ -786,7 +785,7 @@ class Countries
         'uganda'                              => 'UG',
         'ukraine'                             => 'UA',
         'unitedarabemirates'                  => 'AE',
-        'unitedkingdom'                       => 'UK',
+        'unitedkingdom'                       => 'GB',
         'unitedstates'                        => 'US',
         'unitedstatesminoroutlyingislands'    => 'UM',
         'uruguay'                             => 'UY',
@@ -1037,7 +1036,7 @@ class Countries
         ['country' => 'Uganda',                                          'country_code' => 'UG',  'calling_code' => '256'],
         ['country' => 'Ukraine',                                         'country_code' => 'UA',  'calling_code' => '380'],
         ['country' => 'United Arab Emirates',                            'country_code' => 'AE',  'calling_code' => '971'],
-        ['country' => 'United Kingdom',                                  'country_code' => 'UK',  'calling_code' => '44'],
+        ['country' => 'United Kingdom',                                  'country_code' => 'GB',  'calling_code' => '44'],
         ['country' => 'United States',                                   'country_code' => 'US',  'calling_code' => '1'],
         ['country' => 'Uruguay',                                         'country_code' => 'UY',  'calling_code' => '598'],
         ['country' => 'U.S. Virgin Islands',                             'country_code' => null,  'calling_code' => '1 340'],
@@ -1154,7 +1153,7 @@ class Countries
      *
      * @return array
      */
-    public static function getContientArray()
+    public static function getContinentArray()
     {
         return self::$code_to_continent;
     }
@@ -1230,12 +1229,15 @@ class Countries
             'AT', // Austria
             'BE', // Belgium
             'CY', // Cyprus
+            'EE', // Estonia
             'FI', // Finland
             'FR', // France
             'DE', // Germany
             'GR', // Greece
             'IE', // Ireland
             'IT', // Italy
+            'LV', // Latvia
+            'LT', // Lithuania
             'LU', // Luxembourg
             'MT', // Malta
             'NL', // Netherlands
@@ -1243,6 +1245,40 @@ class Countries
             'SK', // Slovakia
             'SI', // Slovenia
             'ES', // Spain
+        ];
+    }
+
+    public static function getEuCountries()
+    {
+        return [
+            'AT', // Austria
+            'BE', // Belgium
+            'BG', // Bulgaria
+            'HR', // Croatia
+            'CY', // Cyprus
+            'CZ', // Czech Republic
+            'DK', // Denmark
+            'EE', // Estonia
+            'FI', // Finland
+            'FR', // France
+            'DE', // Germany
+            'GR', // Greece
+            'HU', // Hungary
+            'IE', // Ireland
+            'IT', // Italy
+            'LV', // Latvia
+            'LT', // Lithuania
+            'LU', // Luxembourg
+            'MT', // Malta
+            'NL', // Netherlands
+            'PL', // Poland
+            'PT', // Portugal
+            'RO', // Romania
+            'SK', // Slovakia
+            'SI', // Slovenia
+            'ES', // Spain
+            'SE', // Sweden
+            'UK', // United Kingdom at the moment
         ];
     }
 

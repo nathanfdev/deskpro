@@ -4,8 +4,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(page, options) {
-		var self = this;
-
 		this.options = {
 			loadUrl: '',
 			saveUrl: '',
@@ -14,8 +12,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 
 		this.setOptions(options);
 		this.page = page;
-
-		this.page.addEvent('destroy', this.destroy, this);
 	},
 
 	_initOverlay: function() {
@@ -74,6 +70,8 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 						footerEl.removeClass('loading');
 					},
 					success: function(data) {
+						self.overlay.close();
+
 						if (data.success) {
 							// remove old tabs, theyre outdated
 							Array.each(DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType), function(tab) {
@@ -83,12 +81,11 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 								}
 							});
 
-							//DeskPRO_Window.runPageRoute(self.options.loadRoute.replace('{id}', data.id));
+							DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.page.getMetaData('ticket_id'), {ignoreExist:true});
+							self.page.closeSelf();
+						} else {
+							DeskPRO_Window.showAlert(data.error);
 						}
-
-						self.overlay.close();
-						DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.page.getMetaData('ticket_id'), {ignoreExist:true});
-						self.page.closeSelf();
 					},
 					error: function(xhr, textStatus, errorThrown) {
 						self.overlay.close();
@@ -120,6 +117,9 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 	destroy: function() {
 		if (this.overlay) {
 			this.overlay.destroy();
+			this.overlay = null;
 		}
+		this.page = null;
+		this.wrapperEl = null;
 	}
 });

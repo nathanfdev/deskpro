@@ -1,0 +1,18 @@
+{% for guide in guides %}
+	<li class="is-nav-item guide-{{ guide.id }}" id="publish_guide_{{ guide.id }}">
+		<div class="item with-title" data-route="listpane:{{ path('agent_guides_list', {'guide_id':guide.id}) }}">
+			{% if guide_repo.getChildren(guide)|length %}
+				<i class="dp-toggle-icon click-through icon-caret-right"></i>
+			{% endif %}
+			<h3>
+				{% if depth and not guide_repo.getChildren(guide)|length %}&mdash;{% endif %}
+				<span class="title-text">{{ guide.title }}</span>
+			</h3>
+			<div class="dp-fader"></div>
+			<em class="counter list-counter"
+				id="kb_cat_count_{{ guide.id }}"
+				data-count="{{ counts[guide.id]|default(0) }}"
+			>{{ counts[guide.id]|default(0) }}</em>
+		</div>
+	</li>
+{% endfor %}

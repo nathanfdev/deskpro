@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
-import { getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { clipboardHasImages, getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
 
 export default class RteEditor extends React.Component {
 
@@ -16,7 +16,6 @@ export default class RteEditor extends React.Component {
     onPasteImage:    PropTypes.func,
     onFocus:         PropTypes.func,
     onBlur:          PropTypes.func
-    
   };
 
   componentDidMount() {
@@ -51,7 +50,7 @@ export default class RteEditor extends React.Component {
     // Override default paste listener to upload images
     $(node).on('paste', this.onPaste);
     const overrideOptions = {
-      paste: { cleanPastedHTML: true }
+      paste: { cleanPastedHTML: false, forcePlainText: false }
     };
 
     this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
@@ -107,7 +106,9 @@ export default class RteEditor extends React.Component {
     const pastedText = clipboardData.getData('text/plain');
     const pastedHtml = clipboardData.getData('text/html');
 
-    this.medium.cleanPaste(pastedText);
+    if (!clipboardHasImages(clipboardData)) {
+      this.medium.cleanPaste(pastedText);
+    }
 
     const { onPasteImage } = this.props;
     if (onPasteImage) {

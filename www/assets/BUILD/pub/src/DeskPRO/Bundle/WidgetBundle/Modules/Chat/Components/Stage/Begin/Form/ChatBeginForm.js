@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Field, Input } from 'react-forms';
+import { Field } from 'react-forms';
+import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
 import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFieldSingleChoice';
@@ -20,7 +21,8 @@ export class ChatBeginForm extends React.Component {
     widgetLanguage:           PropTypes.number,
     loggedIn:                 PropTypes.bool,
     chatRequiredName:         PropTypes.bool,
-    chatRequiredEmail:        PropTypes.bool
+    chatRequiredEmail:        PropTypes.bool,
+    primaryColor:             PropTypes.string
   };
 
 
@@ -38,8 +40,13 @@ export class ChatBeginForm extends React.Component {
   }
 
   render() {
-    const { customFields, allowDepartmentSelection, chatDepartments, chatRequiredName, chatRequiredEmail } = this.props;
-    const { submit, errors, onSubmit, widgetLanguage, loggedIn } = this.props;
+    const { customFields, allowDepartmentSelection, chatRequiredName, chatRequiredEmail } = this.props;
+    const { submit, errors, onSubmit, widgetLanguage, loggedIn, primaryColor } = this.props;
+
+    const buttonStyles = {};
+    if (primaryColor) {
+      buttonStyles.backgroundColor = primaryColor;
+    }
 
     return (
       <WidgetBodyScrollAreaContainer>
@@ -67,7 +74,7 @@ export class ChatBeginForm extends React.Component {
                   <Input type="email" />
                 </Field>
               </FormItem>}
-            {allowDepartmentSelection && chatDepartments.size > 1 && this.renderDepartmentSelect()}
+            {allowDepartmentSelection && this.renderDepartmentSelect()}
             {customFields.valueSeq().map((customField, index) =>
               <CustomField
                 key={index}
@@ -87,7 +94,7 @@ export class ChatBeginForm extends React.Component {
             <div className="button-label">
               {submit
                 ? <div className="spinner"><i /></div>
-                : <button className="dpdesignportal-button dpdesignportal-button-wide">
+                : <button className="dpdesignportal-button dpdesignportal-button-wide" style={buttonStyles}>
                   {portalPhrases.get('portal.chat.start')}
                 </button>
               }

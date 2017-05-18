@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -57,12 +54,21 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
      */
     private $httpUtils;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     * @param HttpUtils     $httpUtils
+     */
     public function __construct(EntityManager $em, HttpUtils $httpUtils)
     {
         $this->em        = $em;
         $this->httpUtils = $httpUtils;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function logout(Request $request, Response $response, TokenInterface $token)
     {
         if ($request->get('_dp_impersonate_exit')) {
@@ -86,6 +92,10 @@ class LogoutHandler implements LogoutHandlerInterface, LogoutSuccessHandlerInter
         }
 
         $request->getSession()->set(self::RECENT_LOGOUT, time());
+
+        // we are using this callback for legacy agent logout as well
+        // so create a cookie for automatic sso to prevent logging in back on redirect
+        $response->headers->setCookie(new Cookie('dp-recent-logout', true, new \DateTime('+5 minutes')));
     }
 
     /**

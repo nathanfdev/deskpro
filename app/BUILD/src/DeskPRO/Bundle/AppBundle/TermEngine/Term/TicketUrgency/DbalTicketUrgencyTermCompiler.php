@@ -26,29 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketUrgency;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketUrgencyTermCompiler.
+ */
 class DbalTicketUrgencyTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $urgency = $term->getOption('num');
-
-        $query_part = $this->getNumericHelper()->buildQueryPart(
+        $qp = $this->getNumericHelper()->buildQueryPart(
             'ticket.urgency',
             $term->getOp(),
-            $urgency
+            $term->getOption('num')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

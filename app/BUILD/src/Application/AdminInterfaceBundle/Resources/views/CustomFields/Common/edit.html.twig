@@ -156,6 +156,19 @@
 									</div>
 								</div>
 							</div>
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3></h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="font-weight: normal">
+											<input type="checkbox" ng-model="EditCtrl.form.text.clickable_links" />
+											Make links clickable
+										</label>
+									</div>
+								</div>
+							</div>
 
 							<div class="form-group">
 								<div class="col-lg-3">
@@ -365,6 +378,20 @@
 										<label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[4]" /> Friday</label>
 										<label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[5]" /> Saturday</label>
 										<label style="font-weight: normal;"><input type="checkbox" ng-model="EditCtrl.form.date.valid_weekdays[6]" /> Sunday</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>Calendar</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<select ng-model="EditCtrl.form.date.calendar">
+											<option value="gregorian" selected>Default (Gregorian)</option>
+											<option value="hijri">Arabic (Hijri)</option>
+										</select>
 									</div>
 								</div>
 							</div>

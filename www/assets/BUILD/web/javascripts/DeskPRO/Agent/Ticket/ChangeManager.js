@@ -339,6 +339,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				context: this,
 				success: function(data) {
 
+					if (!self.ticketPage) {
+						return;
+					}
+
 					if (data.error_messages) {
 						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
 						Array.each(data.error_messages, function(msg) {
@@ -480,5 +484,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		property.setIncomingValue(newValue);
 		property.pulseInterfaceElement();
+	},
+
+	destroy: function() {
+		this.ticketPage = null;
 	}
 });

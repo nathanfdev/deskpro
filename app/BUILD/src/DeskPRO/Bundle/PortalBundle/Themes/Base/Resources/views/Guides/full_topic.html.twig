@@ -1,0 +1,8 @@
+{% set counter = counter ~ '.' ~ topic.display_order %}
+<div class="topic">
+    <h{{ depth }} id="{{ topic.slug }}">{{ counter }} {{ topic.title }}</h{{ depth }}>
+    {{ topic.get_content_full|content_pdf|raw }}
+    {% for child in topic.children %}
+        {%  include 'Theme:Guides:full_topic.html.twig' with {'topic': child, 'depth': 2, 'counter': counter } %}
+    {%  endfor %}
+</div>

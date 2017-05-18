@@ -104,7 +104,6 @@
   .dpdesignportal-message-avatar {
     position: absolute;
     top: 0;
-    left: 5px;
     border-top-right-radius: 0;
   }
 
@@ -129,6 +128,10 @@
 
   &.agent-message { padding-left: 30px; }
   &.agent-message .dpdesignportal-message-content { background: #ededed; }
+  &.agent-message .dpdesignportal-message-avatar {
+    left: 5px;
+  }
+
   &.user-message { padding-right: 30px; }
   &.user-message .dpdesignportal-message-content {
     background: #fff;
@@ -138,7 +141,6 @@
   &.user-message .dpdesignportal-message-avatar {
     border-top-left-radius: 0;
     border-top-right-radius: 99px;
-    left: initial;
     right: 5px;
   }
 

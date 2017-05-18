@@ -36,9 +36,15 @@ namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
@@ -231,6 +237,8 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFilter('trans', [$this, 'dummy']),
             new \Twig_SimpleFilter('transchoice', [$this, 'dummy']),
             new \Twig_SimpleFilter('plain_template_filter', [$this, 'plain_template_filter']),
+            new \Twig_SimpleFilter('content', [$this, 'replaceContent']),
+            new \Twig_SimpleFilter('content_pdf', [$this, 'replaceContentPdf']),
 
             // Override for custom UTF-8 handling
             new \Twig_SimpleFilter('upper', [$this, 'strUpper']),
@@ -781,7 +789,12 @@ class TemplatingExtension extends \Twig_Extension
 
     public function securityToken($name = '', $timeout = 43200)
     {
-        return $this->container->getSession()->getEntity()->generateSecurityToken($name, $timeout);
+        $session = $this->container->getSession();
+        if ($session instanceof Session) {
+            return $session->getEntity()->generateSecurityToken($name, $timeout);
+        }
+
+        return;
     }
 
     public function staticSecurityToken($name = '', $timeout = 18000)
@@ -1832,5 +1845,89 @@ class TemplatingExtension extends \Twig_Extension
     public function dummy($ret)
     {
         return $ret;
+    }
+
+    public function replaceContentPdf($content)
+    {
+        return $this->replaceContent($content, true);
+    }
+
+    public function replaceContent($content, $pdf = false)
+    {
+        return preg_replace_callback_array(
+            [
+                '|{{\s*img\(([^/]+)/([^)]+)\)\s*}}|' => function ($match) {
+                    return $this->getBlobImage(trim($match[1]), trim($match[2]));
+                },
+                '|<a href="{{\s*content\(([^,]+),([^),]+)\)\s*}}">([^<]*)</a>|' => function ($match) use ($pdf) {
+                    $type = trim($match[1]);
+                    $id = trim($match[2]);
+                    $title = empty($match[3]) ? '' : trim($match[3]);
+
+                    return $this->getManualInternalLink($type, $id, $title, '', $pdf);
+                },
+                '|{{\s*content_link\(([^,]+),([^),]+)(,[^)]+)?\)\s*}}|' => function ($match) use ($pdf) {
+                    $type = trim($match[1]);
+                    $id = trim($match[2]);
+                    $anchor = empty($match[3]) ? '' : trim($match[3], ", \t\n\r\0\x0B");
+
+                    return $this->getManualInternalLink($type, $id, '', $anchor, $pdf);
+                },
+            ],
+            $content
+        );
+    }
+
+    public function getBlobImage($authId, $filename)
+    {
+        return App::get('router')->generate('serve_blob', ['blob_auth_id' => $authId, 'filename' => $filename], UrlGeneratorInterface::ABSOLUTE_PATH);
+    }
+
+    public function getManualInternalLink($type, $id, $title = '', $anchor = '', $pdf = false)
+    {
+        $em = $this->getContainer()->getEm();
+        switch ($type) {
+            case 'article':
+            case 'knowledgebase':
+            case 'knowledgebase_article':
+                $object = $em->getRepository(Article::class)->find($id);
+                break;
+            case 'news':
+                $object = $em->getRepository(News::class)->find($id);
+                break;
+            case 'feedback':
+                $object = $em->getRepository(Feedback::class)->find($id);
+                break;
+            case 'download':
+                $object = $em->getRepository(Download::class)->find($id);
+                break;
+            case 'guide':
+            case 'topic':
+                $object = $em->getRepository(Topic::class)->find($id);
+                break;
+            default:
+                $object = null;
+        }
+        if (!$object) {
+            return '-- Broken link - '.$type.':'.$id.' --';
+        }
+        $url = $this->getContainer()->get('object_router')->getPortalUrl($object);
+        if ($anchor) {
+            $url .= '#'.$anchor;
+        }
+        if (!$title) {
+            $title = $object->getTitle();
+        }
+
+        if ($pdf && $type == 'topic') {
+            $target = $object->getSlug();
+            if ($anchor) {
+                $target .= '_'.$anchor;
+            }
+
+            return '<a class="internal_link topic" href="#'.$target.'">'.$title.'</a>';
+        } else {
+            return '<a class="internal_link '.$type.'" href="'.$url.'">'.$title.'</a>';
+        }
     }
 }

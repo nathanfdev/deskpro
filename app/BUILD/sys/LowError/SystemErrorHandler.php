@@ -178,11 +178,12 @@ class SystemErrorHandler
     }
 
     /**
-     * @param \Exception $exception The exception to log
-     * @param bool       $send      True to send a report to deskpro
-     * @param string     $unique_id An error ID. if this error has been reported before, it will not be reported again
+     * @param \Exception $exception    The exception to log
+     * @param bool       $send         True to send a report to deskpro
+     * @param string     $unique_id    An error ID. if this error has been reported before, it will not be reported again
+     * @param bool       $noShowErrors Don't show errors override
      */
-    public static function logException(\Exception $exception, $send = false, $unique_id = null)
+    public static function logException(\Exception $exception, $send = false, $unique_id = null, $noShowErrors = false)
     {
         if (!self::shouldLog($exception)) {
             return;
@@ -224,7 +225,12 @@ class SystemErrorHandler
         if (!$send) {
             $einfo['no_send_error'] = true;
         }
+
+        $curNoShowErrors = self::$noShowErrors;
+
+        self::$noShowErrors = $noShowErrors;
         self::logErrorInfo($einfo);
+        self::$noShowErrors = $curNoShowErrors;
     }
 
     private static function shouldLog(/* Throwable */
@@ -236,11 +242,22 @@ class SystemErrorHandler
             || $exception instanceof MethodNotAllowedException
             || $exception instanceof AccessDeniedException
             || $exception instanceof LogoutException
+            || self::isProxyException($exception)
         ) {
             return false;
         }
 
         return true;
+    }
+
+    /**
+     * @param $exception
+     *
+     * @return bool
+     */
+    public static function isProxyException($exception)
+    {
+        return $exception instanceof \UnexpectedValueException && strpos($exception->getMessage(), 'Invalid Host') === 0;
     }
 
     public static function logExceptionIfUniqueBacktrace(/*Throwable*/
@@ -845,11 +862,10 @@ class SystemErrorHandler
 
             if (self::$bugsnagConfig['app_version']) {
                 self::$bugsnagClient->setAppVersion(self::$bugsnagConfig['app_version']);
-            } else {
-                $buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt';
-                if (file_exists($buildNumFile)) {
-                    self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
-                }
+            } elseif (($buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-name.txt') && file_exists($buildNumFile)) {
+                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
+            } elseif (($buildNumFile = self::getDpEnv()->getAppDir().'/sys/config/build-num.txt') && file_exists($buildNumFile)) {
+                self::$bugsnagClient->setAppVersion(trim(file_get_contents($buildNumFile)));
             }
         }
 

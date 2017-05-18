@@ -29,9 +29,11 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Template;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
@@ -216,6 +218,57 @@ class PortalController extends AbstractController
                 'destination'          => $destination,
             ]
         );
+    }
+
+    /**
+     * @Route("/login/magic_link/{authId}", name="portal_magic_link_login")
+     *
+     * @param string $authId
+     *
+     * @return Response
+     */
+    public function loginMagicLinkController($authId)
+    {
+        $tmpData = $this->getRepo(TmpData::class)->findOneBy([
+            'auth' => $authId,
+        ]);
+
+        if (!$tmpData instanceof TmpData || !$tmpData->getData('email')) {
+            return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
+                'error_title' => 'portal.account.link-expired',
+            ]);
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $this->getRepo(Person::class);
+        $person     = $personRepo->findOneByEmail($tmpData->getData('email'));
+
+        if (!$person instanceof Person) {
+            return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
+                'error_title' => 'portal.account.link-expired',
+            ]);
+        }
+
+        // create api token
+        $token = new ApiToken();
+        $token->setPerson($person);
+        $token->setScope(ApiToken::SCOPE_CLIENT);
+
+        $this->getEm()->persist($token);
+        $this->getEm()->flush($token);
+
+        // remove temp auth code
+        $this->getEm()->remove($tmpData);
+        $this->getEm()->flush();
+
+        $res = $this->render('ApiBundle::ApiTokens/custom_target.html.twig', [
+            'target_url' => $tmpData->getData('target'),
+            'token'      => $token,
+        ]);
+
+        $res->headers->set('Content-Type', 'text/html');
+
+        return $res;
     }
 
     /**

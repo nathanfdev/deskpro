@@ -36,13 +36,15 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DateTime;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * History of slugs.
  */
-class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
+class NewsSlugHistory extends DomainObject
 {
     /**
      * The unique ID.
@@ -66,7 +68,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     protected $slug;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_created;
 
@@ -78,7 +80,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setContent($news);
         $this->setSlug($old_slug);
-        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('date_created', new DateTime());
     }
 
     /**
@@ -128,7 +130,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleSlugHistory';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\NewsSlugHistory';
         $metadata->setPrimaryTable(['name' => 'news_slug_history']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(

@@ -1,9 +1,13 @@
+@new
 Feature: Discover settings
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
     And I have only default brand
+    And only the following custom ticket fields exist:
+      | #  | Type | Title      |
+      | f1 | text | Text field |
+      | f2 | text | Text field |
 
   Scenario: I get discover settings
     When I send a GET request to "/api/v2/helpdesk/discover"
@@ -83,29 +87,13 @@ Feature: Discover settings
     And the JSON node "data.tickets.group_fields[9].id" should be equal to "person"
     And the JSON node "data.tickets.group_fields[9].type" should be equal to "person"
 
-    And the JSON node "data.tickets.group_fields[10].id" should be equal to "ticket_field.6"
+    And the JSON node "data.tickets.group_fields[10].id" should be equal to "ticket_field.{f1}"
     And the JSON node "data.tickets.group_fields[10].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[10].field_id" should be equal to 6
+    And the JSON node "data.tickets.group_fields[10].field_id" should be equal to "{f1}"
 
-    And the JSON node "data.tickets.group_fields[11].id" should be equal to "ticket_field.7"
+    And the JSON node "data.tickets.group_fields[11].id" should be equal to "ticket_field.{f2}"
     And the JSON node "data.tickets.group_fields[11].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[11].field_id" should be equal to 7
-
-    And the JSON node "data.tickets.group_fields[12].id" should be equal to "ticket_field.1"
-    And the JSON node "data.tickets.group_fields[12].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[12].field_id" should be equal to 1
-
-    And the JSON node "data.tickets.group_fields[13].id" should be equal to "ticket_field.8"
-    And the JSON node "data.tickets.group_fields[13].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[13].field_id" should be equal to 8
-
-    And the JSON node "data.tickets.group_fields[14].id" should be equal to "ticket_field.12"
-    And the JSON node "data.tickets.group_fields[14].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[14].field_id" should be equal to 12
-
-    And the JSON node "data.tickets.group_fields[15].id" should be equal to "ticket_field.5"
-    And the JSON node "data.tickets.group_fields[15].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[15].field_id" should be equal to 5
+    And the JSON node "data.tickets.group_fields[11].field_id" should be equal to "{f2}"
 
     And the JSON node "data.tickets.order_fields[0].id" should be equal to "urgency"
     And the JSON node "data.tickets.order_fields[0].type" should be equal to "urgency"

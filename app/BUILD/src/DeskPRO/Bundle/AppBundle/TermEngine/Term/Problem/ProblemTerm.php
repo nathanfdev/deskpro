@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -47,10 +43,20 @@ class ProblemTerm extends AbstractTerm
      */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(['problem' => null]);
+        $resolver->setDefaults(['problem' => []]);
         $resolver->setConstraints([
             new Assert\NotBlank(),
         ]);
+        $resolver->setNormalizer(
+            'problem',
+            function ($options, $value) {
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+
+                return $value;
+            }
+        );
     }
 
     /**

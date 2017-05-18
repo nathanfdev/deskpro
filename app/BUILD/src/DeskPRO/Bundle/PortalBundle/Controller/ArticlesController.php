@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
@@ -70,11 +71,14 @@ class ArticlesController extends AbstractController
                 true
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', [
-                'pager'      => $pager,
-                'category'   => null,
-                'page_title' => $this->get('portal_view.page_title_generator')->kb(),
-            ]);
+            return $this->render(
+                'PortalBundle:Articles:feed.rss.twig',
+                [
+                    'pager'      => $pager,
+                    'category'   => null,
+                    'page_title' => $this->get('portal_view.page_title_generator')->kb(),
+                ]
+            );
         }
         $rssLink = $this->generateUrl(
             'portal_kb',
@@ -131,11 +135,14 @@ class ArticlesController extends AbstractController
                 false
             );
 
-            return $this->render('PortalBundle:Articles:feed.rss.twig', [
-                'pager'      => $pager,
-                'category'   => $category,
-                'page_title' => $this->get('portal_view.page_title_generator')->kb($category),
-            ]);
+            return $this->render(
+                'PortalBundle:Articles:feed.rss.twig',
+                [
+                    'pager'      => $pager,
+                    'category'   => $category,
+                    'page_title' => $this->get('portal_view.page_title_generator')->kb($category),
+                ]
+            );
         }
         $rssLink = $this->generateUrl('portal_kb_browse', ['slug' => $category->getSlug(), '_format' => 'rss']);
 
@@ -189,7 +196,6 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article, $visitor_id)
     {
-
         // COMMENT FORM
 
         $newCommentForm = null;
@@ -233,6 +239,11 @@ class ArticlesController extends AbstractController
         $check = new SubmitCommentAbuseCheck($this->getUser(), $request->getClientIp());
         $check->markAsCheckOnly();
         $this->get('anti_abuse')->check($check);
+
+        // REGISTERED PAGE VIEW LOG
+        if ($person = $this->getUser()) {
+            $this->container->get('content.page_view')->pageView($person, PageViewLog::TYPE_ARTICLE, $article->getId());
+        }
 
         // RENDER THEME
 

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { AbstractCustomField } from './AbstractCustomField';
-import { WithFormValue } from 'react-forms';
+import { withFormValue } from 'react-forms';
 import classNames from 'classnames';
+import { AbstractCustomField } from './AbstractCustomField';
 import { noFocusBorder } from './noFocusBorderDecorator';
 
 export class CustomFieldCheckbox extends AbstractCustomField {
@@ -44,7 +44,7 @@ class MultipleCheckbox extends React.Component {
   };
 
   componentDidMount() {
-    this.addNoFocusBorderListeners(this.refs.el);
+    this.addNoFocusBorderListeners(this.el);
   }
 
   onClick = () => {
@@ -78,7 +78,7 @@ class MultipleCheckbox extends React.Component {
       <div
         className="checkbox-container"
         tabIndex={0}
-        ref="el"
+        ref={(c) => { this.el = c; }}
         onClick={this.onClick}
       >
         <span className={classNames('checkbox', { checked: value.indexOf(itemValue) !== -1 })}>
@@ -91,4 +91,4 @@ class MultipleCheckbox extends React.Component {
   }
 }
 
-const MultipleCheckboxWithFormValue = WithFormValue(MultipleCheckbox);
+const MultipleCheckboxWithFormValue = withFormValue(MultipleCheckbox);

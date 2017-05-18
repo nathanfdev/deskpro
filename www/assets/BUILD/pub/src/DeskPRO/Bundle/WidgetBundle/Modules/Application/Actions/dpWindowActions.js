@@ -49,9 +49,16 @@ export const widgetResize = createAction(
     const widgetFrameWindow = parent.window.widget_iframe;
     const $window = $(widgetFrameWindow);
 
+    // if parent height less than the widget frame one then it means
+    // we are in mobile landscape mode and have nav/bar borders
+    let height = widgetFrameWindow.innerHeight || $window.height();
+    if (parent.window.innerHeight < widgetFrameWindow.innerHeight) {
+      height = parent.window.innerHeight;
+    }
+
     return {
-      width:  $window.width(),
-      height: Math.max(widgetFrameWindow.innerHeight, $window.height())
+      width: $window.width(),
+      height
     };
   }
 );
@@ -66,7 +73,7 @@ export const windowResize = createAction(
 
     return {
       width:  $window.width(),
-      height: parentWindow.innerHeight > $window.height() ? parentWindow.innerHeight : $window.height()
+      height: parentWindow.innerHeight || $window.height()
     };
   }
 );

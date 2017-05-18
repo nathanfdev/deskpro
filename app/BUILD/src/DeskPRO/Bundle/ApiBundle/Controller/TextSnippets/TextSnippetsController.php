@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
@@ -52,8 +48,19 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @Rest\Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
  * @ApiDoc(
  *     target="all",
- *     section="Tickets",
+ *     section="Text snippets",
  *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\TextSnippets\TextSnippet"
+ * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TextSnippet",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "type"="tickets"
+ *      }
+ *     }
  * )
  */
 class TextSnippetsController extends CrudController

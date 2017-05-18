@@ -26,29 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketNumAgentReplies;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketNumAgentRepliesTermCompiler.
+ */
 class DbalTicketNumAgentRepliesTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $urgency = $term->getOption('num');
-
-        $query_part = $this->getNumericHelper()->buildQueryPart(
+        $qp = $this->getNumericHelper()->buildQueryPart(
             'ticket.count_agent_replies',
             $term->getOp(),
-            $urgency
+            $term->getOption('num')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

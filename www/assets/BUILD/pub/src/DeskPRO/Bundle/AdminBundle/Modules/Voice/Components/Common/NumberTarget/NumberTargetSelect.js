@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import TargetTypeSelect from '../../Common/NumberTarget/TargetTypeSelect';
-import AgentsSelectContainer from '../../Common/NumberTarget/AgentsSelectContainer';
+import AgentsSelectContainer from '../../../../Common/Components/Select/AgentsSelectContainer';
 import QueuesSelectContainer from '../../Common/NumberTarget/QueuesSelectContainer';
 import AutoAttendantSelectContainer from '../../Common/NumberTarget/AutoAttendantSelectContainer';
 

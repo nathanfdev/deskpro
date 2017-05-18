@@ -45,6 +45,15 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant")
  * @ApiUserContext("admin")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAutoAttendantType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant"
+ *      }
+ *     }
+ * )
  */
 class VoiceAutoAttendantsController extends CrudController
 {

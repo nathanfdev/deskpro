@@ -41,8 +41,7 @@ Feature: Quick Search
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.grouped_results" should have 2 elements
-    And the JSON node "data.grouped_results[0].results[0].id" should be equal to "{admin}"
-    And the JSON node "data.grouped_results[0].results[0].primary_email" should be equal to "admin@deskpro.dev"
+    And the JSON node "data.grouped_results[0].results[0].name" should be equal to "Admin Admin"
     And the JSON node "data.grouped_results[1].results[0].id" should be equal to "{organization}"
 
   Scenario Outline: I search by entity type

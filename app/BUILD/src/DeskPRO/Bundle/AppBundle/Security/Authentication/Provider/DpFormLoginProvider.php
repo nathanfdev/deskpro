@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Authentication\Provider;
 
 use Application\DeskPRO\Auth\AuthenticationManager;
@@ -38,9 +34,10 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -48,17 +45,20 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
 
+/**
+ * Class DpFormLoginProvider.
+ */
 class DpFormLoginProvider implements AuthenticationProviderInterface
 {
     /**
-     * @var \Application\DeskPRO\Auth\AuthenticationManager
+     * @var ContainerInterface
      */
-    private $dp_auth_manager;
+    private $container;
 
     /**
      * @var \DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider
      */
-    private $dp_person_provider;
+    private $dpPersonProvider;
 
     /**
      * @var Session
@@ -66,33 +66,21 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
     private $session;
 
     /**
-     * @var EventLogger
-     */
-    private $logger;
-
-    /**
-     * @param DpAuthManager        $dp_auth_manager
-     * @param DpPersonUserProvider $dp_person_provider
+     * Constructor.
+     *
+     * @param ContainerInterface   $container
+     * @param DpPersonUserProvider $dpPersonProvider
      * @param Session              $session
-     * @param EventLogger          $logger
      */
-    public function __construct(
-        DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session, EventLogger $logger)
+    public function __construct(ContainerInterface $container, DpPersonUserProvider $dpPersonProvider, Session $session)
     {
-        $this->dp_auth_manager    = $dp_auth_manager;
-        $this->dp_person_provider = $dp_person_provider;
-        $this->session            = $session;
-        $this->logger             = $logger;
+        $this->container        = $container;
+        $this->dpPersonProvider = $dpPersonProvider;
+        $this->session          = $session;
     }
 
     /**
-     * Attempts to authenticate a TokenInterface object.
-     *
-     * @param TokenInterface $token The TokenInterface instance to authenticate
-     *
-     * @throws AuthenticationException if the authentication fails
-     *
-     * @return TokenInterface An authenticated TokenInterface instance, never null
+     * {@inheritdoc}
      */
     public function authenticate(TokenInterface $token)
     {
@@ -104,12 +92,12 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
         /* @var Usersource $usersource */
         /* @var Result $authResult */
-        $auth_manager                  = $this->dp_auth_manager;
+        $auth_manager                  = $this->container->get('dp_authentication_manager.user');
         list($authResult, $usersource) = $this->getDpAuthResultForGivenUsersources($token, $auth_manager);
 
         // if its the user interface and we failed, please try agent usersources as well
-        if (!$authResult->isValid() && 'user' === $this->dp_auth_manager->getInterface()) {
-            $auth_manager                  = $this->dp_auth_manager->cloneForInterface('agent');
+        if (!$authResult->isValid() && 'user' === $auth_manager->getInterface()) {
+            $auth_manager                  = $auth_manager->cloneForInterface('agent');
             list($authResult, $usersource) = $this->getDpAuthResultForGivenUsersources($token, $auth_manager);
         }
 
@@ -124,7 +112,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
             $person          = $login_processor->getPerson();
 
-            if ($this->dp_person_provider->personHasBannedEmail($person)) {
+            if ($this->dpPersonProvider->personHasBannedEmail($person)) {
                 throw new DisabledException('portal.account.login-disabled');
             }
 
@@ -138,11 +126,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * Checks whether this provider supports the given token.
-     *
-     * @param TokenInterface $token A TokenInterface instance
-     *
-     * @return bool true if the implementation supports the Token, false otherwise
+     * {@inheritdoc}
      */
     public function supports(TokenInterface $token)
     {
@@ -173,7 +157,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 } catch (AuthenticationException $e) {
                     throw $e;
                 } catch (\Exception $e) {
-                    $this->logger->log($e);
+                    SystemErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
                     $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;

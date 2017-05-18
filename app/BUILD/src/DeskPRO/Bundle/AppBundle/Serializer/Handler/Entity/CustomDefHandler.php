@@ -35,10 +35,12 @@ use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDef as CustomDefModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class CustomDefHandler.
@@ -51,13 +53,25 @@ class CustomDefHandler extends AbstractEntityHandler
     private $translate;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var Language[]
+     */
+    private $languages;
+
+    /**
      * Constructor.
      *
-     * @param Translate $translate
+     * @param Translate     $translate
+     * @param EntityManager $em
      */
-    public function __construct(Translate $translate)
+    public function __construct(Translate $translate, EntityManager $em)
     {
         $this->translate = $translate;
+        $this->em        = $em;
     }
 
     /**
@@ -85,7 +99,11 @@ class CustomDefHandler extends AbstractEntityHandler
         $model        = new CustomDefModel($entity);
         $translations = [];
 
-        foreach ($this->translate->getAllLanguages() as $language) {
+        if (null === $this->languages) {
+            $this->languages = $this->em->getRepository(Language::class)->findAll();
+        }
+
+        foreach ($this->languages as $language) {
             $translations[$language->getId()] = new CustomDefTranslation(
                 $this->translate->getPhraseObject($entity, 'title', $language),
                 $this->translate->getPhraseObject($entity, 'description', $language),

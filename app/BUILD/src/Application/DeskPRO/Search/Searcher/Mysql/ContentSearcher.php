@@ -88,6 +88,9 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
             if (!$this->person->hasPerm('downloads.use')) {
                 unset($limit_types['download']);
             }
+            if (!$this->person->hasPerm('guides.use')) {
+                unset($limit_types['guide']);
+            }
         }
 
         return array_values($limit_types);
@@ -97,7 +100,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
     {
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = ['article', 'download', 'feedback', 'news'];
+            $limit_types = ['article', 'download', 'feedback', 'news', 'topic'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);
@@ -276,7 +279,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         // Otherwise fallback to like
         $limit_types = \Orb\Util\Arrays::removeFalsey($limit_types);
         if (!$limit_types) {
-            $limit_types = ['article', 'download', 'feedback', 'news'];
+            $limit_types = ['article', 'download', 'feedback', 'news', 'topic'];
         }
 
         $limit_types = $this->permFilterTypes($limit_types);

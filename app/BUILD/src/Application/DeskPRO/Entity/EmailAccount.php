@@ -35,8 +35,12 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
+use DeskPRO\Component\Util\IpUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @property int $id
@@ -50,6 +54,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property \DateTime $date_created
  * @property \DateTime $date_read_start
  * @property \DateTime $date_last_incoming
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class EmailAccount extends DomainObject
 {
@@ -132,11 +138,17 @@ class EmailAccount extends DomainObject
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      */
     protected $cert_blob = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Blob
+     *
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
      */
     protected $key_blob = null;
 
@@ -199,7 +211,32 @@ class EmailAccount extends DomainObject
             return null;
         }
 
-        return $this->outgoing_account->getType();
+        return $this->getOutgoingAccount()->getType();
+    }
+
+    /**
+     * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     */
+    public function getOutgoingAccount()
+    {
+        $account = $this->outgoing_account;
+
+        // On cloud, should never be a local host so re-write these as using the mailer
+        if (defined('DPC_IS_CLOUD')) {
+            if ($account instanceof SmtpConfig && IpUtils::guessIsLocalNetworkHost($account->host)) {
+                $account = new PhpMailConfig();
+            }
+        }
+
+        return $account;
+    }
+
+    /**
+     * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     */
+    public function getRealOutgoingAccount()
+    {
+        return $this->outgoing_account;
     }
 
     /**
@@ -415,7 +452,7 @@ class EmailAccount extends DomainObject
         $data['incoming_account']      = $this->incoming_account ? $this->incoming_account->serializeJsonArray() : [];
         $data['incoming_account_type'] = $this->getIncomingAccountType();
         $data['outgoing_account_type'] = $this->getOutgoingAccountType();
-        $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : [];
+        $data['outgoing_account']      = $this->outgoing_account ? $this->getOutgoingAccount()->serializeJsonArray() : [];
         $data['use_email_address']     = $this->getUseEmailAddress();
 
         return $data;

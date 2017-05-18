@@ -26,15 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
-use Orb\Data\Countries;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -70,9 +64,8 @@ class AddressType extends AbstractContactDataItemType
             ->add('zip', TextType::class, [
                 'property_path' => 'field_4',
             ])
-            ->add('country', ChoiceType::class, [
+            ->add('country', TextType::class, [
                 'property_path' => 'field_5',
-                'choices'       => Countries::getCountryArray(),
             ])
         ;
     }

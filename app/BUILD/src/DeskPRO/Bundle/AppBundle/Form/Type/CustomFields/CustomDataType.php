@@ -350,7 +350,7 @@ class CustomDataType extends AbstractType
      * @param Collection        $allCustomData
      * @param CustomDefAbstract $customDef
      *
-     * @return CustomDataAbstract[]|ArrayCollection
+     * @return CustomDataAbstract[]|ArrayCollection|Collection
      */
     protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
     {
@@ -483,6 +483,7 @@ class CustomDataType extends AbstractType
                     $options = [
                         'input'    => 'timestamp',
                         'widget'   => 'choice',
+                        'calendar' => $def->getOption('calendar'),
                         'weekdays' => $def->getOption('date_valid_dow'),
                         'min_date' => $def->getDateMinFormat(),
                         'max_date' => $def->getDateMaxFormat(),

@@ -23,6 +23,11 @@ services:
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
+  event_listener.phrase_translatable:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PhraseTranslatableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.custom_per_data:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomPerDataListener
     tags:
@@ -42,7 +47,7 @@ services:
 
   event_listener.voice_queue:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener
-    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
+    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: doctrine.entity_listener }
 
@@ -60,6 +65,12 @@ services:
 
   event_listener.voice_settings:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.voice_agent_target:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAgentTargetListener
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: doctrine.entity_listener }

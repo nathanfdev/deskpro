@@ -98,5 +98,10 @@ class UrlHostCheckerSpec extends ObjectBehavior
         $this->simplifyUrl('http://mydomain.com:9000')->shouldBe('mydomain.com:9000');
         $this->simplifyUrl('https://mydomain.com')->shouldBe('mydomain.com');
         $this->simplifyUrl('https://samesite.com:8043/fooD')->shouldBe('samesite.com:8043');
+        $this->simplifyUrl('//foo.com', true)->shouldBe('http://foo.com');
+        $this->simplifyUrl('http://foo.com', true)->shouldBe('http://foo.com');
+        $this->simplifyUrl('https://foo.com', true)->shouldBe('https://foo.com');
+        $this->simplifyUrl('https://foo.com:8888', true)->shouldBe('https://foo.com:8888');
+        $this->simplifyUrl('', true)->shouldBe('');
     }
 }

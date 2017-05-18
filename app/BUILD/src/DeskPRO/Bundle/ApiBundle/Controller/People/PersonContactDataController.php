@@ -51,7 +51,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class PersonContactDataController extends CrudSubController
 {
-    public static $exposeOnly     = ['get', 'list'];
+    public static $exposeOnly     = ['get', 'list', 'count'];
     public static $entity         = PersonContactData::class;
     public static $parentProperty = 'person';
     public static $listOrder      = 'asc';

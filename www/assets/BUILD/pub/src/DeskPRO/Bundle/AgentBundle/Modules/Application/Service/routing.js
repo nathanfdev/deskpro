@@ -6,7 +6,7 @@ import Immutable from 'immutable';
 const reservedCharsRegex = /[\.\-,:;]/g;
 
 /**
- * Validates state to not contain reserverd characters
+ * Validates state to not contain reserved characters
  *
  * @param {Immutable.List} state State to validate
  * @return {void}
@@ -21,15 +21,13 @@ function ensureNoReservedChars(state) {
         throw new Error(`Component state key "${key}" contains a reserved char`);
       }
       if (value.forEach) {
-        value.forEach(subValue => {
+        value.forEach((subValue) => {
           if (reservedCharsRegex.test(subValue)) {
             throw new Error(`Component state value "${subValue}" contains a reserved char`);
           }
         });
-      } else {
-        if (reservedCharsRegex.test(value)) {
-          throw new Error(`Component state value "${value}" contains a reserved char`);
-        }
+      } else if (reservedCharsRegex.test(value)) {
+        throw new Error(`Component state value "${value}" contains a reserved char`);
       }
     });
   });
@@ -42,7 +40,7 @@ function ensureNoReservedChars(state) {
  * @return {void}
  */
 function ensureNoScalarState(state) {
-  state.forEach(data => {
+  state.forEach((data) => {
     if (typeof data !== 'object') {
       throw new Error('Each component state stored in URL must be an object!');
     }
@@ -76,7 +74,10 @@ export function stateToString(state) {
   ensureNoReservedChars(state);
 
   let string = '';
-  state.forEach((data, component) => string += `${component}:${componentStateToString(data)}.`);
+  state.forEach((data, component) => {
+    string += `${component}:${componentStateToString(data)}.`;
+    return null;
+  });
 
   return string.slice(0, -1);
 }
@@ -94,7 +95,7 @@ function componentStateFromString(string) {
 
   const state = {};
   const parts = string.split(';');
-  parts.forEach(part => {
+  parts.forEach((part) => {
     const [key, value] = part.split('-');
     if (!key || !value) {
       return null;
@@ -109,6 +110,8 @@ function componentStateFromString(string) {
     }
 
     state[key] = decodedValue;
+
+    return null;
   });
 
   return state;

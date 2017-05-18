@@ -321,6 +321,38 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         return $session_id;
     }
 
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip
+     */
+    public function setIpAddress($ip)
+    {
+        $this->setModelField('ip_address', $ip);
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setVisitorId($id)
+    {
+        $this->setModelField('visitor_id', $id);
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

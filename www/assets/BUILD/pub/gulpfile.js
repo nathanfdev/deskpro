@@ -168,7 +168,8 @@ function getWebpackConfig(mode, isProd) {
         warning:                'fbjs/lib/warning',
         'jquery.ui':            'jquery-ui',
         'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
-        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson'
+        'jquery.serializejson': 'jquery-serializejson/jquery.serializejson',
+        'mark.js':              'mark.js/dist/jquery.mark.min'
       }
     },
 
@@ -233,7 +234,7 @@ function getWebpackConfig(mode, isProd) {
           loader: 'json-loader'
         }
       ],
-      noParse: [/\.min\.js/]
+      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
     },
 
     plugins: [
@@ -267,6 +268,8 @@ function getWebpackConfig(mode, isProd) {
     config.entry.DeskPRO_PortalBundle_rtl_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss'];
 
     config.entry.DeskPRO_PortalBundle_vendors_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss'];
+
+    config.entry.DeskPRO_PortalBundle_GuidePdf_style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/guide_pdf.scss'];
 
     config.entry.DeskPRO_PortalBundle_iestyle  = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss'];
     config.entry.DeskPRO_PortalBundle_ie8style = ['./src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss'];

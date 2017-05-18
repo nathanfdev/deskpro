@@ -546,7 +546,7 @@ pageMeta.lang = {{ {
 
 					{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
-					<tbody class="hidden-row off" ng-show="hidden && !show_hidden">
+					<tbody class="hidden-row off ng-hide" ng-show="hidden && !show_hidden">
 					<tr>
 						<td colspan="2" style="padding-top: 4px; padding-bottom: 4px;">
 							<a ng-click="showHidden()">
@@ -555,7 +555,7 @@ pageMeta.lang = {{ {
 						</td>
 					</tr>
 					</tbody>
-					<tbody class="controls-row off" ng-show="edit_fields.length">
+					<tbody class="controls-row off ng-hide" ng-show="edit_fields.length">
 						<tr>
 							<td colspan="2" style="text-align: center; background: #eee;">
 								<span ng-hide="is_saving">

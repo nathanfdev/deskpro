@@ -32,18 +32,11 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
-use Application\DeskPRO\Entity\LabelDef;
-use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\TicketLayout\Layout;
-use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
 use DpTestSrc\TestBundle\UserDetailsRepo;
@@ -83,7 +76,7 @@ class ApiDb extends AbstractDbSet
             true
         );
 
-        $agent = $this->addUser(
+        $this->addUser(
             UserDetailsRepo::AGENT_FIRST_NAME,
             UserDetailsRepo::AGENT_LAST_NAME,
             UserDetailsRepo::AGENT_EMAIL,
@@ -92,7 +85,7 @@ class ApiDb extends AbstractDbSet
             false
         );
 
-        $user = $this->addUser(
+        $this->addUser(
             UserDetailsRepo::USER_FIRST_NAME,
             UserDetailsRepo::USER_LAST_NAME,
             UserDetailsRepo::USER_EMAIL,
@@ -101,7 +94,7 @@ class ApiDb extends AbstractDbSet
             false
         );
 
-        $deletedAgent = $this->addUser(
+        $this->addUser(
             UserDetailsRepo::DELETED_AGENT_FIRST_NAME,
             UserDetailsRepo::DELETED_AGENT_LAST_NAME,
             UserDetailsRepo::DELETED_AGENT_EMAIL,
@@ -159,79 +152,6 @@ SQL
         $team       = new AgentTeam();
         $team->name = 'test team';
 
-        // Create ticket layouts
-        // prepare custom defs for people, organizations and tickets
-        foreach (['custom_def_people', 'custom_def_organizations', 'custom_def_ticket'] as $custom_def_table) {
-            $this->getDb()->exec(
-                <<<SQL
-                INSERT INTO `$custom_def_table` (`id`, `parent_id`,  `js_class`, `has_form_template`, `has_display_template`, `title`, `description`, `handler_class`, `options`, `is_user_enabled`, `is_enabled`, `display_order`, `is_agent_field`, `default_value`)
-                VALUES
-                   ('1', null, '', '0', '0', 'Desired Sizes', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', '?', '1', '1', '12', '0', '2'),
-                   ('2', '1', '', '0', '0', 'Small', '', null, '?', '1', '1', '13', '0', ''),
-                   ('3', '1', '', '0', '0', 'Medium', '', null, '?', '1', '1', '14', '0', ''),
-                   ('4', '1', '', '0', '0', 'Large', '', null, '?', '1', '1', '15', '0', ''),
-                   ('5', null, '', '0', '0', 'Delivery Time', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\DateTime', '?', '1', '1', '38', '0', ''),
-                   ('6', null, '', '0', '0', 'Widget Type', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Text', 'a:5:{s:20:"custom_css_classname";s:0:"";s:21:"agent_validation_type";s:8:"required";s:14:"agent_required";b:1;s:16:"agent_min_length";s:2:"10";s:16:"agent_max_length";s:0:"";}', '1', '1', '10', '0', ''),
-                   ('7', null, '', '0', '0', 'Widget Description', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Textarea', 'a:2:{s:24:"agent_validation_resolve";s:1:"1";s:16:"agent_max_length";s:2:"10";}', '1', '1', '11', '0', 'default value'),
-                   ('8', null, '', '0', '0', 'Multiple choice', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Choice', 'a:2:{s:8:"multiple";b:1;s:8:"expanded";b:1;}', '1', '1', '12', '0', '9,10'),
-                   ('9', '8', '', '0', '0', 'Choice 1', '', null, '?', '1', '1', '13', '0', ''),
-                   ('10', '8', '', '0', '0', 'Choice 2', '', null, '?', '1', '1', '14', '0', ''),
-                   ('11', '8', '', '0', '0', 'Choice 3', '', null, '?', '1', '1', '15', '0', ''),
-                   ('12', null, '', '0', '0', 'Delivery Date', 'A custom  field', 'Application\\\DeskPRO\\\CustomFields\\\Handler\\\Date', '?', '1', '1', '38', '0', '');
-SQL
-            );
-        }
-
-        $layout = new Layout();
-        $layout
-            ->add(new LayoutField(FormFields::DEPARTMENT))
-            ->add(new LayoutField(FormFields::MESSAGE));
-
-        $ticket_layout1               = new TicketLayout();
-        $ticket_layout1->is_enabled   = true;
-        $ticket_layout1->agent_layout = $layout;
-        $ticket_layout1->user_layout  = new Layout();
-
-        $layout = new Layout();
-        $layout
-            ->add(new LayoutField(FormFields::PERSON))
-            ->add(new LayoutField(FormFields::DEPARTMENT))
-            ->add(new LayoutField(FormFields::MESSAGE))
-            ->add(new LayoutField(FormFields::ATTACHMENTS))
-            ->add(new LayoutField(FormFields::CAPTCHA))
-            ->add(new LayoutField(FormFields::PRODUCT))
-            ->add(new LayoutField(FormFields::CC))
-            ->add(new LayoutField(FormFields::FOLLOWERS))
-            ->add(new LayoutField(FormFields::PRIORITY))
-            ->add(new LayoutField(FormFields::CATEGORY))
-            ->add(new LayoutField(FormFields::WORKFLOW))
-            ->add(new LayoutField('ticket_field', 1))// Select box
-            ->add(new LayoutField('ticket_field', 5))// Datetime
-            ->add(new LayoutField('ticket_field', 6))// Text
-            ->add(new LayoutField('ticket_field', 7))// Textarea
-            ->add(new LayoutField('ticket_field', 8))// Checkbox group
-            ->add(new LayoutField('ticket_field', 12))// Date
-
-            ->add(new LayoutField('user_field', 1))// Select box
-            ->add(new LayoutField('user_field', 5))// Datetime
-            ->add(new LayoutField('user_field', 6))// Text
-            ->add(new LayoutField('user_field', 7))// Textarea
-            ->add(new LayoutField('user_field', 8))// Checkbox group
-            ->add(new LayoutField('user_field', 12))// Date
-
-            ->add(new LayoutField('org_field', 1))// Select box
-            ->add(new LayoutField('org_field', 5))// Datetime
-            ->add(new LayoutField('org_field', 6))// Text
-            ->add(new LayoutField('org_field', 7))// Textarea
-            ->add(new LayoutField('org_field', 8))// Checkbox group
-            ->add(new LayoutField('org_field', 12)) // Date
-        ;
-
-        $ticket_layout2               = new TicketLayout($dep2);
-        $ticket_layout2->is_enabled   = true;
-        $ticket_layout2->agent_layout = $layout;
-        $ticket_layout2->user_layout  = new Layout();
-
         // Create a basic task
         $task = new Task();
         $task->setCreator($admin);
@@ -261,8 +181,6 @@ SQL
         $em->persist($dep1);
         $em->persist($dep2);
         $em->persist($dep3);
-        $em->persist($ticket_layout1);
-        $em->persist($ticket_layout2);
         $em->persist($task);
         $em->persist($taskAssignment);
         $em->persist($unassignedTask);
@@ -332,79 +250,6 @@ SQL
         );
         // end of "/agent_teams"
 
-        // "/organizations" endpoint and its' children test data -------------------------------------------------------
-        $organization1 = new Organization();
-        $organization1
-            ->setName('Organization 1')
-            ->setSummary('test organization')
-            ->setImportance(1);
-        $organization2 = new Organization();
-        $organization2
-            ->setName('Organization 2')
-            ->setSummary('test organization')
-            ->setImportance(1);
-
-        $this->getEm()->persist($organization1);
-        $this->getEm()->persist($organization2);
-        $this->getEm()->flush();
-
-        $this->getDb()->exec(
-            '
-            UPDATE `people` SET organization_id = 1 WHERE id IN (1, 3);
-            UPDATE `people` SET organization_id = 2 WHERE id IN (2, 4);
-        '
-        );
-        // end of "/organizations"
-
-        // Create a ticket in the DB manually
-        $this->getDb()->exec(
-            "
-            INSERT INTO `tickets`
-            (
-            `ref`,
-            `auth`,
-            `sent_to_address`,
-            `email_account_address`,
-            `creation_system`,
-            `creation_system_option`,
-            `ticket_hash`,
-            `status`,
-            `is_hold`,
-            `urgency`,
-            `count_agent_replies`,
-            `count_user_replies`,
-            `date_created`,
-            `date_status`,
-            `total_user_waiting`,
-            `total_to_first_reply`,
-            `has_attachments`,
-            `subject`,
-            `original_subject`
-            )
-            VALUES
-                ('QMOI-7218-PQGI',
-                'SPMGCS2PRX32YNG',
-                '',
-                '',
-                'web.agent.portal',
-                '',
-                'none',
-                'awaiting_user',
-                0,
-                1,
-                1,
-                0,
-                '".date('Y-m-d H:i:s')."',
-                '".date('Y-m-d H:i:s')."',
-                0,
-                0,
-                0,
-                'Test',
-                'Test'
-                );
-            "
-        );
-
         $this->getDb()->exec(
             "
             REPLACE INTO `settings` (`name`, `value`)
@@ -415,7 +260,6 @@ SQL
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
                 ('core.deskpro_build', '".time()."'),
-                ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),
@@ -450,57 +294,6 @@ SQL
         "
         );
 
-        $agent1 = $em->find('DeskPRO:Person', 1);
-        $agent2 = $em->find('DeskPRO:Person', 2);
-
-// Tickets
-        $ticket1 = new Ticket();
-        $ticket1->disableAutoTicketProcess();
-        $ticket1->setPersonId(3);
-        $ticket1->agent = $agent1;
-        $ticket1->setDepartmentId(1);
-        $ticket1->setOrganization($organization1);
-        $ticket1->setLanguageId(1);
-        $ticket1->setSubject('Ticket #1');
-        $ticket1->setRef('DIDXGBLWRL-201622485');
-        $ticket1->setBrand($brand);
-        $em->persist($ticket1);
-        $ticket2 = new Ticket();
-        $ticket2->disableAutoTicketProcess();
-        $ticket2->setPersonId(3);
-        $ticket2->agent = $agent2;
-        $ticket2->setDepartmentId(1);
-        $ticket2->setOrganization($organization2);
-        $ticket2->setLanguageId(1);
-        $ticket2->setSubject('Ticket #2');
-        $ticket2->setAgentTeamId(1);
-        $ticket2->setBrand($brand);
-        $em->persist($ticket2);
-        $ticket3 = new Ticket();
-        $ticket3->disableAutoTicketProcess();
-        $ticket3->setPersonId(3);
-        $ticket3->agent = $agent1;
-        $ticket3->setDepartmentId(2);
-        $ticket3->setSubject('Ticket #3');
-        $ticket3->setAgentTeamId(2);
-        $ticket3->setBrand($brand);
-        $em->persist($ticket3);
-        $em->flush();
-
-        // Add a blue flag on the first ticket.
-        $ticket1->setFlagForPerson($agent, 'blue');
-        $ticket1->setFlagForPerson($admin, 'green');
-        $ticket2->setFlagForPerson($admin, 'green');
-
-        // Adding a couple of labels.
-        $ticket1->addLabelByString('foo');
-        $ticket2->addLabelByString('bar');
-        $ticket3->addLabelByString('bar'); // This adds a duplicate 'bar' record.
-        $em->persist($ticket1);
-        $em->persist($ticket2);
-        $em->persist($ticket3);
-        $em->flush();
-
         // "/user_chats" endpoint test data ----------------------------------------------------------------------------
         $this->getDb()->exec(
             "
@@ -519,33 +312,6 @@ SQL
         "
         );
         // end of "/user_chats" endpoint test data
-
-        // Labels endpoints test data ----------------------------------------------------------------------------------
-        $organizationType = LabelDef::TYPE_ORGS;
-        $peopleType       = LabelDef::TYPE_PEOPLE;
-        $ticketType       = LabelDef::TYPE_TICKETS;
-        $taskType         = LabelDef::TYPE_TASKS;
-        $this->getDb()->exec(
-            "
-            INSERT INTO `label_defs`
-                (`label_type`, `label`, `color`, `total`)
-            VALUES
-                ('$organizationType', 'AAA-org', 'red', 1),
-                ('$organizationType', 'BBB-org', 'blue', 2),
-                ('$organizationType', 'CCC-org', 'green', 42),
-                ('$peopleType', 'AAA-person', 'white', 1),
-                ('$peopleType', 'BBB-person', 'red', 3),
-                ('$peopleType', 'CCC-person', 'yellow', 3),
-                ('$ticketType', 'AAA-ticket', 'white', 1),
-                ('$ticketType', 'BBB-ticket', 'red', 3),
-                ('$ticketType', 'CCC-ticket', 'green', 13),
-                ('$taskType', 'AAA-task', 'red', 0),
-                ('$taskType', 'BBB-task', 'white', 0),
-                ('$taskType', 'CCC-task', 'red', 0)
-            ;
-        "
-        );
-        // end of labels endpoints
 
         // "/user_groups" endpoint and its' children test data ---------------------------------------------------------
         $this->getDb()->exec(
@@ -637,6 +403,7 @@ SQL
               ('8', NULL, 'downloads.use', 1, 1),
               ('8', NULL, 'news.use', 1, 1),
               ('8', NULL, 'chat.use', 1, 1),
+              ('8', NULL, 'guides.use', 1, 1),
 
               ('7', NULL, 'articles.use', 1, 1),
               ('7', NULL, 'feedback.use', 1, 1),
@@ -723,52 +490,6 @@ SQL
 SQL
         );
         // end of ticket filters
-
-        // Legacy ticket filters test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            <<<SQL
-            INSERT INTO `ticket_filters`
-                (`id`, `is_global`, `title`, `is_enabled`, `sys_name`, `terms`, `group_by`, `order_by`, `display_order`)
-            VALUES
-                ('1', '1', 'My Tickets', '1', 'agent', '[{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '1'),
-                ('2', '1', 'My Team\'s Tickets', '1', 'agent_team', '[{"type":"agent_team","op":"is","options":{"agent_team":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '2'),
-                ('3', '1', 'Tickets I Follow', '1', 'participant', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '3'),
-                ('4', '1', 'Unassigned', '1', 'unassigned', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '4'),
-                ('5', '1', 'All', '1', 'all', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}]', '', 'ticket.urgency:desc', '5'),
-                ('6', '1', 'Awaiting User', '1', 'archive_awaiting_user', '[{"type":"status","op":"is","options":{"status":"awaiting_user"}}]', '', 'ticket.urgency:desc', '6'),
-                ('7', '1', 'Resolved', '1', 'archive_resolved', '[{"type":"status","op":"is","options":{"status":"resolved"}}]', '', 'ticket.urgency:desc', '7'),
-                ('8', '1', 'Archived', '1', 'archive_archived', '[{"type":"status","op":"is","options":{"status":"archived"}}]', '', 'ticket.urgency:desc', '8'),
-                ('9', '1', 'Spam', '1', 'archive_spam', '[{"type":"status","op":"is","options":{"status":"hidden.spam"}}]', '', 'ticket.urgency:desc', '9'),
-                ('10', '1', 'Deleted', '1', 'archive_deleted', '[{"type":"status","op":"is","options":{"status":"hidden.deleted"}}]', '', 'ticket.urgency:desc', '10'),
-                ('11', '1', 'My Tickets (Hold)', '1', 'agent_w_hold', '[{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '11'),
-                ('12', '1', 'My Team\'s Tickets (Hold)', '1', 'agent_team_w_hold', '[{"type":"agent_team","op":"is","options":{"agent_team":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '12'),
-                ('13', '1', 'Tickets I Follow (Hold)', '1', 'participant_w_hold', '[{"type":"participant","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '13'),
-                ('14', '1', 'Unassigned (Hold)', '1', 'unassigned_w_hold', '[{"type":"agent","op":"is","options":{"agent":"0"}},{"type":"agent_team","op":"is","options":{"agent_team":"0"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '14'),
-                ('15', '1', 'All (Hold)', '1', 'all_w_hold', '[{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":1}}]', '', 'ticket.urgency:desc', '15'),
-                ('16', '1', 'My custom filter', '1', '', '[{"type":"subject","op":"contains","options":{"subject":"Demo"}}]', '', '', '1000'),
-                ('17', '1', 'Problem filter', '1', 'problem_100000', '[{"type":"problems","op":"is","options":{"problems":100000}}]', '', '', '1000');
-SQL
-        );
-        // end of legacy ticket filters
-
-        // Ticket macros test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            <<<'SQL'
-            INSERT INTO `ticket_macros`
-                (`id`, `person_id`, `title`, `is_enabled`, `is_global`, `actions`)
-            VALUES
-                ('1', '1', 'Update ticket macro 1', '1', '1', 'a:2:{i:0;a:2:{s:4:"type";s:5:"agent";s:7:"options";a:1:{s:5:"agent";s:2:"-1";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
-                ('2', '1', 'Update ticket macro 2', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label1";i:1;s:6:"label2";i:2;s:6:"label3";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}}'),
-                ('3', '1', 'Update ticket macro 3', '1', '0', 'a:3:{i:0;a:2:{s:4:"type";s:10:"add_labels";s:7:"options";a:1:{s:6:"labels";a:3:{i:0;s:6:"label4";i:1;s:6:"label5";i:2;s:6:"label6";}}}i:1;a:2:{s:4:"type";s:8:"language";s:7:"options";a:1:{s:8:"language";s:1:"2";}}i:2;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
-                ('4', '2', 'Update ticket macro 4', '1', '0', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:13:"awaiting_user";}}}'),
-                ('5', '2', 'Update ticket macro 5', '1', '1', 'a:1:{i:0;a:2:{s:4:"type";s:6:"status";s:7:"options";a:1:{s:6:"status";s:14:"awaiting_agent";}}}'),
-                ('6', '1', 'Update and reply ticket macro 1', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:5:"reply";s:7:"options";a:2:{s:10:"reply_text";s:14:"My reply text.";s:9:"reply_pos";s:6:"append";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}}'),
-                ('7', '1', 'Fail validation macro 1', '1', '0', 'a:6:{i:0;a:2:{s:4:"type";s:5:"reply";s:7:"options";a:2:{s:10:"reply_text";s:0:"";s:9:"reply_pos";s:6:"append";}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"1";}}i:2;a:2:{s:4:"type";s:6:"add_cc";s:7:"options";a:1:{s:10:"add_emails";s:16:"user@deskpro.dev";}}i:3;a:2:{s:4:"type";s:5:"agent";s:7:"options";a:1:{s:5:"agent";s:1:"3";}}i:4;a:2:{s:4:"type";s:15:"ticket_field[8]";s:7:"options";a:1:{s:13:"custom_fields";a:1:{s:7:"field_8";a:2:{i:0;s:1:"1";i:1;s:1:"9";}}}}i:5;a:2:{s:4:"type";s:15:"ticket_field[5]";s:7:"options";a:1:{s:13:"custom_fields";a:1:{s:7:"field_5";s:12:"invalid_date";}}}}'),
-                ('8', '1', 'Fail validation macro 2', '1', '0', 'a:2:{i:0;a:2:{s:4:"type";s:15:"ticket_field[6]";s:7:"options";a:1:{s:13:"custom_fields";a:1:{s:7:"field_6";s:3:"abc";}}}i:1;a:2:{s:4:"type";s:10:"department";s:7:"options";a:1:{s:10:"department";s:1:"2";}}}')
-            ;
-SQL
-        );
-        // end of ticket macros filters
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec(
@@ -1024,77 +745,6 @@ SQL
             "
         );
         // end of AgentAlerts
-
-        // Snippets test data ------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            <<<'SQL'
-            INSERT INTO `text_snippet_categories` (`id`, `person_id`, `typename`, `is_global`)
-            VALUES
-                (1, NULL, 'tickets', 1),
-                (2, 1, 'tickets', 0),
-                (3, 2, 'tickets', 0),
-
-                (4, NULL, 'chat', 1),
-                (5, 1, 'chat', 0),
-                (6, 2, 'chat', 0)
-            ;
-
-            INSERT INTO `text_snippets` (`id`, `person_id`, `category_id`, `shortcut_code`, `is_draft`)
-            VALUES
-                (1, NULL, 1, 'ticket_snippet1', 1),
-                (2, 1, 1, 'ticket_snippet2', 1),
-                (3, 1, 2, 'ticket_snippet3', 0),
-                (4, 2, 1, 'ticket_snippet4', 0),
-                (5, 1, 3, 'ticket_snippet5', 1),
-
-                (6, NULL, 4, 'chat_snippet1', 1),
-                (7, 1, 4, 'chat_snippet2', 1),
-                (8, 1, 5, 'chat_snippet3', 0),
-                (9, 2, 4, 'chat_snippet4', 0),
-                (10, 1, 6, 'chat_snippet5', 1),
-
-                (11, 1, 2, 'ticket_snippet_wo_content', 1)
-            ;
-
-            INSERT INTO `object_lang`
-                (`language_id`, `ref`, `ref_type`, `ref_id`, `prop_name`, `value`)
-            VALUES
-                ('1', 'text_snippet_categories.1', 'text_snippet_categories', '1', 'title', 'Ticket Category 1'),
-                ('2', 'text_snippet_categories.2', 'text_snippet_categories', '2', 'title', 'Ticket Category 2'),
-                ('3', 'text_snippet_categories.3', 'text_snippet_categories', '3', 'title', 'Ticket Category 3'),
-
-                ('1', 'text_snippet_categories.4', 'text_snippet_categories', '4', 'title', 'Chat Category 1'),
-                ('2', 'text_snippet_categories.5', 'text_snippet_categories', '5', 'title', 'Chat Category 2'),
-                ('3', 'text_snippet_categories.6', 'text_snippet_categories', '6', 'title', 'Chat Category 3'),
-
-                ('1', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet {{ ticket.subject }} (en) 1'),
-                ('1', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content {{ ticket.person.name }} (en) 1'),
-                ('2', 'text_snippets.1', 'text_snippets', '1', 'title', 'Ticket Snippet (fr) 1'),
-                ('2', 'text_snippets.1', 'text_snippets', '1', 'snippet', 'Ticket Snippet Content (fr) 1'),
-
-                ('2', 'text_snippets.2', 'text_snippets', '2', 'title', 'Ticket Snippet 2'),
-                ('2', 'text_snippets.2', 'text_snippets', '2', 'snippet', 'Ticket Snippet Content 2'),
-                ('3', 'text_snippets.3', 'text_snippets', '3', 'title', 'Ticket Snippet 3'),
-                ('3', 'text_snippets.3', 'text_snippets', '3', 'snippet', 'Ticket Snippet Content 3'),
-                ('1', 'text_snippets.4', 'text_snippets', '4', 'title', 'Ticket Snippet 4'),
-                ('1', 'text_snippets.4', 'text_snippets', '4', 'snippet', 'Ticket Snippet Content 4'),
-                ('2', 'text_snippets.5', 'text_snippets', '5', 'title', 'Ticket Snippet 5'),
-                ('2', 'text_snippets.5', 'text_snippets', '5', 'snippet', 'Ticket Snippet Content 5'),
-
-                ('1', 'text_snippets.6', 'text_snippets', '6', 'title', 'Chat Snippet 1'),
-                ('1', 'text_snippets.6', 'text_snippets', '6', 'snippet', 'Chat Snippet Content 1'),
-                ('2', 'text_snippets.7', 'text_snippets', '7', 'title', 'Chat Snippet 2'),
-                ('2', 'text_snippets.7', 'text_snippets', '7', 'snippet', 'Chat Snippet Content 2'),
-                ('3', 'text_snippets.8', 'text_snippets', '8', 'title', 'Chat Snippet 3'),
-                ('3', 'text_snippets.8', 'text_snippets', '8', 'snippet', 'Chat Snippet Content 3'),
-                ('1', 'text_snippets.9', 'text_snippets', '9', 'title', 'Chat Snippet 4'),
-                ('1', 'text_snippets.9', 'text_snippets', '9', 'snippet', 'Chat Snippet Content 4'),
-                ('2', 'text_snippets.10', 'text_snippets', '10', 'title', 'Chat Snippet 5'),
-                ('2', 'text_snippets.10', 'text_snippets', '10', 'snippet', 'Chat Snippet Content 5')
-            ;
-SQL
-        );
-        // end of Snippets
 
         $date = new \DateTime();
 

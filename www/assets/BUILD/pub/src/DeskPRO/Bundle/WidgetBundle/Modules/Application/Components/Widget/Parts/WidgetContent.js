@@ -6,6 +6,7 @@ export class WidgetContent extends React.Component {
 
   static propTypes = {
     fullScreen:     PropTypes.bool,
+    landscapeMode:  PropTypes.bool,
     isBubble:       PropTypes.bool,
     widgetPosition: PropTypes.string,
     children:       PropTypes.any // eslint-disable-line react/forbid-prop-types
@@ -31,7 +32,7 @@ export class WidgetContent extends React.Component {
   }
 
   render() {
-    const { fullScreen, isBubble, widgetPosition, children } = this.props;
+    const { fullScreen, landscapeMode, isBubble, widgetPosition, children } = this.props;
 
     if (this.state.rerender) {
       return null;
@@ -42,11 +43,12 @@ export class WidgetContent extends React.Component {
         className={classNames(
           'widget-container',
           'dpdesignportal', {
-            'chat-bubble':   isBubble,
-            mobile:          !isBubble,
-            'position-left': widgetPosition === 'bottom.left' && !isBubble,
-            'rtl-language':  portalPhrases.getTextDirection() === 'RTL',
-            'full-screen':   fullScreen
+            'chat-bubble':    isBubble,
+            mobile:           !isBubble,
+            'position-left':  widgetPosition === 'bottom.left' && !isBubble,
+            'rtl-language':   portalPhrases.getTextDirection() === 'RTL',
+            'full-screen':    fullScreen,
+            'landscape-mode': landscapeMode
           }
         )}
       >

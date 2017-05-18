@@ -46,13 +46,22 @@ class PersonEmailTerm extends AbstractTerm
         $resolver->setDefaults([
             'email' => '',
         ]);
-
         $resolver->setConstraints([
             'email' => [
                 new Assert\NotBlank(),
                 new Assert\Email(['strict' => true]),
             ],
         ]);
+        $resolver->setNormalizer(
+            'email',
+            function ($options, $value) {
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+
+                return $value;
+            }
+        );
     }
 
     /**

@@ -91,6 +91,12 @@ class PortalTabsHelper
                         $tabs[] = $tab_type;
                     }
                     break;
+                case 'guides':
+                    if ($this->getBrandSetting('user.portal_tab_guides')
+                        && $this->auth_checker->isGranted(UseSectionVoter::USE_GUIDES)) {
+                        $tabs[] = $tab_type;
+                    }
+                    break;
                 case 'newticket':
                     if ($this->getBrandSetting('user.portal_tab_tickets')
                         && $this->auth_checker->isGranted(UseSectionVoter::VIEW_TICKETS_LINK)) {
@@ -119,6 +125,7 @@ class PortalTabsHelper
 
         $order = array_merge($order, [
             'articles',
+            'guides',
             'news',
             'feedback',
             'downloads',

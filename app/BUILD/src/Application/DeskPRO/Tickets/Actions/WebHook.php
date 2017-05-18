@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp\RequestOptions;
 use Orb\Util\CheckedOptionsArray;
@@ -99,6 +100,18 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             $data['event_type']      = $context->getEventType();
             $data['event_method']    = $context->getEventMethod();
             $data['custom_data']     = $custom_data;
+            $data['ticket_logs']     = [];
+
+            $state   = $ticket->getStateChangeRecorder();
+            $changes = $state->getChanges();
+
+            $logGenerator = new TicketLogGenerator($ticket, $context);
+            foreach ($changes as $change) {
+                $logData = $logGenerator->getLogDataForChange($change);
+                if ($logData) {
+                    $data['ticket_logs'][] = $logData;
+                }
+            }
 
             $format = 'json' === $this->getActionOption('payload_type')
                 ? RequestOptions::JSON

@@ -110,16 +110,26 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             ]);
         }
 
-        $errno        = 0;
-        $errstr       = '';
-        $this->socket = @stream_socket_client(
-            $host.':'.$port,
-            $errno,
-            $errstr,
-            $this->stream_timeout,
-            \STREAM_CLIENT_CONNECT,
-            $context
-        );
+        $errno  = 0;
+        $errstr = '';
+        if ($context) {
+            $this->socket = @stream_socket_client(
+                $host.':'.$port,
+                $errno,
+                $errstr,
+                $this->stream_timeout,
+                \STREAM_CLIENT_CONNECT,
+                $context
+            );
+        } else {
+            $this->socket = @stream_socket_client(
+                $host.':'.$port,
+                $errno,
+                $errstr,
+                $this->stream_timeout,
+                \STREAM_CLIENT_CONNECT
+            );
+        }
         if (!$this->socket) {
             throw new Exception\RuntimeException('cannot connect to host; error = '.$errstr.' (errno = '.$errno.' )');
         }

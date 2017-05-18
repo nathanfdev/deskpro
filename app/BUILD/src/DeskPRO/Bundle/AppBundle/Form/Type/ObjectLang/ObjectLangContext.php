@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ObjectLang;
 
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;

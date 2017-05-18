@@ -1,0 +1,18 @@
+<dp:subject>
+    {{ phrase('agent.emails.api_token_magic_link_subject', {helpdesk_name: brand_setting('core.deskpro_name')}) }}
+</dp:subject>
+<p>
+    {{ phrase('agent.emails.api_token_magic_link_description') }}
+</p>
+<p>
+    <a href="{{ login_magic_link_url }}">{{ phrase('agent.emails.api_token_magic_link_click') }}</a>
+</p>
+<p>
+    {{ phrase('agent.emails.api_token_magic_link_copy') }}
+</p>
+<p>
+    <a href="{{ login_magic_link_url }}">{{ login_magic_link_url }}</a>
+</p>
+<p>
+    {{ phrase('agent.emails.api_token_magic_link_note') }}
+</p>

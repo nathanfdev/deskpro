@@ -32,9 +32,11 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DepartmentPermission;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\EntityRepository\Guide as GuideRepository;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
@@ -142,6 +144,14 @@ class PortalPermissionsLoader
     public function getAllowedChatDepartments(array $userGroups)
     {
         return $this->getAllowedUsergroupDepartments($userGroups, DepartmentPermission::APP_CHAT);
+    }
+
+    public function getAllowedGuides(array $userGroups)
+    {
+        /** @var GuideRepository $repository */
+        $repository = $this->em->getRepository(Guide::class);
+
+        return $repository->getGuidesForUsergroups($userGroups);
     }
 
     /**

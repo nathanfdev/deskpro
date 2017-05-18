@@ -34,7 +34,7 @@ class TicketMessageContainer extends React.Component {
 
   onCall = () => {
     const phoneCall = this.getPhoneCall();
-    this.props.dispatch(openDialpad(phoneCall.get('from_number')));
+    this.props.dispatch(openDialpad(phoneCall.get('external_number')));
   };
 
   onOpenSettings = () => {

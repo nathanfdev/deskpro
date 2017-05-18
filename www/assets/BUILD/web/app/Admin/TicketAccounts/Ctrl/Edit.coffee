@@ -51,19 +51,25 @@ define [
       }
       if @accountId
         get.trigger = "/ticket_triggers/email_accounts/#{@accountId}"
+      else
+        get.trigger = "/ticket_triggers/newticket"
 
       trigger_promise = @Api.sendDataGet(get).then( (result) =>
         @customActions = result.data.customActions.action_defs
 
-        if result.data?.trigger?.trigger?
-          @trigger = result.data.trigger.trigger
-          @triggerId = @trigger.id
+        if result.data && result.data.trigger
+          if result.data.trigger.trigger
+            @trigger = result.data.trigger.trigger
+            @triggerId = @trigger.id
 
-          if @trigger.actions?.actions?.length
-            @$scope.actions_form = {}
-            for action in @trigger.actions.actions
-              rowId = _.uniqueId('action')
-              @$scope.actions_form[rowId] = action
+            if @trigger.actions?.actions?.length
+              @$scope.actions_form = {}
+              for action in @trigger.actions.actions
+                rowId = _.uniqueId('action')
+                @$scope.actions_form[rowId] = action
+          else
+            @trigger = result.data.trigger
+            @triggerId = 0
         else
           @trigger = {}
           @triggerId = 0

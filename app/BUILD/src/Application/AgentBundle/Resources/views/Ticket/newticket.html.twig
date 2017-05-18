@@ -11,6 +11,10 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') a
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
+
+<script>
+    $('.hijri input').calendarsPicker({calendar: $.calendars.instance('islamic')});
+</script>
 <div class="layout-content page-new-ticket page-new-content">
 <div class="dp-page-content">
 

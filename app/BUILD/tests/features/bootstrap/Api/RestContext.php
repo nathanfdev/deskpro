@@ -31,11 +31,11 @@ namespace DpBehat\Api;
 use Application\DeskPRO\Entity\Session;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
+use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 class RestContext extends BaseContext
 {
@@ -239,6 +239,20 @@ class RestContext extends BaseContext
     }
 
     /**
+     * Checks, whether the db queries counter equal or less than value.
+     *
+     * @Then the db queries counter should be equal or less than :value
+     */
+    public function theDbQueriesCounterShouldBeEqualOrLessThan($value)
+    {
+        $actual = $this->getHttpHeader('DB-QUERIES-COUNT');
+        $this->assert(
+            intval($actual) <= intval($value),
+            sprintf('The db queries counter "%s" is greater than "%s"', $actual, $value)
+        );
+    }
+
+    /**
      * Checks, whether the header matches a regular expression.
      *
      * @Then the header :name should match :regex
@@ -356,6 +370,29 @@ class RestContext extends BaseContext
         }
 
         echo "curl -X $method$data$headers '$url'";
+    }
+
+    /**
+     * @Then I can load and save object via :url
+     *
+     * @param string $url
+     */
+    public function canLoadAndSaveObject($url)
+    {
+        $url = DataContext::replace($url);
+
+        /** @var Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+        $client->request('GET', $this->locatePath($url), [], [], $this->server_params);
+
+        $data    = json_decode($client->getResponse()->getContent(), true);
+        $data    = $data['data'];
+        $content = json_encode($data);
+
+        $client->request('PUT', $this->locatePath($url), [], [], $this->server_params, $content);
+
+        $response = $client->getResponse();
+        $this->assertEquals(204, $response->getStatusCode());
     }
 
     private function getHttpHeader($name)

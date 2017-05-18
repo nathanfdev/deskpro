@@ -64,7 +64,6 @@ class TicketHandler extends AbstractEntityHandler
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
-            ->setIsHold($model->isHold())
         ;
 
         if ($model->getDateCreated()) {
@@ -154,13 +153,31 @@ class TicketHandler extends AbstractEntityHandler
         // ensure that the ticket has brand and department
         // they are optional so set default ones if they are empty
         if (!$entity->getBrand()) {
-            $entity->setBrand($this->mappers->getBrandMapper()->getDefaultBrand());
+            // if department is assigned and has a brand
+            // then set the first brand from the department
+            if ($entity->getDepartment() && $entity->getDepartment()->getBrands()->count()) {
+                $entity->setBrand($entity->getDepartment()->getBrands()->first());
+            } else {
+                $entity->setBrand($this->mappers->getBrandMapper()->getDefaultBrand());
+            }
         }
 
+        // ensure ticket's department and brand are related
         $ticketBrand      = $entity->getBrand();
         $ticketDepartment = $entity->getDepartment();
         if (!$ticketDepartment || ($ticketBrand && !$ticketBrand->getDepartments()->contains($ticketDepartment))) {
             $entity->setDepartment($this->mappers->getBrandMapper()->getDefaultDepartment($ticketBrand));
+        }
+
+        // ensure we are using leaf department
+        $ticketDepartment = $entity->getDepartment();
+        if ($ticketDepartment && !$ticketDepartment->isLeaf()) {
+            foreach ($ticketDepartment->getAllChildren() as $childDepartment) {
+                if ($childDepartment->isLeaf()) {
+                    $entity->setDepartment($childDepartment);
+                    break;
+                }
+            }
         }
 
         // persist basic entity
@@ -171,6 +188,11 @@ class TicketHandler extends AbstractEntityHandler
             $this->createOrUpdateTicketMessage($messageModel, $entity);
         }
 
+        // set on hold status after message updates otherwise it will be overwritten
+        $entity->setIsHold($model->isHold());
+        $this->persister->persistAndFlush($entity, $model);
+
+        // write ticket log message
         $ticketLogEntity = new Entity\TicketLog();
         $ticketLogEntity
             ->setTicket($entity)

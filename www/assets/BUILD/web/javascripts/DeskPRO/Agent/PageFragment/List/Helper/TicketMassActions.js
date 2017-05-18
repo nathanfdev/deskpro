@@ -4,7 +4,7 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.List.Helper');
 DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
   Implements: [Orb.Util.Events, Orb.Util.Options],
 
-  initialize: function(options)  {
+  initialize: function(options) {
     this.options = {
       /**
        * Scope of the list
@@ -49,6 +49,9 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     }
 
     callback();
+
+    $('select.macro', this.wrapper).off();
+    $('.apply-actions', this.wrapper).off();
 
     this._loadInside();
   },
@@ -173,7 +176,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         var wrapper = $(this).parent();
         var title = $('.radio-title', wrapper).text().trim();
 
-        var newEl = $(tpl)
+        var newEl = $(tpl);
         newEl.addClass($(this).data('attach-class'));
         $('.radio-title', newEl).text(title);
 
@@ -206,30 +209,30 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     // todo should be redo to $scope models
     var $assignMe = this.getElById('assign_me'), $unassignAgent = this.getElById('unassign_agent');
-    $assignMe.on('click', function(){
+    $assignMe.on('click', function() {
       $('select[name="actions[agent]"]', this.wrapper).val($(this).data('me')).trigger('change');
     });
-    $unassignAgent.on('click', function(){
+    $unassignAgent.on('click', function() {
       $('select[name="actions[agent]"]', this.wrapper).val(0).trigger('change');
     });
-    $('select[name="actions[agent]"]').on('change', function(){
+    $('select[name="actions[agent]"]').on('change', function() {
       $(this).val() === $assignMe.data('me') ? $assignMe.hide() : $assignMe.show();
       parseInt($(this).val()) ? $unassignAgent.show() : $unassignAgent.hide();
     });
     var $assignTeam = this.getElById('assign_team'),
       $unassignTeam = this.getElById('unassign_team');
-    $assignTeam.on('click', function(){
+    $assignTeam.on('click', function() {
       $('select[name="actions[agent_team]"]', this.wrapper).val($(this).data('team')).trigger('change');
     });
-    $unassignTeam.on('click', function(){
+    $unassignTeam.on('click', function() {
       $('select[name="actions[agent_team]"]', this.wrapper).val(0).trigger('change');
     });
-    $('select[name="actions[agent_team]"]').on('change', function(){
+    $('select[name="actions[agent_team]"]').on('change', function() {
       $(this).val() === $assignTeam.data('team') ? $assignTeam.hide() : $assignTeam.show();
       parseInt($(this).val()) ? $unassignTeam.show() : $unassignTeam.hide();
     });
     var $assignFollow = this.getElById('follower_me');
-    $assignFollow.on('click', function(){
+    $assignFollow.on('click', function() {
       var $sel = $('select[name="actions[add_participants][add_participants][]"]', this.wrapper),
         me = $(this).data('me').toString(),
         val = $sel.val();
@@ -237,7 +240,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       $sel.val(val);
       $sel.trigger('change');
     });
-    $('select[name="actions[add_participants][add_participants][]"]').on('change', function(){
+    $('select[name="actions[add_participants][add_participants][]"]').on('change', function() {
       var val = $(this).val();
       val && val.length && val.indexOf($assignFollow.data('me').toString()) > -1 ? $assignFollow.hide() : $assignFollow.show();
     });
@@ -253,7 +256,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     var recordSnippetUse = function(snippetId) {
       var el = $("#" + self.baseId + "_snippet_ids");
       var current = el.val() || '';
-      var newval = current.length ? current + ',' + snippetId : snippetId+'';
+      var newval = current.length ? current + ',' + snippetId : snippetId + '';
       el.val(newval);
     };
 
@@ -273,12 +276,15 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       self.getElById('is_html_reply').val('1');
 
       DeskPRO_Window.initRteAgentReply(textarea, {
-        defaultIsHtml: true,
+        defaultIsHtml:        true,
         inlineHiddenPosition: this.getElById('is_html_reply'),
-        minHeight: 120,
+        minHeight:            120,
+
         callback: function(obj) {
-          obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
-          obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
+          obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function() {
+          });
+          obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function() {
+          });
           obj.addBtnSeparatorAfter('dp_attach');
 
           var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
@@ -303,18 +309,19 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     //------------------------------
 
     this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-      driver: DeskPRO_Window.ticketSnippetDriver,
-      onBeforeOpen: function() {
+      driver:         DeskPRO_Window.ticketSnippetDriver,
+      onBeforeOpen:   function() {
         if (isWysiwyg && textarea.data('redactor')) {
           try {
             textarea.data('redactor').saveSelection();
-          } catch (e) {}
+          } catch (e) {
+          }
         }
       },
       onSnippetClick: function(info) {
 
-        var snippetId    = info.snippetId;
-        var snippetCode  = info.snippetCode;
+        var snippetId = info.snippetId;
+        var snippetCode = info.snippetCode;
 
         var agentText;
         var defaultText;
@@ -347,7 +354,8 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
           try {
             textarea.data('redactor').restoreSelection();
             textarea.data('redactor').setBuffer();
-          } catch (e) {}
+          } catch (e) {
+          }
 
           var html = result;
           html = html.replace(/<\/p>\s*<p>/g, '<br/>');
@@ -363,12 +371,119 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     });
 
     //------------------------------
+    // Insert snippet by %-% combo
+    //------------------------------
+
+    if (textarea.data('redactor')) {
+      var ed = textarea.getEditor();
+      var api = textarea.data('redactor');
+
+      var te = new DeskPRO.TextExpander({
+        textarea: ed,
+        onCombo: function(combo, ev) {
+          combo = combo.replace(/%/g, '');
+          if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES || !window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
+            return;
+          }
+
+          ev.preventDefault();
+
+          for (var i = 0; i < window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo].length; i++) {
+            var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo][i];
+
+            var focus = api.getFocus(),
+              focusNode = $(focus[0]),
+              testText;
+
+            if (focus[0].nodeType == 3) {
+              testText = focusNode.text().substring(0, focus[1]);
+            } else {
+              focus[0] = focusNode.contents().get(focus[1] - 1);
+              focusNode = $(focus[0]);
+              testText = focusNode.text();
+              focus[1] = testText.length;
+            }
+
+            var lastAt = testText.lastIndexOf('%'), matches = [];
+
+            if (lastAt != -1) {
+              api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+            }
+
+            // web kit handles content editable without an issue. this prevents the span
+            // from being extended unnecessarily
+            var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+            api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet</span>');
+
+            $.ajax({
+              url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
+              dataType: 'json',
+              success: function (data) {
+                var snippet = data.snippet;
+                var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+                var snippetId = snippet.id;
+                var snippetCode = snippet.snippet;
+
+                recordSnippetUse(snippetId);
+
+                var agentText;
+                var defaultText;
+                var wantText;
+                var useText;
+
+                Array.each(snippetCode, function (info) {
+                  if (info.language_id == ticketLangId) {
+                    wantText = info.value;
+                  }
+                  if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+                    agentText = info.value;
+                  }
+                  if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+                    defaultText = info.value;
+                  }
+                  useText = info.value;
+                });
+
+                if (wantText) {
+                  useText = wantText;
+                } else if (agentText) {
+                  useText = agentText;
+                } else if (defaultText) {
+                  useText = defaultText;
+                }
+
+                useText = useText.replace(/<\/p>\s*<p>/g, '<br/>');
+                useText = useText.replace(/^<p>/, '');
+                useText = useText.replace(/<\/p>$/, '');
+                var result = $('<div>' + useText + '</div>');
+
+                var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+                var cursor = $('<span class="_cursor"></span>');
+                var cursorPos = result.find('> p');
+                if (!cursorPos[0]) {
+                  cursorPos = result;
+                }
+
+                el.after(result);
+                cursorPos.append(cursor);
+                el.remove();
+
+                api.setSelection(cursor[0], 0, cursor[0], 0);
+                api.syncCode();
+              }
+            });
+          }
+        }
+      });
+    }
+
+    //------------------------------
     // Upload handling
     //------------------------------
 
     DeskPRO_Window.util.fileupload(this.wrapper, {
-      url: this.wrapper.data('upload-url'),
-      uploadTemplate: $('.template-upload', this.replyBox),
+      url:              this.wrapper.data('upload-url'),
+      uploadTemplate:   $('.template-upload', this.replyBox),
       downloadTemplate: $('.template-download', this.replyBox)
     });
 
@@ -429,7 +544,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     var actList = $('.other-properties-wrapper', this.wrapper);
     $('.add-term-row', add).show().on('click', function() {
       var x = Orb.getUniqueId();
-      var basename = 'actions_set['+x+']';
+      var basename = 'actions_set[' + x + ']';
       self.actionsEditor.addNewRow($('.search-terms', actList), basename);
       self.updatePositions();
     });
@@ -447,25 +562,19 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     DP.select($('select.macro', $inside));
     this._initInside();
     this.updatePositions();
-    window.setTimeout(function () {
+    window.setTimeout(function() {
       self.updatePositions();
     }, 200);
-    window.setTimeout(function () {
+    window.setTimeout(function() {
       self.updatePositions();
     }, 500);
   },
 
   _loadInside: function() {
-
-    if (this.cachedTemplate) {
-      this._renderInside(this.cachedTemplate);
-      return;
-    }
-
     var self = this;
     $.ajax({
       method: 'GET',
-      url: DP_BASE_URL+'agent/ticket-search/mass-action-overlay'
+      url:    DP_BASE_URL + 'agent/ticket-search/mass-action-overlay'
     }).then(function(data) {
       self.cachedTemplate = data;
       self._renderInside(self.cachedTemplate);
@@ -487,7 +596,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     if (this.wrapper.find('select.macro_id')[0] && this.wrapper.find('select.macro_id').val() !== '0') {
       appendArray.push({
-        name: 'run_macro_id',
+        name:  'run_macro_id',
         value: this.wrapper.find('select.macro_id').val()
       });
       info.actionsCount = 1;
@@ -536,7 +645,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       }
 
       appendArray.push({
-        name: name,
+        name:  name,
         value: val
       });
 
@@ -568,7 +677,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       formData.push({ name: 'result_ids[]', value: tid });
     });
 
-    formData.push({ name:'return_data', value:'1'});
+    formData.push({ name: 'return_data', value: '1' });
 
     this.getActionFormValues(formData, true, formDataInfo);
 
@@ -582,12 +691,12 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     var statusUpdate = this.wrapper.find('input[name="actions[status]"]:checked').val();
 
     DeskPRO_Window.util.ajaxWithClientMessages({
-      url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
-      type: 'POST',
-      data: formData,
+      url:      BASE_URL + 'agent/ticket-search/ajax-save-actions',
+      type:     'POST',
+      data:     formData,
       dataType: 'json',
-      context: this,
-      success: function(data) {
+      context:  this,
+      success:  function(data) {
         self.wrapper.removeClass('loading');
 
         this.close();
@@ -674,9 +783,9 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     }
 
     this.wrapper.css({
-      top: pos.top - 4,
-      left: pos.left + 8,
-      right: 3,
+      top:    pos.top - 4,
+      left:   pos.left + 8,
+      right:  3,
       bottom: bottom,
       height: height
     });
@@ -696,24 +805,24 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     if (!this.options.isListView) {
       this.backdropEls.eq(0).css({
-        top: 0,
-        width: leftEnd,
+        top:    0,
+        width:  leftEnd,
         bottom: 0,
-        left: 0
+        left:   0
       });
 
       this.backdropEls.eq(1).css({
-        top: 0,
+        top:    0,
         height: topEnd,
-        width: contentStart - leftEnd,
-        left: leftEnd
+        width:  contentStart - leftEnd,
+        left:   leftEnd
       });
 
       this.backdropEls.eq(2).css({
-        top: 0,
-        right: 0,
+        top:    0,
+        right:  0,
         bottom: 0,
-        left: contentStart
+        left:   contentStart
       });
     }
 
@@ -743,12 +852,12 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     var macroBtnEl = $('div.macro-load', this.wrapper).addClass('loading');
 
     $.ajax({
-      url: BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
-      data: { macro_id: macro_id },
-      type: 'GET',
+      url:      BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
+      data:     { macro_id: macro_id },
+      type:     'GET',
       dataType: 'json',
-      context: this,
-      success: function(data) {
+      context:  this,
+      success:  function(data) {
 
         inputActionsEl.hide();
         macroEl.show();
@@ -784,11 +893,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
    * @return {Boolean}
    */
   isOpen: function() {
-    if (!this._hasInit || !this.wrapper.is('.open')) {
-      return false;
-    }
-
-    return true;
+    return this._hasInit && this.wrapper.is('.open');
   },
 
 
@@ -797,7 +902,12 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
    */
   open: function() {
     var self = this;
-    var _open = function () {
+
+    if (self.isOpen()) {
+      return;
+    }
+
+    var _open = function() {
       self._initOverlay();
       self.updatePositions();
       DeskPRO_Window.layout.addEvent('resized', self.updatePositions, self);
@@ -810,13 +920,8 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       self.$scope.halfrealtime = true;
       self.$scope.massActionsOpen = true;
       self.$scope.$safeApply();
-    }
-
-    if (!this.wrapper || !this.wrapper[0]) {
-      this._resetWrapper(_open);
-    } else {
-      _open();
-    }
+    };
+    this._resetWrapper(_open);
   },
 
 

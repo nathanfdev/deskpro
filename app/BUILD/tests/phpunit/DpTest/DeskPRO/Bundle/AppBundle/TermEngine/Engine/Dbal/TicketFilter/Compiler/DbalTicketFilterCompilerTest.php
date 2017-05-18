@@ -124,29 +124,29 @@ class DbalTicketFilterCompilerTest extends ApiTestCase
                 'status_0' => [Ticket::STATUS_RESOLVED],
                 'ids_1'    => [new TermEngineExpression('agent.getTeamIds()')],
                 'ids_2'    => [1, 2],
-                'email_0'  => 'chris.tickner@deskpro.com',
+                'email_0'  => ['chris.tickner@deskpro.com'],
             ],
             $dbal_query->getParameters()
         );
         $this->assertEquals(
-            '((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) OR  EXISTS(
+            '((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email_0)) OR  EXISTS(
                   SELECT * FROM
                     tickets_participants tp
                         JOIN
                     people p ON tp.person_id = p.id
                   WHERE
-                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) AND ticket.id = tp.ticket_id
+                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email_0)) AND ticket.id = tp.ticket_id
                 )))',
             $dbal_query->generateWhereString()
         );
         $this->assertEquals(
-            'SELECT * FROM tickets ticket WHERE (((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) OR  EXISTS(
+            'SELECT * FROM tickets ticket WHERE (((ticket.agent_id IN (:ids_0)) OR (ticket.status IN (:status_0))) OR (ticket.agent_team_id IN (:ids_1)) OR ((ticket.department_id IN (:ids_2)) AND (ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email_0)) OR  EXISTS(
                   SELECT * FROM
                     tickets_participants tp
                         JOIN
                     people p ON tp.person_id = p.id
                   WHERE
-                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email_0) AND ticket.id = tp.ticket_id
+                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email_0)) AND ticket.id = tp.ticket_id
                 ))))',
             (string) $dbal_query
         );

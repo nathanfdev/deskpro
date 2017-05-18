@@ -26,38 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\AgentTeam;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalAgentTeamTermCompiler.
+ */
 class DbalAgentTeamTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
         $ids = [];
-
-        foreach ($term->getOption('agent_team_ids') as $agent_team_id) {
-            if ($agent_team_id === AgentTeamTerm::TEAM_ID_ME) {
+        foreach ($term->getOption('agent_team_ids') as $teamId) {
+            if ($teamId === AgentTeamTerm::TEAM_ID_ME) {
                 $ids[] = new TermEngineExpression('agent.getTeamIds()');
             } else {
-                $ids[] = $agent_team_id;
+                $ids[] = $teamId;
             }
         }
 
-        $query_part = $this->getEntityHelper()->buildQueryPart(
+        $qp = $this->getEntityHelper()->buildQueryPart(
             'ticket.agent_team_id',
             $term->getOp(),
             $ids
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

@@ -5,6 +5,7 @@
 			<span class="pin-btn" style="display: none;"><i class="fa fa-lock"></i></span>
 		</div>
 		<div id="dp_source_loading"></div>
+		{% if not app.hasBeta('agent_chat') %}
 		<div id="dp_source_footer">
 			<footer class="results-nav no-click-switch" id="agent_chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
 				<div class="cursor">
@@ -21,6 +22,13 @@
 				</div>
 			</footer>
 		</div>
+		{% else %}
+			<div id="dp_source_footer">
+				<footer class="results-nav no-click-switch">
+
+				</footer>
+			</div>
+		{% endif %}
 	</div>
 	<div id="dp_source_place" style="display: none;">
 		<span><i class="fa fa-chevron-right"></i></span>
@@ -78,7 +86,8 @@
 							'fa fa-download':  tab.tabType == 'download',
 							'fa fa-list-alt':  tab.tabType == 'news',
 							'fa fa-th-list':   tab.tabType == 'feedback',
-							'fa fa-comment':   tab.tabType == 'userchat'
+							'fa fa-comment':   tab.tabType == 'userchat',
+							'fa fa-book':      tab.tabType == 'topics'
 						}"></i>{{ ng_var('tab.title') }}
 					</a>
 					<span class="bound-fade"></span>
@@ -100,7 +109,8 @@
 							'fa fa-download':  item.type == 'download',
 							'fa fa-list-alt':  item.type == 'news',
 							'fa fa-th-list':   item.type == 'feedback',
-							'fa fa-comment':   item.type == 'userchat'
+							'fa fa-comment':   item.type == 'userchat',
+							'fa fa-book':      item.type == 'topics'
 						}"></i>
 						<span class="title">{{ ng_var('item.title') }}</span>
 					</a>

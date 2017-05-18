@@ -65,6 +65,6 @@ class ImmediateStrategySpec extends ObjectBehavior
     {
         $this->handleSystemEvent($system_event);
         $handler->processEvent($system_event)->shouldBeCalled();
-        $delivery_service->deliver($message)->shouldBeCalled();
+        $delivery_service->schedule($message)->shouldBeCalled();
     }
 }

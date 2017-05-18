@@ -131,7 +131,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                         }
                     }
                 }
-            } elseif (!empty($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false && $allow_rememberme) {
+            } elseif (!empty($_COOKIE['dpreme']) && is_string($_COOKIE['dpreme']) && strpos($_COOKIE['dpreme'], '-') !== false && $allow_rememberme) {
                 list($person_id, $cookie_code) = explode('-', $_COOKIE['dpreme'], 2);
 
                 /** @var Entity\Person $person */

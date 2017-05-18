@@ -34,12 +34,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
+use DateTime;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Base reivisons.
+ * Base revisions.
  */
-abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class RevisionAbstract extends DomainObject
 {
     const STATUS_VISIBLE    = 'published';
     const STATUS_VALIDATING = 'validating';
@@ -76,13 +78,13 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
      *
      * @JMS\Type("DateTime")
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_created;
 
     public function __construct()
     {
-        $this['date_created'] = new \DateTime();
+        $this['date_created'] = new DateTime();
     }
 
     /**

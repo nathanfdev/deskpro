@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Helpdesk;
 
 use Application\DeskPRO\Entity\Setting;
@@ -50,26 +46,25 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @ApiModes("all")
  * @ApiUserContext("admin")
+ * @ApiDoc(target="all", section="Helpdesk")
+ * @Rest\Route("/helpdesk/updater")
  */
 class UpdaterController extends BaseController
 {
     /**
      * @ApiDoc(
-     *     section="Helpdesk",
      *     description="Get the updater settings",
      *     statusCodes={
      *         200="Success"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\UpdaterSettings"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/helpdesk/updater/settings")
+     * @Rest\Get("/settings")
      */
     public function updaterSettingsAction()
     {
-        return View::create(
-            ['data' => $this->get('updater_settings_resolver')->getUpdaterSettings()],
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('updater_settings_resolver')->getUpdaterSettings()));
     }
 
     /**
@@ -78,9 +73,12 @@ class UpdaterController extends BaseController
      *      statusCodes={
      *          204="Returned in case of successful resource modify",
      *          400="We will return this in case your request was malformed",
-     *      }
+     *      },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\UpdaterSettingsType"
+     *     }
      * )
-     * @Rest\Put("/helpdesk/updater/settings")
+     * @Rest\Put("/settings")
      * @ApiUnstable()
      *
      * @param Request $request
@@ -94,13 +92,12 @@ class UpdaterController extends BaseController
         }
 
         $model         = $this->get('updater_settings_resolver')->getUpdaterSettings();
-        $type          = UpdaterSettingsType::class;
         $isModify      = true;
         $status        = Response::HTTP_NO_CONTENT;
         $partialUpdate = true;
         $options       = [];
 
-        $form    = $this->createForm($type, $model, $options);
+        $form    = $this->createForm(UpdaterSettingsType::class, $model, $options);
         $decoded = json_decode($request->getContent(), true);
 
         $form->submit($decoded, !$partialUpdate);
@@ -129,20 +126,24 @@ class UpdaterController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Manually schedule an upgrade to run right now",
-     *      statusCodes={
-     *          204="Returned in case of successful resource modify",
-     *          400="We will return this in case your request was malformed",
-     *      }
+     *     description="Manually schedule an upgrade to run right now",
+     *     statusCodes={
+     *         204="Returned in case of successful resource modify",
+     *         400="We will return this in case your request was malformed",
+     *     },
+     *     parameters={
+     *        {"name"="delay", "description"="delay before start", "dataType"="integer", "required"=false}
+     *     },
+     *     noOutput=true
      * )
-     * @Rest\Post("/helpdesk/updater/manual-schedule")
+     * @Rest\Post("/manual-schedule")
      * @ApiUnstable()
      *
      * @param Request $request
      *
      * @return View
      */
-    public function manualSheduleAction(Request $request)
+    public function manualScheduleAction(Request $request)
     {
         if ($this->get('deskpro.app_env')->getConfig('settings.disable_admin_deskpro_updates')) {
             throw $this->createAccessDeniedException('disable_admin_deskpro_updates is enabled');
@@ -168,20 +169,17 @@ class UpdaterController extends BaseController
 
     /**
      * @ApiDoc(
-     *     section="Helpdesk",
      *     description="Get the updater status",
      *     statusCodes={
      *         200="Success"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Settings\Model\UpdaterStatus"
      * )
      * @ApiUnstable()
-     * @Rest\Get("/helpdesk/updater/status")
+     * @Rest\Get("/status")
      */
     public function updaterStatusAction()
     {
-        return View::create(
-            ['data' => $this->get('updater_settings_resolver')->getUpdaterStatus()],
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($this->get('updater_settings_resolver')->getUpdaterStatus()));
     }
 }

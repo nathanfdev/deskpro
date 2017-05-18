@@ -60,11 +60,6 @@ $collection->create('user_login_usersource_sso', [
     'requirements' => ['usersource_id' => '\\d+'],
 ]);
 
-$collection->create('user_logout', [
-    'path'       => '/logout/{auth}',
-    'controller' => 'UserBundle:Login:logout',
-]);
-
 $collection->create('user_saml_sls', [
     'path'       => '/saml/sls/{usersource_id}',
     'controller' => 'UserBundle:Login:samlSingleLogoutService',

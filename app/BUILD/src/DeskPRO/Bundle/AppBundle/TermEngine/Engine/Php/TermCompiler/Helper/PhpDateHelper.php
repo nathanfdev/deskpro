@@ -26,30 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class PhpDateHelper.
+ */
 class PhpDateHelper extends AbstractPhpHelper
 {
     /**
-     * An identifier for this helper.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getId()
     {
         return 'date';
     }
 
+    /**
+     * @param $field_name
+     * @param $op
+     * @param \DateTime      $date1
+     * @param \DateTime|null $date2
+     * @param bool           $ignore_time
+     *
+     * @throws \Exception
+     *
+     * @return PhpCheck
+     */
     public function buildQueryPart($field_name, $op, \DateTime $date1, \DateTime $date2 = null, $ignore_time = false)
     {
-        $expression = '';
         if (TermInterface::OP_RANGE == $op) {
             $expression = sprintf(
                 '%s >= :date1 and %s <= :date2',
@@ -63,7 +70,6 @@ class PhpDateHelper extends AbstractPhpHelper
                 $field_name
             );
         } else {
-            $expression_op = '==';
             switch ($op) {
                 case TermInterface::OP_IS:
                     $expression_op = '==';

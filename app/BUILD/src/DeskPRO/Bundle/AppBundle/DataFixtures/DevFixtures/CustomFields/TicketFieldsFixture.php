@@ -64,21 +64,11 @@ class TicketFieldsFixture extends AbstractCustomDefFixture
         $fields[] = $this->createField(
             'select',
             'Flumdiggler',
-            ['Agree', 'Disagree', 'I\'d rather not say']
+            ['choices' => ['Agree', 'Disagree', 'I\'d rather not say']]
         );
 
         self::$fields['default'] = $fields;
-
-        //------------------------------
-        // Widgets
-        //------------------------------
-        $fields   = [];
-        $fields[] = $this->createField('text', 'Widget Type');
-        $fields[] = $this->createField('textarea', 'Widget Description');
-        $fields[] = $this->createField('checkbox', 'Desired Sizes', ['Small', 'Medium', 'Large']);
-        $fields[] = $this->createField('date', 'Manufacture Date');
-
-        self::$fields['widgets'] = $fields;
+        self::$fields['widgets'] = $this->getWidgetsFields();
 
         //------------------------------
         // Regulation and Control of Magical Creatures [both]
@@ -87,13 +77,13 @@ class TicketFieldsFixture extends AbstractCustomDefFixture
         $fields[] = $this->createField(
             'radio',
             'Reason for Complaint',
-            ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']
+            ['choices' => ['Nuisance', 'Dangerous', 'Smelly', 'Ugly', 'Mean', 'Other']]
         );
 
         $fields[] = $this->createField(
             'multiselect',
             'Suggested Actions',
-            ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']
+            ['choices' => ['Eviction', 'Shun', 'Fire them off to the moon', 'Strongly worded letter']]
         );
 
         self::$fields['regulation'] = $fields;
@@ -107,9 +97,11 @@ class TicketFieldsFixture extends AbstractCustomDefFixture
             'select',
             'Hotdog Kind',
             [
-                'Normal',
-                ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
-                'Large',
+                'choices' => [
+                    'Normal',
+                    ['German', ['Bratwurst', 'Extrawurst', ['Frankfurter', ['Rindswurst', 'Würstchen']]]],
+                    'Large',
+                ],
             ]
         );
 

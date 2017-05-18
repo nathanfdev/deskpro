@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -44,6 +40,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class SearchController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/search")
  */
 class SearchController extends BaseController
 {
@@ -75,10 +72,11 @@ class SearchController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchResponse"
      * )
      *
-     * @Rest\Get("/search")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
@@ -125,10 +123,11 @@ class SearchController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchResponse"
      * )
      *
-     * @Rest\Get("/search/people_and_orgs")
+     * @Rest\Get("/people_and_orgs")
      *
      * @param Request $request
      *
@@ -165,9 +164,12 @@ class SearchController extends BaseController
      *      },
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     output="array"
      * )
-     * @Rest\Get("/search/{type}", requirements={"type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation)"})
+     * @Rest\Get("/{type}", requirements={
+     *     "type"="(article|download|feedback|news|ticket|person|agent|organization|chat_conversation|topic)"
+     * })
      *
      * @param string  $type
      * @param Request $request
@@ -195,6 +197,7 @@ class SearchController extends BaseController
         $searchRequest = new QuickSearchRequest(
             $this->getUser(),
             (string) $request->query->get('q'),
+            $request->query->get('params'),
             (string) $request->query->get('sort')
         );
 
@@ -213,16 +216,6 @@ class SearchController extends BaseController
      */
     protected function getSearchResults(QuickSearchRequest $searchRequest)
     {
-        $results  = $this->get('quick_search')->search($searchRequest);
-        $response = ['grouped_results' => []];
-
-        foreach ($results->getContexts() as $context) {
-            $response['grouped_results'][] = [
-                'type'    => $context->getType(),
-                'results' => $context->getEntities(),
-            ];
-        }
-
-        return new View($this->wrap($response));
+        return new View($this->wrap($this->get('quick_search')->search($searchRequest)));
     }
 }

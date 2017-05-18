@@ -84,6 +84,9 @@ class PersonNote extends DomainObject
     protected $agent;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
      */
     protected $date_created;

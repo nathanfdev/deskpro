@@ -1,405 +1,443 @@
 {% extends 'AgentBundle:Login:layout.html.twig' %}
 {% set authManager = app.authenticationManager %}
 {% if captcha %}
-	{% form_theme captcha _self %}
+  {% form_theme captcha _self %}
 {% endif %}
 
 {# CAPTCHA #}
 {% block deskpro_captcha_widget %}
-	{% if form.captcha is defined %}
-		{{ form_row(form.captcha) }}
-	{% endif %}
+  {% if form.captcha is defined %}
+    {{ form_row(form.captcha) }}
+  {% endif %}
 {% endblock deskpro_captcha_widget %}
 
 {% block deskpro_recaptcha_widget %}
-	{% spaceless %}
-		<script src="//www.google.com/recaptcha/api.js"></script>
-		<div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
-	{% endspaceless %}
+  {% spaceless %}
+    <script src="//www.google.com/recaptcha/api.js"></script>
+    <div class="g-recaptcha"
+         data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
+  {% endspaceless %}
 {% endblock deskpro_recaptcha_widget %}
 
 {% block captcha_widget %}
-	{% spaceless %}
-		<div class="captcha-field">
-			<img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
-			{% if reload %}
-				<script type="text/javascript">
-					function reload_{{ image_id }}() {
-						var img = document.getElementById('{{ image_id }}');
-						img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
-					}
-				</script>
-				<a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-			{% endif %}
-			{{ form_widget(form, { attr: { class: 'shorter' } } ) }}
-		</div>
-	{% endspaceless %}
+  {% spaceless %}
+    <div class="captcha-field">
+      <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}"
+           height="{{ captcha_height }}" />
+      {% if reload %}
+        <script type="text/javascript">
+          function reload_ {{ image_id }}() {
+            var img = document.getElementById('{{ image_id }}');
+            img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
+          }
+        </script>
+        <a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fa fa-refresh"
+                                                                                aria-hidden="true"></i></a>
+      {% endif %}
+      {{ form_widget(form, { attr: { class: 'shorter' } } ) }}
+    </div>
+  {% endspaceless %}
 {% endblock %}
 
 {% block head %}
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$('.show-lost-password-trigger').on('click', function(ev) {
-				ev.preventDefault();
-				$('#normal_view').hide();
-				$('#lost_fields').show();
-				$('#lost_fields_sent').hide();
-			});
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('.show-lost-password-trigger').on('click', function(ev) {
+        ev.preventDefault();
+        $('#normal_view').hide();
+        $('#lost_fields').show();
+        $('#lost_fields_sent').hide();
+      });
 
-			$('.show-login-form-trigger').on('click', function(ev) {
-				ev.preventDefault();
-				$('#normal_view').show();
-				$('#lost_fields').hide();
-				$('#lost_fields_sent').hide();
-			});
+      $('.show-login-form-trigger').on('click', function(ev) {
+        ev.preventDefault();
+        $('#normal_view').show();
+        $('#lost_fields').hide();
+        $('#lost_fields_sent').hide();
+      });
 
-			$('#do_send_lost').on('submit', function(ev) {
-				ev.preventDefault();
+      $('#do_send_lost').on('submit', function(ev) {
+        ev.preventDefault();
 
-				var email = $('#lost_email').val().trim();
-				var postData = $('#lost_form').find('input').serializeArray();
+        var email = $('#lost_email').val().trim();
+        var postData = $('#lost_form').find('input').serializeArray();
 
-				if (!email || email.indexOf('@') === -1) {
-					alert('Please enter an email address');
-					return;
-				}
+        if (!email || email.indexOf('@') === -1) {
+          alert('Please enter an email address');
+          return;
+        }
 
-				$('#lost_fields_submit').hide();
-				$('#lost_fields_laoding').show();
+        $('#lost_fields_submit').hide();
+        $('#lost_fields_laoding').show();
 
-				$.ajax({
-					url: '{{ path(route_prefix~'_send_lost') }}',
-					type: 'POST',
-					data: postData,
-					complete: function() {
-						$('#lost_fields_submit').show();
-						$('#lost_fields_loading').hide();
-					},
-					success: function(data) {
-						if (data && data.status) {
-							$('#normal_view').show();
-							$('#lost_fields').hide();
-							$('#lost_fields_sent').hide();
+        $.ajax({
+          url:      '{{ path(route_prefix~'_send_lost') }}',
+          type:     'POST',
+          data:     postData,
+          complete: function() {
+            $('#lost_fields_submit').show();
+            $('#lost_fields_loading').hide();
+          },
+          success:  function(data) {
+            if (data && data.status) {
+              $('#normal_view').show();
+              $('#lost_fields').hide();
+              $('#lost_fields_sent').hide();
 
-							if (data.status == 'usersource_redirect') {
-								window.location = data.url;
-							} else if (data.status == 'usersource_no_reset') {
-								alert('You are registered through ' + data.usersource_name + '. You cannot reset your password from this page.');
-							}
-							return;
-						}
-						$('#lost_fields_sent').show();
-						$('#normal_view').hide();
-						$('#lost_fields').hide();
-					}
-				});
-			});
+              if (data.status == 'usersource_redirect') {
+                window.location = data.url;
+              } else if (data.status == 'usersource_no_reset') {
+                alert('You are registered through ' + data.usersource_name + '. You cannot reset your password from this page.');
+              }
+              return;
+            }
+            $('#lost_fields_sent').show();
+            $('#normal_view').hide();
+            $('#lost_fields').hide();
+          }
+        });
+      });
 
-			{% if app.getRequest().query.has('lost') %}
-				$('.show-lost-password-trigger').trigger('click');
-			{% endif %}
+      if (window.location.hash === '#reset-password') {
+        $('.show-lost-password-trigger').trigger('click');
+      }
 
-			$('.timeago').timeago();
-		});
-	</script>
+      $('.timeago').timeago();
+    });
+  </script>
 {% endblock %}
 
 {% block pre_content %}
 
-	{% if is_to_admin and url_corrections.https %}
+  {% if is_to_admin and url_corrections.https %}
 
-		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
-			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure Login Form</h2>
-			<p>
-				You are currently viewing an insecure login form.
-			</p>
-			<br/>
-			<p>
-				Your helpdesk is configured with a secure HTTPS URL, but you are currently viewing the insecure version instead.
-			</p>
-			<br/>
-			<p>
-				Unless there is a specific reason to use the insecure version, you should click the button
-				below to navigate to your secure HTTPS site.
-			</p>
-			<div style="text-align: center; margin: 20px 0 10px 0;">
-				<a href="{{ url_full('agent_login', {'return': path('admin') }) }}" style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">Go to secure login form &rarr;</a>
-			</div>
-			<br />
-			<p>If you need to change the URL or disable HTTPS, log in and go to Settings > Setup.</p>
-		</div>
+    <div class="non-secure-warning"
+         style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+      <h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure Login Form</h2>
+      <p>
+        You are currently viewing an insecure login form.
+      </p>
+      <br />
+      <p>
+        Your helpdesk is configured with a secure HTTPS URL, but you are currently viewing the insecure version instead.
+      </p>
+      <br />
+      <p>
+        Unless there is a specific reason to use the insecure version, you should click the button
+        below to navigate to your secure HTTPS site.
+      </p>
+      <div style="text-align: center; margin: 20px 0 10px 0;">
+        <a href="{{ url_full('agent_login', {'return': path('admin') }) }}"
+           style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
+          Go to secure login form &rarr;
+        </a>
+      </div>
+      <br />
+      <p>If you need to change the URL or disable HTTPS, log in and go to Settings > Setup.</p>
+    </div>
 
-	{% elseif is_to_admin and url_corrections.host %}
+  {% elseif is_to_admin and url_corrections.host %}
 
-		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
-			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
-			<p>
-				You are using the helpdesk through an invalid URL. The helpdesk is configured with this URL: {{ url_full('admin') }}.
-			</p>
-			<br />
-			<p>
-				If you want to change the URL, log in below and proceed to Settings > Setup.
-			</p>
-		</div>
+    <div class="non-secure-warning"
+         style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+      <h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
+      <p>
+        You are using the helpdesk through an invalid URL. The helpdesk is configured with this
+        URL: {{ url_full('admin') }}.
+      </p>
+      <br />
+      <p>
+        If you want to change the URL, log in below and proceed to Settings > Setup.
+      </p>
+    </div>
 
-	{% endif %}
+  {% endif %}
 
-	{% if not is_to_admin and url_corrections.https %}
+  {% if not is_to_admin and url_corrections.https %}
 
-		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
-			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure URL</h2>
-			<p>
-				You are using the helpdesk through an insecure URL. Your administrator has defined the agent interface at {{ url_full('agent') }}.
-			</p>
-			<div style="text-align: center; margin: 20px 0 10px 0;">
-				<a href="{{ url_full('agent_login', {'return': path('agent') }) }}" style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
-					Click here to go to the correct URL &rarr;
-				</a>
-			</div>
-			<br />
-			<small>
-				If you are an administrator, log in to the <a href="{{ url_full('agent_login', {'return': path('admin') }) }}">Admin Interface</a> to change the URL of the helpdesk.
-			</small>
-		</div>
+    <div class="non-secure-warning"
+         style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+      <h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure URL</h2>
+      <p>
+        You are using the helpdesk through an insecure URL. Your administrator has defined the agent interface
+        at {{ url_full('agent') }}.
+      </p>
+      <div style="text-align: center; margin: 20px 0 10px 0;">
+        <a href="{{ url_full('agent_login', {'return': path('agent') }) }}"
+           style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
+          Click here to go to the correct URL &rarr;
+        </a>
+      </div>
+      <br />
+      <small>
+        If you are an administrator, log in to the
+        <a href="{{ url_full('agent_login', {'return': path('admin') }) }}">Admin Interface</a>
+        to change the URL of the helpdesk.
+      </small>
+    </div>
 
-	{% elseif not is_to_admin and url_corrections.host %}
+  {% elseif not is_to_admin and url_corrections.host %}
 
-		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
-			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
-			<p>
-				You are using the helpdesk through an invalid URL. Your administrator has defined the agent interface at {{ url_full('agent') }}.
-			</p>
-			<div style="text-align: center; margin: 20px 0 10px 0;">
-				<a href="{{ url_full('agent_login', {'return': path('agent') }) }}" style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
-					Click here to go to the correct URL &rarr;
-				</a>
-			</div>
-			<br />
-			<small>
-				If you are an administrator, log in to the <a href="{{ url_full('agent_login', {'return': path('admin') }) }}">Admin Interface</a> to change the URL of the helpdesk.
-			</small>
-		</div>
+    <div class="non-secure-warning"
+         style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+      <h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
+      <p>
+        You are using the helpdesk through an invalid URL. Your administrator has defined the agent interface
+        at {{ url_full('agent') }}.
+      </p>
+      <div style="text-align: center; margin: 20px 0 10px 0;">
+        <a href="{{ url_full('agent_login', {'return': path('agent') }) }}"
+           style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
+          Click here to go to the correct URL &rarr;
+        </a>
+      </div>
+      <br />
+      <small>
+        If you are an administrator, log in to the
+        <a href="{{ url_full('agent_login', {'return': path('admin') }) }}">Admin Interface</a>
+        to change the URL of the helpdesk.
+      </small>
+    </div>
 
-	{% endif %}
+  {% endif %}
 
 {% endblock %}
 
 {% block content %}
 
-{##############################################################################################################}
-{# LOGIN FORM #}
-{##############################################################################################################}
+  {##############################################################################################################}
+  {# LOGIN FORM #}
+  {##############################################################################################################}
 
-<div id="normal_view"{% if render_forgot_pw %} style="display: none;"{% endif %}>
-	<div class="title">
-		{{ phrase('agent.general.log_in') }}
-	</div>
-	<div class="content">
-		{# FORM LOGIN #}
-		{% if authManager.isLoginFormVisible %}
-			<form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
-					{{ form_token('user_login') }}
-					<input type="hidden" name="agent_login" value="1" />
-					{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
-					{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
-					{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
-					{% if failed_to_login %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
-					{% if didReset %}<div class="success">{{ phrase('portal.account.reset-password-success') }}</div>{% endif %}
-					{% if lockout %}
-						{% set timeago = lockout %}
-						<div class="error">
-							{{ phrase('agent.login.account_locked_message', {
-								timeago: '<time class="timeago" data-timeago-no-ago="1" data-no-update="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
-							}, true) }}
-						</div>
-					{% endif %}
-					{% if has_done_reset %}<div class="success">{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
-					{% if has_logged_out %}
-					  <div class="success">{{ phrase('agent.login.has_logged_out') }}</div>
-					  {% include 'DeskPRO:Common:notify-logout-script.html.twig' with { show:true } %}
-					{% endif %}
+  <div id="normal_view"{% if render_forgot_pw %} style="display: none;"{% endif %}>
+    <div class="title">
+      {{ phrase('agent.general.log_in') }}
+    </div>
+    <div class="content">
+      {# FORM LOGIN #}
+      {% if authManager.isLoginFormVisible %}
+        <form action="{{ path(route_prefix~'_login_authenticate_local') }}" method="post">
+          {{ form_token('user_login') }}
+          <input type="hidden" name="agent_login" value="1" />
+          {% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
+          {% if return %}<input type="hidden" name="return" value="{{ return }}" />{% endif %}
+          {% if timeout %}
+            <div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
+          {% if failed_to_login %}
+            <div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
+          {% if didReset %}
+            <div class="success">{{ phrase('portal.account.reset-password-success') }}</div>{% endif %}
+          {% if lockout %}
+            {% set timeago = lockout %}
+            <div class="error">
+              {{ phrase('agent.login.account_locked_message', {
+                timeago: '<time class="timeago" data-timeago-no-ago="1" data-no-update="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
+              }, true) }}
+            </div>
+          {% endif %}
+          {% if has_done_reset %}
+            <div class="success">{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
+          {% if has_logged_out %}
+            <div class="success">{{ phrase('agent.login.has_logged_out') }}</div>
+            {% include 'DeskPRO:Common:notify-logout-script.html.twig' with { show:true } %}
+          {% endif %}
 
-					{% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
+          {% if failed_login_name == "1" %}{% set failed_login_name = "" %}{% endif %}
 
-					<fieldset style="margin-bottom: 15px;">
-						<p>
-							<i class="icon-envelope-alt"></i>
-							<input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40" placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}" tabindex="1" />
-						</p>
-						<p>
-							<i class="icon-lock"></i>
-							<input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"  tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
-						</p>
+          <fieldset style="margin-bottom: 15px;">
+            <p>
+              <i class="icon-envelope-alt"></i>
+              <input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40"
+                     placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}"
+                     tabindex="1" />
+            </p>
+            <p>
+              <i class="icon-lock"></i>
+              <input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"
+                     tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
+            </p>
 
-						{% if captcha %}
-							{% set captcha_error = app.session.getFlash('captcha_login_error') %}
-							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
-								<div class="dp-control-label">
-									<label>{{ phrase('user.general.label_captcha') }} *</label>
-								</div>
+            {% if captcha %}
+              {% set captcha_error = app.session.getFlash('captcha_login_error') %}
+              <div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}"
+                   style="position: relative;margin-left:-9px;">
+                <div class="dp-control-label">
+                  <label>{{ phrase('user.general.label_captcha') }} *</label>
+                </div>
 
-									{{ form_widget(captcha) }}
-									{% if captcha_error %}
-										<div class="dp-help-inline dp-error-explain" style="color: red;">
-											{{ phrase('user.tickets.form_error_captcha_invalid') }}
-										</div>
-									{% endif %}
+                {{ form_widget(captcha) }}
+                {% if captcha_error %}
+                  <div class="dp-help-inline dp-error-explain" style="color: red;">
+                    {{ phrase('user.tickets.form_error_captcha_invalid') }}
+                  </div>
+                {% endif %}
 
-							</div>
-						{% endif %}
-						{% set token_error = app.session.getFlash('request_token_expired') %}
-						{% if token_error %}
-							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
-								<div class="dp-controls dp-fill">
-									<div class="dp-help-inline dp-error-explain" style="color: red;">
-										{{ phrase('user.general.request_token_expired') }}
-									</div>
-								</div>
-							</div>
-						{% endif %}
-						{% set banned = app.session.getFlash('email_banned') %}
-						{% if banned %}
-							<div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}" style="position: relative;margin-left:-9px;">
-								<div class="dp-controls dp-fill">
-									<div class="dp-help-inline dp-error-explain" style="color: red;">
-										{{ phrase('portal.account.login-disabled') }}
-									</div>
-								</div>
-							</div>
-						{% endif %}
-						<br /><br />
+              </div>
+            {% endif %}
+            {% set token_error = app.session.getFlash('request_token_expired') %}
+            {% if token_error %}
+              <div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}"
+                   style="position: relative;margin-left:-9px;">
+                <div class="dp-controls dp-fill">
+                  <div class="dp-help-inline dp-error-explain" style="color: red;">
+                    {{ phrase('user.general.request_token_expired') }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            {% set banned = app.session.getFlash('email_banned') %}
+            {% if banned %}
+              <div class="dp-control-group {% if captcha_error %}dp-error dp-error-static{% endif %}"
+                   style="position: relative;margin-left:-9px;">
+                <div class="dp-controls dp-fill">
+                  <div class="dp-help-inline dp-error-explain" style="color: red;">
+                    {{ phrase('portal.account.login-disabled') }}
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            <br /><br />
 
-						<ul style="margin:0;padding:0; line-height:20px;">
-							{% if app.getSetting('core.enable_user_rememberme') %}
-							<li style="float:left; list-style-type:none;">
-								<input type="checkbox"
-									name="remember_me" id="rem_cb" value="1" tabindex="3" />
-							</li>
-							<li style="float:left; list-style-type:none;">
-								<label for="rem_cb">
-									{{ phrase('agent.login.remember_me') }}
-								</label>
-							</li>
-							{% endif %}
-							{% if authManager.isForgotPasswordVisible %}
-							<li style="float:none; list-style-type:none; overflow: hidden; text-align: right;">
-								<a href="#"
-									class="show-lost-password-trigger">{{ phrase('agent.login.forgot_password') }}</a>
-							</li>
-							{% endif %}
-						</ul>
-					</fieldset>
-			<input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}" style="margin-bottom: 10px;" />
+            <ul style="margin:0;padding:0; line-height:20px;">
+              {% if app.getSetting('core.enable_user_rememberme') %}
+                <li style="float:left; list-style-type:none;">
+                  <input type="checkbox"
+                         name="remember_me" id="rem_cb" value="1" tabindex="3" />
+                </li>
+                <li style="float:left; list-style-type:none;">
+                  <label for="rem_cb">
+                    {{ phrase('agent.login.remember_me') }}
+                  </label>
+                </li>
+              {% endif %}
+              {% if authManager.isForgotPasswordVisible %}
+                <li style="float:none; list-style-type:none; overflow: hidden; text-align: right;">
+                  <a href="#" class="show-lost-password-trigger">
+                    {{ phrase('agent.login.forgot_password') }}
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </fieldset>
+          <input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}"
+                 style="margin-bottom: 10px;" />
 
-			{% if authManager.hasLoginTextButtonUsersources %}
-				<div class="dp-usersource-list">
-					<ul>
-						{% for usersource in authManager.getLoginTextButtonUsersources %}
-							<li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
-						{% endfor %}
-					</ul>
-				</div>
-			{% endif %}
-			{% if authManager.hasLoginIconUsersources %}
-				<div class="dp-usersource-list">
-					{{ phrase('user.profile.or_connect_with') }}
-					{% for usersource in authManager.getLoginIconUsersources %}
-						{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
-					{% endfor %}
-				</div>
-			{% endif %}
-		</form>
-	{# END FORM LOGIN #}
-	{% else %}
-		{% if authManager.hasLoginTextButtonUsersources %}
-			<ul>
-				{% for usersource in authManager.getLoginTextButtonUsersources %}
-					<li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
-				{% endfor %}
-			</ul>
-			{% if authManager.hasLoginIconUsersources %}
-				<ul class="dp-usersource-list">
-					<li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
-					{% for usersource in authManager.getLoginIconUsersources %}
-						<li style="display: inline-block;">{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-		{% else %}
-			{% if authManager.hasLoginIconUsersources %}
-				<ul>
-					<li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
-					{% for usersource in authManager.getLoginIconUsersources %}
-						<li style="display: inline-block;">{{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
-		{% endif %}
-	{% endif %}
-	</div>
-</div>
+          {% if authManager.hasLoginTextButtonUsersources %}
+            <div class="dp-usersource-list">
+              <ul>
+                {% for usersource in authManager.getLoginTextButtonUsersources %}
+                  <li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if authManager.hasLoginIconUsersources %}
+            <div class="dp-usersource-list">
+              {{ phrase('user.profile.or_connect_with') }}
+              {% for usersource in authManager.getLoginIconUsersources %}
+                {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+              {% endfor %}
+            </div>
+          {% endif %}
+        </form>
+        {# END FORM LOGIN #}
+      {% else %}
+        {% if authManager.hasLoginTextButtonUsersources %}
+          <ul>
+            {% for usersource in authManager.getLoginTextButtonUsersources %}
+              <li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
+            {% endfor %}
+          </ul>
+          {% if authManager.hasLoginIconUsersources %}
+            <ul class="dp-usersource-list">
+              <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
+              {% for usersource in authManager.getLoginIconUsersources %}
+                <li style="display: inline-block;">
+                  {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% else %}
+          {% if authManager.hasLoginIconUsersources %}
+            <ul>
+              <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
+              {% for usersource in authManager.getLoginIconUsersources %}
+                <li style="display: inline-block;">
+                  {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
 
-{% if authManager.hasFormLoginCapability %}
-	{##############################################################################################################}
-	{# LOST PASSWORD #}
-	{##############################################################################################################}
+  {% if authManager.hasFormLoginCapability %}
+    {##############################################################################################################}
+    {# LOST PASSWORD #}
+    {##############################################################################################################}
 
-	<div id="lost_fields" {% if not render_forgot_pw %} style="display: none"{% endif %}>
-		<div class="title">
-			{{ phrase('agent.general.lost_password') }}
-		</div>
-		<div class="content">
-			<form id="do_send_lost">
-				<fieldset>
-					<p>{{ phrase('agent.login.reset-password-info') }}</p>
-					<p id="lost_form">
-						<i class="icon-envelope-alt"></i>
-						{{ form_token('user_login') }}
-						<input type="text" class="text" value="{{ render_forgot_pw ?: failed_login_name }}" name="email" id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
-					</p>
-				</fieldset>
-				<div id="lost_fields_submit">
-					<p><input class="full-width" type="submit" value="{{ phrase('agent.login.email_instructions') }}" /></p>
-					<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
-				</div>
-				<div id="lost_fields_laoding" style="display: none;">
-					<center>
-						<img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
-					</center>
-				</div>
-			</form>
-		</div>
+    <div id="lost_fields" {% if not render_forgot_pw %} style="display: none"{% endif %}>
+      <div class="title">
+        {{ phrase('agent.general.lost_password') }}
+      </div>
+      <div class="content">
+        <form id="do_send_lost">
+          <fieldset>
+            <p>{{ phrase('agent.login.reset-password-info') }}</p>
+            <p id="lost_form">
+              <i class="icon-envelope-alt"></i>
+              {{ form_token('user_login') }}
+              <input type="text" class="text" value="{{ render_forgot_pw ?: failed_login_name }}" name="email"
+                     id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />
+            </p>
+          </fieldset>
+          <div id="lost_fields_submit">
+            <p><input class="full-width" type="submit" value="{{ phrase('agent.login.email_instructions') }}" /></p>
+            <p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
+          </div>
+          <div id="lost_fields_laoding" style="display: none;">
+            <center>
+              <img src="{{ asset('images/spinners/loading-big-circle.gif') }}" />
+            </center>
+          </div>
+        </form>
+      </div>
 
-		{% if app.getSetting('core.install_source') == 'win_installer' %}
-			<div style="padding: 0 25px 15px 25px; line-height: 14pt; font-size: 11px;">
-				You may also reset your password using the DeskPRO Windows application. Using the computer
-				that DeskPRO was installed on, click the DeskPRO icon in your system tray and select "Reset Password".
-			</div>
-		{% endif %}
-	</div>
+      {% if app.getSetting('core.install_source') == 'win_installer' %}
+        <div style="padding: 0 25px 15px 25px; line-height: 14pt; font-size: 11px;">
+          You may also reset your password using the DeskPRO Windows application. Using the computer
+          that DeskPRO was installed on, click the DeskPRO icon in your system tray and select "Reset Password".
+        </div>
+      {% endif %}
+    </div>
 
-	{##############################################################################################################}
-	{# LOST PASSWORD:SENT #}
-	{##############################################################################################################}
+    {##############################################################################################################}
+    {# LOST PASSWORD:SENT #}
+    {##############################################################################################################}
 
-	<div id="lost_fields_sent" style="display: none">
-		<div class="title">
-			{{ phrase('agent.general.lost_password') }}
-		</div>
-		<div class="content">
-			<form>
-				<fieldset>
-					<p>{{ phrase('agent.login.reset-password-sent') }}</p>
-				</fieldset>
-				<p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
-			</form>
-		</div>
-	</div>
+    <div id="lost_fields_sent" style="display: none">
+      <div class="title">
+        {{ phrase('agent.general.lost_password') }}
+      </div>
+      <div class="content">
+        <form>
+          <fieldset>
+            <p>{{ phrase('agent.login.reset-password-sent') }}</p>
+          </fieldset>
+          <p><a class="show-login-form-trigger" href="#">&larr; {{ phrase('agent.login.back_to_login') }}</a></p>
+        </form>
+      </div>
+    </div>
 
 
-	<script type="text/javascript">
-		$(function(){ $('#email').focus(); });
-	</script>
-{% endif %}
+    <script type="text/javascript">
+      $(function() {
+        $('#email').focus();
+      });
+    </script>
+  {% endif %}
 
 {% endblock %}

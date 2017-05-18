@@ -175,8 +175,11 @@ class GroupingCounter
             return $this->makeTimeFieldSelect($grouping, $field);
         } elseif ($grouping == 'language') {
             $default = App::getEntityRepository(Language::class)->getDefault();
-
-            return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
+            if ($default) {
+                return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
+            } else {
+                return "COALESCE(tickets.language_id, 0) AS $field";
+            }
         } elseif ($f = $this->getCustomDefField($grouping)) {
             if ($f->isChoiceType()) {
                 return "COALESCE(custom_data_ticket_$field.field_id, 0) AS $field";
@@ -355,7 +358,7 @@ class GroupingCounter
         $times     = array_keys($this->getTimeTitles());
         $fieldname = \Application\DeskPRO\Searcher\TicketSearch::getTableField($field);
         $times     = array_reverse($times);
-        $last_t    = self::LAST_TIME_MARKER;
+        $ranges    = self::getTimeRanges();
 
         $now = time();
 
@@ -365,22 +368,16 @@ class GroupingCounter
         foreach ($times as $t) {
             if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
                 // total time is stored in seconds, so we're not doing a date compare
-                $date    = $t;
-                $parts[] = " WHEN (tickets.$fieldname + ($now - COALESCE(UNIX_TIMESTAMP(date_user_waiting)))) >= $date THEN $t ";
+                $from    = $ranges[$t];
+                $to      = $t;
+                $parts[] = " WHEN tickets.$fieldname BETWEEN $from AND $to THEN $t ";
             } else {
                 // Get a real time so we dont have mysql doing calculations,
                 // and we dont need to do a subquery etc
-                $date = date('Y-m-d H:i:s', $now - $t);
-
-                if ($t == 300) {
-                    $now     = date('Y-m-d H:i:s');
-                    $parts[] = " WHEN tickets.$fieldname BETWEEN '$date' AND '$now' THEN $t ";
-                }
-
-                $parts[] = " WHEN tickets.$fieldname <= '$date' THEN $last_t ";
+                $from    = date('Y-m-d H:i:s', max($now - $t, 0));
+                $to      = date('Y-m-d H:i:s', $now - $ranges[$t]);
+                $parts[] = " WHEN tickets.$fieldname BETWEEN '$from' AND '$to' THEN $t ";
             }
-
-            $last_t = $t;
         }
 
         $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
@@ -753,6 +750,39 @@ class GroupingCounter
         foreach ($times as &$phrase) {
             $phrase = App::getTranslator()->phrase($phrase);
         }
+
+        return $times;
+    }
+
+    public static function getTimeRanges()
+    {
+        $times = [
+            300                    => 0,
+            900                    => 301,
+            1800                   => 901,
+            3600                   => 1801,
+            7200                   => 3601,
+            10800                  => 7201,
+            14400                  => 10801,
+            21600                  => 14401,
+            43200                  => 21601,
+            86400                  => 43201,
+            172800                 => 86401,
+            259200                 => 172801,
+            345600                 => 259201,
+            432000                 => 345601,
+            518400                 => 432001,
+            604800                 => 518401,
+            1209600                => 604801,
+            1814400                => 1209601,
+            2419200                => 1814401,
+            4838400                => 2419201,
+            7257600                => 4838401,
+            9676800                => 7257601,
+            12096000               => 9676801,
+            14515200               => 12096001,
+            self::LAST_TIME_MARKER => 14515201,
+        ];
 
         return $times;
     }

@@ -86,7 +86,7 @@ class Department extends AbstractCategoryRepository
     {
         $perms = App::getDb()->fetchAll(
             'SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?',
-            [$dep->id]
+            [$dep->getId()]
         );
 
         $data = [
@@ -132,37 +132,38 @@ class Department extends AbstractCategoryRepository
     {
         switch ($context) {
             case 'ticket':
-                $opt         = 'core_tickets.default_department';
-                $check_field = 'is_tickets_enabled';
+                $opt        = 'core_tickets.default_department';
+                $checkField = 'is_tickets_enabled';
                 break;
             case 'chat':
-                $opt         = 'core.chat.default_department';
-                $check_field = 'is_chat_enabled';
+                $opt        = 'core.chat.default_department';
+                $checkField = 'is_chat_enabled';
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown context `$context`");
         }
 
-        $dep_id = App::getSetting($opt);
-        $dep    = null;
-        if ($dep_id) {
-            $dep = $this->find($dep_id);
+        $depId = App::getSetting($opt);
+        $dep   = null;
+        if ($depId) {
+            /** @var \Application\DeskPRO\Entity\Department $dep */
+            $dep = $this->find($depId);
         }
 
         if (!$dep) {
             // There should always be a correct default set, but this is
             // error handling in case
-            $dep_id = App::getDb()->fetchColumn("
+            $depId = App::getDb()->fetchColumn("
                 SELECT d.id
                 FROM departments d
                 LEFT JOIN departments AS subdep ON (subdep.parent_id = d.id)
-                WHERE subdep.id IS NULL AND d.$check_field = 1
+                WHERE subdep.id IS NULL AND d.$checkField = 1
                 ORDER BY d.display_order ASC
                 LIMIT 1
             ");
 
-            if ($dep_id) {
-                $dep = $this->find($dep_id);
+            if ($depId) {
+                $dep = $this->find($depId);
             }
         }
 
@@ -180,13 +181,13 @@ class Department extends AbstractCategoryRepository
     {
         switch ($context) {
             case 'ticket':
-                $check_field = 'AND d.is_tickets_enabled = 1';
+                $checkField = 'AND d.is_tickets_enabled = 1';
                 break;
             case 'chat':
-                $check_field = 'AND d.is_chat_enabled = 1';
+                $checkField = 'AND d.is_chat_enabled = 1';
                 break;
             case 'both':
-                $check_field = '';
+                $checkField = '';
                 break;
             default:
                 throw new \InvalidArgumentException("Unknown context `$context`");
@@ -197,7 +198,7 @@ class Department extends AbstractCategoryRepository
             FROM DeskPRO:Department d
             LEFT JOIN d.children c 
             WHERE c.id IS NULL
-                $check_field
+                $checkField
         ")->execute();
     }
 }

@@ -26,13 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Organization;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
@@ -46,19 +41,14 @@ class DbalOrganizationTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
-        $query_part->addUniqueJoin(
-            'organizations',
-            'organizations',
-            '{organizations}.id = ticket.organization_id'
+        $qp = $this->getEntityHelper()->buildQueryPart(
+            'ticket.organization_id',
+            $term->getOp(),
+            $term->getOption('organization')
         );
-        $query_part->setParameter('organization', $term->getOption('organization'));
 
-        $op = $this->isOp($term->getOp(), TermInterface::OP_NOT) ? '!=' : '=';
-        $query_part->setWhereString(sprintf('{organizations}.id %s :organization', $op));
+        $this->logQueryPart($qp);
 
-        $this->logQueryPart($query_part);
-
-        return $query_part;
+        return $qp;
     }
 }

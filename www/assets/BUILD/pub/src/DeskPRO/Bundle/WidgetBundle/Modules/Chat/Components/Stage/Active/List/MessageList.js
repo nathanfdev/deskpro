@@ -89,7 +89,12 @@ export class MessageList extends React.Component {
           <source src={`${soundsPath}/pop.ogg`} />
           <source src={`${soundsPath}/pop.wav`} />
         </audio>
-        <ScrollArea ref={(c) => { this.scrollArea = c; }} ownerDocument={window.widgetFrame.document} vertical>
+        <ScrollArea
+          ref={(c) => { this.scrollArea = c; }}
+          ownerDocument={window.widgetFrame.document}
+          vertical
+          style={{ overflow: 'hidden' }}
+        >
           <div className="bottom-aligner" />
           <div>
             {messages.map((message, key) => <MessageFactoryContainer key={key} message={message} />)}

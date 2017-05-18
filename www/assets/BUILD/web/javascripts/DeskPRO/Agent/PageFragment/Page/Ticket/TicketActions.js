@@ -20,9 +20,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		this.changeManager = this.page.changeManager;
 		this.ticketId = this.page.meta.ticket_id;
 
-		var wrapper = this.page.wrapper;
-		var actionsButtons = this.getEl('action_buttons');
-
 		this.page.getEl('flag').on('change', function() {
 			var value = $(this).val();
 			var prop = self.changeManager.getPropertyManager('flag');
@@ -246,7 +243,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		//------------------------------
 
 		var macroMenu = this.getEl('macros_menu');
-		var statusMenuMenu = new DeskPRO.UI.Menu2(macroMenu, {
+		var statusMenuMenu = this.statusMenuMenu = new DeskPRO.UI.Menu2(macroMenu, {
 			positionBy: this.getEl('macros_menu_trigger'),
 			openBelow: true,
 			onFilterUpdated: function(info) {
@@ -402,5 +399,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 	 */
 	getEl: function(id) {
 		return this.page.getEl(id);
+	},
+
+	destroy: function() {
+		if (this.statusMenuMenu) {
+			this.statusMenuMenu.destroy();
+			this.statusMenuMenu = null;
+		}
+		if (this.macroOverlay) {
+			this.macroOverlay.destroy();
+			this.macroOverlay = null;
+		}
+		this.page = null;
+		this.changeManager = null;
+		this.destroyEvents();
 	}
 });

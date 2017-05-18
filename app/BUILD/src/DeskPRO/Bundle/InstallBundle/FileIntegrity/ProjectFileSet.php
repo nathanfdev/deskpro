@@ -203,9 +203,11 @@ class ProjectFileSet
             'Mock',
             'test-suite',
             'classes.map',
+            'storybook',
         ];
 
-        static $ignorePaths = [
+        // making this static causes a syntax error in PHP5.5 on the last element of the array for some reason (wtf?)
+        $ignorePaths = [
             '%DP_APP_DIR%/vendor/autoload.php',
             '%DP_APP_DIR%/vendor/behat/',
             '%DP_APP_DIR%/vendor/behatch/',
@@ -229,6 +231,7 @@ class ProjectFileSet
             '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/Event/PreUpdateEventArgs.php', // because we patch it ourselves
             '%DP_APP_KERNEL_CACHE%/dev/',
             '%DP_APP_KERNEL_CACHE%/test/',
+            '%DP_APP_WWW_ASSET%'.DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR.'storybook',
         ];
 
         foreach ($ignoreAnywhere as $p) {

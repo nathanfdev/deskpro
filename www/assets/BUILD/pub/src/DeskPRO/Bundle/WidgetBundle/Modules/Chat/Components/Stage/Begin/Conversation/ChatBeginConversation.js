@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Field, Input } from 'react-forms';
+import { Field } from 'react-forms';
+import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
 import { CustomFieldSingleChoice } from 'DeskPRO/Component/CustomField/CustomFieldSingleChoice';
@@ -56,6 +57,7 @@ export class ChatBeginConversation extends React.Component {
         errors={props.errors}
         onSubmit={this.onSubmit}
         field="chat_department"
+        primaryColor={props.primaryColor}
       >
         <CustomFieldSingleChoice
           name="chat_department"
@@ -66,7 +68,7 @@ export class ChatBeginConversation extends React.Component {
   }
 
   prepareFormFields(props) {
-    const { customFields, chatDepartments, widgetLanguage, errors, submit, loggedIn } = props;
+    const { customFields, widgetLanguage, errors, submit, loggedIn, primaryColor } = props;
     const { chatRequiredName, chatRequiredEmail } = props;
 
     const hiddenFields = customFields.valueSeq().filter(this.isHiddenField).map(customField =>
@@ -87,6 +89,7 @@ export class ChatBeginConversation extends React.Component {
           field="name"
           errors={errors}
           required={chatRequiredName}
+          primaryColor={primaryColor}
         >
           {hiddenFields}
           <Field select="name">
@@ -102,6 +105,7 @@ export class ChatBeginConversation extends React.Component {
           field="email"
           errors={errors}
           required={chatRequiredEmail}
+          primaryColor={primaryColor}
         >
           {hiddenFields}
           <Field select="email">
@@ -115,7 +119,7 @@ export class ChatBeginConversation extends React.Component {
       }
     }
 
-    if (props.allowDepartmentSelection && chatDepartments.size > 1) {
+    if (props.allowDepartmentSelection) {
       const departmentField = this.getChatDepartmentField(props);
       fields.push(departmentField);
 

@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPRO article importer.
@@ -62,14 +61,20 @@ class ArticleHandler extends AbstractEntityHandler
             ->setStatus($model->getStatus())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDatePublished($model->getDatePublished())
-            ->setDateEnd($model->getDateEnd())
             ->setEndAction($model->getEndAction())
             ->setViewCount($model->getViewCount())
         ;
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
+        }
+        if ($model->getDatePublished()) {
+            $entity->setDatePublished($model->getDatePublished());
+        } else {
+            $entity->setDatePublished($entity->getDateCreated());
+        }
+        if ($model->getDateEnd()) {
+            $entity->setDateEnd($model->getDateEnd());
         }
 
         $this->helpers->getCustomDataHelper()->updateCustomData($this->mappers->getArticleCustomDefMapper(), $model, $entity);
@@ -78,7 +83,6 @@ class ArticleHandler extends AbstractEntityHandler
         $this->helpers->getTranslationHelper()->updateTranslations($model->getContentTranslations(), $entity, 'content');
 
         // update article categories
-        $newCategories = new ArrayCollection();
         foreach ($model->getCategories() as $categoryPath) {
             /** @var Entity\ArticleCategory $categoryEntity */
             $categoryEntity = $this->helpers->getCategoryHelper()->findOrCreateCategory(
@@ -91,12 +95,13 @@ class ArticleHandler extends AbstractEntityHandler
             }
 
             $entity->addToCategory($categoryEntity);
-            $newCategories->add($categoryEntity);
         }
 
-        foreach ($entity->getCategories() as $category) {
-            if (!$newCategories->contains($category)) {
-                $entity->removeFromCategory($category);
+        if (!$entity->getCategories()->count()) {
+            // use default category
+            $defaultCategory = $this->mappers->getArticleCategoryMapper()->getDefaultCategory();
+            if ($defaultCategory) {
+                $entity->addToCategory($defaultCategory);
             }
         }
 

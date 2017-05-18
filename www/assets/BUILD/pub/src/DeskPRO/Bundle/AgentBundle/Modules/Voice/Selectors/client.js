@@ -4,11 +4,6 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 const stateSelector = state => state.Voice.client;
 
-export const isVoiceEnabledSelector = createSelector(
-  meSelector,
-  me => isSecure && me.getIn(['agent_data', 'is_voice_enabled'])
-);
-
 // tokens
 export const tokensSelector = createSelector(
   stateSelector,
@@ -75,4 +70,28 @@ export const connectionsSelector = createSelector(
 export const outboundNumberSelector = createSelector(
   stateSelector,
   state => state.get('outboundNumber')
+);
+
+export const outgoingCallSelector = createSelector(
+  stateSelector,
+  state => state.get('outgoingCall')
+);
+
+export const isVoiceEnabledSelector = createSelector(
+  meSelector,
+  idleActivitySidSelector,
+  phoneTokenSelector,
+  workerTokenSelector,
+  (me, idleSid, phoneToken, workerToken) =>
+    isSecure
+    && me.getIn(['agent_data', 'is_voice_enabled'])
+    && idleSid
+    && phoneToken
+    && workerToken
+);
+
+// settings
+export const ringingVolumeSelector = createSelector(
+  stateSelector,
+  state => state.get('ringingVolume')
 );

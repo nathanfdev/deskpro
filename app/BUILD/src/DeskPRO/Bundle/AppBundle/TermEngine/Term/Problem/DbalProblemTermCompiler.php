@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Problem;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -46,19 +42,34 @@ class DbalProblemTermCompiler extends AbstractDbalTermCompiler
      */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
-        $query_part->addUniqueJoin(
-            'problem2tickets',
-            'problem2tickets',
-            '{problem2tickets}.ticket_id = ticket.id'
-        );
-        $query_part->setParameter('problem', $term->getOption('problem'));
+        $value = $term->getOption('problem');
 
-        $op = $this->isOp($term->getOp(), TermInterface::OP_NOT) ? '!=' : '=';
-        $query_part->setWhereString(sprintf('{problem2tickets}.problem_id %s :problem', $op));
+        $qp = new DbalQueryPart();
+        $qp
+            ->addUniqueJoin(
+                'problem2tickets',
+                'problem2tickets',
+                '{problem2tickets}.ticket_id = ticket.id'
+            )
+            ->setParameter('problem', $value)
+        ;
 
-        $this->logQueryPart($query_part);
+        if ($this->isOp($term->getOp(), TermInterface::OP_NOT)) {
+            if ($value) {
+                $qp->setWhereString('{problem2tickets}.problem_id NOT IN(:problem) OR {problem2tickets}.problem_id IS NULL');
+            } else {
+                $qp->setWhereString('{problem2tickets}.problem_id IS NOT NULL');
+            }
+        } else {
+            if ($value) {
+                $qp->setWhereString('{problem2tickets}.problem_id IN(:problem)');
+            } else {
+                $qp->setWhereString('{problem2tickets}.id IS NULL');
+            }
+        }
 
-        return $query_part;
+        $this->logQueryPart($qp);
+
+        return $qp;
     }
 }

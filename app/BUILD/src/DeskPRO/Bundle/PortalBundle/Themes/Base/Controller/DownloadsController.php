@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Download;
@@ -125,7 +121,12 @@ class DownloadsController extends AbstractController
     {
         $person = $this->getCurrentPerson();
 
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count'], $person);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager(
+            $category,
+            (int) $options['page'],
+            (int) $options['count'],
+            $person
+        );
 
         return $this->renderThemeView(
             sprintf('Theme:Downloads:DownloadList/%s.html.twig', $options['style']),

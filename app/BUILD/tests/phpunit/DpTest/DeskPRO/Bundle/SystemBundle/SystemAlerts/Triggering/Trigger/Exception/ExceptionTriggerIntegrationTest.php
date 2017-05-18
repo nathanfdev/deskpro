@@ -67,7 +67,8 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         $this->assertEquals(0, $this->countRaisedIncidents());
         $this->event_logger->log($this->dummyException('-3 days'));
         $this->triggering_process->run();
-        $this->assertEquals(1, $this->countIncidents(ExceptionIncident::class));
+        // for now it turned off
+        $this->assertEquals(0, $this->countIncidents(ExceptionIncident::class));
     }
 
     /**
@@ -93,8 +94,8 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         $this->event_logger->log(new \Exception('Fourth', 2));
 
         $this->triggering_process->run();
-
-        $this->assertEquals(2, $this->countIncidents(ExceptionIncident::class));
+        // for now it turned off
+        $this->assertEquals(0, $this->countIncidents(ExceptionIncident::class));
     }
 
     /**
@@ -105,17 +106,24 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         // Given an incident
         $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
-        $incident = $this->findSingleIncident();
-        $this->assertEquals(1, $this->countRaisedIncidents());
-        $this->assertCount(1, $incident->getEvents());
+
+        $incident = $this->findSingleIncident(false);
+
+        return;
+
+        // for now it turned off
+        $this->assertEquals(0, $this->countRaisedIncidents());
+        $this->assertCount(0, $incident->getEvents());
 
         // When adding a new exception event
         $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
 
         // Then there should be still 1 incident, but related to 2 events
-        $this->assertEquals(1, $this->countRaisedIncidents());
-        $this->assertCount(2, $incident->getEvents());
+
+        // for now it turned off
+        $this->assertCount(0, $incident->getEvents());
+        $this->assertEquals(0, $this->countRaisedIncidents());
     }
 
     /**
@@ -126,7 +134,10 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         // Given a dismissed incident
         $this->event_logger->log($this->dummyException());
         $this->triggering_process->run();
-        $incident = $this->findSingleIncident();
+        $incident = $this->findSingleIncident(false);
+
+        return;
+
         $this->assertTrue($incident->isRaised());
         $this->assertCount(1, $incident->getEvents());
         $incident->setDismissed(true);
@@ -138,6 +149,7 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
         $this->triggering_process->run();
 
         // Then
+
         $this->assertEquals(1, $this->countAllIncidents());
         $this->assertCount(2, $incident->getEvents());
     }

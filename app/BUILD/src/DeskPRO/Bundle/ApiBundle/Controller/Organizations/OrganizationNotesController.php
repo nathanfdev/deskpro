@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\OrganizationNote;
@@ -46,6 +42,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/organizations/{parentId}/notes")
  * @ApiDoc(target="all", section="Organizations", output="Application\DeskPRO\Entity\OrganizationNote")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationNoteType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\OrganizationNote",
+ *          "organization"="Application\DeskPRO\Entity\Organization",
+ *          "agent"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class OrganizationNotesController extends CrudSubController
 {

@@ -6,6 +6,7 @@ Feature: /voice_numbers endpoint
     And no VoiceNumber records exist
     And no VoiceQueueTarget records exist
     And no VoiceAgentTarget records exist
+    And the setting "beta_features.voice" is set to 1
     And only the following VoiceAccount records exist:
       | #  | AccountName | AccountSid | AuthToken |
       | a1 | Account 1   | Sid1       | Token1    |

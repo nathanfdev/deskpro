@@ -1,5 +1,5 @@
 import { createAction } from 'Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const setImMe = createAction(
   'SET_IM_ME',
@@ -73,6 +73,11 @@ export const markMessagesOptimistic = createAction(
   (uuids, chatId, status) => ({ uuids, chatId, status })
 );
 
+export const markAllMessagesOptimistic = createAction(
+  'IM_MARK_ALL_MESSAGES_OPTIMISTIC',
+  (chat) => { const obj = { chatId: chat }; return obj; }
+);
+
 export const markMessages = createAction(
   'IM_MARK_MESSAGES',
   (ids, uuids, chatId, status = 2) => dispatch => new Promise(
@@ -83,6 +88,18 @@ export const markMessages = createAction(
           .error(response => reject(response));
       }
     )
+);
+
+export const markAllMessagesAsRead = createAction(
+  'IM_MARK_ALL_MESSAGES',
+  chatId => dispatch => new Promise(
+    (resolve, reject) => {
+      dispatch(markAllMessagesOptimistic(chatId));
+      return repository('AgentChat').markAllMessagesAsRead(chatId)
+        .success(() => resolve({ chatId }))
+        .error(response => reject(response));
+    }
+  )
 );
 
 export const saveDraft = createAction(
@@ -106,5 +123,15 @@ export const loadDrafts = createAction(
     }
 
     return drafts;
+  }
+);
+
+export const searchMessageClick = createAction(
+  'IM_SEARCH_MESSAGE_CLICK',
+  message => (dispatch) => {
+    api.sendGet(`DP_API/agent_chats/${message.chat}/messages/${message.id}/page?order_by=date_created`).success((response) => {
+      dispatch(loadMessages(message.chat, '', response.data));
+    });
+    return {};
   }
 );

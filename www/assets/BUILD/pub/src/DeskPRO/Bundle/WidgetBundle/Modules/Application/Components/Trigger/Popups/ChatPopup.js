@@ -33,9 +33,10 @@ export default class ChatPopup extends React.Component {
       const $popup = $(this.popup);
 
       if (popupStyle === 'widget_button_agent') {
-        $popup.css('right', $(getButton()).width() + 10);
+        const button = getButton();
+        $popup.css('right', $(button).find('.preemtive-button').width() + 15);
       } else {
-        $popup.css('right', 1);
+        $popup.css('right', 0);
       }
     }, 0);
   }

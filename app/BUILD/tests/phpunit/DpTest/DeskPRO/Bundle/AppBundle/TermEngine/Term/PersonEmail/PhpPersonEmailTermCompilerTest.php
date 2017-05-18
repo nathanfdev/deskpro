@@ -26,21 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
 
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PersonEmailTerm;
-use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PhpTicketStatusTermCompiler;
+use DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail\PhpPersonEmailTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractPhpTermCompilerTest;
 
+/**
+ * Class PhpPersonEmailTermCompilerTest.
+ */
 class PhpPersonEmailTermCompilerTest extends AbstractPhpTermCompilerTest
 {
     /**
-     * @var PhpTicketStatusTermCompiler
+     * @var PhpPersonEmailTermCompiler
      */
     protected $term_compiler;
 
@@ -84,7 +84,7 @@ class PhpPersonEmailTermCompilerTest extends AbstractPhpTermCompilerTest
 
     protected function createTicketProphecy($email = null)
     {
-        $ticket = $this->prophesize('Application\DeskPRO\Entity\Ticket');
+        $ticket = $this->prophesize(Ticket::class);
         if (!$email) {
             $email = null;
         }

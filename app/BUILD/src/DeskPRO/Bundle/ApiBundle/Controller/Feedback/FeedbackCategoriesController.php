@@ -54,6 +54,7 @@ class FeedbackCategoriesController extends BaseController
      *     statusCodes={
      *         200="Returned if request was successful"
      *     },
+     *     output="Application\DeskPRO\Entity\FeedbackCategory"
      * )
      *
      * @Rest\Get("")

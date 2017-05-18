@@ -139,10 +139,6 @@ class ServeFileScript extends LowScriptAbstract
             } elseif (preg_match('#^/o-avatar/([0-9]+)#', $pathinfo, $m)) {
                 $this->orgAvatarAction($m[1]);
 
-            // User CSS
-            } elseif (preg_match('#^/res-user/main.css#', $pathinfo, $m)) {
-                $this->userCssAction();
-
             // sitemap.xml
             } elseif (preg_match('#^/sitemap.xml#', $pathinfo, $m)) {
                 $this->sitemapXmlAction();
@@ -220,218 +216,6 @@ class ServeFileScript extends LowScriptAbstract
             'time'    => time(),
             'message' => $message,
         ];
-    }
-
-    /**
-     * Serve user CSS blob.
-     */
-    public function userCssAction()
-    {
-        $is_rtl      = !empty($_GET['rtl']);
-        $blob_column = $is_rtl ? 'css_blob_rtl_id' : 'css_blob_id';
-
-        $sth = $this->getPdoRead()->prepare("
-            SELECT blobs.*
-            FROM styles
-            INNER JOIN blobs ON (blobs.id = styles.$blob_column)
-            WHERE styles.id = 1
-        ");
-        $sth->execute();
-        $blob       = $sth->fetch(\PDO::FETCH_ASSOC);
-        $did_reload = false;
-
-        if (
-            !$blob ||
-            (
-                isset($_GET['reload'])
-                && (
-                    filemtime(DP_ROOT.'/src/Application/UserBundle/Resources/views/Css/main.css.twig') > strtotime($blob['date_created'])
-                    || filemtime(DP_ROOT.'/src/Application/UserBundle/Resources/views/Css/custom.css.twig') > strtotime($blob['date_created'])
-                )
-            )
-        ) {
-            $did_reload = true;
-            $container  = $this->bootFullSystem();
-            $css        = $container->get('templating')->render('UserBundle:Css:main.css.twig', []);
-
-            if ($is_rtl) {
-                // filter CSS to change LTR ideas to RTL
-                preg_match_all('#/\*@no_rtl\*/(.*)/\*@/no_rtl\*/#sU', $css, $matches, PREG_SET_ORDER);
-                $replace = [];
-
-                foreach ($matches as $key => $match) {
-                    $replace[$key] = $match[1];
-                    $css           = str_replace($match[0], "\x1a$key\x1a", $css);
-                }
-
-                // where the value is left/right
-                $css = preg_replace_callback('/(?<=[^a-z0-9_-])(float|clear|text-align)\s*:\s*(left|right)/i', function ($match) {
-                    switch (strtolower($match[2])) {
-                        case 'left': $new = 'right'; break;
-                        case 'right': $new = 'left'; break;
-                        default: $new = $match[2];
-                    }
-
-                    return "$match[1]: $new";
-                }, $css);
-
-                // where the rule name contains left/right
-                $css = preg_replace_callback('/(?<=[^a-z0-9_-])(padding|margin|border)-(left|right)\s*:/i', function ($match) {
-                    switch (strtolower($match[2])) {
-                        case 'left': $new = 'right'; break;
-                        case 'right': $new = 'left'; break;
-                        default: $new = $match[2];
-                    }
-
-                    return "$match[1]-$new:";
-                }, $css);
-                $css = preg_replace_callback('/(?<=[^a-z0-9_-])(border)-(left|right)-([a-z]+)\s*:/i', function ($match) {
-                    switch (strtolower($match[2])) {
-                        case 'left': $new = 'right'; break;
-                        case 'right': $new = 'left'; break;
-                        default: $new = $match[2];
-                    }
-
-                    return "$match[1]-$new-$match[3]:";
-                }, $css);
-
-                // where the shortcut defines left/right
-                $css = preg_replace_callback(
-                    '/(?<=[^a-z0-9_-])(padding|margin)\s*:\s*([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)/i',
-                    function ($match) {
-                        return "$match[1]: $match[2] $match[5] $match[4] $match[3]";
-                    }, $css
-                );
-                $css = preg_replace_callback(
-                    '/(?<=[^a-z0-9_-])((-[a-z]+-)?border-radius)\s*:\s*([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)\s+([a-z0-9\._-]+)/i',
-                    function ($match) {
-                        $tl = $match[3];
-                        $tr = $match[4];
-                        $br = $match[5];
-                        $bl = $match[6];
-
-                        return "$match[1]: $tr $tl $bl $br";
-                    }, $css
-                );
-                $css = preg_replace_callback(
-                    '/(?<=[^a-z0-9_-])((-[a-z]+-)?border-[a-z]+)-(left|right)-(radius)\s*:/i',
-                    function ($match) {
-                        switch (strtolower($match[3])) {
-                            case 'left': $new = 'right'; break;
-                            case 'right': $new = 'left'; break;
-                            default: $new = $match[2];
-                        }
-
-                        return "$match[1]-$new-$match[4]:";
-                    }, $css
-                );
-                $css = preg_replace_callback(
-                    '/(?<=[^a-z0-9_-])((-[a-z]+-)?border-radius-[a-z]+)(left|right)\s*:/i',
-                    function ($match) {
-                        switch (strtolower($match[3])) {
-                            case 'left': $new = 'right'; break;
-                            case 'right': $new = 'left'; break;
-                            default: $new = $match[2];
-                        }
-
-                        return "$match[1]$new:";
-                    }, $css
-                );
-
-                // where the rule name is left/right
-                $css = preg_replace_callback('/(?<=[^a-z0-9_-])(left|right)\s*:/i', function ($match) {
-                    switch (strtolower($match[1])) {
-                        case 'left': $new = 'right'; break;
-                        case 'right': $new = 'left'; break;
-                        default: $new = $match[1];
-                    }
-
-                    return "$new:";
-                }, $css);
-
-                $position_flip = function ($x) {
-                    if (strtolower($x) == 'left') {
-                        return 'right';
-                    } elseif (strtolower($x) == 'left') {
-                        return 'left';
-                    } elseif (preg_match('/^([0-9.]+)%$/', $x, $percent)) {
-                        return (100 - $percent[1]).'%'; // percentage left offset on right
-                    } elseif (preg_match('/^0[a-z]*$/i', $x)) {
-                        return '100%'; // left to completely right
-                    } else {
-                        return $x; // can't flip
-                    }
-                };
-
-                // flip background position
-                $css = preg_replace_callback(
-                    '/(?<=[^a-z0-9_-])(background-position)\s*:\s*([a-z0-9\._-]+)/i',
-                    function ($match) use ($position_flip) {
-                        $x = $position_flip($match[2]);
-
-                        return "$match[1]: $x";
-                    }, $css
-                );
-
-                // flip background
-                $css = preg_replace_callback(
-                    '/(?<=[^a-z0-9_-])(background)\s*:\s*([^;}]*?url\([^;}]+?)\s+(left|right|center|[0-9.]+%|0[a-z]*)/i',
-                    function ($match) use ($position_flip) {
-                        $x = $position_flip($match[3]);
-
-                        return "$match[1]: $match[2] $x";
-                    }, $css
-                );
-
-                foreach ($replace as $key => $replace_css) {
-                    $css = str_replace("\x1a$key\x1a", $replace_css, $css);
-                }
-
-                $css .= '/* RTL filter */';
-            } else {
-                $css = str_replace('/*@no_rtl*/', '', $css);
-                $css = str_replace('/*@/no_rtl*/', '', $css);
-            }
-
-            $blob = $container->getBlobStorage()->createBlobRecordFromString(
-                $css,
-                $is_rtl ? 'main-rtl.css' : 'main.css',
-                'text/css'
-            );
-            $blob_id = $blob->getId();
-
-            $container->getDb()->update('styles', [$blob_column => $blob_id], ['id' => 1]);
-
-            $sth = $this->getPdoRead()->prepare('
-                SELECT blobs.*
-                FROM blobs
-                WHERE blobs.id =?
-                LIMIT 1
-            ');
-            $sth->execute([$blob_id]);
-            $blob = $sth->fetch(\PDO::FETCH_ASSOC);
-        }
-
-        if (!$blob) {
-            if ($this->error_mode == 'exception') {
-                throw new \Exception('File not found. (no_css_blob_id)', 400);
-            }
-            header('HTTP/1.0 404 Not Found');
-            echo 'File not found (no_css_blob_id)';
-
-            return;
-        }
-
-        if (!$did_reload) {
-            $this->error_mode = 'exception';
-        }
-
-        try {
-            $this->showBlob($blob);
-        } catch (\Exception $e) {
-            $_GET['reload'] = true;
-            $this->showBlob($blob);
-        }
     }
 
     /**
@@ -810,28 +594,15 @@ class ServeFileScript extends LowScriptAbstract
             $sth->execute(['id' => $blob_id]);
             $blob = $sth->fetch(\PDO::FETCH_ASSOC);
 
-            // Try to detect bad css file and reload it automatically
-            if ($filename == 'main.css') {
-                $is_css = false;
-                $q      = $this->getPdoRead()->query('SELECT css_blob_id FROM styles');
-                while ($r = $q->fetch(\PDO::FETCH_ASSOC)) {
-                    if ($r['css_blob_id'] == $blob_id) {
-                        $is_css = true;
-                        break;
-                    }
-                }
-
-                if ($is_css) {
-                    $this->getPdo()->exec('UPDATE styles SET css_blob_id = NULL');
-                    $this->userCssAction();
-                    exit;
-                }
-            }
-
             // Fallback on DB check, it may have been moved
-            if ($blob['storage_loc'] != 'fs') {
+            if ($blob && $blob['storage_loc'] !== 'fs') {
                 $this->showBlob($blob_id, $size);
+
+                return;
             }
+
+            header('HTTP/1.0 404 Not Found');
+            echo 'File not found. (2.2)';
 
             return;
         }

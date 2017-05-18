@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Person;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -51,7 +47,6 @@ class PersonTerm extends AbstractTerm
         $resolver->setDefaults([
             'person_ids' => [],
         ]);
-
         $resolver->setConstraints([
             'person_ids' => [
                 new Assert\NotBlank(),
@@ -61,6 +56,23 @@ class PersonTerm extends AbstractTerm
                 ]),
             ],
         ]);
+        $resolver->setNormalizer(
+            'person_ids',
+            function ($options, $value) {
+                if (!is_array($value)) {
+                    $value = [$value];
+                }
+
+                $value = array_map(
+                    function ($id) {
+                        return (int) $id;
+                    },
+                    $value
+                );
+
+                return $value;
+            }
+        );
     }
 
     /**

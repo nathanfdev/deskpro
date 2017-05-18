@@ -54,7 +54,6 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
         $settings = [
             'core.done_data_initializer' => 1,
             'core.deskpro_build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-            'core.deskpro_build_num'     => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
             'core.install_build'         => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
             'core.install_timestamp'     => time(),
             'core.install_key'           => RandUtils::randomStringFormat('%25An'),

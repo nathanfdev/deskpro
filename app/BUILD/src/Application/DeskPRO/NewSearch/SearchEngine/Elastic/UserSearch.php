@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
+use Elastica\Index;
 use Elastica\Query;
 use Elastica\Util as ElasticaUtil;
 use Orb\Util\Arrays;
@@ -43,7 +44,7 @@ class UserSearch implements UserSearchInterface
     const LIMIT           = 20;
 
     /**
-     * @var \Elastica\Index
+     * @var Index
      */
     private $index;
 
@@ -53,10 +54,10 @@ class UserSearch implements UserSearchInterface
     private $transformer;
 
     /**
-     * @param \Elastica\Index            $index
+     * @param Index                      $index
      * @param ElasticaResultsTransformer $transformer
      */
-    public function __construct(\Elastica\Index $index, ElasticaResultsTransformer $transformer)
+    public function __construct(Index $index, ElasticaResultsTransformer $transformer)
     {
         $this->index       = $index;
         $this->transformer = $transformer;
@@ -113,6 +114,14 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Term(['_type' => 'feedback']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
             $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $filter->addShould($f);
+        }
+        if ($context->getGuideIds() && ($limitTypes === null || in_array('topic', $limitTypes))) {
+            $search->addType('topic');
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'topic']));
+            $f->addMustNot(new Query\Term(['status' => 'hidden']));
+            $f->addMust(new Query\Terms('guide_id', $context->getGuideIds()));
             $filter->addShould($f);
         }
         if ($context->getPerson() && ($limitTypes === null || in_array('ticket', $limitTypes))) {
@@ -252,6 +261,14 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Term(['_type' => 'feedback']));
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
             $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
+            $boolQuery->addShould($f);
+        }
+        if ($context->getGuideIds() && ($limit_types === null || in_array('topic', $limit_types))) {
+            $search->addType('topic');
+            $f = new Query\BoolQuery();
+            $f->addMust(new Query\Term(['_type' => 'topic']));
+            $f->addMustNot(new Query\Term(['status' => 'hidden']));
+            $f->addMust(new Query\Terms('guide_id', $context->getGuideIds()));
             $boolQuery->addShould($f);
         }
 

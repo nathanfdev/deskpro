@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -45,10 +41,12 @@ class ReplayLogCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->setName('dpdev:replay-log')
+        $this
+            ->setName('dpdev:replay-log')
             ->setDescription('Replays log already stored in DB')
             ->addArgument('request_id', InputArgument::REQUIRED, 'Id of request to replay (string)')
-            ->addOption('use-id', 'i', InputOption::VALUE_NONE, 'Use integer id instead if request_id');
+            ->addOption('use-id', 'i', InputOption::VALUE_NONE, 'Use integer id instead if request_id')
+        ;
     }
 
     /**

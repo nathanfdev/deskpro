@@ -52,7 +52,7 @@ class ChatPingTimeout extends AbstractJob
         // Agent timeouts
         //------------------------------
 
-        $cutoff = date('Y-m-d H:i:s', time() - 20); // 20 secs for agents
+        $cutoff = date('Y-m-d H:i:s', time() - 360);
 
         // Agnets who we know are online
         $agent_ids = App::getDb()->fetchAllCol('
@@ -87,7 +87,7 @@ class ChatPingTimeout extends AbstractJob
         // User timeouts
         //------------------------------
 
-        $cutoff = time() - 50;
+        $cutoff = time() - 1200;
 
         $chat_ids = App::getDb()->fetchAllCol("
             SELECT DISTINCT c.id

@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
-use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -52,10 +51,20 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiModes("all")
  * @Rest\Route("/tickets")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Ticket",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class TicketsController extends AbstractTicketsController
 {
-    use LabelsHelper, TicketsPagerTrait, TicketSaveTrait;
+    use TicketsPagerTrait, TicketSaveTrait;
 
     public static $type = TicketType::class;
 
@@ -96,12 +105,15 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="labels", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="[\w+]"},
+     *          {"name"="not_status", "description"="not status filter", "dataType"="integer", "pattern"="[\w+]"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="organization", "description"="organization filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="problem", "description"="problem filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="department", "description"="department filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="sla", "description"="sla id filter", "dataType"="integer", "pattern"="\d+"},
+     *          {"name"="sla_status", "description"="sla status filter", "dataType"="integer", "pattern"="ok|warning|fail"},
      *          {
      *              "name"="ticket_field.{id}",
      *              "description"="
@@ -129,7 +141,8 @@ class TicketsController extends AbstractTicketsController
         // if the "ids" param is provided, then just use it to select tickets
         $ids = $request->query->get('ids');
         if ($ids) {
-            $currentPage = $request->query->getInt('page', 1);
+            $offset      = $request->query->getInt('offset');
+            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
             $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
             $ids         = !empty($ids) ? explode(',', $ids) : [];
             $total       = count($ids);
@@ -141,6 +154,7 @@ class TicketsController extends AbstractTicketsController
                 'include',
                 'count',
                 'page',
+                'offset',
                 'ids_only',
                 'inline_sideloads',
                 JsonHeadersResponseListener::INCLUDE_HEADERS_PARAM,
@@ -165,6 +179,9 @@ class TicketsController extends AbstractTicketsController
                     'total_user_waiting',
                     'subject',
                     'status',
+                    'not_status',
+                    'sla',
+                    'sla_status',
                 ];
                 $orderBy = $params['order_by'];
                 if (!in_array($orderBy, $allowed)) {
@@ -196,7 +213,8 @@ class TicketsController extends AbstractTicketsController
             /** @var DbalTermEngine $engine */
             $engine      = $this->get('term_engine.dbal.engine');
             $context     = new TermEngineContext($this->getUser());
-            $currentPage = $request->query->getInt('page', 1);
+            $offset      = $request->query->getInt('offset');
+            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
             $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
 
             /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $ticketsQuery */
@@ -204,12 +222,19 @@ class TicketsController extends AbstractTicketsController
             $total        = $ticketsQuery->fetchCount();
             $ticketsQuery->setCount($maxPerPage);
             $ticketsQuery->setPage($currentPage);
+            $ticketsQuery->setOffset($offset);
             $ticketsQuery->addOrderBy($orderBy, $orderDir);
 
             $ids = $ticketsQuery->fetchIds();
         }
 
-        return View::create($this->wrap($this->getTicketsPager($total, $ids, $currentPage, $maxPerPage)));
+        if ($offset) {
+            $result = $this->getTicketsOffsetList($total, $ids, $offset, $maxPerPage);
+        } else {
+            $result = $this->getTicketsPager($total, $ids, $currentPage, $maxPerPage);
+        }
+
+        return View::create($this->wrap($result));
     }
 
     /**

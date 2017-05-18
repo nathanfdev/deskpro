@@ -34,13 +34,17 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Orb\Data\ContentTypes;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -50,6 +54,12 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/blobs")
  * @ApiDoc(target="all", section="Blobs", output="Application\DeskPRO\Entity\Blob")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType"
+ *     }
+ * )
  */
 class BlobsController extends CrudController
 {
@@ -66,11 +76,100 @@ class BlobsController extends CrudController
      */
     public function postTempAction(Request $request)
     {
+        $form = $this->createForm(AcceptAttachmentType::class, null, [
+            'upload_context' => 'agent',
+            'required'       => true,
+            'with_context'   => true,
+        ]);
+        $form->submit($this->getRequestData($request));
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        return View::create($this->wrap($form->getData()), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Rest\Post("/form_data")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postFormDataAction(Request $request)
+    {
+        if ($request->request->has('file') && $request->request->has('name')) {
+            $dataUri  = $request->request->get('file');
+            $mimeType = 'application/octet-stream';
+            if (preg_match('|data:([^;]*);|', $dataUri, $matches)) {
+                $mimeType = $matches[1];
+            }
+            $binary = file_get_contents($dataUri);
+            $name   = $request->request->get('name');
+            if ($name === 'undefined' && preg_match('|^image/(.*)|', $mimeType, $matches)) {
+                $name = 'image.'.$matches[1];
+            }
+            $blob = $this->get('blob.storage')->createBlobRecordFromString(
+                $binary,
+                $name,
+                $mimeType
+            );
+
+            return View::create($this->wrap($blob), Response::HTTP_CREATED);
+        }
+        throw $this->createBadRequestException();
+    }
+
+    /**
+     * @Rest\Post("/froala")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function postFroalaAction(Request $request)
+    {
         $file   = $request->files->get('file');
         $accept = $this->getContainer()->getAttachmentAccepter();
         $blob   = $accept->accept($file);
 
-        return View::create($this->wrap($blob), Response::HTTP_CREATED);
+        $return['link'] = $blob->getDownloadUrl(true);
+
+        return new Response(json_encode($return), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Rest\Post("/load_remote_images")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postLoadRemoteImagesAction(Request $request)
+    {
+        $fs = new Filesystem();
+
+        $images    = $request->get('images');
+        $tmpDir    = $this->get('deskpro.app_env')->getUserTmpDir();
+        $fileId    = uniqid('remote_images', true);
+        $tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'remote_images'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
+        mkdir($tmpFolder, 0777, true);
+        foreach ($images as &$image) {
+            $filename = basename($image['source']);
+            $mimeType = ContentTypes::getContentTypeFromFilename($filename);
+
+            file_put_contents($tmpFolder.$filename, fopen($image['source'], 'r'));
+            $blob = $this->get('blob.storage')->createBlobRecordFromFile(
+                $tmpFolder.$filename,
+                $filename,
+                $mimeType
+            );
+            $image['blob'] = $blob;
+        }
+        $fs->remove($tmpFolder);
+
+        return View::create($this->wrap($images), Response::HTTP_CREATED);
     }
 
     /**
@@ -101,7 +200,10 @@ class BlobsController extends CrudController
      */
     public function getAction(Request $request, $authId)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($authId, $request));
+        $this->denyAccessUnlessGranted(
+            PermissionGroupVoter::VIEW,
+            $this->getPermissionGroupEntityContext($authId, $request)
+        );
 
         return View::create($this->wrap($this->findEntity($authId, $request)), Response::HTTP_OK);
     }
@@ -149,11 +251,16 @@ class BlobsController extends CrudController
                 $authIds = explode(',', $authIds);
             }
 
-            $authIds = array_map(function ($authId) {
-                return preg_replace('|^(\d*\-)?|', '', $authId);
-            }, $authIds);
+            $authIds = array_map(
+                function ($authId) {
+                    return preg_replace('|^(\d*\-)?|', '', $authId);
+                },
+                $authIds
+            );
             if (count($authIds) > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException(
+                    'You can select maximum '.static::$listMaxResults.' entities'
+                );
             }
 
             $qb->andWhere('e.authcode IN (:authIds)');
@@ -173,7 +280,9 @@ class BlobsController extends CrudController
             $count = (int) $request->query->getInt('count', static::$listPerPage);
 
             if ($count > static::$listMaxResults) {
-                throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
+                throw $this->createBadRequestException(
+                    'You can select maximum '.static::$listMaxResults.' entities'
+                );
             } elseif ($count <= 0) {
                 throw $this->createBadRequestException('You must select at least 1 entity');
             }
@@ -236,7 +345,10 @@ class BlobsController extends CrudController
      */
     public function deleteAction($authId, Request $request)
     {
-        $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, $this->getPermissionGroupEntityContext($authId, $request));
+        $this->denyAccessUnlessGranted(
+            PermissionGroupVoter::DELETE,
+            $this->getPermissionGroupEntityContext($authId, $request)
+        );
 
         $entity = $this->findEntity($authId, $request);
         $this->deleteEntity($entity);
@@ -271,7 +383,8 @@ class BlobsController extends CrudController
      *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
-     *      }
+     *      },
+     *     output="DeskPRO\Bundle\AppBundle\Archive\Archive"
      * )
      * @Rest\Get("/{authId}/archive", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
      *
@@ -285,8 +398,7 @@ class BlobsController extends CrudController
     public function getArchiveInfoAction($authId, Request $request)
     {
         /** @var Blob $blob */
-        $blob = $this->findEntity($authId, $request);
-
+        $blob    = $this->findEntity($authId, $request);
         $archive = $this->getArchive($blob);
 
         try {
@@ -296,20 +408,21 @@ class BlobsController extends CrudController
             @unlink($archive);
         }
 
-        return new View(['data' => $zip->getInfo()]);
+        return new View($this->wrap($zip->getInfo()));
     }
 
     /**
      * @ApiDoc(
      *     description="See archive content",
      *     requirements={
-     *          {
-     *              "name"="authId",
-     *              "requirement"="(\d+\-)?[A-Z0-9]+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          }
-     *      }
+     *         {
+     *             "name"="authId",
+     *             "requirement"="(\d+\-)?[A-Z0-9]+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/{authId}/files", requirements={"authId"="(\d+\-)?[A-Z0-9]+"})
      *
@@ -322,6 +435,10 @@ class BlobsController extends CrudController
      */
     public function getArchiveFilesAction($authId, Request $request)
     {
+        if (!Blob::hasZipArchiveClass()) {
+            return new View(null, Response::HTTP_NOT_IMPLEMENTED);
+        }
+
         /** @var Blob $blob */
         $blob = $this->findEntity($authId, $request);
 
@@ -335,24 +452,25 @@ class BlobsController extends CrudController
             @unlink($archive);
         }
 
-        return new View(['data' => $content]);
+        return new View($this->wrap($content));
     }
 
     /**
      * @ApiDoc(
      *     description="Serve archived content",
      *     requirements={
-     *          {
-     *              "name"="authId",
-     *              "requirement"="(\d+\-)?[A-Z0-9]+",
-     *              "description"="The id of the resource",
-     *              "dataType"="integer"
-     *          },
-     *          {
-     *              "name"="path",
-     *              "description"="The path of the file",
-     *          }
-     *      }
+     *         {
+     *             "name"="authId",
+     *             "requirement"="(\d+\-)?[A-Z0-9]+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         },
+     *         {
+     *             "name"="path",
+     *             "description"="The path of the file",
+     *         }
+     *     },
+     *     output="string"
      * )
      * @Rest\Get("/{authId}/download/{path}", requirements={"authId"="(\d+\-)?[A-Z0-9]+","path"=".+"})
      *

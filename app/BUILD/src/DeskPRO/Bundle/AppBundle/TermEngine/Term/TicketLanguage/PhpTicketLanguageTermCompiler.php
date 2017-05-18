@@ -26,39 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class PhpTicketLanguageTermCompiler.
+ */
 class PhpTicketLanguageTermCompiler extends AbstractPhpTermCompiler
 {
     /**
-     * Take a term and return a PhpCheck representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     *
-     * @return PhpCheck
+     * {@inheritdoc}
      */
     protected function doCompile(TermInterface $term)
     {
-        $op   = $term->getOp();
-        $lang = $term->getOption('language');
-        if (is_numeric($lang)) {
-            return new PhpCheck(
-                'check_contains(ticket.getLanguage().id, :op, :language)',
-                ['op' => $op, 'language' => $lang]
-            );
-        }
+        $op        = $term->getOp();
+        $composite = $this->isOp($term->getOp(), TermInterface::OP_NOT) ? '&&' : '||';
 
         return new PhpCheck(
-            'check_contains(ticket.getLanguage().lang_code, :op, :language)',
-            ['op' => $op, 'language' => $lang]
+            "check_contains(ticket.getLanguage().lang_code, :op, :language) $composite check_contains(ticket.getLanguage().id, :op, :language)",
+            ['op' => $op, 'language' => $term->getOption('language')]
         );
     }
 }

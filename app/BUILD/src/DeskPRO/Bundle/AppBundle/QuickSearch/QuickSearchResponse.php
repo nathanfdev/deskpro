@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class QuickSearchResponse.
@@ -40,12 +37,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 class QuickSearchResponse
 {
     /**
+     * @JMS\SerializedName("grouped_results")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchContext>")
+     *
      * @var ArrayCollection
      */
     private $contexts;
 
     /**
-     * Consctructor.
+     * Constructor.
      */
     public function __construct()
     {

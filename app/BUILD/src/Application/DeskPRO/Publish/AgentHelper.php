@@ -39,10 +39,13 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Topic;
+use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonContextInterface;
 use Orb\Util\Arrays;
 
@@ -55,12 +58,14 @@ class AgentHelper implements PersonContextInterface
     const DOWNLOADS = 'downloads';
     const NEWS      = 'news';
     const FEEDBACK  = 'feedback';
+    const TOPICS    = 'topics';
 
     /** @var array */
     protected $enabled_types = [
         self::ARTICLES,
         self::DOWNLOADS,
         self::NEWS,
+        self::TOPICS,
     ];
 
     /**
@@ -336,7 +341,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['category_link_table']}
                         ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
                 )';
@@ -348,7 +353,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['content_type']}
                         ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId.'
                 )';
@@ -435,7 +440,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['category_link_table']}
                         ON {$t_info['category_link_table']}.{$t_info['id_field']} = {$t_info['table']}.id
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['category_link_table']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
                 ) AS $alias";
@@ -446,7 +451,7 @@ class AgentHelper implements PersonContextInterface
                     INNER JOIN {$t_info['content_type']}
                         ON {$t_info['content_type']}.id = {$t_info['table']}.{$t_info['id_field']}
                     INNER JOIN {$t_info['category_table']}
-                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.category_id
+                        ON {$t_info['category_table']}.id = {$t_info['content_type']}.{$t_info['category_field']}
                     WHERE {$t_info['table']}.status != 'deleted'
                     AND {$t_info['category_table']}.brand_id = ".(int) $brandId."
                 ) AS $alias";
@@ -485,6 +490,7 @@ class AgentHelper implements PersonContextInterface
                 'entity'              => ArticleComment::class,
                 'category_table'      => 'article_categories',
                 'category_link_table' => 'article_to_categories',
+                'category_field'      => 'category_id',
                 'id_field'            => 'article_id',
             ],
             'downloads' => [
@@ -492,6 +498,7 @@ class AgentHelper implements PersonContextInterface
                 'table'          => 'download_comments',
                 'entity'         => DownloadComment::class,
                 'category_table' => 'download_categories',
+                'category_field' => 'category_id',
                 'id_field'       => 'download_id',
             ],
             'news' => [
@@ -499,6 +506,7 @@ class AgentHelper implements PersonContextInterface
                 'table'          => 'news_comments',
                 'entity'         => NewsComment::class,
                 'category_table' => 'news_categories',
+                'category_field' => 'category_id',
                 'id_field'       => 'news_id',
             ],
             'feedback' => [
@@ -506,6 +514,14 @@ class AgentHelper implements PersonContextInterface
                 'table'        => 'feedback_comments',
                 'entity'       => FeedbackComment::class,
                 'id_field'     => 'feedback_id',
+            ],
+            'topics' => [
+                'content_type'   => 'topics',
+                'table'          => 'topic_comments',
+                'entity'         => TopicComment::class,
+                'category_table' => 'guides',
+                'category_field' => 'guide_id',
+                'id_field'       => 'topic_id',
             ],
         ];
 
@@ -596,6 +612,12 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
+            'topics' => [
+                'content_type' => 'topic',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
+            ],
         ];
 
         //------------------------------
@@ -670,6 +692,12 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
+            'topics' => [
+                'content_type' => 'topics',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
+            ],
         ];
 
         $db        = App::getDb();
@@ -734,6 +762,12 @@ class AgentHelper implements PersonContextInterface
                 'entity'       => Feedback::class,
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
+            ],
+            'topics' => [
+                'content_type' => 'topics',
+                'entity'       => Topic::class,
+                'id_field'     => 'topic_id',
+                'rev_table'    => 'topic_revisions',
             ],
         ];
 
@@ -802,6 +836,9 @@ class AgentHelper implements PersonContextInterface
             case self::FEEDBACK:
                 return Feedback::class;
                 break;
+            case self::TOPICS:
+                return Topic::class;
+                break;
         }
 
         throw new \InvalidArgumentException("Unknown type `$type`");
@@ -831,6 +868,9 @@ class AgentHelper implements PersonContextInterface
                 break;
             case self::FEEDBACK:
                 return FeedbackCategory::class;
+                break;
+            case self::TOPICS:
+                return Guide::class;
                 break;
         }
 

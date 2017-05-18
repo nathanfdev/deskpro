@@ -42,6 +42,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
      */
     public function setUp()
     {
+        $this->clearTable('departments');
         $this->clearTable('tickets');
         $this->clearTable('ticket_categories');
         $this->clearTable('people');
@@ -235,6 +236,90 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(1, $entity->messages);
         $this->assertCount(1, $entity->messages[0]->getAttachments());
         $this->assertEquals('file2.txt', $entity->messages[0]->getAttachments()[0]->getBlob()->getFilename());
+    }
+
+    public function test_ticket_on_hold()
+    {
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('message');
+        $message1->setPerson(1);
+
+        $model = $this->createBaseModel();
+        $model->setAsHold(true);
+        $model->addMessage($message1);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isHold());
+    }
+
+    public function test_leaf_department_detect()
+    {
+        $brand = $this->getRepository(Entity\Brand::class)->findOneBy(['name' => 'default']);
+
+        $department = new Entity\Department();
+        $department->setRealTitle('d');
+        $department->addBrand($brand);
+
+        $department1 = new Entity\Department();
+        $department1->setRealTitle('d1');
+        $department1->addBrand($brand);
+
+        $department1a = new Entity\Department();
+        $department1a->setRealTitle('d1a');
+        $department1a->addBrand($brand);
+
+        $department2 = new Entity\Department();
+        $department2->setRealTitle('d2');
+        $department2->addBrand($brand);
+
+        $department1->addChild($department1a);
+        $department->addChild($department1);
+        $department->addChild($department2);
+
+        $this->em()->persist($department1a);
+        $this->em()->persist($department1);
+        $this->em()->persist($department2);
+        $this->em()->persist($department);
+        $this->em()->flush();
+
+        $model = $this->createBaseModel();
+        $model->setDepartment('d');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('d1a', $entity->getDepartment()->getRealTitle());
+    }
+
+    public function test_get_brand_from_department()
+    {
+        $customBrand = new Entity\Brand();
+        $customBrand->setName('custom brand');
+
+        $this->em()->persist($customBrand);
+        $this->em()->flush();
+
+        $department = new Entity\Department();
+        $department->setRealTitle('custom department');
+        $department->addBrand($customBrand);
+
+        $this->em()->persist($department);
+        $this->em()->flush();
+
+        $model = $this->createBaseModel();
+        $model->setDepartment('custom department');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('custom department', $entity->getDepartment()->getRealTitle());
+        $this->assertEquals('custom brand', $entity->getBrand()->getName());
     }
 
     /**

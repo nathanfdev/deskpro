@@ -87,21 +87,40 @@ class TwilioNullAdapter extends TwilioAdapter
     public function createWorkspace(VoiceAccount $account)
     {
         $payload = [
-            'sid'                   => 'sid'.(++self::$uuid),
-            'account_sid'           => 'account_sid',
-            'date_created'          => 'date_created',
-            'date_updated'          => 'date_updated',
-            'default_activity_name' => 'default_activity_name',
-            'default_activity_sid'  => 'default_activity_sid',
-            'event_callback_url'    => 'event_callback_url',
-            'events_filter'         => 'events_filter',
-            'friendly_name'         => 'friendly_name',
-            'multi_task_enabled'    => 'multi_task_enabled',
-            'timeout_activity_name' => 'timeout_activity_name',
-            'timeout_activity_sid'  => 'timeout_activity_sid',
+            'sid'                    => 'sid'.(++self::$uuid),
+            'account_sid'            => 'account_sid',
+            'date_created'           => 'date_created',
+            'date_updated'           => 'date_updated',
+            'default_activity_name'  => 'default_activity_name',
+            'default_activity_sid'   => 'default_activity_sid',
+            'event_callback_url'     => 'event_callback_url',
+            'events_filter'          => 'events_filter',
+            'friendly_name'          => 'friendly_name',
+            'multi_task_enabled'     => 'multi_task_enabled',
+            'timeout_activity_name'  => 'timeout_activity_name',
+            'timeout_activity_sid'   => 'timeout_activity_sid',
+            'prioritize_queue_order' => 'prioritize_queue_order',
+            'url'                    => 'url',
+            'links'                  => 'links',
         ];
 
         return new WorkspaceInstance($this->getVersion(), $payload);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createVoicemailTaskQueue(VoiceAccount $account)
+    {
+        return $this->getTaskQueue();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createVoicemailWorker(VoiceAccount $account)
+    {
+        return $this->getWorker();
     }
 
     /**
@@ -147,23 +166,7 @@ class TwilioNullAdapter extends TwilioAdapter
      */
     public function createTaskQueue(VoiceQueue $queue)
     {
-        $payload = [
-            'sid'                       => 'sid'.(++self::$uuid),
-            'account_sid'               => 'account_sid',
-            'assignment_activity_sid'   => 'assignment_activity_sid',
-            'assignment_activity_name'  => 'assignment_activity_name',
-            'date_created'              => 'date_created',
-            'date_updated'              => 'date_updated',
-            'friendly_name'             => 'friendly_name',
-            'max_reserved_workers'      => 'max_reserved_workers',
-            'reservation_activity_sid'  => 'reservation_activity_sid',
-            'reservation_activity_name' => 'reservation_activity_name',
-            'target_workers'            => 'target_workers',
-            'url'                       => 'url',
-            'workspace_sid'             => 'workspace_sid',
-        ];
-
-        return new TaskQueueInstance($this->getVersion(), $payload, 'workspace_sid');
+        return $this->getTaskQueue();
     }
 
     /**
@@ -176,37 +179,38 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function deleteTaskQueue(VoiceQueue $queue)
+    public function deleteTaskQueue(VoiceAccount $account, $queueSid)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createWorker(VoiceAccount $account, Person $person, $activityName = null)
+    public function getTaskQueues(VoiceAccount $account)
     {
-        $payload = [
-            'account_sid'         => 'account_sid',
-            'activity_name'       => 'activity_name',
-            'activity_sid'        => 'activity_sid',
-            'attributes'          => 'attributes',
-            'available'           => 'available',
-            'date_created'        => 'date_created',
-            'date_status_changed' => 'date_status_changed',
-            'date_updated'        => 'date_updated',
-            'friendly_name'       => 'friendly_name',
-            'sid'                 => 'sid'.(++self::$uuid),
-            'workspace_sid'       => 'workspace_sid',
-
-        ];
-
-        return new Taskrouter\V1\Workspace\WorkerInstance($this->getVersion(), $payload, 'workspace_sid');
+        return [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function updateWorker(VoiceAccount $account, Person $person, $activityName = null)
+    public function getWorkers(VoiceAccount $account)
+    {
+        return [];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createAgentWorker(VoiceAccount $account, Person $person, $activityName = null)
+    {
+        return $this->getWorker();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateAgentWorker(VoiceAccount $account, Person $person, $activityName = null)
     {
     }
 
@@ -214,6 +218,29 @@ class TwilioNullAdapter extends TwilioAdapter
      * {@inheritdoc}
      */
     public function deleteWorker(VoiceAccount $account, $workerSid)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createAgentTaskQueue(VoiceAccount $account, Person $person)
+    {
+        return $this->getTaskQueue();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateAgentTaskQueue(VoiceAccount $account, Person $person)
+    {
+        return $this->getTaskQueue();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function clearWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
     {
     }
 
@@ -265,6 +292,20 @@ class TwilioNullAdapter extends TwilioAdapter
      */
     public function getConference(VoiceAccount $account, $conferenceSid)
     {
+        $payload = [
+            'account_sid'      => 'account_sid',
+            'date_created'     => 'date_created',
+            'date_updated'     => 'date_updated',
+            'api_version'      => 'api_version',
+            'friendly_name'    => 'friendly_name',
+            'region'           => 'region',
+            'sid'              => 'sid',
+            'status'           => 'status',
+            'uri'              => 'uri',
+            'subresource_uris' => 'subresource_uris',
+        ];
+
+        return new V2010\Account\ConferenceInstance($this->getVersion(), $payload, 'account_sid');
     }
 
     /**
@@ -303,5 +344,56 @@ class TwilioNullAdapter extends TwilioAdapter
     private function getVersion()
     {
         return new V2010(new Taskrouter(new Client('username', 'password')));
+    }
+
+    /**
+     * @return TaskQueueInstance
+     */
+    private function getTaskQueue()
+    {
+        $payload = [
+            'sid'                       => 'sid'.(++self::$uuid),
+            'account_sid'               => 'account_sid',
+            'assignment_activity_sid'   => 'assignment_activity_sid',
+            'assignment_activity_name'  => 'assignment_activity_name',
+            'date_created'              => 'date_created',
+            'date_updated'              => 'date_updated',
+            'friendly_name'             => 'friendly_name',
+            'max_reserved_workers'      => 'max_reserved_workers',
+            'reservation_activity_sid'  => 'reservation_activity_sid',
+            'reservation_activity_name' => 'reservation_activity_name',
+            'target_workers'            => 'target_workers',
+            'url'                       => 'url',
+            'workspace_sid'             => 'workspace_sid',
+            'task_order'                => 'task_order',
+            'links'                     => 'links',
+        ];
+
+        return new TaskQueueInstance($this->getVersion(), $payload, 'workspace_sid');
+    }
+
+    /**
+     * @return Taskrouter\V1\Workspace\WorkerInstance
+     */
+    private function getWorker()
+    {
+        $payload = [
+            'account_sid'         => 'account_sid',
+            'activity_name'       => 'activity_name',
+            'activity_sid'        => 'activity_sid',
+            'attributes'          => 'attributes',
+            'available'           => 'available',
+            'date_created'        => 'date_created',
+            'date_status_changed' => 'date_status_changed',
+            'date_updated'        => 'date_updated',
+            'friendly_name'       => 'friendly_name',
+            'sid'                 => 'sid'.(++self::$uuid),
+            'workspace_sid'       => 'workspace_sid',
+            'url'                 => 'url',
+            'links'               => 'links',
+
+        ];
+
+        return new Taskrouter\V1\Workspace\WorkerInstance($this->getVersion(), $payload, 'workspace_sid');
     }
 }

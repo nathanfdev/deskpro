@@ -75,6 +75,15 @@
 
 		</div>
 
+		<div ng-if="setting.name == 'actions'">
+			<dp-person-actions ng-model="setting_values.actions"
+							   type="Ctrl.usersourceType"
+							   title="Login Actions"
+							   ng-if="Ctrl.usersourceType == 'user' || setting_values.auto_agent"
+			>
+			</dp-person-actions>
+		</div>
+
 		<p ng-show="errors[setting.name]" class="text-danger">This field is required and cannot be empty.</p>
 	</div>
 </div>

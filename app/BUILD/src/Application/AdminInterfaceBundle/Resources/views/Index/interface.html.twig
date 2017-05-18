@@ -179,6 +179,9 @@
                         {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings', '{brandId: brandId}'), 'portal.news_settings', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings', '{brandId: brandId}'), 'portal.downloads_settings', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings', '{brandId: brandId}'), 'portal.feedback_settings', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {% if app.hasFeature('guides') %}
+                            {{ nav.list_subitem_regex_statemark('Guides', ng_href('portal.guides_settings', '{brandId: brandId}'), 'portal.guides_settings', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_guides || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {%  endif  %}
                     </div>
                     <div ng-if="brandId > 0 && brandId != 'new'">
                         {{ nav.list_subitem('Portal', ng_href('portal.portal_editor', '{brandId: brandId}'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
@@ -224,6 +227,12 @@
                         {{ nav.list_subitem('MySQL Info', ng_href('server.mysql_info'), 'server.mysql_info', 'fa-hdd-o') }}
                         {{ nav.list_subitem('Error Logs', ng_href('server.error_logs'), 'server.error_logs', 'fa-exclamation') }}
                         {{ nav.list_subitem('Incidents', ng_href('server.incidents'), 'server.incidents', 'fa-exclamation') }}
+                    {{ nav.list_item_group_end() }}
+                {% endif %}
+
+                {% if app.hasFeature('dev') %}
+                    {{ nav.list_item_group('Dev', 'fa-code', '', 'dev') }}
+                        {{ nav.list_subitem('Agent Notifications', ng_href('dev.notifications'), 'dev.notifications', 'fa-cog') }}
                     {{ nav.list_item_group_end() }}
                 {% endif %}
 
@@ -307,6 +316,7 @@
         window.DP_IS_CLOUD          = {% if app.isCloud() %}true{% else %}false{% endif %};
         window.DP_IS_DEV_ENV        = {% if app.isDevEnv() %}true{% else %}false{% endif %};
         window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};
+        window.DP_HAS_DEV           = {% if app.hasFeature('dev') %}true{% else %}false{% endif %};
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         {% if app.isCloud() %}
         window.DPC_SITE_DOMAIN = '{{ constant('DPC_SITE_DOMAIN') }}';

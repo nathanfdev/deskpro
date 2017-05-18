@@ -31,7 +31,6 @@ namespace Application\ImportBundle\Model;
 use Application\ImportBundle\Model\ContactData\ContactData;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Exporting person entity.
@@ -757,25 +756,5 @@ class Person implements LabelAwareModelInterface, LanguageAwareInterface, Custom
     public function getContactData()
     {
         return $this->contact_data;
-    }
-
-    /**
-     * @Assert\Callback()
-     *
-     * @internal
-     *
-     * @param ExecutionContextInterface $context
-     */
-    public function validate(ExecutionContextInterface $context)
-    {
-        // validate name
-        if (!$this->name && !$this->first_name && !$this->last_name) {
-            $context
-                ->buildViolation('This value should not be blank.')
-                ->setCode(Assert\NotBlank::IS_BLANK_ERROR)
-                ->atPath('name')
-                ->addViolation()
-            ;
-        }
     }
 }

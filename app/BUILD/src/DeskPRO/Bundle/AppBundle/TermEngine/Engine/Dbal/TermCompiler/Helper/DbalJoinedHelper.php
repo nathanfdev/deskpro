@@ -26,15 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalJoinedHelper.
+ */
 class DbalJoinedHelper extends AbstractDbalHelper
 {
     /**
@@ -47,11 +46,19 @@ class DbalJoinedHelper extends AbstractDbalHelper
         return 'joined';
     }
 
-    protected function applyWhere(DbalQueryPart $part, $field_name, $op, $input)
+    /**
+     * @param DbalQueryPart $part
+     * @param mixed         $fieldName
+     * @param string        $op
+     * @param mixed         $input
+     *
+     * @return DbalQueryPart
+     */
+    protected function applyWhere(DbalQueryPart $part, $fieldName, $op, $input)
     {
-        $fields = $field_name;
-        if (!is_array($field_name)) {
-            $fields = [$field_name => $input];
+        $fields = $fieldName;
+        if (!is_array($fieldName)) {
+            $fields = [$fieldName => $input];
         }
 
         $where  = [];
@@ -67,7 +74,12 @@ class DbalJoinedHelper extends AbstractDbalHelper
                 $sql_op = (TermInterface::OP_NOT_HAS === $op) ? 'NOT IN' : 'IN';
             }
 
-            $where[]                           = sprintf('%s %s :input%d', $field, $sql_op, $iter);
+            if (is_array($value)) {
+                $where[] = sprintf('%s %s (:input%d)', $field, $sql_op, $iter);
+            } else {
+                $where[] = sprintf('%s %s :input%d', $field, $sql_op, $iter);
+            }
+
             $values[sprintf('input%d', $iter)] = $value;
             ++$iter;
         }
@@ -84,35 +96,38 @@ class DbalJoinedHelper extends AbstractDbalHelper
     }
 
     /**
-     * @param mixed $field_name
-     * @param $op
-     * @param array $num
-     * @param null  $num2
+     * @param string $fieldName
+     * @param string $joinTable
+     * @param string $joinClause
+     * @param string $op
+     * @param bool   $input
+     * @param bool   $unique
      *
      * @return DbalQueryPart
      */
-    public function buildQueryPart($field_name, $join_table, $join_clause, $op, $input = false, $unique = true)
+    public function buildQueryPart($fieldName, $joinTable, $joinClause, $op, $input = false, $unique = true)
     {
         $part = new DbalQueryPart();
 
         if ($unique) {
-            $part->addUniqueJoin($join_table, $join_table, $join_clause);
+            $part->addUniqueJoin($joinTable, $joinTable, $joinClause);
         } else {
-            $part->addJoin($join_table, $join_clause);
+            $part->addJoin($joinTable, $joinClause);
         }
 
-        return $this->applyWhere($part, $field_name, $op, $input);
+        return $this->applyWhere($part, $fieldName, $op, $input);
     }
 
     /**
-     * @param mixed $field_name
-     * @param $op
-     * @param array $num
-     * @param null  $num2
+     * @param string $fieldName
+     * @param array  $joins
+     * @param string $op
+     * @param bool   $input
+     * @param bool   $unique
      *
      * @return DbalQueryPart
      */
-    public function buildMultiJoinQueryPart($field_name, $joins, $op, $input = false, $unique = true)
+    public function buildMultiJoinQueryPart($fieldName, array $joins, $op, $input = false, $unique = true)
     {
         $part = new DbalQueryPart();
 
@@ -124,39 +139,6 @@ class DbalJoinedHelper extends AbstractDbalHelper
             }
         }
 
-        return $this->applyWhere($part, $field_name, $op, $input);
-    }
-
-    /**
-     * Join multiple query parts.
-     *
-     * @param array $joins       is an array of tablename => clause for the main join
-     * @param array $query_parts is an array of DbalQueryPart which will be merged into the join
-     *
-     * @return DbalQueryPart
-     */
-    public function buildJoinedQueryParts(array $joins, array $query_parts)
-    {
-        $part = new DbalQueryPart();
-
-        foreach ($joins as $join_table => $join_clause) {
-            if ($unique) {
-                $part->addUniqueJoin($join_table, $join_table, $join_clause);
-            } else {
-                $part->addJoin($join_table, $join_clause);
-            }
-        }
-
-        $where  = [];
-        $values = [];
-        foreach ($query_parts as $query_part) {
-            $where[] = $query_part->getWhereString();
-            $values  = array_merge($values, $query_part->getParameters());
-        }
-
-        $part->setWhereString(implode('AND', $where));
-        $part->setParameters($values);
-
-        return $part;
+        return $this->applyWhere($part, $fieldName, $op, $input);
     }
 }

@@ -4,7 +4,7 @@ const commands = {
   waitUntilLoaded() {
     return this
       .waitForElementVisible('@sidebar')
-      .waitForElementVisible('@dashboard')
+      .waitForElementVisible('@dashboard', 60000)
       .assert.containsText('@dashboard', 'DeskPRO Updates')
       .assert.containsText('@sidebar', 'Admin Dashboard')
     ;

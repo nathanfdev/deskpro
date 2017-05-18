@@ -35,10 +35,17 @@ namespace Application\DeskPRO\Usersource;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
+use Orb\Auth\Adapter\CallbackInterface;
+use Orb\Auth\Adapter\DisplayContextInterface;
+use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Adapter\SamlAdapterInterface;
+use Orb\Auth\Adapter\SessionStateInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\StateHandler\SessionWrapper;
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
+use Orb\Log\Writer\Stream;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
@@ -106,42 +113,42 @@ class UsersourceAuthAdapterFactory
 
         $appEnv = $this->container->get('deskpro.app_env');
         if (($appEnv->isDebug() || $appEnv->getConfig('logs.enable_usersource_log'))
-            && $adapter instanceof \Orb\Log\Loggable) {
+            && $adapter instanceof Loggable) {
             $adapter->setLogger($this->_getAdapterLogger());
         }
 
-        if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
+        if ($adapter instanceof FormLoginInterface) {
             $adapter->setFormData($_POST);
         }
 
-        if ($displayContext && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
+        if ($displayContext && $adapter instanceof DisplayContextInterface) {
             $adapter->setDisplayContext($displayContext);
         }
 
-        if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-            $route_type = 'portal';
+        if ($adapter instanceof CallbackInterface) {
+            $routeType = 'portal';
             if ($this->isAgentInterface($useInterface)) {
-                $route_type = 'agent';
+                $routeType = 'agent';
             }
 
             if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_authenticate', ['usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND],
+                    $routeType.'_login_authenticate', ['usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND],
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_usersource_sso', ['usersource_id' => $usersource['id']],
+                    $routeType.'_login_usersource_sso', ['usersource_id' => $usersource['id']],
                     RouterInterface::ABSOLUTE_URL
                 );
             } elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
                 $url = $this->router->generate(
-                    $route_type.'_login_usersource_sso', ['usersource_id' => $usersource['id']],
+                    $routeType.'_login_usersource_sso', ['usersource_id' => $usersource['id']],
                     RouterInterface::ABSOLUTE_URL
                 );
             } else {
                 $url = $this->router->generate(
-                    $route_type.'_login_callback', ['usersource_id' => $usersource['id']],
+                    $routeType.'_login_callback', ['usersource_id' => $usersource['id']],
                     RouterInterface::ABSOLUTE_URL
                 );
             }
@@ -151,26 +158,27 @@ class UsersourceAuthAdapterFactory
             );
         }
 
-        if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
-            $auth_state = new SessionWrapper($this->session);
-            $adapter->setStateHandler($auth_state);
+        if ($adapter instanceof SessionStateInterface) {
+            $authState = new SessionWrapper($this->session);
+            $adapter->setStateHandler($authState);
         }
 
-        if ($adapter instanceof \Orb\Auth\Adapter\SsoCapableInterface) {
+        if ($adapter instanceof SsoCapableInterface) {
             if ($this->isAgentInterface($useInterface)) {
-                $logout_url = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
+                $logoutUrl = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
             } else {
-                $logout_url = $usersource->getAdapter()->getUserLogoutRedirectUrl();
+                $logoutUrl = $usersource->getAdapter()->getUserLogoutRedirectUrl();
             }
 
-            $adapter->setLogoutRedirectUrl($logout_url);
+            $adapter->setLogoutRedirectUrl($logoutUrl);
         }
 
         if ($adapter instanceof SamlAdapterInterface) {
             $adapter->setMetadataXmlUrl(
                 $this->router->generate(
                     'user_saml_metadata', ['usersource_id' => $usersource->id], RouterInterface::ABSOLUTE_URL
-                ));
+                )
+            );
             $adapter->setSingleLogoutServiceUrl(
                 $this->router->generate(
                     'user_saml_sls', ['usersource_id' => $usersource->id], RouterInterface::ABSOLUTE_URL
@@ -186,8 +194,8 @@ class UsersourceAuthAdapterFactory
         static $logger = null;
 
         if ($logger === null) {
-            $logger = new \Orb\Log\Logger();
-            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir().'/usersource_log.log'));
+            $logger = new Logger();
+            $logger->addWriter(new Stream($this->container->getLogDir().'/usersource_log.log'));
         }
 
         return $logger;

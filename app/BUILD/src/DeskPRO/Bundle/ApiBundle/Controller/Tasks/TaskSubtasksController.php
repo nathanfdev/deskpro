@@ -40,6 +40,17 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/tasks/{parentId}/subtasks")
  * @ApiDoc(target="all", section="Tasks", output="DeskPRO\Bundle\AppBundle\Entity\TaskSubtask")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Task\TaskSubtaskType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TaskSubtask",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "task"="DeskPRO\Bundle\AppBundle\Entity\Task"
+ *      }
+ *     }
+ * )
  */
 class TaskSubtasksController extends AbstractTaskSubController
 {

@@ -44,6 +44,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
  * @Rest\Route("/tickets/{parentId}/cc")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TicketParticipant",
+ *          "owner"="Application\DeskPRO\Entity\Ticket",
+ *          "agent_interface"=true
+ *      }
+ *     }
+ * )
  */
 class TicketCcController extends CrudSubController
 {

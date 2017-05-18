@@ -1,42 +1,50 @@
+import 'froala-editor/js/froala_editor.pkgd.min';
 import React, { PropTypes } from 'react';
-import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
+import ReactTooltip from 'react-tooltip';
+import Isvg from 'react-inlinesvg';
+import $ from 'jquery';
+import FroalaEditor from 'react-froala-wysiwyg';
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/PersonAvatar';
-import { chooseColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { List } from 'DeskPRO/Component/Semantic/List';
+import { Header } from 'DeskPRO/Component/Semantic/Common';
 import emojione from 'emojione';
 import MessageList from './MessageList';
 import HeaderHelper from './HeaderHelper';
 import EmojiBox from './EmojiBox';
+import AvatarHelper from '../IMTabs/AvatarHelper';
 
 emojione.imagePathSVGSprites = `./..${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/emoticons/emojione.sprites.svg`;
-emojione.imageType = 'png';
+emojione.imageType = 'svg';
 emojione.sprites = true;
 
 class Container extends React.Component {
   static propTypes = {
-    me:              PropTypes.object.isRequired,
-    agents:          PropTypes.object.isRequired,
-    departments:     PropTypes.object.isRequired,
-    teams:           PropTypes.object.isRequired,
-    current:         PropTypes.object.isRequired,
-    searchQuery:     PropTypes.string,
-    isOpen:          PropTypes.bool.isRequired,
-    clickOut:        PropTypes.func,
-    saveDraft:       PropTypes.func,
-    onSubmit:        PropTypes.func,
-    onChange:        PropTypes.func,
-    onAttach:        PropTypes.func,
-    messages:        PropTypes.object,
-    loadMessages:    PropTypes.func,
-    loadingMessages: PropTypes.bool.isRequired,
-    markNewMessages: PropTypes.func,
-    openGroupDrawer: PropTypes.func,
-    onScroll:        PropTypes.func,
-    onChatSearch:    PropTypes.func,
-    onAgentClick:    PropTypes.func.isRequired
+    me:                   PropTypes.object.isRequired,
+    agents:               PropTypes.object.isRequired,
+    people:               PropTypes.object.isRequired,
+    departments:          PropTypes.object.isRequired,
+    teams:                PropTypes.object.isRequired,
+    current:              PropTypes.object.isRequired,
+    searchQuery:          PropTypes.string,
+    isOpen:               PropTypes.bool.isRequired,
+    onClose:              PropTypes.func,
+    saveDraft:            PropTypes.func,
+    onSubmit:             PropTypes.func,
+    onChange:             PropTypes.func,
+    activeTabs:           PropTypes.object,
+    messages:             PropTypes.object,
+    loadMessages:         PropTypes.func,
+    loadingMessages:      PropTypes.bool.isRequired,
+    markNewMessages:      PropTypes.func,
+    openGroupDrawer:      PropTypes.func,
+    onScroll:             PropTypes.func,
+    onChatSearch:         PropTypes.func,
+    onAgentClick:         PropTypes.func.isRequired,
+    onSearchMessageClick: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -47,7 +55,7 @@ class Container extends React.Component {
     onAttach() {
 
     },
-    clickOut() {
+    onClose() {
 
     },
     onSubmit() {
@@ -61,20 +69,55 @@ class Container extends React.Component {
     }
   };
 
+  static pickIcon(item) {
+    switch (item.tabType) {
+      case 'ticket':
+        return 'mail outline';
+      case 'person':
+        return 'user';
+      case 'article':
+        return 'file text outline';
+      case 'news':
+        return 'newspaper';
+      case 'organization':
+        return 'building outline';
+      case 'download':
+        return 'download';
+      case 'feedback':
+        return 'thumbs outline up';
+      case 'userchat':
+        return 'comment outline';
+      case 'topics':
+        return 'book outline';
+      default:
+        return '';
+    }
+  }
+
+  static onBlur() {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+  }
+
+  static onFocus() {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
       emojiOpened:       false,
       expandGroupHeader: false,
       searching:         false,
-      message:           ''
+      message:           '',
+      linkDrawerOpened:  false,
+      editorControls:    null
     };
 
-    this.openEmoji    = this.openEmoji.bind(this);
-    this.closeEmoji   = this.closeEmoji.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.addEmoji     = this.addEmoji.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.destroyEditor        = () => {};
+  }
+
+  componentWillMount() {
+    window.addEventListener('keyup', this.onEscape);
   }
 
   componentDidMount() {
@@ -88,6 +131,26 @@ class Container extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this.state.editorControls) { // there is a chance that component was mounted and immediately unmounted
+      this.state.editorControls.destroy();
+    }
+    window.addEventListener('keyup', this.onEscape);
+  }
+
+  onSearchMessageClick = (message) => {
+    this.setState({ searching: false }, () => {
+      this.props.onChatSearch('');
+      this.props.onSearchMessageClick(message);
+    });
+  };
+
+  onEscape = (e) => {
+    if (e.keyCode === 27 && this.props.isOpen) {
+      this.closeContainer();
+    }
+  };
+
   getPath = (props) => {
     let path;
     if (!props.searchQuery) {
@@ -99,8 +162,8 @@ class Container extends React.Component {
   };
 
   getHeader() {
-    const { agents, teams, departments, current, me, openGroupDrawer } = this.props;
-    const props = { agents, teams, departments, current, me, openGroupDrawer };
+    const { agents, people, teams, departments, current, me, openGroupDrawer } = this.props;
+    const props = { agents, people, teams, departments, current, me, openGroupDrawer };
 
     if (!this.headerHelper) {
       this.headerHelper = new HeaderHelper(props);
@@ -109,16 +172,15 @@ class Container extends React.Component {
     }
 
     const header = this.headerHelper.getHeaderText();
+    const tooltipId = `tooltip-for-chat-header-${current.get('id')}`;
 
     return (
       <span className="wrapper">
-        {header}
+        <span data-for={tooltipId} data-tip={header} className="chat-header dont-break-out">{header}</span>
+        <ReactTooltip delayShow={1000} id={tooltipId} effect="solid" place="top" className="im-tooltip" />
+        <CloseChat onClick={() => { this.closeContainer(); }} />
         <i
-          className={classNames('remove icon')}
-          onClick={() => { this.clickOut(); }}
-        />
-        <i
-          className={classNames('search icon', { enabled: this.state.searching })}
+          className={classNames('search icon dp-button', { enabled: this.state.searching })}
           onClick={() => { this.toggleSearch(); }}
         />
       </span>
@@ -140,9 +202,6 @@ class Container extends React.Component {
     ) {
       this.props.loadMessages();
     }
-    if (this.editor) {
-      this.editor.focus();
-    }
     const newState = { mounted: true, searching: false, expandedHeader: false };
     if (props.drafts && props.drafts[props.current.get('id')]) {
       newState.message = props.drafts[props.current.get('id')];
@@ -154,106 +213,86 @@ class Container extends React.Component {
     this.props.onChatSearch('');
   }
 
-  openEmoji() {
+  openEmoji = () => {
     this.setState({ emojiOpened: true });
-  }
+  };
 
-  closeEmoji() {
+  closeEmoji = () => {
     this.setState({ emojiOpened: false });
-  }
+  };
 
-  clickOut() {
+  closeContainer() {
     this.closeEmoji();
     this.setState({ searching: false, expandedHeader: false });
     this.props.onChatSearch('');
-    this.props.clickOut(this.props.current.get('id'));
+    this.props.onClose(this.props.current.get('id'));
   }
 
-  addEmoji(emoji) {
-    emojione.imageType = 'png';
-    emojione.sprites = false;
-
+  addEmoji = (emoji) => {
     const editor = this.editor;
-    const medium = editor.getMediumEditor();
-    medium.stopSelectionUpdates();
-
-    // focus the rte field
-    editor.focus();
-
-    const contentWindow = medium.options.contentWindow;
-    const ownerDocument = medium.options.ownerDocument;
-
     const html = emoji.shortname;
+    editor.events.focus();
+    editor.selection.restore();
+    editor.html.insert(html);
+    this.handleChange(editor.html.get());
+    this.closeEmoji();
+  };
 
-    if (contentWindow.getSelection) {
-      // IE9 and non-IE
-      const selection = contentWindow.getSelection();
-      if (selection.getRangeAt && selection.rangeCount) {
-        let range = selection.getRangeAt(0);
-        range.deleteContents();
-
-        // Range.createContextualFragment() would be useful here but is
-        // only relatively recently standardized and is not supported in
-        // some browsers (IE9, for one)
-        const el     = document.createElement('div');
-        el.innerHTML = html;
-        const frag   = document.createDocumentFragment();
-
-        let node;
-        let lastNode;
-
-        do {
-          node = el.firstChild;
-          if (node) {
-            lastNode = frag.appendChild(node);
-          }
-        } while (node);
-
-        range.insertNode(frag);
-
-        // Preserve the selection
-        if (lastNode) {
-          range = ownerDocument.createRange();
-          range.selectNodeContents(lastNode);
-          range.collapse(false);
-
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      }
-    } else if (ownerDocument.selection && ownerDocument.selection.type !== 'Control') {
-      // IE < 9
-      ownerDocument.selection.createRange().pasteHTML(html);
-    }
-
-    medium.saveSelection();
-    medium.trigger('onChange');
-
-    // focus the rte again to correct display caret position
-    editor.focus();
-  }
-
-  handleChange(text) {
+  handleChange = (text) => {
     this.setState({ message: text });
     this.props.onChange(text);
-  }
+  };
 
-  handleSubmit(event) {
-    event.preventDefault();
-    this.props.onSubmit(this.state.message);
-    this.props.saveDraft(this.props.current.get('id'), '');
-    this.setState({ message: '' });
-  }
+  handleSubmit = (event) => {
+    if (!this.editor.core.isEmpty()) {
+      event.preventDefault();
+      this.props.onSubmit(this.state.message);
+      this.props.saveDraft(this.props.current.get('id'), '');
+      this.setState({ message: '' });
+    }
+  };
 
-  handleAttach() {
-    this.props.onAttach();
-  }
+  initFroala = (initControls) => {
+    this.setState({ editorControls: initControls });
+    initControls.initialize();
+  };
+
+  bindFroalaEvents = (e, editor) => {
+    this.editor = editor;
+    editor.events.on('keydown', this.handleKeydown, true);
+    if (document.activeElement.tagName.toLowerCase() === 'body') {
+      editor.events.focus();
+    }
+  };
+
+  handleKeydown = (e) => {
+    if (e.keyCode === 13 && !(e.ctrlKey || e.metaKey || e.shiftKey || e.altKey)) {
+      e.stopPropagation();
+      this.handleSubmit(e);
+      return false;
+    }
+    return e;
+  };
+
+  openLink = () => {
+    this.setState({ linkDrawerOpened: true });
+  };
+
+  closeLink = () => {
+    this.setState({ linkDrawerOpened: false });
+  };
+
+  openAttach = () => {
+    this.editor.commands.exec('insertFile');
+    this.state.editorControls.getEditor()('popups.setContainer', 'file.insert', $('#replyForm'));
+    this.state.editorControls.getEditor()('popups.get', 'file.insert').css({ top: '25px', left: '325px' });
+  };
 
   groupHeader() {
     const { current, agents, onAgentClick, openGroupDrawer, me } = this.props;
     const { expandGroupHeader, searching } = this.state;
 
-    let localAgents = current.get('agents');
+    let localAgents = current.get('agents').filter(item => agents.get(item));
     localAgents = expandGroupHeader ? localAgents : localAgents.slice(0, 9);
 
     if (current.get('chat_type') === 'group' && !searching) {
@@ -261,7 +300,7 @@ class Container extends React.Component {
         <Segment vertical className={classNames('group participants', { expanded: expandGroupHeader })}>
           <span className="control">
             <i className="fa fa-times" onClick={() => this.setState({ expandGroupHeader: false })} />
-            <i
+            { current.get('admin') === me.get('id') ? (<i
               className="write icon group-edit"
               onClick={
                 () => {
@@ -271,7 +310,7 @@ class Container extends React.Component {
                   );
                 }
               }
-            />
+            />) : null }
           </span>
           {localAgents.map(
             (agentId) => {
@@ -279,27 +318,26 @@ class Container extends React.Component {
                 return null;
               }
 
-              const className = ['ui avatar image im'];
+              const className = [];
               const agent = agents.get(agentId);
+
+              if (!agent) {
+                return null;
+              }
+
               if (!agent.get('online')) {
                 className.push('offline');
               }
 
               return (
                 <span key={`agent_span_${agentId}`} onClick={() => onAgentClick(agentId, 'agent')}>
-                  <PersonAvatar
-                    key={`agent_${agentId}`}
-                    person={agent}
-                    size={24}
-                    className={classNames(className)}
-                    color={chooseColor(agent)}
-                  />
+                  {AvatarHelper.renderAgentAvatar(agent, 24, className, agent.get('name'))}
                 </span>
               );
             }
           )}
           <span className="dots" onClick={() => this.setState({ expandGroupHeader: true })}>
-            {current.get('agents').size > 9 && !expandGroupHeader ? '...' : null}
+            {current.get('agents').filter(item => agents.get(item)).size > 9 && !expandGroupHeader ? '...' : null}
           </span>
         </Segment>
       );
@@ -313,8 +351,8 @@ class Container extends React.Component {
       return (
         <Segment vertical className="search">
           <SearchBox
-            onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
-            onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
+            onFocus={Container.onFocus}
+            onBlur={Container.onBlur}
             onUserInput={this.props.onChatSearch}
           />
         </Segment>
@@ -324,63 +362,142 @@ class Container extends React.Component {
     return null;
   }
 
+  handleLink(item) {
+    const propertyName = item.tabType === 'userchat' ? 'conversation_id' : `${item.tabType}_id`;
+    const message      = `{{${item.tabType.charAt(0).toLowerCase()}-${item.page.meta[propertyName]}}}: ${item.title}`;
+    const editor       = this.editor;
+    editor.events.focus();
+    editor.selection.restore();
+    editor.html.insert(message);
+    this.handleChange(editor.html.get());
+    this.closeLink();
+  }
+
+  renderAttachList() {
+    const { activeTabs } = this.props;
+
+    const items = Object.keys(activeTabs).map((index) => {
+      const item = activeTabs[index];
+      return {
+        label:   item.title.length > 50 ? `${item.title.substr(0, 50)}\u2026` : item.title,
+        icon:    Container.pickIcon(item),
+        onClick: () => this.handleLink(item)
+      };
+    });
+
+    return this.linkTrigger ?
+      (<Detached zIndex={99999} isOpen={this.state.linkDrawerOpened} positionTarget={this.linkTrigger} positionMy="right+25 top+35">
+        <ClickOut onClickOut={this.closeLink}>
+          <div className="attach-list">
+            <Header content="Current tabs" level={4} className="attach-header" />
+            <List elements={items} />
+          </div>
+        </ClickOut>
+      </Detached>)
+      : null;
+  }
+
   render() {
-    const { isOpen, loadingMessages, onScroll, markNewMessages, searchQuery, onAgentClick } = this.props;
-    const { current, messages, me, agents, teams, departments } = this.props;
+    const { isOpen, loadingMessages, onScroll, searchQuery } = this.props;
+    const { markNewMessages, onAgentClick } = this.props;
+    const { current, messages, me, agents, teams, departments, people } = this.props;
+    const header = this.getHeader();
+    let enabled = true;
+    if (current.get('chat_type') === 'agent') {
+      const agentId = this.headerHelper.getAgentId(current);
+      if (agentId && !agents.get(agentId)) {
+        enabled = false;
+      }
+    }
+
+    const buttons = [
+      'bold', 'italic', 'underline', 'strikeThrough', 'color',
+      '-',
+      'align', 'formatOL', 'formatUL', 'insertImage',
+      '-',
+      'insertLink', 'insertFile', 'insertVideo', 'undo', 'redo'
+    ];
+
+    const froalaConfig = {
+      imageUploadMethod:         'POST',
+      imageUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
+      imageUploadURL:            `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageDefaultWidth:         0,
+      fileUploadMethod:          'POST',
+      fileUploadParams:          { _rt: window.DP_REQUEST_TOKEN, json: true },
+      fileUploadURL:             `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoUploadMethod:         'POST',
+      videoUploadParams:         { _rt: window.DP_REQUEST_TOKEN, json: true },
+      videoUploadURL:            `${BASE_URL}agent/misc/accept-redactor-file-upload`, // eslint-disable-line no-undef
+      videoDefaultWidth:         0,
+      videoResize:               false,
+      videoDefaultDisplay:       'block',
+      videoSplitHTML:            'true',
+      linkAlwaysBlank:           true,
+      toolbarInline:             true,
+      charCounterCount:          false,
+      toolbarButtons:            buttons,
+      toolbarButtonsMD:          buttons,
+      toolbarButtonsSM:          buttons,
+      toolbarButtonsXS:          buttons,
+      shortcutsEnabled:          ['bold', 'italic', 'underline'],
+      quickInsertButtons:        ['image', 'file', 'video'],
+      enter:                     $.FroalaEditor.ENTER_BR,
+      placeholderText:           false,
+      immediateReactModelUpdate: true,
+      key:                       'qENARBFSTb1G1QJg1RA==',
+      events:                    {
+        'froalaEditor.focus':       Container.onFocus,
+        'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
+        'froalaEditor.initialized': this.bindFroalaEvents
+      }
+    };
 
     return (
       <Detached
         zIndex={99999}
         isOpen={isOpen}
-        positionTarget={document.getElementById(`chat-${current.get('id')}`)}
+        positionTarget={document.getElementById(`chat-${current.get('id')}`) || document.getElementById('im-overflow')}
         positionMy="left-43 top-2"
       >
         <div className="ui popup left bottom im chat drawer">
-          <div className="im header">{this.getHeader()}</div>
+          <div className="im header">{header}</div>
           {this.searchHeader()}
           {this.groupHeader()}
-          <div className="box">
-            <MessageList
-              loadingMessages={loadingMessages}
-              current={current}
-              messages={messages}
-              me={me}
-              agents={agents}
-              teams={teams}
-              departments={departments}
-              searchQuery={searchQuery}
-              markNewMessages={markNewMessages}
-              onScroll={onScroll}
-              onAgentClick={onAgentClick}
-            />
-          </div>
-          <div className="reply">
-            <form onSubmit={this.handleSubmit}>
-              <RteEditor
-                inline
-                ref={(c) => { this.editor = c; }}
-                value={this.state.message}
-                onChange={this.handleChange}
-                onSubmit={this.handleSubmit}
-                onFocus={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = true; }}
-                onBlur={() => { window.DeskPRO_Window.keyboardShortcuts.isPaused = false; }}
-                className="textarea"
-                options={{
-                  autoLink:      true,
-                  imageDragging: true,
-                  placeholder:   false,
-                  toolbar:       {
-                    buttons:                ['bold', 'italic', 'underline'],
-                    updateOnEmptySelection: true
-                  },
-                  paste: {
-                    forcePlainText:  false,
-                    cleanPastedHTML: false,
-                    cleanAttrs:      ['style', 'dir']
-                  }
-                }}
+          <MessageList
+            loadingMessages={loadingMessages}
+            current={current}
+            messages={messages}
+            me={me}
+            agents={agents}
+            people={people}
+            teams={teams}
+            departments={departments}
+            searchQuery={searchQuery}
+            markNewMessages={markNewMessages}
+            onScroll={onScroll}
+            onAgentClick={onAgentClick}
+            onSearchMessageClick={this.onSearchMessageClick}
+          />
+          {enabled ? (<div className="reply">
+            <form onSubmit={this.handleSubmit} id="replyForm">
+              <FroalaEditor
+                tag="textarea"
+                config={froalaConfig}
+                model={this.state.message}
+                onModelChange={this.handleChange}
+                onManualControllerReady={this.initFroala}
               />
-              <i className="fa fa-paperclip reply-icon" onClick={this.handleAttach} />
+              <i
+                className={classNames('fa fa-link reply-icon', { inactive: Object.keys(this.props.activeTabs).length < 1 })}
+                ref={(c) => { this.linkTrigger = c; }}
+                onClick={this.openLink}
+              />
+              <i
+                className="fa fa-paperclip reply-icon"
+                ref={(c) => { this.attachTrigger = c; }}
+                onClick={this.openAttach}
+              />
               <i
                 className="fa fa-smile-o reply-icon emoji trigger"
                 onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
@@ -395,11 +512,24 @@ class Container extends React.Component {
               />
               : null
             }
-          </div>
+            {Object.keys(this.props.activeTabs).length ? this.renderAttachList() : null}
+          </div>) : null }
         </div>
       </Detached>
     );
   }
 }
+
+function CloseChat(props) {
+  return (
+    <span className="dp-button close-im" onClick={props.onClick}>
+      <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/close-open-im.svg`} />
+    </span>
+  );
+}
+
+CloseChat.propTypes = {
+  onClick: PropTypes.func.isRequired
+};
 
 export default Container;

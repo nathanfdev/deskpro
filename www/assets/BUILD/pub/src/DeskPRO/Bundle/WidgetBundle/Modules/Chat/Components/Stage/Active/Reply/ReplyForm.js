@@ -28,7 +28,8 @@ export class ReplyForm extends React.Component {
     lostConnection:      PropTypes.bool,
     canReopen:           PropTypes.bool,
     onUserTyping:        PropTypes.func,
-    onSendMessage:       PropTypes.func
+    onSendMessage:       PropTypes.func,
+    primaryColor:        PropTypes.string
   };
 
   static getUploadUrl() {
@@ -121,7 +122,11 @@ export class ReplyForm extends React.Component {
   }
 
   render() {
-    const { attachedImagesCount, isEnded, canReopen, lostConnection } = this.props;
+    const { attachedImagesCount, isEnded, canReopen, lostConnection, primaryColor } = this.props;
+    const sendButtonStyles = {};
+    if (primaryColor) {
+      sendButtonStyles.backgroundColor = primaryColor;
+    }
 
     if (isEnded && !canReopen) {
       return null;
@@ -155,7 +160,7 @@ export class ReplyForm extends React.Component {
             </AttachmentContainer>
           </div>
 
-          <button className="send">
+          <button className="send" style={sendButtonStyles}>
             <i className="fa fa-angle-double-right" />
           </button>
         </form>

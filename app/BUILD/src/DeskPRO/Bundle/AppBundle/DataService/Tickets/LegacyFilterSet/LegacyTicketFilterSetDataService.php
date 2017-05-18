@@ -115,6 +115,10 @@ class LegacyTicketFilterSetDataService
             return !$filter->isProblemFilter();
         });
 
+        uasort($filters, function (LegacyTicketFilter $a, LegacyTicketFilter $b) {
+            return $a->getDisplayOrder() - $b->getDisplayOrder();
+        });
+
         return $filters;
     }
 

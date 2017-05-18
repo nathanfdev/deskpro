@@ -82,9 +82,6 @@ class PostBuild extends AbstractBuild
             $this->container->getEm()->getRepository(Language::class)->installAll($langPacks);
         }
 
-        $this->out('invalidate lang cache');
-        $this->out('invalidate lang js cache');
-
         //------------------------------
         // Reset opcache
         //------------------------------
@@ -101,14 +98,7 @@ class PostBuild extends AbstractBuild
             $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
             @file_get_contents($url, null, $ctx);
 
-            $this->out('Warmup OPcache');
-            $url = $this->container->getRouter()->generate('sys_serverinfo', [
-                'path' => 'opcache/warmup',
-                'auth' => $this->container->get('deskpro.app_env')->getServerInfoAuth('opcache/warmup'),
-            ], RouterInterface::ABSOLUTE_URL);
-
-            $ctx = stream_context_create(['http' => ['timeout' => 10, 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]]);
-            @file_get_contents($url, null, $ctx);
+            // warmup is done via PostBuildAlways
         }
 
         //------------------------------
@@ -149,29 +139,6 @@ class PostBuild extends AbstractBuild
         $appSyncer->runSync();
 
         $this->out('.. done syncing apps');
-
-        //------------------------------
-        // Clear error logs
-        //------------------------------
-
-        foreach (['cli-phperr.log', 'server-phperr-web.log', 'error.log'] as $l) {
-            $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
-            if (file_exists($path)) {
-                $this->out('resetting '.$l);
-                @file_put_contents($path, '');
-            }
-        }
-
-        //------------------------------
-        // Clear prod logs
-        //------------------------------
-
-        foreach (glob(dp_get_log_dir().DIRECTORY_SEPARATOR.'*-prod.log') as $l) {
-            if (file_exists($l)) {
-                $this->out('resetting '.pathinfo($l, PATHINFO_BASENAME));
-                @file_put_contents($l, '');
-            }
-        }
 
         //------------------------------
         // Recompile tempaltes

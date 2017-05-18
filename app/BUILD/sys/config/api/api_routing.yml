@@ -1,14 +1,8 @@
 # This is the "main" file for the api kernel. No other kernel imports this.
 # 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
 
-api_versioned_actions:
-    resource: "@ApiBundle/Resources/config/versioned_actions.yml"
-    type: versioned_action
-
 api_routes:
-    prefix: /api/v2
-    type: annotation
-    resource: "@ApiBundle/Controller"
+  resource: "@ApiBundle/Resources/config/routing_api.yml"
 
 serve_blob:
     path: '/file.php/{blob_auth_id}/{filename}'
@@ -24,6 +18,10 @@ dp_routes:
 
 dpkernel_routes:
     resource: "@DeskPRO/Resources/config/dp-routing.php"
+
+
+#cloud_billing_routing:
+#    resource: "@CloudBillingBundle/Resources/config/routing.yml"
 
 nelmio_api_doc_index:
     path: /api/v2/doc/{view}

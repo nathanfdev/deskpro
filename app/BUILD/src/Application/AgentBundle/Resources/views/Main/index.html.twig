@@ -51,6 +51,8 @@
 			DPC_IS_CLOUD = false;
 		{% endif %}
 
+		window.IS_BILLING_ERROR = {% if is_billing_error %}true{% else %}false{% endif %};
+
 		window.DP_LOADED_TIME = (new Date()).getTime() / 1000;
 
 		if (!window.console) window.console = {};
@@ -190,7 +192,7 @@
 	</style>
 	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 </head>
-<body class="dp {% if is_demo %}is-demo{% endif %}"
+<body class="dp {% if is_demo %}is-demo{% endif %} {% if is_billing_error %}with-billing-error{% endif %}"
       ng-class="{
         'panevis-source-on': paneVis.source,
         'panevis-source-off': !paneVis.source,
@@ -226,7 +228,9 @@
 {% include 'AgentBundle:Main:window-header.html.twig' %}
 {% include 'AgentBundle:Main:window-nav.html.twig' %}
 {% include 'AgentBundle:Main:window-col-layout.html.twig' %}
-{% include 'AgentBundle:Main:window-chat.html.twig' %}
+{% if not app.hasBeta('agent_chat') %}
+	{% include 'AgentBundle:Main:window-chat.html.twig' %}
+{% endif %}
 
 {####################
  # RESOURCE LOADING
@@ -237,7 +241,7 @@
 {# /dp_window #}
 </div>
 
-<audio preload="preload">
+<audio preload="preload" loop="loop">
 	<source src="{{ asset('sounds/new-chat.mp3') }}" />
 	<source src="{{ asset('sounds/new-chat.ogg') }}" />
 </audio>

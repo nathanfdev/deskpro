@@ -240,6 +240,9 @@ class AgentChatType extends AbstractType
         if (($formType === AgentChat::TYPE_AGENT || $formType === AgentChat::TYPE_GROUP) && !$agentChat->getId()) {
             $agentChat->addParticipant($this->getPerson($event));
         }
+        if ($formType === AgentChat::TYPE_GROUP) {
+            $agentChat->setAdmin($this->getPerson($event));
+        }
     }
 
     /**

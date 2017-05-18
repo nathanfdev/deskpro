@@ -77,6 +77,15 @@ use Symfony\Component\HttpFoundation\Request;
  *          }
  *      }
  * )
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\FeedbackCommentType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\FeedbackComment"
+ *      }
+ *     }
+ * )
  */
 class FeedbackAllCommentsController extends AbstractFeedbackController
 {

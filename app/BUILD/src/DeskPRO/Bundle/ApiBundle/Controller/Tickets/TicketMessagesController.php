@@ -44,6 +44,17 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/tickets/{parentId}/messages")
  * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketMessage")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\TicketMessage",
+ *          "ticket"="Application\DeskPRO\Entity\Ticket",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class TicketMessagesController extends CrudSubController
 {
@@ -52,9 +63,12 @@ class TicketMessagesController extends CrudSubController
     public static $entity         = TicketMessage::class;
     public static $type           = TicketMessageType::class;
     public static $parentProperty = 'ticket';
-    public static $sortOptions    = ['date' => 'date_created'];
     public static $listSort       = 'id';
     public static $listOrder      = 'asc';
+    public static $sortOptions    = [
+        'date_created' => 'date_created',
+        'date'         => 'date_created', // alias
+    ];
 
     /**
      * {@inheritdoc}
@@ -66,6 +80,8 @@ class TicketMessagesController extends CrudSubController
             'person'                 => $this->getUser(),
             'has_attachments'        => true,
             'with_ticket_validation' => $request->get('with_ticket_validation'),
+            'allow_set_status'       => true,
+            'allow_apply_macros'     => true,
         ]);
 
         return parent::handleForm($model, $request, $options);

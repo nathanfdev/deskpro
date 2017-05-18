@@ -43,7 +43,10 @@ class SerializerView extends View
      */
     protected $mapping = [];
 
-    protected $serializeNull = false;
+    /**
+     * @var bool
+     */
+    protected $serializeNull = true;
 
     /**
      * @return bool

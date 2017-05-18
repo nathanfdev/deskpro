@@ -74,6 +74,7 @@ class NewAgentChatMessageGeneratorSpec extends ObjectBehavior
         $avatarResolver->getAvatar($bob, 64)->willReturn('http://lorempixel.com/64/64');
 
         $chat->getPersonList()->willReturn([$bob, $alice]);
+        $chat->getId()->willReturn(1);
 
         $bob->getId()->willReturn(1);
         $alice->getId()->willReturn(2);

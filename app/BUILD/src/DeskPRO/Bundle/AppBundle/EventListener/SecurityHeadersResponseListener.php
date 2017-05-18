@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -39,6 +40,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class SecurityHeadersResponseListener implements EventSubscriberInterface
 {
+    /**
+     * @var IntrospectableContainerInterface
+     */
+    protected $container;
+
+    public function __construct(IntrospectableContainerInterface $container)
+    {
+        $this->container = $container;
+    }
     /**
      * {@inheritdoc}
      */
@@ -54,6 +64,12 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
+        if ($this->container->initialized('deskpro.core.settings')) {
+            if ($this->container->get('deskpro.core.settings')->get('core.disable_csp_headers')) {
+                return;
+            }
+        }
+
         $response = $event->getResponse();
         $response->headers->add(['X-Content-Type-Options' => 'nosniff']);
 
@@ -71,11 +87,8 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
             'object-src'  => '*',
             'child-src'   => ['*', 'blob:'],
             'form-action' => '*',
-            'frame-src'   => ['self'],
+            'frame-src'   => ['*'],
         ];
-
-        //https://developers.google.com/recaptcha/docs/faq#im-using-content-security-policy-csp-on-my-website-how-can-i-configure-it-to-work-with-recaptcha
-        $csp['frame-src'][] = 'https://www.google.com/recaptcha/';
 
         $referrerPolicy = 'no-referrer-when-downgrade';
 
@@ -91,7 +104,6 @@ class SecurityHeadersResponseListener implements EventSubscriberInterface
         // Lock down agent/admin a bit
         if (strpos($path, '/agent') || strpos($path, '/admin')) {
             $csp['form-action'] = 'self';
-            $csp['child-src']   = 'self';
             $referrerPolicy     = 'no-referrer';
         }
 

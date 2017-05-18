@@ -128,7 +128,12 @@ class NewsController extends AbstractController
     public function listAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
         $person = $this->getCurrentPerson();
-        $pager  = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count'], $person);
+        $pager  = $this->getNewsDataService()->getNewsPager(
+            $category,
+            (int) $options['page'],
+            (int) $options['count'],
+            $person
+        );
 
         return $this->renderThemeView(
             sprintf('Theme:News:PostList/%s.html.twig', $options['style']),

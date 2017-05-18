@@ -107,6 +107,8 @@ class WriteListener
                 $this->getLogService()->write($item->getLog());
             }
         }
+
+        $collector->clear();
     }
 
     /**

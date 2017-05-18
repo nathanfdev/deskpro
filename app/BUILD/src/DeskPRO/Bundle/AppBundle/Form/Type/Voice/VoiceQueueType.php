@@ -28,10 +28,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -62,17 +65,32 @@ class VoiceQueueType extends AbstractType
                 'multiple'     => true,
                 'by_reference' => false,
             ])
-            ->add('greet_asset', VoiceAssetType::class, [
+            ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
                 'required'      => false,
             ])
-            ->add('loop_asset', VoiceAssetType::class, [
+            ->add('loop_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'loopAsset',
                 'required'      => false,
             ])
-            ->add('voicemail_asset', VoiceAssetType::class, [
+            ->add('voicemail_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
+            ])
+            ->add('voicemail_department', EntityType::class, [
+                'property_path' => 'voicemailDepartment',
+                'class'         => Department::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')->where('u.is_tickets_enabled = 1');
+                },
+            ])
+            ->add('voicemail_agent', EntityType::class, [
+                'property_path' => 'voicemailAgent',
+                'class'         => Person::class,
+            ])
+            ->add('voicemail_agent_team', EntityType::class, [
+                'property_path' => 'voicemailAgentTeam',
+                'class'         => AgentTeam::class,
             ])
             ->add('routing_model', ChoiceType::class, [
                 'property_path'     => 'routingModel',

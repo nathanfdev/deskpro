@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
@@ -37,12 +33,17 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 /**
  * Class AgentSettings.
  */
-class AgentSettings implements \JsonSerializable
+class AgentSettings
 {
     /**
      * @var TicketsSettings
      */
     private $tickets;
+
+    /**
+     * @var IMSettings
+     */
+    private $im;
 
     /**
      * @return TicketsSettings
@@ -61,12 +62,22 @@ class AgentSettings implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return IMSettings
      */
-    public function jsonSerialize()
+    public function getIM()
     {
-        return [
-            'tickets' => $this->tickets,
-        ];
+        return $this->im;
+    }
+
+    /**
+     * @param IMSettings $im
+     *
+     * @return $this
+     */
+    public function setIM(IMSettings $im)
+    {
+        $this->im = $im;
+
+        return $this;
     }
 }

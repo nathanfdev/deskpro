@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Fieldset, createValue } from 'react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
-import { loadAll, isLoadedCollectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadAll, loadWithParams, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import PortalFormWidget from 'DeskPRO/Bundle/PortalBundle/PageWidget/PortalFormWidget';
 import { createChat } from '../../../Actions/chatActions';
 import {
@@ -13,7 +13,8 @@ import {
   chatSelectDepartmentTypeSelector,
   chatDefaultDepartmentSelector,
   chatRequiredNameSelector,
-  chatRequiredEmailSelector
+  chatRequiredEmailSelector,
+  primaryColorSelector
 } from '../../../../Application/Selectors/dpWindow';
 import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
@@ -27,15 +28,18 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   requireLogin:             requireChatLoginSelector(state),
   customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
   customFields:             customChatFieldsOrderedSelector(state),
-  chatDepartments:          allSelectorFactory('ChatDepartment')(state),
-  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
+  allChatDepartments:       collectionSelectorFactory('ChatDepartment', 'all')(state),
+  chatDepartments:          collectionSelectorFactory('ChatDepartment', 'online')(state),
+  chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'online')(state),
+  allChatDepartmentsLoaded: isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
   chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
   chatRequiredName:         chatRequiredNameSelector(state),
   chatRequiredEmail:        chatRequiredEmailSelector(state),
   widgetLanguage:           widgetLanguageSelector(state),
   loggedIn:                 widgetSessionIsLoginSelector(state),
-  defaultValues:            chatFormDefaultValuesSelector(state)
+  defaultValues:            chatFormDefaultValuesSelector(state),
+  primaryColor:             primaryColorSelector(state)
 }))
 export class ChatBeginContainer extends React.Component {
 
@@ -47,10 +51,12 @@ export class ChatBeginContainer extends React.Component {
     liveDemo:                 PropTypes.bool,
     customFieldsLoaded:       PropTypes.bool,
     chatDepartmentsLoaded:    PropTypes.bool,
+    allChatDepartmentsLoaded: PropTypes.bool,
     chatSelectDepartmentType: PropTypes.string,
     chatDefaultDepartment:    PropTypes.number,
     loggedIn:                 PropTypes.bool,
     chatDepartments:          PropTypes.object,
+    allChatDepartments:       PropTypes.object,
     customFields:             PropTypes.object
   };
 
@@ -112,25 +118,28 @@ export class ChatBeginContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, liveDemo } = this.props;
 
-    dispatch(loadAll('CustomDefChat'));
-    dispatch(loadAll('ChatDepartment'));
+    // don't make api calls on live demo
+    if (!liveDemo) {
+      dispatch(loadAll('CustomDefChat'));
+      dispatch(loadAll('ChatDepartment'));
+      dispatch(loadWithParams('ChatDepartment', { online: true }, 'online'));
+    }
 
     this.mounted = true;
   }
 
   componentWillReceiveProps(newProps) {
     const newState = {};
-    const { children, customFields, customFieldsLoaded } = this.props;
+    const { customFields, customFieldsLoaded } = this.props;
     const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType, chatDefaultDepartment } = this.props;
 
-    if (children !== newProps.children
-        || customFields !== newProps.customFields
+    if ((customFields && !customFields.equals(newProps.customFields))
         || customFieldsLoaded !== newProps.customFieldsLoaded
-        || chatDepartments !== newProps.chatDepartments
+        || (chatDepartments && !chatDepartments.equals(newProps.chatDepartments))
         || chatSelectDepartmentType !== newProps.chatSelectDepartmentType
-        || chatDefaultDepartment !== newProps.chatDefaultDepartment
+        || (!!chatDefaultDepartment && chatDefaultDepartment !== newProps.chatDefaultDepartment)
         || chatDepartmentsLoaded !== newProps.chatDepartmentsLoaded) {
       newState.formData = this.getInitialFormData(newProps);
     }
@@ -197,39 +206,43 @@ export class ChatBeginContainer extends React.Component {
   };
 
   getInitialFormData(props) {
-    const { children, customFields, defaultValues } = props;
+    const { customFields, defaultValues, children } = props;
     const { chatDepartments, chatSelectDepartmentType, chatDefaultDepartment } = props;
     const formData = {
-      name:   '',
-      email:  '',
+      name:   defaultValues && defaultValues.get('name') || '',
+      email:  defaultValues && defaultValues.get('email') || '',
       fields: {}
     };
 
-    if (children.type !== ChatBeginSimple) {
-      if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
-        if (chatDepartments.has(chatDefaultDepartment)) {
-          formData.chat_department = chatDefaultDepartment;
-        } else if (chatDepartments.size > 0) {
-          formData.chat_department = chatDepartments.first().get('id');
-        }
-      } else if (chatDepartments.size > 1) {
-        formData.chat_department = '';
-      } else if (chatDepartments.size === 1) {
+    if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
+      if (chatDepartments.has(chatDefaultDepartment)) {
+        formData.chat_department = chatDefaultDepartment;
+      } else if (chatDepartments.size > 0) {
         formData.chat_department = chatDepartments.first().get('id');
       }
-
-      customFields.forEach((customField) => {
-        const fieldId = customField.get('id');
-        const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
-
-        let defaultValue = optionsDefaultValue || customField.get('default_value');
-        if (defaultValue && defaultValue.toJS) {
-          defaultValue = defaultValue.toJS();
-        }
-
-        formData.fields[fieldId] = defaultValue;
-      });
+    } else if (children && children.type === ChatBeginSimple && chatDepartments.size > 1) {
+      formData.chat_department = chatDepartments.first().get('id');
+    } else if (chatDepartments.size > 1) {
+      formData.chat_department = '';
+    } else if (chatDepartments.size === 1) {
+      formData.chat_department = chatDepartments.first().get('id');
     }
+
+    if (defaultValues && defaultValues.get('department') && chatDepartments.has(defaultValues.get('department'))) {
+      formData.chat_department = defaultValues.get('department');
+    }
+
+    customFields.forEach((customField) => {
+      const fieldId = customField.get('id');
+      const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
+
+      let defaultValue = optionsDefaultValue || customField.get('default_value');
+      if (defaultValue && defaultValue.toJS) {
+        defaultValue = defaultValue.toJS();
+      }
+
+      formData.fields[fieldId] = defaultValue;
+    });
 
     return createValue({
       onChange: this.onChange,
@@ -240,10 +253,10 @@ export class ChatBeginContainer extends React.Component {
   render() {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
-    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
-    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 1;
+    const { allChatDepartments, chatDepartmentsLoaded, allChatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
+    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && allChatDepartments.size > 1;
 
-    if (!customFieldsLoaded || !chatDepartmentsLoaded) {
+    if (!customFieldsLoaded || !chatDepartmentsLoaded || !allChatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
     }
 

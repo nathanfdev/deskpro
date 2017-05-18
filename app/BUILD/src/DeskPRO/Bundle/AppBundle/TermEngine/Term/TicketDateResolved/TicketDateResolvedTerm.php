@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\OptionsResolver\TermOptionsResolver;
@@ -37,17 +33,21 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class TicketDateResolvedTerm.
+ */
 class TicketDateResolvedTerm extends AbstractTerm
 {
+    /**
+     * {@inheritdoc}
+     */
     public static function configureOptions(TermOptionsResolver $resolver)
     {
-        $resolver->setDefaults(
-            [
-                'date'        => null,
-                'date2'       => null,
-                'ignore_time' => false,
-            ]
-        );
+        $resolver->setDefaults([
+            'date'        => null,
+            'date2'       => null,
+            'ignore_time' => false,
+        ]);
 
         $date_normalizer = function ($options, $date) {
             if (!$date) {
@@ -61,29 +61,28 @@ class TicketDateResolvedTerm extends AbstractTerm
             return new \DateTime((string) $date);
         };
 
-        $resolver->setNormalizers(
-            [
-                'date'        => $date_normalizer,
-                'date2'       => $date_normalizer,
-                'ignore_time' => function ($options, $ignore_time) {
-                    return (bool) $ignore_time;
-                },
-            ]
-        );
+        $resolver->setNormalizers([
+            'date'        => $date_normalizer,
+            'date2'       => $date_normalizer,
+            'ignore_time' => function ($options, $ignore_time) {
+                return (bool) $ignore_time;
+            },
+        ]);
 
-        $resolver->setConstraints(
-            [
-                'date' => [
-                    new Assert\NotNull(),
-                    new Assert\DateTime(),
-                ],
-                'date2' => [
-                    new Assert\DateTime(),
-                ],
-            ]
-        );
+        $resolver->setConstraints([
+            'date' => [
+                new Assert\NotNull(),
+                new Assert\DateTime(),
+            ],
+            'date2' => [
+                new Assert\DateTime(),
+            ],
+        ]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSupportedOps()
     {
         return [
@@ -98,6 +97,9 @@ class TicketDateResolvedTerm extends AbstractTerm
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOp()
     {
         return TermInterface::OP_IS;

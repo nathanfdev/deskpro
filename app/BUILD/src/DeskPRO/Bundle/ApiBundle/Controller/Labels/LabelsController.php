@@ -41,6 +41,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class LabelsController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/{type}_labels")
  */
 class LabelsController extends BaseController
 {
@@ -48,6 +49,7 @@ class LabelsController extends BaseController
      * Fetch labels for given entity types and you can filter labels by some term.
      *
      * @ApiDoc(
+     *     section="Labels",
      *     resourceDescription="Operations about labels",
      *     description="Get all labels by types",
      *     requirements={
@@ -75,7 +77,7 @@ class LabelsController extends BaseController
      * )
      * @ApiUnstable()
      * @Rest\Get(
-     *     "/{type}_labels",
+     *     "",
      *     name="api_person_labels_list",
      *     requirements={
      *         "type"="task|ticket|person|organization|feedback|news|chat|article|download"
@@ -133,10 +135,8 @@ class LabelsController extends BaseController
 
         $term = $request->get('term');
         if (null !== $term) {
-            $qb
-                ->andWhere('l.label LIKE :term')
-                ->setParameter('term', $term.'%')
-            ;
+            $qb->andWhere('l.label LIKE :term');
+            $qb->setParameter('term', '%'.$term.'%');
         }
 
         return View::create($this->wrap($qb->getQuery()->getResult()));

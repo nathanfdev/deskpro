@@ -41,6 +41,12 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiModes("all")
  * @Rest\Route("/settings/anti_abuse/captcha")
  * @ApiDoc(target="all", output="DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\CaptchaAntiAbuseSettings")
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Captcha\CaptchaAntiAbuseType"
+ *     }
+ * )
  */
 class CaptchaAntiAbuseSetupController extends AbstractAntiAbuseSetupController
 {

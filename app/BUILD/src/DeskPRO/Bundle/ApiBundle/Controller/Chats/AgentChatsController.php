@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
+use Application\DeskPRO\Entity\PersonPref;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -50,9 +51,20 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/agent_chats")
- * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
  * @ApiUnstable()
  * @Feature("agent_chat")
+ * @ApiDoc(target="all", section="Chats", output="DeskPRO\Bundle\AppBundle\Entity\AgentChat")
+ * @ApiDoc(target="getAction", documentation="Retrieves an agent chat with provided id")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentChatType",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\AgentChat",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class AgentChatsController extends CrudController
 {
@@ -106,7 +118,7 @@ class AgentChatsController extends CrudController
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, $this->getPermissionGroupContext($request));
 
         $form = $this->createForm(static::$type, $this->instantiateEntity($request), ['person' => $this->getUser()]);
-        $form->submit($this->getRequestContent($request));
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -162,6 +174,11 @@ class AgentChatsController extends CrudController
      */
     public function putAction($id, Request $request)
     {
+        /** @var AgentChat $chat */
+        $chat = $this->findEntity($id, $request);
+        if ($chat->getAdmin() && $chat->getAdmin() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Access denied'); // temporary stub I guess
+        }
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
 
         return $this->handleForm($this->findEntity($id, $request), $request, ['person' => $this->getUser()]);
@@ -207,5 +224,164 @@ class AgentChatsController extends CrudController
             $qb->andWhere('messages.message LIKE :search');
             $qb->setParameter('search', "%$search%");
         }
+    }
+
+    /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
+     * @ApiDoc(
+     *     section = "Chats",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "delete group",
+     *     requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="a chat id"
+     *      }
+     *     },
+     *     statusCodes = {
+     *       204 = "Chat was deleted",
+     *       403 = "You are not admin or chat is not group chat"
+     *     }
+     * )
+     * @Rest\Delete("/{id}/delete")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function deleteGroupAction($id)
+    {
+        /** @var AgentChat $chat */
+        $chat = $this->findOr404(static::$entity, $id);
+        if ($chat->getAdmin() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not admin for this chat');
+        }
+        if ($chat->getType() !== AgentChat::TYPE_GROUP) {
+            throw $this->createAccessDeniedException(sprintf('You are allowed to delete %s chat', $chat->getType()));
+        }
+        $entityManager = $this->get('doctrine.orm.default_entity_manager');
+        $entityManager->remove($chat);
+        $entityManager->flush();
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * This endpoint gives an ability to start chat with some person, team, department or with everyone in helpdesk.
+     *
+     * @ApiDoc(
+     *     section = "Chats",
+     *     resourceDescription="Operations about agent chats",
+     *     description = "leave group",
+     *     requirements={
+     *      {
+     *          "name"="id",
+     *          "dataType"="integer",
+     *          "requirement"="\d+",
+     *          "description"="a chat id"
+     *      }
+     *     },
+     *     statusCodes = {
+     *       204 = "Chat was deleted",
+     *       403 = "You are admin or chat is not group chat"
+     *     }
+     * )
+     * @Rest\Delete("/{id}/leave")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function leaveGroupAction($id)
+    {
+        /** @var AgentChat $chat */
+        $chat = $this->findOr404(static::$entity, $id);
+        if ($chat->getAdmin() === $this->getUser()) {
+            throw $this->createAccessDeniedException('You are not allowed to leave chat, only delete it');
+        }
+        if ($chat->getType() !== AgentChat::TYPE_GROUP) {
+            throw $this->createAccessDeniedException(sprintf('You are allowed to delete %s chat', $chat->getType()));
+        }
+        $chat->removeParticipant($this->getUser());
+        $this->get('doctrine.orm.default_entity_manager')->flush();
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Post("/chats_order")
+     *
+     * @param Request $request
+     *
+     * @throws InvalidFormException
+     *
+     * @return View
+     */
+    public function saveChatsOrderAction(Request $request)
+    {
+        $chatsOrder = $request->request->get('chats_order');
+
+        $pref = $this
+            ->get('doctrine.orm.default_entity_manager')
+            ->getRepository(PersonPref::class)
+            ->findOneBy(['name' => 'agent.ui.im.chats_order', 'person' => $this->getUser()]);
+
+        if (!$pref) {
+            $pref = new PersonPref();
+            $pref
+                ->setPerson($this->getUser())
+                ->setName('agent.ui.im.chats_order');
+        }
+        $i = 1;
+        asort($chatsOrder);
+        foreach ($chatsOrder as &$preference) {
+            $preference = (int) $i;
+            ++$i;
+        }
+        $pref->setValueArray($chatsOrder);
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em->persist($pref);
+        $em->flush();
+    }
+
+    /**
+     * @Rest\Put("/{id}/hide")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function hideChatAction($id)
+    {
+        $this->setChatPinned($id, false);
+    }
+
+    /**
+     * @Rest\Put("/{id}/reveal")
+     *
+     * @param int $id
+     *
+     * @return View
+     */
+    public function revealChatAction($id)
+    {
+        $this->setChatPinned($id, true);
+    }
+
+    /**
+     * @param int  $id
+     * @param bool $pinned
+     */
+    private function setChatPinned($id, $pinned = false)
+    {
+        /** @var AgentChat $chat */
+        $chat = $this->findOr404(static::$entity, $id);
+        $em   = $this->get('doctrine.orm.default_entity_manager');
+        $chat->setPinned($pinned);
+        $em->persist($chat);
+        $em->flush();
     }
 }

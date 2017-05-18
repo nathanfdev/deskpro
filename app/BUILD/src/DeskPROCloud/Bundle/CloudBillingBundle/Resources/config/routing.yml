@@ -1,0 +1,3 @@
+billing:
+    resource: "@CloudBillingBundle/Controller"
+    prefix:   /cloud

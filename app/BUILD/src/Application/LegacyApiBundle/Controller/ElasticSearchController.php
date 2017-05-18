@@ -268,6 +268,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
                 'news'              => 'news',
                 'download'          => 'downloads',
                 'chat_conversation' => 'chat_conversations',
+                'topic'             => 'topics',
             ];
 
             foreach ($types as $type => $table) {

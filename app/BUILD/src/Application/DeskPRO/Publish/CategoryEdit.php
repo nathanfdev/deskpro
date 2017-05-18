@@ -388,6 +388,14 @@ class CategoryEdit
                     LIMIT 1
                 ", [$categoryId]);
                 break;
+            case 'topics':
+                $counts = App::getDb()->fetchColumn("
+                    SELECT COUNT(*)
+                    FROM topics
+                    WHERE guide_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+                    LIMIT 1
+                ", [$categoryId]);
+                break;
             default:
                 $counts = 0;
                 break;

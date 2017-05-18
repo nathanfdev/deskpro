@@ -58,29 +58,40 @@ use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Phrase;
+use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Entity\TextSnippet;
+use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
+use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
@@ -100,8 +111,12 @@ use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
 use DeskPRO\Bundle\AppBundle\Entity\TaskList;
 use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
 use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceRecordAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceTextAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceUploadAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
@@ -253,6 +268,8 @@ class ObjectsManager
                 $value = $date;
             } elseif (is_array($array = json_decode($value, true))) {
                 $value = $array;
+            } elseif (is_numeric($value)) {
+                $value = (int) $value;
             }
         }
 
@@ -314,17 +331,22 @@ class ObjectsManager
             'TicketParticipant'        => [Factory\SimpleFactory::class, 'create', TicketParticipant::class],
             'TicketAttachment'         => [Factory\SimpleFactory::class, 'create', TicketAttachment::class],
             'TicketFlagged'            => [Factory\SimpleFactory::class, 'create', TicketFlagged::class],
+            'TicketMacro'              => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
+            'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
+            'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
+            'TicketLog'                => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
             'Language'                 => [Factory\SimpleFactory::class, 'create', Language::class],
-            'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
+            'Guest'                    => [Factory\CommonFactories::class, 'person', 'guest'],
             'User'                     => [Factory\CommonFactories::class, 'person', 'user'],
             'Agent'                    => [Factory\CommonFactories::class, 'person', 'agent'],
             'Admin'                    => [Factory\CommonFactories::class, 'person', 'admin'],
             'PersonEmail'              => [Factory\SimpleFactory::class, 'create', PersonEmail::class],
             'AgentData'                => [Factory\SimpleFactory::class, 'create', AgentData::class],
             'LabelTicket'              => [Factory\SimpleFactory::class, 'create', LabelTicket::class],
+            'LabelPerson'              => [Factory\SimpleFactory::class, 'create', LabelPerson::class],
             'LabelDef'                 => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'            => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
             'LabelTask'                => [Factory\SimpleFactory::class, 'create', LabelTask::class],
@@ -336,11 +358,23 @@ class ObjectsManager
             'VoiceAccount'             => [Factory\SimpleFactory::class, 'create', VoiceAccount::class],
             'VoiceNumber'              => [Factory\SimpleFactory::class, 'create', VoiceNumber::class],
             'VoiceQueue'               => [Factory\SimpleFactory::class, 'create', VoiceQueue::class],
-            'VoiceAsset'               => [Factory\SimpleFactory::class, 'create', VoiceAsset::class],
+            'VoiceTextAsset'           => [Factory\SimpleFactory::class, 'create', VoiceTextAsset::class],
+            'VoiceUploadAsset'         => [Factory\SimpleFactory::class, 'create', VoiceUploadAsset::class],
+            'VoiceRecordAsset'         => [Factory\SimpleFactory::class, 'create', VoiceRecordAsset::class],
             'VoiceAutoAttendant'       => [Factory\SimpleFactory::class, 'create', VoiceAutoAttendant::class],
             'VoiceQueueTarget'         => [Factory\SimpleFactory::class, 'create', VoiceQueueTarget::class],
             'VoiceAgentTarget'         => [Factory\SimpleFactory::class, 'create', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [Factory\SimpleFactory::class, 'create', VoiceAutoAttendantTarget::class],
+            'ClientDevice'             => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
+            'LegacyTicketFilter'       => [Factory\SimpleFactory::class, 'create', LegacyTicketFilter::class],
+            'TicketFilter'             => [Factory\SimpleFactory::class, 'create', TicketFilter::class],
+            'Problem'                  => [Factory\SimpleFactory::class, 'create', Problem::class],
+            'PersonPref'               => [Factory\SimpleFactory::class, 'create', PersonPref::class],
+            'Blob'                     => [Factory\SimpleFactory::class, 'create', Blob::class],
+            'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
+            'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
+            'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
+            'Phrase'                   => [Factory\SimpleFactory::class, 'create', Phrase::class],
         ];
     }
 
@@ -353,6 +387,7 @@ class ObjectsManager
             'AgentTeam'                => [$this, 'find', AgentTeam::class],
             'Person'                   => [$this, 'find', Person::class],
             'PersonEmail'              => [$this, 'find', PersonEmail::class],
+            'Guest'                    => [$this, 'find', Person::class, ['is_user' => false]],
             'User'                     => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => false]],
             'Agent'                    => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                    => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
@@ -366,6 +401,10 @@ class ObjectsManager
             'TicketParticipant'        => [$this, 'find', TicketParticipant::class],
             'TicketAttachment'         => [$this, 'find', TicketAttachment::class],
             'TicketFlagged'            => [$this, 'find', TicketFlagged::class],
+            'TicketMacro'              => [$this, 'find', TicketMacro::class],
+            'TicketFilter'             => [$this, 'find', TicketFilter::class],
+            'TicketSla'                => [$this, 'find', TicketSla::class],
+            'TicketLog'                => [$this, 'find', TicketLog::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],
@@ -418,6 +457,7 @@ class ObjectsManager
             'LabelFeedback'            => [$this, 'find', LabelFeedback::class],
             'LabelTicket'              => [$this, 'find', LabelTicket::class],
             'LabelTask'                => [$this, 'find', LabelTask::class],
+            'LabelPerson'              => [$this, 'find', LabelPerson::class],
             'Brand'                    => [$this, 'find', Brand::class],
             'BrandSetting'             => [$this, 'find', BrandSetting::class],
             'Usergroup'                => [$this, 'find', Usergroup::class],
@@ -430,11 +470,22 @@ class ObjectsManager
             'VoiceAccount'             => [$this, 'find', VoiceAccount::class],
             'VoiceNumber'              => [$this, 'find', VoiceNumber::class],
             'VoiceQueue'               => [$this, 'find', VoiceQueue::class],
-            'VoiceAsset'               => [$this, 'find', VoiceAsset::class],
+            'VoiceAsset'               => [$this, 'find', AbstractVoiceAsset::class],
+            'VoiceTextAsset'           => [$this, 'find', VoiceTextAsset::class],
+            'VoiceRecordAsset'         => [$this, 'find', VoiceRecordAsset::class],
+            'VoiceUploadAsset'         => [$this, 'find', VoiceUploadAsset::class],
             'VoiceAutoAttendant'       => [$this, 'find', VoiceAutoAttendant::class],
             'VoiceQueueTarget'         => [$this, 'find', VoiceQueueTarget::class],
             'VoiceAgentTarget'         => [$this, 'find', VoiceAgentTarget::class],
             'VoiceAutoAttendantTarget' => [$this, 'find', VoiceAutoAttendantTarget::class],
+            'LegacyTicketFilter'       => [$this, 'find', LegacyTicketFilter::class],
+            'Problem'                  => [$this, 'find', Problem::class],
+            'PersonPref'               => [$this, 'find', PersonPref::class],
+            'Sla'                      => [$this, 'find', Sla::class],
+            'TextSnippet'              => [$this, 'find', TextSnippet::class],
+            'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
+            'ObjectLang'               => [$this, 'find', ObjectLang::class],
+            'Phrase'                   => [$this, 'find', Phrase::class],
         ];
     }
 }

@@ -45,6 +45,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 {
     /** @var string */
     protected $tpl_prefix = 'AgentBundle:Login';
+
     /** @var string */
     protected $route_prefix = 'agent';
 
@@ -68,7 +69,12 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             }
         }
 
-        $has_logged_out = $this->in->checkIsset('o');
+        $has_logged_out = $request->cookies->has('dp-recent-logout');
+        if ($has_logged_out) {
+            // remove recent logout cookie on redirect login
+            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dp-recent-logout');
+            $cookie->send();
+        }
 
         // SSO Automatic Redirecting
 
@@ -223,6 +229,11 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                 'didReset'          => $this->in->getBool('did_reset'),
             ]
         );
+    }
+
+    public function viewResetPasswordFormAction()
+    {
+        return $this->redirect($this->generateUrl('agent_login').'#reset-password');
     }
 
     public function preloadSourcesAction()

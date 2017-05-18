@@ -98,6 +98,8 @@ class NewTicket
     public $attach = [];
     /** @var array */
     public $ticket_fields = [];
+    /** @var int */
+    public $organization_id;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -246,6 +248,7 @@ class NewTicket
 
         if ($org) {
             $this->custom_org_fields = App::$container->getOrgFieldManager()->createFormArrayForObject($org);
+            $this->organization_id   = $org->getId();
         }
     }
 
@@ -579,8 +582,27 @@ class NewTicket
         $this->_ticket_manager->saveTicket($ticket, $ticket_context);
 
         if ($agent_chat) {
-            $notify_text = $message->person->getDisplayName().' alerted you in a note in {{t-'.$ticket->id.'}}: '.$ticket->subject;
-            $agent_chat->sendAgentMessage($notify_text, array_keys($notify_chat));
+            $agentIds   = array_keys($notify_chat);
+            $notifyText = sprintf(
+                '%s alerted you in a note in {{t-%d}}: %s',
+                $message->getPerson()->getDisplayName(),
+                $ticket->getId(),
+                $ticket->getSubject()
+            );
+            $agent_chat->sendAgentMessage($notifyText, $agentIds);
+            if (App::$container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
+                $newIMtext = sprintf(
+                    '[{{t-%d}}] %s',
+                    $ticket->getId(),
+                    Strings::prepareWysiwygHtml(Strings::trimHtml($this->message))
+                );
+
+                App::$container->get('deskpro.notification.service')->sendNote(
+                    $message->getPerson(),
+                    $agentIds,
+                    $newIMtext
+                );
+            }
         }
 
         $this->_ticket = $ticket;

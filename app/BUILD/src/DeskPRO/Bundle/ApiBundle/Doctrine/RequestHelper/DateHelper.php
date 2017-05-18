@@ -61,7 +61,7 @@ class DateHelper
         $firstDayOfThisWeek  = strtotime('monday this week');
         $firstDayOfThisMonth = strtotime('first day of this month');
         $firstDayOfLastMonth = strtotime('first day of -1 month');
-        $firstDayOfThisYear  = strtotime('first day of this year');
+        $firstDayOfThisYear  = strtotime('first day of January '.date('Y'));
 
         $target = $targetField;
 

@@ -34,8 +34,10 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
+use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -73,10 +75,9 @@ class NotificationService
     {
         $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
         $qb              = $actionAlertRepo->createQueryBuilder('aa');
-        $date            = new \DateTime('@'.$last);
-        $result          = $qb->where('aa.date_created > (:last)')
+        $result          = $qb->where('aa.id > :last')
             ->andWhere('aa.target_id = :target_id')
-            ->setParameter('last', $date->format('Y-m-d H:i:s'))
+            ->setParameter('last', $last)
             ->setParameter('target_id', $user->getId())
             ->getQuery()
             ->getResult();
@@ -89,9 +90,23 @@ class NotificationService
      */
     public function lastAlert()
     {
-        $date = new \DateTime();
+        $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
+        $qb              = $actionAlertRepo->createQueryBuilder('aa');
+        $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
 
-        return $date->getTimestamp();
+        return $alert ? $alert->getId() : 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function lastNotify()
+    {
+        $notificationRepo = $this->em->getRepository(Notification::class);
+        $qb               = $notificationRepo->createQueryBuilder('n');
+        $notification     = $qb->orderBy('n.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+
+        return $notification ? $notification->getId() : 0;
     }
 
     /**
@@ -129,41 +144,41 @@ class NotificationService
      */
     public function sendNote(Person $person, $ids, $noteText)
     {
-        $participantsCount   = count($ids);
         $agentChatRepository = $this->em->getRepository(AgentChat::class);
         $personRepository    = $this->em->getRepository(Person::class);
 
+        //ugly cheat
+        foreach ($personRepository->findBy(['id' => $ids]) as $participant) {
+            $noteText = str_replace(
+                '@'.$participant->getDisplayName(),
+                '<strong>@'.$participant->getDisplayName().'</strong>',
+                $noteText
+            );
+        }
+
         $chat = null;
-        if ($participantsCount == 1) {
-            $chat = $agentChatRepository->findChatWithAgent($personRepository->find(current($ids)), $person);
-        } elseif ($participantsCount > 1) {
-            $chat = $agentChatRepository->findGroupChat($person, $ids);
-        }
 
-        if (!$chat) {
-            $chat = new AgentChat();
-            if ($participantsCount == 1) {
+        foreach ($ids as $participantId) {
+            $participant = $personRepository->find($participantId);
+            $chat        = $agentChatRepository->findChatWithAgent($participant, $person);
+            if (!$chat) {
+                $chat = new AgentChat();
                 $chat->setType(AgentChat::TYPE_AGENT);
-            } else {
-                $chat
-                    ->setType(AgentChat::TYPE_GROUP)
-                    ->setName('Notification from: '.$person->getDisplayName());
+                $chat->addParticipant($participant);
+                $chat->addParticipant($person);
             }
 
-            $participants = $personRepository->findBy(['id' => $ids]);
-            foreach ($participants as $participant) {
-                $chat->addParticipant($participant);
-            }
-            $chat->addParticipant($person);
+            $message = new AgentChatMessage();
+            $message
+                ->setPerson($person)
+                ->setChat($chat)
+                ->setUuid(RandUtils::uuidV4())
+                ->setMessage($noteText)
+                ->setMetadata(['mention' => true]);
+            $this->em->persist($chat);
+            $this->em->persist($message);
         }
-        $message = new AgentChatMessage();
-        $message
-            ->setPerson($person)
-            ->setChat($chat)
-            ->setUuid(uniqid('', true))
-            ->setMessage($noteText);
-        $this->em->persist($chat);
-        $this->em->persist($message);
+
         $this->em->flush();
     }
 
@@ -181,6 +196,11 @@ class NotificationService
                     'debug'  => $this->settings->get('notification.settings.pusher_client.debug'),
                 ]);
             case 'db':
+                return new NotificationClient('legacy', [
+                    'last_alert'  => $this->lastAlert(),
+                    'last_notify' => $this->lastNotify(),
+                ]);
+            case 'db_new':
 
                 return new NotificationClient('polling', [
                     'last_alert'       => $this->lastAlert(),

@@ -1,9 +1,11 @@
 import Notify from 'notifyjs';
 import striptags from 'striptags';
 import $ from 'jquery';
+import emojione from 'emojione';
+import Message from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow/Message';
+import { startChat } from '../Modules/IM/Actions/chatsActions';
 
-class NotificationsHandler
-{
+class NotificationsHandler {
   constructor(props) {
     this.options = {};
     Object.assign(this.options, props);
@@ -14,12 +16,17 @@ class NotificationsHandler
     switch (payload.type) {
       case 'notification.agent_chat.new_message':
         if (!NotificationsHandler.active && !Notify.needsPermission) {
+          const summary = striptags(emojione.shortnameToUnicode(Message.formatMessage(data.summary)));
           const notification = new Notify(
             data.title,
             {
-              body:    striptags(data.summary),
-              timeout: 5,
-              icon:    data.icon
+              body:        summary,
+              timeout:     7,
+              icon:        data.icon,
+              notifyClick: () => {
+                this.options.dispatch(startChat(null, data.chat));
+                $(window).focus();
+              }
             }
           );
           notification.show();

@@ -92,6 +92,7 @@
 			"default_value": true
 		},
 		{
+			"label": "Login Actions",
 			"name": "actions",
 			"type": "array"
 		},

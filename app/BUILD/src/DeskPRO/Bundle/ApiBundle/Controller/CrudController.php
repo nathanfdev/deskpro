@@ -26,19 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\AppBundle\CountBadge\AbstractCount;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountMap;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\AppBundle\Serializer\OffsetList;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use DeskPRO\Component\Util\ControllerUtils;
 use Doctrine\ORM\QueryBuilder;
@@ -46,6 +45,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -87,8 +87,6 @@ abstract class CrudController extends BaseController
     public static $forcePartialUpdate = false;
 
     /**
-     * Get resource with provided id.
-     *
      * @ApiDoc(
      *      description="Get a resource",
      *      tags={"CRUD"="#ffa500"},
@@ -121,8 +119,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Entities counts.
-     *
      * @ApiDoc(
      *      description="Count list",
      *      tags={"CRUD"="#ffa500"},
@@ -164,9 +160,13 @@ abstract class CrudController extends BaseController
 
             $result = $qb->getQuery()->getArrayResult();
 
-            $count = Count::fromGroupedBy($groupBy);
+            if ($request->query->getBoolean('index_group_by', false)) {
+                $count = CountMap::fromGroupedBy($groupBy);
+            } else {
+                $count = Count::fromGroupedBy($groupBy);
+            }
 
-            $this->addGroupByNestedCounts($count, $result, $request->query->getBoolean('index_group_by', false));
+            $this->addGroupByNestedCounts($count, $result);
             $count->setCount($totalCount);
         }
 
@@ -174,11 +174,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Entities list.
-     *
-     * Selects entities based on the provided "ids" parameter or returns paginated list of no IDs provided.
-     * Look carefully at filters section to have a great filtering, grouping or sorting power
-     *
      * @ApiDoc(
      *      description="Get collection of resources",
      *      tags={"CRUD"="#ffa500"},
@@ -235,8 +230,9 @@ abstract class CrudController extends BaseController
 
         // return QueryBuilder result or Pagerfanta depending on if pagination is enabled for the controller
         if (static::$listPaginate) {
-            $page  = (int) $request->query->getInt('page', 1);
-            $count = (int) $request->query->getInt('count', static::$listPerPage);
+            $page   = (int) $request->query->getInt('page', 1);
+            $offset = (int) $request->query->getInt('offset');
+            $count  = (int) $request->query->getInt('count', static::$listPerPage);
 
             if ($count > static::$listMaxResults) {
                 throw $this->createBadRequestException('You can select maximum '.static::$listMaxResults.' entities');
@@ -244,27 +240,32 @@ abstract class CrudController extends BaseController
                 throw $this->createBadRequestException('You must select at least 1 entity');
             }
 
-            if ($limit) {
-                // adding limit to the initial qb will
-                // make the initial COUNT have a limit, which
-                // might speed it up a bit
-                $qb->setMaxResults($limit);
-
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new LimitedPager($pagerAdapter, $limit);
+            if ($offset) {
+                $result = new OffsetList($qb, $count, $offset);
             } else {
-                $pagerAdapter = new DoctrineORMAdapter($qb);
-                $pager        = new Pagerfanta($pagerAdapter);
+                if ($limit) {
+                    // adding limit to the initial qb will
+                    // make the initial COUNT have a limit, which
+                    // might speed it up a bit
+                    $qb->setMaxResults($limit);
+
+                    $pagerAdapter = new DoctrineORMAdapter($qb);
+                    $pager        = new LimitedPager($pagerAdapter, $limit);
+                } else {
+                    $pagerAdapter = new DoctrineORMAdapter($qb);
+                    $pager        = new Pagerfanta($pagerAdapter);
+                }
+
+                $pager->setMaxPerPage($count);
+                $pager->setCurrentPage($page);
+
+                $result = $pager;
             }
-
-            $pager->setMaxPerPage($count);
-            $pager->setCurrentPage($page);
-
-            $result = $pager;
         } else {
             if ($limit) {
                 $qb->setMaxResults($limit);
             }
+
             $result = $qb->getQuery()->getResult();
         }
 
@@ -272,8 +273,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Get data for export to CSV.
-     *
      * @Rest\Get("/csv")
      *
      * @param Request $request
@@ -286,11 +285,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * You can create new resource. Just provide well formed request.
-     * Look into requirements for details.
-     *
-     * **We will ship resource representation as soon as it will be created.**
-     *
      * @ApiDoc(
      *      description="Create a new resource",
      *      tags={"CRUD"="#ffa500"},
@@ -314,9 +308,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Update the resource with specified ID.
-     * Look carefully in requirements section to form request well.
-     *
      * @ApiDoc(
      *      description="Update an existing resource",
      *      tags={"CRUD"="#ffa500"},
@@ -350,9 +341,6 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * Obviously it's an ability to erase what you've done.
-     * Be careful there is no CTRL+Z shortcut.
-     *
      * @ApiDoc(
      *      description="Delete a resource",
      *      tags={"CRUD"="#ffa500"},
@@ -446,11 +434,10 @@ abstract class CrudController extends BaseController
     }
 
     /**
-     * @param Count $count
-     * @param array $result
-     * @param bool  $indexByGroupName
+     * @param AbstractCount $count
+     * @param array         $result
      */
-    protected function addGroupByNestedCounts(Count $count, array $result, $indexByGroupName = false)
+    protected function addGroupByNestedCounts(AbstractCount $count, array $result)
     {
         foreach ($result as $group) {
             if (isset($group['date_title'])) {
@@ -462,8 +449,7 @@ abstract class CrudController extends BaseController
                 $group['group_name'],
                 $count->getGroupedBy(),
                 $group['title'],
-                true,
-                $indexByGroupName
+                true
             );
         }
     }
@@ -494,11 +480,12 @@ abstract class CrudController extends BaseController
      *
      * This method is called on a valid entity to persist it. May be overwritten in child controllers.
      *
-     * @param object $model
+     * @param object        $model
+     * @param FormInterface $form
      *
      * @return object The passed model
      */
-    protected function persistModel($model)
+    protected function persistModel($model, FormInterface $form = null)
     {
         $em = $this->getManager();
         $em->persist($model);
@@ -543,9 +530,6 @@ abstract class CrudController extends BaseController
             $partialUpdate = true;
         }
 
-        $form    = $this->createForm(static::$type, $model, $options);
-        $decoded = $this->getRequestContent($request);
-
         // we use POST request for creating and updating entities (including partial updates)
         // so $clearMissing should depends on $model id (switch for POST and PATCH request)
 
@@ -555,12 +539,13 @@ abstract class CrudController extends BaseController
 
         // in this case form ViolationMapper should apply entity validation errors on the submitted form
 
-        $form->submit($decoded, !$partialUpdate);
+        $form = $this->createForm(static::$type, $model, $options);
+        $form->submit($request->request->all(), !$partialUpdate);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($model);
+        $this->persistModel($model, $form);
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
         if ($this->isExposed('get')) {
@@ -568,21 +553,6 @@ abstract class CrudController extends BaseController
         }
 
         return $view;
-    }
-
-    /**
-     * It's useful for replacing content.
-     *
-     * @param Request $request
-     *
-     * @return mixed
-     */
-    protected function getRequestContent(Request $request)
-    {
-        return json_decode(
-            $request->getContent(),
-            true // convert to assoc arrays instead of stdClass instances
-        );
     }
 
     /**

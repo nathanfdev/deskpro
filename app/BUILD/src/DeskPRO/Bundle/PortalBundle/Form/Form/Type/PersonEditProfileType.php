@@ -214,6 +214,7 @@ class PersonEditProfileType extends AbstractType
             $form->add('upload_picture', FileType::class, [
                 'required' => false,
                 'mapped'   => false,
+                'label'    => $this->phrase('portal.forms.label_upload_picture'),
             ]);
         }
 

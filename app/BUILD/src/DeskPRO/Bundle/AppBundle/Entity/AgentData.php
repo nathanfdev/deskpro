@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -74,8 +75,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $id;
 
     /**
-     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="agentData")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Person", mappedBy="agentData")
      *
      * @var Person
      */
@@ -94,15 +94,14 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $extensionNumber;
 
     /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoiceAsset")
      *
      * @Assert\Valid()
      *
-     * @var VoiceAsset
+     * @var AbstractVoiceAsset
      */
     private $voicemailAsset;
 
@@ -122,6 +121,13 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $voiceWorkerSid;
+
+    /**
+     * @ORM\Column(name="voice_task_queue_sid", type="string", length=100, nullable=true)
+     *
+     * @var string
+     */
+    private $voiceTaskQueueSid;
 
     /**
      * @ORM\Column(name="available_status", type="string",length=100)
@@ -180,6 +186,9 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setPerson(Person $person = null)
     {
         $this->setModelField('person', $person);
+        if ($person) {
+            $person->setAgentData($this);
+        }
 
         return $this;
     }
@@ -205,7 +214,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAsset
+     * @return AbstractVoiceAsset
      */
     public function getVoicemailAsset()
     {
@@ -213,11 +222,11 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAsset $voicemailAsset
+     * @param AbstractVoiceAsset $voicemailAsset
      *
      * @return $this
      */
-    public function setVoicemailAsset(VoiceAsset $voicemailAsset = null)
+    public function setVoicemailAsset(AbstractVoiceAsset $voicemailAsset = null)
     {
         $this->setModelField('voicemailAsset', $voicemailAsset);
 
@@ -260,6 +269,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setVoiceWorkerSid($voiceWorkerSid)
     {
         $this->setModelField('voiceWorkerSid', $voiceWorkerSid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVoiceTaskQueueSid()
+    {
+        return $this->voiceTaskQueueSid;
+    }
+
+    /**
+     * @param string $voiceTaskQueueSid
+     *
+     * @return $this
+     */
+    public function setVoiceTaskQueueSid($voiceTaskQueueSid)
+    {
+        $this->setModelField('voiceTaskQueueSid', $voiceTaskQueueSid);
 
         return $this;
     }

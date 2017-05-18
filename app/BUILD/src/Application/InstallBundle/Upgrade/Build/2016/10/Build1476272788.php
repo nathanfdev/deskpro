@@ -57,7 +57,7 @@ SQL;
         foreach ($brands as $brand) {
             $preparedStatement->execute([
                 'brand_id' => $brand,
-                'value'    => $globalValue,
+                'value'    => $globalValue ? $globalValue['value'] : 0,
             ]);
         }
 

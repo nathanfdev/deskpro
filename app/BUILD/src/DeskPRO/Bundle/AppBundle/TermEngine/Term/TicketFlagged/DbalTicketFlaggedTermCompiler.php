@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketFlagged;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -37,37 +33,46 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTer
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketFlaggedTermCompiler.
+ */
 class DbalTicketFlaggedTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
+        $qp = new DbalQueryPart();
+        $qp
+            ->addJoin(
+                'tickets_flagged',
+                'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id'
+            )
+            ->setParameter('agent_id', new TermEngineExpression('agent.getId()'))
+        ;
 
-        $op    = $term->getOp();
-        $isser = $this->isOp($op, TermInterface::OP_NOT) ? '!=' : '=';
+        $isNot = $this->isOp($term->getOp(), TermInterface::OP_NOT);
+        $value = $term->getOption('flag');
 
-        $query_part->addJoin(
-            'tickets_flagged',
-            'ticket.id = tickets_flagged.ticket_id AND tickets_flagged.person_id = :agent_id'
-        );
-
-        $query_part->setParameter('agent_id', new TermEngineExpression('agent.getId()'));
-
-        $color = $term->getOption('flag');
-        if ($color == '') {
-            if (TermInterface::OP_NOT === $op) {
-                $query_part->setWhereString('tickets_flagged.person_id = :agent_id tickets_flagged.color IS NULL');
+        if (!$value) {
+            if ($isNot) {
+                $qp->setWhereString('tickets_flagged.person_id = :agent_id AND tickets_flagged.color IS NULL');
             } else {
-                $query_part->setWhereString('tickets_flagged.person_id = :agent_id tickets_flagged.color IS NOT NULL');
+                $qp->setWhereString('tickets_flagged.person_id = :agent_id AND tickets_flagged.color IS NOT NULL');
             }
         } else {
-            $operator = TermInterface::OP_NOT === $op ? '!=' : '=';
-            $query_part->setWhereString(sprintf('tickets_flagged.color %s :color', $operator));
-            $query_part->setParameter('color', $color);
+            $qp->setParameter('color', $value);
+
+            if ($isNot) {
+                $qp->setWhereString('tickets_flagged.color NOT IN(:color) OR tickets_flagged.color IS NULL');
+            } else {
+                $qp->setWhereString('tickets_flagged.color IN(:color)');
+            }
         }
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

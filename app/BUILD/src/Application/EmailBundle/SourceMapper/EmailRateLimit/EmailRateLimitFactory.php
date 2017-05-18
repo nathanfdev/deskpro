@@ -32,6 +32,9 @@
 
 namespace Application\EmailBundle\SourceMapper\EmailRateLimit;
 
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
+use Application\DeskPRO\Entity\EmailAccount;
+use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\DependencyInjection\Container;
 
 class EmailRateLimitFactory
@@ -53,13 +56,14 @@ class EmailRateLimitFactory
             return new NullEmailRateLimit();
         }
 
-        $accountIds = array_map(function ($r) {
-            return $r['id'];
-        }, $container->get('database_connection')->fetchAll("
-            SELECT id
-            FROM email_accounts
-            WHERE outgoing_account LIKE '%PhpMailConfig%'
-        "));
+        $accounts = $container->get('email.email_account_manager')->getAllAccounts('with_transport');
+        $accounts = ListUtils::filter($accounts, function (EmailAccount $ac) {
+            return !($ac->getOutgoingAccount() instanceof SmtpConfig);
+        });
+
+        $accountIds = ListUtils::map($accounts, function (EmailAccount $ac) {
+            return $ac->getId();
+        });
 
         if (!$accountIds) {
             return new NullEmailRateLimit();
@@ -83,13 +87,13 @@ class EmailRateLimitFactory
         }
 
         if (defined('DPC_SITE_FLAG_DISABLE_OUTMAIL')) {
-            return [['time' => 1, 'count' => 1, 'actions' => ['rate_limit']]];
+            return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
         }
 
         // Demos
         if (DPC_DEMO_EXPIRE) {
             if (DPC_SITE_IS_SUSPICIOUS) {
-                return [['time' => 1, 'count' => 1, 'actions' => ['rate_limit']]];
+                return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
             }
 
             if (DPC_SITE_IS_APPROVED) {
@@ -100,7 +104,7 @@ class EmailRateLimitFactory
                 ];
             } else {
                 return [
-                    ['time' => 5       /* 5s */, 'count' => 25, 'actions' => ['cancel_site']],
+                    ['time' => 5       /* 5s */, 'count' => 25, 'actions' => ['rate_limit', 'log_suspicious']],
                     ['time' => 900     /* 15m */, 'count' => 25, 'actions' => ['rate_limit', 'log_suspicious']],
                     ['time' => 86400   /* 24h */, 'count' => 50, 'actions' => ['rate_limit', 'log_suspicious']],
                     ['time' => 1209600 /* 14d */, 'count' => 300, 'actions' => ['rate_limit', 'log_suspicious']],
@@ -110,7 +114,7 @@ class EmailRateLimitFactory
         // New accounts (30 days)
         } elseif (DPC_SITE_CREATED_AT > (time() - 3369600)) {
             if (DPC_SITE_IS_SUSPICIOUS) {
-                return [['time' => 1, 'count' => 1, 'actions' => ['rate_limit']]];
+                return [['time' => 0, 'count' => 0, 'actions' => ['rate_limit']]];
             }
 
             if (DPC_SITE_IS_APPROVED) {
@@ -120,7 +124,7 @@ class EmailRateLimitFactory
                 ];
             } else {
                 return [
-                    ['time' => 5       /* 5s */, 'count' => 30, 'actions' => ['cancel_site']],
+                    ['time' => 5       /* 5s */, 'count' => 30, 'actions' => ['log_account_warning']],
                     ['time' => 900     /* 15m */, 'count' => 40, 'actions' => ['log_account_warning']],
                     ['time' => 3600    /* 1h */, 'count' => min(100, max(DPC_AGENTS * 4, 50)), 'actions' => ['rate_limit', 'log_suspicious']],
                 ];

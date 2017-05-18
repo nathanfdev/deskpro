@@ -10,8 +10,7 @@ import { Header } from 'DeskPRO/Component/Semantic/Common';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { Scrollable } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Scrollable';
 
-class GroupAddDrawer extends React.Component
-{
+class GroupAddDrawer extends React.Component {
   static propTypes = {
     me:            PropTypes.object.isRequired,
     agents:        PropTypes.object.isRequired,
@@ -59,13 +58,13 @@ class GroupAddDrawer extends React.Component
       checkedAgents:      props.checkedAgents,
       checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
       groupName:          '',
+      edited:             false,
       startedSelecting:   false
     };
-    this.agentClick  = this.agentClick.bind(this);
-    this.createGroup = this.createGroup.bind(this);
-    this.updateGroup = this.updateGroup.bind(this);
-    this.onChange    = this.onChange.bind(this);
-    this.clickOut    = this.clickOut.bind(this);
+  }
+
+  componentWillMount() {
+    window.addEventListener('keyup', this.onEscape);
   }
 
   componentWillReceiveProps(props) {
@@ -73,14 +72,24 @@ class GroupAddDrawer extends React.Component
       this.setState({
         checkedAgents:      props.checkedAgents,
         checkedAgentsCount: GroupAddDrawer.recalculateChecked(props.checkedAgents),
-        groupName:          props.editChat.get('name') || this.state.groupName
+        groupName:          props.editChat.get('name') && !this.state.edited ? props.editChat.get('name') : this.state.groupName
       });
     }
   }
 
-  onChange(event) {
-    this.setState({ groupName: event.target.value });
+  componentWillUnmount() {
+    window.addEventListener('keyup', this.onEscape);
   }
+
+  onEscape = (e) => {
+    if (e.keyCode === 27 && this.props.isOpen) {
+      this.clickOut();
+    }
+  };
+
+  onChange = (event) => {
+    this.setState({ groupName: event.target.value, edited: true });
+  };
 
   getAgentsHeader() {
     return (
@@ -100,7 +109,7 @@ class GroupAddDrawer extends React.Component
     );
   }
 
-  agentClick(agent) {
+  agentClick = (agent) => {
     this.props.agentClick(agent);
     const alreadyChecked = !!this.state.checkedAgents[agent.get('id')];
     const newCheckedAgents = this.state.checkedAgents;
@@ -113,22 +122,37 @@ class GroupAddDrawer extends React.Component
         checkedAgentsCount: GroupAddDrawer.recalculateChecked(this.state.checkedAgents)
       }
     );
+  };
+
+  clearState(callback) {
+    const clearState = {
+      checkedAgents:      {},
+      checkedAgentsCount: 0,
+      groupName:          '',
+      edited:             false
+    };
+    if (callback) {
+      this.setState(clearState, callback);
+    } else {
+      this.setState(clearState);
+    }
   }
 
+  clickOut = () => {
+    this.clearState(this.props.clickOut);
+  };
 
-  clickOut() {
-    this.setState({ checkedAgents: {}, checkedAgentsCount: 0, groupName: '' }, this.props.clickOut);
-  }
-
-  createGroup() {
+  createGroup = () => {
     const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
     this.props.createGroup(Object.keys(agents), this.state.groupName);
-  }
+    this.clearState();
+  };
 
-  updateGroup() {
+  updateGroup = () => {
     const agents = Immutable.fromJS(this.state.checkedAgents).filter(item => item).toJS();
     this.props.updateGroup(this.props.editChat.get('id'), Object.keys(agents), this.state.groupName);
-  }
+    this.clearState();
+  };
 
   renderAgent(agent) {
     if (agent.get('id') === this.props.me.get('id')) {

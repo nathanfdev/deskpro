@@ -92,6 +92,11 @@ $collection->create('agent_accept_redactor_image_upload', [
     'controller' => 'AgentBundle:Misc:acceptRedactorImageUpload',
 ]);
 
+$collection->create('agent_accept_redactor_file_upload', [
+    'path'       => '/misc/accept-redactor-file-upload',
+    'controller' => 'AgentBundle:Misc:acceptRedactorFileUpload',
+]);
+
 $collection->create('agent_redactor_autosave', [
     'path'         => '/misc/redactor-autosave/{content_type}/{content_id}',
     'controller'   => 'AgentBundle:Misc:redactorAutosave',
@@ -240,6 +245,11 @@ $collection->create('agent_min_ie_version', [
 $collection->create('agent_login', [
     'path'       => '/login',
     'controller' => 'AgentBundle:Login:index',
+]);
+
+$collection->create('agent_login_view_reset_password_form', [
+    'path'       => '/login/reset-password',
+    'controller' => 'AgentBundle:Login:viewResetPasswordForm',
 ]);
 
 $collection->create('agent_login_authenticate_local', [
@@ -1564,9 +1574,9 @@ $collection->create('agent_publish_ratingwhovoted', [
 ]);
 
 $collection->create('agent_publish_whoviewed', [
-    'path'       => '/publish/who-viewed/{object_type}/{object_id}/{view_action}',
+    'path'       => '/publish/who-viewed/{objectType}/{objectId}/{viewAction}',
     'controller' => 'AgentBundle:Publish:whoViewed',
-    'defaults'   => ['view_action' => 1],
+    'defaults'   => ['viewAction' => 1],
 ]);
 
 $collection->create('agent_publish_save_stickysearchwords', [
@@ -2103,6 +2113,65 @@ $collection->create('agent_feedback_merge', [
     'requirements' => ['feedback_id' => '\\d+', 'other_feedback_id' => '\\d+'],
 ]);
 
+$collection->create('agent_topic_new', [
+    'path'       => '/guides/new',
+    'controller' => 'AgentBundle:Guide:newTopic',
+]);
+
+$collection->create('agent_topic_view', [
+    'path'         => '/guides/topic/{topic_id}',
+    'controller'   => 'AgentBundle:Guide:view',
+    'requirements' => ['topic_id' => '\\d+'],
+    'options'      => ['fragment_name' => 'm'],
+]);
+
+$collection->create('agent_topic_revisionstab', [
+    'path'         => '/guides/topic/{topic_id}/view-revisions',
+    'controller'   => 'AgentBundle:Guide:viewRevisions',
+    'requirements' => ['topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_topic_save', [
+    'path'         => '/guides/topic/{topic_id}/ajax-save',
+    'controller'   => 'AgentBundle:Guide:ajaxSave',
+    'requirements' => ['topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_topic_new_save', [
+    'path'       => '/guides/new/save',
+    'controller' => 'AgentBundle:Guide:newTopicSave',
+]);
+
+$collection->create('agent_guides_list', [
+    'path'       => '/guides/list/{guide_id}',
+    'controller' => 'AgentBundle:Guide:list',
+    'defaults'   => ['guide_id' => '0'],
+    'options'    => ['fragment_name' => 'guides', 'fragment_type' => 'list'],
+]);
+
+$collection->create('agent_topic_ajax_save_comment', [
+    'path'         => '/guides/topic/{topic_id}/ajax-save-comment',
+    'controller'   => 'AgentBundle:Guide:ajaxSaveComment',
+    'requirements' => ['topic_id' => '\\d+'],
+]);
+
+$collection->create('agent_publish_guides_newform', [
+    'path'       => '/guides/new-form',
+    'controller' => 'AgentBundle:Guide:addCategoryForm',
+]);
+
+$collection->create('agent_topic_ajax_get_guides', [
+    'path'         => '/guides/brand/{brand_id}',
+    'controller'   => 'AgentBundle:Guide:ajaxGetGuidesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
+]);
+
+$collection->create('agent_topic_ajax_get_topics', [
+    'path'         => '/guides/topics/{guide_id}',
+    'controller'   => 'AgentBundle:Guide:ajaxGetTopicsByGuide',
+    'requirements' => ['guide_id' => '\\d+'],
+]);
+
 $collection->create('agent_agentchat_getonlineagents', [
     'path'       => '/agent-chat/get-online-agents.json',
     'controller' => 'AgentBundle:AgentChat:getOnlineAgents',
@@ -2471,6 +2540,13 @@ $collection->create('go_to_feedback_id', [
 $collection->create('go_to_chat_id', [
     'path'         => '/go/chat/{id}',
     'controller'   => 'AgentBundle:GoTo:chatId',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_topic_id', [
+    'path'         => '/go/topic/{id}',
+    'controller'   => 'AgentBundle:GoTo:topicId',
     'methods'      => ['GET'],
     'requirements' => ['id' => '\\d+'],
 ]);

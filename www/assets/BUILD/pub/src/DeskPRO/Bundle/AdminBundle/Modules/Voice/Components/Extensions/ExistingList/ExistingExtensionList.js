@@ -2,9 +2,7 @@ import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import ExtensionsHeader from '../ExtensionsHeader';
-import AudioWidget from '../../Common/AudioWidget/AudioWidget';
 import NumberTargetList from '../../Common/NumberTarget/NumberTargetList';
-import AudioWidgetContainer from './AudioWidgetContainer';
 
 class ExistingExtensionList extends React.Component {
 
@@ -50,7 +48,6 @@ class ExistingExtensionList extends React.Component {
             <div className="column agent">Agent</div>
             <div className="column extension">Extension</div>
             <div className="column targets">Queues</div>
-            <div className="column asset">Voicemail</div>
           </div>
           {existingAgents.map((agent, index) =>
             <ExistingExtensionRow
@@ -105,11 +102,6 @@ class ExistingExtensionRow extends React.Component {
           <div className="column extension">{agent.getIn(['agent_data', 'extension_number'])}</div>
           <div className="column targets">
             <NumberTargetList targets={involvedQueues} displayCount={2} />
-          </div>
-          <div className="column asset">
-            <AudioWidgetContainer agent={agent}>
-              <AudioWidget />
-            </AudioWidgetContainer>
           </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>

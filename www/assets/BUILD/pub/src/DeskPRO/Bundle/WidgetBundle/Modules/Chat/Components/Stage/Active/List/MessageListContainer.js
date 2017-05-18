@@ -6,11 +6,14 @@ import { MessageListSpinner } from './MessageListSpinner';
 import {
   chatLoadedSelector,
   messagesSelector,
-  muteSelector
+  muteSelector,
+  agentSelector
 } from '../../../../Selectors/chat';
 import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Application/Selectors/dpWindow';
+import { windowResize } from '../../../../../Application/Actions/dpWindowActions';
 
 @connect(state => ({
+  chatAgent:        agentSelector(state),
   chatLoaded:       chatLoadedSelector(state),
   messages:         messagesSelector(state),
   widgetDimensions: widgetDimensionsSelector(state),
@@ -20,7 +23,10 @@ import { widgetDimensionsSelector, isBubbleSelector } from '../../../../../Appli
 export class MessageListContainer extends React.Component {
 
   static propTypes = {
+    isBubble:         PropTypes.bool,
+    dispatch:         PropTypes.func,
     chatLoaded:       PropTypes.bool,
+    chatAgent:        PropTypes.object,
     widgetDimensions: PropTypes.object
   };
 
@@ -33,40 +39,59 @@ export class MessageListContainer extends React.Component {
   }
 
   reCalcHeight() {
-    const { widgetDimensions } = this.props;
+    const { widgetDimensions, chatAgent, isBubble, dispatch } = this.props;
     const widgetHeight = widgetDimensions.get('height');
     const $document = $(window.widgetFrame.document);
-    const $chatHeader = $document.find('.dpdesignportal-chat-header-wrapper');
+    const $chatHeader = $document.find('.dpdesignportal-chat-header, .dpdesignportal-collect-user-info-header');
     const $powered = $document.find('.dpdesignportal-powered-by-deskpro');
 
     const calc = (ignoreHeaderAndFooter) => {
       let height = widgetHeight;
+
+      height -= $document.find('.dpdesignportal-header').outerHeight(true);
+      height -= $document.find('.dpdesignportal-chat-header-controls').outerHeight(true);
+      height -= $document.find('.dpdesignportal-chat-footer').outerHeight(true);
+
       if (!ignoreHeaderAndFooter) {
         // increase height manually, because it isn't changing instantly after hide()/show()
         height -= $chatHeader.outerHeight(true);
         height -= $powered.outerHeight(true);
       }
-      height -= $document.find('.dpdesignportal-chat-header-controls').outerHeight(true);
-      height -= $document.find('.dpdesignportal-chat-footer').outerHeight(true);
-      // todo .dpdesignportal-chat-footer height returns 37 at this stage instead of 107
-      height -= ignoreHeaderAndFooter ? 47 : 37;
+
+      if (isBubble) {
+        height -= 10;
+      }
+
       return height;
     };
 
     let height = calc();
-
-    if (height < 100) {
-      height = calc(true);
+    if (chatAgent && height < 100) {
       $chatHeader.hide();
       $powered.hide();
+
+      // re-calc one more time
+      height = calc(true);
     } else {
       $chatHeader.show();
       $powered.show();
+
+      // re-calc one more time
+      height = calc();
     }
 
-    $(this.node.node).css('height', height);
-    if (this.node.scrollBottom) {
-      this.node.scrollBottom();
+    if (this.node) {
+      $(this.node.node).css('height', height);
+
+      // re-calc one more time to set elements in DOM properly
+      if (this.prevHeight !== height) {
+        this.prevHeight = height;
+        setTimeout(() => dispatch(windowResize()), 0);
+      }
+
+      if (this.node.scrollBottom) {
+        this.node.scrollBottom();
+      }
     }
   }
 

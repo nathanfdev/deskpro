@@ -328,7 +328,6 @@ class TermEngineDb extends AbstractDbSet
                 ('core.default_from_email', 'noreply@example.com'),
                 ('core.default_timezone', 'UTC'),
                 ('core.deskpro_build', '".time()."'),
-                ('core.deskpro_build_num', '0'),
                 ('core.deskpro_url', 'http://localhost:8888/'),
                 ('core.deskpro_version', '20131002122551'),
                 ('core.done_data_initializer', '1'),

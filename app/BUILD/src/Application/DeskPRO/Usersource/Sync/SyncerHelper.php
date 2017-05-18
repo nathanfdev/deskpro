@@ -188,7 +188,7 @@ class SyncerHelper
     public function persistAndFlushEntity($entity)
     {
         $this->em->persist($entity);
-        $this->em->flush($entity);
+        $this->em->flush();
     }
 
     /**
@@ -257,7 +257,7 @@ class SyncerHelper
         $this->log(Logger::DEBUG, 'saving person');
         $this->em->persist($person);
         if ($flush) {
-            $this->em->flush($person);
+            $this->em->flush();
         }
     }
 
@@ -271,7 +271,7 @@ class SyncerHelper
         $this->log(Logger::DEBUG, 'saving association');
         $this->em->persist($association);
         if ($flush) {
-            $this->em->flush($association);
+            $this->em->flush();
         }
     }
 

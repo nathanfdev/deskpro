@@ -38,9 +38,11 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -210,6 +212,43 @@ class BreadcrumbBuilder
             $this->object_router->getPortalPath($a),
             Breadcrumbs::DOWNLOADS_VIEW,
             $a
+        );
+
+        return $this;
+    }
+
+    //####################################################################################################################
+    // Guides
+    //####################################################################################################################
+
+    public function addTopics()
+    {
+        $this->b->add(
+            $this->url_generator->generate('portal_guides'),
+            Breadcrumbs::TOPICS,
+            ['phrase' => 'portal.general.nav-downloads']
+        );
+
+        return $this;
+    }
+
+    public function addGuide(Guide $guide)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($guide),
+            Breadcrumbs::GUIDE,
+            ['title' => $this->language_manager->objectPhrase($guide)]
+        );
+
+        return $this;
+    }
+
+    public function addTopic(Topic $topic)
+    {
+        $this->b->add(
+            $this->object_router->getPortalPath($topic),
+            Breadcrumbs::TOPIC,
+            $topic
         );
 
         return $this;

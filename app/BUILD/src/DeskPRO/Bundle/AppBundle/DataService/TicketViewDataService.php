@@ -236,31 +236,31 @@ class TicketViewDataService extends AbstractDataService
     }
 
     /**
-     * @param TicketView $view
-     * @param $field_id
-     * @param CustomDefAbstract $field_def
-     * @param $data
+     * @param TicketView        $view
+     * @param int               $fieldId
+     * @param CustomDefAbstract $def
+     * @param mixed             $data
+     * @param bool              $isAlwaysVisible
      *
      * @return bool|null|string
      */
-    private function addCustomDataProperty(TicketView $view, $field_id, CustomDefAbstract $field_def, $data, $is_always_visible)
+    private function addCustomDataProperty(TicketView $view, $fieldId, CustomDefAbstract $def, $data, $isAlwaysVisible)
     {
         if (is_array($data)) {
-            $value = array_map(function ($data) use ($field_def) {
-                $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
-
-                return $value;
+            $value = array_map(function ($data) use ($def) {
+                return $data ? CustomFieldUtil::getValueForCustomFormField($def, $data) : null;
             }, $data);
             $value = implode(', ', $value);
         } else {
-            $value = $data ? CustomFieldUtil::getValueForCustomFormField($field_def, $data) : null;
+            $value = $data ? CustomFieldUtil::getValueForCustomFormField($def, $data) : null;
         }
 
         $view->addProperty(
-            $field_id,
-            $field_def->getTitle(),
+            $fieldId,
+            $def->getTitle(),
             (string) $value,
-            $is_always_visible
+            $isAlwaysVisible,
+            $def->getOption('clickable_links')
         );
 
         return $value;

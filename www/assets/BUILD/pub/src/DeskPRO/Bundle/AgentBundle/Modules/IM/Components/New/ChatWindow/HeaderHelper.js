@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
+import Isvg from 'react-inlinesvg';
 
-export default class HeaderHelper
-{
+export default class HeaderHelper {
   constructor(props) {
     this.props = props;
   }
@@ -17,7 +17,7 @@ export default class HeaderHelper
     const agent =  agents.get(agentId);
     return [
       this.getAgentHeaderText(chat),
-      <i className="icon group add" onClick={() => { openGroupDrawer([agent.get('id')]); }} />
+      agent ? <GroupAdd onClick={() => { openGroupDrawer([agent.get('id')]); }} /> : null
     ];
   }
 
@@ -36,7 +36,9 @@ export default class HeaderHelper
 
   getAgentHeaderText(chat) {
     const agentId = this.getAgentId(chat);
-    return this.props.agents.getIn([agentId, 'name']);
+    return this.props.agents.getIn([agentId, 'name'])
+      ? this.props.agents.getIn([agentId, 'name'])
+      : this.props.people.getIn([agentId, 'name']);
   }
 
   getDepartmentHeader(chat) {
@@ -45,6 +47,34 @@ export default class HeaderHelper
 
   getAgentTeamHeader(chat) {
     return this.props.teams.getIn([chat.getIn(['agent_teams', 0]), 'name']);
+  }
+
+  getEmptyHeader() {
+    const { current } = this.props;
+    let header;
+
+    switch (current.get('chat_type')) {
+      case 'agent':
+        header = this.getAgentHeaderText(current);
+        break;
+      case 'department':
+        header = `the ${this.getDepartmentHeader(current)} Department`;
+        break;
+      case 'team':
+        header = `Team ${this.getAgentTeamHeader(current)}`;
+        break;
+      case 'group':
+        header = `the ${current.get('name')} Group`;
+        break;
+      case 'everyone':
+        header = 'Everyone';
+        break;
+      default:
+        header = 'some im';
+        break;
+    }
+
+    return header;
   }
 
   getHeaderText(textMode = false) {
@@ -74,3 +104,15 @@ export default class HeaderHelper
     return header;
   }
 }
+
+function GroupAdd(props) {
+  return (
+    <span className="dp-button group add" onClick={props.onClick}>
+      <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/group-icon.svg`} />
+    </span>
+  );
+}
+
+GroupAdd.propTypes = {
+  onClick: PropTypes.func.isRequired
+};

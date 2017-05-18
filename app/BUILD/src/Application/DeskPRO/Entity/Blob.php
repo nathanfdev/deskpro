@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -229,6 +230,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public static function hasZipArchiveClass()
+    {
+        return class_exists('ZipArchive');
+    }
+
     /**
      * @return int
      */
@@ -398,6 +404,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             return $this->file_url;
         }
 
+        if (!$this->getAuthId()) {
+            return;
+        }
+
         $url = App::get('router')->generate('serve_blob', ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()], $absolute);
 
         // We are specifically requestinga local url,
@@ -423,19 +433,29 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param int        $size
      * @param int|string $absolute
+     * @param bool       $sizeFit
      *
      * @return string
      */
-    public function getThumbnailUrl($size = 50, $absolute = UrlGeneratorInterface::ABSOLUTE_PATH)
+    public function getThumbnailUrl($size = 50, $absolute = UrlGeneratorInterface::ABSOLUTE_PATH, $sizeFit = false)
     {
         if (!$this->isImage()) {
             return;
         }
+        if (!$this->getAuthId()) {
+            return;
+        }
 
-        $params = ['blob_auth_id' => $this->getAuthId(), 'filename' => $this->getFilenameSafe()];
+        $params = [
+            'blob_auth_id' => $this->getAuthId(),
+            'filename'     => $this->getFilenameSafe(),
+        ];
 
         if ($size) {
             $params['s'] = $size;
+        }
+        if ($sizeFit) {
+            $params['size-fit'] = 1;
         }
 
         return App::get('router')->generate('serve_blob', $params, $absolute);
@@ -736,12 +756,26 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         ];
     }
 
+    /**
+     * We can't set invalid data to the db so check properties before flush.
+     */
+    public function _onValidateProps()
+    {
+        // force set auth code
+        if (!$this->authcode) {
+            SystemErrorHandler::logException(new \InvalidArgumentException('Attempt to save a blob without authcode'), false, null, true);
+            $this->setModelField('authcode', DpStrings::random(20, Strings::CHARS_KEY_ALPHA));
+        }
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+        $metadata->addLifecycleCallback('_onValidateProps', 'prePersist');
+        $metadata->addLifecycleCallback('_onValidateProps', 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Blob';
         $metadata->setPrimaryTable([

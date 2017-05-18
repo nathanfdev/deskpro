@@ -115,6 +115,11 @@ class DbalQuery
     private $page;
 
     /**
+     * @var int
+     */
+    private $offset;
+
+    /**
      * @var bool
      */
     private $group_with_rollup;
@@ -517,6 +522,22 @@ class DbalQuery
     }
 
     /**
+     * @return int
+     */
+    public function getOffset()
+    {
+        return $this->offset;
+    }
+
+    /**
+     * @param int $offset
+     */
+    public function setOffset($offset)
+    {
+        $this->offset = $offset;
+    }
+
+    /**
      * @return string
      */
     public function generateLimitString()
@@ -537,6 +558,10 @@ class DbalQuery
      */
     public function getPageOffset()
     {
+        if ($this->offset) {
+            return $this->offset;
+        }
+
         if (!$this->limit || !$this->page) {
             return 0;
         }

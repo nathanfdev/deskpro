@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Content\NewsType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -66,9 +67,19 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *          {"name"="group_by", "dataType"="string", "pattern"="author|category|period_created|period_updated", "description"="how to group counters"}
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Content\NewsType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\News"
+ *      }
+ *     }
+ * )
  */
 class NewsController extends AbstractSingleCategoryContentController
 {
     public static $entity   = News::class;
     public static $category = NewsCategory::class;
+    public static $type     = NewsType::class;
 }

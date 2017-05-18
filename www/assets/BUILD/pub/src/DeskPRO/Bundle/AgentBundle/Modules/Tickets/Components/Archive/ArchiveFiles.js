@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { pureRender } from 'Ampliflux';
+import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
+import { Detached } from 'DeskPRO/Component/Positioned/Detached';
+import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import * as actions from '../../Actions/archiveActions';
 import { filesSelector } from '../../Selectors/archive';
 
@@ -29,7 +31,7 @@ export class ArchiveFilesContainer extends React.Component {
   loadFiles = () => {
     const { authId, files } = this.props;
 
-    if (!files.get(authId.toInt())) {
+    if (!files.get(authId)) {
       this.props.dispatch(actions.loadFiles(authId));
     }
   };
@@ -37,7 +39,7 @@ export class ArchiveFilesContainer extends React.Component {
   render() {
     const { files, authId } = this.props;
     let filesList = {};
-    const list = files.filter(x => x.get('id') === authId.toInt());
+    const list = files.filter(x => x.get('id') === authId);
     if (list.size) {
       filesList = list.first().get('files');
     }
@@ -60,7 +62,8 @@ export class ArchiveFiles extends React.Component {
 
   static defaultProps = {
     list: {},
-    getLink() {}
+    getLink() {
+    }
   };
 
   static unflattenList(list, index, level) {
@@ -139,15 +142,21 @@ export class ArchiveFiles extends React.Component {
     if (tree) {
       return (
         <List>
-          {tree.map(element =>
-            <ListElement
-              icon={element.dir ? 'folder' : 'file'}
-              href={element.dir ? '' : this.props.getLink(element)}
-              label={`${element.filename} (${element.filesize_readable})`}
-            >
-              {this.renderTree(element.children)}
-            </ListElement>
-          )}
+          {tree.map((element) => {
+            let label = element.filename;
+            if (element.filesize_readable) {
+              label = `${label} (${element.filesize_readable})`;
+            }
+            return (
+              <ListElement
+                icon={element.dir ? 'folder' : 'file'}
+                href={element.dir ? '' : this.props.getLink(element)}
+                label={label}
+              >
+                {this.renderTree(element.children)}
+              </ListElement>
+            );
+          })}
         </List>
       );
     }
@@ -156,14 +165,32 @@ export class ArchiveFiles extends React.Component {
 
   render() {
     return (
-      <div className="archive-files">
+      <div
+        className="archive-files"
+        ref={(c) => {
+          this.container = c;
+        }}
+      >
         <a onClick={this.toggleFiles}>
           <span>view files &nbsp;</span>
           <i className="fitted icon dropdown" />
         </a>
-        <div className={classNames('files', { hidden: !this.state.open })}>
-          {this.getFileList()}
-        </div>
+        <Detached
+          zIndex={99999}
+          isOpen={this.state.open}
+          positionAt="left bottom"
+          positionTarget={this.container}
+        >
+          <ClickOut
+            onClickOut={() => {
+              this.setState({ open: false });
+            }}
+          >
+            <div className={classNames('files', { hidden: !this.state.open })}>
+              {this.getFileList()}
+            </div>
+          </ClickOut>
+        </Detached>
       </div>
     );
   }

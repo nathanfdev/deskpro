@@ -43,6 +43,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.activityTime = new Date();
 		this.isMobile = false;
 
+		this.updateWindowUrlFragment = _.debounce(this.updateWindowUrlFragmentNow.bind(this), 100);
+
 		this.appsSidebar = {
 			visible: false,
 			width: 350
@@ -70,8 +72,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			list: 2,
 			tabs: 4
 		};
-
-		var self = this;
 
 		if (window.AppPlatform) {
 			this.initAppPlatform(window.AppPlatform);
@@ -304,6 +304,7 @@ DeskPRO.Agent.Window = new Orb.Class({
         options.pasteZone = null;
 				if (options.page) {
 					options.namespace = options.page.OBJ_ID + '_fileupload';
+					options.page = null;
 				}
 
 				if (!options.namespace) {
@@ -986,6 +987,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		});
 		/***************** /scrolling handle on drag ******************/
+
+		// after page is loaded, lets do render on init
+		// this means loading a page enables lazy loading
+		// of tabs from url bar or local history, but
+		// actually clicking stuff will instant
+    DeskPRO_Window.TabBar.enableInitOnRender();
 	},
 
 	initScope: function() {
@@ -1221,6 +1228,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				case 'knowledgebase':
 				case 'news':
 				case 'downloads':
+				case 'guides':
 				case 'category':
 				case 'status':
 				case 'label':
@@ -1288,7 +1296,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		DeskPRO_Window.TabBar.options.activateNew = true;
 	},
 
-	updateWindowUrlFragment: function() {
+	updateWindowUrlFragmentNow: function() {
 
 		if (!this.hashHandling) return;
 		if (this.DEBUG.disableUrlFragments) return;
@@ -1688,7 +1696,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 		var handler = null;
 		var sectionId = null;
-		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch')) {
+		if (testcl('.Kb') || testcl('.News') || testcl('.Download') || testcl('.Publish') || testcl('PublishSearch') || testcl('.Guide')) {
 			sectionId = 'publish_section';
 		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
 			sectionId = 'tickets_section';
@@ -2161,8 +2169,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		var self = this;
-
 		if (routeData && routeData.postData) {
 			var ajaxOptions = {
 				dataType: 'text',
@@ -2428,10 +2434,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	handleSoundElements: function(el) {
 		var self = this;
 		if ($(el).is('[data-play-sound]')) {
-			self.playLibrarySound($(el).data('play-sound'), {appendTo: el});
+			self.playLibrarySound($(el).data('play-sound'), {appendTo: el, loop: true});
 		} else {
 			$('[data-play-sound]', el).each(function() {
-				self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
+				self.playLibrarySound($(this).data('play-sound'), {appendTo: el, loop: true});
 			});
 		}
 	},
@@ -2526,7 +2532,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 			if (xhr && (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec')) {
-				this.showAlert($('<div>We could not load the page you requested because the connection timed out. Please try again.</div>'));
 				return;
 			}
 		}
@@ -2540,7 +2545,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (data && data.error && (data.error == 'session_expired' || data.error == 'invalid_request_token')) {
 				var url = data.redirect_login;
 				url += '?return=' + encodeURIComponent(window.location.href);
-				url += '&timeout=1'
+				url += '&timeout=1';
 
 				window.location = url;
 				ajaxOptions.error = null;
@@ -2598,7 +2603,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 
 		if (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeout') {
-			this.showAlert($('<div><strong>Network Error</strong><br />The request timed out. The server may be too busy to handle your request, or you may have been disconnected from the internet. Try again.</div>'), 'network_error');
 			this.incNetworkError();
 			return;
 		}
@@ -2655,7 +2659,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}
 		}
 
-		var self = this;
 		$('#global_ajax_error_info').empty();
 		if (message) {
 			$('#global_ajax_error_info').html(message);
@@ -2669,21 +2672,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				zIndex: 50000 /* this should be bigger than everything */
 			});
 		}
-
-		$('#global_ajax_error_submit').off('click').on('click', function(ev) {
-			ev.preventDefault();
-			$('#global_ajax_error').removeClass('switch-success').addClass('switch-loading');
-			$.ajax({
-				url: BASE_URL + 'dp/report-error.json',
-				data: {
-					error_text: message
-				},
-				type: 'POST',
-				success: function() {
-					$('#global_ajax_error').removeClass('switch-loading').addClass('switch-success');
-				}
-			});
-		});
 
 		this.ajaxErrorOverlay.initOverlay(); // needed so we can access wrapperOuter next
 		this.ajaxErrorOverlay.elements.wrapperOuter.addClass('error');
@@ -2738,6 +2726,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('article', cb.bind(this));
 		this.addPageRouteLoader('download', cb.bind(this));
 		this.addPageRouteLoader('news', cb.bind(this));
+		this.addPageRouteLoader('guides', cb.bind(this));
 		this.addPageRouteLoader('feedback', cb.bind(this));
 		this.addPageRouteLoader('org', cb.bind(this));
 
@@ -2770,8 +2759,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
 		this.addPageRouteLoader('voice', this.loadRoute.bind(this));
 		this.addPageRouteLoader('poppage', this.loadRouteOverlay.bind(this));
-
-		var self = this;
 	},
 
 	_initWindowInterface: function() {
@@ -2864,6 +2851,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
+      this.newTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+        loadUrl: BASE_URL + 'agent/guides/new',
+        tabRoute: 'page:' + BASE_URL + 'agent/guides/new',
+        autostart: autostart
+      });
 		}
 
 		this.newTaskLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
@@ -3133,19 +3125,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_initInterfaceServices: function() {
-		var self = this;
-
 		this.popover_inited = {};
-
 		this.initInterfaceLayerEvents(document);
 	},
 
 	_initInterfacePopover: function(el, opennow) {
-		var self = this;
 		var popover_inited = this.popover_inited;
 
 		var route = el.data('route');
-		var routeData = self.parseRoute(route);
+		var routeData = this.parseRoute(route);
 
 		if (el.data('route-preload-id')) {
 			routeData.preloadId = el.data('route-preload-id');
@@ -3379,19 +3367,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		$('.as-popover.preload', context).each(function() {
-			var p = self._initInterfacePopover($(this));
+			self._initInterfacePopover($(this));
 		});
 
 		if (page) {
-			var scrollEls = $('.with-scrollbar', context);
-			if (scrollEls.length) {
-				scrollEls.each(function() {
-					new DeskPRO.Agent.ScrollerHandler(page, $(this), {
-						showEvent: 'show',
-						hideEvent: 'hide'
-					});
+      $('.with-scrollbar', context).each(function() {
+				new DeskPRO.Agent.ScrollerHandler(page, $(this), {
+					showEvent: 'show',
+					hideEvent: 'hide'
 				});
-			}
+			});
 		}
 
 		$('.timeago', context).timeago();
@@ -3694,7 +3679,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!src.length) {
 			run();
 		} else {
-			var remaining = src.length, self = this;
+			var remaining = src.length;
 
 			for (var i = 0; i < src.length; i++) {
 				$.ajax({
@@ -3724,13 +3709,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return DeskPRO.Agent.RteEditor.initRteAgentReply(textarea, options);
 	},
 
-	initAgentNotifierForRte: function(obj, textarea, alwaysAvailable, verifyCallback) {
+	initAgentNotifierForRte: function(obj, textarea, alwaysAvailable) {
 		var self = this;
 		var cacheKey = 'dp_agent_notifier_map';
 
 		if (sessionStorage[cacheKey]) {
 			var agentMap = JSON.parse(sessionStorage[cacheKey]);
-			self._initAgentNotifierForRte(obj, textarea, agentMap, alwaysAvailable, verifyCallback);
+			self._initAgentNotifierForRte(obj, textarea, agentMap, alwaysAvailable);
 		} else {
 			$.ajax({
 				url: BASE_URL + "agent/people/agent_notifier_map.json",
@@ -3739,13 +3724,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				noErrorOverride: true,
 				success: function(data) {
 					sessionStorage[cacheKey] = JSON.stringify(data);
-					self._initAgentNotifierForRte(obj, textarea, data, alwaysAvailable, verifyCallback);
+					self._initAgentNotifierForRte(obj, textarea, data, alwaysAvailable);
 				}
 			});
 		}
 	},
 
-	_initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable, verifyCallback) {
+	_initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable) {
 		var api = textarea.data('redactor');
 		if (!api) {
 			return;
@@ -3779,12 +3764,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			self.hideAgentNotifyList(obj);
 
-			if (verifyCallback) {
-				if (!verifyCallback(agentId)) {
-					return;
-				}
-			}
-
 			var focus = api.getFocus(),
 				focusNode = $(focus[0]),
 				testText;
@@ -3802,8 +3781,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				focus[1] = testText.length;
 			}
 
-			var	lastAt = testText.lastIndexOf('@'),
-				matches = [];
+			var	lastAt = testText.lastIndexOf('@');
 
 			if (lastAt != -1) {
 				api.setSelection(focus[0], lastAt, focus[0], focus[1]);

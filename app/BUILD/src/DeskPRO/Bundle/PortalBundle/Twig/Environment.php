@@ -36,7 +36,6 @@ use Application\DeskPRO\App;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateCompilationException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\CustomTemplateNotFoundException;
 use DeskPRO\Bundle\PortalBundle\Twig\Exception\PortalLoaderException;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 
 /**
  * Class Environment.
@@ -66,10 +65,7 @@ class Environment extends \Twig_Environment
     }
 
     /**
-     * @param string $name
-     * @param null   $index
-     *
-     * @return \Twig_TemplateInterface
+     * {@inheritdoc}
      */
     public function loadTemplate($name, $index = null)
     {
@@ -105,10 +101,10 @@ class Environment extends \Twig_Environment
      */
     private function loadTemplateFromDb($name, $index)
     {
-        $className = $this->getTemplateClass($name, $index);
-
         try {
-            if ($template = $this->getPortalLoader()->getDbTemplate($name)) {
+            $template = $this->getPortalLoader()->getDbTemplate($name);
+            if ($template) {
+                $className = $this->getTemplateClass($name, $index);
                 if (!class_exists($className, false)) {
                     // we have to check for class existence otherwise whole script will fail without ability to fallback
                     eval('?>'.$this->compileSource($template->getTemplateCode(), $name));
@@ -215,13 +211,5 @@ class Environment extends \Twig_Environment
         $key = $this->cache->generateKey($name, $this->getTemplateClass($name));
 
         return !$key ? false : $key;
-    }
-
-    /**
-     * @return EventLogger
-     */
-    private function getLogger()
-    {
-        return App::$container->get('dp_sys.alerts.event_logger');
     }
 }

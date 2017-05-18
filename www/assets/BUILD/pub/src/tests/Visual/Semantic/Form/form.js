@@ -2,6 +2,7 @@ import React from 'react';
 import { storiesOf, action, linkTo } from '@kadira/storybook';
 import { Toggle, Range, Select } from 'DeskPRO/Component/Semantic/Form';
 import { css } from 'Visual/decorators';
+import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';
 
 const options = [
   {
@@ -80,5 +81,13 @@ storiesOf('Semantic: form', module)
   .add(
     'Checkbox on',
     () => <Toggle active checkbox onChange={linkTo('Semantic: form', 'Checkbox off')}>Label</Toggle>
+  )
+  .add(
+    'Button Group',
+    () => <ButtonGroup>
+      <Button onClick={action('Click First')} key="1" className="test">First</Button>
+      <Button onClick={action('Click Second')} key="2">Second</Button>
+      <Button onClick={action('Click Third')} key="3">Third</Button>
+    </ButtonGroup>
   )
 ;

@@ -7,22 +7,30 @@ class TextArea extends React.Component {
     name:        PropTypes.string,
     placeholder: PropTypes.string,
     value:       PropTypes.string,
-    rows:        PropTypes.number
+    rows:        PropTypes.number,
+    onChange:    PropTypes.func
+  };
+  static defaultProps = {
+    onChange() {}
+  };
+
+  handleChange = (event) => {
+    this.props.onChange(event.target.value);
   };
 
   render() {
-    const { placeholder, id, value, rows } = this.props;
+    const { placeholder, id, value, name, rows } = this.props;
     return (
       <div className={classNames('ui', 'textarea')}>
         <textarea
           id={id}
           ref={(c) => { this.input = c; }}
           name={name}
+          value={value}
+          onChange={this.handleChange}
           placeholder={placeholder}
           rows={rows}
-        >
-          {value}
-        </textarea>
+        />
       </div>
     );
   }

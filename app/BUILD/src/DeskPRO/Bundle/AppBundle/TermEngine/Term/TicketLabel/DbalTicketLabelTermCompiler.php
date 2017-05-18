@@ -26,20 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLabel;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketLabelTermCompiler.
+ */
 class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $query_part = $this->getJoinedHelper()->buildQueryPart(
+        $qp = $this->getJoinedHelper()->buildQueryPart(
             'labels_tickets.label',
             'labels_tickets',
             'ticket.id = labels_tickets.ticket_id',
@@ -48,6 +50,6 @@ class DbalTicketLabelTermCompiler extends AbstractDbalTermCompiler
             false
         );
 
-        return $query_part;
+        return $qp;
     }
 }

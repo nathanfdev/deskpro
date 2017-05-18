@@ -43,7 +43,7 @@ define [
         parent_id = parseInt(parent_id)
         if options
           for opt in options
-            if (parent_id != 0 and parseInt(opt.parent_id) == parent_id) or (parent_id == 0 and (not opt.parent_id or not parseInt(opt.parent_id)))
+            if (parent_id? and parseInt(opt.parent_id) == parent_id) or (parent_id == 0 and (not opt.parent_id or not parseInt(opt.parent_id)))
               o = getRenderOpt(opt, parentTitleSegs)
 
               if o then parentTitleSegs.push(o.title)
@@ -51,7 +51,7 @@ define [
               childOps = []
               recursive_parent_id = opt.id
               # Prevent checkbox from recursive infinite loop
-              if (!recursive_parent_id && typeof opt.value == 'integer')
+              if !recursive_parent_id && parseInt(opt.value)
                 recursive_parent_id = opt.value
               addTree(options, recursive_parent_id, childOps, parentTitleSegs)
 

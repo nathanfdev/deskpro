@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Organizations;
 
 use Application\DeskPRO\Entity\OrganizationContactData;
@@ -51,7 +47,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  */
 class OrganizationContactDataController extends CrudSubController
 {
-    public static $exposeOnly     = ['get', 'list'];
+    public static $exposeOnly     = ['get', 'list', 'count'];
     public static $entity         = OrganizationContactData::class;
     public static $parentProperty = 'organization';
     public static $listOrder      = 'asc';

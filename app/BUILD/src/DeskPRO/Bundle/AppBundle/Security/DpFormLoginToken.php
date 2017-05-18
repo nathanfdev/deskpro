@@ -45,9 +45,9 @@ class DpFormLoginToken extends AbstractToken
     /**
      * DpFormLoginToken constructor.
      *
-     * @param \Application\DeskPRO\Entity\Person $user
-     * @param string                             $credentials
-     * @param array                              $roles
+     * @param \Application\DeskPRO\Entity\Person|string $user
+     * @param string                                    $credentials
+     * @param array                                     $roles
      */
     public function __construct($user, $credentials, array $roles = [])
     {

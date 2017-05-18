@@ -61,13 +61,17 @@ class DownloadHandler extends AbstractEntityHandler
             ->setStatus($model->getStatus())
             ->setPerson($this->helpers->getPersonHelper()->findOrCreatePerson($model->getPerson()))
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
-            ->setDatePublished($model->getDatePublished())
             ->setViewCount($model->getViewCount())
             ->setNumDownloads($model->getNumDownloads())
         ;
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
+        }
+        if ($model->getDatePublished()) {
+            $entity->setDatePublished($model->getDatePublished());
+        } else {
+            $entity->setDatePublished($entity->getDateCreated());
         }
 
         // update download category
@@ -77,7 +81,8 @@ class DownloadHandler extends AbstractEntityHandler
                 $model->getCategory()
             ));
         } else {
-            $entity->setCategory(null);
+            // use default category
+            $entity->setCategory($this->mappers->getDownloadCategoryMapper()->getDefaultCategory());
         }
 
         // update download blob

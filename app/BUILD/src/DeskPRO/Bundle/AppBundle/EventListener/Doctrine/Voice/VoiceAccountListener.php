@@ -87,6 +87,22 @@ class VoiceAccountListener
         }
 
         $account->setWorkspaceSid($workspace->sid);
+
+        // create "voicemail" queue
+        $voicemailQueue = $this->twilioAdapter->createVoicemailTaskQueue($account);
+        if (!$voicemailQueue) {
+            throw new TwilioException('Unable to create Twilio voicemail queue');
+        }
+
+        $account->setVoicemailQueueSid($voicemailQueue->sid);
+
+        // create "voicemail" worker
+        $voicemailWorker = $this->twilioAdapter->createVoicemailWorker($account);
+        if (!$voicemailWorker) {
+            throw new TwilioException('Unable to create Twilio voicemail worker');
+        }
+
+        $account->setVoicemailWorkerSid($voicemailWorker->sid);
     }
 
     /**
@@ -114,9 +130,15 @@ class VoiceAccountListener
             throw new TwilioException('Unable to create Twiml app');
         }
 
-        $account->setTwimlAppSid($twimlApp->sid);
-        $this->em->persist($account);
-        $this->em->flush();
+        $this->em->getConnection()->update(
+            'voice_accounts',
+            [
+                'twiml_app_sid' => $twimlApp->sid,
+            ],
+            [
+                'id' => $account->getId(),
+            ]
+        );
     }
 
     /**

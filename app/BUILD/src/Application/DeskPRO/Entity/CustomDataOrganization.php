@@ -58,6 +58,13 @@ class CustomDataOrganization extends CustomDataAbstract
      */
     protected $root_field;
 
+    public function setOrganization(Organization $organization)
+    {
+        $this->setModelField('organization', $organization);
+
+        return $this;
+    }
+
     public function getOrganizationId()
     {
         return $this->organization['id'];

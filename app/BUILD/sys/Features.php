@@ -28,12 +28,22 @@
 
 namespace DpSys;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvFactory;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\DependencyInjection\Exception\LogicException;
+
 /**
  * This class handles feature flags for both licensed features as well as experimental features.
  */
 final class Features
 {
     const VOICE = 'voice';
+    const DEV   = 'dev';
+
+    /** @var SettingsResolver */
+    private $settingsResolver;
 
     /**
      * @var Features
@@ -57,6 +67,16 @@ final class Features
     }
 
     /**
+     * @internal
+     *
+     * @param SettingsResolver $settingsResolver
+     */
+    public function _setSettingsResolver(SettingsResolver $settingsResolver)
+    {
+        $this->settingsResolver = $settingsResolver;
+    }
+
+    /**
      * Do we want to enable an experimental feature?
      *
      * @param string $id The id of the feature (should be a constant above)
@@ -65,8 +85,8 @@ final class Features
      */
     private function hasExperimental($id)
     {
-        return $this->getDpEnv()->getConfig('settings.enable_experimental.all')
-            || $this->getDpEnv()->getConfig('settings.enable_experimental.'.$id);
+        return $this->getAppEnv()->getConfig('settings.enable_experimental.all')
+            || $this->getAppEnv()->getConfig('settings.enable_experimental.'.$id);
     }
 
     /**
@@ -78,13 +98,41 @@ final class Features
      */
     public function hasFeature($id)
     {
+        /*
+         * @TODO aftery long discussion with SY and tries to pass here featuresCollection I postponed it.
+         * The main purpose to use featuresCollection here - avoid need to change hasBeta to hasFeature in templates
+         * see FeaturesListener.
+         * Generally it is a good idea, but internal settings of featuresCollection won't work (hasFeature called
+         * before it) also we cant pass featuresCollection here via DI cause circular dependency occurs.
+         */
         switch ($id) {
             case self::VOICE:
                 return $this->hasVoice();
+            case self::DEV:
+                return $this->getAppEnv()->isQa() || $this->getAppEnv()->isDebug();
             default:
                 // assume it's an arbitrary experimental flag
                 return $this->hasExperimental($id);
         }
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return bool
+     */
+    public function hasBeta($id)
+    {
+        if (!$this->settingsResolver) {
+            $e = new LogicException('There is no settings resolver set in DpSys\Features. Check the code!');
+            SystemErrorHandler::handleException($e);
+
+            return false;
+        }
+
+        $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $id);
+
+        return $this->settingsResolver->getGlobalSettings()->getBool($key, false);
     }
 
     /**
@@ -95,7 +143,7 @@ final class Features
     public function hasVoice()
     {
         return ($this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev'))
-            && $this->hasExperimental('voice');
+            && $this->hasBeta('voice');
     }
 
     /**
@@ -107,13 +155,10 @@ final class Features
     }
 
     /**
-     * @return \DpRun\DpEnv
+     * @return \DeskPRO\Bundle\AppBundle\AppEnv\AppEnv
      */
-    private function getDpEnv()
+    private function getAppEnv()
     {
-        /* @var \DpRun\DpEnv $DP_ENV */
-        global $DP_ENV;
-
-        return $DP_ENV;
+        return AppEnvFactory::create();
     }
 }

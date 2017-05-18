@@ -180,7 +180,6 @@ class UserGroupHelper
 
         $entity = new Usergroup();
         $entity->setTitle($name);
-        $entity->setSysName($sysName);
         $entity->setIsAgentGroup($isAgent);
 
         $this->persister->persistAndFlush($entity);

@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
@@ -92,6 +93,16 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     protected $is_archived = false;
 
     /**
+     * Indicate is chat pinned or not.
+     *
+     * @var bool
+     * @ORM\Column(type="boolean", options={"default" = 0}, nullable=false)
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    protected $is_pinned = false;
+
+    /**
      * DateTime when chat was first time created.
      *
      * @var \DateTime
@@ -105,7 +116,7 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      * Obviously - last message date time.
      *
      * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=true)
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      */
@@ -122,9 +133,19 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     protected $name;
 
     /**
+     * @var Person
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="admin_id", referencedColumnName="id", onDelete="SET NULL")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     */
+    protected $admin;
+
+    /**
      * List of participating in chat entities.
      *
-     * @var AgentChatParticipant[] an id array of participants
+     * @var AgentChatParticipant[]|ArrayCollection an id array of participants
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant", mappedBy="chat",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      */
@@ -153,7 +174,6 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('date_last_message', new \DateTime());
         $this->setModelField('participants', new ArrayCollection());
         $this->setModelField('messages', new ArrayCollection());
     }
@@ -207,6 +227,26 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
     }
 
     /**
+     * @return bool
+     */
+    public function isPinned()
+    {
+        return $this->is_pinned;
+    }
+
+    /**
+     * @param bool $pinned
+     *
+     * @return $this
+     */
+    public function setPinned($pinned = true)
+    {
+        $this->setModelField('is_pinned', (bool) $pinned);
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateCreated()
@@ -249,7 +289,27 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param Person $admin
+     *
+     * @return $this
+     */
+    public function setAdmin(Person $admin)
+    {
+        $this->setModelField('admin', $admin);
 
         return $this;
     }
@@ -326,7 +386,8 @@ class AgentChat implements EntityInterface, NotifyPropertyChanged, PersonList
                     $addPerson($person);
                 }
             }
-            if ($participant->getDepartment() && $persons = $participant->getDepartment()->getPersonList()) {
+            if ($participant->getDepartment()) {
+                $persons = App::$container->get('data.departments')->getDepartmentAgents($participant->getDepartment());
                 foreach ($persons as $person) {
                     $addPerson($person);
                 }

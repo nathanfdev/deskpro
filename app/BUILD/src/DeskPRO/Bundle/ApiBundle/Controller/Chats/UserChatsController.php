@@ -44,6 +44,7 @@ use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -78,13 +79,11 @@ use Symfony\Component\HttpFoundation\Response;
  * )
  * @ApiDoc(
  *     target="postAction",
- *     parameters = {
- *         { "name" = "subject", "dataType" = "string", "format" = "string", "description" = "Chat subject", "required" = false },
- *         { "name" = "person", "dataType" = "string|integer", "format" = "string|integer", "description" = "Person id or email address", "required" = false },
- *         { "name" = "person_email", "dataType" = "string", "format" = "string", "description" = "Guest email address", "required" = false },
- *         { "name" = "agent", "dataType" = "string|integer", "format" = "string|integer", "description" = "Assigned agent id or email address", "required" = false },
- *         { "name" = "chat_department", "dataType" = "integer", "format" = "integer", "description" = "Chat department id", "required" = true },
- *         { "name" = "fields", "dataType" = "object", "format" = "object", "description" = "Custom fields", "required" = false}
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\ChatConversation"
+ *      }
  *     }
  * )
  */
@@ -119,23 +118,24 @@ class UserChatsController extends CrudController
      * Assign a chat conversation to an agent.
      *
      * @ApiDoc(
-     *      description="Assign chat to agent",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "dataType"="integer",
-     *          },
-     *          {
-     *              "name"="agentId",
-     *              "requirement"="\d+",
-     *              "dataType"="integer",
-     *          }
-     *      },
-     *      statusCodes={
-     *         200="Returned if successful request",
-     *         400="Returned if you filter set was malformed"
-     *      }
+     *     description="Assign chat to agent",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *         },
+     *         {
+     *             "name"="agentId",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *         }
+     *     },
+     *     statusCodes={
+     *        200="Returned if successful request",
+     *        400="Returned if you filter set was malformed"
+     *     },
+     *     noInput=true
      * )
      * @Rest\Put("/{id}/assign/{agentId}", requirements={"id"="\d+", "agentId"="\d+"})
      *
@@ -167,18 +167,19 @@ class UserChatsController extends CrudController
      * End a chat conversation.
      *
      * @ApiDoc(
-     *      description="End a chat conversation",
-     *      requirements={
-     *          {
-     *              "name"="id",
-     *              "requirement"="\d+",
-     *              "dataType"="integer",
-     *          }
-     *      },
-     *      statusCodes={
-     *         200="Returned if successful request",
-     *         400="Returned if you filter set was malformed"
-     *      }
+     *     description="End a chat conversation",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "dataType"="integer",
+     *         }
+     *     },
+     *     statusCodes={
+     *        200="Returned if successful request",
+     *        400="Returned if you filter set was malformed"
+     *     },
+     *     noInput=true
      * )
      * @Rest\Put("/{id}/end", requirements={"id"="\d+"})
      *
@@ -190,10 +191,7 @@ class UserChatsController extends CrudController
     public function endAction(Request $request, $id)
     {
         $conversation = $this->findEntity($id, $request);
-
-        $conversation
-            ->setStatus(ChatConversation::STATUS_ENDED)
-        ;
+        $conversation->setStatus(ChatConversation::STATUS_ENDED);
 
         $em = $this->getManager();
         $em->persist($conversation);
@@ -201,7 +199,7 @@ class UserChatsController extends CrudController
 
         $this->get('event_dispatcher')->dispatch(UserChatEvent::ENDED, new UserChatEvent($conversation, [], ['chat_ended']));
 
-        return View::create();
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -284,9 +282,9 @@ class UserChatsController extends CrudController
     /**
      * @param ChatConversation $model
      *
-     * @return ChatConversation
+     * {@inheritdoc}
      */
-    protected function persistModel($model)
+    protected function persistModel($model, FormInterface $form = null)
     {
         parent::persistModel($model);
         $this->get('event_dispatcher')->dispatch(UserChatEvent::STARTED, new UserChatEvent($model));

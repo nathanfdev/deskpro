@@ -34,6 +34,7 @@ namespace Application\DeskPRO\Usersource;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\IdentityFinderInterface;
@@ -52,18 +53,20 @@ class UsersourceManager
     protected $usersources = null;
 
     /**
-     * @var \Application\DeskPRO\App\AppManipulator
+     * @var DeskproContainer
      */
-    private $app_manipulator;
+    private $container;
 
     /**
-     * @param EntityManager      $em
-     * @param App\AppManipulator $app_manipulator
+     * Container.
+     *
+     * @param EntityManager    $em
+     * @param DeskproContainer $container
      */
-    public function __construct(EntityManager $em, App\AppManipulator $app_manipulator)
+    public function __construct(EntityManager $em, DeskproContainer $container)
     {
-        $this->em              = $em;
-        $this->app_manipulator = $app_manipulator;
+        $this->em        = $em;
+        $this->container = $container;
     }
 
     public function ensureSsoSettings(Usersource $usersource)
@@ -80,7 +83,7 @@ class UsersourceManager
                 if ($source->id != $usersource->id) {
                     $source->disableSso();
                     if ($source->app) {
-                        $this->app_manipulator->disableSso($source->app);
+                        $this->container->getSystemService('app_manipulator')->disableSso($source->app);
                     }
                 }
             }

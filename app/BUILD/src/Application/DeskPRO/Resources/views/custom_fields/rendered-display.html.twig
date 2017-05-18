@@ -14,5 +14,19 @@
 	{% endblock %}
 {% endset %}
 {% block content %}
-	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} customfield rendered dont-break-out" id="{{elId}}_rendered_wrap">{% if nl2br is defined and nl2br %}{{ field_rendered|escape|nl2br }}{% else %}{{ field_rendered|raw }}{% endif %}{{ field_def.getHtmlOption()|raw }}</div>
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} customfield rendered dont-break-out" id="{{elId}}_rendered_wrap">
+		{% if nl2br is defined and nl2br %}
+			{% set propValue = field_rendered|escape|nl2br %}
+		{% else %}
+			{% set propValue = field_rendered|escape %}
+		{% endif %}
+
+		{% if field_def.getOption('clickable_links') %}
+			{{ propValue|safe_link_urls_html }}
+		{% else %}
+			{{ propValue|raw }}
+		{% endif %}
+
+		{{ field_def.getHtmlOption()|raw }}
+	</div>
 {% endblock %}

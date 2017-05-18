@@ -85,7 +85,7 @@ class VoicePhoneCall
      *
      * @var string
      */
-    private $fromNumber;
+    private $externalNumber;
 
     /**
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
@@ -156,6 +156,13 @@ class VoicePhoneCall
     private $recording;
 
     /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $duration;
+
+    /**
      * @JMS\Type("deferred<entity<Application\DeskPRO\Entity\Ticket>>")
      *
      * @var Ticket
@@ -169,22 +176,23 @@ class VoicePhoneCall
      */
     public function __construct(VoicePhoneCallEntity $phoneCall)
     {
-        $this->id            = $phoneCall->getId();
-        $this->taskSid       = $phoneCall->getTaskSid();
-        $this->callSid       = $phoneCall->getCallSid();
-        $this->conferenceSid = $phoneCall->getConferenceSid();
-        $this->number        = $phoneCall->getNumber();
-        $this->fromNumber    = $phoneCall->getFromNumber();
-        $this->person        = $phoneCall->getPerson();
-        $this->type          = $phoneCall->getType();
-        $this->status        = $phoneCall->getStatus();
-        $this->data          = $phoneCall->getData();
-        $this->participants  = $phoneCall->getParticipants();
-        $this->phoneCallLogs = $phoneCall->getPhoneCallLogs();
-        $this->dateCreated   = $phoneCall->getDateCreated();
-        $this->dateStarted   = $phoneCall->getDateStarted();
-        $this->dateEnded     = $phoneCall->getDateEnded();
-        $this->recording     = $phoneCall->getRecording();
+        $this->id             = $phoneCall->getId();
+        $this->taskSid        = $phoneCall->getTaskSid();
+        $this->callSid        = $phoneCall->getCallSid();
+        $this->conferenceSid  = $phoneCall->getConferenceSid();
+        $this->number         = $phoneCall->getNumber();
+        $this->externalNumber = $phoneCall->getExternalNumber();
+        $this->person         = $phoneCall->getPerson();
+        $this->type           = $phoneCall->getType();
+        $this->status         = $phoneCall->getStatus();
+        $this->data           = $phoneCall->getData();
+        $this->participants   = $phoneCall->getParticipants();
+        $this->phoneCallLogs  = $phoneCall->getPhoneCallLogs();
+        $this->dateCreated    = $phoneCall->getDateCreated();
+        $this->dateStarted    = $phoneCall->getDateStarted();
+        $this->dateEnded      = $phoneCall->getDateEnded();
+        $this->recording      = $phoneCall->getRecording();
+        $this->duration       = $phoneCall->getDuration();
     }
 
     /**

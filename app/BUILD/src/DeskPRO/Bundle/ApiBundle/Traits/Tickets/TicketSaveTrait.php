@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
 
 /**
  * Class SaveTicketTrait.
@@ -44,27 +45,33 @@ trait TicketSaveTrait
      * Save the ticket via ticket manager with proper context.
      *
      * @param Ticket $ticket
+     * @param array  $options
      */
-    protected function saveTicket(Ticket $ticket)
+    protected function saveTicket(Ticket $ticket, array $options = [])
     {
         $manager = $this->getContainer()->getTicketManager();
         $changes = $ticket->getStateChangeRecorder();
 
         if ($changes->isNewTicket()) {
-            $event = 'new';
+            $event = ExecutorContext::EVENT_NEW;
         } elseif ($changes->hasNewReply()) {
-            $event = 'newreply';
+            $event = ExecutorContext::EVENT_REPLY;
         } elseif ($changes->isDeleted()) {
-            $event = 'delete';
+            $event = ExecutorContext::EVENT_DELETE;
         } else {
-            $event = 'update';
+            $event = ExecutorContext::EVENT_UPDATE;
         }
 
-        $eventMethod = 'api';
+        $eventMethod = ExecutorContext::METHOD_API;
         if ($this->getContainer()->get('api_client_info')->isMobileClient()) {
-            $eventMethod = 'mobile';
+            $eventMethod = ExecutorContext::METHOD_MOBILE;
         }
 
-        $manager->saveTicket($ticket, $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod));
+        $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod);
+        if (isset($options['suppress_user_notify']) && $options['suppress_user_notify']) {
+            $context->getVars()->set('mute_user_emails', true);
+        }
+
+        $manager->saveTicket($ticket, $context);
     }
 }

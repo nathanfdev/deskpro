@@ -36,6 +36,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usergroup;
+use Doctrine\ORM\EntityManager;
 
 class NewPerson
 {
@@ -69,18 +71,17 @@ class NewPerson
     public $language;
 
     /** @var Person */
-    protected $_person;
+    protected $person;
 
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    protected $_em;
+    protected $em;
 
-    public function __construct(Person $person_context)
+    public function __construct(Person $personContext, EntityManager $entityManager)
     {
-        $this->_person_context = $person_context;
-
-        $this->_em = App::getOrm();
+        $this->personContext = $personContext;
+        $this->em            = $entityManager;
     }
 
     public function setCustomFieldForm(array $form)
@@ -90,12 +91,12 @@ class NewPerson
 
     public function save()
     {
-        $this->_em->beginTransaction();
+        $this->em->beginTransaction();
 
         $person = new Person();
 
         if ($this->name) {
-            $person->name = $this->name;
+            $person->setName($this->name);
         }
 
         if ($this->email) {
@@ -103,7 +104,7 @@ class NewPerson
         }
 
         if ($this->timezone) {
-            $person->timezone = $this->timezone;
+            $person->setTimezone($this->timezone);
         }
 
         if ($this->password) {
@@ -111,55 +112,52 @@ class NewPerson
         }
 
         if ($this->language) {
-            $person->language = $this->language;
+            $person->setLanguage($this->language);
         }
 
         $org = null;
         if ($this->organization_id) {
-            $org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
+            $org = $this->em->find(Organization::class, $this->organization_id);
             if ($org) {
-                $person->organization          = $org;
-                $person->organization_position = $this->organization_position;
+                $person->setOrganization($org)->setOrganizationPosition($this->organization_position);
             }
         }
 
         foreach ($this->usergroup_ids as $ug_id) {
-            $ug = $this->_em->find('DeskPRO:Usergroup', $ug_id);
+            $ug = $this->em->find(Usergroup::class, $ug_id);
             if ($ug_id) {
-                $person->usergroups->add($ug);
+                $person->addUsergroup($ug);
             }
         }
 
-        $person->creation_system = Person::CREATED_WEB_AGENT;
+        $person->setCreationSystem(Person::CREATED_WEB_AGENT);
 
-        $this->_em->persist($person);
-        $this->_em->flush();
+        $this->em->persist($person);
+        $this->em->flush();
 
         if ($this->custom_fields) {
             $manager = App::$container->getPersonFieldManager();
             $manager->saveFormToObject($this->custom_fields, $person);
         }
 
-        $this->_em->flush();
-        $this->_em->commit();
+        $this->em->flush();
+        $this->em->commit();
 
         $person->getLabelManager()->setLabelsArray($this->labels);
-        $this->_em->flush();
+        $this->em->flush();
 
-        if (!$org && $this->new_organization && $this->_person_context->hasPerm('agent_org.create')) {
-            $org       = new Organization();
-            $org->name = $this->new_organization;
-            $this->_em->persist($org);
-
-            $person->organization          = $org;
-            $person->organization_position = $this->organization_position;
+        if (!$org && $this->new_organization && $this->personContext->hasPerm('agent_org.create')) {
+            $org = new Organization();
+            $org->setName($this->new_organization);
+            $this->em->persist($org);
+            $person->setOrganization($org)->setOrganizationPosition($this->organization_position);
         }
 
-        $this->_person = $person;
+        $this->person = $person;
     }
 
     public function getPerson()
     {
-        return $this->_person;
+        return $this->person;
     }
 }

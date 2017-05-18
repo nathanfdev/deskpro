@@ -34,6 +34,9 @@ namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -65,7 +68,7 @@ class NewTicketValidator extends AbstractValidator
     protected $is_resolved = false;
 
     /**
-     * @param array $page_data
+     * @param Layout $layout
      */
     public function setLayout(Layout $layout)
     {
@@ -178,7 +181,7 @@ class NewTicketValidator extends AbstractValidator
 
             case 'ticket_field':
                 $field = App::getSystemService('TicketFieldsManager')->getFieldFromId($item->getFieldId());
-                if ($field && $field->is_enabled) {
+                if ($field instanceof CustomDefTicket && $field->isEnabled()) {
                     if ($field->getOption('agent_validation_resolve') && !$this->is_resolved) {
                         // no validation, its only on resolve
                     } else {
@@ -210,7 +213,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('ticket.'.$code, ['message' => $str, 'field' => 'ticket_field_'.$field->getId()]);
+                            $this->addError('ticket.'.$field->getId().'.'.$code, ['message' => $str, 'field' => 'ticket_field_'.$field->getId()]);
                         }
                     }
                 }
@@ -218,7 +221,7 @@ class NewTicketValidator extends AbstractValidator
 
             case 'user_field':
                 $field = App::getSystemService('PersonFieldsManager')->getFieldFromId($item->getFieldId());
-                if ($field && $field->is_enabled) {
+                if ($field instanceof CustomDefPerson && $field->isEnabled()) {
                     if ($field->getOption('agent_validation_resolve') && !$this->is_resolved) {
                         // no validation, its only on resolve
                     } else {
@@ -246,15 +249,20 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'person_field_'.$field->getId()]);
+                            $this->addError('person.'.$field->getId().'.'.$code, ['message' => $str, 'field' => 'person_field_'.$field->getId()]);
                         }
                     }
                 }
                 break;
 
             case 'org_field':
+                // make sure the user belongs to an org
+                if (!$this->newticket->organization_id) {
+                    return;
+                }
+
                 $field = App::getSystemService('OrgFieldsManager')->getFieldFromId($item->getFieldId());
-                if ($field && $field->is_enabled) {
+                if ($field instanceof CustomDefOrganization && $field->isEnabled()) {
                     if ($field->getOption('agent_validation_resolve') && !$this->is_resolved) {
                         // no validation, its only on resolve
                     } else {
@@ -282,7 +290,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.'.$code, ['message' => $str, 'field' => 'org_field_'.$field->getId()]);
+                            $this->addError('org.'.$field->getId().'.'.$code, ['message' => $str, 'field' => 'org_field_'.$field->getId()]);
                         }
                     }
                 }

@@ -26,21 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketDateResolved;
 
-use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketDateResolvedTermCompiler.
+ */
 class DbalTicketDateResolvedTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $query_part = $this->getDateHelper()->buildQueryPart(
+        $qp = $this->getDateHelper()->buildQueryPart(
             'ticket.date_resolved',
             $term->getOp(),
             $term->getOption('date'),
@@ -48,8 +49,8 @@ class DbalTicketDateResolvedTermCompiler extends AbstractDbalTermCompiler
             $term->getOption('ignore_time')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

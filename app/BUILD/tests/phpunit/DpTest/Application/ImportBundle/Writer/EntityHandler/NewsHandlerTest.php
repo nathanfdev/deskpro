@@ -107,6 +107,23 @@ class NewsHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('label 2', $entity->getLabels()[1]->getLabel());
     }
 
+    public function test_default_category()
+    {
+        $category = new Entity\NewsCategory();
+        $category->setRealTitle('cat');
+
+        $this->em()->persist($category);
+        $this->em()->flush($category);
+
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+
+        $entity = $this->getBaseEntity();
+        $this->assertNotNull($entity);
+        $this->assertNotNull($entity->getCategory());
+    }
+
     /**
      * @return Model\News
      */

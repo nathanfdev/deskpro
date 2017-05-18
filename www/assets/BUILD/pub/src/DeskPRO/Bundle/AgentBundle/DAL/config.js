@@ -9,7 +9,8 @@ import { PersonSettingRepository } from './Repositories/PersonSettingRepository'
 import { ArticlePendingCreateRepository } from './Repositories/ArticlePendingCreateRepository';
 import { ContentRepository } from './Repositories/ContentRepository';
 import { CommentsRepository } from './Repositories/CommentsRepository';
-import { OnboardingRepository } from './Repositories/OnboardingRepository';
+import GuideRepository from './Repositories/GuideRepository';
+import OnboardingRepository from './Repositories/OnboardingRepository';
 
 export const repositoriesConfig = {
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
@@ -19,6 +20,8 @@ export const repositoriesConfig = {
   Feedback:             { type: 'api', url: '/feedback', repositoryClass: FeedbackRepository },
   FeedbackCategory:     { type: 'api', url: '/feedback_categories' },
   FeedbackComment:      { type: 'api', url: '/feedback_comments', repositoryClass: FeedbackCommentRepository },
+  Guide:                { type: 'api', url: '/guides', repositoryClass: GuideRepository },
+  Topic:                { type: 'api', url: '/topics' },
   Organization:         { type: 'api', url: '/organizations' },
   Onboarding:           { type: 'api', url: '/people/onboarding', repositoryClass: OnboardingRepository },
   Person:               { type: 'api', url: '/people' },
@@ -36,7 +39,9 @@ export const repositoriesConfig = {
     url:             '/article_pending_creates',
     repositoryClass: ArticlePendingCreateRepository
   },
-  VoiceQueue:     { type: 'api', url: '/voice_queues', allowAll: true },
-  VoiceNumber:    { type: 'api', url: '/voice_numbers', allowAll: true },
-  VoicePhoneCall: { type: 'api', url: '/voice_phone_calls' }
+  VoiceQueue:      { type: 'api', url: '/voice_queues', allowAll: true },
+  VoiceNumber:     { type: 'api', url: '/voice_numbers', allowAll: true },
+  VoicePhoneCall:  { type: 'api', url: '/voice_phone_calls' },
+  VoicemailRecord: { type: 'api', url: '/voicemail_records', allowAll: true },
+  Brands:          { type: 'api', url: '/brands', allowAll: true }
 };

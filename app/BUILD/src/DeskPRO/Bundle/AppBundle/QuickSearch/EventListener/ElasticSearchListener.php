@@ -26,18 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\QuickSearch\EventListener;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvent;
 use DeskPRO\Bundle\AppBundle\QuickSearch\QuickSearchEvents;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
 use FOS\ElasticaBundle\Repository;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -56,21 +53,14 @@ class ElasticSearchListener implements EventSubscriberInterface
     private $settings_resolver;
 
     /**
-     * @var EventLogger
-     */
-    private $logger;
-
-    /**
      * @param RepositoryManager $elastic_manager
      * @param SettingsResolver  $settings_resolver
-     * @param EventLogger       $logger
      */
     public function __construct(
-        RepositoryManager $elastic_manager, SettingsResolver $settings_resolver, EventLogger $logger)
+        RepositoryManager $elastic_manager, SettingsResolver $settings_resolver)
     {
         $this->elastic_manager   = $elastic_manager;
         $this->settings_resolver = $settings_resolver;
-        $this->logger            = $logger;
     }
 
     /**
@@ -85,8 +75,10 @@ class ElasticSearchListener implements EventSubscriberInterface
 
     /**
      * @param QuickSearchEvent $event
+     * @param string           $eventName
+     * @param EventDispatcher  $dispatcher
      */
-    public function onSearch(QuickSearchEvent $event)
+    public function onSearch(QuickSearchEvent $event, $eventName, EventDispatcher $dispatcher)
     {
         $context = $event->getContext();
         $request = $event->getRequest();
@@ -100,7 +92,7 @@ class ElasticSearchListener implements EventSubscriberInterface
         // the DB search may be skipped according to event payload
         // ES listener should not be subscribed if ES setting is disabled
         if (!$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
-            $this->dispatchFallback($event);
+            $dispatcher->dispatch(QuickSearchEvents::SEARCH_FALLBACK, $event);
 
             return;
         }
@@ -117,22 +109,14 @@ class ElasticSearchListener implements EventSubscriberInterface
                 $sort = $request->getSort();
             }
 
-            $options = array_merge($context->getCriteriaOptions(), ['sort_type' => $sort]);
+            $options = array_merge($context->getCriteriaOptions(), $request->getParams(), ['sort_type' => $sort]);
             $result  = $repository->find($query, null, $options);
             foreach ($result as $entity) {
                 $context->addEntity($entity);
             }
         } catch (\Exception $e) {
-            $this->logger->log($e);
-            $this->dispatchFallback($event);
+            SystemErrorHandler::logException($e);
+            $dispatcher->dispatch(QuickSearchEvents::SEARCH_FALLBACK, $event);
         }
-    }
-
-    /**
-     * @param QuickSearchEvent $event
-     */
-    private function dispatchFallback(QuickSearchEvent $event)
-    {
-        $event->getDispatcher()->dispatch(QuickSearchEvents::SEARCH_FALLBACK, $event);
     }
 }

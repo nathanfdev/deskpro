@@ -36,6 +36,8 @@ use Application\DeskPRO\App;
 
 class DateField extends CustomFieldAbstract
 {
+    const DEFAULT_CALENDAR = 'gregorian';
+
     /** @var string */
     public $default_value = '';
     /** @var string */
@@ -59,6 +61,8 @@ class DateField extends CustomFieldAbstract
     public $date_valid_range2 = null;
     /** @var array|null */
     public $date_valid_dow = null;
+    /** @var string */
+    public $calendar;
 
     public function init()
     {
@@ -102,6 +106,8 @@ class DateField extends CustomFieldAbstract
                 $this->date_valid_type = null;
             }
         }
+
+        $this->calendar = $this->_field->getOption('calendar') ?: self::DEFAULT_CALENDAR;
     }
 
     protected function setFieldProperties()
@@ -185,5 +191,6 @@ class DateField extends CustomFieldAbstract
         }
 
         $field->setOption('date_valid_timezone', App::getCurrentPerson()->getTimezone());
+        $field->setOption('calendar', $this->calendar);
     }
 }

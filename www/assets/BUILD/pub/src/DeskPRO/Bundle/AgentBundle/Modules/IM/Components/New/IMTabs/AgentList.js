@@ -17,16 +17,13 @@ class AgentList extends AbstractList {
       return null;
     }
 
-    const className = ['im', 'agent'];
-    if (!agent.get('online')) {
-      className.push('offline');
-    }
+    const className = ['im', 'agent', agent.get('online') ? 'online' : 'offline'];
 
     return (
       <ListElement
         key={agent.get('id')}
         className={classNames(className)}
-        imageNode={this.getAvatar(agent)}
+        imageNode={this.getAvatar(agent, 24, [], agent.get('name'))}
       >
         <div
           onClick={() => this.props.onParticipantClick(agent.get('id'), 'agent')}
@@ -34,16 +31,12 @@ class AgentList extends AbstractList {
         >
           <div className="header">{agent.get('name')}</div>
         </div>
-        <div className="timestamp last-seen content right floated">
-          {AbstractList.getTimestamp(agent.get('last_seen'))}
-        </div>
-
       </ListElement>
     );
   }
 
   getItems() {
-    return this.filterList(this.props.agents, 'name').map(agent => this.getItem(agent));
+    return this.props.agents.map(agent => this.getItem(agent));
   }
 
   render() {

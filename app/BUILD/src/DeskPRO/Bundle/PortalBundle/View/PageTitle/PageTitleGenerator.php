@@ -39,9 +39,11 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -277,6 +279,31 @@ class PageTitleGenerator
         return (string) $builder;
     }
 
+    public function guides($topicOrGuide = null)
+    {
+        $builder = $this->createHelpdeskTitleBuilder();
+
+        $sectionTitle = $this->phrase('portal.guides.section-title');
+
+        if ($topicOrGuide instanceof Guide) {
+            $builder->prependSection(
+                $this->getGuideSection($topicOrGuide, $sectionTitle)
+            );
+        } elseif ($topicOrGuide instanceof Topic) {
+            $builder->prependSection(
+                $this->getGuideSection(
+                    $topicOrGuide->getGuide(),
+                    $sectionTitle
+                )
+            );
+            $builder->prependSection($topicOrGuide->getTitle());
+        } else {
+            $builder->prependSection($sectionTitle);
+        }
+
+        return (string) $builder;
+    }
+
     public function search()
     {
         $builder = $this->createHelpdeskTitleBuilder();
@@ -327,6 +354,24 @@ class PageTitleGenerator
         }
 
         $section[] = $this->language_manager->objectPhrase($cat);
+
+        return $section;
+    }
+
+    protected function getGuideSection(Guide $guide, $prepend_to_section)
+    {
+        $section = [];
+
+        $permission_bag = $this->getCurrentUserPermissionBag();
+        if (!$permission_bag->hasContentCategoryAccess($guide)) {
+            return $section;
+        }
+
+        if ($prepend_to_section) {
+            $section[] = $prepend_to_section;
+        }
+
+        $section[] = $this->language_manager->objectPhrase($guide);
 
         return $section;
     }

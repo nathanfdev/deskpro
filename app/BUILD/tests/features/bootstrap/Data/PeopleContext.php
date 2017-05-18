@@ -310,6 +310,7 @@ class PeopleContext extends BaseContext
 
     /**
      * @param string $label
+     * @param Person $person
      *
      * @return LabelPerson
      */
@@ -334,6 +335,7 @@ class PeopleContext extends BaseContext
      */
     private function createUsergroup($name, $isAgent)
     {
+        /** @var Usergroup $group */
         $group = $this->repository(Usergroup::class)->findOneBy(['sys_name' => $name]);
         if (!$group) {
             $group = SimpleFactory::create(Usergroup::class, [

@@ -26,142 +26,63 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\CountBadge;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * Represents a count, typically used to show counters/badges in a UI.
+ * Class Count.
  */
-class Count
+class Count extends AbstractCount
 {
-    /**
-     * Count itself.
-     *
-     * @JMS\Type("integer")
-     *
-     * @var int Count value
-     */
-    private $count = 0;
-
     /**
      * Nested counts.
      *
-     * @JMS\Type("map<DeskPRO\Bundle\AppBundle\CountBadge\Count>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\CountBadge\Count>")
      * @JMS\MaxDepth(0)
      *
      * @var Count[]
      */
-    private $nested = [];
-
-    /**
-     * Entity identity.
-     *
-     * @var string
-     */
-    private $id;
-
-    /**
-     * Count type.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $type;
-
-    /**
-     * Count title.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $title;
-
-    /**
-     * Grouping option.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $grouped_by;
-
-    /**
-     * Make constructor private to allow construction only through factory methods.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
-     * @param string $grouped_by
-     *
-     * @return Count
-     */
-    public static function fromGroupedBy($grouped_by)
-    {
-        $count = new self();
-        $count->setGroupedBy($grouped_by);
-
-        return $count;
-    }
-
-    /**
-     * @param int $value
-     *
-     * @return Count
-     */
-    public static function fromValue($value)
-    {
-        $count = new self();
-        $count->setCount($value);
-
-        return $count;
-    }
+    protected $nested = [];
 
     /**
      * @param int    $value
      * @param string $id
      * @param string $type
      * @param string $title
-     * @param array  $nested
-     * @param string $grouped_by
+     * @param bool   $sumToValue If need to increase $this->value by nested count value
      *
-     * @return Count
+     * @return $this
      */
-    public static function create($value, $id, $type = null, $title = '', $grouped_by = null, array $nested = [])
+    public function addNested($value, $id, $type, $title = '', $sumToValue = false)
     {
-        $count = new self();
+        $count = new static();
         $count->setCount($value);
         $count->setId($id);
-        $count->setNested($nested);
-        $count->setGroupedBy($grouped_by);
         $count->setType($type);
         $count->setTitle($title);
 
-        return $count;
+        $this->nested[] = $count;
+
+        if ($sumToValue) {
+            $this->add($value);
+        }
+
+        return $this;
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
-    public function getCount()
+    public function addNestedInstance(AbstractCount $instance, $sumToValue = false)
     {
-        return $this->count;
-    }
-
-    /**
-     * @param int $count
-     */
-    public function setCount($count)
-    {
-        $this->count = (int) $count;
+        $this->nested[] = $instance;
+        if ($sumToValue) {
+            $this->add($instance->getCount());
+        }
+        if ($instance->getType()) {
+            $this->groupedBy = $instance->getType();
+        }
     }
 
     /**
@@ -170,138 +91,5 @@ class Count
     public function getNested()
     {
         return $this->nested;
-    }
-
-    /**
-     * @param Count[] $nested
-     */
-    public function setNested($nested)
-    {
-        $this->nested = $nested;
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId($id)
-    {
-        if ($id === null) {
-            $this->id = 0;
-        } else {
-            $this->id = $id;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     */
-    public function setTitle($title)
-    {
-        if ($title === null) {
-            $this->title = '';
-        } else {
-            $this->title = (string) $title;
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getGroupedBy()
-    {
-        return $this->grouped_by;
-    }
-
-    /**
-     * @param string $grouped_by
-     */
-    public function setGroupedBy($grouped_by)
-    {
-        $this->grouped_by = $grouped_by;
-    }
-
-    /**
-     * @param int    $value
-     * @param string $id
-     * @param string $type
-     * @param string $title
-     * @param bool   $sum_to_value     If need to increase $this->value by nested count value
-     * @param bool   $indexByGroupName If need to index an nested ID as array key
-     *
-     * @return $this
-     */
-    public function addNested($value, $id, $type, $title = '', $sum_to_value = false, $indexByGroupName = false)
-    {
-        $count = new self();
-        $count->setCount($value);
-        $count->setId($id);
-        $count->setType($type);
-        $count->setTitle($title);
-        if ($indexByGroupName) {
-            $this->nested[$id] = $count;
-        } else {
-            $this->nested[] = $count;
-        }
-
-        if ($sum_to_value) {
-            $this->add($value);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param Count $instance
-     * @param bool  $sum_to_value If need to increase $this->value by nested count value
-     */
-    public function addNestedInstance(Count $instance, $sum_to_value = false)
-    {
-        $this->nested[] = $instance;
-        if ($sum_to_value) {
-            $this->add($instance->getCount());
-        }
-        if ($instance->getType()) {
-            $this->grouped_by = $instance->getType();
-        }
-    }
-
-    /**
-     * @param int $int
-     */
-    public function add($int)
-    {
-        $this->count += $int;
     }
 }

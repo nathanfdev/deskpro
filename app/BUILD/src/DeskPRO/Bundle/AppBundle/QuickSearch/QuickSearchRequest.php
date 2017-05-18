@@ -50,6 +50,11 @@ class QuickSearchRequest
     private $query;
 
     /**
+     * @var array
+     */
+    private $params;
+
+    /**
      * @var string|null
      */
     private $sort;
@@ -86,12 +91,14 @@ class QuickSearchRequest
      *
      * @param Person $person
      * @param string $query
+     * @param array  $params
      * @param string $sort
      */
-    public function __construct(Person $person, $query, $sort = null)
+    public function __construct(Person $person, $query, $params, $sort = null)
     {
         $this->person = $person;
         $this->query  = $query;
+        $this->params = $params;
         $this->sort   = $sort;
     }
 
@@ -101,6 +108,24 @@ class QuickSearchRequest
     public function getQuery()
     {
         return $this->query;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params ?: [];
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getParam($name)
+    {
+        return isset($this->params[$name]) ? $this->params[$name] : null;
     }
 
     /**

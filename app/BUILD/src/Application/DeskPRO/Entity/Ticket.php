@@ -680,6 +680,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $this->__dp_auto_ticket_process = false;
 
+        // prevent auto ticket process of parent ticket while saving as well
+        // e.g. it's called in snippet formatter of reply action
+
+        $parentTicket = $this->getParentTicket();
+        if ($parentTicket && $parentTicket->__dp_auto_ticket_process) {
+            $parentTicket->disableAutoTicketProcess();
+        }
+
         return $this;
     }
 
@@ -1481,7 +1489,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function addSla(Sla $sla)
     {
         foreach ($this->ticket_slas as $ticket_sla) {
-            if ($ticket_sla->sla->id == $sla->id) {
+            if ($ticket_sla->sla === $sla) {
                 return $ticket_sla;
             }
         }
@@ -1503,17 +1511,21 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeSla(Sla $sla)
     {
+        $found = null;
         foreach ($this->ticket_slas as $k => $ticket_sla) {
-            if ($ticket_sla->sla->id == $sla->id) {
+            if ($ticket_sla->sla === $sla) {
                 $this->ticket_slas->remove($k);
-                $this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
-                $this->updateWorstSlaStatus();
 
-                return $ticket_sla;
+                // already found a dupe, dont double log
+                if (!$found) {
+                    $this->_onPropertyChanged('ticket_slas', null, $this->ticket_slas);
+                }
+                $this->updateWorstSlaStatus();
+                $found = $ticket_sla;
             }
         }
 
-        return;
+        return $found;
     }
 
     /**
@@ -1535,7 +1547,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function hasSla(Sla $sla)
     {
         foreach ($this->ticket_slas as $ticket_sla) {
-            if ($ticket_sla->sla->id == $sla->id) {
+            if ($ticket_sla->sla === $sla) {
                 return $ticket_sla;
             }
         }
@@ -1631,7 +1643,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             }
         }
 
-        $this->_onPropertyChanged('messages', null, $this->messages, true);
+        $this->_onPropertyChanged('messages', null, $message, true);
         $this->getStateChangeRecorder()->record('message', null, $message);
 
         if (!$message->is_agent_note) {
@@ -4541,6 +4553,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getCountUserReplies()
     {
         return $this->count_user_replies;
+    }
+
+    /**
+     * @param ArrayCollection $problems
+     *
+     * @return $this
+     */
+    public function setProblems($problems)
+    {
+        $this->setModelField('problems', $problems);
+
+        return $this;
     }
 
     /**

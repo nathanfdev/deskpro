@@ -5,7 +5,7 @@ services:
 
   security.feature_listener:
     class: DeskPRO\Bundle\AppBundle\Security\EventListener\FeatureListener
-    arguments: ["@deskpro.feature_flags", "@annotation_reader"]
+    arguments: ["@deskpro.feature_flags", "@deskpro.features_collection", "@annotation_reader"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -130,6 +130,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.article_category:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCategoriesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.article_comments:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\ArticleCommentsVoter
     tags:
@@ -157,6 +162,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.download_categories:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\DownloadCategoriesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.download_comments:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\DownloadCommentsVoter
     tags:
@@ -174,6 +184,11 @@ services:
 
   security.voter.permission_groups.news:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\NewsVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.news_categories:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\UserPublish\NewsCategoriesVoter
     tags:
       - { name: security.voter.permission_groups }
 
@@ -219,6 +234,11 @@ services:
 
   security.voter.permission_groups.ticket_messages:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.ticket_logs:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketLogsVoter
     tags:
       - { name: security.voter.permission_groups }
 

@@ -208,12 +208,25 @@
 			<ul class="attachment-list">
 				{% for attach_id in ticket_message_attachments[message.id] %}
 					{% set ticket_attach = ticket_attachments[attach_id] %}
-					<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}with-icon with-icon-attachment with-icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}{% if ticket_attach.blob.isArchive() %} archive-blob{% endif %}" rel="message-{{message.id}}">
-						{% if ticket_attach.blob.isImage() %}
-							<a class="dragout" draggable="true" data-downloadurl="{{ticket_attach.blob.content_type}}:{{ticket_attach.blob.filename}}:{{ ticket_attach.blob.getDownloadUrl(true) }}" data-blob-authid="{{ ticket_attach.blob.getAuthId() }}" href="{{ ticket_attach.blob.download_url }}" data-deskpro-url="{{ ticket_attach.blob.getDownloadUrl(false, false) }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 'filename': ticket_attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+					{% set blob = ticket_attach.blob %}
+					<li class="{% if blob.isImage() %}is-image{% else %}with-icon with-icon-attachment with-icon-filetype-{{blob.extension|default('none')}}{% endif %}{% if blob.isArchive() %} archive-blob{% endif %}" rel="message-{{message.id}}">
+						{% if blob.isImage() %}
+							<a class="dragout"
+								draggable="true"
+								data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}"
+								data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}"
+								data-deskpro-url="{{ blob.getDownloadUrl(false, false) }}"
+								target="_blank">
+								<img src="{{ blob.getThumbnailUrl(50, 1, true) }}"
+									 alt=""
+									 class="preview" />
+							</a>
 						{% endif %}
-						<a class="dragout" draggable="true" data-downloadurl="{{ticket_attach.blob.content_type}}:{{ticket_attach.blob.filename}}:{{ ticket_attach.blob.getDownloadUrl(true) }}" data-blob-authid="{{ ticket_attach.blob.getAuthId() }}" href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
-						<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+						<a class="dragout" draggable="true" data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}" data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}" target="_blank">{{blob.filename}}</a>
+						<span class="size">({{ blob.readable_filesize }})</span>
+						{% if blob.isArchive() and blob.hasZipArchiveClass() %}
+							<span class="view-archive-files"/>
+						{% endif %}
 					</li>
 				{% endfor %}
 			</ul>

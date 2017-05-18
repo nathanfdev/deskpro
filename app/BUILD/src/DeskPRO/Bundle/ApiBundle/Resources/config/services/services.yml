@@ -11,14 +11,21 @@ services:
   api_view_representation_factory:
     class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
 
-  jsonp_format_listener:
-    class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
+  version_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\VersionListener
+    arguments:
+      - "@api.version_info"
+      - "@request_matcher"
     tags:
       - { name: kernel.event_subscriber }
 
-  json_body_listener:
-    class: DeskPRO\Bundle\ApiBundle\EventListener\JsonBodyListener
-    arguments: ["@router"]
+  content_type_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\ContentTypeListener
+    tags:
+      - { name: kernel.event_subscriber }
+
+  jsonp_format_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\JsonpFormatListener
     tags:
       - { name: kernel.event_subscriber }
 

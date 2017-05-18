@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Component\Util\MathUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -102,6 +103,11 @@ class LabelDef extends DomainObject
      */
     protected $total = 0;
 
+    /**
+     * Constructor.
+     *
+     * @param array $data
+     */
     public function __construct(array $data = [])
     {
         foreach ($data as $k => $v) {
@@ -109,6 +115,14 @@ class LabelDef extends DomainObject
                 $this[$k] = trim($v);
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLabelType()
+    {
+        return $this->label_type;
     }
 
     /**
@@ -166,6 +180,24 @@ class LabelDef extends DomainObject
                 $this->setModelField('color', $c);
             }
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     *
+     * @return string
+     */
+    public function getTextColor()
+    {
+        return MathUtils::isDarkBg($this->color) ? '#FFFFFF' : '#000000';
     }
 
     /**

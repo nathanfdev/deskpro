@@ -98,6 +98,7 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
     {
         return [
             'id'           => $this->id,
+            'person_id'    => $this->person ? $this->person->getId() : null,
             'action_type'  => $this->action_type,
             'details'      => serialize($this->details ?: []),
             'date_created' => $this->date_created->format('Y-m-d H:i:s'),

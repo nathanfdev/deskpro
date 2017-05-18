@@ -184,6 +184,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
                 return Strings::smartWordWrap($string, $len, $break);
             }),
+
+            new \Twig_SimpleFilter('safe_link_urls', [$this, 'safeLinkUrls'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -605,6 +607,16 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         $navigationHelper = $this->container->get('navigation_helper');
 
         return !$navigationHelper->hasOnlyOneApp() && !$navigationHelper->hasNoActiveApps();
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    public function safeLinkUrls($text)
+    {
+        return Strings::linkifyHtml(htmlspecialchars($text), true);
     }
 
     /**

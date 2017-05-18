@@ -125,8 +125,8 @@
         }
       }
 
-      &.auto-attendant-press-options {
-        width: 300px;
+      &.press-options {
+        width: 350px;
       }
 
       &.auto-attendant-dial-numbers {
@@ -211,21 +211,21 @@
           }
         }
 
-        &.auto-attendant-press-options {
+        &.press-options {
           position: relative;
 
-          .press-options {
+          .multiple-press-options {
             position: absolute;
             margin-top: -5px;
+          }
 
-            .press-option {
-              display: block;
-              font-size: 14px;
-              color: #999999;
+          .press-option {
+            display: block;
+            font-size: 14px;
+            color: #999999;
 
-              i.icon {
-                color: #3E78B8;
-              }
+            i.icon {
+              color: #3E78B8;
             }
           }
         }
@@ -424,6 +424,15 @@
     }
   }
 
+  .field {
+    &.audio-asset {
+      i {
+        cursor: pointer;
+        margin-left: 10px;
+      }
+    }
+  }
+
   .routing-model {
     .help {
       margin-top: 5px;
@@ -452,6 +461,27 @@
 
   .cancel-button {
     margin-left: 15px !important;
+  }
+
+  .voice-voicemail-property {
+    display: flex;
+
+    .ui.checkbox {
+      margin-right: 20px;
+      width: 150px;
+    }
+
+    &:first-child {
+      margin-top: 10px;
+    }
+
+    &:last-child {
+      margin-bottom: 10px;
+    }
+
+    .Select {
+      width: 250px;
+    }
   }
 }
 
@@ -602,16 +632,9 @@
     }
 
     &.audio-asset {
-      .audio-asset-buttons {
-        display: inline-block;
+      i {
+        cursor: pointer;
         margin-left: 10px;
-
-        button.icon {
-          margin-right: 10px;
-          width: 30px;
-          height: 30px;
-          padding: 0;
-        }
       }
     }
   }

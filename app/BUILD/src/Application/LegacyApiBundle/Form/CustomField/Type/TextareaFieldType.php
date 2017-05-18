@@ -26,18 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
+use Application\LegacyApiBundle\Form\CustomField\Model\TextareaField;
+
+/**
+ * Class TextareaFieldType.
+ */
 class TextareaFieldType extends TextFieldType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextareaField',
+            'data_class' => TextareaField::class,
         ];
     }
 }

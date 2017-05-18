@@ -108,7 +108,7 @@ class ChatCreateType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $brand   = $this->brandStack->getActive()->getBrand();
+        $brand        = $this->brandStack->getActive()->getBrand();
         $brandOptions = $this->settingsResolver->getWidgetBrandOptions($brand);
 
         $nameConstraints = [];
@@ -118,7 +118,8 @@ class ChatCreateType extends AbstractType
         }
 
         $emailConstraints = [new Assert\Email(['strict' => true])];
-        if (($this->settingsResolver->isChatEmailValidation() || $brandOptions->getChat()->isRequiredEmail()) && !$this->settingsResolver->isChatRequireLogin()) {
+        if (($this->settingsResolver->isChatEmailValidation()
+            || $brandOptions->getChat()->isRequiredEmail()) && !$this->settingsResolver->isChatRequireLogin()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
@@ -170,10 +171,11 @@ class ChatCreateType extends AbstractType
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonEmailFromSession']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonDataFromSession']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetVisitorId']);
     }
 
     /**
@@ -187,8 +189,9 @@ class ChatCreateType extends AbstractType
                 'csrf_protection'               => false,
                 'csrf_double_submit_protection' => false,
             ])
-            ->setRequired('person')
+            ->setRequired(['person', 'visitor_id'])
             ->setAllowedTypes('person', ['null', Person::class])
+            ->setAllowedTypes('visitor_id', ['null', 'string'])
         ;
     }
 
@@ -251,15 +254,15 @@ class ChatCreateType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetPersonEmailFromSession(FormEvent $event)
+    public function onSetPersonDataFromSession(FormEvent $event)
     {
         $form   = $event->getForm();
         $person = $form->getConfig()->getOption('person');
 
-        /** @var \Application\DeskPRO\Entity\Person $person */
-        if ($person) {
+        if ($person instanceof Person) {
             $event->setData(array_merge($event->getData(), [
                 'email' => $person->getPrimaryEmailAddress(),
+                'name'  => $person->getDisplayName(),
             ]));
         }
     }
@@ -309,6 +312,18 @@ class ChatCreateType extends AbstractType
         if ($this->settingsResolver->isChatRequireLogin() && !$person) {
             $form->addError(new FormError('Login required'));
         }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetVisitorId(FormEvent $event)
+    {
+        /** @var ChatConversation $conversation */
+        $conversation = $event->getData();
+        $conversation->setVisitorId($event->getForm()->getConfig()->getOption('visitor_id'));
     }
 
     /**

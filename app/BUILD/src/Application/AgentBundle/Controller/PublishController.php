@@ -45,6 +45,7 @@ use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
@@ -107,6 +108,7 @@ class PublishController extends AbstractController
             PortalSettingsResolver::APPS_KB        => false,
             PortalSettingsResolver::APPS_DOWNLOADS => false,
             PortalSettingsResolver::APPS_NEWS      => false,
+            PortalSettingsResolver::APPS_GUIDES    => false,
         ];
 
         /** @var Brand[] $brands */
@@ -179,6 +181,14 @@ class PublishController extends AbstractController
         $downloadCatsCounts = $this->publishHelper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
         //------------------------------
+        // Guides
+        //------------------------------
+
+        $guides       = $this->em->getRepository(Guide::class)->findAll();
+        $guideRepo    = $this->em->getRepository(Guide::class);
+        $guidesCounts = $this->em->getRepository(Guide::class)->getAllCounts();
+
+        //------------------------------
         // Glossary
         //------------------------------
 
@@ -218,6 +228,10 @@ class PublishController extends AbstractController
             'download_cats'        => $downloadCats,
             'download_repo'        => $downloadRepo,
             'download_cats_counts' => $downloadCatsCounts,
+
+            'guides'        => $guides,
+            'guide_repo'    => $guideRepo,
+            'guides_counts' => $guidesCounts,
 
             'app_settings'      => $appSettings,
             'brands'            => $brands,
@@ -779,73 +793,78 @@ class PublishController extends AbstractController
         // Figure out which table
         //------------------------------
 
-        $entity_name = null;
+        $entityName = null;
         switch ($type) {
             case 'article':
-                $entity_name = ArticleCategory::class;
+                $entityName = ArticleCategory::class;
                 break;
             case 'download':
-                $entity_name = DownloadCategory::class;
+                $entityName = DownloadCategory::class;
                 break;
             case 'news':
-                $entity_name = NewsCategory::class;
+                $entityName = NewsCategory::class;
+                break;
+            case 'topics':
+                $entityName = Guide::class;
                 break;
         }
 
-        if (!$entity_name) {
+        if (!$entityName) {
             return $this->createJsonResponse(['Invalid type']);
         }
 
         /** @var AbstractCategoryRepository $repos */
-        $repos      = $this->em->getRepository($entity_name);
-        $table      = $repos->getTableName();
-        $perm_table = $repos->getPermissionTableName();
+        $repos         = $this->em->getRepository($entityName);
+        $table         = $repos->getTableName();
+        $permTable     = $repos->getPermissionTableName();
+        $categoryField = $repos->getCategoryField();
 
         //------------------------------
         // Read input
         //------------------------------
 
-        $save_category = [
+        $saveCategory = [
             'id'         => $this->in->getUInt('category.id'),
             'title'      => $this->in->getString('category.title'),
             'usergroups' => $this->in->getCleanValueArray('category.usergroups', 'uint', 'discard'),
         ];
 
-        $save_structure = $this->in->getRaw('category_structure');
-        if ($save_structure) {
-            $save_structure = @json_decode($save_structure, true);
+        $saveStructure = $this->in->getRaw('category_structure');
+        if ($saveStructure) {
+            $saveStructure = @json_decode($saveStructure, true);
         }
-        if (!$save_structure) {
-            $save_structure = [];
+        if (!$saveStructure) {
+            $saveStructure = [];
         }
 
         //------------------------------
         // Save category
         //------------------------------
 
-        if ($save_category['id'] && $cat = $this->em->getRepository($entity_name)->find($save_category['id'])) {
-            if ($save_category['title']) {
-                $cat->title = $save_category['title'];
+        if ($saveCategory['id'] && $cat = $this->em->getRepository($entityName)->find($saveCategory['id'])) {
+            if ($saveCategory['title']) {
+                $cat->setTitle($saveCategory['title']);
                 $this->db->update($table, [
-                    'title' => $cat->title,
+                    'title' => $cat->getTitle(),
+                    'slug'  => $cat->getSlug(),
                 ], ['id' => $cat->id]);
             }
 
-            $this->db->delete($perm_table, ['category_id' => $cat->id]);
+            $this->db->delete($permTable, [$categoryField => $cat->id]);
 
             // Everyone implies all groups
-            if (in_array(1, $save_category['usergroups'])) {
-                $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => 1]);
+            if (in_array(1, $saveCategory['usergroups'])) {
+                $this->db->replace($permTable, [$categoryField => $cat->id, 'usergroup_id' => 1]);
             } else {
                 /** @var UsergroupDataService $usergroupsService */
                 $usergroupsService = $this->container->getDataService('Usergroup');
                 $usergroups        = $usergroupsService->getUserUsergroups();
-                foreach ($save_category['usergroups'] as $ug_id) {
-                    if (!isset($usergroups[$ug_id])) {
+                foreach ($saveCategory['usergroups'] as $ugId) {
+                    if (!isset($usergroups[$ugId])) {
                         continue;
                     }
 
-                    $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => $ug_id]);
+                    $this->db->replace($permTable, [$categoryField => $cat->id, 'usergroup_id' => $ugId]);
                 }
             }
         }
@@ -854,7 +873,7 @@ class PublishController extends AbstractController
         // Save structure
         //------------------------------
 
-        if ($save_structure) {
+        if ($saveStructure) {
             $parent_map         = [];
             $fn_struct_traverse = function ($cats, $parent = 0) use (&$parent_map, &$fn_struct_traverse) {
                 foreach ($cats as $cat) {
@@ -864,7 +883,7 @@ class PublishController extends AbstractController
                     }
                 }
             };
-            $fn_struct_traverse($save_structure);
+            $fn_struct_traverse($saveStructure);
 
             $order = 0;
             foreach ($parent_map as $cat_id => $parent_id) {
@@ -943,33 +962,36 @@ class PublishController extends AbstractController
 
     public function addCategoryFormAction($type)
     {
-        $entity_name = null;
+        $entityName = null;
         switch ($type) {
             case 'article':
-                $entity_name = ArticleCategory::class;
+                $entityName = ArticleCategory::class;
                 break;
             case 'download':
-                $entity_name = DownloadCategory::class;
+                $entityName = DownloadCategory::class;
                 break;
             case 'news':
-                $entity_name = NewsCategory::class;
+                $entityName = NewsCategory::class;
+                break;
+            case 'guide':
+                $entityName = Guide::class;
                 break;
         }
 
-        if (!$entity_name) {
+        if (!$entityName) {
             return $this->createJsonResponse(['Invalid type']);
         }
 
         $brandId = $this->in->getUInt('brand_id');
 
-        $all_categories = $this->getFilteredCategory($entity_name, $brandId);
+        $allCategories = $this->getFilteredCategory($entityName, $brandId);
 
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
         return $this->render('AgentBundle:Publish:new-cat.html.twig', [
             'type'           => $type,
-            'all_categories' => $all_categories,
+            'all_categories' => $allCategories,
             'brands'         => $brands,
             'brand_id'       => $brandId,
         ]);
@@ -988,6 +1010,9 @@ class PublishController extends AbstractController
             case 'news':
                 $class = NewsCategory::class;
                 break;
+            case 'guide':
+                $class = Guide::class;
+                break;
         }
 
         if (!$class) {
@@ -995,14 +1020,15 @@ class PublishController extends AbstractController
         }
 
         /** @var AbstractCategoryRepository $repos */
-        $repos      = $this->em->getRepository($class);
-        $perm_table = $repos->getPermissionTableName();
+        $repos         = $this->em->getRepository($class);
+        $permTable     = $repos->getPermissionTableName();
+        $categoryField = $repos->getCategoryField();
 
         //------------------------------
         // Save
         //------------------------------
 
-        $save_category = [
+        $saveCategory = [
             'id'         => 0,
             'parent_id'  => $this->in->getUInt('category.parent_id'),
             'title'      => $this->in->getString('category.title') ?: 'Untitled',
@@ -1010,42 +1036,42 @@ class PublishController extends AbstractController
             'brand_id'   => $this->in->getUInt('category.brand_id'),
         ];
 
-        $parent_cat = null;
-        if ($save_category['parent_id']) {
-            $parent_cat = $repos->find($save_category['parent_id']);
+        $parentCat = null;
+        if ($saveCategory['parent_id']) {
+            $parentCat = $repos->find($saveCategory['parent_id']);
         }
 
         $brand = null;
-        if ($save_category['brand_id']) {
-            $brand = $this->em->getRepository(Brand::class)->find($save_category['brand_id']);
+        if ($saveCategory['brand_id']) {
+            $brand = $this->em->getRepository(Brand::class)->find($saveCategory['brand_id']);
         }
 
         $cat        = new $class();
-        $cat->title = $save_category['title'];
+        $cat->title = $saveCategory['title'];
         if ($brand) {
             $cat->brand = $brand;
         }
-        if ($parent_cat) {
-            $cat->parent = $parent_cat;
+        if ($parentCat) {
+            $cat->parent = $parentCat;
         }
         $this->em->persist($cat);
         $this->em->flush();
 
-        $save_category['id'] = $cat->id;
+        $saveCategory['id'] = $cat->id;
 
         // Everyone implies all groups
-        if (in_array(1, $save_category['usergroups'])) {
-            $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => 1]);
+        if (in_array(1, $saveCategory['usergroups'])) {
+            $this->db->replace($permTable, [$categoryField => $cat->id, 'usergroup_id' => 1]);
         } else {
             /** @var UsergroupDataService $usergroupsService */
             $usergroupsService = $this->container->getDataService('Usergroup');
             $usergroups        = $usergroupsService->getUserUsergroups();
-            foreach ($save_category['usergroups'] as $ug_id) {
-                if (!isset($usergroups[$ug_id])) {
+            foreach ($saveCategory['usergroups'] as $ugId) {
+                if (!isset($usergroups[$ugId])) {
                     continue;
                 }
 
-                $this->db->replace($perm_table, ['category_id' => $cat->id, 'usergroup_id' => $ug_id]);
+                $this->db->replace($permTable, [$categoryField => $cat->id, 'usergroup_id' => $ugId]);
             }
         }
 
@@ -1070,6 +1096,9 @@ class PublishController extends AbstractController
                 break;
             case 'downloads':
                 $url = $this->generateUrl('agent_downloads_list', ['category_id' => $cat->getId()]);
+                break;
+            case 'manuals':
+                $url = $this->generateUrl('agent_guides_list', ['guide_id' => $cat->getId()]);
                 break;
             case 'news':
                 $url = $this->generateUrl('agent_news_list', ['category_id' => $cat->getId()]);

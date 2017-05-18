@@ -67,6 +67,17 @@ class Organization implements LabelAwareModelInterface, CustomDataAwareModelInte
     private $importance;
 
     /**
+     * @var array
+     *
+     * @JMS\Type("array<string>")
+     *
+     * @Assert\All(constraints={
+     *   @Assert\NotBlank()
+     * })
+     */
+    private $emailDomains = [];
+
+    /**
      * @var \DateTime
      *
      * @JMS\Type("DateTime")
@@ -192,5 +203,25 @@ class Organization implements LabelAwareModelInterface, CustomDataAwareModelInte
     public function getContactData()
     {
         return $this->contact_data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEmailDomains()
+    {
+        return $this->emailDomains;
+    }
+
+    /**
+     * @param array $emailDomains
+     *
+     * @return $this
+     */
+    public function setEmailDomains($emailDomains)
+    {
+        $this->emailDomains = $emailDomains;
+
+        return $this;
     }
 }

@@ -57,7 +57,6 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
         $multi_match = new Query\MultiMatch();
         $multi_match->setQuery(ElasticaUtil::escapeTerm($q));
         $multi_match->setFields($this->getQueryFields());
-        $multi_match->setAnalyzer('standard');
         $multi_match->setOperator('AND');
 
         return $multi_match;
@@ -72,6 +71,9 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
 
         if (isset($options['is_agent'])) {
             $mainFilter->addMust(new Query\Term(['is_agent' => (bool) $options['is_agent']]));
+        }
+        if (isset($options['with_phone_number']) && $options['with_phone_number']) {
+            $mainFilter->addMust(new Query\Exists('phone_numbers'));
         }
 
         return $mainFilter->toArray();

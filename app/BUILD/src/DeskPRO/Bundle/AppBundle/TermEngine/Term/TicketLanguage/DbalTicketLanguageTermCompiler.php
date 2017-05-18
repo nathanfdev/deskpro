@@ -26,68 +26,50 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketLanguageTermCompiler.
+ */
 class DbalTicketLanguageTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
+        $value = $term->getOption('language');
 
-        $query_part->addUniqueJoin(
-            'languages',
-            'languages',
-            '{languages}.id = ticket.language_id'
-        );
+        $qp = new DbalQueryPart();
+        $qp
+            ->addUniqueJoin(
+                'languages',
+                'languages',
+                '{languages}.id = ticket.language_id'
+            )
+            ->setParameter('language', $value)
+        ;
 
-        $language = $term->getOption('language');
-        $query_part->setParameter('language', $language);
-        $op = $term->getOp();
-
-        $whereString = $this->isOp($op, TermInterface::OP_NOT)
-            ? $this->getNotEqualWhereString($language)
-            : $this->getEqualWhereString($language);
-
-        $query_part->setWhereString($whereString);
-
-        $this->logQueryPart($query_part);
-
-        return $query_part;
-    }
-
-    /**
-     * @param $language
-     *
-     * @return string
-     */
-    private function getNotEqualWhereString($language)
-    {
-        if (!$language) {
-            return '{languages}.id IS NOT NULL';
+        if ($this->isOp($term->getOp(), TermInterface::OP_NOT)) {
+            if ($value) {
+                $qp->setWhereString('({languages}.id NOT IN(:language) AND {languages}.lang_code NOT IN(:language)) OR {languages}.id IS NULL');
+            } else {
+                $qp->setWhereString('{languages}.id IS NOT NULL');
+            }
+        } else {
+            if ($value) {
+                $qp->setWhereString('{languages}.id IN(:language) OR {languages}.lang_code IN(:language)');
+            } else {
+                $qp->setWhereString('{languages}.id IS NULL');
+            }
         }
 
-        return '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL';
-    }
+        $this->logQueryPart($qp);
 
-    /**
-     * @param $language
-     *
-     * @return string
-     */
-    private function getEqualWhereString($language)
-    {
-        if (!$language) {
-            return '{languages}.id IS NULL';
-        }
-
-        return '{languages}.id = :language OR {languages}.lang_code = :language';
+        return $qp;
     }
 }

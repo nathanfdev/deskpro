@@ -143,8 +143,10 @@ class OverrideHandler implements HandlerInterface
         foreach ($overrides as $override) {
             $this->overrideOutput($annotation, $override, $action);
             $this->overrideSection($annotation, $override);
-            $this->overrideInput($annotation, $override, $action);
+            $this->overrideInput($annotation, $override);
             $this->overrideTags($annotation, $override);
+            $this->overrideDocumentation($annotation, $override);
+
             if ($extended) {
                 $this->overrideFilters($annotation, $override);
                 $this->overrideRequirements($annotation, $override);
@@ -189,11 +191,10 @@ class OverrideHandler implements HandlerInterface
     /**
      * @param DpApiDoc $annotation
      * @param DpApiDoc $override
-     * @param string   $action
      */
-    private function overrideInput(DpApiDoc $annotation, DpApiDoc $override, $action)
+    private function overrideInput(DpApiDoc $annotation, DpApiDoc $override)
     {
-        if (($action === 'put' || $action === 'post') && !$annotation->getInput() && $override->getInput()) {
+        if (!$annotation->getInput() && $override->getInput()) {
             $annotation->setClassInput($override->getInput());
         }
     }
@@ -238,6 +239,10 @@ class OverrideHandler implements HandlerInterface
         }
     }
 
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
     private function overrideTags(DpApiDoc $annotation, DpApiDoc $override)
     {
         $arrayData = $override->toArray();
@@ -245,6 +250,17 @@ class OverrideHandler implements HandlerInterface
             foreach ($arrayData['tags'] as $tag => $colorCode) {
                 $annotation->addTag($tag, $colorCode);
             }
+        }
+    }
+
+    /**
+     * @param DpApiDoc $annotation
+     * @param DpApiDoc $override
+     */
+    private function overrideDocumentation(DpApiDoc $annotation, DpApiDoc $override)
+    {
+        if ($override->getDocumentationOverride()) {
+            $annotation->setDocumentationOverride($override->getDocumentationOverride());
         }
     }
 }

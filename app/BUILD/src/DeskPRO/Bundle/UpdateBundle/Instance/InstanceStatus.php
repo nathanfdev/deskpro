@@ -104,6 +104,6 @@ class InstanceStatus
 
         $interval = $this->latestRelease->getDate()->diff($this->currentRelease->getDate());
 
-        return max(1, (int) $interval->format('%d'));
+        return max(1, (int) $interval->format('%a'));
     }
 }

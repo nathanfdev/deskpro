@@ -237,7 +237,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * {@inheritdoc}
          */
-        public function getPhraseName($property, Translate $translate)
+        public function getPhraseName($property)
         {
             return 'user.lang.lang_title_'.$this->sys_name;
         }

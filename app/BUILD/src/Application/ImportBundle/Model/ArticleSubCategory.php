@@ -33,7 +33,15 @@ namespace Application\ImportBundle\Model;
  *
  * Class ArticleCategory
  */
-class ArticleSubCategory extends AbstractArticleCategory
+class ArticleSubCategory extends AbstractArticleCategory implements ImportMapKeyAwareInterface
 {
     use OidAwareModelTrait;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getImportMapKey()
+    {
+        return 'article_category';
+    }
 }

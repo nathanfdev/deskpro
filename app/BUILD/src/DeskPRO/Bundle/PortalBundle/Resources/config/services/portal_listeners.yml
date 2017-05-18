@@ -18,7 +18,7 @@ services:
       - "@brand_stack"
       - "@settings_resolver"
       - "@brand_repository"
-      - "@default_brand"
+      - "@default_brand_finder"
       - "@portal_mode_storage"
       - "@logger"
       - "@url_host_checker"
@@ -93,6 +93,15 @@ services:
 
   api_exception.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\ApiExceptionListener
+    tags:
+      - { name: kernel.event_subscriber}
+
+  no_ticket_access_redirect.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\NoTicketAccessRedirectListener
+    arguments:
+      - "@security.token_storage"
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
     tags:
       - { name: kernel.event_subscriber}
 

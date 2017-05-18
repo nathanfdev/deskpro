@@ -147,6 +147,9 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic = new Orb.Class({
 	destroy: function() {
 		if (this.overlay) {
 			this.overlay.destroy();
+			this.overlay = null;
 		}
+		this.page = null;
+		this.destroyEvents();
 	}
 });

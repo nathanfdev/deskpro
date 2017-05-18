@@ -1,11 +1,17 @@
+@new
 Feature: /ticket_statuses endpoint
   To CRUD DeskPRO ticket's statuses
   As an API user
   I want an API endpoint
 
   Background:
-    Given I install the api data set
-    And my request is authenticated
+    Given I'm authenticated as admin
+    And only the following Ticket records exist:
+      | #  | Subject  | Status         |
+      | t1 | Ticket 1 | awaiting_agent |
+      | t2 | Ticket 2 | awaiting_agent |
+      | t3 | Ticket 3 | awaiting_agent |
+      | t4 | Ticket 4 | awaiting_user |
 
   Scenario: I retrieve a list of ticket statuses
     When I send a GET request to "/api/v2/ticket_statuses"

@@ -101,6 +101,8 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('person_id', $id);
+
+        return $this;
     }
 
     public function getObjectType()
@@ -110,6 +112,8 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param string|int $type
+     *
+     * @return $this
      */
     public function setObjectType($type)
     {
@@ -131,6 +135,32 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('object_type', $type);
+
+        return $this;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setObjectId($id)
+    {
+        $this->setModelField('object_id', $id);
+
+        return $this;
+    }
+
+    /**
+     * @param int $action
+     *
+     * @return $this
+     */
+    public function setActionView($action)
+    {
+        $this->setModelField('view_action', $action);
+
+        return $this;
     }
 
     public static function getObjectTypeFromTypeId($type)

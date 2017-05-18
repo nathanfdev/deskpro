@@ -83,16 +83,20 @@ class Apiv1EndpointListener implements EventSubscriberInterface
         }
     }
 
+    /**
+     * @param GetResponseForExceptionEvent $event
+     */
     public function onException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        if ($exception instanceof AccessDeniedHttpException && $exception->getCode() === 42) {
+        if ($exception instanceof AccessDeniedHttpException && $event->getRequest()->isXmlHttpRequest()) {
             $response = new JsonResponse();
             $response->headers->set('X-Status-Code', Response::HTTP_FORBIDDEN);
             $response->setContent([
-                'error_code'    => 'insufficient_rights',
+                'error_code'    => $exception->getCode() === 42 ? 'insufficient_rights' : 'forbidden',
                 'error_message' => $exception->getMessage(),
             ]);
+
             $event->setResponse($response);
         }
     }

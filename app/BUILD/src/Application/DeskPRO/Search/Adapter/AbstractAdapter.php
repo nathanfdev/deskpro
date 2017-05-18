@@ -64,6 +64,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
     const TYPE_DOWNLOAD = 'download';
     const TYPE_IDEA     = 'feedback';
     const TYPE_NEWS     = 'news';
+    const TYPE_TOPIC    = 'topic';
     /**#@-*/
 
     /**

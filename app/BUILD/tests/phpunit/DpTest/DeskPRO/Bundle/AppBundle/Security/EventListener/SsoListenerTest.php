@@ -28,21 +28,25 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Security\EventListener;
 
-use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use Application\DeskPRO\Auth\AuthSettings;
 use DeskPRO\Bundle\AppBundle\Security\EventListener\SsoListener;
 use DpTest\PortalTestCase;
 use Symfony\Component\Debug\BufferingLogger;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+/**
+ * Class SsoListenerTest.
+ */
 class SsoListenerTest extends PortalTestCase
 {
     private $authSettings;
     private $authChecker;
-    private $authManager;
+    private $container;
     private $logger;
     private $listener;
 
@@ -53,14 +57,16 @@ class SsoListenerTest extends PortalTestCase
     {
         $this->authSettings = $this->getMockBuilder(AuthInterfaceSettings::class)->disableOriginalConstructor()->getMock();
         $this->authChecker  = $this->getMockBuilder(AuthorizationCheckerInterface::class)->disableOriginalConstructor()->getMock();
-        $this->authManager  = $this->getMockBuilder(AuthenticationManager::class)->disableOriginalConstructor()->getMock();
+        $this->authSettings = $this->getMockBuilder(AuthSettings::class)->disableOriginalConstructor()->getMock();
+        $this->container    = $this->getMockBuilder(ContainerInterface::class)->disableOriginalConstructor()->getMock();
         $this->logger       = new BufferingLogger();
 
-        $this->authManager->method('getSettings')->willReturn($this->authSettings);
+        $this->container->method('get')->willReturn($this->authSettings);
+        $this->authSettings->method('getUserInterfaceSettings')->willReturn($this->getMockBuilder(AuthInterfaceSettings::class)->disableOriginalConstructor()->getMock());
 
         $this->listener = $this
             ->getMockBuilder(SsoListener::class)
-            ->setConstructorArgs([$this->authChecker, $this->authManager, $this->logger])
+            ->setConstructorArgs([$this->authChecker, $this->container, $this->logger])
             ->setMethods(['checkAuthSystemForResponse'])
             ->getMock()
         ;

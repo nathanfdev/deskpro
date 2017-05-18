@@ -38,6 +38,20 @@ use DpBehat\Data\DataContext;
 class TicketLogsContext extends BaseContext
 {
     /**
+     * @Given I reset ticket logs
+     */
+    public function iResetAllTicketLogs()
+    {
+        $qb = $this->em()->createQueryBuilder();
+        $qb
+            ->delete()
+            ->from(TicketLog::class, 'e')
+        ;
+
+        $qb->getQuery()->execute();
+    }
+
+    /**
      * @Given I reset the :ticketId ticket logs
      *
      * @param int $ticketId

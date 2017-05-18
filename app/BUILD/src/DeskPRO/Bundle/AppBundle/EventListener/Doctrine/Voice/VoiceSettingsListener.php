@@ -57,8 +57,7 @@ class VoiceSettingsListener
     /**
      * Send notification to real-time update voice agents online count.
      *
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
+     * @ORM\PreFlush()
      *
      * @param AgentData $agentData
      */
@@ -66,6 +65,13 @@ class VoiceSettingsListener
     {
         $agent = $agentData->getPerson();
         if (!$agent) {
+            return;
+        }
+
+        $uow = $this->em->getUnitOfWork();
+
+        $originalAgentData = $uow->getOriginalEntityData($agentData);
+        if (!empty($originalAgentData) && $originalAgentData['agentCallsEnabled'] === $agentData->isAgentCallsEnabled()) {
             return;
         }
 
@@ -77,14 +83,13 @@ class VoiceSettingsListener
         ]);
 
         $this->em->persist($cm);
-        $this->em->flush();
+        $uow->computeChangeSet($this->em->getClassMetadata(get_class($cm)), $cm);
     }
 
     /**
      * Force set 'ticket.use' and 'person.use' permissions that are required to use voice.
      *
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
+     * @ORM\PreFlush()
      *
      * @param AgentData $agentData
      */
@@ -107,7 +112,9 @@ class VoiceSettingsListener
                 $permission->setValue(1);
 
                 $this->em->persist($permission);
-                $this->em->flush();
+
+                $uow = $this->em->getUnitOfWork();
+                $uow->computeChangeSet($this->em->getClassMetadata(get_class($permission)), $permission);
             }
         }
     }

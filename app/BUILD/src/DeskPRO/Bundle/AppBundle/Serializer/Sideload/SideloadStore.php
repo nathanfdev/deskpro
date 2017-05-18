@@ -61,7 +61,7 @@ class SideloadStore
     private $notLoaded = [];
 
     /**
-     * @var array
+     * @var CustomSideload[][]
      */
     private $customs = [];
 
@@ -94,6 +94,10 @@ class SideloadStore
         $this->addSideloadString($fqcn, $entity->getId());
     }
 
+    /**
+     * @param mixed $class
+     * @param mixed $id
+     */
     public function addSideloadString($class, $id)
     {
         $snake = TypeUtils::getSnakeCaseBaseTypeName($class);
@@ -191,8 +195,9 @@ class SideloadStore
         }
         $return = [];
         foreach ($this->customs[$interest] as $custom) {
-            if (false === array_search((int) $custom->getId(), $this->loaded[$interest])) {
-                $this->loaded[$interest][] = (int) $custom->getId();
+            $id = is_numeric($custom->getId()) ? (int) $custom->getId() : $custom->getId();
+            if (false === array_search($id, $this->loaded[$interest])) {
+                $this->loaded[$interest][] = $id;
                 $return[]                  = $custom;
             }
         }
@@ -200,6 +205,9 @@ class SideloadStore
         return $return;
     }
 
+    /**
+     * @return array
+     */
     public function getAvailableTypes()
     {
         return array_merge(array_keys($this->classmap), array_keys($this->customs));

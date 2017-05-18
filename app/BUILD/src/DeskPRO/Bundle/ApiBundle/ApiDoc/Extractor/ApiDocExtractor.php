@@ -26,15 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Component\Util\ControllerUtils;
+use FOS\RestBundle\Controller\Annotations\Put;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Nelmio\ApiDocBundle\Extractor\ApiDocExtractor as BaseApiDocExtractor;
 use Symfony\Component\Routing\Route;
 
@@ -53,7 +51,7 @@ class ApiDocExtractor extends BaseApiDocExtractor
     ];
 
     /**
-     * @return Route[]
+     * {@inheritdoc}
      */
     public function getRoutes()
     {
@@ -79,7 +77,8 @@ class ApiDocExtractor extends BaseApiDocExtractor
 
                 /** @var Feature $annotation */
                 $annotation = $methodAnnotation ?: $classAnnotation;
-                if ($annotation && !$features->hasFeature($annotation->getName())) {
+                $name = $annotation ? $annotation->getName() : null;
+                if ($annotation && !($features->hasFeature($name) || $features->hasBeta($name))) {
                     return false;
                 }
             }
@@ -91,6 +90,18 @@ class ApiDocExtractor extends BaseApiDocExtractor
 
             return true;
         });
+    }
+
+    protected function parseAnnotations(ApiDoc $annotation, Route $route, \ReflectionMethod $method)
+    {
+        parent::parseAnnotations($annotation, $route, $method);
+
+        $annots = $this->reader->getMethodAnnotations($method);
+        foreach ($annots as $annot) {
+            if ($annot instanceof Put) {
+                $this->injectInputMethodOption($annotation);
+            }
+        }
     }
 
     /**
@@ -133,5 +144,23 @@ class ApiDocExtractor extends BaseApiDocExtractor
         }
 
         return $exposedMethods;
+    }
+
+    /**
+     * @param ApiDoc $annotation
+     */
+    private function injectInputMethodOption(ApiDoc $annotation)
+    {
+        $input = $annotation->getInput();
+        if (is_array($input) && array_key_exists('class', $input)) {
+            $input['options']['method'] = 'put';
+        } elseif (is_string($input)) {
+            $input = ['class' => $input, 'options' => ['method' => 'put']];
+        }
+
+        $reflection    = new \ReflectionClass(ApiDoc::class);
+        $inputProperty = $reflection->getProperty('input');
+        $inputProperty->setAccessible(true);
+        $inputProperty->setValue($annotation, $input);
     }
 }

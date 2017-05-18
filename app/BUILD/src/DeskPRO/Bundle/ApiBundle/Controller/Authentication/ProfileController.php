@@ -47,6 +47,15 @@ use Symfony\Component\HttpFoundation\Response;
  * @SerializerView(mapping={
  *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile"
  * })
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\PersonProfileType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class ProfileController extends BaseController
 {

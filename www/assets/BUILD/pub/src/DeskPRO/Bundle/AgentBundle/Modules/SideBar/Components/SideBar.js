@@ -28,6 +28,9 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   componentWillMount = () => {
+    if (window.IS_BILLING_ERROR) {
+      this.state.sectionsBadges.push('billing_section');
+    }
     window.document.addEventListener('dpUpdateSideBarBadge', (e) => {
       const sectionsBadges = this.state.sectionsBadges;
       if (e.detail.count > 0) {
@@ -92,18 +95,15 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseFeedback() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_feedback'];
+    return true;
   }
 
   static canUsePublish() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_kb']
-      || window.DESKPRO_APP_SETTINGS['core.apps_news']
-      || window.DESKPRO_APP_SETTINGS['core.apps_downloads'];
+    return true;
   }
 
   static canUseTasks() {
-    return window.DESKPRO_APP_SETTINGS['core.apps_tasks']
-      && window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
+    return window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
   }
 
   static canUseReports() {

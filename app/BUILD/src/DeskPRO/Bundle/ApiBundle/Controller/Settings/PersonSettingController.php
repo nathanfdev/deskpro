@@ -26,18 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\PersonSetting;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,6 +41,7 @@ use Symfony\Component\HttpFoundation\Response;
  * API access to person settings.
  *
  * @ApiModes("all")
+ * @Rest\Route("/person_setting")
  */
 class PersonSettingController extends BaseController
 {
@@ -58,40 +53,33 @@ class PersonSettingController extends BaseController
      *          201="Created",
      *          400="Bad Request"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting",
+     *      parameters={
+     *          { "name" = "name", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting name" },
+     *          { "name" = "value", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting value" },
+     *      }
      * )
-     * @Rest\Post("/person_setting", name="api_person_setting_post")
+     * @Rest\Post("")
      *
      * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     * @throws InvalidFormException
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
      *
      * @return View
      */
     public function postAction(Request $request)
     {
-        $em      = $this->getDoctrine()->getManager();
-        $name    = $request->request->get('name');
-        $value   = $request->request->get('value');
+        $name  = $request->request->get('name');
+        $value = $request->request->get('value');
+
         $setting = new PersonSetting($this->getUser(), $name);
         $setting->setValue($value);
+
+        $em = $this->getManager();
         $em->persist($setting);
         $em->flush();
-        $location = $this->generateUrl(
-            'api_person_setting_get',
-            ['name' => $setting->getName()]
-        );
 
-        return View::create(
-            $this->wrap($setting),
-            Response::HTTP_CREATED,
-            [
-                'Location' => $location,
-            ]
-        );
+        return View::create($this->wrap($setting), Response::HTTP_CREATED, [
+            'Location' => $this->generateUrl('api_person_setting_get', ['name' => $setting->getName()]),
+        ]);
     }
 
     /**
@@ -103,40 +91,35 @@ class PersonSettingController extends BaseController
      *          400="Bad Request",
      *          404="Not Found"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting",
+     *      parameters={
+     *          { "name" = "name", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting name" },
+     *          { "name" = "value", "dataType" = "string", "format" = "string", "required" = true, "description" = "setting value" },
+     *      }
      * )
-     * @Rest\Put("/person_setting", name="api_person_setting_put")
+     * @Rest\Put("")
      *
      * @param Request $request
-     *
-     * @throws WrappedApiErrorException
-     * @throws InvalidFormException
-     * @throws \LogicException
-     * @throws \InvalidArgumentException
      *
      * @return View
      */
     public function putAction(Request $request)
     {
-        $em      = $this->getDoctrine()->getManager();
         $name    = $request->request->get('name');
         $value   = $request->request->get('value');
-        $setting = $this->getRepository(PersonSetting::class)
-            ->find(['name' => $name, 'person' => $this->getUser()]);
-        $setting->setValue($value);
-        $em->flush();
-        $location = $this->generateUrl(
-            'api_person_setting_get',
-            ['name' => $setting->getName()]
-        );
+        $setting = $this->getRepository(PersonSetting::class)->find([
+            'name'   => $name,
+            'person' => $this->getUser(),
+        ]);
 
-        return View::create(
-            $this->wrap($setting),
-            Response::HTTP_CREATED,
-            [
-                'Location' => $location,
-            ]
-        );
+        $setting->setValue($value);
+
+        $em = $this->getManager();
+        $em->flush();
+
+        return View::create($this->wrap($setting), Response::HTTP_CREATED, [
+            'Location' => $this->generateUrl('api_person_setting_get', ['name' => $setting->getName()]),
+        ]);
     }
 
     /**
@@ -146,26 +129,19 @@ class PersonSettingController extends BaseController
      *      statusCodes={
      *          200="Success"
      *      },
-     *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
+     *      output="array<DeskPRO\Bundle\AppBundle\Entity\PersonSetting>"
      * )
-     * @Rest\Get("/person_setting", name="api_person_setting_cget")
+     * @Rest\Get("")
      *
      * @return View
      */
     public function listAction()
     {
-        $settings = $this
-            ->getDoctrine()
-            ->getRepository(PersonSetting::class)
-            ->findBy([
-                'person' => $this->getUser(),
-            ])
-        ;
+        $settings = $this->getDoctrine()->getRepository(PersonSetting::class)->findBy([
+            'person' => $this->getUser(),
+        ]);
 
-        return View::create(
-            $this->wrap($settings),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($settings));
     }
 
     /**
@@ -186,7 +162,7 @@ class PersonSettingController extends BaseController
      *      },
      *      output="DeskPRO\Bundle\AppBundle\Entity\PersonSetting"
      * )
-     * @Rest\Get("/person_setting/{name}", name="api_person_setting_get")
+     * @Rest\Get("/{name}", name="api_person_setting_get")
      *
      * @param string $name
      *
@@ -194,22 +170,15 @@ class PersonSettingController extends BaseController
      */
     public function getAction($name)
     {
-        $setting = $this
-            ->getDoctrine()
-            ->getRepository(PersonSetting::class)
-            ->find([
-                'name'   => $name,
-                'person' => $this->getUser(),
-            ])
-        ;
+        $setting = $this->getDoctrine()->getRepository(PersonSetting::class)->find([
+            'name'   => $name,
+            'person' => $this->getUser(),
+        ]);
 
         if (null === $setting) {
             throw $this->createNotFoundException();
         }
 
-        return View::create(
-            $this->wrap($setting),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($setting));
     }
 }

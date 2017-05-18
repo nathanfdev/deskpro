@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
@@ -51,16 +47,17 @@ class LanguagesController extends CrudController
 {
     public static $entity     = Language::class;
     public static $listOrder  = 'asc';
-    public static $exposeOnly = ['list', 'get'];
+    public static $exposeOnly = ['list', 'get', 'count'];
 
     /**
      * @ApiDoc(
-     *      section="Languages",
-     *      description="provide agent phrases for frontend",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     section="Languages",
+     *     description="provide agent phrases for frontend",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     output="array"
      * )
      * @Rest\Get("/agent_phrases")
      *
@@ -93,6 +90,7 @@ class LanguagesController extends CrudController
             'agent.general.person',
             'agent.general.task',
             'agent.general.ticket',
+            'agent.general.topic',
             'agent.general.your_profile',
             'agent.onboarding.topbar_search_title',
             'agent.onboarding.topbar_search_text',
@@ -113,9 +111,14 @@ class LanguagesController extends CrudController
             'agent.onboarding.topbar_intro_button',
             'agent.onboarding.topbar_changes_intro_title',
             'agent.onboarding.topbar_changes_intro_text',
+            'agent.onboarding.new_im_position_title',
+            'agent.onboarding.new_im_position_text',
+            'agent.onboarding.new_im_start_new_title',
+            'agent.onboarding.new_im_start_new_text',
             'agent.tickets.count_agents',
             'agent.voice.incoming_call_title',
             'agent.voice.call_new_incoming',
+            'agent.voice.call_new_outgoing',
             'agent.voice.call_answered',
             'agent.voice.call_participant_muted',
             'agent.voice.call_participant_unmuted',
@@ -141,12 +144,13 @@ class LanguagesController extends CrudController
 
     /**
      * @ApiDoc(
-     *      section="Languages",
-     *      description="provide admin phrases for frontend",
-     *      statusCodes={
-     *          201="Created",
-     *          400="Bad Request"
-     *      }
+     *     section="Languages",
+     *     description="provide admin phrases for frontend",
+     *     statusCodes={
+     *         201="Created",
+     *         400="Bad Request"
+     *     },
+     *     noOutput="array"
      * )
      * @Rest\Get("/admin_phrases")
      *
@@ -158,6 +162,7 @@ class LanguagesController extends CrudController
     {
         $phrases = [
             'agent.voice.call_new_incoming',
+            'agent.voice.call_new_outgoing',
             'agent.voice.call_answered',
             'agent.voice.call_participant_muted',
             'agent.voice.call_participant_unmuted',

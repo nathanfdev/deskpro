@@ -41,6 +41,29 @@ class ChatBlock extends AbstractEntityRepository
      */
     const BLOCK_TIMEOUT = 86400;
 
+    public function getBlockForVisitor($visitor_id = null, $ip = null)
+    {
+        if (!$visitor_id && !$ip) {
+            return null;
+        }
+
+        $qb = $this->createQueryBuilder('b');
+
+        if ($visitor_id) {
+            $qb->orWhere('b.visitor_id = :vid')->setParameter('vid', $visitor_id);
+        }
+
+        if ($ip) {
+            $qb->orWhere('b.ip_address = :ip')->setParameter('ip', $ip);
+        }
+
+        $datecut = new \DateTime('-'.self::BLOCK_TIMEOUT.' seconds');
+        $qb->andWhere('b.date_created > :created')->setParameter('created', $datecut);
+        $block = $qb->getQuery()->setMaxResults(1)->getOneOrNullResult();
+
+        return $block;
+    }
+
     /**
      * @param string $ip_address
      *

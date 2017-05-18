@@ -90,8 +90,7 @@ class NewTicketController extends AbstractController
         if ($request->isMethod('get') && $request->query->count()) {
             // to set form default values from request query
             $formOptions['validation_groups']             = false;
-            $formOptions['csrf_protection']               = false;
-            $formOptions['csrf_double_submit_protection'] = false;
+            $formOptions['csrf_double_submit_skip_check'] = true;
         }
 
         $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, $formOptions);
@@ -107,7 +106,7 @@ class NewTicketController extends AbstractController
             FormValidatorChecker::clearFormErrors($form);
         }
 
-        if ($form->isValid()) {
+        if ($form->isValid() && $request->isMethod('post')) {
             // dont process if user hit "more attachments"
             if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
                 if (!$rerendering && !$rerendering_saved) {

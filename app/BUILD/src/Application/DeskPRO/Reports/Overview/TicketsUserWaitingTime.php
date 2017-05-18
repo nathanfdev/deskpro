@@ -107,6 +107,11 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
         $now   = time();
         $field = TimeTitles::makeTimeFieldSelect("($now - UNIX_TIMESTAMP(tickets.date_user_waiting))");
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         if ($this->grouping_field) {
             $group_field = $this->grouping_field->getFieldInfo();
             $sql         = "
@@ -114,13 +119,14 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
                 FROM tickets
                 {$group_field['join']}
                 WHERE tickets.status IN ('awaiting_agent') {$group_field['where']} AND tickets.is_hold = 0
+                ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
                 GROUP BY {$group_field['group_by']}, time_group
                 ORDER BY time_group ASC
             ";
 
             $this->logger->logDebug("[TicketsUserWaitingTime (Grouepd)] $sql");
             $this->logger->startTimer('TicketsUserWaitingTime');
-            $q = App::getDb()->executeQuery($sql);
+            $q = App::getDb()->executeQuery($sql, $params);
             $this->logger->logTotalTime('TicketsUserWaitingTime');
 
             $this->logger->startTimer('TicketsUserWaitingTime.collecting');
@@ -147,12 +153,13 @@ class TicketsUserWaitingTime extends AbstractSubgroupedTableOverviewStat
                 SELECT $field, COUNT(*)
                 FROM tickets
                 WHERE tickets.status IN ('awaiting_agent') AND tickets.is_hold = 0
+                ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '').'
                 GROUP BY time_group
-            ";
+            ';
 
             $this->logger->logDebug("[TicketsUserWaitingTime] $sql");
             $this->logger->startTimer('TicketsUserWaitingTime');
-            $this->values = App::getDb()->fetchAllKeyValue($sql);
+            $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
             $this->logger->logTotalTime('TicketsUserWaitingTime');
         }
 

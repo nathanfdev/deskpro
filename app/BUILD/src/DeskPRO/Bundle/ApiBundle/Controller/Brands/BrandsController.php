@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Brands;
 
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -51,6 +50,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  * @ApiModes("all")
  * @Rest\Route("/brands")
  * @ApiDoc(target="all", section="Brands", output="Application\DeskPRO\Entity\Brand")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\BrandType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Brand"
+ *      }
+ *     }
+ * )
  */
 class BrandsController extends CrudController
 {
@@ -105,6 +113,7 @@ class BrandsController extends CrudController
      *     statusCodes = {
      *       201 = "Brand was created",
      *     },
+     *     input="DeskPRO\Bundle\AppBundle\Form\Type\BrandType",
      *     output="Application\DeskPRO\Entity\Brand"
      * )
      * @Rest\Post("")
@@ -149,14 +158,6 @@ class BrandsController extends CrudController
 
         $brand->setThemeSet($themeSet);
         $brand->setEditThemeSet($editThemeSet);
-
-        /** @var Department[] $departments */
-        $departments = $this->getRepository(Department::class)->getChildDepartments('both');
-        foreach ($departments as $department) {
-            $brand->addDepartment($department);
-            $department->addBrand($brand);
-            $this->persistModel($department);
-        }
 
         $this->persistModel($brand);
 

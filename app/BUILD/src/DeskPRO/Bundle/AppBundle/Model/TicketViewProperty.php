@@ -33,20 +33,51 @@ namespace DeskPRO\Bundle\AppBundle\Model;
  */
 class TicketViewProperty
 {
+    /**
+     * @var int
+     */
     protected $id;
-    protected $label;
-    protected $value;
-    private $always_visible;
 
-    public function __construct($id, $label, $value, $always_visible = false)
+    /**
+     * @var string
+     */
+    protected $label;
+
+    /**
+     * @var string
+     */
+    protected $value;
+
+    /**
+     * @var bool
+     */
+    private $alwaysVisible;
+
+    /**
+     * @var bool
+     */
+    private $linkify;
+
+    /**
+     * TicketViewProperty constructor.
+     *
+     * @param int    $id
+     * @param string $label
+     * @param string $value
+     * @param bool   $alwaysVisible
+     * @param bool   $linkify
+     */
+    public function __construct($id, $label, $value, $alwaysVisible = false, $linkify = false)
     {
         if (!$id) {
             throw new \InvalidArgumentException('a TicketViewProperty cannot be instantiated without an ID');
         }
-        $this->id             = $id;
-        $this->label          = $label;
-        $this->value          = $value;
-        $this->always_visible = (bool) $always_visible;
+
+        $this->id            = $id;
+        $this->label         = $label;
+        $this->value         = $value;
+        $this->alwaysVisible = (bool) $alwaysVisible;
+        $this->linkify       = (bool) $linkify;
     }
 
     /**
@@ -73,18 +104,35 @@ class TicketViewProperty
         return $this->value;
     }
 
+    /**
+     * @return bool
+     */
     public function isVisible()
     {
         return $this->isAlwaysVisible() ? true : !$this->isEmpty();
     }
 
+    /**
+     * @return bool
+     */
     public function isEmpty()
     {
         return empty($this->getValue());
     }
 
+    /**
+     * @return bool
+     */
     public function isAlwaysVisible()
     {
-        return $this->always_visible;
+        return $this->alwaysVisible;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLinkify()
+    {
+        return $this->linkify;
     }
 }

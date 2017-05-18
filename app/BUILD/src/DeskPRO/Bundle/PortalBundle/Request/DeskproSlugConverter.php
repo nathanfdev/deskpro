@@ -32,6 +32,12 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Guide;
+use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Content\ContentSlugManager;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Doctrine\ORM\EntityManager;
@@ -53,89 +59,89 @@ class DeskproSlugConverter implements ParamConverterInterface
     /**
      * @var ContentSlugManager
      */
-    private $slug_manager;
+    private $slugManager;
 
-    public function __construct(EntityManager $em, ContentSlugManager $slug_manager)
+    public function __construct(EntityManager $em, ContentSlugManager $slugManager)
     {
-        $this->em           = $em;
-        $this->slug_manager = $slug_manager;
+        $this->em          = $em;
+        $this->slugManager = $slugManager;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $param_name          = $configuration->getName();
-        $param_class         = $configuration->getClass();
-        $param_options       = $this->getOptions($configuration);
-        $slug_attribute_name = $param_options['slug_route_param'];
-        $slug_input          = $request->attributes->get($slug_attribute_name);
-        $slug_col            = $param_options['slug_col']; // this will always be "slug" (for now)
+        $paramName         = $configuration->getName();
+        $paramClass        = $configuration->getClass();
+        $paramOptions      = $this->getOptions($configuration);
+        $slugAttributeName = $paramOptions['slug_route_param'];
+        $slugInput         = $request->attributes->get($slugAttributeName);
+        $slugCol           = $paramOptions['slug_col']; // this will always be "slug" (for now)
 
-        if ($param_name === 'tag_request') {
+        if ($paramName === 'tag_request') {
             return;
         }
 
-        if ($this->isContentClass($param_class)) {
-            if ($obj = $this->slug_manager->findContentObjectBySlug($slug_input, $param_class)) {
+        if ($this->isContentClass($paramClass)) {
+            if ($obj = $this->slugManager->findContentObjectBySlug($slugInput, $paramClass)) {
                 // this must have come from history, we should redirect to the new url
-                if ($obj->getSlug() !== $slug_input) {
+                if ($obj->getSlug() !== $slugInput) {
                     throw new PermanentRedirectException(
                         $request->attributes->get('_route'),
                         array_merge(
                             $request->attributes->get('_route_params'),
                             [
-                                $slug_attribute_name => $obj->getSlug(),
+                                $slugAttributeName => $obj->getSlug(),
                             ]
                         )
                     );
                 }
 
-                $request->attributes->set($param_name, $obj);
+                $request->attributes->set($paramName, $obj);
 
                 return;
             }
         }
 
         // is it in the repo?
-        $repo = $this->em->getRepository($param_class);
-        if ($obj = $repo->findOneBy([$slug_col => $slug_input])) {
-            $request->attributes->set($param_name, $obj);
+        $repo = $this->em->getRepository($paramClass);
+        if ($obj = $repo->findOneBy([$slugCol => $slugInput])) {
+            $request->attributes->set($paramName, $obj);
 
             return;
         }
 
-        $id = substr($slug_input, 0, strpos($slug_input, '-'));
+        $id = substr($slugInput, 0, strpos($slugInput, '-'));
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
-            $new_slug_attribute = [
-                $slug_attribute_name => $obj->slug,
+            $newSlugAttribute = [
+                $slugAttributeName => $obj->slug,
             ];
 
             throw new PermanentRedirectException(
                 $request->attributes->get('_route'),
                 array_merge(
                     $request->attributes->get('_route_params'),
-                    $new_slug_attribute
+                    $newSlugAttribute
                 )
             );
         }
 
-        $id = $slug_input;
+        $id = $slugInput;
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
-            $new_slug_attribute = [
-                $slug_attribute_name => $obj->slug,
+            $newSlugAttribute = [
+                $slugAttributeName => $obj->slug,
             ];
 
             throw new PermanentRedirectException(
                 $request->attributes->get('_route'),
                 array_merge(
                     $request->attributes->get('_route_params'),
-                    $new_slug_attribute
+                    $newSlugAttribute
                 )
             );
         }
 
-        throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_input));
+        throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $paramClass, $slugAttributeName, $slugInput));
     }
 
     public function supports(ParamConverter $configuration)
@@ -156,13 +162,12 @@ class DeskproSlugConverter implements ParamConverterInterface
     private function isContentClass($param_class)
     {
         switch ($param_class) {
-            case 'Application\DeskPRO\Entity\Article':
-                return true;
-            case 'Application\DeskPRO\Entity\Feedback':
-                return true;
-            case 'Application\DeskPRO\Entity\News':
-                return true;
-            case 'Application\DeskPRO\Entity\Download':
+            case Article::class:
+            case Feedback::class:
+            case News::class:
+            case Download::class:
+            case Topic::class:
+            case Guide::class:
                 return true;
             default:
                 return false;

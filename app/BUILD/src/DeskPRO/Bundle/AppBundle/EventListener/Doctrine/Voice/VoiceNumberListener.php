@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\Mapping as ORM;
+use Twilio\Exceptions\RestException;
 
 /**
  * Class VoiceNumberListener.
@@ -73,11 +74,21 @@ class VoiceNumberListener
      * @ORM\PreRemove()
      *
      * @param VoiceNumber $number
+     *
+     * @throws \Exception
      */
     public function onRemove(VoiceNumber $number)
     {
-        $this->twilioAdapter->updateNumber($number, [
-            'voiceApplicationSid' => '',
-        ]);
+        try {
+            $this->twilioAdapter->updateNumber($number, [
+                'voiceApplicationSid' => '',
+            ]);
+        } catch (RestException $e) {
+            if ($e->getStatusCode() === 404) {
+                return;
+            }
+
+            throw $e;
+        }
     }
 }

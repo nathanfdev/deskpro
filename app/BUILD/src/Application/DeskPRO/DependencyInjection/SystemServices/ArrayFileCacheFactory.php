@@ -34,26 +34,32 @@
 
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
+use Doctrine\Common\Cache\VoidCache;
 use Orb\Doctrine\Common\Cache\ArrayFileCache;
 
 class ArrayFileCacheFactory
 {
-    public static function create($cache_name)
+    public static function create($cacheName)
     {
-        if (!function_exists('dp_get_tmp_dir') || !is_writable(dp_get_tmp_dir())) {
-            return self::createNull();
-        }
-
-        $cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
+        $cacheName = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cacheName);
 
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
-        $path = $DP_ENV->getAppBaseKernelCacheDir();
+        $path      = $DP_ENV->getAppBaseKernelCacheDir().DIRECTORY_SEPARATOR.$DP_ENV->getEnvId();
+        $cacheFile = $path.DIRECTORY_SEPARATOR.$cacheName.'.cache';
 
-        $version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
-        $cache      = new ArrayFileCache($path, $version_id);
+        if (!$path || !is_writable($path)) {
+            return self::createNull();
+        }
 
-        if ($cache_name == 'dql') {
+        if (is_file($cacheFile) && !is_writable($cacheFile)) {
+            return self::createNull();
+        }
+
+        $versionId = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
+        $cache     = new ArrayFileCache($cacheFile, $versionId);
+
+        if ($cacheName == 'dql') {
             // Filters out queries with 'IN' components that can pollute the cache
             $cache->setFilter(function ($data) {
                 if (!is_object($data)) {
@@ -78,6 +84,10 @@ class ArrayFileCacheFactory
             $cache->setLimit(350);
         }
 
+        if ($cache instanceof ArrayFileCache) {
+            $cache->registerShutdownCommit();
+        }
+
         return $cache;
     }
 
@@ -86,8 +96,7 @@ class ArrayFileCacheFactory
         static $null_cache;
 
         if (!$null_cache) {
-            $null_cache = new ArrayFileCache('/dev/null');
-            $null_cache->disable();
+            $null_cache = new VoidCache();
         }
 
         return $null_cache;

@@ -28,27 +28,17 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\PersistentCollection;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
-use Twilio\Exceptions\TwilioException;
 
 /**
  * Class VoiceQueueListener.
  */
 class VoiceQueueListener
 {
-    /**
-     * @var TwilioAdapter
-     */
-    private $twilioAdapter;
+    use VoiceAccountSyncTrait;
 
     /**
      * @var EntityManager
@@ -56,39 +46,28 @@ class VoiceQueueListener
     private $em;
 
     /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
      * Constructor.
      *
-     * @param TwilioAdapter   $twilioAdapter
-     * @param EntityManager   $em
-     * @param RouterInterface $router
+     * @param EntityManager $em
      */
-    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em, RouterInterface $router)
+    public function __construct(EntityManager $em)
     {
-        $this->twilioAdapter = $twilioAdapter;
-        $this->em            = $em;
-        $this->router        = $router;
+        $this->em = $em;
     }
 
     /**
      * @ORM\PrePersist()
      *
      * @param VoiceQueue $queue
-     *
-     * @throws TwilioException
      */
-    public function onCreate(VoiceQueue $queue)
+    public function onPersist(VoiceQueue $queue)
     {
-        $taskQueue = $this->twilioAdapter->createTaskQueue($queue);
-        if (!$taskQueue) {
-            throw new TwilioException('Unable to create Twilio task queue');
+        $account = $queue->getAccount();
+        if (!$account) {
+            return;
         }
 
-        $queue->setTaskQueueSid($taskQueue->sid);
+        $this->updateAccountDateSync($account);
     }
 
     /**
@@ -99,107 +78,15 @@ class VoiceQueueListener
      */
     public function onUpdate(VoiceQueue $queue, PreUpdateEventArgs $args)
     {
-        if ($args->hasChangedField('name') || $args->hasChangedField('routingModel')) {
-            $this->twilioAdapter->updateTaskQueue($queue);
-        }
-
-        $agents = $queue->getAgents();
-        if ($agents instanceof PersistentCollection) {
-            $this->updateWorkers($agents->getInsertDiff());
-            $this->updateWorkers($agents->getDeleteDiff());
-        }
-    }
-
-    /**
-     * @ORM\PreRemove()
-     *
-     * @param VoiceQueue $queue
-     */
-    public function onRemove(VoiceQueue $queue)
-    {
         $account = $queue->getAccount();
         if (!$account) {
             return;
         }
 
-        $account->getQueues()->removeElement($queue);
-
-        $this->twilioAdapter->createOrUpdateWorkflow($account, $this->getAssignmentUrl($account));
-        $this->twilioAdapter->deleteTaskQueue($queue);
-        $queue->setTaskQueueSid(null);
-    }
-
-    /**
-     * @ORM\PostPersist()
-     *
-     * @param VoiceQueue $queue
-     */
-    public function setTargetWorkers(VoiceQueue $queue)
-    {
-        $account = $queue->getAccount();
-        if (!$account) {
-            return;
+        if ($args->hasChangedField('agents')
+            || $args->hasChangedField('routingModel')
+            || $args->hasChangedField('maxQueueSize')) {
+            $this->updateAccountDateSync($account);
         }
-
-        $this->twilioAdapter->updateTaskQueue($queue);
-        $this->updateWorkers($queue->getAgents());
-    }
-
-    /**
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
-     *
-     * @param VoiceQueue $queue
-     */
-    public function updateWorkflow(VoiceQueue $queue)
-    {
-        $account = $queue->getAccount();
-        if (!$account) {
-            return;
-        }
-
-        $workflow = $this->twilioAdapter->createOrUpdateWorkflow($account, $this->getAssignmentUrl($account));
-        if (!$workflow) {
-            return;
-        }
-
-        if ($account->getQueueWorkflowSid() !== $workflow->sid) {
-            $account->setQueueWorkflowSid($workflow->sid);
-            $this->em->persist($account);
-            $this->em->flush();
-        }
-    }
-
-    /**
-     * @param Person[] $agents
-     */
-    private function updateWorkers($agents)
-    {
-        foreach ($agents as $agent) {
-            if ($agent->getAgentData() && $agent->getAgentData()->getVoiceWorkerSid()) {
-                $this->twilioAdapter->updateWorker($this->getVoiceAccount(), $agent);
-            }
-        }
-    }
-
-    /**
-     * @return VoiceAccount|null
-     */
-    private function getVoiceAccount()
-    {
-        return $this->em->getRepository(VoiceAccount::class)->getVoiceAccount();
-    }
-
-    /**
-     * @param VoiceAccount $account
-     *
-     * @return string
-     */
-    private function getAssignmentUrl(VoiceAccount $account)
-    {
-        return $this->router->generate('twilio_assignment_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

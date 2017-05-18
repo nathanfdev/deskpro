@@ -4,7 +4,7 @@
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { AbstractClient } from './AbstractClient';
 
-export class PollingClient extends AbstractClient {
+export default class PollingClient extends AbstractClient {
 
   inProgress = false;
 
@@ -19,6 +19,8 @@ export class PollingClient extends AbstractClient {
   bind(channelName, eventName) {
     const that             = this;
     that.options.eventName = eventName;
+    // here we have logic mismatch. We could do poll for action-alerts only, so polling client can't handle user_notify
+    // todo update logic to handle it properly.
     that.interval          = setInterval(that.sendPoll.bind(that), that.options.polling_interval);
   }
 

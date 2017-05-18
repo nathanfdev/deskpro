@@ -34,13 +34,14 @@ use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
-use Orb\Util\Strings;
 
 /**
  * Class VoiceWorkerListener.
  */
 class VoiceWorkerListener
 {
+    use VoiceAccountSyncTrait;
+
     /**
      * @var TwilioAdapter
      */
@@ -80,14 +81,8 @@ class VoiceWorkerListener
             return;
         }
 
-        $account = $this->getVoiceAccount();
-        if (!$account) {
-            return;
-        }
-
-        $worker = $this->twilioAdapter->createWorker($account, $agentData->getPerson(), 'Offline');
-        $agentData->setVoiceWorkerSid($worker->sid);
         $agentData->setAvailableStatus(AgentData::AVAILABLE_STATUS_OFFLINE);
+        $this->updateAccountDateSync($this->getVoiceAccount());
     }
 
     /**
@@ -113,8 +108,8 @@ class VoiceWorkerListener
         } elseif ($args->hasChangedField('availableStatus') || $args->hasChangedField('agentCallsEnabled')) {
             // change activity
             if ($agentData->getVoiceWorkerSid()) {
-                $activity = $this->getActivityStatus($agentData);
-                $this->twilioAdapter->updateWorker($account, $agentData->getPerson(), $activity);
+                $activity = TwilioAdapter::getActivityStatus($agentData);
+                $this->twilioAdapter->updateAgentWorker($account, $agentData->getPerson(), $activity);
             }
         }
     }
@@ -136,11 +131,9 @@ class VoiceWorkerListener
             return;
         }
 
-        // delete worker from Twilio
-        $this->twilioAdapter->deleteWorker($account, $agentData->getVoiceWorkerSid());
-
         // unset voice data
         $agentData->setVoiceWorkerSid(null);
+        $agentData->setVoiceTaskQueueSid(null);
         $agentData->setExtensionNumber(null);
 
         // remove agent from queues
@@ -152,6 +145,8 @@ class VoiceWorkerListener
         $this->em->getConnection()->executeQuery('DELETE FROM voice_targets WHERE agent_id = :person_id', [
             'person_id' => $agentData->getPerson()->getId(),
         ]);
+
+        $this->updateAccountDateSync($this->getVoiceAccount());
     }
 
     /**
@@ -160,20 +155,5 @@ class VoiceWorkerListener
     private function getVoiceAccount()
     {
         return $this->em->getRepository(VoiceAccount::class)->getVoiceAccount();
-    }
-
-    /**
-     * @param AgentData $agentData
-     *
-     * @return string
-     */
-    private function getActivityStatus(AgentData $agentData)
-    {
-        $status = $agentData->getAvailableStatus();
-        if (!$agentData->isAgentCallsEnabled()) {
-            $status = AgentData::AVAILABLE_STATUS_OFFLINE;
-        }
-
-        return ucfirst(Strings::dashToCamelCase($status));
     }
 }

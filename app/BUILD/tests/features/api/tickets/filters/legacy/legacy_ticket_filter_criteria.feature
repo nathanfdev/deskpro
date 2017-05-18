@@ -1,10 +1,17 @@
+@new
 Feature: /ticket_filters endpoint
   To check filter by related entity
 
   Background:
-    Given I install the api data set
-    And there are no Person records
+    Given there are no Person records
     And I'm authenticated as admin
+    And only the following Department records exist:
+      | #  | Title        | Is Tickets Enabled |
+      | d1 | Department 1 | 1                  |
+      | d2 | Department 2 | 1                  |
+    Given only the following LegacyTicketFilter records exist:
+      | #  | Title    | Is Enabled | Is Global | Sys Name | Display Order | Terms                                                                                                                    |
+      | f1 | Filter 1 | 1          | 1         | agent    | 1             | [{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}] |
     And there are no Ticket records
     And I re-fill ticket search table
 
@@ -21,7 +28,7 @@ Feature: /ticket_filters endpoint
       | ticket_4 |            | Ticket 4 |
     And I re-fill ticket search table
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?<property>=~ref_1~"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?<property>=~ref_1~"
     Then the response status code should be 200
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{ticket_1}"
@@ -29,7 +36,7 @@ Feature: /ticket_filters endpoint
     And the JSON node "data[1].id" should be equal to "{ticket_2}"
     And the JSON node "data[1].<property>" should be equal to "{ref_1}"
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?<property>=~ref_2~"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?<property>=~ref_2~"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{ticket_3}"
@@ -53,7 +60,7 @@ Feature: /ticket_filters endpoint
       | ticket_4 |         | Ticket 4 |
     And I re-fill ticket search table
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?urgency=2"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?urgency=2"
     Then the response status code should be 200
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{ticket_1}"
@@ -61,24 +68,24 @@ Feature: /ticket_filters endpoint
     And the JSON node "data[1].id" should be equal to "{ticket_2}"
     And the JSON node "data[1].urgency" should be equal to 2
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?urgency=4"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?urgency=4"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{ticket_3}"
     And the JSON node "data[0].urgency" should be equal to 4
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?urgency=1"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?urgency=1"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{ticket_4}"
     And the JSON node "data[0].urgency" should be equal to 1
 
   Scenario: I retrieve list of filter's tickets with additional dates criteria
-    When I send a GET request to "/api/v2/ticket_filters/1/tickets?waiting_time=1893456000"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?waiting_time=1893456000"
     Then the response status code should be 200
-    When I send a GET request to "/api/v2/ticket_filters/1/tickets?all_waiting_time=1893456000"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?all_waiting_time=1893456000"
     Then the response status code should be 200
-    When I send a GET request to "/api/v2/ticket_filters/1/tickets?date_created=1893456000"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?date_created=1893456000"
     Then the response status code should be 200
 
   Scenario: I retrieve list of filter's tickets with additional custom field criteria
@@ -99,13 +106,13 @@ Feature: /ticket_filters endpoint
     And the object "ticket_3" has "single_choice_field" custom data with "{single_choice_v3_field}"
     And I re-fill ticket search table
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?ticket_field.~single_choice_field~=~single_choice_v1_field~"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?ticket_field.~single_choice_field~=~single_choice_v1_field~"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{ticket_1}"
     And the JSON node "data[0].fields.{single_choice_field}.value[0]" should be equal to "{single_choice_v1_field}"
 
-    When I send a GET request to "/api/v2/ticket_filters/5/tickets?ticket_field.~single_choice_field~[]={single_choice_v2_field}&ticket_field.~single_choice_field~[]={single_choice_v3_field}&order_by=id&order_dir=asc"
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?ticket_field.~single_choice_field~[]={single_choice_v2_field}&ticket_field.~single_choice_field~[]={single_choice_v3_field}&order_by=id&order_dir=asc"
     Then the response status code should be 200
     And the JSON node "data" should have 3 elements
     And the JSON node "data[0].id" should be equal to "{ticket_1}"

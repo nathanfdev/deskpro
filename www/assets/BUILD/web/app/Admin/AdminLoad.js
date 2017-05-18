@@ -174,6 +174,7 @@ define([
   'Admin/DownloadsSettings/Ctrl/DownloadsSettings',
   'Admin/NewsSettings/Ctrl/NewsSettings',
   'Admin/FeedbackSettings/Ctrl/FeedbackSettings',
+  'Admin/GuidesSettings/Ctrl/GuidesSettings',
   'Admin/RoundRobin/Ctrl/List',
   'Admin/RoundRobin/Ctrl/Edit',
   'Admin/Icons/Ctrl/List',
@@ -182,6 +183,7 @@ define([
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
   'Admin/VoiceChannel/Ctrl/ReactComponent',
+  'Admin/Main/Ctrl/Features',
 
   'CloudAdminLoad',
   window.DP_ADMIN_BUNDLE_PATH

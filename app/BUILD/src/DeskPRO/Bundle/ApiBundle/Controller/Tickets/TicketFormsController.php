@@ -44,6 +44,18 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/ticket_forms/{context}", requirements={"context"="(agent|user)"})
+ * @ApiDoc(
+ *     target="postContextAction,putContextAction",
+ *     input={
+ *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType",
+ *         "options"={
+ *              "data"="Application\DeskPRO\Entity\Ticket",
+ *              "person"="Application\DeskPRO\Entity\Person",
+ *              "ticket_view_context"="agent",
+ *              "ticket_visibility"="new"
+ *         }
+ *     }
+ * )
  */
 class TicketFormsController extends AbstractTicketsController
 {

@@ -34,7 +34,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-use Doctrine\ORM\Event\OnFlushEventArgs;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\LazyCriteriaCollection;
 
 /**
@@ -56,7 +56,7 @@ class ObjectTranslatableListener implements EventSubscriber
             'postLoad',
             'postPersist',
             'preRemove',
-            'onFlush',
+            'preFlush',
             'onClear',
         ];
     }
@@ -90,9 +90,9 @@ class ObjectTranslatableListener implements EventSubscriber
     }
 
     /**
-     * @param OnFlushEventArgs $args
+     * @param PreFlushEventArgs $args
      */
-    public function onFlush(OnFlushEventArgs $args)
+    public function preFlush(PreFlushEventArgs $args)
     {
         foreach ($this->updateQueue as $entity) {
             $this->updateObjectTranslations($entity, $args->getEntityManager());
@@ -147,7 +147,9 @@ class ObjectTranslatableListener implements EventSubscriber
             /* @var ObjectLang $objectLang */
             $objectLang->setObject($entity);
             $em->persist($objectLang);
-            $em->getUnitOfWork()->computeChangeSets();
+
+            $uow = $em->getUnitOfWork();
+            $uow->computeChangeSet($em->getClassMetadata(get_class($objectLang)), $objectLang);
         }
 
         // remove deleted

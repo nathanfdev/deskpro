@@ -532,7 +532,7 @@ JS;
 
     public function acceptTempUploadAction()
     {
-        $copy_blobauth = $this->in->getString('copy_blob');
+        $copy_blobauth          = $this->in->getString('copy_blob');
         $allowedImageExtensions = ['gif', 'png', 'jpg', 'jpeg'];
 
         if ($copy_blobauth) {
@@ -636,7 +636,12 @@ JS;
         return $res;
     }
 
-    public function acceptRedactorImageUploadAction()
+    public function acceptRedactorFileUploadAction()
+    {
+        return $this->acceptRedactorImageUploadAction(true);
+    }
+
+    public function acceptRedactorImageUploadAction($fileUpload = false)
     {
         $copy_blobauth = $this->in->getString('copy_blob');
 
@@ -650,7 +655,7 @@ JS;
                 return $this->createJsonResponse($error);
             }
 
-            if (!$blob->isImage()) {
+            if (!$fileUpload && !$blob->isImage()) {
                 $error = [
                     'error_code'   => 'not_in_allowed_exts',
                     'error_detail' => implode(',', ['gif', 'png', 'jpg', 'jpeg']),
@@ -680,10 +685,16 @@ JS;
 
             $error = $accept->getError($file, 'agent');
             if (!$error) {
-                $set = new \Application\DeskPRO\Attachments\RestrictionSet();
-                $set->setAllowedExts(['gif', 'png', 'jpg', 'jpeg']);
-                $accept->addRestrictionSet('only_images', $set);
-                $error = $accept->getError($file, 'only_images');
+                $set  = new \Application\DeskPRO\Attachments\RestrictionSet();
+                $exts = !$fileUpload
+                    ? ['gif', 'png', 'jpg', 'jpeg']
+                    : ['gif', 'png', 'jpg', 'jpeg', // also allow images
+                        'pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt',
+                       'rar', 'zip', 'tar.gz', '7zip', 'gzip', 'bzip',
+                       'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', ];
+                $set->setAllowedExts($exts);
+                $accept->addRestrictionSet($fileUpload ? 'only_files' : 'only_images', $set);
+                $error = $accept->getError($file, $fileUpload ? 'only_files' : 'only_images');
             }
             if ($error) {
                 $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
@@ -694,7 +705,7 @@ JS;
             }
         }
 
-        $blob = [
+        $blobResponse = [
             'blob_id'           => $blob['id'],
             'blob_auth'         => $blob->authcode,
             'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
@@ -705,9 +716,14 @@ JS;
 
             // needed for Redactor
             'filelink' => $blob->getDownloadUrl(true),
+            'link'     => $blob->getDownloadUrl(true),
         ];
 
-        return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blob]);
+        if ($this->in->getBool('json')) {
+            return $this->createJsonResponse(json_encode(['link' => $blob->getDownloadUrl(true)]));
+        }
+
+        return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blobResponse]);
     }
 
     public function redactorAutosaveAction($content_type, $content_id)

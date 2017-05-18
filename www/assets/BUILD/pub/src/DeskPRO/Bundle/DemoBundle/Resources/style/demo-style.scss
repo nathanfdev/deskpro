@@ -1,4 +1,7 @@
+$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
+
 @import '../../../AppBundle/Resources/style/variables';
+@import "../../../../../../node_modules/font-awesome/scss/font-awesome";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/css3/_placeholder";
 
 $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
@@ -20,11 +23,28 @@ h4 {
   margin-bottom: 30px;
 }
 .logo {
-  margin-top: 80px;
-  margin-bottom: 50px;
+  padding-top: 80px;
+  padding-bottom: 50px;
   svg {
     height: 50px;
   }
+}
+.container {
+  padding-bottom: 160px;
+}
+.container.extend-trial .logo {
+  position: fixed;
+  padding: 0;
+  top: 20px;
+  left: 30px;
+  margin: 0;
+}
+.ui.button {
+  font-family: $font-family;
+  font-size: 16px;
+}
+i.flag:not(.icon):before {
+  background-image: url('../img/flags.png');
 }
 form.form {
   text-align: left;
@@ -46,6 +66,36 @@ a {
   color: $dp-greyscale-300;
   font-style: italic;
 }
+footer {
+  background-color: $dp-greyscale-50;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  height: 140px;
+  padding: 50px;
+  color: $dp-greyscale-850;
+  font-size: 16px;
+  font-weight: 300;
+  span {
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: middle;
+  }
+  .logos {
+    display: inline-block;
+  }
+  svg {
+    width: 100px;
+    height: 40px;
+    max-height: 25px;
+    max-width: 100px;
+    path {
+      fill: $dp-greyscale-750;
+    }
+  }
+}
 .segment.login,
 .segment.confirm-extend,
 .segment.confirm-reset,
@@ -55,6 +105,159 @@ a {
   margin: auto;
   padding: 50px;
 }
+.ui.horizontal.segments.extend-trial {
+  width: 1220px;
+  margin: 80px auto 0;
+  border: none;
+  box-shadow: none;
+  .segment.extend-trial-form {
+    width: 910px;
+    padding: 40px 95px;
+    border: 1px solid $dp-greyscale-250;
+    border-radius: 2px;
+    .green {
+      color: $dp-emerald-primary;
+    }
+    form.form {
+      margin-bottom: 0;
+    }
+    .ui.form .field > label {
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 6px;
+    }
+    .segments {
+      border: none;
+      box-shadow: none;
+      margin-top: 40px;
+    }
+    .segment.address {
+      border: none;
+      padding: 30px;
+    }
+    .segment.credit-card {
+      border: none;
+      background: $dp-greyscale-50;
+      padding: 30px 40px;
+      p.reinsurance {
+        display: inline-block;
+        font-size: 10px;
+        width: 120px;
+        position: absolute;
+        margin: 0 10px;
+      }
+    }
+    .expiry input {
+      @include placeholder {
+        font-style: normal;
+      }
+    }
+    .card-number {
+      svg {
+        height: 18px;
+        vertical-align: middle;
+      }
+      .faded svg {
+        opacity: 0.4;
+      }
+    }
+    .expiry .ui.input,
+    .security-code .ui.input {
+      width: 60px;
+    }
+    .security-code img {
+      height: 40px;
+      vertical-align: bottom;
+    }
+  }
+  .segment.extend-trial-side-bar {
+    background-color: $dp-greyscale-150;
+    border: none;
+    width: 280px;
+    padding: 0 0 0 30px;
+    .offer {
+      padding: 30px;
+      background-color: $dp-greyscale-50;
+      border: 1px solid $dp-sonic-primary;
+      text-align: center;
+      color: $dp-greyscale-850;
+      font-weight: 400;
+      font-size: 14px;
+      .price {
+        font-size: 48px;
+        color: $dp-sonic-primary;
+        line-height: 60px;
+      }
+      .trophy {
+        line-height: 48px;
+        vertical-align: middle;
+        i.icon.trophy {
+          color: $dp-sonic-primary;
+          font-size: 36px;
+        }
+      }
+    }
+    button {
+      margin-top: 30px;
+      width: 266px;
+      i.icon {
+        font-size: 12px;
+        color: $dp-greyscale-50;
+        opacity: 1;
+      }
+    }
+    button.delete {
+      text-transform: uppercase;
+    }
+  }
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+.delete-confirm-popin,
+.question-popin {
+  left: calc(50% - 230px);
+  top: 15%;
+  position: absolute;
+  .delete-confirm,
+  .question {
+    background-color: $dp-greyscale-50;
+    width: 460px;
+    padding: 40px;
+    svg {
+      height: 62px;
+    }
+    p {
+      font-size: 14px;
+      font-weight: 400;
+      margin-bottom: 34px;
+    }
+    button {
+      display: block;
+      margin: 20px auto 0;
+      min-width: 170px;
+      font-weight: 600;
+    }
+    z-index: 1;
+  }
+}
+.segment {
+  .bottom-link {
+    margin-top: 50px;
+  }
+  .description {
+    margin-bottom: 34px;
+  }
+  button {
+    min-width: 150px;
+  }
+}
 .segment.confirm-reset {
   padding: 40px 50px;
   button.ui.button {
@@ -62,47 +265,33 @@ a {
     width: 150px;
   }
 }
-.segment.extend-trial {
-  width: 910px;
-  padding: 40px 95px;
-  .green {
-    color: $dp-emerald-primary;
-  }
-  .ui.form .field > label {
-    font-size: 14px;
-    font-weight: 400;
-  }
-  .segments {
-    border: none;
-    box-shadow: none;
-    margin-top: 40px;
-  }
-  .segment.address {
-    border: none;
-    background: $dp-greyscale-100;
-    padding: 30px;
-  }
-  .segment.credit-card {
-    border: none;
-    background: $dp-greyscale-50;
-    padding: 30px 40px;
-  }
-  .expiry input {
-    @include placeholder {
-      font-style: normal;
+.segment.confirm-extend {
+  text-align: center;
+  .or {
+    width: 70px;
+    display: inline-block;
+    .ui.horizontal.divider:before {
+      background-position: left 0.5em top 50%;
+      background-size: 60%;
+    }
+    .ui.horizontal.divider:after {
+      background-position: right 0.5em top 50%;
+      background-size: 60%;
     }
   }
-  .card-number svg {
-    height: 18px;
-    vertical-align: middle;
-  }
-  .expiry .ui.input,
-  .security-code .ui.input {
-    width: 60px;
-  }
-  .security-code img {
-    height: 40px;
-    vertical-align: bottom;
+  button {
+    height: 126px;
+    width: 140px;
+    min-width: 140px;
+    background-color: $dp-greyscale-50;
+    padding: 10px;
+    border: 1px solid $dp-greyscale-200;
+    border-radius: 2px;
+    svg {
+      height: 30px;
+      display: block;
+      margin: 0 auto 10px;
+    }
   }
 }
 .delete-account-feedback {

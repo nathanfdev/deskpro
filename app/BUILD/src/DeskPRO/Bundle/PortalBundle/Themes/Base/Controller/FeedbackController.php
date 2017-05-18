@@ -86,8 +86,8 @@ class FeedbackController extends AbstractController
         ]);
 
         $pager = $this->getFeedbackDataService()->getItemsPager(
-            $options['page'],
-            $options['count'],
+            (int) $options['page'],
+            (int) $options['count'],
             $filter,
             $person
         );

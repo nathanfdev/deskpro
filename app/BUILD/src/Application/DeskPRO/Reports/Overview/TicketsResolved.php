@@ -91,17 +91,23 @@ class TicketsResolved extends AbstractTableOverviewStat
         $d1 = $this->date_start->format('Y-m-d H:i:s');
         $d2 = $this->date_end->format('Y-m-d H:i:s');
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = "
             SELECT {$group_field['select']}, COUNT(*)
             FROM tickets
             {$group_field['join']}
             WHERE tickets.status = 'resolved' AND tickets.date_resolved BETWEEN '$d1' AND '$d2' {$group_field['where']}
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
             GROUP BY {$group_field['group_by']}
         ";
 
         $this->logger->logDebug("[TicketsResolved] $sql");
         $this->logger->startTimer('TicketsResolved');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketsResolved');
 
         return $this->values;

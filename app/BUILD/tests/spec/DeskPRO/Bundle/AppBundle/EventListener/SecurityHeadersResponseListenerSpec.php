@@ -29,6 +29,7 @@
 namespace spec\DeskPRO\Bundle\AppBundle\EventListener;
 
 use PhpSpec\ObjectBehavior;
+use Symfony\Component\DependencyInjection\IntrospectableContainerInterface;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,6 +41,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class SecurityHeadersResponseListenerSpec extends ObjectBehavior
 {
+    public function let(
+        IntrospectableContainerInterface $container
+    ) {
+        $this->beConstructedWith($container);
+    }
+
     public function it_is_an_event_subscriber()
     {
         $this->shouldHaveType('Symfony\Component\EventDispatcher\EventSubscriberInterface');
@@ -67,7 +74,7 @@ class SecurityHeadersResponseListenerSpec extends ObjectBehavior
 
         $headers->add(['X-Content-Type-Options' => 'nosniff'])->shouldBeCalled();
         $headers->add(['X-Frame-Options' => 'sameorigin'])->shouldBeCalled();
-        $headers->add(['Content-Security-Policy' => 'default-src \'self\' blob:; script-src * data: \'unsafe-inline\' \'unsafe-eval\'; style-src * data: \'unsafe-inline\'; img-src * data: blob:; font-src * data:; connect-src *; media-src * data: blob:; object-src *; child-src * blob:; form-action *; frame-src \'self\' https://www.google.com/recaptcha/; frame-ancestors \'self\''])->shouldBeCalled();
+        $headers->add(['Content-Security-Policy' => 'default-src \'self\' blob:; script-src * data: \'unsafe-inline\' \'unsafe-eval\'; style-src * data: \'unsafe-inline\'; img-src * data: blob:; font-src * data:; connect-src *; media-src * data: blob:; object-src *; child-src * blob:; form-action *; frame-src *; frame-ancestors \'self\''])->shouldBeCalled();
         $headers->add(['Referrer-Policy' => 'no-referrer-when-downgrade'])->shouldBeCalled();
 
         $this->onResponse($event);

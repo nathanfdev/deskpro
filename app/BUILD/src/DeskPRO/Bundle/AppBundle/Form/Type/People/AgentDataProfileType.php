@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -61,6 +62,10 @@ class AgentDataProfileType extends AbstractType
             ])
             ->add('agent_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'agentCallsEnabled',
+            ])
+            ->add('voicemail_asset', VoiceAssetAuthType::class, [
+                'property_path' => 'voicemailAsset',
+                'required'      => false,
             ])
         ;
 

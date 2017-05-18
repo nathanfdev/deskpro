@@ -187,7 +187,7 @@ class PersonType extends AbstractType
         $person = $event->getForm()->getData();
         $data   = $event->getData();
 
-        if (isset($data['primary_email'])) {
+        if (!empty($data['primary_email'])) {
             if (!isset($data['emails'])) {
                 $data['emails'] = $person->getEmailAddresses();
             }
@@ -221,8 +221,8 @@ class PersonType extends AbstractType
         if (!empty($data['name'])) {
             $person->setName($data['name']);
             $event->setData(array_merge($data, [
-                'first_name' => $person->first_name,
-                'last_name'  => $person->last_name,
+                'first_name' => $person->getFirstName(),
+                'last_name'  => $person->getLastName(),
             ]));
         }
     }

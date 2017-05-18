@@ -89,10 +89,10 @@ class ArticlesDataService extends AbstractDataService
             [
                 'getArticlesPager',
                 $category,
-                $page,
-                $maxPerPage,
+                (int) $page,
+                (int) $maxPerPage,
                 $person,
-                $withTree,
+                (bool) $withTree,
             ],
             function () use ($em, $permissionsManager, $category, $maxPerPage, $page, $person, $withTree) {
                 $qb = $em->createQueryBuilder();
@@ -146,8 +146,8 @@ class ArticlesDataService extends AbstractDataService
         return $this->generateAndCache(
             [
                 'getTopArticlesPager',
-                $page,
-                $maxPerPage,
+                (int) $page,
+                (int) $maxPerPage,
                 $person,
             ],
             function () use ($em, $permissionsManager, $maxPerPage, $page, $person) {

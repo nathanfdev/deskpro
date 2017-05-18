@@ -106,7 +106,7 @@ abstract class AntiAbuseEvent extends Event
     {
         if ($personOrEmail instanceof Person) {
             $this->person = $personOrEmail;
-        } else {
+        } elseif (is_string($personOrEmail)) {
             $this->email = $personOrEmail;
         }
 

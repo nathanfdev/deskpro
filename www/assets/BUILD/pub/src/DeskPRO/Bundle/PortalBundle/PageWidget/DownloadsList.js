@@ -10,25 +10,39 @@ export class DownloadsList extends PageWidget {
       const $count = $widget.find('.as-vote-count');
 
       $widget.on('vote', () => {
-        const votes = parseInt($count.data('votes'), 10) || 0;
+        const agreed = $btn.hasClass('agreed');
+        const votes = parseInt($count.text(), 10) || 0;
 
-        $count.text(votes + 1);
+        $count.text(votes + (agreed ? -1 : 1));
+        if (!agreed) {
+          $btn.addClass('agreed');
+        } else {
+          $btn.removeClass('agreed');
+        }
+
         $widget.addClass('with-voted');
+        if (!agreed) {
+          $btn.addClass('agreed');
+        } else {
+          $btn.removeClass('agreed');
+        }
       });
 
-      $btn.on('click', event => {
+      $btn.on('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
         event.stopImmediatePropagation();
 
-        if ($btn.hasClass('with-voted')) {
-          $btn.toggleClass('with-voted');
-          $btn.toggleClass('with-voted');
-          return;
-        }
+        const agreed = $btn.hasClass('agreed');
+        const voteUpUrl = $btn.data('vote-up-url');
+        const voteDownUrl = $btn.data('vote-down-url');
 
-        $.post($btn.attr('href'));
-        $widget.trigger('vote');
+        $widget.removeClass('with-voted');
+
+        setTimeout(() => {
+          $.post(agreed ? voteDownUrl : voteUpUrl);
+          $widget.trigger('vote');
+        }, 100);
       });
     });
   }

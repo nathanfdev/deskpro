@@ -121,6 +121,10 @@ class IdsOnlyListener implements EventSubscriberInterface
             } else {
                 $transformed = clone $data;
                 foreach ($properties as $name => $propertyMetadata) {
+                    if ($propertyMetadata->readOnly) {
+                        continue;
+                    }
+
                     $propertyMetadata->setValue(
                         $transformed,
                         $this->transformData($propertyMetadata->getValue($transformed))

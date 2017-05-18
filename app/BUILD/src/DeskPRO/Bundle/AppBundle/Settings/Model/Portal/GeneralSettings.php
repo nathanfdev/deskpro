@@ -117,6 +117,15 @@ class GeneralSettings extends AbstractBrandAwareSettings
     private $appsDownloads;
 
     /**
+     * Application guides enabled.
+     *
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     */
+    private $appsGuides;
+
+    /**
      * Application portal enabled.
      *
      * @var bool
@@ -249,7 +258,7 @@ class GeneralSettings extends AbstractBrandAwareSettings
      */
     public function getPortalMode()
     {
-        if ($this->appsDownloads || $this->appsFeedback || $this->appsKb || $this->appsNews) {
+        if ($this->appsDownloads || $this->appsFeedback || $this->appsKb || $this->appsNews || $this->appsGuides) {
             return 'publish';
         }
 
@@ -355,6 +364,26 @@ class GeneralSettings extends AbstractBrandAwareSettings
     public function setAppsDownloads($appsDownloads)
     {
         $this->appsDownloads = $appsDownloads;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppsGuides()
+    {
+        return $this->appsGuides;
+    }
+
+    /**
+     * @param bool $appsGuides
+     *
+     * @return GeneralSettings
+     */
+    public function setAppsGuides($appsGuides)
+    {
+        $this->appsGuides = $appsGuides;
 
         return $this;
     }

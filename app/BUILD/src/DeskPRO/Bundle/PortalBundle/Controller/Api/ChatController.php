@@ -29,10 +29,15 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
@@ -48,11 +53,15 @@ use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ChatController.
  *
+ * @SerializerView(mapping={
+ *     "Application\DeskPRO\Entity\ChatConversation": "DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\WidgetChat"
+ * })
  * @Rest\Route("/portal/api/chats")
  */
 class ChatController extends AbstractApiController
@@ -82,13 +91,23 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
-        $session      = $this->getApiSession();
+        $session = $this->getApiSession();
+        $this->checkIfSessionIsBlocked($session);
         $conversation = ChatConversation::newForUserSession($session);
+
+        /** @var DepartmentRepository $departmentRepository */
+        $departmentRepository = $this->getManager()->getRepository(Department::class);
+        $defaultDepartment    = $departmentRepository->getDefaultDepartment('chat');
+        $conversation->setDepartment($defaultDepartment);
 
         // $clearMissing = false to check only submitted data
         // if chat in 'simple' mode so we can skip custom fields validation
 
-        $form = $this->createForm(ChatCreateType::class, $conversation, ['person' => $session->getPerson()]);
+        $form = $this->createForm(ChatCreateType::class, $conversation, [
+            'person'     => $session->getPerson(),
+            'visitor_id' => $session->getVisitorId(),
+        ]);
+
         $form->submit($request->request->all(), false);
         if (!$form->isValid()) {
             return $this->generateFormErrorsResponse($form);
@@ -106,8 +125,8 @@ class ChatController extends AbstractApiController
 
         $this->setWidgetOption('chat_id', $conversation->getId());
 
-        if ($session->visitor_id) {
-            $hit = $this->getDoctrine()->getRepository(HitRecord::class)->findLastForVisitorId($session->visitor_id);
+        if ($session->getVisitorId()) {
+            $hit = $this->getDoctrine()->getRepository(HitRecord::class)->findLastForVisitorId($session->getVisitorId());
             if ($hit && $hit->getUrl()) {
                 $trackMsg = UserChatMessages::createUserTrackMessage($conversation, $hit->getUrl());
                 $conversation->addMessage($trackMsg);
@@ -289,10 +308,10 @@ class ChatController extends AbstractApiController
     {
         $this->checkSession($conversation);
 
-        $message_ids  = $request->request->get('message_ids');
-        $current_date = new \DateTime();
+        $messageIds  = $request->request->get('message_ids');
+        $currentDate = new \DateTime();
 
-        if (!empty($message_ids)) {
+        if (!empty($messageIds)) {
             /** @var EntityManager $em */
             $em = $this->getDoctrine()->getManager();
             $qb = $em->createQueryBuilder();
@@ -304,14 +323,14 @@ class ChatController extends AbstractApiController
                     'cm.conversation = :conversation_id'
                 )
                 ->setParameters([
-                    'date_received'   => $current_date->format('c'),
-                    'message_ids'     => $message_ids,
+                    'date_received'   => $currentDate->format('c'),
+                    'message_ids'     => $messageIds,
                     'conversation_id' => $conversation->getId(),
                 ])
             ;
 
             $qb->getQuery()->execute();
-            $this->dispatch(UserChatEvent::ACK_MESSAGES, new UserChatEvent($conversation, $message_ids));
+            $this->dispatch(UserChatEvent::ACK_MESSAGES, new UserChatEvent($conversation, $messageIds));
         }
 
         return View::create();
@@ -336,8 +355,8 @@ class ChatController extends AbstractApiController
             return $this->generateFormErrorsResponse($form);
         }
 
-        $partial_message = $form->get('partial_message')->getData();
-        $this->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($conversation, $partial_message));
+        $partialMessage = $form->get('partial_message')->getData();
+        $this->dispatch(UserChatEvent::USER_TYPING, new UserChatEvent($conversation, $partialMessage));
 
         return View::create();
     }
@@ -472,12 +491,14 @@ class ChatController extends AbstractApiController
      */
     protected function checkSession(ChatConversation $conversation)
     {
-        $request_session      = $this->getApiSession();
-        $conversation_session = $conversation->getSession();
+        $requestSession      = $this->getApiSession();
+        $conversationSession = $conversation->getSession();
 
-        if (!$conversation_session || $request_session->getId() !== $conversation_session->getId()) {
+        if (!$conversationSession || $requestSession->getId() !== $conversationSession->getId()) {
             throw new BadRequestHttpException('wrong_session_code');
         }
+
+        $this->checkIfSessionIsBlocked($conversationSession);
     }
 
     /**
@@ -488,5 +509,17 @@ class ChatController extends AbstractApiController
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
+    }
+
+    /**
+     * @param Session $session
+     */
+    public function checkIfSessionIsBlocked(Session $session)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\ChatBlock $rep */
+        $rep = $this->getDoctrine()->getRepository(ChatBlock::class);
+        if ($block = $rep->getBlockForVisitor($session->getVisitorId(), $session->getIpAddress())) {
+            throw new AccessDeniedHttpException('Banned');
+        }
     }
 }

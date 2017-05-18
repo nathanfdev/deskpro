@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\AbstractAppSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields\TicketGroupFieldSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields\TicketOrderFieldSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Permissions\TicketPermissionSettings;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -88,13 +89,21 @@ class TicketsSettings extends AbstractAppSettings
     private $orderFields = [];
 
     /**
+     * @var TicketPermissionSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Permissions\TicketPermissionSettings")
+     */
+    private $permissions;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->fieldInfo = new TicketFieldsInfoSettings();
-        $this->billing   = new TicketBillingSettings();
-        $this->timelog   = new TicketTimelogSettings();
+        $this->fieldInfo   = new TicketFieldsInfoSettings();
+        $this->billing     = new TicketBillingSettings();
+        $this->timelog     = new TicketTimelogSettings();
+        $this->permissions = new TicketPermissionSettings();
     }
 
     /**
@@ -183,5 +192,13 @@ class TicketsSettings extends AbstractAppSettings
         $this->orderFields[] = $orderFieldSettings;
 
         return $this;
+    }
+
+    /**
+     * @return TicketPermissionSettings
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
     }
 }

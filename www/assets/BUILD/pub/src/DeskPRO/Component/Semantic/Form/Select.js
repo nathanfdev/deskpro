@@ -31,6 +31,20 @@ class Select extends React.Component {
     };
   }
 
+  componentWillMount = () => {
+    const { value } = this.props;
+    if (value) {
+      this.selectValueFromProps(value);
+    }
+  };
+
+  componentWillReceiveProps = (newProps) => {
+    if ((!this.state.value && newProps.value)
+      || (this.state.value && (newProps.value !== this.state.value.value))) {
+      this.selectValueFromProps(newProps.value);
+    }
+  };
+
   componentDidUpdate = () => {
     if (this.focusedOption && this.state.isOpen && !this.hasScrolledToOption) {
       this.menu.scrollTop      = this.focusedOption.node.offsetTop;
@@ -155,6 +169,15 @@ class Select extends React.Component {
   selectFocusedOption = () => {
     this.selectValue(this.state.focusedOption);
     this.filterInput.blur();
+  };
+
+  selectValueFromProps = (value) => {
+    const currentValue = this.props.options.find(option => option.value === value);
+    if (currentValue) {
+      this.setState({
+        value: currentValue
+      });
+    }
   };
 
   toggleSelect = () => {

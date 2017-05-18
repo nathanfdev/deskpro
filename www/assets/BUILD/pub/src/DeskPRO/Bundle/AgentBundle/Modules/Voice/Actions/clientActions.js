@@ -1,12 +1,15 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { callsEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
+import { allNumbersSelector } from '../Selectors/numbers';
 
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
 export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
@@ -18,6 +21,19 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
 export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
+export const setOutgoingCall = createAction('VOICE_AGENT_SET_OUTGOING_CALL');
+export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
+
+export const setRingingVolume = createAction(
+  'VOICE_AGENT_SET_RINGING_VOLUME',
+  (value) => {
+    if (storageAvailable('localStorage')) {
+      localStorage.setItem('dpAgent.voice.ringingVolume', value);
+    }
+
+    return value;
+  }
+);
 
 let worker;
 
@@ -32,7 +48,7 @@ export const voiceBootstrap = createAction(
     const offlineSid   = offlineActivitySidSelector(initialState);
     const connectSid   = callsEnabled ? idleSid : offlineSid;
 
-    if (!workerToken || !phoneToken) {
+    if (!workerToken || !phoneToken || !connectSid || !offlineSid) {
       return;
     }
 
@@ -72,9 +88,9 @@ export const voiceBootstrap = createAction(
         dispatch(updateIncomigCall(reservation));
 
         // fetch the ticket info to get assigned agent
-        const ticketId = reservation.task.attributes.deskpro_ticket_id;
+        const callId = reservation.task.attributes.deskpro_call_id;
         const fetchTimeout = setInterval(() => {
-          api.sendGet(`DP_API/tickets/${ticketId}`).success(({ data }) => {
+          api.sendGet(`DP_API/voice_client/phone_call/${callId}/ticket`).success(({ data }) => {
             if (data.agent) {
               clearInterval(fetchTimeout);
 
@@ -113,19 +129,25 @@ export const voiceBootstrap = createAction(
         console.log(error);
       });
       window.Twilio.Device.connect((connection) => {
-        const callId   = connection.message.CallId;
-        const ticketId = connection.message.TicketId;
-
-        // open ticket
-        api.sendPut(`DP_API/voice_client/phone_call/${callId}/assign_agent`).success(() => {
-          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${ticketId}`);
-        });
+        // if we have call id on device connect then it means we get an incoming phone call
+        // assign agent to the phone call's ticket
+        if (!connection.message.Outbound) {
+          // create and open a ticket
+          api
+            .sendPut(`DP_API/voice_client/phone_call/${connection.message.CallId}/assign_agent`)
+            .success(({ data }) => {
+              connection.message.TicketId = data.id;
+              window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
+            });
+        }
 
         dispatch(addConnection(connection));
         connection.disconnect(() => {
           // call has ended
-          // unset incoming call and set worker activity to idle
+          // unset incoming and outgoing calls and set worker activity to idle
           dispatch(removeConnection(connection));
+          dispatch(resetOutgoingCall());
+
           worker.update('ActivitySid', idleSid);
         });
       });
@@ -176,6 +198,56 @@ export const voiceBootstrap = createAction(
         worker.update('ActivitySid', idleSid);
       }
     });
+    messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+      const data = event.data;
+
+      dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
+
+      if (data.linked.voice_phone_call) {
+        dispatch(addToCollection('VoicePhoneCall', 'all',  Object.values(data.linked.voice_phone_call)));
+      }
+      if (data.linked.person) {
+        dispatch(addToCollection('Person', 'all',  Object.values(data.linked.person)));
+      }
+    });
+  }
+);
+
+export const makeOutboundCall = createAction(
+  'VOICE_AGENT_MAKE_OUTBOUND_PHONE_CALL',
+  (callFrom, callTo) => (dispatch, getState) => {
+    const state   = getState();
+    const me      = meSelector(state);
+    const agentId = me.get('id');
+    const busySid = busyActivitySidSelector(state);
+    const numbers = allNumbersSelector(state);
+
+    const number = numbers.get(callFrom);
+    if (!number) {
+      return null;
+    }
+
+    const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
+      call_from: callFrom,
+      call_to:   callTo
+    });
+    promise.success(({ data, linked }) => {
+      if (linked.person) {
+        dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
+      }
+
+      dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
+      worker.update('ActivitySid', busySid);
+      window.Twilio.Device.connect({
+        CallId:   data.id,
+        AgentId:  agentId,
+        From:     number.get('number'),
+        To:       callTo,
+        Outbound: true
+      });
+    });
+
+    return promise;
   }
 );
 
@@ -194,20 +266,18 @@ export const acceptPhoneCall = createAction(
       // accept twilio reservation
       incomingCall.accept(() => {
         window.Twilio.Device.connect({
-          From:     from,
-          CallId:   incomingCall.task.attributes.deskpro_call_id,
-          AgentId:  agentId,
-          TicketId: incomingCall.task.attributes.deskpro_ticket_id
+          From:    from,
+          CallId:  incomingCall.task.attributes.deskpro_call_id,
+          AgentId: agentId
         });
       });
     } else {
       // got invite, join the conference
       worker.update('ActivitySid', busySid);
       window.Twilio.Device.connect({
-        From:     from,
-        CallId:   incomingCall.get('call_id'),
-        AgentId:  agentId,
-        TicketId: incomingCall.get('ticket_id')
+        From:    from,
+        CallId:  incomingCall.get('call_id'),
+        AgentId: agentId
       });
     }
   }
@@ -299,9 +369,17 @@ export const cancelInvite = createAction(
 export const hangup = createAction(
   'VOICE_AGENT_HANGUP',
   (connection) => {
-    const callId = connection.message.CallId;
-
     connection.disconnect();
+
+    const callId = connection.message.CallId;
     api.sendPut(`DP_API/voice_client/phone_call/${callId}/end_call`);
   }
+);
+
+export const searchPerson = createAction(
+  'VOICE_AGENT_SEARCH_PERSON',
+  searchString => api.sendGet(`DP_API/search/person?${compileParams({
+    q:      searchString,
+    params: { with_phone_number: 1 }
+  })}`)
 );

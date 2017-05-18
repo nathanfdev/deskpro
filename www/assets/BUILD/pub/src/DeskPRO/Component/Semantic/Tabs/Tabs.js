@@ -9,9 +9,10 @@ class Tabs extends React.Component {
 
   static propTypes = {
     items: PropTypes.arrayOf(PropTypes.shape({
-      id:      PropTypes.string,
-      title:   PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
-      content: PropTypes.oneOfType([
+      id:        PropTypes.string,
+      title:     PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+      className: PropTypes.string,
+      content:   PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.node
       ]).isRequired
@@ -22,15 +23,6 @@ class Tabs extends React.Component {
       activeMenuItem:    PropTypes.arrayOf(PropTypes.string),
       item:              PropTypes.arrayOf(PropTypes.string)
     })
-  };
-
-  static defaultProps = {
-    allClasses: {
-      menuItem:          [],
-      notActiveMenuItem: [],
-      activeMenuItem:    [],
-      item:              []
-    }
   };
 
   constructor(props) {
@@ -81,17 +73,24 @@ class Tabs extends React.Component {
     const tabsItems = [];
     const self = this;
     let key = 1;
-    items.map((item, index) => {
-      const props = {
-        key,
-        tabId:     item.id,
-        active:    self.state.activeId ? self.state.activeId === item.id : index === 0,
-        content:   item.content,
-        className: classes.item
-      };
-      key += 1;
-      return tabsItems.push(<TabsItem {...props} />);
-    });
+    items
+      .filter((item, index) => {
+        if (self.state.activeId) {
+          return self.state.activeId === item.id;
+        }
+        return index === 0;
+      })
+      .map((item, index) => {
+        const props = {
+          key,
+          tabId:     item.id,
+          active:    self.state.activeId ? self.state.activeId === item.id : index === 0,
+          content:   item.content,
+          className: classNames(classes.item, item.className ? item.className : '')
+        };
+        key += 1;
+        return tabsItems.push(<TabsItem {...props} />);
+      });
 
     return tabsItems;
   }

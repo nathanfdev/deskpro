@@ -68,6 +68,7 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\TransactionRequiredException;
 use DpSys\License;
+use Exception;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\CallbackInterface;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -232,70 +233,6 @@ class LoginController extends AbstractController
 
         Cookie::makeCookie('dplogout', 1, 0)->send();
         $this->deleteCookies(['dp-guest-cache']);
-    }
-
-    /**
-     * @param $auth
-     *
-     * @return Response
-     */
-    public function logoutAction($auth)
-    {
-        if (!\Orb\Util\Util::checkStaticSecurityToken($auth, md5(App::getAppSecret().'user_logout'))) {
-            return $this->redirectRoute('user');
-        }
-
-        $this->_logoutPerson();
-
-        if ($this->in->getString('quicklogout') == 'ajax') {
-            if ($this->in->getString('callback')) {
-                return $this->createJsonpResponse(['logged_out' => true]);
-            } else {
-                return $this->createJsonResponse(['logged_out' => true]);
-            }
-        } elseif ($this->in->getString('quicklogout') == 'pop') {
-            $html = <<<'HTML'
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<script type="text/javascript">
-window.close();
-window.onload = function () { window.close(); };
-</script>
-</head>
-<body>
-</body>
-</html>
-HTML;
-
-            $this->createResponse($html);
-        }
-
-        if ($this->in->getString('to') == 'admin') {
-            // TODO: move these checkAuthSystem calls to actually call AuthenticationManager
-            // but be careful, auth system will detect the interface automatically when we want to
-            // check different interfaces here (the url is always user interface)
-            if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
-                return $res;
-            }
-
-            return $this->redirect($this->request->getBaseUrl().'/admin/login?o=1');
-        } elseif ($this->in->getString('to') == 'agent') {
-            if ($res = $this->checkAuthSystemForResponse($this->getAgentAuthSettings(), true)) {
-                return $res;
-            }
-
-            return $this->redirect($this->request->getBaseUrl().'/agent/login?o=1');
-        } else {
-            if ($this->in->getString('via') == 'user_chat') {
-                return $this->redirectRoute('user_widget_chat');
-            }
-            if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), true)) {
-                return $res;
-            }
-
-            return $this->redirectRoute('user', ['o' => '1']);
-        }
     }
 
     /**
@@ -1308,20 +1245,32 @@ HTML;
             return new NotFoundHttpException();
         }
 
-        $usersource_test = $this->session->getFlash(self::USERSOURCE_TEST, []);
-        if (!$usersource_test) {
-            $usersource_test = $this->in->getBool(self::USERSOURCE_TEST);
+        $usersourceTest = $this->session->getFlash(self::USERSOURCE_TEST, []);
+        if (!$usersourceTest) {
+            $usersourceTest = $this->in->getBool(self::USERSOURCE_TEST);
         }
 
-        $this->attachTestLoggerIfNecessary($usersource_test, $adapter);
+        $this->attachTestLoggerIfNecessary($usersourceTest, $adapter);
 
         $result = $adapter->getSsoLoginActionResult($this);
 
         if ($result->isValid()) {
-            $login_processor = new LoginProcessor($source, $result->getIdentity(), $usersource_test);
-            $person          = $login_processor->getPerson();
+            $loginProcessor = new LoginProcessor($source, $result->getIdentity(), $usersourceTest);
+            try {
+                $person = $loginProcessor->getPerson(null, true);
+            } catch (Exception $e) {
+                $log = $this->getAdapterLog($adapter);
 
-            if ($usersource_test) {
+                $log .= "\n\n".$e->getMessage();
+
+                return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', [
+                        'log'            => $log,
+                        'display_errors' => $result->getMessages('display_errors'),
+                    ]
+                );
+            }
+
+            if ($usersourceTest) {
                 //--------------------------------------
                 // test result
                 //--------------------------------------
@@ -1346,7 +1295,7 @@ HTML;
             //--------------------------------------
             // test result
             //--------------------------------------
-            if ($usersource_test) {
+            if ($usersourceTest) {
                 $log = $this->getAdapterLog($adapter);
 
                 return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', [

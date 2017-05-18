@@ -29,7 +29,6 @@
 namespace Application\ImportBundle\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository;
 use Application\ImportBundle\Importer\ImporterContext;
 use Application\ImportBundle\Model\BatchConfig;
@@ -107,27 +106,18 @@ class ApplyCommand extends AbstractImporterCommand
                 return 0;
             }
 
-            $exit_code = $this->executeBatchRun($input, $output);
+            $exitCode = $this->executeBatchRun($input, $output);
 
             @flock($fh, LOCK_UN);
             @fclose($fh);
         } else {
-            $exit_code = $this->executeUnattendedRun($input, $output);
+            $exitCode = $this->executeUnattendedRun($input, $output);
         }
-
-        if ($this->getContainer()->getSetting('elastica.enabled')) {
-            $command = $this->getApplication()->find('fos:elastica:populate');
-            $input   = new ArrayInput(['']);
-            $output  = new NullOutput();
-            $command->run($input, $output);
-        }
-
-        $em->getRepository(Ticket::class)->fillSearchTable();
 
         unset($GLOBALS['DP_IS_IMPORTING']);
         $GLOBALS['DP_NOSQL_LOG'] = false;
 
-        return $exit_code;
+        return $exitCode;
     }
 
     /**
@@ -152,8 +142,7 @@ class ApplyCommand extends AbstractImporterCommand
         }
 
         $appEnv = $this->getContainer()->get('deskpro.app_env');
-
-        $cmd = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
+        $cmd    = sprintf('%s %s', dp_get_php_path(), implode(' ', $arguments));
 
         do {
             $process = new Process($cmd, realpath($appEnv->getDpRoot()));
@@ -171,10 +160,6 @@ class ApplyCommand extends AbstractImporterCommand
             $output->writeln('<info>Done batch</info>');
             $output->writeln('<info>Updating search tables.</info>');
 
-            /** @var EntityRepository\Ticket $ticket_repository */
-            $ticket_repository = $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket');
-            $ticket_repository->fillSearchTable();
-
             $config          = $this->createGeneratorContext($input);
             $exporter_config = $config->getBatchConfig();
 
@@ -187,6 +172,21 @@ class ApplyCommand extends AbstractImporterCommand
                 $rerun = false;
             }
         } while ($rerun);
+
+        if ($this->getContainer()->getSetting('elastica.enabled')) {
+            $output->writeln('<info>Update elasctic search.</info>');
+
+            $command = $this->getApplication()->find('dp:elastica:populate');
+            $input   = new ArrayInput(['']);
+            $output  = new NullOutput();
+            $command->run($input, $output);
+        }
+
+        $output->writeln('<info>Update ticket search tables.</info>');
+
+        /** @var EntityRepository\Ticket $ticket_repository */
+        $ticket_repository = $this->getContainer()->getEm()->getRepository('DeskPRO:Ticket');
+        $ticket_repository->fillSearchTable();
 
         $output->writeln('<info>Done all.</info>');
 

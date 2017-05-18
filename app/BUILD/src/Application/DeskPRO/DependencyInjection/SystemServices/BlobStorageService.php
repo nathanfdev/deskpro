@@ -89,23 +89,34 @@ class BlobStorageService
                 define(CURLOPT_TIMEOUT, 13);
             }
 
+            $connectTimeout = $container->getSetting('core.filestorage_s3_connect_timeout', 1);
+            $timeout        = $container->getSetting('core.filestorage_s3_timeout', 3);
+
+            if (php_sapi_name() === 'cli') {
+                // allow extra time for CLI upload
+                // e.g. a bigger upload that was first saved to db on a web request that is now being moved
+                $connectTimeout = $container->getSetting('core.filestorage_s3_connect_timeout_cli', 2);
+                $timeout        = $container->getSetting('core.filestorage_s3_timeout_cli', 10);
+            }
+
             $client = S3Client::factory([
                 'key'             => $container->getSetting('core.filestorage_s3_key'),
                 'secret'          => $container->getSetting('core.filestorage_s3_secret'),
                 'request.options' => [
-                    'connect_timeout' => 15,
-                    'timeout'         => 120,
+                    'connect_timeout' => $connectTimeout,
+                    'timeout'         => $timeout,
                 ],
                 'curl.options' => [
-                    CURLOPT_CONNECTTIMEOUT => 15,
-                    CURLOPT_TIMEOUT        => 120,
+                    CURLOPT_CONNECTTIMEOUT => $connectTimeout,
+                    CURLOPT_TIMEOUT        => $timeout,
                 ],
             ]);
             $s3_adapter = new AmazonS3Storage([
-                's3_client'       => $client,
-                'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
-                'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
-                'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
+                's3_client'              => $client,
+                'bucket'                 => $container->getSetting('core.filestorage_s3_bucket'),
+                'file_url_domain'        => $container->getSetting('core.filestorage_s3_file_url_domain'),
+                'base_path'              => $container->getSetting('core.filestorage_s3_basepath'),
+                'fail_limit_per_request' => 1,
             ]);
             $s3_adapter->setLogger($logger);
         }

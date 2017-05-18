@@ -26,29 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\Department;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalDepartmentTermCompiler.
+ */
 class DbalDepartmentTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $ids = $term->getOption('department_ids');
-
-        $query_part = $this->getEntityHelper()->buildQueryPart(
+        $qp = $this->getEntityHelper()->buildQueryPart(
             'ticket.department_id',
             $term->getOp(),
-            $ids
+            $term->getOption('department_ids')
         );
 
-        $this->logQueryPart($query_part);
+        $this->logQueryPart($qp);
 
-        return $query_part;
+        return $qp;
     }
 }

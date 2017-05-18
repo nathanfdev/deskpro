@@ -214,7 +214,7 @@ class TicketLogGenerator
      *
      * @return array
      */
-    private function getLogDataForChange(ChangeInterface $change)
+    public function getLogDataForChange(ChangeInterface $change)
     {
         $old = $change->getOld();
         $new = $change->getNew();

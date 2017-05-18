@@ -138,9 +138,9 @@ class ArticleCategoryHandlerTest extends AbstractEntityHandlerTest
 
         $this->assertCount(2, $entity->getUserGroups());
         $this->assertEquals('Group 1', $entity->getUserGroups()[0]->getTitle());
-        $this->assertEquals('group_1', $entity->getUserGroups()[0]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[0]->getSysName());
         $this->assertEquals('Group 2', $entity->getUserGroups()[1]->getTitle());
-        $this->assertEquals('group_2', $entity->getUserGroups()[1]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[1]->getSysName());
     }
 
     public function test_update_user_groups()
@@ -178,9 +178,9 @@ class ArticleCategoryHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(2, $entity->getUserGroups());
 
         $this->assertEquals('Group 1', $entity->getUserGroups()[0]->getTitle());
-        $this->assertEquals('group_1', $entity->getUserGroups()[0]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[0]->getSysName());
         $this->assertEquals('Group 3', $entity->getUserGroups()[1]->getTitle());
-        $this->assertEquals('group_3', $entity->getUserGroups()[1]->getSysName());
+        $this->assertEmpty($entity->getUserGroups()[1]->getSysName());
 
         $this->assertEquals($ug1->getId(), $entity->getUserGroups()[0]->getId());
         $this->assertNotEquals($ug2->getId(), $entity->getUserGroups()[1]->getId());
@@ -221,52 +221,6 @@ class ArticleCategoryHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(2, $entity->getChildren()[0]->getChildren());
         $this->assertEquals('sub_cat_1a', $entity->getChildren()[0]->getChildren()[0]->getTitle());
         $this->assertEquals('sub_cat_1b', $entity->getChildren()[0]->getChildren()[1]->getTitle());
-    }
-
-    public function test_cascade_remove_sub_categories()
-    {
-        $subModel1 = new Model\ArticleSubCategory();
-        $subModel1->setTitle('sub_cat_1');
-
-        $subModel1a = new Model\ArticleSubCategory();
-        $subModel1a->setTitle('sub_cat_1a');
-
-        $subModel1b = new Model\ArticleSubCategory();
-        $subModel1b->setTitle('sub_cat_1b');
-
-        $subModel1->addCategory($subModel1a);
-        $subModel1->addCategory($subModel1b);
-
-        $subModel2 = new Model\ArticleSubCategory();
-        $subModel2->setTitle('sub_cat_2');
-
-        $model = new Model\ArticleCategory();
-        $model->setOid(1);
-        $model->setTitle('test_cat');
-
-        $model->addCategory($subModel1);
-        $model->addCategory($subModel2);
-
-        $this->writer->writeData($model);
-
-        $entity = $this->getArticleCategoryEntity();
-        $this->assertNotNull($entity);
-        $this->assertCount(2, $entity->getChildren());
-        $this->assertCount(2, $entity->getChildren()[0]->getChildren()->toArray());
-
-        $this->em()->clear();
-
-        $model = new Model\ArticleCategory();
-        $model->setOid(1);
-        $model->setTitle('test_cat');
-        $model->addCategory($subModel2);
-
-        $this->writer->writeData($model);
-
-        $entity = $this->getArticleCategoryEntity();
-        $this->assertNotNull($entity);
-        $this->assertCount(1, $entity->getChildren());
-        $this->assertEquals('sub_cat_2', $entity->getChildren()[0]->getTitle());
     }
 
     public function test_update_sub_choice_by_oid()

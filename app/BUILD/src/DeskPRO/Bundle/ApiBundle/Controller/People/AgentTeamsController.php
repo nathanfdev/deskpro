@@ -45,6 +45,15 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/agent_teams")
  * @ApiDoc(target="all", section="Agents", output="DeskPRO\Bundle\AppBundle\Serializer\Model\AgentTeam")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\AgentTeamType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\AgentTeam"
+ *      }
+ *     }
+ * )
  */
 class AgentTeamsController extends CrudController
 {

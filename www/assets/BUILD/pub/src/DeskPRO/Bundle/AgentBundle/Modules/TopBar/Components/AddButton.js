@@ -40,6 +40,10 @@ class AddButton extends React.Component {
           <i className="icon download" /> {agentPhrases.get('agent.general.download')}</MenuItem>);
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
           <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
+        if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
+          items.push(<MenuItem key="topic" onClick={this.addTopic}>
+            <i className="icon book" /> {agentPhrases.get('agent.general.topic')}</MenuItem>);
+        }
       }
       if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
         items.push(<MenuItem key="task" onClick={this.addTask}>
@@ -89,6 +93,11 @@ class AddButton extends React.Component {
 
   addFeedback = () => {
     window.DeskPRO_Window.newFeedbackLoader.toggle();
+    this.closePopup();
+  };
+
+  addTopic = () => {
+    window.DeskPRO_Window.newTopicLoader.toggle();
     this.closePopup();
   };
 

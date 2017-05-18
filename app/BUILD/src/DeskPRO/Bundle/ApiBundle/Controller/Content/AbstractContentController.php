@@ -33,6 +33,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use DeskPRO\Bundle\AppBundle\CountBadge\AbstractCount;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
@@ -45,7 +46,6 @@ use Symfony\Component\HttpFoundation\Request;
 abstract class AbstractContentController extends CrudController
 {
     public static $category;
-    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
     public static $sortOptions = [
         'id'           => 'id',
         'date_created' => 'date_created',
@@ -121,7 +121,7 @@ abstract class AbstractContentController extends CrudController
     /**
      * {@inheritdoc}
      */
-    protected function addGroupByNestedCounts(Count $count, array $result, $indexByGroupName = false)
+    protected function addGroupByNestedCounts(AbstractCount $count, array $result)
     {
         if ($count->getGroupedBy() === 'category') {
             $map = [];
@@ -136,7 +136,7 @@ abstract class AbstractContentController extends CrudController
                 $value    = isset($map[$id]) ? $map[$id] : 0;
                 $groupBy  = !$children->count() ? $count->getGroupedBy() : '';
 
-                $nestedCount = Count::create($value, $id, $count->getGroupedBy(), $category->getTitle(), $groupBy);
+                $nestedCount = $count::create($value, $id, $count->getGroupedBy(), $category->getTitle(), $groupBy);
                 foreach ($children as $childCategory) {
                     $addNested($nestedCount, $childCategory);
                 }
@@ -148,7 +148,7 @@ abstract class AbstractContentController extends CrudController
                 $addNested($count, $category);
             }
         } else {
-            parent::addGroupByNestedCounts($count, $result, $indexByGroupName);
+            parent::addGroupByNestedCounts($count, $result);
         }
     }
 }

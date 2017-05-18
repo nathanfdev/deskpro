@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\System\Alerts;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -48,41 +44,20 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("all")
  * @Rest\Route("/system/incidents")
- * @ApiDoc(target="all", section="System")
+ * @ApiDoc(target="all", section="System", output="DeskPRO\Bundle\SystemBundle\Serializer\Model\Incident\StatefulIncident")
+ * @ApiDoc(
+ *     target="putAction,dismissAllAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\SystemBundle\Form\Type\SystemAlerts\IncidentType"
+ *     }
+ * )
  */
 class IncidentController extends CrudController
 {
     public static $entity       = AbstractIncident::class;
     public static $type         = IncidentType::class;
-    public static $exposeOnly   = ['get', 'list', 'put', 'delete'];
+    public static $exposeOnly   = ['get', 'list', 'count', 'put', 'delete'];
     public static $listPaginate = false;
-
-    /**
-     * @ApiDoc(
-     *     section="System",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Incident\AbstractIncident"
-     * )
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return View
-     * @Rest\Get("/{id}", requirements={"id"="\d+"})
-     */
-    public function getAction(Request $request, $id)
-    {
-        if (!$incident = $this->findEntity($id, $request)) {
-            throw $this->createNotFoundException();
-        }
-        $instructionsHtml = $this->get('dp_sys.alerts.instructions_generator')->generate($incident);
-
-        return View::create($this->wrap(
-            ['incident' => $incident, 'instructions_html' => $instructionsHtml]
-        ), Response::HTTP_OK);
-    }
 
     /**
      * {@inheritdoc}
@@ -102,5 +77,60 @@ class IncidentController extends CrudController
     protected function getManager()
     {
         return $this->getDoctrine()->getManager('system');
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="System",
+     *      description="delete all incidents",
+     *      statusCodes={
+     *          200="Returned if success",
+     *      }
+     * )
+     *
+     * @Rest\Delete("")
+     *
+     * @return View
+     */
+    public function removeAllAction()
+    {
+        $this->getManager()->createQueryBuilder()->delete(AbstractIncident::class)->getQuery()->execute();
+
+        return View::create(null, Response::HTTP_OK);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="System",
+     *      description="change dismissed status for all incidents",
+     *      requirements={
+     *          {
+     *              "name"="dimissed",
+     *              "requirement"="1|0",
+     *              "description"="An integer representing bool"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned if success",
+     *      }
+     * )
+     *
+     * @param Request $request
+     *
+     * @Rest\Put("")
+     *
+     * @return View
+     */
+    public function dismissAllAction(Request $request)
+    {
+        $this
+            ->getManager()
+            ->createQueryBuilder()
+            ->update(AbstractIncident::class, 'i')
+            ->set('i.dismissed', ':dismissed')
+            ->getQuery()
+            ->execute(['dismissed' => $request->request->get('dismissed')]);
+
+        return View::create(null, Response::HTTP_OK);
     }
 }

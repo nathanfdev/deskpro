@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQuery;
@@ -38,6 +34,9 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketLanguage\TicketLanguageTerm;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 use DpTest\DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractDbalTicketFilterTermCompilerTest;
 
+/**
+ * Class DbalTicketLanguageTermCompilerTest.
+ */
 class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCompilerTest
 {
     /**
@@ -58,17 +57,16 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
             ]
         );
 
-        $query_part = $this->term_compiler->compile($term);
-
-        $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
+        $qp = $this->term_compiler->compile($term);
+        $this->assertWhere($qp, '{languages}.id IN(:language) OR {languages}.lang_code IN(:language)');
         $this->assertParameters(
-            $query_part,
+            $qp,
             [
-                'language' => '1',
+                'language' => ['1'],
             ]
         );
         $this->assertUniqueJoins(
-            $query_part,
+            $qp,
             [
                 'languages' => [
                     'table' => 'languages',
@@ -88,20 +86,19 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
             TermInterface::OP_NOT
         );
 
-        $query_part = $this->term_compiler->compile($term);
-
+        $qp = $this->term_compiler->compile($term);
         $this->assertWhere(
-            $query_part,
-            '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL'
+            $qp,
+            '({languages}.id NOT IN(:language) AND {languages}.lang_code NOT IN(:language)) OR {languages}.id IS NULL'
         );
         $this->assertParameters(
-            $query_part,
+            $qp,
             [
-                'language' => '1',
+                'language' => ['1'],
             ]
         );
         $this->assertUniqueJoins(
-            $query_part,
+            $qp,
             [
                 'languages' => [
                     'table' => 'languages',
@@ -119,16 +116,17 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
                 'language' => 'eng',
             ]
         );
-        $query_part = $this->term_compiler->compile($term);
-        $this->assertWhere($query_part, '{languages}.id = :language OR {languages}.lang_code = :language');
+
+        $qp = $this->term_compiler->compile($term);
+        $this->assertWhere($qp, '{languages}.id IN(:language) OR {languages}.lang_code IN(:language)');
         $this->assertParameters(
-            $query_part,
+            $qp,
             [
-                'language' => 'eng',
+                'language' => ['eng'],
             ]
         );
         $this->assertUniqueJoins(
-            $query_part,
+            $qp,
             [
                 'languages' => [
                     'table' => 'languages',
@@ -147,19 +145,20 @@ class DbalTicketLanguageTermCompilerTest extends AbstractDbalTicketFilterTermCom
             ],
             TermInterface::OP_NOT
         );
-        $query_part = $this->term_compiler->compile($term);
+
+        $qp = $this->term_compiler->compile($term);
         $this->assertWhere(
-            $query_part,
-            '({languages}.id != :language AND {languages}.lang_code != :language) OR {languages}.id IS NULL'
+            $qp,
+            '({languages}.id NOT IN(:language) AND {languages}.lang_code NOT IN(:language)) OR {languages}.id IS NULL'
         );
         $this->assertParameters(
-            $query_part,
+            $qp,
             [
-                'language' => 'ger',
+                'language' => ['ger'],
             ]
         );
         $this->assertUniqueJoins(
-            $query_part,
+            $qp,
             [
                 'languages' => [
                     'table' => 'languages',

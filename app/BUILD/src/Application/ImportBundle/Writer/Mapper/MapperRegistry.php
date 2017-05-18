@@ -286,7 +286,7 @@ class MapperRegistry
     /**
      * Returns the department mapper.
      *
-     * @return CommonMapper
+     * @return DepartmentMapper
      */
     public function getDepartmentMapper()
     {

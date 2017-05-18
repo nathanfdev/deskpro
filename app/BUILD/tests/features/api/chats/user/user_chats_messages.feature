@@ -1,6 +1,6 @@
 @new
 Feature: /user_chats endpoint
-  To retrieve DeskPRO agents
+  To retrieve DeskPRO user chat messages
   As an API user
   I want an API endpoint
 
@@ -47,7 +47,7 @@ Feature: /user_chats endpoint
     Then the response should be in JSON
     And the response status code should be 201
     And the JSON node data should exist
-    And the JSON node "data.author_id" should be equal to 0
+    And the JSON node "data.author_id" should be equal to "{admin}"
     And the JSON node "data.is_user" should be true
 
   Scenario: I send a message as an agent to a conversation
@@ -62,7 +62,7 @@ Feature: /user_chats endpoint
     Then the response should be in JSON
     And the response status code should be 201
     And the JSON node data should exist
-    And the JSON node "data.author_id" should be equal to 0
+    And the JSON node "data.author_id" should be equal to "{admin}"
     And the JSON node "data.is_user" should be false
 
   Scenario: I get the last messages on a conversation

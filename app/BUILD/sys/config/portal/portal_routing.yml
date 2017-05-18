@@ -1,8 +1,7 @@
 # This is the "main" file for the portal kernel. No other kernel imports this.
 # 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
 api_routes:
-    resource: "@ApiBundle/Resources/config/routing_api.yml"
-    prefix: /api/v2
+  resource: "@ApiBundle/Resources/config/routing_api.yml"
 
 system_routes:
     resource: "@SystemBundle/Resources/config/routing.yml"
@@ -19,6 +18,9 @@ dp_routes:
 
 dpkernel_routes:
     resource: "@DeskPRO/Resources/config/dp-routing.php"
+
+#cloud_billing_routing:
+#    resource: "@CloudBillingBundle/Resources/config/routing.yml"
 
 # any URL that isn't caught from the above config AND ends in "/"
 # we do this to redirect to the same URL without the trailing slash

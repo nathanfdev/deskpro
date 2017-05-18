@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html {% if language.is_rtl %}class="as-rtl" dir="rtl"{% endif %}>
+<head>
+    <title>{{ guide.title }}</title>
+    <link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_PortalBundle_GuidePdf_style.css', 'app_assets') }}" />
+    <style>
+        @media print {
+            .sf-toolbar {
+                display: none !important;
+            }
+        }
+        body {
+            width: 1000px;
+        }
+    </style>
+</head>
+<body>
+    <div class="guides pdf">
+        {% for topic in guide.topics %}
+            <div class="topic">
+                <h1 id="{{ topic.slug }}"><span class="counter">{{ topic.display_order }}</span> {{ topic.title }}</h1>
+                {% for child in topic.children %}
+                    {%  include 'Theme:Guides:full_topic.html.twig' with {'topic': child, 'depth': 2, 'counter': topic.display_order} %}
+                {%  endfor %}
+            </div>
+        {% endfor %}
+    </div>
+</body>

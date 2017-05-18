@@ -126,11 +126,16 @@
 	</div>
 </div>
 
-<dp-person-actions ng-model="setting_values.actions"
-				   type="Ctrl.usersourceType"
-				   title="Login Actions"
-				   ng-if="Ctrl.usersourceType == 'user' || setting_values.auto_agent"
->
-</dp-person-actions>
-
-
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Login Actions</h3>
+	</div>
+	<div class="col-lg-8">
+		<dp-person-actions ng-model="setting_values.actions"
+						   type="Ctrl.usersourceType"
+						   title="Login Actions"
+						   ng-if="Ctrl.usersourceType == 'user' || setting_values.auto_agent"
+		>
+		</dp-person-actions>
+	</div>
+</div>

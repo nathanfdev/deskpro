@@ -59,6 +59,10 @@ if (defined('DPC_IS_CLOUD')) {
     $col = $loader->import(DP_ROOT.'/src/Cloud/LegacyApiBundle/Resources/config/api-routing.php');
     $col->addPrefix('/api');
     $collection->addCollection($col);
+
+    // ClOUD BILLING ROUTES
+    $col = $loader->import(DP_ROOT.'/src/DeskPROCloud/Bundle/CloudBillingBundle/Resources/config/routing.yml');
+    $collection->addCollection($col);
 }
 
 return $collection;

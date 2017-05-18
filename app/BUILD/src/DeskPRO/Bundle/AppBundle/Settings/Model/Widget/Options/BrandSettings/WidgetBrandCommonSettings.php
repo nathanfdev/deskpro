@@ -74,6 +74,13 @@ class WidgetBrandCommonSettings
     private $enabled = true;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $primaryColor = '#62ad8c';
+
+    /**
      * @return string
      */
     public function getType()
@@ -151,5 +158,21 @@ class WidgetBrandCommonSettings
         $this->enabled = (bool) $enabled;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrimaryColor()
+    {
+        return $this->primaryColor;
+    }
+
+    /**
+     * @param string $primaryColor
+     */
+    public function setPrimaryColor($primaryColor)
+    {
+        $this->primaryColor = $primaryColor;
     }
 }

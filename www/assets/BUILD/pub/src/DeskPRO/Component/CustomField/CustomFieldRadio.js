@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
+import { withFormValue, Input } from 'react-forms';
 import { AbstractCustomField } from './AbstractCustomField';
-import { WithFormValue, Input } from 'react-forms';
 import { noFocusBorder } from './noFocusBorderDecorator';
 
 export class CustomFieldRadio extends AbstractCustomField {
@@ -41,7 +41,7 @@ class RadioButton extends React.Component {
   };
 
   componentDidMount() {
-    this.addNoFocusBorderListeners(this.refs.el);
+    this.addNoFocusBorderListeners(this.el);
   }
 
   onClick = () => {
@@ -53,7 +53,7 @@ class RadioButton extends React.Component {
     const { itemValue, itemLabel, formValue } = this.props;
 
     return (
-      <div tabIndex="0" className="radio-button" ref="el">
+      <div tabIndex="0" className="radio-button" ref={(c) => { this.el = c; }}>
         <Input type="radio" value={itemValue} checked={formValue.value === itemValue} />
         <label className="title" onClick={this.onClick}>{itemLabel}</label>
       </div>
@@ -61,4 +61,4 @@ class RadioButton extends React.Component {
   }
 }
 
-const RadioButtonWithFormValue = WithFormValue(RadioButton);
+const RadioButtonWithFormValue = withFormValue(RadioButton);

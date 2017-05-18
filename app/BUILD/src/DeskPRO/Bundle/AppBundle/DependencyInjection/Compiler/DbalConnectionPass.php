@@ -38,8 +38,8 @@ class DbalConnectionPass implements CompilerPassInterface
     {
         $connections = $container->getParameter('doctrine.connections');
 
-        foreach ($connections as $id => $service_id) {
-            $def     = $container->getDefinition($service_id);
+        foreach ($connections as $id => $serviceId) {
+            $def     = $container->getDefinition($serviceId);
             $args    = $def->getArguments();
             $args[0] = new Expression("service('deskpro.db_config_reader').getParams('$id')");
 

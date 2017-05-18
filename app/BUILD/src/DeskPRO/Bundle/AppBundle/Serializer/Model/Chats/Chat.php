@@ -34,17 +34,8 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class Chat.
  */
-class Chat
+class Chat extends AbstractChat
 {
-    /**
-     * The unique id of chat conversation.
-     *
-     * @JMS\Type("integer")
-     *
-     * @var int
-     */
-    protected $id;
-
     /**
      * BC property.
      *
@@ -75,58 +66,13 @@ class Chat
     protected $subjectLine;
 
     /**
-     * If this is a user conversation, this is the user who started the chat.
+     * BC copy of agent id.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Type("integer")
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @var int
      */
-    protected $person = null;
-
-    /**
-     * User chat: The users name, if they arent a person.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $personName = '';
-
-    /**
-     * User chat: The users email, if they aren`t a person.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $personEmail = '';
-
-    /**
-     * If this is a user conversation, this is the agent assigned.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     *
-     * @var \Application\DeskPRO\Entity\Person
-     */
-    protected $agent = null;
-
-    /**
-     * Status of the chat conversation.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $status = 'open';
-
-    /**
-     * Department which chat was assigned.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
-     *
-     * @var \Application\DeskPRO\Entity\Department
-     */
-    protected $department = null;
+    protected $agentId = null;
 
     /**
      * BC property.
@@ -149,60 +95,6 @@ class Chat
     protected $departmentName = '';
 
     /**
-     * Date when chat was started.
-     *
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    protected $dateCreated;
-
-    /**
-     * Date when agent typed last time.
-     *
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    protected $dateAgentTyping;
-
-    /**
-     * Date when chat was ended.
-     *
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    protected $dateEnded;
-
-    /**
-     * Who ended the chat.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $endedBy = '';
-
-    /**
-     * True if transcript should be send.
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $shouldSendTranscript = false;
-
-    /**
-     * Date when transcript was sent.
-     *
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    protected $dateTranscriptSent = null;
-
-    /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      *
      * @JMS\Type("custom_data<array>")
@@ -210,40 +102,20 @@ class Chat
     protected $fields;
 
     /**
-     * Date when transcript was sent.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     *
-     * @var \DateTime
-     */
-    protected $needValidateEmail = null;
-
-    /**
-     * Constructor.
-     *
-     * @param ChatConversation $chat
+     * {@inheritdoc}
      */
     public function __construct(ChatConversation $chat)
     {
-        $this->id                   = $chat->getId();
-        $this->conversationId       = $chat->getId();
-        $this->subject              = $chat->getSubjectLine();
-        $this->subjectLine          = $chat->getSubjectLine();
-        $this->department           = $chat->getDepartment();
-        $this->departmentId         = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
-        $this->departmentName       = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
-        $this->person               = $chat->getPerson();
-        $this->agent                = $chat->getAgent();
-        $this->personName           = $chat->getPersonName();
-        $this->personEmail          = $chat->getPersonEmail();
-        $this->dateCreated          = $chat->getDateCreated();
-        $this->dateAgentTyping      = $chat->getDateAgentTyping();
-        $this->dateEnded            = $chat->getDateEnded();
-        $this->endedBy              = $chat->getEndedBy();
-        $this->shouldSendTranscript = $chat->getShouldSendTranscript();
-        $this->dateTranscript_sent  = $chat->getDateTranscriptSent();
-        $this->needValidateEmail    = $chat->getEmailValidationCode() && !$chat->getEmailValidated();
-        $this->fields               = $chat->getCustomData();
+        parent::__construct($chat);
+
+        $this->fields = $chat->getCustomData();
+
+        // BC with legacy message format
+        $this->conversationId = $chat->getId();
+        $this->subject        = $chat->getSubjectLine();
+        $this->subjectLine    = $chat->getSubjectLine();
+        $this->departmentId   = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
+        $this->departmentName = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
+        $this->agentId        = $chat->getAgentId();
     }
 }

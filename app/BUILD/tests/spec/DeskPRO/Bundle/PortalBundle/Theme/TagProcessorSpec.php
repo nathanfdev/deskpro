@@ -36,7 +36,6 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
 use DeskPRO\Bundle\PortalBundle\Theme\TagRequestFactory;
-use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -48,10 +47,9 @@ class TagProcessorSpec extends ObjectBehavior
     public function let(
         TagRequestFactory $tag_request_factory,
         TagHandlerInterface $esi_handler,
-        TagHandlerInterface $inline_handler,
-        EventLogger $logger
+        TagHandlerInterface $inline_handler
     ) {
-        $this->beConstructedWith($tag_request_factory, [$esi_handler, $inline_handler], $logger);
+        $this->beConstructedWith($tag_request_factory, [$esi_handler, $inline_handler]);
     }
 
     public function it_returns_the_result_of_the_first_handler_that_supports_the_tag_request(

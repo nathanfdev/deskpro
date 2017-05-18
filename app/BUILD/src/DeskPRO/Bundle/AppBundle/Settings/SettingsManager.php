@@ -33,8 +33,10 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPref;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\IMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -71,6 +73,7 @@ class SettingsManager
     {
         $settings = new AgentSettings();
         $settings->setTickets($this->getTicketsSettings());
+        $settings->setIM($this->getIMSettings());
 
         return $settings;
     }
@@ -94,6 +97,23 @@ class SettingsManager
         }
 
         $settings->setFilterGroupings($grouping);
+
+        return $settings;
+    }
+
+    /**
+     * @return IMSettings
+     */
+    private function getIMSettings()
+    {
+        $settings = new IMSettings();
+
+        $chatsOrderPreference = $this
+            ->em
+            ->getRepository(PersonPref::class)
+            ->findOneBy(['name' => 'agent.ui.im.chats_order', 'person' => $this->user]);
+
+        $settings->setChatsOrder($chatsOrderPreference ? $chatsOrderPreference->getValue() : []);
 
         return $settings;
     }

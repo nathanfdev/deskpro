@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
@@ -59,9 +60,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="Application\DeskPRO\Settings\GeneralPortalSettings"
-     *      }
+     *     output="Application\DeskPRO\Settings\GeneralPortalSettings"
      * )
      *
      * @Rest\Get("/new/portal/general")
@@ -84,9 +83,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         200="Success",
      *         404="Not Found error will returned in case we can't find the specified brand"
      *     },
-     *     output={
-     *          "class"="Application\DeskPRO\Settings\GeneralPortalSettings"
-     *      }
+     *     output="Application\DeskPRO\Settings\GeneralPortalSettings"
      * )
      *
      * @Rest\Get("/{brand}/portal/general")
@@ -112,10 +109,9 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *         400="In case your request was malformed",
      *     },
      *     input= {
-     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\Portal\GeneralSettingsType",
-     *         "name"="",
-     *         "options"={"method"="POST"},
-     *     }
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType"
+     *     },
+     *     noOutput=true
      *)
      * @Rest\Post("/{brand}/portal/general")
      *
@@ -127,27 +123,41 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
     public function postAction(Request $request, Brand $brand)
     {
         $model = $this->getModel($brand);
-        $this->handleForm($request, $model);
+
+        $form = $this->createForm($this->getType(), $model);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        /** @var UrlHostChecker $urlHostChecker */
+        $urlHostChecker = $this->get('url_host_checker');
+        $url            = $model->getDeskproUrl();
 
         $em = $this->getManager();
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
-            $url = $model->getDeskproUrl();
-            /** @var UrlHostChecker $urlHostChecker */
-            $urlHostChecker = $this->get('url_host_checker');
-            $helpdeskUrl    = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
-            $helpdeskUrl    = $urlHostChecker->simplifyUrl($helpdeskUrl);
+            $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+            $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
 
             if (false !== strpos($url, $helpdeskUrl)) {
                 throw new BadRequestHttpException(
                     'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
                 );
             }
-
-            $brand->setUrl($urlHostChecker->simplifyUrl($url));
         }
+
+        $brand->setUrl($urlHostChecker->simplifyUrl($url));
+
         $brand->setName($model->getBrandName());
         $em->persist($brand);
         $em->flush();
+
+        $this->persistModel($model);
+
+        if (defined('DPC_IS_CLOUD')) {
+            \Cloud\LegacyApiBundle\Helper\CloudBrandHelper::flushBrandDomains();
+        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -188,6 +198,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isAppsKb(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_NEWS, $model->isAppsNews(), $brand)
             ->updateSetting(PortalSettingsResolver::APPS_DOWNLOADS, $model->isAppsDownloads(), $brand)
+            ->updateSetting(PortalSettingsResolver::APPS_GUIDES, $model->isAppsDownloads(), $brand)
             ->updateSetting(PortalSettingsResolver::IFACE_PORTAL, $model->isIfacePortal(), $brand)
             ->updateSetting(PortalSettingsResolver::IFACE_WIDGET, $model->isIfaceWidget(), $brand)
             ->updateSetting(PortalSettingsResolver::SHOW_RATINGS, $model->isShowRatings(), $brand)

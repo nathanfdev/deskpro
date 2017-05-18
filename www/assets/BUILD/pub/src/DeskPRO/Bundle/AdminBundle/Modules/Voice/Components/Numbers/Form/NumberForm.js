@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, Input, createValue } from 'react-forms';
+import { Fieldset, createValue } from 'react-forms';
 import classNames from 'classnames';
-import { Form, Field, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import NumberTargetSelect from '../../Common/NumberTarget/NumberTargetSelect';
@@ -12,7 +12,8 @@ class NumberForm extends React.Component {
     number:       PropTypes.object,
     onReturnBack: PropTypes.func.isRequired,
     onSubmit:     PropTypes.func,
-    saving:       PropTypes.bool
+    saving:       PropTypes.bool,
+    errors:       PropTypes.object // eslint-disable-line react/no-unused-prop-types
   };
 
   constructor(props) {
@@ -49,7 +50,7 @@ class NumberForm extends React.Component {
 
   onCancel = (event) => {
     event.preventDefault();
-    this.setState(this.getDefaultState());
+    this.props.onReturnBack();
   };
 
   getDefaultState() {

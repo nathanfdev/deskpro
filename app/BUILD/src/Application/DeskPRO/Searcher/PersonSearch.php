@@ -971,6 +971,7 @@ class PersonSearch extends SearcherAbstract
                     break;
 
                 case self::TERM_NAME:
+                case self::TERM_USERNAME:
                     if (is_array($choice)) {
                         $choice = array_pop($choice);
                     }

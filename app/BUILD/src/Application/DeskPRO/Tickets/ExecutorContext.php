@@ -45,6 +45,7 @@ class ExecutorContext implements ExecutorContextInterface
     const EVENT_NEW    = 'newticket';
     const EVENT_REPLY  = 'newreply';
     const EVENT_UPDATE = 'update';
+    const EVENT_DELETE = 'delete';
     const EVENT_NOOP   = 'noop';
 
     const METHOD_API    = 'api';

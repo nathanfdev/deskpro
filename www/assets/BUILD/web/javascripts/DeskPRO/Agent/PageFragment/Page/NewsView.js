@@ -533,7 +533,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,

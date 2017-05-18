@@ -27,6 +27,11 @@ services:
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
+  form.scalar_extension:
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\ScalarTransformerExtension
+    tags:
+      - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType' }
+
   form.checkbox_extension:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\DeskproCheckboxExtension
     tags:

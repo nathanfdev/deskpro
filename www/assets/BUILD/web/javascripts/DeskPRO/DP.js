@@ -227,9 +227,10 @@ var DP = {
 				});
 
 				options.formatSelection = function(data) {
+					data = data || {};
 					var n = $('<span/>').text(data.text);
 					return {type: 'el', value: n};
-				}
+				};
 				options.formatResult = function(result) {
 					var opt = el.find('option[value="' + result.id + '"]');
 					if (!opt || !opt[0]) {

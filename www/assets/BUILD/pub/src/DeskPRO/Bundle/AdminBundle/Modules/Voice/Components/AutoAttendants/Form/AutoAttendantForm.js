@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, Input, createValue } from 'react-forms';
+import { Fieldset, createValue } from 'react-forms';
 import classNames from 'classnames';
-import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import DialNumberCheckbox from './DialNumber/DialNumberCheckbox';
 import DialNumbers from './DialNumber/DialNumbers';
-import AudioWidgetFormContainer from './AudioWidgetFormContainer';
+import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 
 class AutoAttendantForm extends React.Component {
 
@@ -14,7 +14,8 @@ class AutoAttendantForm extends React.Component {
     autoAttendant: PropTypes.object,
     onReturnBack:  PropTypes.func,
     onSubmit:      PropTypes.func,
-    saving:        PropTypes.bool
+    saving:        PropTypes.bool,
+    errors:        PropTypes.object // eslint-disable-line react/no-unused-prop-types
   };
 
   constructor(props) {
@@ -43,7 +44,7 @@ class AutoAttendantForm extends React.Component {
 
   onCancel = (event) => {
     event.preventDefault();
-    this.setState(this.getDefaultState());
+    this.props.onReturnBack();
   };
 
   getDefaultState() {

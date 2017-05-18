@@ -16,7 +16,6 @@ services:
     arguments:
       - "@tag_request_factory"
       - [ "@tag_handler.esi", "@tag_handler.inline" ]
-      - "@dp_sys.alerts.event_logger"
 
 
   tag_handler.esi:

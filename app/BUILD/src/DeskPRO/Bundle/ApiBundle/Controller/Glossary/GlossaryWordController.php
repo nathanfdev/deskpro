@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Glossary;
 
 use Application\DeskPRO\Entity\GlossaryWord;
@@ -47,6 +43,15 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/glossary/words")
  * @ApiDoc(target="all", section="Glossary", output="Application\DeskPRO\Entity\GlossaryWord")
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Glossary\GlossaryWordType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\GlossaryWord"
+ *      }
+ *     }
+ * )
  */
 class GlossaryWordController extends CrudController
 {

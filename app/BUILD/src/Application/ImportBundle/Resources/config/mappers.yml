@@ -46,6 +46,12 @@ services:
     tags:
       - { name: dp.importer.writer.mapper }
 
+  dp.importer.writer.mapper.department:
+    class: Application\ImportBundle\Writer\Mapper\DepartmentMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
   dp.importer.writer.mapper.download_category:
     class: Application\ImportBundle\Writer\Mapper\DownloadCategoryMapper
     arguments: ["@doctrine.orm.entity_manager"]
@@ -133,5 +139,23 @@ services:
   dp.importer.writer.mapper.brand:
     class: Application\ImportBundle\Writer\Mapper\BrandMapper
     arguments: ["@doctrine.orm.entity_manager", "@brand_aware_settings_resolver"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.person_contact_data:
+    class: Application\ImportBundle\Writer\Mapper\PersonContactDataMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.organization_contact_data:
+    class: Application\ImportBundle\Writer\Mapper\OrganizationContactDataMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
+  dp.importer.writer.mapper.phone_number:
+    class: Application\ImportBundle\Writer\Mapper\PhoneNumberMapper
+    arguments: ["@doctrine.orm.entity_manager"]
     tags:
       - { name: dp.importer.writer.mapper }

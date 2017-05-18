@@ -157,11 +157,6 @@ $collection->create('sys_log_js_error', [
     'controller' => 'DeskPRO:Data:logJsError',
 ]);
 
-$collection->create('sys_report_error', [
-    'path'       => '/dp/report-error.json',
-    'controller' => 'DeskPRO:Data:sendErrorReport',
-]);
-
 $collection->create('data_interface_data', [
     'path'         => '/data/interface-data.{_format}',
     'controller'   => 'DeskPRO:Data:interfaceData',
@@ -202,22 +197,6 @@ $collection->create('dp3_redirect_kb_php', [
 $collection->create('dp3_redirect_login_php', [
     'path'       => '/login.php',
     'controller' => 'PortalBundle:Deskpro3Redirect:login',
-]);
-
-$collection->create('dp3_redirect_manual_php', [
-    'path'       => '/manual.php',
-    'controller' => 'PortalBundle:Deskpro3Redirect:manuals',
-]);
-
-$collection->create('dp3_redirect_manual_rewritten', [
-    'path'       => '/manual/{manual_bit}/{page_bit}',
-    'controller' => 'PortalBundle:Deskpro3Redirect:rewrittenManuals',
-    'defaults'   => ['page_bit' => ''],
-]);
-
-$collection->create('dp3_redirect_manual_download_php', [
-    'path'       => '/manual_download.php',
-    'controller' => 'PortalBundle:Deskpro3Redirect:manuals',
 ]);
 
 $collection->create('dp3_redirect_news_archive_php', [
@@ -278,11 +257,6 @@ $collection->create('dp3_redirect_ticketlist_company_php', [
 $collection->create('dp3_redirect_ticketlist_participate_php', [
     'path'       => '/ticketlist_participate.php',
     'controller' => 'PortalBundle:Deskpro3Redirect:ticketList',
-]);
-
-$collection->create('dp3_redirect_troubleshooter_php', [
-    'path'       => '/troubleshooter.php',
-    'controller' => 'PortalBundle:Deskpro3Redirect:troubles',
 ]);
 
 $collection->create('dp3_redirect_view_php', [

@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
+use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType;
@@ -46,6 +47,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class ProfileController.
+ */
 class ProfileController extends AbstractController
 {
     /**
@@ -81,59 +85,76 @@ class ProfileController extends AbstractController
             'saved_form_subrequest' => $this->isSavedFormSubRequest($request),
             'action'                => $this->generateUrl('portal_user_registration'),
         ]);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
-            // check if the person already has an account (or is a contact)
-            if ($email = $person->getEmailAddress()) {
-                /** @var Person $personCheck */
-                if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
-                    // uncomment this conditional if the "set password" email should only be sent to accounts
-                    // that cannot login. accounts that get here that can login are given a form error instead.
-                    //if (!$personCheck->isUser()) {
-                        // contact, they should now get a "set password" email and a redirection
-                        // set the reset code
-
-                    $validSeconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
-                    $reset        = $this->getPersonDataService()->createPasswordReset($personCheck, $validSeconds);
-
-                    $this->get('portal_email_sender')->sendPasswordSetLink($personCheck, $reset);
-
-                    return $this->redirectToRoute('portal_user_register_set_password', [
-                            'email' => $personCheck->getPrimaryEmailAddress(),
-                        ]);
-                    //}
-                }
-            }
+        if ($request->isMethod('get') && $request->query->count()) {
+            // to set form default values from request query
+            $formOptions['validation_groups']             = false;
+            $formOptions['csrf_double_submit_skip_check'] = true;
         }
 
-        if ($form->isValid()) {
-            $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
-            $event->setResponse($this->redirectToRoute('portal_user_registration'));
-            $this->getAntiAbuseService()->check($event);
+        $form->handleRequest($request);
 
-            if ($this->isSavedFormSubRequest($request)) {
-                // this is coming from the validation controller, so this time we actually want to save the user
-                $request->getSession()->set(
-                    'last_username',
-                    $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : ''
-                );
-                $this->get('person_manipulator')->validatePerson($person, $person->getEmailAddress());
-                $context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
-                $this->getPersonFactory()->saveNewPerson($person, $context);
-                $this->getEmailSender()->sendWelcomeEmail($person);
-                $this->get('person_manipulator')->authenticatePerson($person);
-                $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified_authenticated'));
+        // pre-fill form values
+        if ($request->isMethod('get') && $request->query->has('person_registration')) {
+            // set default values
+            // using the string constant to acquire data from query instead of Form::getName for BC
+            $form->submit($request->query->get('person_registration') ?: []);
+            FormValidatorChecker::clearFormErrors($form);
+        }
 
-                return $this->redirectToRoute('portal_home');
-            } else {
-                // this is a normal web request, and we need email validation
-                $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
-                $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $savedForm);
-                $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+        if ($request->isMethod('post')) {
+            if ($form->isSubmitted()) {
+                // check if the person already has an account (or is a contact)
+                if ($email = $person->getEmailAddress()) {
+                    /** @var Person $personCheck */
+                    if ($personCheck = $this->get('data.person')->getPersonForEmail($email)) {
+                        // uncomment this conditional if the "set password" email should only be sent to accounts
+                        // that cannot login. accounts that get here that can login are given a form error instead.
+                        //if (!$personCheck->isUser()) {
+                            // contact, they should now get a "set password" email and a redirection
+                            // set the reset code
+
+                        $validSeconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
+                        $reset        = $this->getPersonDataService()->createPasswordReset($personCheck, $validSeconds);
+
+                        $this->get('portal_email_sender')->sendPasswordSetLink($personCheck, $reset);
+
+                        return $this->redirectToRoute('portal_user_register_set_password', [
+                                'email' => $personCheck->getPrimaryEmailAddress(),
+                            ]);
+                        //}
+                    }
+                }
             }
 
-            return $this->redirectToRoute('portal_home');
+            if ($form->isValid()) {
+                $event = new RegistrationAbuseCheck($this->getCurrentPerson(), $request->getClientIp());
+                $event->setResponse($this->redirectToRoute('portal_user_registration'));
+                $this->getAntiAbuseService()->check($event);
+
+                if ($this->isSavedFormSubRequest($request)) {
+                    // this is coming from the validation controller, so this time we actually want to save the user
+                    $request->getSession()->set(
+                        'last_username',
+                        $person->getPrimaryEmail() ? $person->getPrimaryEmail()->getEmail() : ''
+                    );
+                    $this->get('person_manipulator')->validatePerson($person, $person->getEmailAddress());
+                    $context = new CreatePersonContext(Person::CREATED_WEB_PERSON);
+                    $this->getPersonFactory()->saveNewPerson($person, $context);
+                    $this->getEmailSender()->sendWelcomeEmail($person);
+                    $this->get('person_manipulator')->authenticatePerson($person);
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified_authenticated'));
+
+                    return $this->redirectToRoute('portal_home');
+                } else {
+                    // this is a normal web request, and we need email validation
+                    $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_REGISTER, $form, $request, $person->getEmailAddress(), $person->getDisplayName());
+                    $this->get('portal_validation')->sendVerificationEmail(PortalValidation::REGISTRATION, $savedForm);
+                    $this->addFlash('success', $this->phrase('portal.flashes.user_registered_must_verify'));
+                }
+
+                return $this->redirectToRoute('portal_home');
+            }
         }
 
         // BREADCRUMBS

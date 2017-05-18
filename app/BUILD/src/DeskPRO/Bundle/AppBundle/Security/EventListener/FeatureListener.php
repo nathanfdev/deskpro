@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Features\FeaturesCollection;
 use Doctrine\Common\Annotations\Reader;
 use Doctrine\Common\Util\ClassUtils;
 use DpSys\Features;
@@ -53,15 +54,22 @@ class FeatureListener implements EventSubscriberInterface
     private $annotationReader;
 
     /**
+     * @var FeaturesCollection
+     */
+    private $featuresCollection;
+
+    /**
      * Constructor.
      *
-     * @param Features $features
-     * @param Reader   $annotationReader
+     * @param Features           $features
+     * @param FeaturesCollection $featuresCollection
+     * @param Reader             $annotationReader
      */
-    public function __construct(Features $features, Reader $annotationReader)
+    public function __construct(Features $features, FeaturesCollection $featuresCollection, Reader $annotationReader)
     {
-        $this->features         = $features;
-        $this->annotationReader = $annotationReader;
+        $this->features           = $features;
+        $this->featuresCollection = $featuresCollection;
+        $this->annotationReader   = $annotationReader;
     }
 
     /**
@@ -106,6 +114,8 @@ class FeatureListener implements EventSubscriberInterface
     {
         $feature = $annotation->getName();
 
-        return $this->features->hasFeature($feature);
+        return $this->featuresCollection->hasFeature($feature)
+            ? $this->features->hasBeta($feature)
+            : $this->features->hasFeature($feature);
     }
 }

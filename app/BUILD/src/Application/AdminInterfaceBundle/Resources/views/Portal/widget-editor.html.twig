@@ -16,11 +16,11 @@
                     <div class="element">
                         <div class="title" ng-class="{'active': section == 'button_settings'}" ng-click="section = 'button_settings'">
                             <i class="dropdown icon"></i>
-                            {{ phrase('admin.widget.button_settings') }}
+                            {{ phrase('admin.widget.widget_settings') }}
                         </div>
                         <div class="content" ng-class="{'active': section == 'button_settings'}" data-target="button_settings">
                             <div class="field">
-                                <label for="label">Label</label>
+                                <label for="label">Chat now label (chat is available)</label>
                                 <div class="inline fields">
                                     <div class="thirteen wide field">
                                         <input type="text" name="label" ng-model="brand_settings.button.translations[0].name">
@@ -37,6 +37,28 @@
                                 </ul>
                                 <ul class="errors" ng-repeat="translation in brand_settings.button.translations">
                                     <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.fields['translations_' + $index].fields.name.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="field">
+                                <label for="label">Contact us label (chat is unavailable)</label>
+                                <div class="inline fields">
+                                    <div class="thirteen wide field">
+                                        <input type="text" name="label" ng-model="brand_settings.button.translations[0].contact_us">
+                                    </div>
+                                    <div class="three wide field">
+                                        <dp-semantic-language-button translations="brand_settings.button.translations" key="contact_us" languages="languages">
+                                        </dp-semantic-language-button>
+                                    </div>
+                                </div>
+                                <ul class="errors">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.translations.errors">
+                                        {{ ng_var('error.message') }}
+                                    </li>
+                                </ul>
+                                <ul class="errors" ng-repeat="translation in brand_settings.button.translations">
+                                    <li ng-repeat="error in formErrors.settings.fields.brand.fields.button.fields.ticket_translations.fields['translations' + $index].fields.contact_us.errors">
                                         {{ ng_var('error.message') }}
                                     </li>
                                 </ul>
@@ -102,6 +124,20 @@
                                     }"
                                     ></spectrum-colorpicker>
                                     <label for="background_color">{{ phrase('admin.widget.text_icon_color') }}</label>
+                                </div>
+                                <div class="inline field">
+                                    <spectrum-colorpicker
+                                            ng-model="brand_settings.widget.primary_color"
+                                            format="'hex'"
+                                            class="color-picker"
+                                            options="{
+                                        showPalette: true,
+                                        palette: ['#ffffff'],
+                                        showSelectionPalette: false,
+                                        showInput: true
+                                    }"
+                                    ></spectrum-colorpicker>
+                                    <label for="background_color">{{ phrase('admin.widget.primary_color') }}</label>
                                 </div>
                             </div>
                             <div class="field">

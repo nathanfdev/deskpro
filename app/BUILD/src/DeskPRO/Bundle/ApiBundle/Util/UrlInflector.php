@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Util;
 
-use FOS\RestBundle\Util\Inflector\InflectorInterface;
+use FOS\RestBundle\Inflector\InflectorInterface;
 
 /**
  * Inflector object using the Doctrine/Inflector.

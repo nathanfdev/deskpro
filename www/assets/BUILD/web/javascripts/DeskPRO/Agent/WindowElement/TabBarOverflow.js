@@ -38,8 +38,10 @@ DeskPRO.Agent.WindowElement.TabBarOverflow = new Orb.Class({
 
 		this.overflowEnabled = false;
 
+    this.debouncedUpdate = _.debounce(this.update.bind(this), 500);
+
 		$(window).on('resize', function() {
-			self.update();
+			self.debouncedUpdate();
 		});
 	},
 

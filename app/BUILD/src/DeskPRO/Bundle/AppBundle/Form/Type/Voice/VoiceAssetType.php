@@ -28,16 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class VoiceAssetType.
@@ -50,37 +48,21 @@ class VoiceAssetType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('id', EntityType::class, [
-                'mapped'         => false,
-                'class'          => VoiceAsset::class,
-                'error_bubbling' => true,
-            ])
-            ->add('name', TextType::class)
-            ->add('text', TextType::class)
-            ->add('language', TextType::class)
-            ->add('blob', BlobAuthType::class)
             ->add('type', ChoiceType::class, [
+                'mapped'            => false,
                 'choices_as_values' => true,
                 'choices'           => [
-                    VoiceAsset::TYPE_TEXT,
-                    VoiceAsset::TYPE_UPLOAD,
-                    VoiceAsset::TYPE_RECORD,
+                    AbstractVoiceAsset::TYPE_TEXT,
+                    AbstractVoiceAsset::TYPE_UPLOAD,
+                    AbstractVoiceAsset::TYPE_RECORD,
                 ],
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInline'], 100);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetAssetFromId']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => VoiceAsset::class,
-        ]);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceFieldsSubmission'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddFormFields'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCreateEntityInstance'], 200);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onUnsetTarget']);
     }
 
     /**
@@ -88,11 +70,69 @@ class VoiceAssetType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetInline(FormEvent $event)
+    public function onForceFieldsSubmission(FormEvent $event)
     {
         $data = $event->getData();
-        if (is_scalar($data)) {
-            $event->setData(['id' => $data]);
+
+        if (!is_array($data)) {
+            return;
+        }
+        if (!isset($data['type'])) {
+            $data['type'] = '';
+        }
+
+        if ($data['type'] === AbstractVoiceAsset::TYPE_TEXT) {
+            if (!isset($data['language'])) {
+                $data['language'] = '';
+            }
+            if (!isset($data['text'])) {
+                $data['text'] = '';
+            }
+        } elseif (in_array($data['type'], [AbstractVoiceAsset::TYPE_UPLOAD, AbstractVoiceAsset::TYPE_RECORD])) {
+            if (!isset($data['blob'])) {
+                $data['blob'] = '';
+            }
+
+            if ($data['type'] === AbstractVoiceAsset::TYPE_RECORD) {
+                if (!isset($data['name'])) {
+                    $data['name'] = '';
+                }
+            }
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onAddFormFields(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+        $type = isset($data['type']) ? $data['type'] : null;
+
+        if ($type === AbstractVoiceAsset::TYPE_TEXT) {
+            $form
+                ->add('text', TextType::class, [
+                    'property_path' => 'text',
+                ])
+                ->add('language', TextType::class, [
+                    'property_path' => 'language',
+                ])
+            ;
+        } elseif (in_array($type, [AbstractVoiceAsset::TYPE_UPLOAD, AbstractVoiceAsset::TYPE_RECORD])) {
+            $form->add('blob', BlobAuthType::class, [
+                'property_path' => 'blob',
+            ]);
+
+            if ($type === AbstractVoiceAsset::TYPE_RECORD) {
+                $form->add('name', TextType::class, [
+                    'property_path' => 'name',
+                ]);
+            }
         }
     }
 
@@ -101,13 +141,33 @@ class VoiceAssetType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetAssetFromId(FormEvent $event)
+    public function onCreateEntityInstance(FormEvent $event)
     {
-        $form = $event->getForm();
-        $data = $form->get('id')->getData();
+        $form  = $event->getForm();
+        $data  = $event->getData();
+        $asset = $form->getData();
 
-        if ($data instanceof VoiceAsset) {
-            $event->setData($data);
+        if (empty($data['type'])) {
+            $asset = null;
+        } else {
+            if (!$asset instanceof AbstractVoiceAsset || $asset->getType() !== $data['type']) {
+                $asset = AbstractVoiceAsset::createByType($data['type']);
+            }
+        }
+
+        $form->setData($asset);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onUnsetTarget(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!$data instanceof AbstractVoiceAsset) {
+            $event->setData(null);
         }
     }
 }

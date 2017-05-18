@@ -51,16 +51,16 @@ class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompil
         $qp   = $this->term_compiler->compile($term);
 
         $this->assertParameters($qp, [
-            'email' => 'chris.tickner@deskpro.com',
+            'email' => ['chris.tickner@deskpro.com'],
         ]);
         $this->assertWhere($qp, '
-                ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) OR  EXISTS(
+                ticket.person_id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email)) OR  EXISTS(
                   SELECT * FROM
                     tickets_participants tp
                         JOIN
                     people p ON tp.person_id = p.id
                   WHERE
-                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) AND ticket.id = tp.ticket_id
+                    p.is_agent = 0 AND p.id  IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email)) AND ticket.id = tp.ticket_id
                 )
             ');
         $this->assertNoUniqueJoins($qp);
@@ -72,16 +72,16 @@ class DbalPersonEmailTermCompilerTest extends AbstractDbalTicketFilterTermCompil
         $qp   = $this->term_compiler->compile($term);
 
         $this->assertParameters($qp, [
-            'email' => 'chris.tickner@deskpro.com',
+            'email' => ['chris.tickner@deskpro.com'],
         ]);
         $this->assertWhere($qp, '
-                ticket.person_id NOT IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) AND NOT EXISTS(
+                ticket.person_id NOT IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email)) AND NOT EXISTS(
                   SELECT * FROM
                     tickets_participants tp
                         JOIN
                     people p ON tp.person_id = p.id
                   WHERE
-                    p.is_agent = 0 AND p.id NOT IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email = :email) AND ticket.id = tp.ticket_id
+                    p.is_agent = 0 AND p.id NOT IN(SELECT pe.person_id FROM people_emails pe WHERE pe.email IN(:email)) AND ticket.id = tp.ticket_id
                 )
             ');
         $this->assertNoJoins($qp);

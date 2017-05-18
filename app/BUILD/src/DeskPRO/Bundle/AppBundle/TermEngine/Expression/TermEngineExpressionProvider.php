@@ -26,20 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Expression;
 
 use Orb\Util\Arrays;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
 use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
+/**
+ * Class TermEngineExpressionProvider.
+ */
 class TermEngineExpressionProvider implements ExpressionFunctionProviderInterface
 {
     /**
-     * @return ExpressionFunction[] An array of Function instances
+     * {@inheritdoc}
      */
     public function getFunctions()
     {

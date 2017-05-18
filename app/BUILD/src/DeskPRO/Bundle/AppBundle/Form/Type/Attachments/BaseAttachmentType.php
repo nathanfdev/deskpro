@@ -130,7 +130,11 @@ class BaseAttachmentType extends AbstractType
         // trying to assign a real blob to attachment
         if (array_key_exists('blob_auth', $data)) {
             // find for existing blob by auth code
-            $blob = $this->blobRepo->getByAuthCode($data['blob_auth']);
+            if (is_scalar($data['blob_auth']) && $data['blob_auth']) {
+                $blob = $this->blobRepo->getByAuthCode($data['blob_auth']);
+            } else {
+                $blob = null;
+            }
 
             // or just set empty blob to correct setting of form fields and form validation
             if (!$blob) {

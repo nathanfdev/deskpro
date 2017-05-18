@@ -154,6 +154,18 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param \DateTime $dateExpire
+     *
+     * @return $this
+     */
+    public function setDateExpire(\DateTime $dateExpire = null)
+    {
+        $this->setModelField('date_expire', $dateExpire);
+
+        return $this;
+    }
+
+    /**
      * Get some data from the extra array.
      */
     public function getData($key = null, $default = null)

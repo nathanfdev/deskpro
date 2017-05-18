@@ -73,3 +73,9 @@ services:
     arguments: ["@deskpro.app_env"]
     tags:
       - { name: kernel.event_subscriber, priority: -10 }
+
+  dp_scripts.listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\DpScriptsListener
+    arguments: ["@service_container"]
+    tags:
+      - { name: kernel.event_subscriber }

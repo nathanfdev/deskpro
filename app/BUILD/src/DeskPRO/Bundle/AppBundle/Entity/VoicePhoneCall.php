@@ -56,6 +56,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const STATUS_COLD_TRANSFER = 'cold_transfer';
     const STATUS_ACTIVE        = 'active';
     const STATUS_ENDED         = 'ended';
+    const STATUS_VOICEMAIL     = 'voicemail';
 
     const DIRECTION_INBOUND  = 'inbound';
     const DIRECTION_OUTBOUND = 'outbound';
@@ -79,7 +80,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $taskSid;
 
     /**
-     * @ORM\Column(name="call_sid", type="string", length=50)
+     * @ORM\Column(name="call_sid", type="string", length=50, nullable=true)
      *
      * @var string
      */
@@ -103,11 +104,11 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $number;
 
     /**
-     * @ORM\Column(name="from_number", type="string", length=50)
+     * @ORM\Column(name="external_number", type="string", length=50)
      *
      * @var string
      */
-    private $fromNumber;
+    private $externalNumber;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
@@ -136,7 +137,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @var array
      */
-    private $data;
+    private $data = [];
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
@@ -179,6 +180,20 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @var Blob
      */
     private $recording;
+
+    /**
+     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord", mappedBy="phoneCall")
+     *
+     * @var VoicemailRecord
+     */
+    private $voicemailRecord;
+
+    /**
+     * @ORM\Column(name="duration", type="integer", nullable=true)
+     *
+     * @var int
+     */
+    private $duration;
 
     /**
      * Constructor.
@@ -281,9 +296,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
-    public function getFromNumber()
+    public function getExternalNumber()
     {
-        return $this->fromNumber;
+        return $this->externalNumber;
     }
 
     /**
@@ -291,9 +306,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setFromNumber($from)
+    public function setExternalNumber($from)
     {
-        $this->setModelField('fromNumber', $from);
+        $this->setModelField('externalNumber', $from);
 
         return $this;
     }
@@ -364,6 +379,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getParticipants()
     {
         return $this->participants;
+    }
+
+    /**
+     * @return ArrayCollection|VoicePhoneCallParticipantUser[]
+     */
+    public function getUserParticipants()
+    {
+        return $this->participants->filter(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant instanceof VoicePhoneCallParticipantUser;
+        });
+    }
+
+    /**
+     * @return ArrayCollection|VoicePhoneCallParticipantAgent[]
+     */
+    public function getAgentParticipants()
+    {
+        return $this->participants->filter(function (AbstractVoicePhoneCallParticipant $participant) {
+            return $participant instanceof VoicePhoneCallParticipantAgent;
+        });
     }
 
     /**
@@ -483,7 +518,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
         $this->setModelField('dateCreated', $dateCreated);
 
@@ -566,6 +601,49 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setRecording(Blob $recording = null)
     {
         $this->setModelField('recording', $recording);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * @param int $duration
+     *
+     * @return $this
+     */
+    public function setDuration($duration)
+    {
+        $this->setModelField('duration', $duration);
+
+        return $this;
+    }
+
+    /**
+     * @return VoicemailRecord
+     */
+    public function getVoicemailRecord()
+    {
+        return $this->voicemailRecord;
+    }
+
+    /**
+     * @param VoicemailRecord $voicemailRecord
+     *
+     * @return $this
+     */
+    public function setVoicemailRecord(VoicemailRecord $voicemailRecord = null)
+    {
+        $this->setModelField('voicemailRecord', $voicemailRecord);
+        if ($voicemailRecord) {
+            $voicemailRecord->setPhoneCall($this);
+        }
 
         return $this;
     }

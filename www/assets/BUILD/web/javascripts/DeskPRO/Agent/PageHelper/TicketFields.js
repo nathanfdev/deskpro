@@ -7,8 +7,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	initialize: function(page) {
 		var self = this;
 		this.page = page;
+    this.page.addEvent('destroy', this.destroy, this);
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
-		this.initFieldWidgets();
 
 		this.mode = 'view';
 
@@ -39,13 +39,20 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			getFieldValue: function(name) {
 				var $holders = self.page.getEl('field_holders');
 				var $field = $('[name="' + name + '"]', $holders);
+
+				// field is not present on the form
+				// e.g. org field if user doesn't belogn to a org
+				if (!$field.length) {
+					return null;
+				}
+
 				if ($field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
 				if ($field.attr('type') === 'hidden') {
 					return $.trim($field.parent().text());
 				}
-				if ($field.is('input:not(:radio, :checkbox), textarea, select')) {
+				if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
 					return $field.val();
 				}
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
@@ -56,12 +63,25 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
+				switch (fieldId) {
+					case 'category':
+						return this.getCategoryId();
+					case 'workflow':
+            return this.getWorkflowId();
+					case 'priority':
+						return this.getPriorityId();
+					case 'product':
+						return this.getProductId();
+				}
+        fieldId = ((fieldId || '')+'').replace('ticket_field_', '');
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
+        fieldId = ((fieldId || '')+'').replace('user_field_');
 				return this.getFieldValue('custom_person_fields[field_' + fieldId + ']');
 			},
 			getOrgFieldValue: function(fieldId) {
+				fieldId = ((fieldId || '')+'').replace('org_field_');
 				return this.getFieldValue('custom_org_fields[field_' + fieldId + ']');
 			}
 		};
@@ -172,7 +192,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 
 			if (field !== 'problem') {
-        $scope.savedValues[field] = self.ticketReader.getTicketFieldValue(field.replace('ticket_field_', ''));
+				var value;
+				if (0 === field.indexOf('user_field_')) {
+					value = self.ticketReader.getUserFieldValue(field);
+				} else if (0 === field.indexOf('org_field_')) {
+          value = self.ticketReader.getOrgFieldValue(field);
+				} else {
+          value = self.ticketReader.getTicketFieldValue(field);
+				}
+        $scope.savedValues[field] = value;
       }
 			$scope.edit_fields.push(field);
 
@@ -214,6 +242,15 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 			self.updateDisplay();
 		};
+
+    if (window.DESKPRO_TICKET_DISPLAY) {
+      var reader = self.ticketReader;
+			var fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
+			for (var i = 0; i < fields.length; i++) {
+				var $row = self.display.find('tbody.item.' + fields[i].id + ':first');
+				self.initFieldWidgets($row);
+			}
+    }
 	},
 
 	updateDisplay: function() {
@@ -236,19 +273,18 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.no_value_fields = [];
 		var $ctrls = this.display.find('.hidden-row');
-		$ctrls.removeClass('off').prev().removeClass('off');
+		$ctrls.removeClass('off').next().removeClass('off');
 
+		var scopeFields = $scope.fields;
 		for (var i = 0; i < fields.length; i++) {
 			var f = fields[i];
-
-			var row = this.display.find('.item.' + f.id);
-			if (undefined === $scope.fields[f.id]) {
-				row.detach().removeClass('off').insertBefore($ctrls);
-			}
-
 			var value = true;
 			if (f.field_type === 'ticket_field') {
 				value = this.ticketReader.getTicketFieldValue(f.field_id);
+			} else if (f.field_type === 'user_field') {
+        value = this.ticketReader.getUserFieldValue(f.field_id);
+			} else if (f.field_type === 'org_field') {
+        value = this.ticketReader.getOrgFieldValue(f.field_id);
 			}
 
 			var noValue = !value || (value instanceof Array && value.length === 0);
@@ -259,7 +295,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 			var visibleByCriteria = isVisibleByCriteria(f);
 			var show = visibleByCriteria && (f.isVisibleOnViewAlways || !noValue || $scope.show_hidden);
-			$scope.fields[f.id] = !!show;
+			scopeFields[f.id] = !!show;
 
 			if (visibleByCriteria && !f.isVisibleOnViewAlways && noValue) {
 				this.no_value_fields.push(f.id);
@@ -267,30 +303,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}
 
 		var newFields = [];
-		Object.keys($scope.fields).forEach(function(fieldId) {
-			if ($scope.fields[fieldId]) {
+		Object.keys(scopeFields).forEach(function(fieldId) {
+			if (scopeFields[fieldId]) {
 				newFields.push(fieldId);
-			}
-		});
-
-		var unsetField = function(name, allowDefaultValue) {
-			$scope.edit_fields.push(name);
-			$scope.setFieldValue(name, '', allowDefaultValue);
-		};
-
-		$scope.hidden = this.no_value_fields.length;
-
-		if (this.oldFields) {
-			this.oldFields.forEach(function(name) {
-				if (newFields.indexOf(name) === -1) {
-					unsetField(name, false);
-				}
-			});
-		}
-
-		newFields.forEach(function(name) {
-			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
-				unsetField(name, true);
 			}
 		});
 
@@ -313,13 +328,51 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		// recursive update fields if they were changed
 		if (changed) {
 			this.updateDisplay();
+			return;
 		}
+
+		$scope.fields = scopeFields;
+
+		for (i = 0; i < fields.length; i++) {
+			f = fields[i];
+			var row = this.display.find('.item.' + f.id);
+			if (undefined === $scope.fields[f.id] || scopeFields[f.id]) {
+				row.detach().removeClass('off').insertBefore($ctrls);
+			} else {
+				row.addClass('off');
+			}
+		}
+
+		var unsetField = function(name, allowDefaultValue) {
+			$scope.edit_fields.push(name);
+			$scope.setFieldValue(name, '', allowDefaultValue);
+		};
+
+		$scope.hidden = this.no_value_fields.length;
+
+		if (this.oldFields) {
+			this.oldFields.forEach(function(name) {
+				if (newFields.indexOf(name) === -1) {
+					unsetField(name, false);
+				}
+			});
+		}
+
+		newFields.forEach(function(name) {
+			if (self.oldFields && self.oldFields.indexOf(name) === -1) {
+				unsetField(name, true);
+			}
+		});
 	},
 
-	initFieldWidgets: function() {
-		this.display.find('select').not('.no-dp-select').dpMultiLevelSelect();
-		DP.select(this.display.find('select'));
-		$('.Date.customfield input', this.display).each(function(){
+	initFieldWidgets: function($tbody) {
+		if (!$tbody || $tbody.data('widget-init')) return;
+
+		$('select', $tbody).not('.no-dp-select').dpMultiLevelSelect();
+		// is it the same as one above?
+		DP.select($('select', $tbody));
+
+		$('.Date.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -336,7 +389,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			});
 		});
 
-		$('.DateTime.customfield input', this.display).each(function(){
+		$('.DateTime.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD HH:mm',
 				widgetParent: $(this).parent().css('position', 'relative'),
@@ -351,10 +404,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				}
 			});
 			$(this).on('dp.change', function(){
-
 				$(this).trigger('change');
 			});
 		});
+
+    $('.hijri input', $tbody).calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
+
+    $tbody.data('widget-init', 1);
 	},
 
 	saveChanges: function() {
@@ -423,11 +479,16 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     old.after(this.display);
     old.remove();
 
-		this.initFieldWidgets();
-
 		this.initScope(this.page.getEl('field_holders'));
 
 		this.updateDisplay();
 		this.$scope.$apply();
+	},
+
+	destroy: function() {
+		this.page = null;
+    this.$scope && this.$scope.$destroy();
+    this.$scope = null;
+    this.display = null;
 	}
 });

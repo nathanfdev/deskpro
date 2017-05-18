@@ -1,4 +1,5 @@
 import Form from './Form';
+import Input from './Input';
 import BlurInput from './BlurInput';
 import Textarea from './Textarea';
 import Select from './Select';
@@ -12,6 +13,7 @@ import Toggle from './Toggle';
 export { Field, SemanticError } from './Field';
 export {
   Form,
+  Input,
   BlurInput,
   Textarea,
   Select,

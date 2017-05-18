@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -39,6 +35,7 @@ use Application\DeskPRO\Dpql\Func\Link;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
@@ -289,7 +286,7 @@ END)
                     $target          = $association['targetEntity'];
                     $childRepository = App::getEntityRepository($target);
 
-                    if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
+                    if (!($childRepository instanceof AbstractEntityRepository)) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
                     }
 
@@ -316,7 +313,7 @@ END)
                     $childRepository = App::getEntityRepository($target);
 
                     if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
-                        || !($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)
+                        || !($childRepository instanceof AbstractEntityRepository)
                         || $association['type'] == ClassMetadataInfo::MANY_TO_MANY
                     ) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
@@ -420,21 +417,14 @@ END)
                 }
 
                 $renderer = null;
-                if ($field && $field->getTypeName() == 'date') {
+                if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
                     $call    = new self(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
-                    $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
-                        if (!$value) {
-                            return $valueRenderer->renderValue(null, 'date');
-                        }
+                    $renderer = function (AbstractValues $valueRenderer, $value) use ($type) {
+                        $date = $value ? new \DateTime('@'.$value) : null;
 
-                        $date = new \DateTime('@'.$value);
-                        if (!$date) {
-                            return $valueRenderer->renderValue(null, 'date');
-                        }
-
-                        return $valueRenderer->renderValue($date, 'date');
+                        return $valueRenderer->renderValue($date ?: null, $type);
                     };
                 } else {
                     $call = new FunctionCall('if', [
@@ -459,7 +449,9 @@ END)
                 $resolver = self::$_tableResolver[$assocTable];
 
                 if ($section === 'where') {
-                    $sql = "`$sqlTable`.`$resolver[0]`";
+                    $sql = strpos($resolver[1], '%1$s') !== false
+                        ? sprintf($resolver[1], $sqlTable)
+                        : "`$sqlTable`.`$resolver[1]`";
                 } elseif ($stack || in_array($section, ['order'])) {
                     // if we have a parent of any sort, act on the printed value
                     $sql = "`$sqlTable`.`$resolver[1]`";

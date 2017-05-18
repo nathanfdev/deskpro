@@ -341,12 +341,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         return $this;
     }
 
-    public function setStatusCode($status_code)
+    public function setStatusCode($statusCode)
     {
-        if (strpos($status_code, '.') !== false) {
-            list($status, $sub_status) = explode('.', $status_code, 2);
+        if (strpos($statusCode, '.') !== false) {
+            list($status, $sub_status) = explode('.', $statusCode, 2);
         } else {
-            $status     = $status_code;
+            $status     = $statusCode;
             $sub_status = null;
         }
 
@@ -669,9 +669,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         return $this->category;
     }
 
-    protected function addSlugHistory($old_slug)
+    protected function addSlugHistory($oldSlug)
     {
-        $history = new FeedbackSlugHistory($this, $old_slug);
+        $history = new FeedbackSlugHistory($this, $oldSlug);
         $this->slug_history->add($history);
 
         return $history;
@@ -687,6 +687,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $last_hidden_status  = $this->hidden_status;
         $this->hidden_status = $value;
         $this->_onPropertyChanged('hidden_status', $last_hidden_status, $value);
+
+        if ($value) {
+            $this->setModelField('status', self::STATUS_HIDDEN);
+        }
 
         return $this;
     }
@@ -800,6 +804,27 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'content',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => false,
+                'columnName' => 'content_input',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'content_input_type',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'content_input_type',
             ]
         );
         $metadata->mapField(

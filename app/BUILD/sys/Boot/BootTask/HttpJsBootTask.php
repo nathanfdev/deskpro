@@ -28,7 +28,7 @@
 
 namespace DpSys\Boot\BootTask;
 
-use Guzzle\Http\Mimetypes;
+use GuzzleHttp\Psr7;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -319,12 +319,23 @@ CODE;
     private function getResponseForFile(File $file)
     {
         switch ($file->getExtension()) {
-            case 'js':       $contentType = 'text/javascript'; break;
-            case 'css':      $contentType = 'text/css'; break;
-            case 'woff':     $contentType = 'application/x-font-woff'; break;
-            case 'woff2':    $contentType = 'application/x-font-woff2'; break;
-            case 'ttf':      $contentType = 'application/x-font-ttf'; break;
-            default:         $contentType = Mimetypes::getInstance()->fromExtension($file->getExtension());
+            case 'js':
+                $contentType = 'text/javascript';
+                break;
+            case 'css':
+                $contentType = 'text/css';
+                break;
+            case 'woff':
+                $contentType = 'application/x-font-woff';
+                break;
+            case 'woff2':
+                $contentType = 'application/x-font-woff2';
+                break;
+            case 'ttf':
+                $contentType = 'application/x-font-ttf';
+                break;
+            default:
+                $contentType = Psr7\mimetype_from_extension($file->getExtension());
         }
 
         if (!$contentType) {

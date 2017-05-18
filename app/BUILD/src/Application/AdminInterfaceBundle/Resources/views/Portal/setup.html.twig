@@ -179,7 +179,7 @@
                                 <a class="control" href="{{ ng_href('portal.kb_settings') }}">{{ phrase('admin.setup.portal_section_manage') }} <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
-                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_knowledgebase') }}">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_knowledgebase') }}">
                             </div>
 
                             <div class="form-text">
@@ -216,7 +216,7 @@
                                 <a class="control" href="{{ ng_href('portal.news_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
-                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_news') }}">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_news') }}">
                             </div>
 
                             <div class="form-text">
@@ -234,7 +234,7 @@
                                 <a class="control" href="{{ ng_href('portal.feedback_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
-                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_feedback') }}">
+                                <img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_feedback') }}">
                             </div>
 
                             <div class="form-text">
@@ -244,6 +244,25 @@
                             </div>
                         </div>
                     </div>
+
+                    {% if app.hasFeature('guides') %}
+                        <div class="col-half">
+                            <div ng-class="{'widget-preview': Ctrl.settings.apps_guides, 'widget-preview-disabled': !Ctrl.settings.apps_guides}">
+                                <div class="widget-header">
+                                    <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_guides" />
+                                    <span class="title">{{ phrase('admin.setup.portal_section_guides') }}</span>
+                                    <a class="control" href="{{ ng_href('portal.guides_settings') }}">{{ phrase('admin.setup.portal_section_manage') }}  <i class="fa fa-cog"></i></a>
+                                </div>
+                                <div class="widget-image">
+                                    <img src="{{ asset('app/Admin/Resources/img/widget-preview-guides.png') }}" alt="{{ phrase('admin.setup.portal_section_widget_preview') }}: {{ phrase('admin.setup.portal_section_guides') }}">
+                                </div>
+
+                                <div class="form-text">
+                                    <p>{{ phrase('admin.setup.portal_section_guides_help') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
 
 
                 </div>

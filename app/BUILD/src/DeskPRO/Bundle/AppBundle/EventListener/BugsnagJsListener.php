@@ -99,8 +99,8 @@ class BugsnagJsListener implements EventSubscriberInterface
         $data = ['apikey' => $settings['frontend_api_key']];
         if (isset($settings['app_version']) && $settings['app_version']) {
             $data['appversion'] = $settings['app_version'];
-        } elseif (($buildNumFile = $this->env->getAppDir().'/sys/config/build-num.txt') && file_exists($buildNumFile)) {
-            $data['appversion'] = trim(file_get_contents($buildNumFile));
+        } else {
+            $data['appversion'] = $this->env->getVersionName() ?: $this->env->getBuildId() ?: 'DEV';
         }
 
         $strings = [];

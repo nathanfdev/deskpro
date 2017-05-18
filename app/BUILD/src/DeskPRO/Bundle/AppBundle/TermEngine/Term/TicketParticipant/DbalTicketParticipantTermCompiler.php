@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\TicketParticipant;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalQueryPart;
@@ -37,16 +33,21 @@ use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\AbstractDbalTer
 use DeskPRO\Bundle\AppBundle\TermEngine\Expression\TermEngineExpression;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class DbalTicketParticipantTermCompiler.
+ */
 class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function doCompile(TermInterface $term)
     {
-        $query_part = new DbalQueryPart();
-
         $op    = $term->getOp();
         $isser = $this->isOp($op, TermInterface::OP_NOT) ? 'NOT IN' : 'IN';
 
-        $query_part->addUniqueJoin(
+        $qp = new DbalQueryPart();
+        $qp->addUniqueJoin(
             'participants',
             'tickets_participants',
             '{participants}.ticket_id = ticket.id'
@@ -61,12 +62,11 @@ class DbalTicketParticipantTermCompiler extends AbstractDbalTermCompiler
             }
         }
 
-        $query_part->setParameter('person_ids', $person_ids);
+        $qp->setParameter('person_ids', $person_ids);
+        $qp->setWhereString(sprintf('{participants}.person_id %s (:person_ids)', $isser));
 
-        $query_part->setWhereString(sprintf('{participants}.person_id %s (:person_ids)', $isser));
+        $this->logQueryPart($qp);
 
-        $this->logQueryPart($query_part);
-
-        return $query_part;
+        return $qp;
     }
 }

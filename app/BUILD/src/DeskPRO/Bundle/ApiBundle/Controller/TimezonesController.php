@@ -33,12 +33,13 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Timezone;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TimezonesController.
  *
  * @ApiModes("all")
+ * @Rest\Route("/timezones")
+ * @ApiDoc(target="all", section="Timezones")
  */
 class TimezonesController extends BaseController
 {
@@ -54,7 +55,7 @@ class TimezonesController extends BaseController
      *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Timezone>"
      * )
      *
-     * @Rest\Get("/timezones", name="api_timezones")
+     * @Rest\Get("")
      */
     public function listAction()
     {
@@ -63,9 +64,6 @@ class TimezonesController extends BaseController
             $timezones[] = new Timezone($num, $timezone);
         }
 
-        return View::create(
-            $this->wrap($timezones),
-            Response::HTTP_OK
-        );
+        return View::create($this->wrap($timezones));
     }
 }

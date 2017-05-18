@@ -36,8 +36,6 @@ class FieldHelper
     /**
      * @param RequestQueryContext $context
      * @param string              $field
-     *
-     * @internal param string $entityClass
      */
     public static function applyFieldFilter(RequestQueryContext $context, $field)
     {
@@ -46,8 +44,8 @@ class FieldHelper
         $value = $context->getRequest()->get($field);
 
         if (!empty($value)) {
-            $qb->andWhere($qb->expr()->eq("$alias.$field", ':'.$field))
-                ->setParameter($field, $value);
+            $qb->andWhere($qb->expr()->eq("$alias.$field", ':'.$field));
+            $qb->setParameter($field, $value);
         }
     }
 }

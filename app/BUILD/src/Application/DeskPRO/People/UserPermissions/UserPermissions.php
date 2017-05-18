@@ -39,6 +39,7 @@ use Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions;
 use Application\DeskPRO\People\UserPermissions\Value\ChatPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\DownloadPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions;
+use Application\DeskPRO\People\UserPermissions\Value\GuidesPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\NewsPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\TicketPermissions;
 
@@ -75,6 +76,11 @@ class UserPermissions implements PermissionsSetInterface
     public $news;
 
     /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\GuidesPermissions
+     */
+    public $guide;
+
+    /**
      * @var array
      */
     public static $prefix_map = [
@@ -84,6 +90,7 @@ class UserPermissions implements PermissionsSetInterface
         'articles'  => 'article',
         'downloads' => 'download',
         'news'      => 'news',
+        'guides'    => 'guide',
     ];
 
     public function __construct()
@@ -94,6 +101,7 @@ class UserPermissions implements PermissionsSetInterface
         $this->article  = new ArticlePermissions();
         $this->download = new DownloadPermissions();
         $this->news     = new NewsPermissions();
+        $this->guide    = new GuidesPermissions();
     }
 
     /**
@@ -135,6 +143,6 @@ class UserPermissions implements PermissionsSetInterface
      */
     public function getTypes()
     {
-        return ['ticket', 'chat', 'feedback', 'article', 'download', 'news'];
+        return ['ticket', 'chat', 'feedback', 'article', 'download', 'news', 'guide'];
     }
 }

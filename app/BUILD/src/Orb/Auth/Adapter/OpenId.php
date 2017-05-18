@@ -101,7 +101,7 @@ class OpenId extends AbstractCallbackAdatper
         $attributes = $openid->getAttributes();
         $userinfo   = [
             'first_name' => !empty($attributes['namePerson/friendly']) ? $attributes['namePerson/friendly'] : null,
-            'email'      => !empty($attributes['email']) ? $attributes['email'] : null,
+            'email'      => !empty($attributes['contact/email']) ? $attributes['contact/email'] : null,
             'name'       => !empty($attributes['namePerson']) ? $attributes['namePerson'] : null,
             'birthday'   => !empty($attributes['birthDate']) ? $attributes['birthDate'] : null,
             'gender'     => !empty($attributes['person/gender']) ? $attributes['person/gender'] : null,

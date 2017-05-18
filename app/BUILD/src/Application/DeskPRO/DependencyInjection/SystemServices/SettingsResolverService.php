@@ -65,6 +65,8 @@ class SettingsResolverService
             new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
         );
 
+        $container->get('deskpro.feature_flags')->_setSettingsResolver($resolver);
+
         $resolver->setVirtual(
             'default_timezone', function ($settings) {
                 $settings = new SettingsBag($settings);

@@ -72,6 +72,7 @@ if (php_sapi_name() === 'cli') {
 
     if (in_array('--no-debug', $_SERVER['argv'])) {
         $config['env']['debug_mode'] = false;
+        $config['env']['no_debug']   = true;
     }
 
     $m = null;

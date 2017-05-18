@@ -11,8 +11,9 @@ const initialState = {
   chating:        false,
   groupCreation:  false,
   manuallyClosed: {},
+  startedByMe:    {},
   checkedAgents:  {},
-  hiddenChats:    {}
+  activeTabs:     {}
 };
 
 export default createReducer(initialState, {
@@ -22,6 +23,13 @@ export default createReducer(initialState, {
   [actions.markChatAsManuallyClosed]: (state, payload) => {
     if (payload) {
       return state.setIn(['manuallyClosed', payload], true);
+    }
+
+    return state;
+  },
+  [actions.markChatAsStartedByMe]: (state, payload) => {
+    if (payload) {
+      return state.setIn(['startedByMe', payload], true);
     }
 
     return state;
@@ -48,6 +56,5 @@ export default createReducer(initialState, {
     }
     return state.mergeIn([], diff);
   },
-  [actions.hideChat]:   (state, payload) => state.set('hiddenChats', payload),
-  [actions.revealChat]: (state, payload) => state.set('hiddenChats', payload)
+  [actions.loadActiveTabs]: (state, payload) => state.set('activeTabs', payload)
 });

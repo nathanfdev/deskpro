@@ -64,7 +64,7 @@ abstract class AbstractUserGroupsController extends CrudController
     {
         /** @var Usergroup $entity */
         $entity = parent::findEntity($id, $request);
-        if (!$entity->is_enabled || $entity->is_agent_group !== static::$isAgentGroup) {
+        if (!$entity->isEnabled() || $entity->isAgentGroup() !== static::$isAgentGroup) {
             throw $this->createNotFoundException();
         }
 

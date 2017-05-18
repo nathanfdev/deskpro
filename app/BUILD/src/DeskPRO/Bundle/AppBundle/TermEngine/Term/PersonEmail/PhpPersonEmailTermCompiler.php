@@ -26,39 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\TermEngine\Term\PersonEmail;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\PhpBuilder\PhpCheck;
 use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler\AbstractPhpTermCompiler;
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
 
+/**
+ * Class PhpPersonEmailTermCompiler.
+ */
 class PhpPersonEmailTermCompiler extends AbstractPhpTermCompiler
 {
     /**
-     * Take a term and return a PhpCheck representing the term's query conditions.
-     *
-     * @param TermInterface $term
-     *
-     * @return PhpCheck
+     * {@inheritdoc}
      */
     protected function doCompile(TermInterface $term)
     {
-        $op    = $term->getOp();
-        $email = $term->getOption('email');
-
-        $check = 'ticket.getPersonEmailAddress()';
-        $check .= $this->isOp($op, TermInterface::OP_IS) ? ' == ' : ' != ';
-        $check .= ':email';
-
-        return new PhpCheck(
-            $check,
-            [
-                'email' => $email,
-            ]
-        );
+        return new PhpCheck('check_contains(ticket.getPersonEmailAddress(), :op, :email)', [
+            'op'    => $term->getOp(),
+            'email' => $term->getOption('email'),
+        ]);
     }
 }

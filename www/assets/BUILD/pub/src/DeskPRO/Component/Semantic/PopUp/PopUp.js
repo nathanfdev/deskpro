@@ -20,9 +20,9 @@ class PopUp extends React.Component {
     autoOpen:       PropTypes.bool,
     className:      PropTypes.string,
     innerClassName: PropTypes.string,
-    id:             PropTypes.number.isRequired,
-    classes:        PropTypes.arrayOf(PropTypes.string),
-    innerClasses:   PropTypes.arrayOf(PropTypes.string)
+    id:             PropTypes.number.isRequired,         // eslint-disable-line react/no-unused-prop-types
+    classes:        PropTypes.arrayOf(PropTypes.string), // eslint-disable-line react/no-unused-prop-types
+    innerClasses:   PropTypes.arrayOf(PropTypes.string)  // eslint-disable-line react/no-unused-prop-types
   };
 
   static defaultProps = {
@@ -97,7 +97,7 @@ class PopUp extends React.Component {
     const { content, positionAt, elementId, innerClassName } = this.props;
 
     return (
-      <ClickOut onClickOut={this.closePopup}>
+      <ClickOut onClickOut={this.closePopup} additionalNodes={['.ReactModalPortal']}>
         <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
           {content}
         </div>

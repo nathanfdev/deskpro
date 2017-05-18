@@ -11,11 +11,12 @@ export class PersonAvatar extends React.Component {
     className:   PropTypes.string,
     color:       PropTypes.string,
     borderColor: PropTypes.string,
-    title:       PropTypes.string
+    title:       PropTypes.string,
+    tooltipId:   PropTypes.string
   };
 
   static defaultProps = {
-    className:   [],
+    className:   '',
     color:       '#CDD2D4',
     borderColor: colorLuminance('#CDD2D4')
   };
@@ -30,11 +31,12 @@ export class PersonAvatar extends React.Component {
   }
 
   render() {
-    const { size, person, className, color, borderColor, title } = this.props;
+    const { size, person, className, color, borderColor, title, tooltipId } = this.props;
     const avatar = person && person.get('avatar') ? person.get('avatar') : Immutable.fromJS({});
 
     const props = {
       size,
+      tooltipId,
       color,
       borderColor,
       urlPattern: avatar.get('url_pattern'),

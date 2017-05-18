@@ -75,17 +75,23 @@ class TicketsAwaitingAgent extends AbstractTableOverviewStat
 
         $group_field = $this->grouping_field->getFieldInfo();
 
+        $params = [];
+        if ($this->agentTeam) {
+            $params['team_id'] = $this->agentTeam;
+        }
+
         $sql = "
             SELECT {$group_field['select']}, COUNT(*)
             FROM tickets AS tickets
             {$group_field['join']}
             WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
+            ".($this->agentTeam ? ' AND agent_team_id = :team_id ' : '')."
             GROUP BY {$group_field['group_by']}
         ";
 
         $this->logger->logDebug("[TicketsAwaitingAgent] $sql");
         $this->logger->startTimer('TicketsAwaitingAgent');
-        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->values = App::getDb()->fetchAllKeyValue($sql, $params);
         $this->logger->logTotalTime('TicketsAwaitingAgent');
 
         return $this->values;

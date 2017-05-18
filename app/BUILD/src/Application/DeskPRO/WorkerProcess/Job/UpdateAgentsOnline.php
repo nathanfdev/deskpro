@@ -43,7 +43,7 @@ class UpdateAgentsOnline extends AbstractJob
 
     public function run()
     {
-        if ($this->getContainer()->get('deskpro.feature_flags')->hasFeature('agent_chat')) {
+        if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
             $data_service     = $this->getContainer()->get('data.agent');
             $agent_ids        = $data_service->getAgentsOnlineStatus();
             $event_dispatcher = $this->getContainer()->get('event_dispatcher');

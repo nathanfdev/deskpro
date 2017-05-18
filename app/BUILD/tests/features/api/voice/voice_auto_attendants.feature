@@ -4,6 +4,7 @@ Feature: /voice_auto_attendants endpoint
   Background:
     Given no VoiceAutoAttendant records exist
     And I'm authenticated as admin
+    And the setting "beta_features.voice" is set to 1
 
   Scenario: I retrieve a list of voice auto attendants
     Given only the following VoiceAutoAttendant records exist:
@@ -45,23 +46,21 @@ Feature: /voice_auto_attendants endpoint
     Given only the following VoiceAutoAttendant records exist:
       | #  | Name             |
       | a1 | Auto attendant 1 |
+    And only the following VoiceTextAsset records exist:
+      | #   | Text       | Language | Auth               |
+      | ta1 | text asset | en-GB    | AAAAAAAAAAAAAAAAAA |
 
     When I send a PUT request to "/api/v2/voice_auto_attendants/{a1}" with body:
     """
 {
-  "audio_asset": {
-    "name": "My asset",
-    "type": "text",
-    "text": "my text",
-    "language": "en-GB"
-  }
+  "audio_asset": "AAAAAAAAAAAAAAAAAA"
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_auto_attendants/{a1}"
     Then the response status code should be 200
-    And the JSON node "data.audio_asset.name" should be equal to the string "My asset"
+    And the JSON node "data.audio_asset.text" should be equal to the string "text asset"
 
   Scenario: I set targets
     Given only the following VoiceAccount records exist:
@@ -140,23 +139,3 @@ Feature: /voice_auto_attendants endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.targets.errors[0].code" should be equal to the string "extra_fields"
-
-  Scenario: I set audio asset by id
-    Given only the following VoiceAutoAttendant records exist:
-      | #              | Name             |
-      | auto_attendant | Auto attendant 1 |
-    And only the following VoiceAsset records exist:
-      | #     | Name     | Type | Text    | Language |
-      | asset | My asset | text | my text | en-GB    |
-
-    When I send a PUT request to "/api/v2/voice_auto_attendants/{auto_attendant}" with body:
-    """
-{
-  "audio_asset": ~asset~
-}
-    """
-    Then the response status code should be 204
-
-    When I send a GET request to "/api/v2/voice_auto_attendants/{auto_attendant}"
-    Then the response status code should be 200
-    And the JSON node "data.audio_asset.name" should be equal to the string "My asset"

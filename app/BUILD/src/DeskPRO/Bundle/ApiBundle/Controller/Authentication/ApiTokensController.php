@@ -44,6 +44,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiTokens\MagicLinkEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Util\ListUtils;
@@ -79,7 +80,10 @@ class ApiTokensController extends BaseController
      *          201="Created token",
      *          401="Invalid credentials",
      *          400="Bad request"
-     *      }
+     *      },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType"
+     *     }
      * )
      *
      * @Rest\Post("")
@@ -91,10 +95,8 @@ class ApiTokensController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-        $requestData = $request->request->all();
-
         $form = $this->createForm(AuthenticationRequestType::class);
-        $form->submit($requestData);
+        $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
@@ -173,10 +175,11 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Get list of api token usersources.",
-     *      statusCodes={
-     *          404="Usersource not found"
-     *      }
+     *     description="Get list of api token usersources.",
+     *     statusCodes={
+     *         404="Usersource not found"
+     *     },
+     *     output="array<DeskPRO\Bundle\AppBundle\Serializer\Model\Usersource>"
      * )
      *
      * @Rest\Get("/user_sources/{context}.{_format}", requirements={"context": "(agent|user)", "_format": "(json|html)"})
@@ -221,10 +224,11 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Login via usersource.",
-     *      statusCodes={
-     *          404="Usersource not found"
-     *      }
+     *     description="Login via usersource.",
+     *     statusCodes={
+     *         404="Usersource not found"
+     *     },
+     *     noOutput=true
      * )
      *
      * @Rest\Get("/user_sources/{usersource}/login")
@@ -257,15 +261,17 @@ class ApiTokensController extends BaseController
 
     /**
      * @ApiDoc(
-     *      description="Returns api token on usersource callback",
-     *      output="token",
-     *      statusCodes={
-     *          200="Created token"
-     *      }
+     *     description="Returns api token on usersource callback",
+     *     output="token",
+     *     statusCodes={
+     *         200="Created token"
+     *     },
+     *     noInput=true,
+     *     output="string"
      * )
      *
-     * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
-     * @Rest\Post("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|default)"})
+     * @Rest\Get("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|deskpro_scheme|default)"})
+     * @Rest\Post("/user_sources/{usersource}/callback/{format}", requirements={"format": "(ios|deskpro_scheme|default)"})
      *
      * @param Request    $request
      * @param Usersource $usersource
@@ -308,6 +314,65 @@ class ApiTokensController extends BaseController
         $res->headers->set('Content-Type', 'text/html');
 
         return $res;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Sends magic link email",
+     *     output="token",
+     *     statusCodes={
+     *         204="Created email"
+     *     },
+     *     input="DeskPRO\Bundle\AppBundle\Form\Type\ApiTokens\MagicLinkEmailType",
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/magic_link/email")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function magicLinkEmailAction(Request $request)
+    {
+        $form = $this->createForm(MagicLinkEmailType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $email  = $form->get('email')->getData();
+        $target = $form->get('target')->getData();
+
+        // generate tmp token
+        $tmpData = new TmpData();
+        $tmpData->setData('email', $email);
+        $tmpData->setData('target', $target);
+        $tmpData->setDateExpire(new \DateTime('+5 hours'));
+
+        $this->getManager()->persist($tmpData);
+        $this->getManager()->flush();
+
+        // send email
+        $message = $this->container->get('mailer')->createMessage();
+        $message->setTemplate(
+            'DeskPRO:emails_common:api-token-magic-email.html.twig',
+            [
+                'login_magic_link_url' => $this->get('router')->generate(
+                    'portal_magic_link_login',
+                    [
+                        'authId' => $tmpData->getAuth(),
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL),
+            ]
+        );
+        $message->setSubject($this->get('language_manager')->phrase('agent.emails.api_token_magic_link_subject', [
+            'helpdesk_name' => $this->get('brand_stack')->getActive()->getSetting('core.deskpro_name'),
+        ]));
+        $message->setTo($email);
+        $this->container->get('mailer')->send($message);
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

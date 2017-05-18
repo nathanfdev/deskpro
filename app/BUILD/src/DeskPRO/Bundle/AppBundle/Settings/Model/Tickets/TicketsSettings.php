@@ -26,47 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Tickets;
 
 /**
  * Class TicketsSettings.
  */
-class TicketsSettings implements \JsonSerializable
+class TicketsSettings
 {
     const FILTER_GROUPING_PREFIX = 'agent.ticket_filter.group_by.';
 
     /**
      * @var array [filter ID => group_by value] map
      */
-    private $filter_groupings = [];
+    private $filterGroupings = [];
 
     /**
      * @return array
      */
     public function getFilterGroupings()
     {
-        return $this->filter_groupings;
+        return $this->filterGroupings;
     }
 
     /**
-     * @param array $filter_groupings
+     * @param array $filterGroupings
      */
-    public function setFilterGroupings($filter_groupings)
+    public function setFilterGroupings($filterGroupings)
     {
-        $this->filter_groupings = $filter_groupings;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'filter_groupings' => $this->filter_groupings,
-        ];
+        $this->filterGroupings = $filterGroupings;
     }
 }

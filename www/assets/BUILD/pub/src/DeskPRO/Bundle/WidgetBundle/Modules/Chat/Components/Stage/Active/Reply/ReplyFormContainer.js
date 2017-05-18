@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
 import { ReplyForm } from './ReplyForm';
 import { ReopenChatContainer } from '../ReopenChatContainer';
-import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
+import { primaryColorSelector } from '../../../../../Application/Selectors/dpWindow';
 import {
   sendUserTyping,
   sendChatMessage,
@@ -22,7 +23,8 @@ import {
   chatId:              chatIdSelector(state),
   agentName:           agentNameSelector(state),
   attachments:         attachmentsSelector(state),
-  attachedImagesCount: attachedImagesCountSelector(state)
+  attachedImagesCount: attachedImagesCountSelector(state),
+  primaryColor:        primaryColorSelector(state)
 }))
 export class ReplyFormContainer extends React.Component {
 
@@ -33,7 +35,7 @@ export class ReplyFormContainer extends React.Component {
     attachments: PropTypes.object
   };
 
-  onUserTyping = message => {
+  onUserTyping = (message) => {
     const { dispatch, chatId } = this.props;
     const data = { partial_message: message };
 
@@ -41,7 +43,7 @@ export class ReplyFormContainer extends React.Component {
     dispatch(sendUserTyping(chatId, data));
   };
 
-  onSendMessage = message => {
+  onSendMessage = (message) => {
     const { dispatch, chatId, attachments } = this.props;
     const data = {
       message:     replaceSmileCodes(message, true),
@@ -52,7 +54,7 @@ export class ReplyFormContainer extends React.Component {
     dispatch(sendChatMessage(chatId, data));
   };
 
-  onRemoveAttachment = attachment => {
+  onRemoveAttachment = (attachment) => {
     this.props.dispatch(removeAttachment(attachment));
   };
 
@@ -66,7 +68,8 @@ export class ReplyFormContainer extends React.Component {
         <ReplyForm
           onUserTyping={this.onUserTyping}
           onSendMessage={this.onSendMessage}
-          onRemoveAttachment={this.onRemoveAttachment} {...this.props}
+          onRemoveAttachment={this.onRemoveAttachment}
+          {...this.props}
         />
       </ReopenChatContainer>
     );
