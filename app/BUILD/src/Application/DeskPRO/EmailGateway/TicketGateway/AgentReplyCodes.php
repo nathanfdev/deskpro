@@ -297,6 +297,12 @@ class AgentReplyCodes implements Loggable
                 $this->props['is_note'] = true;
                 break;
 
+            case 'reply':
+            case 'isreply':
+                $this->getLogger()->logDebug('[AgentReplyCodes] Message is a reply');
+                $this->props['is_reply'] = true;
+                break;
+
             case 'assign':
             case 'agent':
                 $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent -- finding param: '.$param);
