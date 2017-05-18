@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatMessageType;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -96,17 +97,17 @@ class UserChatMessagesController extends CrudSubController
     /**
      * @param ChatMessage $model
      *
-     * @return ChatMessage
+     * {@inheritdoc}
      */
-    protected function persistModel($model)
+    protected function persistModel($model, FormInterface $form = null)
     {
         if (!$model->getAuthor()->isAgent()) {
             $model->setIsUser(true);
         }
+
         parent::persistModel($model);
 
         $conversation = $model->getConversation();
-
         $this->get('event_dispatcher')->dispatch(UserChatEvent::SEND_MESSAGE, new UserChatEvent($conversation, $model));
 
         return $model;

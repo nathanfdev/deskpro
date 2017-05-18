@@ -1,6 +1,7 @@
 misc files
 .DS_Store
 .idea
+.vscode
 nbproject
 catalog.xml
 .settings

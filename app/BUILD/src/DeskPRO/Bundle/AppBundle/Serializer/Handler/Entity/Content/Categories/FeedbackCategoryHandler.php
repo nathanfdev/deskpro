@@ -26,11 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories;
+
+use Application\DeskPRO\Entity\FeedbackCategory;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Categories\FeedbackCategory as FeedbackCategoryModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
 /**
- * Class CRMSettings.
+ * Class FeedbackCategoryHandler.
  */
-class CRMSettings extends AbstractAppSettings
+class FeedbackCategoryHandler extends AbstractCategoryHandler
 {
+    /**
+     * {@inheritdoc}
+     *
+     * @param \Application\DeskPRO\Entity\FeedbackCategory $entity
+     */
+    protected function createModel($entity, SideloadSerializationContext $context)
+    {
+        $model = new FeedbackCategoryModel($entity);
+        $model->setTitleTranslations($this->getTitleTranslations($entity));
+
+        return $model;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getClassNames()
+    {
+        return FeedbackCategory::class;
+    }
 }

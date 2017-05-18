@@ -31,7 +31,6 @@ namespace Application\ImportBundle\Writer;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
@@ -50,7 +49,7 @@ class Writer implements WriterInterface
     private $entityHandlers;
 
     /**
-     * @var ObjectManager
+     * @var EntityManager
      */
     private $em;
 

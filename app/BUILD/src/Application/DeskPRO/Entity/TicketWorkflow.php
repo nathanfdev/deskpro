@@ -106,7 +106,7 @@ class TicketWorkflow extends DomainObject implements HasPhraseName
     /**
      * {@inheritdoc}
      */
-    public function getPhraseName($property, Translate $translate)
+    public function getPhraseName($property)
     {
         if (!$property) {
             $property = 'title';

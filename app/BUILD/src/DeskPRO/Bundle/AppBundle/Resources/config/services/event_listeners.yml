@@ -23,6 +23,11 @@ services:
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
+  event_listener.phrase_translatable:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PhraseTranslatableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.custom_per_data:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomPerDataListener
     tags:

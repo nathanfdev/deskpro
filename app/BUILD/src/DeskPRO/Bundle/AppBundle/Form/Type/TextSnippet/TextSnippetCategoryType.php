@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet;
 
 use Application\DeskPRO\Entity\Person;
@@ -86,6 +82,8 @@ class TextSnippetCategoryType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onSetTypeAndPerson(FormEvent $event)

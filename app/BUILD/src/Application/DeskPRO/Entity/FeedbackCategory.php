@@ -61,6 +61,9 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
      */
     protected $usergroups;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->usergroups = new ArrayCollection();

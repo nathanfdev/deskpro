@@ -39,7 +39,6 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_news_browse", route_param_map={"slug":"slug"})
@@ -50,9 +49,6 @@ class NewsCategory extends CategoryAbstract
     /**
      * Category`s parent.
      *
-     * @JMS\Groups("news_categories")
-     * @JMS\Type("entity<Application\DeskPRO\Entity\NewsCategory>")
-     *
      * @var NewsCategory
      */
     protected $parent;
@@ -60,43 +56,35 @@ class NewsCategory extends CategoryAbstract
     /**
      * Category`s children.
      *
-     * @JMS\Groups("news_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\NewsCategory>>")
-     *
-     * @var array
+     * @var NewsCategory[]
      */
     protected $children;
 
     /**
      * Articles belongs this category.
      *
-     * @JMS\Groups("news_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Article>>")
-     *
-     * @var ArrayCollection
+     * @var ArrayCollection|News[]
      */
     protected $articles;
 
     /**
      * Usergroups that has access to this category.
      *
-     * @JMS\Groups("news_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|Usergroup[]
      */
     protected $usergroups;
 
     /**
      * Brand linked to the category.
      *
-     * @JMS\Groups("news_categories")
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
-     *
      * @var Brand
      */
     protected $brand;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->usergroups = new ArrayCollection();
@@ -138,6 +126,14 @@ class NewsCategory extends CategoryAbstract
         $this->setModelField('brand', $brand);
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNews()
+    {
+        return $this->articles;
     }
 
     //###########################################################################

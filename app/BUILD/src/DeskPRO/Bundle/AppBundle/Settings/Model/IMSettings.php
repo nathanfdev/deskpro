@@ -26,16 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Settings\Model;
 
 /**
  * Class IMSettings.
  */
-class IMSettings implements \JsonSerializable
+class IMSettings
 {
     /**
      * @var array
@@ -60,15 +56,5 @@ class IMSettings implements \JsonSerializable
         $this->chatsOrder = $chatsOrder;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'chats_order' => $this->chatsOrder,
-        ];
     }
 }

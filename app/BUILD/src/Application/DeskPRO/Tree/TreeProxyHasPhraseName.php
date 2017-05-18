@@ -36,9 +36,9 @@ class TreeProxyHasPhraseName extends TreeProxy implements HasPhraseName
     /**
      * {@inheritdoc}
      */
-    public function getPhraseName($property, Translate $translate)
+    public function getPhraseName($property)
     {
-        return $this->__obj->getPhraseName($property, $translate);
+        return $this->__obj->getPhraseName($property);
     }
 
     /**

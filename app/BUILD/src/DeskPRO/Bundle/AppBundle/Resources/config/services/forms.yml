@@ -192,7 +192,7 @@ services:
       - { name: form.type }
 
   form.web_attachment_accepter:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\WebAcceptAttachmentType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType
     arguments: ["@blob.storage", "@attachment_accepter"]
     tags:
       - { name: form.type }
@@ -264,7 +264,7 @@ services:
 
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
-    arguments: ["@language_manager", "@?api_client_info"]
+    arguments: ["@language_manager", "@security.token_storage", "@?api_client_info"]
     tags:
       - { name: form.type }
 

@@ -38,7 +38,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class WidgetBrandButtonTranslation extends AbstractTranslationModel
 {
     /**
-     * Button name.
+     * Chat button name.
      *
      * @var string
      *
@@ -46,6 +46,16 @@ class WidgetBrandButtonTranslation extends AbstractTranslationModel
      * @Assert\NotBlank()
      */
     private $name;
+
+    /**
+     * Ticket fallback button name.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @Assert\NotBlank()
+     */
+    private $contactUs;
 
     /**
      * @return string
@@ -63,6 +73,26 @@ class WidgetBrandButtonTranslation extends AbstractTranslationModel
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContactUs()
+    {
+        return $this->contactUs;
+    }
+
+    /**
+     * @param string $contactUs
+     *
+     * @return $this
+     */
+    public function setContactUs($contactUs)
+    {
+        $this->contactUs = $contactUs;
 
         return $this;
     }

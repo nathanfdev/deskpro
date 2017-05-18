@@ -32,6 +32,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Controller\Helper\TicketResults;
 use Application\AgentBundle\Controller\JsonRenderer\TicketListRenderer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\PeopleFields;
@@ -63,6 +64,7 @@ use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles ticket searches.
@@ -1449,9 +1451,9 @@ class TicketSearchController extends AbstractController
         }
     }
 
-    protected function _outputCsv($vars, $results_helper)
+    protected function _outputCsv(array $vars, TicketResults $results_helper)
     {
-        $response = new \Symfony\Component\HttpFoundation\Response();
+        $response = new Response();
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="tickets.csv"');
 
@@ -1548,11 +1550,11 @@ class TicketSearchController extends AbstractController
         // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
         // of the tickets regardless of the page setting.
         if ($vars['is_grouped_result']) {
-            $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page++, $chunk_size);
+            $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $chunk_size);
         } else {
-            $tickets = $results_helper->getTicketsForPage($page++, $chunk_size);
+            $tickets = $results_helper->getTicketsForPage($page, $chunk_size);
         }
-        $vars['ticket_display'] = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
+        $vars['ticket_display'] = new TicketResultsDisplay($tickets);
         $vars['ticket_display']->setPersonContext($this->person);
 
         while (!empty($tickets)) {
@@ -1991,13 +1993,14 @@ class TicketSearchController extends AbstractController
                 foreach ($actions as $name => $opt) {
                     // Cleanup RTE markup
                     if ($name == 'reply') {
-                        $new_message       = isset($opt['reply_text']) ? $this->cleaner->clean($opt['reply_text'], 'html') : '';
-                        $new_message       = Strings::trimHtml($new_message);
-                        $new_message       = Strings::prepareWysiwygHtml($new_message);
-                        $opt['reply_text'] = $new_message;
-                        $contextType       = 'newreply';
+                        $new_message = isset($opt['reply_text']) ? $this->cleaner->clean($opt['reply_text'], 'html') : '';
+                        $new_message = Strings::trimHtml($new_message);
+                        $new_message = Strings::prepareWysiwygHtml($new_message);
+                        if ($new_message) {
+                            $opt['reply_text'] = $new_message;
+                            $contextType       = 'newreply';
+                        }
                     }
-
                     $action = $factory->createFromForm($name, $opt);
                     $collection->add($action);
                 }

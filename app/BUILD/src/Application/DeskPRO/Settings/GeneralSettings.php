@@ -250,6 +250,7 @@ class GeneralSettings
     public function saveSettings()
     {
         if ($this->deskpro_url) {
+            $this->deskpro_url = App::$container->get('url_host_checker')->simplifyUrl($this->deskpro_url, true);
             $this->deskpro_url = rtrim($this->deskpro_url, '/').'/';
             $this->settings->setSetting('core.deskpro_url', $this->deskpro_url);
         }
@@ -261,6 +262,8 @@ class GeneralSettings
 
             @file_put_contents(App::$container->getParameter('dp.user.cache_dir').'/helpdesk-offline-message.txt', $this->helpdesk_disabled_message);
         }
+
+        $this->site_url = App::$container->get('url_host_checker')->simplifyUrl($this->site_url, true);
 
         $this->settings->setSetting('core.deskpro_name', $this->deskpro_name);
         $this->settings->setSetting('core.site_url', $this->site_url);

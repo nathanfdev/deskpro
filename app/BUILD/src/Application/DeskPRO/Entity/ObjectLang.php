@@ -37,8 +37,14 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class ObjectLang.
+ *
+ * @JMS\ExclusionPolicy("ALL")
+ */
 class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
@@ -70,6 +76,9 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var Language
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
+     *
      * @Assert\NotNull()
      */
     protected $language;
@@ -83,6 +92,9 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @Assert\NotBlank()
      */
@@ -250,6 +262,7 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ObjectLang';
         $metadata->setPrimaryTable(
             [
                 'name'    => 'object_lang',

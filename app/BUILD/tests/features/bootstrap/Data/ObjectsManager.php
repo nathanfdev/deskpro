@@ -74,6 +74,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
@@ -85,6 +86,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
@@ -332,6 +334,7 @@ class ObjectsManager
             'TicketMacro'              => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
             'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
             'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
+            'TicketLog'                => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
@@ -371,6 +374,7 @@ class ObjectsManager
             'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
             'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
             'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
+            'Phrase'                   => [Factory\SimpleFactory::class, 'create', Phrase::class],
         ];
     }
 
@@ -400,6 +404,7 @@ class ObjectsManager
             'TicketMacro'              => [$this, 'find', TicketMacro::class],
             'TicketFilter'             => [$this, 'find', TicketFilter::class],
             'TicketSla'                => [$this, 'find', TicketSla::class],
+            'TicketLog'                => [$this, 'find', TicketLog::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],
@@ -480,6 +485,7 @@ class ObjectsManager
             'TextSnippet'              => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],
+            'Phrase'                   => [$this, 'find', Phrase::class],
         ];
     }
 }

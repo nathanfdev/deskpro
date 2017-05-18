@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,7 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Attachments;
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
@@ -39,11 +41,12 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class WebAcceptAttachmentType.
+ * Class AcceptAttachmentType.
  */
-class WebAcceptAttachmentType extends AbstractType
+class AcceptAttachmentType extends AbstractType
 {
     /**
      * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
@@ -72,13 +75,31 @@ class WebAcceptAttachmentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('upload', FileType::class, [
-            'mapped'   => false,
-            'required' => false,
-            'label'    => false,
+        $constraints = [new Assert\File()];
+        if ($options['required']) {
+            $constraints[] = new Assert\NotNull();
+        }
+
+        $builder->add($options['field_name'], FileType::class, [
+            'mapped'      => false,
+            'required'    => false,
+            'label'       => false,
+            'constraints' => $constraints,
         ]);
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        if ($options['with_context']) {
+            $builder->add('context', ChoiceType::class, [
+                'mapped'            => false,
+                'required'          => false,
+                'label'             => false,
+                'choices_as_values' => true,
+                'choices'           => ['', 'image'],
+            ]);
+
+            $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateContext']);
+        }
+
+        $builder->get($options['field_name'])->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -86,9 +107,17 @@ class WebAcceptAttachmentType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => Blob::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class'   => Blob::class,
+                'field_name'   => 'file',
+                'required'     => false,
+                'with_context' => false,
+            ])
+            ->setRequired(['upload_context'])
+            ->setAllowedValues('upload_context', ['agent', 'user'])
+            ->setAllowedTypes('with_context', 'bool')
+        ;
     }
 
     /**
@@ -100,14 +129,15 @@ class WebAcceptAttachmentType extends AbstractType
     {
         $form = $event->getForm();
         $data = $event->getData();
-        $file = isset($data['upload']) ? $data['upload'] : null;
 
-        if ($file instanceof UploadedFile) {
-            $error = $this->acceptAttachment->getError($file, 'user');
+        if ($data instanceof UploadedFile) {
+            $parentForm = $form->getParent();
+            $options    = $parentForm->getConfig()->getOptions();
 
-            // Unable to accept, generate error
+            $error = $this->acceptAttachment->getError($data, $options['upload_context']);
             if ($error) {
-                $errorCode   = $error['error_code'];
+                // unable to accept the file, add an error
+                $errorCode   = 'accept_'.$error['error_code'];
                 $errorDetail = $error['error_detail'];
 
                 $params = [];
@@ -115,11 +145,31 @@ class WebAcceptAttachmentType extends AbstractType
                     $params['detail'] = $errorDetail;
                 }
 
-                $phrase = sprintf('portal.forms.error_accept_%s', $errorCode);
-                $form->get('upload')->addError(new FormError($phrase, $phrase, $params));
+                $form->addError(new FormError($errorCode, $errorCode, $params));
             } else {
-                $form->setData($this->acceptAttachment->accept($file, true));
+                // set blob data
+                $parentForm->setData($this->acceptAttachment->accept($data, true));
             }
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onValidateContext(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+        if (!$data instanceof Blob) {
+            return;
+        }
+
+        $options = $form->getConfig()->getOptions();
+        $context = $form->get('context')->getData();
+        if ($context === 'image' && !$data->isImage()) {
+            $form->get($options['field_name'])->addError(new FormError(ErrorsCodes::NOT_AN_IMAGE));
         }
     }
 }

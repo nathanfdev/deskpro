@@ -1215,12 +1215,4 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
         return $rec->value;
     }
-
-    /**
-     * @return Language[]
-     */
-    public function getAllLanguages()
-    {
-        return App::getEntityRepository(Language::class)->findAll();
-    }
 }

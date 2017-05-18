@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Language;
@@ -48,8 +44,7 @@ class TextSnippetContent
     protected $language;
 
     /**
-     * Snippet title
-     * у.
+     * Snippet title.
      *
      * @var string
      *
