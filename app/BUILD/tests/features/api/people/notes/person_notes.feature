@@ -32,8 +32,8 @@ Feature: /people/{id}/notes endpoint
 
   Scenario: I retrieve list of person notes
     Given only the following PersonNote records exist:
-      | #  | Person  | Agent   | Note    |
-      | n1 | {admin} | {admin} | my note |
+      | #  | Person  | Agent   | Note    | Date Created        |
+      | n1 | {admin} | {admin} | my note | 2017-05-16 10:15:00 |
 
     When I send a GET request to "/api/v2/people/{admin}/notes"
     Then the response should be in JSON
@@ -44,6 +44,7 @@ Feature: /people/{id}/notes endpoint
     And the JSON node "data[0].note" should be equal to "my note"
     And the JSON node "data[0].agent" should be equal to "{admin}"
     And the JSON node "data[0].person" should be equal to "{admin}"
+    And the JSON node "data[0].date_created" should be equal to "2017-05-16T10:15:00+0000"
 
   Scenario: I modify a note
     Given only the following PersonNote records exist:

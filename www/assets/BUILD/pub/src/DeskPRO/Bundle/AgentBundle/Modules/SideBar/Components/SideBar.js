@@ -87,7 +87,7 @@ export class SideBarContainer extends SeparateComponent {
   }
 
   static canUseChat() {
-    return window.DESKPRO_PERSON_PERMS['agent_chat.use'];
+    return window.DESKPRO_PERSON_PERMS['agent_chat.use'] && window.DESKPRO_APP_SETTINGS['core.apps_chat'];
   }
 
   static canUsePeople() {

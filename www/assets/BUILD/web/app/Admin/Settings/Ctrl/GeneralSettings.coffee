@@ -137,7 +137,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			)
 
 		checkUrl: ->
-			if @$scope.settings.deskpro_url.match(/^https:/)
+			if @$scope.settings.deskpro_url and @$scope.settings.deskpro_url.match(/^https:/)
 				@$scope.https_url = true
 			else
 				@$scope.https_url = false

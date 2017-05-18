@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand;
@@ -40,8 +36,8 @@ use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Psr\Log\LoggerInterface;
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +45,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Templating\EngineInterface;
 
 /**
  * If the portal is disabled, we send a response back immediately from this request listener.
@@ -104,22 +99,32 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     private $tokenStorage;
 
     /**
-     * @var Environment
+     * @var EngineInterface
      */
     private $portalTpl;
 
+    /**
+     * Constructor.
+     *
+     * @param BrandStack            $brandStack
+     * @param SettingsResolver      $resolver
+     * @param LoggerInterface       $logger
+     * @param EngineInterface       $portalTpl
+     * @param PortalModeStorage     $modeStorage
+     * @param TokenStorageInterface $tokenStorage
+     */
     public function __construct(
-        BrandStack $brand_stack,
-        SettingsResolver $resolver,
-        LoggerInterface $logger,
-        EngineInterface $portal_tpl,
-        PortalModeStorage $modeStorage,
+        BrandStack            $brandStack,
+        SettingsResolver      $resolver,
+        LoggerInterface       $logger,
+        EngineInterface       $portalTpl,
+        PortalModeStorage     $modeStorage,
         TokenStorageInterface $tokenStorage
     ) {
         $this->resolver     = $resolver;
-        $this->brandStack   = $brand_stack;
+        $this->brandStack   = $brandStack;
         $this->logger       = $logger;
-        $this->portalTpl    = $portal_tpl;
+        $this->portalTpl    = $portalTpl;
         $this->modeStorage  = $modeStorage;
         $this->tokenStorage = $tokenStorage;
     }
@@ -146,6 +151,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             || $this->isWhitelisted($event->getRequest())
             || $this->isAdminPreview()
             || $this->isAdminPreviewApiCall($event)
+            || $this->isFavicon($event)
         ) {
             // we only make this decision on master requests. sub requests are never "offline".
             // whitlisted routes obviously should pass
@@ -230,5 +236,15 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             $user instanceof Person
             && $user->isAdmin()
             && strpos($event->getRequest()->getPathInfo(), 'portal/api') !== false;
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isFavicon(GetResponseEvent $event)
+    {
+        return $event->getRequest()->getPathInfo() === '/favicon.ico';
     }
 }

@@ -26,14 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpSys\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 
+/**
+ * Class PortalKernel.
+ */
 class PortalKernel extends BaseKernel
 {
     /**

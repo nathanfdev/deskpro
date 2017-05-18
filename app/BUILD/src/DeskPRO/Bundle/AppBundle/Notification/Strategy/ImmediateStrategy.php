@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 
 /**
@@ -44,8 +45,16 @@ class ImmediateStrategy extends AbstractStrategy
     {
         $messages = $this->createMessages($event);
         foreach ($messages as $message) {
-            $this->delivery_service->deliver($message);
+            $this->delivery_service->schedule($message);
         }
+    }
+
+    /**
+     * This is just a proxy.
+     */
+    public function deliver()
+    {
+        $this->delivery_service->deliver();
     }
 
     /**
@@ -57,6 +66,7 @@ class ImmediateStrategy extends AbstractStrategy
     {
         $messages = [];
         foreach ($this->event_handlers as $handler) {
+            /** @var NotifyHandlerInterface $handler */
             $messages = array_merge($messages, $handler->processEvent($event));
         }
 

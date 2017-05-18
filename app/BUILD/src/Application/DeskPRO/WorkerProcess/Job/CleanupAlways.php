@@ -99,6 +99,58 @@ class CleanupAlways extends AbstractJob
         }
 
         //------------------------------
+        // action_alerts
+        //------------------------------
+
+        // action_alerts are instant - it is messages we use to update react application state
+        $datetime = date('Y-m-d H:i:s', time() - 300); // 5 minutes seems to be fine gap
+
+        $ids = App::getDb()->fetchAllCol(
+            'SELECT id FROM notify_action_alerts WHERE date_created < ?',
+            [$datetime],
+            [\PDO::PARAM_STR]);
+
+        if ($ids) {
+            $batch_ids = array_chunk($ids, 50, false);
+            foreach ($batch_ids as $ids) {
+                $num = App::getDb()->executeUpdate('
+                    DELETE FROM notify_action_alerts
+                    WHERE id IN (?)
+                ', [$ids], [Connection::PARAM_INT_ARRAY]);
+
+                if ($num) {
+                    $this->logStatus("Cleaned up $num old action_alerts");
+                }
+            }
+        }
+
+        //------------------------------
+        // notifications
+        //------------------------------
+
+        // notifications are instant, same as above
+        $datetime = date('Y-m-d H:i:s', time() - 300);
+
+        $ids = App::getDb()->fetchAllCol(
+            'SELECT id FROM notify_notifications WHERE date_created < ?',
+            [$datetime],
+            [\PDO::PARAM_STR]);
+
+        if ($ids) {
+            $batch_ids = array_chunk($ids, 50, false);
+            foreach ($batch_ids as $ids) {
+                $num = App::getDb()->executeUpdate('
+                    DELETE FROM notify_notifications
+                    WHERE id IN (?)
+                ', [$ids], [Connection::PARAM_INT_ARRAY]);
+
+                if ($num) {
+                    $this->logStatus("Cleaned up $num old notifications");
+                }
+            }
+        }
+
+        //------------------------------
         // Optimise perms
         //------------------------------
 

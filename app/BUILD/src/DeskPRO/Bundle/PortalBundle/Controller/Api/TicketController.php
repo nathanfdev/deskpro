@@ -108,7 +108,7 @@ class TicketController extends AbstractApiController
             'department_id'                 => $request->query->getInt('department_id'),
             'hide_department_field'         => $request->query->getBoolean('hide_department_field'),
             'subject_type'                  => $request->get('subject_type'),
-            'default_subject'               => $request->get('default_subject'),
+            'default_subject'               => $request->get('subject'),
             'ticket_view_context'           => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'             => TicketWithLayoutsContext::VISIBILITY_NEW,
             'form_type'                     => $request->get('type'),

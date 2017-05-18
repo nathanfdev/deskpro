@@ -49,7 +49,9 @@ services:
 
   api_serializer.handler.custom_def:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDefHandler
-    arguments: ["@deskpro.core.translate"]
+    arguments:
+      - "@deskpro.core.translate"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -120,7 +122,47 @@ services:
   api_serializer.handler.topic_comment:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TopicCommentHandler
     arguments:
-          - "@avatar_resolver"
+      - "@avatar_resolver"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.article_category:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\ArticleCategoryHandler
+    arguments:
+      - "@deskpro.core.translate"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.download_category:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\DownloadCategoryHandler
+    arguments:
+      - "@deskpro.core.translate"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.feedback_category:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\FeedbackCategoryHandler
+    arguments:
+      - "@deskpro.core.translate"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.news_category:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\NewsCategoryHandler
+    arguments:
+      - "@deskpro.core.translate"
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.product:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\Categories\ProductHandler
+    arguments:
+      - "@deskpro.core.translate"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -173,6 +215,13 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketParticipantHandler
     arguments:
       - "@data.chat"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.ticket_log:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketLogHandler
+    arguments:
+      - "@twig"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo;
 
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRMSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\PublishSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\TasksSettings;
@@ -67,7 +67,7 @@ class AgentClientInfoSettings
     /**
      * @var CRMSettings
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRMSettings")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMSettings")
      */
     private $crm;
 

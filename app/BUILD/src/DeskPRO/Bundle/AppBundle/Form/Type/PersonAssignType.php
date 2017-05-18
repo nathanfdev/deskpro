@@ -82,12 +82,6 @@ class PersonAssignType extends AbstractType
             ])
         ;
 
-        foreach (['id', 'name', 'email'] as $available_field) {
-            if (!in_array($available_field, $options['available_fields'])) {
-                $builder->remove($available_field);
-            }
-        }
-
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields'], 200);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson'], 100);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onResetPerson']);
@@ -158,8 +152,8 @@ class PersonAssignType extends AbstractType
         /** @var Person $person */
         $person = $form->getData();
         if (!isset($data['name']) && $person) {
-            // If we sent just ID and person doesn't have name
-            // then force set name from its display name to prevent validation error as name is required field
+            // If we sent just ID and person doesn't have a name
+            // then force set name from its display name to prevent validation error because name is a required field
             if ($person->getId() && !$person->getName()) {
                 $person->setName($person->getDisplayName());
             }
@@ -196,7 +190,6 @@ class PersonAssignType extends AbstractType
                 'label_name'         => '',
                 'label_email'        => '',
                 'data_class'         => Person::class,
-                'available_fields'   => ['id', 'name', 'email'],
                 'allow_extra_fields' => false,
                 'allow_create'       => false,
                 'error_bubbling'     => false,

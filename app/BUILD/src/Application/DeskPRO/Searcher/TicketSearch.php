@@ -317,6 +317,10 @@ class TicketSearch extends SearcherAbstract
             return true;
         }
 
+        if ($term === self::TERM_DATE_ARCHIVED) {
+            return true;
+        }
+
         return false;
     }
 
@@ -1071,8 +1075,6 @@ class TicketSearch extends SearcherAbstract
                 ($sql)
                 UNION
                 ($sql2)
-                $order_by
-                LIMIT {$this->limit}
             ";
         } else {
             $select_query = $sql;

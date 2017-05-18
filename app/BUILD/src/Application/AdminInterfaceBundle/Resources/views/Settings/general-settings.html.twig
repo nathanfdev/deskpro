@@ -40,8 +40,8 @@
 								to link to your helpdesk. For example, in email notifications.
 							</span>
 
-							<input type="text" name="deskpro_url" class="form-control" ng-model="settings.deskpro_url" ng-change="Settings.checkUrl()" style="width: 40%" />
-                            <div style="margin-left: 10px;" ng-show="https_url">
+							<input type="text" name="deskpro_url" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
+                            <div ng-if="settings.deskpro_url.length > 7 && Settings.checkUrl() && https_url">
                                 <label>
                                     <input type="checkbox" ng-model="settings.deskpro_url_autocorrect" />
 									Force HTTPS

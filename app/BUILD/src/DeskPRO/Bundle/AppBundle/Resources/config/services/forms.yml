@@ -192,7 +192,7 @@ services:
       - { name: form.type }
 
   form.web_attachment_accepter:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\WebAcceptAttachmentType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType
     arguments: ["@blob.storage", "@attachment_accepter"]
     tags:
       - { name: form.type }
@@ -264,7 +264,7 @@ services:
 
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
-    arguments: ["@language_manager", "@?api_client_info"]
+    arguments: ["@language_manager", "@security.token_storage", "@?api_client_info"]
     tags:
       - { name: form.type }
 
@@ -309,8 +309,14 @@ services:
       - { name: form.type }
 
   form.recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType
     arguments: ["@settings_resolver", "@language_manager"]
+    tags:
+      - { name: form.type }
+
+  form.captcha:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType
+    arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
     tags:
       - { name: form.type }
 

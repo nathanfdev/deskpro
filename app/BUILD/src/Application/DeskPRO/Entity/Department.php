@@ -442,7 +442,7 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
     /**
      * {@inheritdoc}
      */
-    public function getPhraseName($property, Translate $translate)
+    public function getPhraseName($property)
     {
         if (!$property) {
             $property = 'title';

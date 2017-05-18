@@ -9,7 +9,7 @@ widgetApi.enableJsonPayloads();
 widgetApi.setDefaultHeader('X-Agent-Request', 'true');
 widgetApi.addInterceptor(new UrlCorrector(`${window.DP_HELPDESK_URL}portal/api/`, /^\/?DP_API\//));
 widgetApi.addInterceptor({
-  request: config => {
+  request: (config) => {
     const newConfig = config;
     const dpsidCode = widgetSessionCodeSelector(store.getState());
 

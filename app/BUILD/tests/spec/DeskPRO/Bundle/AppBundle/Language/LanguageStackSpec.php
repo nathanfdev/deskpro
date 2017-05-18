@@ -26,17 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace spec\DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use Application\DeskPRO\Translate\SystemLanguage;
+use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -46,9 +42,9 @@ class LanguageStackSpec extends ObjectBehavior
 {
     public function let(
         SettingsResolver $settings_resolver,
-        LanguageRepo $language_repo
+        EntityManager $em
     ) {
-        $this->beConstructedWith($settings_resolver, $language_repo);
+        $this->beConstructedWith($settings_resolver, $em);
     }
 
     public function it_will_return_null_if_no_active_language_set()
@@ -93,10 +89,13 @@ class LanguageStackSpec extends ObjectBehavior
         SettingsResolver $settings_resolver,
         SettingsBag $settings_bag,
         Language $default_lang,
+        EntityManager $em,
         LanguageRepo $language_repo
     ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings_bag);
         $settings_bag->get('core.default_language_id')->willReturn(5);
+
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->find(5)->willReturn($default_lang);
 
         $this->getDefaultLanguage()->shouldReturn($default_lang);
@@ -106,11 +105,13 @@ class LanguageStackSpec extends ObjectBehavior
         SettingsResolver $settings_resolver,
         SettingsBag $settings_bag,
         Language $default_lang,
+        EntityManager $em,
         LanguageRepo $language_repo
     ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings_bag);
         $settings_bag->get('core.default_language_id')->willReturn(null);
 
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->find(1)->willReturn($default_lang);
 
         $this->getDefaultLanguage()->shouldReturn($default_lang);
@@ -120,11 +121,13 @@ class LanguageStackSpec extends ObjectBehavior
         SettingsResolver $settings_resolver,
         SettingsBag $settings_bag,
         Language $default_lang,
-        LanguageRepo $language_repo,
-        SystemLanguage $sys_lang
+        EntityManager $em,
+        LanguageRepo $language_repo
     ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings_bag);
         $settings_bag->get('core.default_language_id')->willReturn(null);
+
+        $em->getRepository(Language::class)->willReturn($language_repo);
         $language_repo->find(1)->willReturn($default_lang);
 
         $this->pushDefault();

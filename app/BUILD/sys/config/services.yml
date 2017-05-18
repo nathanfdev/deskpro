@@ -70,7 +70,6 @@ services:
     arguments:
       - "@settings_resolver"
       - "@doctrine.orm.default_entity_manager"
-      - "@deskpro.blob_storage"
 
   default_brand_finder:
     class: DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder

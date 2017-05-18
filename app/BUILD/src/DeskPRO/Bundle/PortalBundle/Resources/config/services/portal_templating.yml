@@ -3,7 +3,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Twig\PortalLoader
     arguments: ["@brand_stack", "@template_repository", "@portal_brand_theme_loader"]
     tags:
-      - { name: twig.loader }
+      - { name: twig.loader, priority: 1000 }
 
   portal_view.breadcrumb_generator:
     class: DeskPRO\Bundle\PortalBundle\View\Breadcrumb\BreadcrumbGenerator

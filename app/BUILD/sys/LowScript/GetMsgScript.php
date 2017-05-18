@@ -353,8 +353,18 @@ class GetMsgScript extends LowScriptAbstract
                     ");
                 }
             }
+
             $data['action_alerts'] = $this->getActionAlerts();
-            $data['notifications'] = $this->getNotifications();
+            $readNotifications     = false;
+            foreach ($data['action_alerts'] as $k => $actionAlert) {
+                if ($actionAlert['type'] === 'read.notifications.alert') {
+                    $readNotifications = true;
+                    // we're processing it further to avoid sending read notifications.alert data
+                    unset($data['action_alerts'][$k]);
+                }
+            }
+            $data['action_alerts'] = array_values($data['action_alerts']);
+            $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
 
             header('Content-Type: application/json');
             echo json_encode($data);
@@ -847,7 +857,7 @@ class GetMsgScript extends LowScriptAbstract
         if (!$person || !isset($_REQUEST['last_alert'])) {
             return [];
         }
-        $last = new \DateTime('@'.(int) $_REQUEST['last_alert']);
+        $last = (int) $_REQUEST['last_alert'];
 
         return $this->transformData($this->fetch($last, $person->getId()));
     }
@@ -858,26 +868,29 @@ class GetMsgScript extends LowScriptAbstract
         if (!$person || !isset($_REQUEST['last_notify'])) {
             return [];
         }
-        $last = new \DateTime('@'.(int) $_REQUEST['last_notify']);
+        $last = (int) $_REQUEST['last_notify'];
 
         return $this->transformData($this->fetch($last, $person->getId(), 'notifications'));
     }
 
-    protected function fetch(\DateTime $date, $targetId, $type = 'action_alerts')
+    protected function fetch($last, $targetId, $type = 'action_alerts')
     {
         $tableName = 'notify_'.$type;
         $sql       = <<<SQL
 SELECT * FROM `{$tableName}`
 WHERE `target_id` = :target_id 
-  AND `date_created` > :date_created
+  AND `id` > :last
+ORDER BY `id` ASC
 SQL;
         $stmnt = $this->getPdoRead()->prepare($sql);
         $stmnt->execute([
-            'target_id'    => $targetId,
-            'date_created' => $date->format('Y-m-d H:i:s'),
+            'target_id' => $targetId,
+            'last'      => $last,
         ]);
 
-        return $stmnt->fetchAll(\PDO::FETCH_ASSOC);
+        $all = $stmnt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $all;
     }
 
     protected function transformData($data)
@@ -891,7 +904,6 @@ SQL;
             $date                  = new \DateTime($datum['date_created']);
             $datum['date_created'] = $date->format(\DateTime::ISO8601);
             $datum['timestamp']    = $date->getTimestamp();
-            $datum['data']         = json_decode($datum['data'], true);
         }
 
         return $data;

@@ -18,7 +18,7 @@ services:
       - "@brand_stack"
       - "@settings_resolver"
       - "@brand_repository"
-      - "@default_brand"
+      - "@default_brand_finder"
       - "@portal_mode_storage"
       - "@logger"
       - "@url_host_checker"

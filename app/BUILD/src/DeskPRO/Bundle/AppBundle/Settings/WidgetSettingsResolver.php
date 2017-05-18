@@ -313,8 +313,15 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
                 $buttonSettings->getTranslations()->add($translation);
             }
+
+            // chat is available button label
             if (!$translation->getName()) {
                 $translation->setName($this->languageManager->phrase('portal.widget.help_button', [], $language));
+            }
+
+            // chat is unavailable button label (ticket fallback)
+            if (!$translation->getContactUs()) {
+                $translation->setContactUs($this->languageManager->phrase('portal.widget.help_ticket_button', [], $language));
             }
         }
 

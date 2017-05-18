@@ -85,7 +85,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $original_hash;
+    protected $original_hash = '';
 
     /**
      * Is this phrase marked as outdated?
@@ -107,6 +107,9 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $updated_at;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->setModelField('created_at', $this->updated_at = new \DateTime());
@@ -120,6 +123,17 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->setModelField('name', $name);
@@ -129,6 +143,14 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         if ($groupname) {
             $this->setModelField('groupname', $groupname);
         }
+    }
+
+    /**
+     * @return Language
+     */
+    public function getLanguage()
+    {
+        return $this->language;
     }
 
     public function incUpdatedAt()

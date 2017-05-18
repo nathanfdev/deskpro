@@ -347,7 +347,7 @@ abstract class AbstractBuild
                 }
             }, $alter);
 
-            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method drop_swap --no-version-check --recursion-method none --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
+            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method drop_swap --no-version-check --recursion-method none --critical-load {critical_load} --max-load {max_load} --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
 
             $dbinfo = LowUtil::getMysqlInfoFromConfigArray($env->getConfig('database'));
 
@@ -356,14 +356,16 @@ abstract class AbstractBuild
             $dbname = $dbinfo['dbname'];
 
             $params = [
-                '{tool}'    => $tool,
-                '{query}'   => escapeshellarg($alter),
-                '{db_host}' => escapeshellarg($dbhost),
-                '{db_port}' => escapeshellarg($port ?: 3306),
-                '{db_name}' => escapeshellarg($dbname),
-                '{db_user}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: $dbinfo['user']),
-                '{db_pass}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: $dbinfo['password']),
-                '{dsn}'     => "t=$table",
+                '{tool}'          => $tool,
+                '{query}'         => escapeshellarg($alter),
+                '{critical_load}' => escapeshellarg($env->getConsolePhpCommand('upgrader.online_schema_upgrade_critical_load') ?: 'Threads_running=50'),
+                '{max_load}'      => escapeshellarg($env->getConsolePhpCommand('upgrader.online_schema_upgrade_max_load') ?: 'Threads_running=25'),
+                '{db_host}'       => escapeshellarg($dbhost),
+                '{db_port}'       => escapeshellarg($port ?: 3306),
+                '{db_name}'       => escapeshellarg($dbname),
+                '{db_user}'       => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_user') ?: $dbinfo['user']),
+                '{db_pass}'       => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_password') ?: $dbinfo['password']),
+                '{dsn}'           => "t=$table",
             ];
 
             $params_test                 = $params;

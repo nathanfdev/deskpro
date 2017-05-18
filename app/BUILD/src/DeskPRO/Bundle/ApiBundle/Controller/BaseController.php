@@ -75,17 +75,17 @@ class BaseController extends FOSRestController
      * @param $status
      * @param $code
      * @param $message
-     * @param array|FormInterface $errors_data
+     * @param array|FormInterface $errorsData
      *
      * @return array
      */
-    protected function createErrorRepresentation($status, $code, $message, $errors_data = [])
+    protected function createErrorRepresentation($status, $code, $message, $errorsData = [])
     {
         return $this->get('api_view_representation_factory')->createErrorRepresentation(
             $status,
             $code,
             $message,
-            $errors_data
+            $errorsData
         );
     }
 
@@ -261,5 +261,24 @@ class BaseController extends FOSRestController
     protected function logException(\Exception $exception)
     {
         SystemErrorHandler::logException($exception);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return array
+     */
+    protected function getRequestData(Request $request)
+    {
+        $params = $request->request->all();
+        $files  = $request->files->all();
+
+        if (is_array($params) && is_array($files)) {
+            $data = array_replace_recursive($params, $files);
+        } else {
+            $data = $params ?: $files;
+        }
+
+        return $data;
     }
 }

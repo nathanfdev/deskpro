@@ -119,7 +119,7 @@ Feature: /ticket_filters_counts endpoint
       | AgentTeam    | agent_team   | Unassigned       | Name       |
       | Organization | organization | None             | Name       |
       | Department   | department   | None             | Title      |
-      | Language     | language     | English          | Title      |
+      | Language     | language     | None             | Title      |
 
   Scenario: I group by urgency
     Given only the following Ticket records exist:

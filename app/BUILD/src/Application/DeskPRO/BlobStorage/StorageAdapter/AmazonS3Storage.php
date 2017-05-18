@@ -229,7 +229,6 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $try = $this->attempts;
         while (--$try >= 0) {
             try {
-                /** @var $model \Guzzle\Service\Resource\Model */
                 $model = $this->s3->getObject([
                     'Bucket' => $this->bucket,
                     'Key'    => $this->resolvePath($blob->getPath()),

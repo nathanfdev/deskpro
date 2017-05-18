@@ -48,6 +48,11 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
     protected $em;
 
     /**
+     * @var MessageInterface[]
+     */
+    private $messages = [];
+
+    /**
      * @param EntityManager $em
      */
     public function __construct(EntityManager $em)
@@ -55,7 +60,7 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
         $this->em = $em;
     }
 
-    public function deliver(MessageInterface $message)
+    public function schedule(MessageInterface $message)
     {
         $persistTo = $this->getChannel($message);
         $persistTo
@@ -64,7 +69,14 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
             ->setDateCreated(new \DateTime($message->getDate()))
             ->setData($message->getData()['data'])
             ->setType($message->getType());
-        $this->em->persist($persistTo);
+        $this->messages[] = $persistTo;
+    }
+
+    public function deliver()
+    {
+        foreach ($this->messages as $message) {
+            $this->em->persist($message);
+        }
         $this->em->flush();
     }
 

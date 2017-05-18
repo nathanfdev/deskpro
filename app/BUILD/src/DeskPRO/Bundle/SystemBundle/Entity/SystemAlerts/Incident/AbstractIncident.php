@@ -288,7 +288,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateFirstFailure()
     {
-        return $this->firstFailureEvent->getDateCreated();
+        return $this->firstFailureEvent ? $this->firstFailureEvent->getDateCreated() : null;
     }
 
     /**
@@ -296,7 +296,7 @@ abstract class AbstractIncident implements Incident
      */
     public function getDateLastFailure()
     {
-        return $this->lastFailureEvent->getDateCreated();
+        return $this->lastFailureEvent ? $this->lastFailureEvent->getDateCreated() : null;
     }
 
     /**

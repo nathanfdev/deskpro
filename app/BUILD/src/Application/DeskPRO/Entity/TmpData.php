@@ -144,6 +144,26 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
      * Set the type.
      *
      * @param string $type
@@ -151,6 +171,18 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     public function setType($type)
     {
         $this->setData('_type', $type);
+    }
+
+    /**
+     * @param \DateTime $dateExpire
+     *
+     * @return $this
+     */
+    public function setDateExpire(\DateTime $dateExpire = null)
+    {
+        $this->setModelField('date_expire', $dateExpire);
+
+        return $this;
     }
 
     /**

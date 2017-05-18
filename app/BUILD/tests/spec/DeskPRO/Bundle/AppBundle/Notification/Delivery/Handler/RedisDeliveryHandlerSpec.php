@@ -60,6 +60,7 @@ class RedisDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
         $client->publish(RedisDeliveryHandler::CHANNEL_ACTION_ALERT, Argument::any())->shouldBeCalled();
-        $this->deliver($actionAlert);
+        $this->schedule($actionAlert);
+        $this->deliver();
     }
 }

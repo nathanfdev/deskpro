@@ -117,11 +117,16 @@ class ezcMailFileParser extends ezcMailPartParser
 
         // figure out the base filename
         // search Content-Disposition first as specified by RFC 2183
+        $fileName = '';
         $matches = array();
-        if ( preg_match( '/\s*filename="?([^;"]*);?/i',
-                        $this->headers['Content-Disposition'], $matches ) )
+        if ( preg_match( '/\s*filename="?([^;"\s]*);?/i',
+                        $this->headers['Content-Disposition'], $matches ) && $matches[1])
         {
-            $fileName = trim( $matches[1], '"' );
+            $fileName = trim( $matches[1], '" ' );
+        } else if ( !$fileName && preg_match( '/\s*filename="?([^;]*);?/i',
+            $this->headers['Content-Disposition'], $matches ) )
+        {
+            $fileName = trim( $matches[1], '" ' );
         }
         // fallback to the name parameter in Content-Type as specified by RFC 2046 4.5.1
         else if ( preg_match( '/\s*name="?([^;"]*);?/i',
@@ -134,12 +139,16 @@ class ezcMailFileParser extends ezcMailPartParser
             $fileName = "filename";
         }
 
+        // DeskPRO Edit: handle utf-8 base64-encoded-filenames
+        if (preg_match( '@^=\?utf-8(\?[QqBb]\?)(([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{4}|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==))(\?=)@', $fileName, $matches)) {
+            $fileName = base64_decode($matches[2]);
+        }
+
         // DeskPRO Edit: Same logic as in rfc2231_implementation.php
         // to fix ezc bug #13038
         if (preg_match( '@^=\?[^?]+\?[QqBb]\?@', $fileName)) {
             $fileName = ezcMailTools::mimeDecode($fileName);
         }
-
 		$fileName = trim($fileName);
 		if (!$fileName) {
 			$fileName = 'filename';

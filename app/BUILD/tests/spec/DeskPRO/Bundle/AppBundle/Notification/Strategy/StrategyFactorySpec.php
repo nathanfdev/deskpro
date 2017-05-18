@@ -30,6 +30,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\EventListener\ImmediateStrategyListener;
 use DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler;
@@ -109,6 +110,9 @@ class StrategyFactorySpec extends ObjectBehavior
 
         $container->get('deskpro.notification.notify_handler.user_notify')->willReturn(new UserNotificationHandler());
         $container->get('deskpro.notification.notify_handler.action_alert')->willReturn(new ActionAlertHandler());
+
+        $container->has('deskpro.notification.immediate_listener')->willReturn(true);
+        $container->get('deskpro.notification.immediate_listener')->willReturn(new ImmediateStrategyListener());
     }
 
     private function configureSettingsResolver(SettingsResolver $settings_resolver, SettingsBag $settings)

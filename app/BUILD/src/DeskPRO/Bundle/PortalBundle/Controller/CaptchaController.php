@@ -26,15 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\TmpData;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class CaptchaController.
+ */
 class CaptchaController extends \Gregwar\CaptchaBundle\Controller\CaptchaController
 {
     /**
@@ -73,5 +73,48 @@ class CaptchaController extends \Gregwar\CaptchaBundle\Controller\CaptchaControl
         }
 
         return parent::generateCaptchaAction($key);
+    }
+
+    /**
+     * @Route("/generate-api-captcha/{token}", name="gregwar_captcha.generate_api_captcha")
+     *
+     * @param string $token
+     *
+     * @return Response
+     */
+    public function generateApiCaptchaAction($token)
+    {
+        $options   = $this->container->getParameter('gregwar_captcha.config');
+        $generator = $this->container->get('gregwar_captcha.generator');
+        $generator->getCaptchaCode($options);
+
+        $persistKeys = [
+            'phrase',
+            'width',
+            'height',
+            'distortion',
+            'length',
+            'quality',
+            'background_color',
+            'text_color',
+        ];
+
+        $tmpData = new TmpData();
+        $tmpData->setName('api_captcha.'.$token);
+        $tmpData->setDateExpire(new \DateTime('+1 hour'));
+        foreach ($persistKeys as $persistKey) {
+            $tmpData->setData($persistKey, $options[$persistKey]);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($tmpData);
+        $em->flush();
+
+        $response = new Response($generator->generate($options));
+        $response->headers->set('Content-type', 'image/jpeg');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Cache-Control', 'no-cache');
+
+        return $response;
     }
 }

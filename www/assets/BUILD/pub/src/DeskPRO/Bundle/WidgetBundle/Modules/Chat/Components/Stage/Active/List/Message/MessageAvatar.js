@@ -3,14 +3,19 @@ import React, { PropTypes } from 'react';
 export class MessageAvatar extends React.Component {
 
   static propTypes = {
-    imageUrl: PropTypes.string
+    imageUrl:     PropTypes.string,
+    primaryColor: PropTypes.string
   };
 
   render() {
-    const { imageUrl } = this.props;
+    const { imageUrl, primaryColor } = this.props;
     const style = {};
+
     if (imageUrl) {
       style.backgroundImage = `url(${imageUrl})`;
+    }
+    if (primaryColor) {
+      style.backgroundColor = primaryColor;
     }
 
     return (

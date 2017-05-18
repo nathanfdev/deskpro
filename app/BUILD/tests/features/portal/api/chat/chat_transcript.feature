@@ -112,7 +112,7 @@ Feature: Widget Chat
     Then the response status code should be 200
     And the response should be in JSON
     And the JSON node "chat_info.data.should_send_transcript" should be equal to 1
-    And the JSON node "chat_info.data.conversation_id" should be equal to "{chat_1}"
+    And the JSON node "chat_info.data.id" should be equal to "{chat_1}"
     When I send a POST request to "/portal/api/chats/{chat_1}/transcript/toggle?dpsid={sid_AAAAAAAAAAAAAAA}"
     Then the response status code should be 204
     And the response should be empty

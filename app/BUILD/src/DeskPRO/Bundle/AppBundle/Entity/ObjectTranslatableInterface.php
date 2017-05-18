@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Language;
@@ -69,29 +65,29 @@ interface ObjectTranslatableInterface extends EntityInterface
     /**
      * Returns a collection of entity translations filtered by property name.
      *
-     * @param string $prop_name
+     * @param string $propName
      *
      * @return Collection|ObjectLang[]
      */
-    public function getObjectPropTranslations($prop_name);
+    public function getObjectPropTranslations($propName);
 
     /**
      * Returns language specific translation.
      *
-     * @param string   $prop_name
+     * @param string   $propName
      * @param Language $language
      *
      * @return ObjectLang|null
      */
-    public function getObjectPropLanguageTranslation($prop_name, Language $language = null);
+    public function getObjectPropLanguageTranslation($propName, Language $language = null);
 
     /**
      * Returns language specific translation value.
      *
-     * @param string        $prop_name
+     * @param string        $propName
      * @param Language|null $language
      *
      * @return string
      */
-    public function getObjectPropLanguageTranslationValue($prop_name, Language $language = null);
+    public function getObjectPropLanguageTranslationValue($propName, Language $language = null);
 }

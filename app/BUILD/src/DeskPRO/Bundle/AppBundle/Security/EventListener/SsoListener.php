@@ -28,11 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
-use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
 use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,9 +51,9 @@ class SsoListener implements EventSubscriberInterface
     private $authorizationChecker;
 
     /**
-     * @var \Application\DeskPRO\Auth\AuthenticationManager
+     * @var ContainerInterface
      */
-    private $authManager;
+    private $container;
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -64,13 +64,13 @@ class SsoListener implements EventSubscriberInterface
      * Constructor.
      *
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param AuthenticationManager         $authManager
+     * @param ContainerInterface            $container
      * @param LoggerInterface               $logger
      */
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, AuthenticationManager $authManager, LoggerInterface $logger)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker, ContainerInterface $container, LoggerInterface $logger)
     {
         $this->authorizationChecker = $authorizationChecker;
-        $this->authManager          = $authManager;
+        $this->container            = $container;
         $this->logger               = $logger;
     }
 
@@ -103,7 +103,7 @@ class SsoListener implements EventSubscriberInterface
         }
 
         // if we need to return a redirect from the auth system, do so now
-        $res = $this->checkAuthSystemForResponse($this->authManager->getSettings(), $event->getRequest());
+        $res = $this->checkAuthSystemForResponse($this->container->get('dp_auth_settings')->getUserInterfaceSettings(), $event->getRequest());
         if ($res) {
             $this->logger->info('Automatic SSO is detected, redirecting to '.$res->getTargetUrl());
             $res->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 1);

@@ -33,7 +33,6 @@ use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
-use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -365,15 +364,6 @@ class Person extends BasePerson
     protected $primaryTeam;
 
     /**
-     * Agent data.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AgentData")
-     *
-     * @var AgentData
-     */
-    protected $agentData;
-
-    /**
      * {@inheritdoc}
      */
     public function __construct(PersonEntity $person, Avatar $avatar)
@@ -416,6 +406,5 @@ class Person extends BasePerson
         $this->emails                  = $person->getEmails();
         $this->teams                   = $person->getTeams();
         $this->primaryTeam             = $person->getPrimaryTeam();
-        $this->agentData               = $person->getAgentData();
     }
 }

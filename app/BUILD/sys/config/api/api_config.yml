@@ -1,5 +1,6 @@
 imports:
     - { resource: ../config.shared.php }
+    - { resource: ../config.captcha.yml }
     - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
     - { resource: ./api_versions.yml }
 

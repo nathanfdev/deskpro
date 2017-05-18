@@ -40,7 +40,7 @@ class Build1489058013 extends AbstractBuild
         $instructions[] = 'ADD CONSTRAINT FK_28166A26E5A6C396 FOREIGN KEY (agent_data_id) REFERENCES agent_data (id) ON DELETE SET NULL';
         $instructions[] = 'ADD UNIQUE INDEX UNIQ_28166A26E5A6C396 (agent_data_id)';
 
-        $this->execSlowAlterTableQuiet('people', implode(', ', $instructions));
+        $this->execSlowAlterTable('people', implode(', ', $instructions));
 
         $fk = $this->getSchemaHelper()->findForeignKey('agent_data', 'person_id', 'people', 'id');
         if ($fk) {

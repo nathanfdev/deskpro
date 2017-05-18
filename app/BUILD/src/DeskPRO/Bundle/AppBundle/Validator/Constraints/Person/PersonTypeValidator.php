@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person;
 
 use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -38,6 +39,21 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
  */
 class PersonTypeValidator extends ConstraintValidator
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -50,8 +66,29 @@ class PersonTypeValidator extends ConstraintValidator
         if (!$value) {
             return;
         }
+        if (!$value instanceof Person && !is_scalar($value)) {
+            throw new UnexpectedTypeException($value, Person::class.' or scalar');
+        }
+
         if (!$value instanceof Person) {
-            throw new UnexpectedTypeException($value, Person::class);
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('p')
+                ->from(Person::class, 'p')
+                ->setParameter('value', $value)
+            ;
+
+            if (is_numeric($value)) {
+                $qb->where('p.id = :value');
+            } else {
+                $qb->join('p.emails', 'e');
+                $qb->where('e.email = :value');
+            }
+
+            $value = $qb->getQuery()->getOneOrNullResult();
+            if (!$value) {
+                return;
+            }
         }
 
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */

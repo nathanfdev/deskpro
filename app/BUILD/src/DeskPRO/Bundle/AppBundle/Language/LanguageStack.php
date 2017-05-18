@@ -26,16 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Language;
 
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\DeskPRO\Translate\SystemLanguage;
+use Doctrine\ORM\EntityManager;
 
 /**
  * The LanguageStack is a way of managing changes in the "active" Language during runtime. It works similar to a stack
@@ -69,12 +65,12 @@ class LanguageStack
     /**
      * @var SettingsResolver
      */
-    private $settings_resolver;
+    private $settingsResolver;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\Language
+     * @var EntityManager
      */
-    private $language_repo;
+    private $em;
 
     /**
      * only stores the reference for quick access in the case of multiple calls to getDefaultLanguage(), do not
@@ -82,14 +78,20 @@ class LanguageStack
      *
      * @var \Application\DeskPRO\Entity\Language|null
      */
-    private $default_language;
+    private $defaultLanguage;
 
-    public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
+    /**
+     * Constructor.
+     *
+     * @param SettingsResolver $settingsResolver
+     * @param EntityManager    $em
+     */
+    public function __construct(SettingsResolver $settingsResolver, EntityManager $em)
     {
-        $this->stack             = [];
-        $this->languages         = [];
-        $this->settings_resolver = $settings_resolver;
-        $this->language_repo     = $language_repo;
+        $this->stack            = [];
+        $this->languages        = [];
+        $this->settingsResolver = $settingsResolver;
+        $this->em               = $em;
     }
 
     /**
@@ -118,6 +120,9 @@ class LanguageStack
         return $this->getActive() ?: $this->getDefaultLanguage();
     }
 
+    /**
+     * @return array
+     */
     public function getStack()
     {
         return $this->stack;
@@ -169,19 +174,19 @@ class LanguageStack
      */
     public function getDefaultLanguage()
     {
-        if ($this->default_language) {
-            return $this->default_language;
+        if ($this->defaultLanguage) {
+            return $this->defaultLanguage;
         }
 
         $lang = null;
-        if ($id = $this->settings_resolver->getGlobalSettings()->get('core.default_language_id')) {
-            if ($lang = $this->language_repo->find($id)) {
-                return $this->default_language = $lang;
+        if ($id = $this->settingsResolver->getGlobalSettings()->get('core.default_language_id')) {
+            if ($lang = $this->em->getRepository(Language::class)->find($id)) {
+                return $this->defaultLanguage = $lang;
             }
         }
 
-        if ($lang = $this->language_repo->find(1)) {
-            return $this->default_language = $lang;
+        if ($lang = $this->em->getRepository(Language::class)->find(1)) {
+            return $this->defaultLanguage = $lang;
         }
 
         return SystemLanguage::getInstance();

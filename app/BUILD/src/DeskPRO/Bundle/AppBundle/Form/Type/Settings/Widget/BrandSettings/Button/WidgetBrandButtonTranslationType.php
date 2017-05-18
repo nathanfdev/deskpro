@@ -45,7 +45,12 @@ class WidgetBrandButtonTranslationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name', TextType::class);
+        $builder
+            ->add('name', TextType::class)
+            ->add('contact_us', TextType::class, [
+                'property_path' => 'contactUs',
+            ])
+        ;
     }
 
     /**

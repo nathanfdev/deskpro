@@ -26,15 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\View;
 
-use DeskPRO\Bundle\ApiBundle\View\Representation\StandardRepresentation;
 use Symfony\Component\Form\FormInterface;
 
+/**
+ * Class ApiViewRepresentationFactory.
+ */
 class ApiViewRepresentationFactory
 {
     /** @const DATATYPE_STANDARD Standard and sort of unknown datatype. */
@@ -62,88 +60,17 @@ class ApiViewRepresentationFactory
      * @param $status
      * @param $code
      * @param $message
-     * @param array|FormInterface $errors_data
+     * @param array|FormInterface $errorsData
      *
      * @return array
      */
-    public function createErrorRepresentation($status, $code, $message, $errors_data = [])
+    public function createErrorRepresentation($status, $code, $message, $errorsData = [])
     {
         return [
             'status'  => $status,
             'code'    => $code,
             'message' => $message,
-            'errors'  => count($errors_data) ? $errors_data : null,
-        ];
-    }
-
-    /**
-     * Serializes a grouped count array.
-     *
-     * @param mixed $data is the grouped count's data
-     *
-     * @return StandardRepresentation an ordered and ready-to-eat representation of the grouped count
-     */
-    protected function serializeGroupedCount($data)
-    {
-        $repr = $this->serializeSingleGroupedCount($data);
-
-        return new StandardRepresentation($repr['data'], [
-            'count'       => $repr['total'],
-            'total_count' => $repr['total'],
-        ]);
-    }
-
-    protected function serializeSingleGroupedCount($data, $group = null, array $group_values = null)
-    {
-        if (!$data) {
-            return;
-        }
-
-        // Let's inspect the headers.
-        $groups = array_keys($data[0]);
-        array_shift($groups); // Removing the count column.
-        $group_id = array_search($group, $groups);
-
-        if (!$group) {
-            $group_id = 0;
-            $group    = $groups[$group_id];
-        }
-
-        $total         = 0;
-        $grouped_count = [];
-        foreach ($data as $count_row) {
-            if ($group_values) {
-                foreach ($group_values as $key => $value) {
-                    if (!array_key_exists($key, $count_row) || $count_row[$key] != $value) {
-                        continue 2;
-                    }
-                }
-            }
-
-            if (!isset($grouped_count[$count_row[$group]])) {
-                $grouped_count[$count_row[$group]] = [
-                    'count' => $count_row['count'],
-                    $group  => $count_row[$group],
-                ];
-                if (count($groups) > $group_id + 1) {
-                    $my_group_values         = $group_values;
-                    $my_group_values[$group] = $count_row[$group];
-
-                    $sub_counts                                  = $this->serializeSingleGroupedCount($data, $groups[$group_id + 1], $my_group_values);
-                    $grouped_count[$count_row[$group]]['groups'] = $sub_counts['data'];
-                    $grouped_count[$count_row[$group]]['count']  = $sub_counts['total'];
-                    $total += $sub_counts['total'];
-                } else {
-                    $total += $count_row['count'];
-                }
-            } else {
-                continue; // We've already processed this one.
-            }
-        }
-
-        return [
-            'total' => $total,
-            'data'  => array_values($grouped_count),
+            'errors'  => count($errorsData) ? $errorsData : null,
         ];
     }
 }

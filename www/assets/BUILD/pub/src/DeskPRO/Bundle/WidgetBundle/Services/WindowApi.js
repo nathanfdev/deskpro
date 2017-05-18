@@ -116,6 +116,7 @@ handlers.setLiveDemoSampleState = (state) => {
   dispatch(setCollection('Person', 'onlineAgents', Immutable.fromJS(agents)));
   dispatch(setCollection('Person', 'all', Immutable.fromJS(agents.concat(users))));
   dispatch(setCollection('ChatDepartment', 'all', Immutable.fromJS(departments)));
+  dispatch(setCollection('ChatDepartment', 'online', Immutable.fromJS(departments)));
 
   // set chat state
   dispatch(chatActions.setLoaded());

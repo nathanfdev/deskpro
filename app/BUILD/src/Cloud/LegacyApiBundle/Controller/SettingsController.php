@@ -128,6 +128,8 @@ class SettingsController extends BaseSettingsController
         $repos        = $this->get('doctrine.orm.default_entity_manager')->getRepository(BrandSetting::class);
         $repos->updateSetting('core.deskpro_url', $set_settings['core.deskpro_url'], $primaryBrand);
 
+        CloudBrandHelper::flushBrandDomains();
+
         return $this->createApiSuccessResponse();
     }
 }

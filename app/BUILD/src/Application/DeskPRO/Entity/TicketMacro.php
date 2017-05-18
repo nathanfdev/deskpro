@@ -134,6 +134,18 @@ class TicketMacro extends DomainObject
     }
 
     /**
+     * @param bool $is_global
+     *
+     * @return $this
+     */
+    public function setIsGlobal($is_global)
+    {
+        $this->setModelField('is_global', $is_global);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function getIsGlobal()

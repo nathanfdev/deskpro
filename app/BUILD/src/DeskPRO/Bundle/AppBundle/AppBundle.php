@@ -44,8 +44,10 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FeaturesCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\MongoConnectionPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\NotificationCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\PermissionGroupsCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\SerializerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
@@ -82,6 +84,8 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new MongoConnectionPass());
         $container->addCompilerPass(new PermissionGroupsCompilerPass());
         $container->addCompilerPass(new FeaturesCompilerPass());
+        $container->addCompilerPass(new NotificationCompilerPass());
+        $container->addCompilerPass(new SerializerPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');

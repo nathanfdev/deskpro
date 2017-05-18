@@ -65,10 +65,7 @@ class Environment extends \Twig_Environment
     }
 
     /**
-     * @param string $name
-     * @param null   $index
-     *
-     * @return \Twig_TemplateInterface
+     * {@inheritdoc}
      */
     public function loadTemplate($name, $index = null)
     {
@@ -104,10 +101,10 @@ class Environment extends \Twig_Environment
      */
     private function loadTemplateFromDb($name, $index)
     {
-        $className = $this->getTemplateClass($name, $index);
-
         try {
-            if ($template = $this->getPortalLoader()->getDbTemplate($name)) {
+            $template = $this->getPortalLoader()->getDbTemplate($name);
+            if ($template) {
+                $className = $this->getTemplateClass($name, $index);
                 if (!class_exists($className, false)) {
                     // we have to check for class existence otherwise whole script will fail without ability to fallback
                     eval('?>'.$this->compileSource($template->getTemplateCode(), $name));

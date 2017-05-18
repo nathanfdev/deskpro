@@ -389,172 +389,63 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		//------------------------------
 
 		var statusMenuTrigger = this.el.find('.status-menu-trigger');
-		var footerEl = this.getEl('message_footer');
 		var statusMenu = this.getEl('status_menu');
-		statusMenu.css('z-index', 999999);
-		var statusMenuH = null;
-		var statusBackdrop = null;
-		var statusMacroFilter = null;
 		var statusMacroList = statusMenu.find('.macro-list');
-		var statusListItems = null;
+		var statusMacroListMap = null;
 		var replyAsType = this.getEl('reply_as_type');
 
-		var closeStatusMenu = function() {
-			statusBackdrop.hide();
-			statusMenu.hide();
-		};
+		var statusMenuMenu = this.statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
+			positionBy: self.getEl('reply_btn_group'),
+			onBeforeMenuOpen: function(info) {
+				var statusMenu = info.statusMenu;
+				var type = replyAsType.data('type');
+				statusMenu.find('li').removeClass('cursor')
+					.filter('[data-type]').removeClass('on')
+					.filter('[data-type="' + type + '"]').addClass('on');
 
-		var updateStatusPos = function() {
-			statusMenuH = statusMenu.height();
-			if (statusMenu > 500) {
-				statusMenu.find('macro-list').css('max-height', 500).css('overflow', 'auto');
-				statusMenuH = 500;
+				var w = self.getEl('reply_btn_group').width() - 3;
+				if (w < 200) {
+					w = 200;
+				}
+				statusMenu.width(w);
+			},
+			onFilterUpdated: function(info) {
+				var isCtrl = info.isCtrl;
+				var ev = info.event;
+
+				if (isCtrl && (ev.which == 85)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingUser();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 65)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetAwaitingAgent();
+					info.cancel = true;
+					return;
+				}
+				if (isCtrl && (ev.which == 68)) {
+					closeStatusMenu();
+					self.page.shortcutReplySetResolved();
+					info.cancel = true;
+					return;
+				}
+			},
+			onItemSelected: function(info) {
+				var item = info.item;
+				if (item.data('type')) {
+					self.setReplyAsOption(item);
+				}
 			}
+		});
 
-			var pos = footerEl.offset();
-			statusMenu.css({
-				left: pos.left + 6,
-				top: pos.top - statusMenuH + 3
-			});
+		var closeStatusMenu = function() {
+			statusMenuMenu.close();
 		};
-
-		var storedNoteText = '';
-		var storedReplyText = '';
 
 		var openStatusMenu = function() {
-			statusListItems = statusMenu.find('li[data-type]').not('.off');
-
-			// Means we're opening fo rhte first time
-			if (!statusBackdrop) {
-				statusBackdrop = $('<div class="backdrop"></div>');
-				statusBackdrop.css('z-index', 999998);
-				statusBackdrop.appendTo('body');
-				statusBackdrop.on('click', function(ev) {
-					ev.stopPropagation();
-					closeStatusMenu();
-				});
-				statusMenu.detach().appendTo('body');
-
-				// Handle macro filtering
-				statusMacroFilter = statusMenu.find('.macro-filter');
-
-				statusMenu.on('click', 'li[data-type]', function(ev) {
-					ev.stopPropagation();
-					self.setReplyAsOption($(this));
-					closeStatusMenu();
-				});
-
-				statusMacroFilter.on('keyup', function(ev) {
-
-					var isCtrl = false;
-					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
-						isCtrl = true;
-					} else if (ev.altKey) {
-						isCtrl = true;
-					}
-					if (isCtrl) {
-						if (isCtrl && (ev.which === 85)) {
-							closeStatusMenu();
-							self.setReplyAsOptionName('awaiting_user');
-							return;
-						}
-						if (isCtrl && (ev.which === 65)) {
-							closeStatusMenu();
-							self.setReplyAsOptionName('awaiting_agent');
-							return;
-						}
-						if (isCtrl && (ev.which === 68)) {
-							closeStatusMenu();
-							self.setReplyAsOptionName('resolved');
-							return;
-						}
-					}
-					var current;
-
-					if (ev.keyCode === 13 /* enter key */) {
-						ev.preventDefault();
-						current = statusListItems.filter('.cursor');
-						if (current[0]) {
-							self.setReplyAsOption(current);
-							closeStatusMenu();
-						}
-					} else if (ev.keyCode === 27 /* escape key */) {
-						ev.preventDefault();
-						closeStatusMenu();
-					} else if (ev.keyCode === 40 /* down key */ || ev.keyCode === 38 /* up key */) {
-						ev.preventDefault();
-						var dir = ev.keyCode === 40 ? 'down' : 'up';
-
-						current = statusListItems.filter('.cursor');
-						if (!current.length) {
-							if (dir === 'down') {
-								statusListItems.first().addClass('cursor');
-							} else {
-								statusListItems.last().addClass('cursor');
-							}
-						} else {
-							var nextIndex = statusListItems.index(current);
-							if (dir === 'down') {
-								nextIndex++;
-							} else {
-								nextIndex--;
-							}
-
-							if (nextIndex < 0) {
-								nextIndex = statusListItems.length-1;
-							} else if (nextIndex > (statusListItems.length-1)) {
-								nextIndex = 0;
-							}
-
-							current.removeClass('cursor');
-							statusListItems.eq(nextIndex).addClass('cursor');
-						}
-					}
-				});
-
-				statusMacroFilter.on('keyup', function() {
-					var val = $.trim($(this).val());
-
-					if (!val) {
-						statusMacroList.find('li').show().removeClass('off');
-						updateStatusPos();
-					} else {
-						val = val.toLowerCase();
-						statusMacroList.find('li').each(function() {
-							if ($(this).text().toLowerCase().indexOf(val) !== -1) {
-								$(this).show().removeClass('off');
-							} else {
-								$(this).hide().addClass('off');
-							}
-						});
-						updateStatusPos();
-					}
-
-					statusListItems = statusMenu.find('li[data-type]').not('.off');
-					if (!statusListItems.filter('.cursor')[0]) {
-						statusMenu.find('li.cursor').removeClass('cursor');
-						statusListItems.first().addClass('cursor');
-					}
-				});
-			}
-
-			// Pre-select proper value
-			var type = replyAsType.data('type');
-			statusMenu.find('li').removeClass('cursor')
-				.filter('[data-type]').removeClass('on')
-				.filter('[data-type="' + type + '"]').addClass('on');
-
-			var w = self.getEl('reply_btn_group').width() - 3;
-			if (w < 200) {
-				w = 200;
-			}
-			statusMenu.width(w);
-
-			statusBackdrop.show();
-			updateStatusPos();
-			statusMenu.show();
-
-			statusMacroFilter.focus();
+			statusMenuMenu.open();
 		};
 
 		this.openStatusMenu = openStatusMenu;
@@ -564,23 +455,29 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			openStatusMenu();
 		});
 
-		$('#settingswin').on('dp_macros_updated', function(ev) {
-			Array.each(ev.macroItems, function(info) {
+		this.onMacrosUpdated = function(ev) {
+			Array.each(ev.macroItems, function (info) {
 				var has = statusMacroList.find('.res-ticketmacro-' + info.id);
 				if (has[0]) {
 					return;
 				}
 
 				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
-				li.data('get-macro-url', BASE_URL + 'agent/tickets/0/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+				if (self.page) {
+					li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
+				}
 				li.data('label', 'Send Reply and ' + info.title);
-				li.data('type', 'macro:'+info.id);
-				li.attr('data-type', 'macro:'+info.id);
+				li.data('type', 'macro:' + info.id);
+				li.attr('data-type', 'macro:' + info.id);
 				li.find('.macro-title').text(info.title);
 
 				statusMacroList.append(li);
 			});
-		});
+		};
+		$('#settingswin').on('dp_macros_updated', this.onMacrosUpdated);
+
+		var storedNoteText = '';
+		var storedReplyText = '';
 
 		this.el.find('.expander').on('click', function() {
 			var target = self.el.find($(this).data('target'));

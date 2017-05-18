@@ -64,6 +64,7 @@ class DbDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getData()->shouldBeCalled();
         $actionAlert->getDate()->shouldBeCalled();
 
-        $this->deliver($actionAlert);
+        $this->schedule($actionAlert);
+        $this->deliver();
     }
 }

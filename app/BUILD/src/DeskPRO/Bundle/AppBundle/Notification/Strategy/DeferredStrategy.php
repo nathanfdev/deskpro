@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
 
 /**
@@ -50,14 +51,16 @@ class DeferredStrategy extends AbstractStrategy
     {
         $messages = $this->createMessages($event);
         foreach ($messages as $message) {
-            $this->delivery_service->deliver($message);
+            $this->delivery_service->schedule($message);
         }
+        $this->delivery_service->deliver();
     }
 
     protected function createMessages(SystemEventInterface $event)
     {
         $messages = [];
         foreach ($this->event_handlers as $handler) {
+            /** @var NotifyHandlerInterface $handler */
             $messages = array_merge($messages, $handler->processEvent($event));
         }
 

@@ -45,5 +45,10 @@ interface DeliveryHandlerInterface
      *
      * @return bool
      */
-    public function deliver(MessageInterface $message);
+    public function schedule(MessageInterface $message);
+
+    /**
+     * @return mixed
+     */
+    public function deliver();
 }

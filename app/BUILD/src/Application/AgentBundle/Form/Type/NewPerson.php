@@ -32,6 +32,7 @@
 
 namespace Application\AgentBundle\Form\Type;
 
+use Application\AgentBundle\Form\Model\NewPerson as NewPersonModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -56,7 +57,7 @@ class NewPerson extends AbstractType
             'allow_delete' => true,
         ]);
         $builder->add('usergroup_ids', 'collection', [
-            'type'         => 'text',
+            'type'         => 'integer',
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
@@ -66,7 +67,7 @@ class NewPerson extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewPerson',
+            'data_class' => NewPersonModel::class,
         ];
     }
 

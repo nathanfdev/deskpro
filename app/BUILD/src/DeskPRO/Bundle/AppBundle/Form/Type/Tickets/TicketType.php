@@ -52,6 +52,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -153,7 +154,9 @@ class TicketType extends AbstractType
                 'person' => $options['person'],
                 'inline' => true,
             ])
-
+            ->add('suppress_user_notify', ApiBooleanType::class, [
+                'mapped' => false,
+            ])
         ;
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
@@ -198,11 +201,22 @@ class TicketType extends AbstractType
             }
 
             $form->add('message', TicketMessageType::class, [
-                'mapped'           => false,
-                'ticket'           => $form->getData(),
-                'person'           => $form->getConfig()->getOption('person'),
-                'ticket_message'   => $message,
-                'allow_set_person' => true,
+                'mapped'         => false,
+                'ticket'         => $form->getData(),
+                'person'         => $form->getConfig()->getOption('person'),
+                'ticket_message' => $message,
+            ]);
+        }
+
+        if (isset($data['messages'])) {
+            $form->add('messages', CollectionType::class, [
+                'mapped'        => false,
+                'allow_add'     => true,
+                'entry_type'    => TicketMessageType::class,
+                'entry_options' => [
+                    'ticket' => $form->getData(),
+                    'person' => $form->getConfig()->getOption('person'),
+                ],
             ]);
         }
     }

@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
@@ -38,6 +34,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 
+/**
+ * Class ImageType.
+ */
 class ImageType extends AbstractType
 {
     /**

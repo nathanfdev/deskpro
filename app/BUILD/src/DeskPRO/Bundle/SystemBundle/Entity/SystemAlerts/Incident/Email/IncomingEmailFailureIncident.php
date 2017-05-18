@@ -47,7 +47,9 @@ class IncomingEmailFailureIncident extends AbstractStatefulIncident
      */
     public function getTitle()
     {
-        return "Continuing {$this->getFirstEvent()->getSubjectDescription()} incoming email failures";
+        $description = $this->getFirstEvent() ? $this->getFirstEvent()->getSubjectDescription() : '';
+
+        return "Continuing $description incoming email failures";
     }
 
     /**
@@ -55,6 +57,6 @@ class IncomingEmailFailureIncident extends AbstractStatefulIncident
      */
     public function getEmailAccountId()
     {
-        return $this->getFirstEvent()->getEmailAccountId();
+        return  $this->getFirstEvent() ? $this->getFirstEvent()->getEmailAccountId() : null;
     }
 }

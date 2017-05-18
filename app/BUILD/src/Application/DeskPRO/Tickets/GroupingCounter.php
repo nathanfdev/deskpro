@@ -175,8 +175,11 @@ class GroupingCounter
             return $this->makeTimeFieldSelect($grouping, $field);
         } elseif ($grouping == 'language') {
             $default = App::getEntityRepository(Language::class)->getDefault();
-
-            return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
+            if ($default) {
+                return "COALESCE(tickets.language_id, {$default['id']}) AS $field";
+            } else {
+                return "COALESCE(tickets.language_id, 0) AS $field";
+            }
         } elseif ($f = $this->getCustomDefField($grouping)) {
             if ($f->isChoiceType()) {
                 return "COALESCE(custom_data_ticket_$field.field_id, 0) AS $field";

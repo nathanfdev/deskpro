@@ -1,0 +1,11 @@
+<!doctype html>
+<html>
+<head>
+    <title>Redirecting</title>
+    <meta http-equiv="refresh" content="0; url={{ target_url }}{{ '?' in target_url ? '&' : '?' }}token={{ token.getKeyString() }}&person_id={{ token.person.id }}" />
+</head>
+<body>
+    <a href="{{ target_url }}{{ '?' in target_url ? '&' : '?' }}token={{ token.getKeyString() }}&person_id={{ token.person.id }}">Continue</a>
+    <script>window.location.href = "{{ target_url }}{{ '?' in target_url ? '&' : '?' }}token={{ token.getKeyString() }}&person_id={{ token.person.id }}";</script>
+</body>
+</html>

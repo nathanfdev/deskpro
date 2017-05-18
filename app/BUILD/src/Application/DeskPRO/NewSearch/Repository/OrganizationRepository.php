@@ -56,7 +56,6 @@ class OrganizationRepository extends AbstractRepository implements WithLabelsInt
         $multi_match = new Query\MultiMatch();
         $multi_match->setQuery(ElasticaUtil::escapeTerm($q));
         $multi_match->setFields($this->getQueryFields());
-        $multi_match->setAnalyzer('standard');
         $multi_match->setOperator('AND');
 
         return $multi_match;

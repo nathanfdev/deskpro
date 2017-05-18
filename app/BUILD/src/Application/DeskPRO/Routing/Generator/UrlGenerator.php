@@ -65,7 +65,11 @@ class UrlGenerator extends BaseUrlGenerator
                 } else {
                     $context->setBaseUrl('');
                 }
-                $context->setHost($info['host']);
+                if (!empty($info['host'])) {
+                    $context->setHost($info['host']);
+                } else {
+                    $context->setHost('');
+                }
                 $context->setMethod('GET');
                 if (!empty($info['port'])) {
                     $context->setHttpPort($info['port']);

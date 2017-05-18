@@ -31,8 +31,12 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\Chat;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\ChatCsv;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Chats\WidgetChat;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
+/**
+ * Class ChatConversationHandler.
+ */
 class ChatConversationHandler extends AbstractEntityHandler
 {
     /**
@@ -46,6 +50,8 @@ class ChatConversationHandler extends AbstractEntityHandler
 
         if ($serializerClass === ChatCsv::class) {
             return new ChatCsv($entity);
+        } elseif ($serializerClass === WidgetChat::class) {
+            return new WidgetChat($entity);
         }
 
         return new Chat($entity);

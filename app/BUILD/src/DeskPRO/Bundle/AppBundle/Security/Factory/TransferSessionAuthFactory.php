@@ -26,17 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Factory;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Reference;
 
+/**
+ * Class TransferSessionAuthFactory.
+ */
 class TransferSessionAuthFactory extends AbstractFactory
 {
     protected $defaultFailureHandlerOptions = [
@@ -54,38 +52,36 @@ class TransferSessionAuthFactory extends AbstractFactory
         'use_referer'                    => false,
     ];
 
+    /**
+     * {@inheritdoc}
+     */
     public function getPosition()
     {
         return 'pre_auth';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getKey()
     {
         return 'transfer_session_auth';
     }
 
     /**
-     * Subclasses must return the id of a service which implements the
-     * AuthenticationProviderInterface.
-     *
-     * @param ContainerBuilder $container
-     * @param string           $id             The unique id of the firewall
-     * @param array            $config         The options array for this listener
-     * @param string           $userProviderId The id of the user provider
-     *
-     * @return string never null, the id of the authentication provider
+     * {@inheritdoc}
      */
     protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
     {
         $providerId = 'dp_security.auth.provider.transfer_session.'.$id;
-        $container
-            ->setDefinition($providerId, new DefinitionDecorator('dp_security.transfer_session.provider'))
-            ->replaceArgument(1, new Reference($userProviderId))
-        ;
+        $container->setDefinition($providerId, new DefinitionDecorator('dp_security.transfer_session.provider'));
 
         return $providerId;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getListenerId()
     {
         return 'dp_security.transfer_session.listener';
