@@ -40,6 +40,7 @@ use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Encryption\DpEnc;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
@@ -92,7 +93,7 @@ class EmailAccountManager
     /**
      * @var \Application\DeskPRO\Entity\EmailAccount
      */
-    private $default_out_account = null;
+    private $default_out_accounts = null;
 
     /**
      * @var DpEnc
@@ -367,14 +368,16 @@ class EmailAccountManager
     /**
      * Just like getPrimaryTicketAccount except will fallback on a non-ticket account.
      *
+     * @param Brand|int $brand
+     *
      * @return EmailAccount
      */
-    public function getPrimaryTicketAccountWithFallback()
+    public function getPrimaryTicketAccountWithFallback($brand = null)
     {
         try {
             return $this->getPrimaryTicketAccount();
         } catch (MissingConfigurationException $e) {
-            return $this->getDefaultOutAccountWithFallback();
+            return $this->getDefaultOutAccountWithFallback($brand);
         }
     }
 
@@ -389,7 +392,7 @@ class EmailAccountManager
             return $ticket->email_account;
         }
 
-        return $this->getPrimaryTicketAccountWithFallback();
+        return $this->getPrimaryTicketAccountWithFallback($ticket->getBrand());
     }
 
     /**
@@ -407,26 +410,46 @@ class EmailAccountManager
     //###################################################################################################################
 
     /**
-     * @param EmailAccount $default
+     * @param EmailAccount[] $defaultAccounts
      */
-    public function setDefaultOutAccount(EmailAccount $default)
+    public function setDefaultOutAccounts(array $defaultAccounts)
     {
-        if (!$default->outgoing_account || !$default->is_enabled) {
-            throw new \InvalidArgumentException();
+        foreach ($defaultAccounts as $default) {
+            if (!$default->outgoing_account || !$default->is_enabled) {
+                throw new \InvalidArgumentException();
+            }
         }
 
-        $this->default_out_account = $default;
+        $this->default_out_accounts = $defaultAccounts;
     }
 
     /**
+     * @param Brand|int $brand
+     *
      * @return EmailAccount
      */
-    public function getDefaultOutAccount()
+    public function getDefaultOutAccount($brand = null)
     {
-        if ($this->default_out_account) {
-            return $this->default_out_account;
+        if ($this->default_out_accounts) {
+            if ($brand instanceof Brand) {
+                $brand = $brand->getId();
+            }
+            $brand = (int) $brand; // in case of null would be converted to 0
+
+            $account = null;
+
+            if ($brand && isset($this->default_out_accounts[$brand])) { // we have brand id and account for it
+                $account = $this->default_out_accounts[$brand];
+            } elseif (isset($this->default_out_accounts['default'])) { // we have no brand but we have default one
+                $account = $this->default_out_accounts['default'];
+            }
+
+            if ($account) { // return here only if we have something
+                return $account;
+            }
         }
 
+        // otherwise try to find first account that matches our needs
         foreach ($this->getAllActiveAccounts() as $acc) {
             if ($this->accountHasTransport($acc)) {
                 return $acc;
@@ -439,12 +462,14 @@ class EmailAccountManager
     /**
      * Just like getDefaultOutAccount except will create an anonymous mail() mailer when none exists.
      *
+     * @param Brand|int $brand
+     *
      * @return EmailAccount
      */
-    public function getDefaultOutAccountWithFallback()
+    public function getDefaultOutAccountWithFallback($brand = null)
     {
         try {
-            return $this->getDefaultOutAccount();
+            return $this->getDefaultOutAccount($brand);
         } catch (MissingConfigurationException $e) {
             $acc = new EmailAccount('outgoing');
 
