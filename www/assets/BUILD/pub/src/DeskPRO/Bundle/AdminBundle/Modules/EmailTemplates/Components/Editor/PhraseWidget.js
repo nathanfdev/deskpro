@@ -129,13 +129,6 @@ class PhrasePopup extends React.Component {
   };
 
   closePopup = () => {
-    // this.props.getPhraseTranslations(this.props.phrase).then(
-    //   (result) => {
-    //     this.setState({
-    //       translations: result
-    //     });
-    //   }
-    // );
     this.popup.closePopup();
   };
 
@@ -200,44 +193,53 @@ class PhraseWidget extends Widget {
       element.className = 'twig-phrase';
       this.setMark(element, code);
 
-      const matches = code.match(/{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/);
-      const phrase = matches[1];
-      const variables = {};
-      const re = /{{([^}]+)}}/g;
-      let match = re.exec(text);
-      while (match !== null) {
-        variables[match[1]] = '';
-        match = re.exec(text);
-      }
-      if (matches[2]) {
-        matches[2]
-          .substring(3, matches[2].length - 1)
-          .split(',')
-          .forEach((variable) => {
-            const pieces = variable.split(':');
-            variables[pieces[0].trim()] = pieces[1].trim();
-          }
-        );
-      }
+      this.code = code;
+      this.text = text;
+      this.getPhraseTranslations = getPhraseTranslations;
+      this.savePhraseTranslations = savePhraseTranslations;
+      this.setCurrentWidget = setCurrentWidget;
 
-
-      render(
-        <PhrasePopup
-          phrase={phrase}
-          code={code}
-          text={text}
-          variables={variables}
-          getPhraseTranslations={getPhraseTranslations}
-          savePhraseTranslations={savePhraseTranslations}
-          setCurrentWidget={setCurrentWidget}
-          setText={this.setText}
-          getText={this.getText}
-        />,
-        element
-      );
+      this.addReactComponent(element);
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
+  }
+
+  addReactComponent = (element) => {
+    const matches = this.code.match(/{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/);
+    const phrase = matches[1];
+    const variables = {};
+    const re = /{{([^}]+)}}/g;
+    let match = re.exec(this.text);
+    while (match !== null) {
+      variables[match[1]] = '';
+      match = re.exec(this.text);
+    }
+    if (matches[2]) {
+      matches[2]
+        .substring(3, matches[2].length - 1)
+        .split(',')
+        .forEach((variable) => {
+          const pieces = variable.split(':');
+          variables[pieces[0].trim()] = pieces[1].trim();
+        }
+        );
+    }
+
+    render(
+      <PhrasePopup
+        phrase={phrase}
+        code={this.code}
+        text={this.text}
+        variables={variables}
+        getPhraseTranslations={this.getPhraseTranslations}
+        savePhraseTranslations={this.savePhraseTranslations}
+        setCurrentWidget={this.setCurrentWidget}
+        setText={this.setText}
+        getText={this.getText}
+      />,
+      element
+    );
   }
 }
 export default PhraseWidget;

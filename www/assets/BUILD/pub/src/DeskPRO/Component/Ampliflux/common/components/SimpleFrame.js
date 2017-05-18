@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
 class SimpleFrame extends React.Component {
@@ -27,10 +26,6 @@ class SimpleFrame extends React.Component {
 
   componentDidUpdate() {
     this.renderFrameContents();
-  }
-
-  componentWillUnmount() {
-    ReactDOM.unmountComponentAtNode(this.getContentDocument().body);
   }
 
   getContentDocument() {

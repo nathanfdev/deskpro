@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
 import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';
-import Frame from 'Ampliflux/common/components/SimpleFrame';
+import SimpleFrame from 'Ampliflux/common/components/SimpleFrame';
 
 class PreviewEmail extends React.Component {
   static propTypes = {
@@ -44,7 +44,7 @@ class PreviewEmail extends React.Component {
     return (
       <div className={classNames('email-preview', { 'with-attachment': attachments && attachments.size > 0 })}>
         <div className="email">
-          <Frame
+          <SimpleFrame
             frameStyles={{
               width:    '100%',
               height:   '100%',

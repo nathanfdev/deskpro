@@ -34,11 +34,8 @@ export class EmailsAndBlockMenuContainer extends React.Component {
 
   render() {
     const info = this.props.emailTemplates;
-    let templates = null;
     const group = info.get('currentTemplateGroup');
-    if (info && info.get('info').get('list')) {
-      templates = info.get('info').get('list').get(group).get('groups');
-    }
+    const templates = info.getIn(['info', 'list', group, 'groups'], null);
     return (<EmailsAndBlockMenu
       emails={templates}
       selectTemplate={this.onChangeTemplate}
@@ -126,7 +123,7 @@ export class EmailsAndBlockMenu extends React.Component {
       return null;
     }
     const subGroups = this.state.selectedLeft.get('subGroups');
-    const primary = subGroups.get('primary').get('templates').valueSeq().map((template, key) => {
+    const primary = subGroups.getIn(['primary', 'templates']).valueSeq().map((template, key) => {
       if (
         (this.state.filter
         && template.get('title').toLowerCase().indexOf(this.state.filter.toLowerCase()) === -1
@@ -146,7 +143,7 @@ export class EmailsAndBlockMenu extends React.Component {
     });
     return (
       <MenuWrapper className={classNames('right-panel')}>
-        <Menu title={subGroups.get('primary').get('title')}>
+        <Menu title={subGroups.getIn(['primary', 'title'])}>
           {primary}
         </Menu>
         {this.getAdditionalTemplates()}

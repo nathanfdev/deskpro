@@ -11,6 +11,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         routePath: routePath
       }
 
-      window.AdminBundle.render(reactProps, document.getElementById('react_admin_bundle'));
+      element = document.getElementById('react_admin_bundle')
+
+      window.AdminBundle.render(reactProps, element)
+
+      @$scope.$on('$destroy', ->
+        window.AdminBundle.unmount(element);
+      )
 
   Admin_VoiceChannel_Ctrl_ReactComponent.EXPORT_CTRL()

@@ -28,9 +28,14 @@ class TemplatePopup extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    if (this.state.currentWidget) {
+      this.state.currentWidget.closePopup();
+    }
+  }
+
   // Local function to deal with widget inception
   setCurrentWidget = (popup) => {
-    console.log('setCurrentWidget');
     if (this.state.currentWidget && this.state.currentWidget !== popup) {
       this.state.currentWidget.closePopup();
     }
@@ -87,7 +92,9 @@ class TemplatePopup extends React.Component {
   };
 
   closePopup = () => {
-    this.popup.closePopup();
+    if (this.popup) {
+      this.popup.closePopup();
+    }
     if (this.state.currentWidget) {
       this.state.currentWidget.closePopup();
     }
@@ -144,24 +151,31 @@ class TemplateWidget extends Widget {
       element.className = 'twig-include';
       this.setMark(element, code);
 
-      render(
-        <TemplatePopup
-          text={text}
-          addMarks={addMarks}
-          loadTemplate={loadTemplate}
-          resetTemplate={resetTemplate}
-          setCurrentWidget={setCurrentWidget}
-          setValue={setValue}
-        />,
-        element
-      );
+      this.text = text;
+      this.addMarks = addMarks;
+      this.loadTemplate = loadTemplate;
+      this.resetTemplate = resetTemplate;
+      this.setCurrentWidget = setCurrentWidget;
+      this.setValue = setValue;
+
+      this.addReactComponent(element);
     } catch (e) {
       console.error(e);
     }
   }
 
-  handleClick = () => {
-    console.log(this);
+  addReactComponent = (element) => {
+    render(
+      <TemplatePopup
+        text={this.text}
+        addMarks={this.addMarks}
+        loadTemplate={this.loadTemplate}
+        resetTemplate={this.resetTemplate}
+        setCurrentWidget={this.setCurrentWidget}
+        setValue={this.setValue}
+      />,
+      element
+    );
   };
 }
 export default TemplateWidget;

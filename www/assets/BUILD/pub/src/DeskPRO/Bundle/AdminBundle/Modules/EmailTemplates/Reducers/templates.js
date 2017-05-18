@@ -9,7 +9,7 @@ const initialState = {
   attachments:          {},
   phrases:              {},
   template:             {},
-  currentLanguage:      'en',
+  currentLanguage:      window.DP_PERSON_LANG_CODE,
   currentTemplate:      null,
   currentTemplateGroup: 'user',
   emailPhrases:         null,

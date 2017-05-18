@@ -24,6 +24,17 @@ class Editor extends React.Component {
     changeTemplateSubject() {},
   };
 
+  constructor(props) {
+    super(props);
+    this.widgets = [];
+  }
+
+  componentWillUnmount() {
+    this.widgets.forEach((widget) => {
+      widget.unmount();
+    });
+  }
+
   findPhrase = key => this.props.phrases.getIn(['all', 'phrases', key], key);
 
   addMarks = (cm, change, setCurrentWidget) => {
@@ -43,7 +54,6 @@ class Editor extends React.Component {
           text = change.text;
           break;
       }
-      const widgets = [];
       text.forEach((content, line) => {
         let match;
         let re;
@@ -65,7 +75,7 @@ class Editor extends React.Component {
         re = /{{\s*phrase\('([^)]+)'(,\s*{[^}]+})?\)\s*}}/g;
         match = re.exec(content);
         while (match !== null) {
-          widgets.push(new PhraseWidget(
+          this.widgets.push(new PhraseWidget(
             cm,
             {
               line: line + from.line,
@@ -82,7 +92,7 @@ class Editor extends React.Component {
         re = /{%\s*include\s*'([^)]+)'\s*%}/g;
         match = re.exec(content);
         while (match !== null) {
-          widgets.push(new TemplateWidget(
+          this.widgets.push(new TemplateWidget(
             cm,
             {
               line: line + from.line,

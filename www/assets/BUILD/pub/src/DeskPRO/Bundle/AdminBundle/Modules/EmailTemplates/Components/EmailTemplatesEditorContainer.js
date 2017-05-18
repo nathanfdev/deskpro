@@ -24,6 +24,9 @@ class EmailTemplatesEditorContainer extends React.Component {
     dispatch:       PropTypes.func,
     emailTemplates: PropTypes.object.isRequired
   };
+  static contextTypes = {
+    router: React.PropTypes.object.isRequired
+  };
 
   constructor(props) {
     super(props);
@@ -45,6 +48,8 @@ class EmailTemplatesEditorContainer extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
 
+    dispatch(actions.setCurrentTemplateGroup('user'));
+    dispatch(actions.setCurrentLanguage(window.DP_PERSON_LANG_CODE));
     dispatch(actions.loadTemplates());
     dispatch(actions.loadPhrases(
       this.props.emailTemplates.get('currentTemplateGroup'),
@@ -150,9 +155,6 @@ class EmailTemplatesEditorContainer extends React.Component {
     const lang = this.props.emailTemplates.get('currentLanguage');
     this.previewTemplate(value, lang);
     this.props.dispatch(actions.updateTemplateBody(value));
-    if (this.state.currentWidget) {
-      this.state.currentWidget.closePopup();
-    }
   };
 
   insertInlineImage = (file) => {
