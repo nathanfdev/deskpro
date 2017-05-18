@@ -92,7 +92,7 @@ class BlobStorageService
 
             $connectTimeout    = $settingsBag->get('filestorage.s3.web.connect_timeout', 2);
             $timeout           = $settingsBag->get('filestorage.s3.web.upload_timeout', 4);
-            $cumulativeTimeout = $settingsBag->get('filestorage.s3.web.cumulative_timeout', 10);
+            $cumulativeTimeout = $settingsBag->get('filestorage.s3.web.cumulative_timeout', 5);
 
             if (php_sapi_name() === 'cli') {
                 // allow extra time for CLI upload

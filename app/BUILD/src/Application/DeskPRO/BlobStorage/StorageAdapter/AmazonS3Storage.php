@@ -168,7 +168,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
         $try = $this->attempts;
         while (--$try >= 0) {
             if ($this->cumulativeTimeout && $this->timePass > $this->cumulativeTimeout) {
-                throw new BlobStorageException('Cumulative timeout exceeded', BlobStorageException::CUMULATIVE_TIMEOUT_EXCEEDED);
+                throw new BlobStorageException('Cumulative timeout exceeded: '.$this->cumulativeTimeout, BlobStorageException::CUMULATIVE_TIMEOUT_EXCEEDED);
             }
             $time = microtime(true);
             try {
