@@ -504,6 +504,7 @@ return [
     'portal.forms.error_not_assignable_category'            => 'Unable to select parent category.',
     'portal.forms.error_not_assignable_product'             => 'Unable to select parent product.',
     'portal.forms.error_not_assignable_choice'              => 'Unable to select parent choice.',
+    'portal.forms.error_bad_choice'                         => 'One or more of the given values is invalid.',
     'portal.forms.label_add_attachment'                     => 'Add Another Attachment',
     'portal.forms.label_captcha'                            => 'To prove you are a human, please tell us the text you see in the CAPTCHA image',
     'portal.forms.label_category'                           => 'Category',

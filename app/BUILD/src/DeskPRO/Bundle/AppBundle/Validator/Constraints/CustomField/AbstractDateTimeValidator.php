@@ -29,7 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -38,6 +40,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
 {
+    /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
+     * Constructor.
+     *
+     * @param TokenStorage $tokenStorage
+     */
+    public function __construct(TokenStorage $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -59,27 +76,27 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
         $validators[] = $this->getFormatValidator();
 
         // Range validator
-        $min_range_format = $constraint->custom_def->getDateMinFormat();
-        $max_range_format = $constraint->custom_def->getDateMaxFormat();
+        $minRangeFormat = $constraint->custom_def->getDateMinFormat();
+        $maxRangeFormat = $constraint->custom_def->getDateMaxFormat();
 
-        if (isset($min_range_format)) {
-            $min_range_date = new \DateTime($min_range_format);
-            $validators[]   = new Assert\GreaterThanOrEqual([
-                'value' => $min_range_date->format($this->getFormat()),
+        if (isset($minRangeFormat)) {
+            $minRangeDate = new \DateTime($minRangeFormat);
+            $validators[] = new Assert\GreaterThanOrEqual([
+                'value' => $minRangeDate->format($this->getFormat()),
             ]);
         }
-        if (isset($max_range_format)) {
-            $max_range_date = new \DateTime($max_range_format);
-            $validators[]   = new Assert\LessThanOrEqual([
-                'value' => $max_range_date->format($this->getFormat()),
+        if (isset($maxRangeFormat)) {
+            $maxRangeDate = new \DateTime($maxRangeFormat);
+            $validators[] = new Assert\LessThanOrEqual([
+                'value' => $maxRangeDate->format($this->getFormat()),
             ]);
         }
 
         // Day of week validator
-        $valid_dow = $constraint->getCustomDefOption('date_valid_dow');
-        if ($valid_dow) {
+        $validDow = $constraint->getCustomDefOption('date_valid_dow');
+        if ($validDow) {
             $validators[] = new AppAssert\DayOfWeek([
-                'choices' => $valid_dow,
+                'choices' => $validDow,
             ]);
         }
 
@@ -89,9 +106,9 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
     /**
      * {@inheritdoc}
      */
-    protected function getCustomDataValue(CustomDataAbstract $custom_data)
+    protected function getCustomDataValue(CustomDataAbstract $customData)
     {
-        $value = parent::getCustomDataValue($custom_data);
+        $value = parent::getCustomDataValue($customData);
         if (!$value) {
             return '';
         }
@@ -105,7 +122,17 @@ abstract class AbstractDateTimeValidator extends AbstractSingleValueValidator
             }
         }
 
-        return $value instanceof \DateTime ? $value->format($this->getFormat()) : $value;
+        if ($value instanceof \DateTime) {
+            $token    = $this->tokenStorage->getToken();
+            $user     = $token ? $token->getUser() : null;
+            $timezone = new \DateTimeZone($user instanceof Person ? $user->getTimezone() : 'UTC');
+
+            $value->setTimezone($timezone);
+
+            return $value->format($this->getFormat());
+        }
+
+        return $value;
     }
 
     /**
