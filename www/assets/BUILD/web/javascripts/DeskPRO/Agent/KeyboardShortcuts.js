@@ -263,7 +263,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	tabLeft: function(ev) {
 		if (this.isPaused) return;
 
-		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
+		var activeTab = $('li.activeTabList:not(.with-list)', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.prev();
 
 		if (!next.length) {
@@ -272,13 +272,14 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		if (!next.is('.activeTabList')) {
 			DeskPRO_Window.TabBar.activateTabById(next.data('tab-id'));
+			DeskPRO_Window.$scope.$apply();
 		}
 	},
 
 	tabRight: function(ev) {
 		if (this.isPaused) return;
 
-		var activeTab = $('li.activeTabList', DeskPRO_Window.TabBar.tabList);
+		var activeTab = $('li.activeTabList:not(.with-list)', DeskPRO_Window.TabBar.tabList);
 		var next = activeTab.next();
 
 		if (!next.length) {
@@ -287,6 +288,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 
 		if (!next.is('.activeTabList')) {
 			DeskPRO_Window.TabBar.activateTabById(next.data('tab-id'));
+			DeskPRO_Window.$scope.$apply();
 		}
 	},
 
