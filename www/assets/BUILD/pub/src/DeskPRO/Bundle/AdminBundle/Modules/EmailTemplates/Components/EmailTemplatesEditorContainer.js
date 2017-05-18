@@ -91,22 +91,25 @@ class EmailTemplatesEditorContainer extends React.Component {
 
   componentWillUnmount() {
     this.props.dispatch(actions.cleanState);
+    if (this.state.currentWidget) {
+      this.state.currentWidget.closePopup();
+    }
   }
 
   getPhraseTranslations = phraseName => this.props.dispatch(actions.loadTranslations(phraseName));
 
-  setCurrentWidget = (popup, editor) => {
-    if (this.state.currentWidget) {
+  setCurrentWidget = (widget, editor) => {
+    if (this.state.currentWidget && this.state.currentWidget !== widget) {
       this.state.currentWidget.closePopup();
     }
     if (editor) {
       this.setState({
-        currentWidget: popup,
+        currentWidget: widget,
         editor
       });
     } else {
       this.setState({
-        currentWidget: popup,
+        currentWidget: widget,
         editor:        this.editor.editor.bodyEditor
       });
     }
@@ -147,6 +150,9 @@ class EmailTemplatesEditorContainer extends React.Component {
     const lang = this.props.emailTemplates.get('currentLanguage');
     this.previewTemplate(value, lang);
     this.props.dispatch(actions.updateTemplateBody(value));
+    if (this.state.currentWidget) {
+      this.state.currentWidget.closePopup();
+    }
   };
 
   insertInlineImage = (file) => {

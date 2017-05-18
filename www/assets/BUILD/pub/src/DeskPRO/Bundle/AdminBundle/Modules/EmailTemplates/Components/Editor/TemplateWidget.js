@@ -30,6 +30,7 @@ class TemplatePopup extends React.Component {
 
   // Local function to deal with widget inception
   setCurrentWidget = (popup) => {
+    console.log('setCurrentWidget');
     if (this.state.currentWidget && this.state.currentWidget !== popup) {
       this.state.currentWidget.closePopup();
     }
@@ -81,13 +82,15 @@ class TemplatePopup extends React.Component {
     this.loadContent();
     this.popup.openPopup();
     setTimeout(() => {
-      this.props.setCurrentWidget(this.popup, this.widgetEditor);
+      this.props.setCurrentWidget(this, this.widgetEditor);
     }, 100);
   };
 
   closePopup = () => {
     this.popup.closePopup();
-    this.props.setCurrentWidget(null, null);
+    if (this.state.currentWidget) {
+      this.state.currentWidget.closePopup();
+    }
   };
 
   resetTemplate = () => {

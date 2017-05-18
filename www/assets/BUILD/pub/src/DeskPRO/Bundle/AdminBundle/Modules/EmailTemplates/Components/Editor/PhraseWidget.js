@@ -21,7 +21,8 @@ class PhrasePopup extends React.Component {
     super(props);
     this.state = {
       translations: {},
-      variables:    {}
+      variables:    {},
+      text:         this.props.getText(),
     };
   }
 
@@ -39,7 +40,8 @@ class PhrasePopup extends React.Component {
         <Input
           id="advanced"
           name="advanced"
-          value={this.props.getText()}
+          value={this.state.text}
+          onChange={this.handleChangeAdvanced}
         />
       </Field>
     </div>
@@ -108,6 +110,12 @@ class PhrasePopup extends React.Component {
     });
   };
 
+  handleChangeAdvanced = (value) => {
+    this.setState({
+      text: value
+    });
+  };
+
   openPopup = () => {
     this.props.getPhraseTranslations(this.props.phrase).then(
       (result) => {
@@ -117,7 +125,7 @@ class PhrasePopup extends React.Component {
       }
     );
     this.popup.openPopup();
-    this.props.setCurrentWidget(this.popup, null);
+    this.props.setCurrentWidget(this, null);
   };
 
   closePopup = () => {
@@ -129,7 +137,6 @@ class PhrasePopup extends React.Component {
     //   }
     // );
     this.popup.closePopup();
-    this.props.setCurrentWidget(null, null);
   };
 
   saveChanges = () => {
