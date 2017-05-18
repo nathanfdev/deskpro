@@ -76,10 +76,12 @@ class SimpleFrame extends React.Component {
   renderFrameContents() {
     const doc = this.getContentDocument();
 
-    const { content } = this.props;
-    doc.open();
-    doc.write(content);
-    doc.close();
+    if (doc) {
+      const { content } = this.props;
+      doc.open();
+      doc.write(content);
+      doc.close();
+    }
   }
 
   render() {
