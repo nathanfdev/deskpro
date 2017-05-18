@@ -110,17 +110,41 @@ class UrlHostChecker
         return $this->isMatch($checkUrl, $host, $port, $allowSchemeSwitch);
     }
 
-    public function simplifyUrl($url)
+    /**
+     * @param string $url
+     * @param bool   $withScheme
+     *
+     * @return string
+     */
+    public function simplifyUrl($url, $withScheme = false)
     {
         // fix schemaless urls
-        if (substr($url, 0, 2) != '//' && substr($url, 0, 4) != 'http') {
+        if (substr($url, 0, 2) != '//' && !preg_match('#^\w+://#', $url)) {
             $url = '//'.$url;
         }
-        $parsed = parse_url($url);
-        $host   = @$parsed['host'];
-        $host   = preg_replace('/^www\./', '', $host);
-        $port   = @$parsed['port'];
 
-        return $host.(($port && $port != 80) ? ':'.$port : '');
+        $parsed = parse_url($url);
+        $scheme = @$parsed['scheme'] ?: 'http';
+        if (!in_array($scheme, ['http', 'https'])) {
+            $scheme = 'http';
+        }
+
+        $host = @$parsed['host'];
+        $host = preg_replace('/^www\./', '', $host);
+        $port = @$parsed['port'];
+
+        if (!$host) {
+            return '';
+        }
+
+        $result = '';
+        if ($withScheme) {
+            $result .= $scheme.'://';
+        }
+
+        $result .= $host;
+        $result .= ($port && $port != 80) ? ':'.$port : '';
+
+        return $result;
     }
 }
