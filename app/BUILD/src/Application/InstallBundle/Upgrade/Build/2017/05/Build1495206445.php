@@ -31,10 +31,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 use Aws\S3\S3Client;
 use DpSys\LowError\SystemErrorHandler;
 
-// This is a blocking build for the possibility that the fs adapter may
+// This is a blocking build for the possibility that the s3 adapter may
 // revert to db after if the region lookup fails
 
-class Build1493135785 extends AbstractBuild implements BlockingBuildInterface
+class Build1495206445 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
