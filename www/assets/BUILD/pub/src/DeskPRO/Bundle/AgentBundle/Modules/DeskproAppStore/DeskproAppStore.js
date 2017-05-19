@@ -90,12 +90,17 @@ class DeskproAppStore
     reduxStore.subscribe( () => {
       const contexts = newContextsStateSelector(reduxStore.getState());
       if (contexts) {
+        /** @var {Context} context **/
         for (const context of contexts.values()) {
-          containerMounter.mountAt(context, WidgetDOM.container.findContainerById(context.id, window.document));
+          // find the dom node to mount at
+          const mountAtNode = WidgetDOM.container.findContainerById(context.id, window.document);
 
-          // TODO do not trigger blindly the apps sidebar
-          const tab = DeskPRO_Window.TabBar.getTab(context.tabId);
-          tab.page.updateAppsSidebar();
+          // TODO have the context initiate any post-mounting activities. This is quick hack-fix
+          const nrOfWidgets = containerMounter.mountAt(context, mountAtNode);
+          if ( nrOfWidgets && ['ticket-sidebar', 'person-sidebar', 'org-sidebar'].indexOf(context.locationId) > -1 ) {
+            const tab = DeskPRO_Window.TabBar.getTab(context.tabId);
+            tab.page.updateAppsSidebar();
+          }
         }
       }
     });

@@ -48,7 +48,7 @@ class ContainerMounter
   /**
    * @param {Context} context
    * @param {Object} domNode
-   * @return {*}
+   * @return {integer}
    */
   mountAt = (context, domNode) =>
   {
@@ -68,6 +68,8 @@ class ContainerMounter
     }
 
     ReactDOM.render(reactElement, domNode);
+    // TODO this is a temporary hack to prevent the sidebar appearing everytime
+    return props.widgetsConfigList.length;
   };
 
   /**
