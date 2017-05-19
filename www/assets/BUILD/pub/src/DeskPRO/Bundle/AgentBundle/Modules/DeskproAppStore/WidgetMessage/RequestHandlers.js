@@ -3,7 +3,7 @@ import { events } from './Events';
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {*} widgetMessage
+ * @param {WidgetMessage} widgetMessage
  * @param {AppServices}  services
  * @constructor
  */
