@@ -90,7 +90,8 @@ class QueueForm extends React.Component {
           voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
           voicemail_department: queue ? queue.get('voicemail_department') : null,
           voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
-          voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null
+          voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
+          voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 30
         },
         errorList: errors,
         onChange:  this.onChange
@@ -112,8 +113,8 @@ class QueueForm extends React.Component {
                   <Select clearable={false} />
                 </AccountChoiceWrapper>
               </Field>}
-            <Field select="name" label="Queue Name">
-              <Input type="text" placeholder="Queue Name" />
+            <Field select="name" label="Queue Name *">
+              <Input type="text" />
             </Field>
             {agents && agents.size > 0 &&
               <Field select="agents" label="Agents">
@@ -137,6 +138,10 @@ class QueueForm extends React.Component {
             </Field>
             <Field select="voicemail_asset" className="audio-asset" label="Voicemail">
               <AudioWidgetFormContainer />
+            </Field>
+
+            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Voicemail timeout *">
+              <Input type="number" />
             </Field>
 
             <div>

@@ -4,7 +4,8 @@ import { createValue } from 'react-forms';
 class BaseForm extends React.Component {
 
   static propTypes = {
-    onSubmit: PropTypes.func
+    onSubmit:   PropTypes.func,
+    autoSubmit: PropTypes.bool
   };
 
   constructor(props) {
@@ -20,11 +21,19 @@ class BaseForm extends React.Component {
   }
 
   onChange = (formData) => {
-    this.setState({ formData });
+    const { autoSubmit } = this.props;
+
+    this.setState({ formData }, () => {
+      if (autoSubmit) {
+        this.onSubmit();
+      }
+    });
   };
 
   onSubmit = (event) => {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
 
     const { onSubmit } = this.props;
     const { formData } = this.state;
