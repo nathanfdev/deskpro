@@ -1,5 +1,65 @@
 import { events } from './Events';
 
+export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, services) =>
+{
+  const { body: invocation } = widgetMessage;
+
+  let error;
+  const allowedMethods = ['get', 'post', 'put', 'delete'];
+
+  const { method, path, body } = invocation;
+
+  if (path.match(/^(?:[a-z]+:)?\/\//i)) {
+    error = new Error(`[API]: Invalid path: ${path}. Absolute paths are not allowed`);
+  }
+  else if ( allowedMethods.indexOf(method.toLowerCase()) == -1 ) {
+    error = new Error(`[API]: Method not allowed ${method}. Allowed methods are: ${allowedMethods.join(', ')}`);
+  }
+
+  // TODO maybe check the body is not undefined or null for post put
+
+  if (error) {
+    response(error);
+    return;
+  }
+
+  const { api } = services;
+  const apiEndpoint = ['DP_API', path].join('/');
+  let requestPromise;
+
+  switch (method.toLowerCase()) {
+    case 'get':
+      requestPromise = api.sendGet(apiEndpoint);
+      break;
+    case 'post':
+      requestPromise = api.sendPost(apiEndpoint, body);
+      break;
+    case 'put':
+      requestPromise = api.sendPut(apiEndpoint, body);
+      break;
+    case 'delete':
+      requestPromise = api.sendDelete(apiEndpoint);
+      break;
+  }
+
+  requestPromise
+    .catch(httpResponse => {
+
+      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data };
+      const error = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
+      response(error, data);
+
+      return httpResponse;
+    })
+    .then(httpResponse => {
+      const data = { status: httpResponse.status, body: httpResponse.data };
+      response(null, data);
+
+      return httpResponse;
+    })
+  ;
+};
+
 /**
  * @param {function} response
  * @param {Widget} widget
@@ -36,6 +96,8 @@ export const EVENT_STATE_GET = (response, widget, widgetMessage, services) =>
 {
   const { api } = services;
   const { name, scope } = widgetMessage.body;
+
+
 
   api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
     .then(httpResponse => httpResponse.data)
@@ -161,6 +223,10 @@ export const EVENT_USER_GET = (response, widget, widgetMessage, services) => {
 };
 
 export const handlers = {
+
+  // GENERIC REST API REQUEST EVENT
+
+  EVENT_WEBAPI_REQUEST_DESKPRO,
 
   // STATE EVENT HANDLERS
 

@@ -1,5 +1,7 @@
 // STATE EVENTS
 
+export const EVENT_WEBAPI_REQUEST_DESKPRO = 'webapi.request.deskpro';
+
 export const EVENT_STATE_FIND = 'state.find';
 
 export const EVENT_STATE_GET = 'state.get';
@@ -19,6 +21,10 @@ export const EVENT_TAB_CLOSE = 'context.tab_close';
 
 export const events =
 {
+  // API REQUEST EVENTS
+
+  EVENT_WEBAPI_REQUEST_DESKPRO,
+
   // STATE EVENTS
 
   EVENT_STATE_FIND,
