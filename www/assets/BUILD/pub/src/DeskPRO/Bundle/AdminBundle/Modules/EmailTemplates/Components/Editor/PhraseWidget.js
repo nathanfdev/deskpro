@@ -50,7 +50,7 @@ class PhrasePopup extends React.Component {
   getPopUp = () => {
     const { phrase } = this.props;
     return (
-      <div className="variable-popup">
+      <div className="phrase-popup">
         <strong>Phrase: </strong><span className="phrase">{phrase}</span>
         <div className="ui horizontal divider">Translations</div>
         {this.getTranslations()}
@@ -66,12 +66,14 @@ class PhrasePopup extends React.Component {
       {window.DP_ENABLED_LANGS.map(language =>
         <Field key={`language_${language.locale}`} field={`phrase_${language.locale}`} errors={null}>
           <label htmlFor={`phrase_${language.locale}`}>{language.title}</label>
-          <Input
-            id={`phrase_${language.locale}`}
-            name={`phrase_${language.locale}`}
-            value={this.state.translations[language.locale]}
-            onChange={(value) => { this.handleChangeTranslation(value, language.locale); }}
-          />
+          <div className="ui input">
+            <textarea
+              id={`phrase_${language.locale}`}
+              name={`phrase_${language.locale}`}
+              value={this.state.translations[language.locale]}
+              onChange={(event) => { this.handleChangeTranslation(event, language.locale); }}
+            />
+          </div>
         </Field>
         )}
     </div>
@@ -101,7 +103,8 @@ class PhrasePopup extends React.Component {
     );
   };
 
-  handleChangeTranslation = (value, locale) => {
+  handleChangeTranslation = (event, locale) => {
+    const value = event.target.value;
     const translations = this.state.translations;
     translations[locale] = value;
     this.setState({
@@ -128,7 +131,9 @@ class PhrasePopup extends React.Component {
   };
 
   closePopup = () => {
-    this.popup.closePopup();
+    if (this.popup) {
+      this.popup.closePopup();
+    }
   };
 
   saveChanges = () => {
@@ -159,7 +164,9 @@ class PhrasePopup extends React.Component {
         }
         this.props.setText(text, 'popup');
       }
-      this.popup.closePopup();
+      if (this.popup) {
+        this.popup.closePopup();
+      }
     });
   };
 
