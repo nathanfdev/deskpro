@@ -55,7 +55,6 @@ class PhrasePopup extends React.Component {
         <div className="ui horizontal divider">Translations</div>
         {this.getTranslations()}
         {this.getVariables()}
-        {this.getAdvanced()}
         <Button onClick={this.saveChanges}>Submit</Button>
         <Button className="basic" onClick={this.closePopup}>Cancel</Button>
       </div>

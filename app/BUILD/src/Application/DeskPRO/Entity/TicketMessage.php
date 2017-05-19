@@ -1064,6 +1064,14 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @return EmailSource
+     */
+    public function getEmailSource()
+    {
+        return $this->email_source;
+    }
+
+    /**
      * @return bool
      */
     public function isAgentNote()

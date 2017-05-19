@@ -16,7 +16,11 @@
 
 		<br /><br />
 
-		<dp:ticket-messages />
+        {% for message in ticket_messages %}
+            {% if not context.message_limit or loop.index0 < context.message_limit %}
+                {% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
+            {% endif %}
+        {% endfor %}
 
 		{% if app.isPortalEnabled() %}
 			<br /><br />

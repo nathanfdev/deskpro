@@ -74,6 +74,9 @@ abstract class AbstractViewModelFactory
 
     protected function convertParameter($entity)
     {
+        if (is_array($entity)) {
+            return array_map([$this, 'convertParameter'], $entity);
+        }
         if (!is_object($entity)) {
             return $entity;
         }
@@ -154,9 +157,10 @@ abstract class AbstractViewModelFactory
     {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
-        $ticketPerson = $ticket->getPerson();
-        $ticketAgent  = $ticket->getAgent();
+        $ticketPerson   = $ticket->getPerson();
+        $ticketAgent    = $ticket->getAgent();
+        $ticketMessages = iterator_to_array($ticket->getMessages());
 
-        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink];
+        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages];
     }
 }

@@ -53,11 +53,13 @@ class TicketReplyByAgent extends TicketEmailType
      * @param Person        $ticketPerson
      * @param Person        $ticketAgent
      * @param string        $ticketLink
+     * @param TicketMessage $ticketMessages
      * @param TicketMessage $reply
      */
-    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, TicketMessage $reply)
+    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, TicketMessage $reply)
     {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink);
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
+
         $this->reply = $reply;
     }
 }

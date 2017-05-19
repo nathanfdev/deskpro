@@ -89,7 +89,7 @@ class Editor extends React.Component {
           ));
           match = re.exec(content);
         }
-        re = /{%\s*include\s*'([^)]+)'\s*%}/g;
+        re = /{%\s*include\s*'([^']+)'\s*(with\s*{[^}]+}\s*)?\s*%}/g;
         match = re.exec(content);
         while (match !== null) {
           this.widgets.push(new TemplateWidget(

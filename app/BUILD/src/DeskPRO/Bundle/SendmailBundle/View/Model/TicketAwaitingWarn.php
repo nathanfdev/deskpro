@@ -44,9 +44,15 @@ class TicketAwaitingWarn extends TicketEmailType
 
     protected $templateFile = 'emails_user:ticket_awaiting_warn.html.twig';
 
-    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketResolveLink)
-    {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink);
+    public function __construct(
+        Ticket $ticket,
+        $ticketPerson,
+        $ticketAgent,
+        $ticketLink,
+        $ticketMessages,
+        $ticketResolveLink
+    ) {
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
 
         $this->ticketResolveLink = $ticketResolveLink;
     }

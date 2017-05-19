@@ -2,30 +2,34 @@
 
 <html>
 <head>
-	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
 </head>
 <body>
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
-	<container>
-		{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+    <container>
+        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
 
-		<br /><br />
+        <br/><br/>
 
-		{{ phrase('user.emails.auto-close') }}
+        {{ phrase('user.emails.auto-close') }}
 
-		<br /><br />
+        <br/><br/>
 
-		<dp:ticket-messages />
+        {% for message in ticket_messages %}
+            {% if not context.message_limit or loop.index0 < context.message_limit %}
+                {% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
+            {% endif %}
+        {% endfor %}
 
-		{% if app.isPortalEnabled() %}
-			<br /><br />
+        {% if app.isPortalEnabled() %}
+            <br/><br/>
 
-			{{ phrase('user.emails.ticket_access_ticket_online') }}
-			<a href="{{ ticket_link }}">{{ ticket_link }}</a>
-		{% endif %}
-	</container>
+            {{ phrase('user.emails.ticket_access_ticket_online') }}
+            <a href="{{ ticket_link }}">{{ ticket_link }}</a>
+        {% endif %}
+    </container>
 
-  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
 </body>
 </html>

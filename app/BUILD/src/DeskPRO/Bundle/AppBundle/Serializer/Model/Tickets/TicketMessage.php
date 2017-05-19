@@ -236,7 +236,7 @@ class TicketMessage
         $this->id                 = $ticketMessage->getId();
         $this->ticket             = $ticketMessage->getTicket();
         $this->person             = $ticketMessage->getPerson();
-        $this->emailSource        = $ticketMessage->email_source;
+        $this->emailSource        = $ticketMessage->getEmailSource();
         $this->attributes         = $ticketMessage->getAttributes();
         $this->attachments        = $ticketMessage->getAttachments();
         $this->dateCreated        = $ticketMessage->getDateCreated();
