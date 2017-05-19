@@ -86,6 +86,14 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.language:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\LanguageHandler
+    arguments:
+      - "@brand_aware_settings_resolver"
+      - "@templating.helper.assets"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.feedback:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackHandler
     arguments: ["@doctrine.orm.default_entity_manager"]
