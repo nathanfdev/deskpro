@@ -7,6 +7,7 @@ import { MenuItem } from '../Menu';
 class Select extends React.Component {
   static propTypes = {
     filter:      PropTypes.bool,
+    disabled:    PropTypes.bool,
     onChange:    PropTypes.func,
     name:        PropTypes.string,
     placeholder: PropTypes.string,
@@ -248,12 +249,12 @@ class Select extends React.Component {
 
   render() {
     const { value, isOpen, inputValue } = this.state;
-    const { placeholder, filter, name, className } = this.props;
+    const { placeholder, filter, name, className, disabled } = this.props;
     const text = value ? value.label : placeholder;
     const options = this.visibleOptions = this.filterOptions();
 
     const select = (<div
-      className={classNames('ui selection dropdown', className, { active: isOpen, visible: isOpen, search: filter })}
+      className={classNames('ui selection dropdown', className, { active: isOpen, visible: isOpen, search: filter, disabled })}
       onClick={this.openSelect}
       onKeyDown={this.handleKeyDown}
     >

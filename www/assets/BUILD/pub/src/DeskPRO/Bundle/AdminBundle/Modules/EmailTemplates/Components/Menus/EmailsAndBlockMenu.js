@@ -36,8 +36,10 @@ export class EmailsAndBlockMenuContainer extends React.Component {
     const info = this.props.emailTemplates;
     const group = info.get('currentTemplateGroup');
     const templates = info.getIn(['info', 'list', group, 'groups'], null);
+    const blocks = info.getIn(['info', 'list', 'layout', 'groups', 'top', 'subGroups', 'primary', 'templates'], null);
     return (<EmailsAndBlockMenu
       emails={templates}
+      emailBlocks={blocks}
       selectTemplate={this.onChangeTemplate}
     />);
   }
@@ -106,15 +108,19 @@ export class EmailsAndBlockMenu extends React.Component {
     if (!this.props.emailBlocks) {
       return null;
     }
-    return this.props.emailBlocks.valueSeq().map((template, key) =>
-      <EmailTemplateItem
-        key={`emailBlock${key}`}
-        label={template.get('title')}
-        icon="code"
-        className="template"
-        onClick={() => this.props.selectTemplate(template)}
-        desc={template.get('desc')}
-      />
+    return this.props.emailBlocks.valueSeq()
+      .filter(
+        template => !!template.get('newTemplate')
+      )
+      .map((template, key) =>
+        <EmailTemplateItem
+          key={`emailBlock${key}`}
+          label={template.get('title')}
+          icon="code"
+          className="template"
+          onClick={() => this.props.selectTemplate(template)}
+          desc={template.get('desc')}
+        />
     );
   };
 

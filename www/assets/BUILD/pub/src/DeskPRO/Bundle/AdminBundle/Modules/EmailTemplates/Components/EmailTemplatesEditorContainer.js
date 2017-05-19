@@ -195,6 +195,9 @@ class EmailTemplatesEditorContainer extends React.Component {
   });
 
   previewTemplate = debounce(function previewDebounce(value, lang) {
+    if (this.props.emailTemplates.getIn(['template', 'type']) !== 'email') {
+      return true;
+    }
     const variables = [];
     if (this.props.emailTemplates.get('exampleTicket')) {
       variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
@@ -222,6 +225,7 @@ class EmailTemplatesEditorContainer extends React.Component {
         }
       }
     );
+    return true;
   }, 400);
 
   resetTemplate = () => {
@@ -423,6 +427,7 @@ class EmailTemplatesEditor extends React.Component {
       currentTemplate:         'Select a template',
       templateSubject:         '',
       templateBody:            '',
+      templateType:            '',
       templatesGroups:         [],
       contentChanged:          false,
       textareaDisabled:        true,
@@ -476,11 +481,21 @@ class EmailTemplatesEditor extends React.Component {
       currentTemplate: emailTemplates.getIn(['currentTemplate', 'title'], 'Select a template')
     });
 
-    this.setState({
-      templateSubject:  emailTemplates.getIn(['template', 'template_code', 'subject'], ''),
-      templateBody:     emailTemplates.getIn(['template', 'template_code', 'body'], ''),
-      textareaDisabled: !emailTemplates.get('currentTemplate')
-    });
+    if (this.props.emailTemplates.getIn(['currentTemplate', 'typeId']) === 'layout') {
+      this.setState({
+        templateSubject:  '',
+        templateType:     'block',
+        templateBody:     emailTemplates.getIn(['template', 'template_code', 'code'], ''),
+        textareaDisabled: !emailTemplates.get('currentTemplate')
+      });
+    } else {
+      this.setState({
+        templateSubject:  emailTemplates.getIn(['template', 'template_code', 'subject'], ''),
+        templateType:     'email',
+        templateBody:     emailTemplates.getIn(['template', 'template_code', 'body'], ''),
+        textareaDisabled: !emailTemplates.get('currentTemplate')
+      });
+    }
   };
 
   handleChangeBody = (value) => {
@@ -654,6 +669,7 @@ class EmailTemplatesEditor extends React.Component {
             disabled={this.state.textareaDisabled}
             body={this.state.templateBody}
             subject={this.state.templateSubject}
+            type={this.state.templateType}
             changeTemplateSubject={this.handleChangeSubject}
             changeTemplateBody={this.handleChangeBody}
             ref={(c) => { this.editor = c; }}
@@ -704,6 +720,7 @@ class EmailTemplatesEditor extends React.Component {
                     options={this.props.emailAccounts}
                     className="email-account basic"
                     onChange={this.props.selectEmailAccount}
+                    disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
                     value={this.props.selectedEmailAccount}
                   />
                 </div>
@@ -714,6 +731,7 @@ class EmailTemplatesEditor extends React.Component {
                     name="to"
                     id="test_email_to"
                     onChange={this.props.handleEmailAddress}
+                    disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
                     value={this.props.previewEmailAddress}
                   />
                 </div>
@@ -721,7 +739,7 @@ class EmailTemplatesEditor extends React.Component {
                   <label htmlFor="test_email_submit">&nbsp;</label>
                   <Button
                     className={classNames('ui basic button', { loading: this.props.previewSubmit })}
-                    disabled={this.state.textareaDisabled}
+                    disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
                     onClick={this.props.sendPreview}
                   >
                     Send
@@ -730,7 +748,7 @@ class EmailTemplatesEditor extends React.Component {
               </div>
             </form>
           </div>
-          <PreviewEmail preview={this.props.emailTemplates.get('preview')} />
+          <PreviewEmail preview={this.props.emailTemplates.get('preview')} type={this.state.templateType} />
         </div>
       </div>
     );

@@ -134,6 +134,9 @@
       }
       .body {
         height: calc(100% - 85px);
+        &.block {
+          height: calc(100% - 15px);
+        }
         .CodeMirror {
           height: 100%;
         }

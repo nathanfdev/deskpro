@@ -8,6 +8,7 @@ class Editor extends React.Component {
     disabled:               PropTypes.bool,
     subject:                PropTypes.string,
     body:                   PropTypes.string,
+    type:                   PropTypes.string,
     changeTemplateBody:     PropTypes.func,
     changeTemplateSubject:  PropTypes.func,
     getPhraseTranslations:  PropTypes.func,
@@ -129,15 +130,18 @@ class Editor extends React.Component {
         <div className={classNames('ui dimmer inverted', { active: disabled })}>
           <div className="ui big loader text">Please select a template to edit</div>
         </div>
-        <div className="subject">
-          Email subject:
-          <CodeMirror
-            value={subject}
-            onChange={this.handleSubjectChange}
-          />
-        </div>
-        <div className="body">
-          Email:
+        {
+          this.props.type === 'email' ?
+            <div className="subject">
+            Email subject:
+            <CodeMirror
+              value={subject}
+              onChange={this.handleSubjectChange}
+            />
+            </div> : ''
+        }
+        <div className={classNames('body', { block: this.props.type === 'block' })}>
+          {this.props.type === 'email' ? 'Email:' : 'Code:'}
           <CodeMirror
             value={body}
             ref={(c) => { this.bodyEditor = c; }}
