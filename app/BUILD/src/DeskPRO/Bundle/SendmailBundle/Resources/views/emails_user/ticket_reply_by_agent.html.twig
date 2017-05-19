@@ -8,13 +8,28 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		<dp:agent-reply />
+		{% set message = ticket_messages|first %}
+		{% if message.person.is_agent %}
+			{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% else %}
+			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% endif %}
 
-		{% if show_rating_link and app.isPortalEnabled() %}<dp:ticket-rating-links />{% endif %}
+		{% if show_rating_link and app.isPortalEnabled() %}
+			{% set message = ticket_messages|first %}
+			{% include 'DeskPRO:emails_common:ticket-rating-links.html.twig' with {message: message, ticket: ticket} %}
+		{% endif %}
 
 		<br /><br />
 
-		<dp:ticket-history />
+		{% for message in ticket_messages|slice(1) %}
+			{% if not context.message_limit or loop.index0 < context.message_limit %}
+				{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
+				message: message,
+				ticketdisplay: context.ticketdisplay
+				} %}
+			{% endif %}
+		{% endfor %}
 
 		{% if app.isPortalEnabled() %}
 			<br /><br />

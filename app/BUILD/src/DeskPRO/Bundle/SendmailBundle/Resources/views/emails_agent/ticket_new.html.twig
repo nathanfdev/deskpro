@@ -18,7 +18,12 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		<dp:last-reply />
+		{% set message = ticket_messages|first %}
+		{% if message.person.is_agent %}
+			{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% else %}
+			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% endif %}
 
 		<br /><br />
 
@@ -28,7 +33,7 @@
 
 		<br /><br />
 
-		<dp:ticket-properties-table />
+		{%  include 'DeskPRO:emails_common:ticket-props-table.html.twig' %}
 	</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
