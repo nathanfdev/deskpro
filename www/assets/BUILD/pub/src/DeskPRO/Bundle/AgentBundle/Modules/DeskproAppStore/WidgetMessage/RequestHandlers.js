@@ -131,8 +131,9 @@ export const EVENT_TAB_STATUS = (response, widget, widgetMessage, services) => {
  * @constructor
  */
 export const EVENT_TAB_ACTIVATE = (response, widget, widgetMessage, services) => {
-  DeskPRO_Window.TabBar.activateTabById(widgetMessage);
-  response(null, widgetMessage);
+  const { body: tabId } = widgetMessage;
+  DeskPRO_Window.TabBar.activateTabById(tabId);
+  response(null, tabId);
 };
 
 /**
@@ -143,8 +144,9 @@ export const EVENT_TAB_ACTIVATE = (response, widget, widgetMessage, services) =>
  * @constructor
  */
 export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
-  DeskPRO_Window.TabBar.removeTabById(widgetMessage);
-  response(null, widgetMessage);
+  const { body: tabId } = widgetMessage;
+  DeskPRO_Window.TabBar.removeTabById(tabId);
+  response(null, tabId);
 };
 
 /**
