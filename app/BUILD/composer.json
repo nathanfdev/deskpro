@@ -84,7 +84,8 @@
     "fisharebest/ext-calendar": "~2.2.1",
     "jms/serializer-bundle": "~1.3.1",
     "guzzlehttp/psr7": "^1.4.1",
-    "aws/aws-sdk-php": "^3.25"
+    "aws/aws-sdk-php": "^3.25",
+    "jms/serializer": "~1.6.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
