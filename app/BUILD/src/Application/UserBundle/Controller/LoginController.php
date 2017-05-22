@@ -585,7 +585,7 @@ class LoginController extends AbstractController
      */
     protected function handleLoginAttempt(Request $request)
     {
-        if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
+        if (isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
             return;
         }
         /** @var PersonRepository $personRepository */
