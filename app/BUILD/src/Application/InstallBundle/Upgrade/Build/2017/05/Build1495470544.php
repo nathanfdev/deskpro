@@ -30,7 +30,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures\Apps2Fixture;
 
-class Build1495466242 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1495470544 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
