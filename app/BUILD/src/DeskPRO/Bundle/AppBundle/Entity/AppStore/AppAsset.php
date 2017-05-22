@@ -53,7 +53,7 @@ class AppAsset implements Domain\ApplicationAsset, EntityInterface, NotifyProper
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable = false)
      *
      * @var App
      */
