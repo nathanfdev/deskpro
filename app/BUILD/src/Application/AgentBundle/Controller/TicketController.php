@@ -2754,6 +2754,9 @@ class TicketController extends AbstractController
                 if ($actions_collection->hasActionType('Reply')) {
                     $reply_action = $actions_collection->getActionType('Reply');
                     $actions_collection->removeActionType('Reply');
+                } elseif ($actions_collection->hasActionType('ReplySnippet')) {
+                    $reply_action = $actions_collection->getActionType('ReplySnippet');
+                    $actions_collection->removeActionType('ReplySnippet');
                 }
 
                 $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
