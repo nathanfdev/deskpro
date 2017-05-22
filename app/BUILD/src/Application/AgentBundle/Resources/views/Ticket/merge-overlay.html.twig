@@ -48,9 +48,24 @@
 							<tr class="header-row">
 								<td class="first">&nbsp;</td>
 								<td colspan="2"><div class="switcher-wrap">
-									<div class="left-text merge-target-button" data-merge-id="{{ ticket.id }}" data-keep="1">{{ phrase('agent.general.merge_keep_this') }}</div>
-									<button class="switch-trigger clean-white" style="margin-top: 1px;">&lsaquo; {{ phrase('agent.general.merge_switch_btn') }} &rsaquo;</button>
-									<div class="right-text merge-target-button" data-merge-id="{{ other_ticket.id }}">{{ phrase('agent.general.merge_merge_this') }}</div>
+									<div
+                                        class="left-text merge-target-button"
+                                        data-merge-id="{{ ticket.id }}"
+                                        data-keep="1"
+                                    >
+                                        {{ phrase('agent.general.merge_keep_this') }}
+                                        {% if ticket.locked_by_agent %}<i class="fa fa-lock" />{% endif %}
+                                    </div>
+									<button class="switch-trigger clean-white" style="margin-top: 1px;">
+                                        &lsaquo; {{ phrase('agent.general.merge_switch_btn') }} &rsaquo;
+                                    </button>
+									<div
+                                        class="right-text merge-target-button"
+                                        data-merge-id="{{ other_ticket.id }}"
+                                    >
+                                        {{ phrase('agent.general.merge_merge_this') }}
+                                        {% if other_ticket.locked_by_agent %}<i class="fa fa-lock" />{% endif %}
+                                    </div>
 								</div></td>
 							</tr>
 						</tbody>
