@@ -152,9 +152,13 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   changeTemplateBody = (value) => {
-    const lang = this.props.emailTemplates.get('currentLanguage');
-    this.previewTemplate(value, lang);
-    this.props.dispatch(actions.updateTemplateBody(value));
+    if (this.props.emailTemplates.getIn(['currentTemplate', 'typeId']) === 'layout') {
+      this.props.dispatch(actions.updateTemplateCode(value));
+    } else {
+      const lang = this.props.emailTemplates.get('currentLanguage');
+      this.previewTemplate(value, lang);
+      this.props.dispatch(actions.updateTemplateBody(value));
+    }
   };
 
   insertInlineImage = (file) => {
@@ -251,10 +255,18 @@ class EmailTemplatesEditorContainer extends React.Component {
       saveSubmit: true
     });
     const name = this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']);
-    const template = {
-      subject: this.props.emailTemplates.getIn(['template', 'template_code', 'subject']),
-      body:    this.props.emailTemplates.getIn(['template', 'template_code', 'body']),
-    };
+    let template;
+
+    if (this.props.emailTemplates.getIn(['currentTemplate', 'typeId']) === 'layout') {
+      template = {
+        body: this.props.emailTemplates.getIn(['template', 'template_code', 'code']),
+      };
+    } else {
+      template = {
+        subject: this.props.emailTemplates.getIn(['template', 'template_code', 'subject']),
+        body:    this.props.emailTemplates.getIn(['template', 'template_code', 'body']),
+      };
+    }
 
     const promises = [];
     promises.push(this.props.dispatch(actions.saveTemplate(name, template)));

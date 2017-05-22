@@ -229,6 +229,11 @@ export const updateTemplateBody = createAction(
   body => body
 );
 
+export const updateTemplateCode = createAction(
+  'EMAIL_TEMPLATES_UPDATE_TEMPLATE_CODE',
+  code => code
+);
+
 export const updateTemplateSubject = createAction(
   'EMAIL_TEMPLATES_UPDATE_TEMPLATE_SUBJECT',
   subject => subject

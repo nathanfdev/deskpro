@@ -28,11 +28,25 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
+use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Template;
+use Application\DeskPRO\EntityRepository\Template as TemplateRepository;
+use Application\DeskPRO\Templating\Templates\TemplateCode;
+use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
  * Class EmailTemplatesFeature.
  */
 class EmailTemplatesFeature extends AbstractFeature
 {
+    protected static $templatesDirectCopy = [
+        'DeskPRO:emails_common:email-header.html.twig'    => 'SendmailBundle:blocks:header.html.twig',
+        'DeskPRO:emails_common:email-footer.html.twig'    => 'SendmailBundle:blocks:footer.html.twig',
+        'DeskPRO:emails_common:email-custom-css.css.twig' => 'SendmailBundle:blocks:resources.html.twig',
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -87,5 +101,84 @@ class EmailTemplatesFeature extends AbstractFeature
     public function needAgentReload()
     {
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeEnable(ContainerInterface $container)
+    {
+        /** @var EntityManager $em */
+        $em = $container->get('doctrine.orm.default_entity_manager');
+        $this->copyLegacyTemplates($em, $container);
+    }
+
+    private function copyLegacyTemplates(EntityManager $em, ContainerInterface $container)
+    {
+        $set = $this->getTemplateSet($em, $container);
+
+        /** @var TemplateRepository $templateRepo */
+        $templateRepo = $em->getRepository(Template::class);
+        $templates    = $templateRepo->findBy(['name' => array_keys(self::$templatesDirectCopy)]);
+
+        foreach ($templates as $previousTemplate) {
+            /** @var Template $previousTemplate */
+            $template = $set->createCustomTemplate(self::$templatesDirectCopy[$previousTemplate->getName()]);
+
+            /** @var TemplateCode $templateCode */
+            $templateCode = $template->getTemplateCode();
+
+            $code = $previousTemplate->getTemplateCode();
+            if ($previousTemplate->getName() === 'DeskPRO:emails_common:email-custom-css.css.twig') {
+                $code = $this->convertResourcesCode($code);
+            }
+            $templateCode->setCode($code);
+            $set->saveTemplate($template);
+            $this->saveLegacyTemplate($em, $previousTemplate);
+            $em->remove($previousTemplate);
+        }
+
+        $em->flush();
+    }
+
+    private function convertResourcesCode($code)
+    {
+        return <<<CODE
+{{ default_css | raw }}
+<style>
+    /* Enter your own custom CSS here */
+    $code
+</style>
+CODE;
+    }
+
+    /**
+     * @param EntityManager      $em
+     * @param ContainerInterface $container
+     *
+     * @return TemplateSet
+     */
+    private function getTemplateSet(EntityManager $em, ContainerInterface $container)
+    {
+        $set = new TemplateSet(
+            $em,
+            $container->get('templating.new_email.twig')
+        );
+
+        return $set;
+    }
+
+    /**
+     * @param EntityManager $em
+     * @param Template      $template
+     */
+    private function saveLegacyTemplate(EntityManager $em, $template)
+    {
+        $dataStore = new DataStore();
+        $dataStore->setName('legacy_email_template.'.md5($template->getName()));
+        $dataStore->setData('name', $template->getName());
+        $dataStore->setData('code', $template->getTemplateCode());
+
+        $em->persist($dataStore);
     }
 }
