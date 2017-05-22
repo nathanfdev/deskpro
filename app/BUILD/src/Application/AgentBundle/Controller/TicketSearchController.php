@@ -1955,6 +1955,12 @@ class TicketSearchController extends AbstractController
                 foreach ($tickets as $ticket) {
                     $actions_collection = $macro->getActionsCollection($ticket);
 
+                    if ($actions_collection->hasActionType('Reply') || $actions_collection->hasActionType('ReplySnippet')) {
+                        $contextType = 'newreply';
+                    } else {
+                        $contextType = 'update';
+                    }
+
                     $this->db->beginTransaction();
                     try {
                         if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
