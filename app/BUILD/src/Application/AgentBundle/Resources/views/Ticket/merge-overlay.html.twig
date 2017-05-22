@@ -44,7 +44,7 @@
 			{% if other_ticket %}
 				<div class="merge-data-wrap">
 					<table class="merge-data" width="100%">
-						<tbody>
+						<thead>
 							<tr class="header-row">
 								<td class="first">&nbsp;</td>
 								<td colspan="2"><div class="switcher-wrap">
@@ -68,7 +68,50 @@
                                     </div>
 								</div></td>
 							</tr>
-						</tbody>
+                            {% if ticket.getLockedByAgent() or other_ticket.getLockedByAgent() %}
+                            <tr class="header-row">
+                                <td class="first locked-ticket">{{ phrase('agent.tickets.merge_force') }}</td>
+                                <td class="locked-ticket">
+                                    {% if ticket.getLockedByAgent() %}
+                                        <label for="ticket_force">
+                                            {{ phrase('agent.tickets.merge_ticket_locked', {
+                                                'id': ticket.getId(),
+                                                'agent_name': ticket.getLockedByAgent().getDisplayName()
+                                               })
+                                            }}
+                                            <input
+                                                id="ticket_force"
+                                                type="checkbox"
+                                                name="ticket_force"
+                                                value="1"
+                                            />
+                                        </label>
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </td>
+                                <td class="locked-ticket">
+                                    {% if other_ticket.getLockedByAgent() %}
+                                        <label for="other_ticket_force">
+                                            {{ phrase('agent.tickets.merge_ticket_locked', {
+                                                'id': other_ticket.getId(),
+                                                'agent_name': other_ticket.getLockedByAgent().getDisplayName()
+                                               })
+                                            }}
+                                            <input
+                                                id="other_ticket_force"
+                                                type="checkbox"
+                                                name="other_ticket_force"
+                                                value="1"
+                                            />
+                                        </label>
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+						</thead>
 						<tbody class="merge-data-rows">
 							<tr class="always-keep">
 								<th nowrap="nowrap"><div>{{ phrase('agent.general.id') }}</div></th>

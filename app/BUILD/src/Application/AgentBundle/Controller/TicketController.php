@@ -3746,6 +3746,26 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException('You cannot merge a ticket with itself');
         }
 
+        if ($ticket->getLockedByAgent() && $ticket->getLockedByAgent() !== $this->person) {
+            return $this->createJsonResponse(
+                [
+                    'success'     => false,
+                    'fail_reason' => 'This ticket is locked by '.$ticket->getLockedByAgent()->getDisplayName(),
+                ],
+                400
+            );
+        }
+
+        if ($other_ticket->getLockedByAgent() && $other_ticket->getLockedByAgent() !== $this->person) {
+            return $this->createJsonResponse(
+                [
+                    'success'     => false,
+                    'fail_reason' => 'Other ticket is locked by '.$other_ticket->getLockedByAgent()->getDisplayName(),
+                ],
+                400
+            );
+        }
+
         if (!$merge->checkPersonPermission()) {
             throw $this->createNotFoundException('User does not have permission to merge these tickets');
         }
