@@ -78,7 +78,6 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
             ->from(Entity\AppStore\AppInstance::class, 'i')
             ->select('i')
             ->innerJoin('i.app', 'a')
-            ->where('a.id != 1')
         ;
 
         $result = $qb->getQuery()->getResult();
