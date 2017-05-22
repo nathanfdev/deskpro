@@ -86,6 +86,25 @@ class ApplicationManagerService implements Domain\ApplicationManager
         //save app
         $appEntity = $this->createAppEntity($bundle);
 
+        $instanceEntity = $this->createInstance($appEntity);
+
+        return $instanceEntity;
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
+     *
+     * @return Entity\AppStore\App
+     */
+    public function createAppEntity(Domain\AppBundle $bundle)
+    {
+        $entities = [];
+        //save app and instance
+
+        $appEntity  = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
+        $entities[] = $appEntity;
+        $this->executeEntityOperationTransaction($entities, $this->persistEntityOperation);
+
         //save blob assets
         foreach ($bundle->listAllResources() as $resource) {
             $fileExtension = $resource->getFileExtension();
@@ -104,24 +123,8 @@ class ApplicationManagerService implements Domain\ApplicationManager
             $appEntity->addAsset($asset);
         }
 
-        $instanceEntity = $this->createInstance($appEntity);
-
-        return $instanceEntity;
-    }
-
-    /**
-     * @param Domain\AppBundle $bundle
-     *
-     * @return Entity\AppStore\App
-     */
-    private function createAppEntity(Domain\AppBundle $bundle)
-    {
-        $entities = [];
-        //save app and instance
-
-        $appEntity  = $this->mapManifestStringToApp($bundle->getManifestAsString(), new Entity\AppStore\App());
-        $entities[] = $appEntity;
-        $this->executeEntityOperationTransaction($entities, $this->persistEntityOperation);
+        $this->entityManager->persist($appEntity);
+        $this->entityManager->flush();
 
         return $appEntity;
     }
@@ -160,7 +163,7 @@ class ApplicationManagerService implements Domain\ApplicationManager
 
         $instanceEntity = new Entity\AppStore\AppInstance();
         $instanceEntity->setApp($applicationEntity);
-        $instanceEntity->setName($applicationEntity->getName());
+        $instanceEntity->setName($applicationEntity->getParsedManifest()->getTitle());
 
         $this->mapApplicationToInstance($application, $instanceEntity);
         if (!is_null($settings)) {

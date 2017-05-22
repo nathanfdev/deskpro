@@ -174,7 +174,7 @@ class AppsController extends AbstractController
             $data = [
                 'name'         => $manifest->getName(),
                 'native_name'  => $manifest->getName(),
-                'title'        => $manifest->getName(),
+                'title'        => $manifest->getTitle(),
                 'scope'        => $manifest->getScope(),
                 'is_installed' => false,
                 'readme'       => $manifest->getDescription(),
@@ -1008,18 +1008,23 @@ class AppsController extends AbstractController
      */
     private function getAppV2ArchiveBundle($name)
     {
-        $blob = $this->em->getRepository(Blob::class)->findOneBy([
-            'sys_name' => 'apps_v2_zip_'.$name,
-        ]);
+        $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
+        $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
 
-        if (!$blob) {
-            return;
+        if (!file_exists($blobPath)) {
+            $blob = $this->em->getRepository(Blob::class)->findOneBy([
+                'sys_name' => 'apps_v2_zip_'.$name,
+            ]);
+
+            if (!$blob) {
+                return;
+            }
+
+            $appEnv   = $this->container->get('deskpro.app_env');
+            $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
+
+            $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
         }
-
-        $appEnv   = $this->container->get('deskpro.app_env');
-        $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
-
-        $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
 
         return new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($blobPath));
     }

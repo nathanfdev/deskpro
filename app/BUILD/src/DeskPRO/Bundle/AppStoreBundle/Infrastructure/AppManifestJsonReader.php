@@ -54,12 +54,14 @@ class AppManifestJsonReader
         // temp manifest setters
         // todo refactor
         $serializer = App::$container->get('serializer');
-
-        $manifest->setName($manifestMap['name']);
-        $manifest->setDescription($manifestMap['description']);
-        $manifest->setScope($manifestMap['scope']);
-        $manifest->setAuthor($serializer->fromArray($manifestMap['author'], Domain\AppManifestAuthor::class));
-        $manifest->setSettings($serializer->fromArray($manifestMap['settings'], 'array<'.Domain\AppManifestSetting::class.'>'));
+        $manifest
+            ->setName($manifestMap['name'])
+            ->setTitle($manifestMap['title'])
+            ->setDescription($manifestMap['description'])
+            ->setScope($manifestMap['scope'])
+            ->setAuthor($serializer->fromArray($manifestMap['author'], Domain\AppManifestAuthor::class))
+            ->setSettings($serializer->fromArray($manifestMap['settings'], 'array<'.Domain\AppManifestSetting::class.'>'))
+        ;
 
         $value           = $manifestMap['settings'];
         $defaultSettings = [];

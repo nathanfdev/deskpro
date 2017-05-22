@@ -47,6 +47,13 @@ class AppManifest
      *
      * @var string
      */
+    private $title;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     private $description;
 
     /**
@@ -93,6 +100,26 @@ class AppManifest
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
 
         return $this;
     }

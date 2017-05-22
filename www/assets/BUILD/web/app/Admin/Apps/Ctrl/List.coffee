@@ -16,6 +16,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     initialLoad: ->
       @apps = [];
       @apps_v2 = [];
+      @apps_v2_packages = [];
 
       appsPromise = @Api.sendDataGet({ apps: '/apps' })
       appsPromise.then( (result) =>
@@ -39,7 +40,18 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         )
       )
 
-      return @$q.all([appsPromise, apps2Promise])
+      apps2PackagesPromise = @Api2.sendGet('/app_packages')
+      apps2PackagesPromise.then( (result) =>
+        result.data.data.forEach((app) =>
+          app.icon_48 = app.icon_url;
+          app.icon_48 = app.icon_48.replace('{{size}}', 48);
+          app.icon_48 = app.icon_48.replace(encodeURIComponent('{{size}}'), 48);
+
+          @apps_v2_packages.push(app)
+        )
+      )
+
+      return @$q.all([appsPromise, apps2Promise, apps2PackagesPromise])
 
     addAppInstance: (instanceInfo, isNew = false) ->
       if isNew
