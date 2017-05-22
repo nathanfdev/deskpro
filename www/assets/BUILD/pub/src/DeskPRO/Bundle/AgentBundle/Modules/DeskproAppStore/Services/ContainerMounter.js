@@ -66,8 +66,7 @@ class ContainerMounter
     if (!reactElement) {
       throw new Error(`unknown render strategy: ${renderStrategy}`);
     }
-
-    ReactDOM.render(reactElement, domNode);
+    
     // TODO this is a temporary hack to prevent the sidebar appearing everytime
     return props.widgetsConfigList.length;
   };

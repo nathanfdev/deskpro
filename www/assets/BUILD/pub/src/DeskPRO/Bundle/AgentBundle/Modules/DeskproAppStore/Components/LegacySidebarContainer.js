@@ -26,6 +26,13 @@ class LegacySidebarContainer extends React.Component
 
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
     appIcons.addAppIcon('/file.php/apps/deskpro_magento/res/magento.png?v=1487683051');
+
+    //show legacy content if it is available
+    if (window.AppPlatform.apps.length) {
+      const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
+      sidebar.showLegacyContent();
+    }
+
   }
 
   componentWillUnmount () {
