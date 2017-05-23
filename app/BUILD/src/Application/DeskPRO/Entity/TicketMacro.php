@@ -126,6 +126,14 @@ class TicketMacro extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
      * @return Person
      */
     public function getPerson()

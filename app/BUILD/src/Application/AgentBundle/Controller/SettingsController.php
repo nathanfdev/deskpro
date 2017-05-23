@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
@@ -532,14 +528,18 @@ class SettingsController extends AbstractController
 
         $macro['actions'] = $actions;
 
+        if (!$macro->getTitle()) {
+            return $this->createJsonResponse(['error' => true, 'form_errors' => ['title_required']]);
+        }
+
         $this->em->persist($macro);
         $this->em->flush();
 
         return $this->createJsonResponse([
             'success'  => true,
             'is_new'   => $is_new,
-            'macro_id' => $macro->id,
-            'title'    => $macro->title,
+            'macro_id' => $macro->getId(),
+            'title'    => $macro->getTitle(),
         ]);
     }
 
