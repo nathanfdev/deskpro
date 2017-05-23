@@ -91,7 +91,8 @@
     <div data-deskproapp-marker class="dp-app-context" style="width: 240px; margin: 22px 0;"></div>
 </div>
 
-<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>
+{# the sidebar sizer is disabled for at the moment and the plan is to completely remove it #}
+{#<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>#}
 
 <div id="{{ baseId }}_layout_content" class="layout-content page-ticket {% if ticket.hasLock() %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
 

@@ -47,7 +47,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.appsSidebar = {
 			visible: false,
-			width: 350
+			width: 240
 		};
 
 		if (Modernizr.localstorage) {
