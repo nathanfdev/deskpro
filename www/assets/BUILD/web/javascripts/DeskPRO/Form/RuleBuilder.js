@@ -422,6 +422,25 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		};
 		opSel.on('change', updateOp);
 
+		$('.builder-options .date-input', row).each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					time: 'fa fa-clock-o',
+					date: 'fa fa-calendar-o',
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
 		this.fireEvent('selectChange', [row, type]);
 	},
 
