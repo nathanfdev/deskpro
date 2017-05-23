@@ -47,6 +47,7 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -102,10 +103,11 @@ class TicketManager
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container    = $container;
-        $this->em           = $container->getEm();
-        $this->db           = $container->getDb();
-        $this->blob_storage = $container->getBlobStorage();
+        $this->container       = $container;
+        $this->em              = $container->getEm();
+        $this->db              = $container->getDb();
+        $this->blob_storage    = $container->getBlobStorage();
+        $this->eventDispatcher = $container->get('event_dispatcher');
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
         $organizationRepo = $this->em->getRepository(Organization::class);
@@ -395,34 +397,29 @@ class TicketManager
         }
 
         if (!$is_trivial_change) {
-            $data = [
-                'ticket_id'      => $ticket->getId(),
-                'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-                'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-            ];
-
-            $this->db->insert('client_messages', [
-                'channel'      => 'agent.ticket-updated',
-                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize($data),
-            ]);
+            $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
+                'agent.ticket-updated',
+                $ticket->getId(),
+                [
+                    'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                ]
+            ));
         }
 
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
             $lockedByAgent = $ticket->getLockedByAgent();
-            $this->db->insert('client_messages', [
-                'channel'      => 'agent-notification.tickets.locked-status',
-                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize([
-                    'ticket_id'      => $ticket->getId(),
+
+            $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
+                'agent-notification.tickets.locked-status',
+                $ticket->getId(),
+                [
                     'is_locked'      => (bool) $lockedByAgent,
                     'locked_by'      => $lockedByAgent ? $lockedByAgent->getId() : null,
                     'locked_by_name' => $lockedByAgent ? $lockedByAgent->getDisplayName() : null,
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-                ]),
-            ]);
+                ]
+            ));
         }
 
         if (!$is_noop) {

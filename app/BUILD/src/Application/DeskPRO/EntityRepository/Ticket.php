@@ -42,10 +42,9 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use Orb\Util\Arrays;
-use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
-use Orb\Util\Strings;
 
 class Ticket extends AbstractEntityRepository
 {
@@ -985,7 +984,8 @@ class Ticket extends AbstractEntityRepository
             return 0;
         }
 
-        $db = App::$container->getDb();
+        $db              = App::$container->getDb();
+        $eventDispatcher = App::$container->get('event_dispatcher');
 
         $db->updateIn('tickets', [
             'date_locked'     => null,
@@ -993,26 +993,19 @@ class Ticket extends AbstractEntityRepository
         ], $ticket_ids);
 
         if (count($ticket_ids) < 250) {
-            $batch = [];
-
-            $d = date('Y-m-d H:i:s');
             foreach ($ticket_ids as $id) {
-                $batch[] = [
-                    'channel'      => 'agent-notification.tickets.locked-status',
-                    'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                    'date_created' => $d,
-                    'data'         => serialize([
-                        'ticket_id'      => $id,
-                        'is_locked'      => false,
-                        'locked_by'      => null,
-                        'locked_by_name' => null,
-                        'via_person'     => null,
-                    ]),
-                ];
-            }
-
-            foreach (array_chunk($batch, 40, false) as $b) {
-                $db->batchInsert('client_messages', $b, true);
+                $eventDispatcher->dispatch(
+                    TicketUpdatedEvent::EVENT_NAME,
+                    new TicketUpdatedEvent(
+                        'agent-notification.tickets.locked-status',
+                        $id,
+                        [
+                            'is_locked'      => false,
+                            'locked_by'      => null,
+                            'locked_by_name' => null,
+                            'via_person'     => null,
+                        ]
+                ));
             }
         }
 

@@ -43,6 +43,7 @@ use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Arrays;
@@ -775,16 +776,20 @@ JS;
                 }
             }
 
-            App::getDb()->insert('client_messages', [
-                'channel'      => 'agent.ticket-draft-updated',
-                'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize([
-                    'ticket_id'  => $content_id,
-                    'draft_html' => $html,
-                    'via_person' => $this->person->id,
-                ]),
-            ]);
+            App::getContainer()
+                ->get('debug.event_dispatcher')
+                ->dispatch(
+                    TicketUpdatedEvent::EVENT_NAME,
+                    new TicketUpdatedEvent(
+                        'agent.ticket-draft-updated',
+                        $content_id,
+                        [
+                            'draft_html' => $html,
+                            'via_person' => $this->person->getId(),
+                        ]
+
+                    )
+                );
         }
 
         return $this->createJsonResponse([

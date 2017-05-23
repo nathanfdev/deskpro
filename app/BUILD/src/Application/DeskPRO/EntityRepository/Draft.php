@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 
 class Draft extends AbstractEntityRepository
 {
@@ -168,16 +169,20 @@ class Draft extends AbstractEntityRepository
             App::getOrm()->flush();
 
             if ($content_type == 'ticket') {
-                App::getDb()->insert('client_messages', [
-                    'channel'      => 'agent.ticket-draft-updated',
-                    'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                    'date_created' => date('Y-m-d H:i:s'),
-                    'data'         => serialize([
-                        'ticket_id'  => $content_id,
-                        'draft_html' => false,
-                        'via_person' => $person->getId(),
-                    ]),
-                ]);
+                App::getContainer()
+                    ->get('debug.event_dispatcher')
+                    ->dispatch(
+                        TicketUpdatedEvent::EVENT_NAME,
+                        new TicketUpdatedEvent(
+                            'agent.ticket-draft-updated',
+                            $content_id,
+                            [
+                                'draft_html' => false,
+                                'via_person' => $person->getId(),
+                            ]
+
+                        )
+                    );
             }
         }
     }

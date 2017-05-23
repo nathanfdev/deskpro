@@ -32,17 +32,16 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 
-class TicketMessageGenerator extends AbstractGenerator
+class TicketMessageGenerator extends SystemEventGenerator
 {
     public function createMessages(SystemEventInterface $event)
     {
         $event->getName();
         /* @var TicketUpdatedEvent $event */
         $messages = [];
-        foreach ($this->getTargets($event) as $target) {
-            $messages[] = new ActionAlert($target, $this->getData($event), $event->getName());
+        foreach ($this->getTarget($event) as $target) {
+            $messages[] = new ActionAlert($target, $event->getData(), $event->getName());
         }
 
         return $messages;
@@ -55,24 +54,6 @@ class TicketMessageGenerator extends AbstractGenerator
         }
 
         return false;
-    }
-
-    protected function getTargets(TicketUpdatedEvent $event)
-    {
-        return [$event->getData()['target']->getId()];
-    }
-
-    protected function getData(TicketUpdatedEvent $event)
-    {
-        $eventData = $event->getData();
-        $data      = [
-            'ticket_id' => $event->getTicketId(),
-            'filter_id' => $eventData['filter_id'],
-            'op'        => $eventData['op'],
-            'eventType' => $event->getEventType(),
-        ];
-
-        return $data;
     }
 
     /**
