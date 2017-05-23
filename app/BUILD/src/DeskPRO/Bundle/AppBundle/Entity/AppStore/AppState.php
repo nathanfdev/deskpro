@@ -104,7 +104,7 @@ class AppState implements Domain\ApplicationState
     /**
      * @return AppInstance
      */
-    public function getAppInstance(): AppInstance
+    public function getAppInstance()
     {
         return $this->appInstance;
     }

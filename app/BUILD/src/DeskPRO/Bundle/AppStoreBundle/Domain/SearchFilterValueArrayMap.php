@@ -80,7 +80,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @return string
      */
-    public function getScopeList(): string
+    public function getScopeList()
     {
         return $this->scopeList;
     }
