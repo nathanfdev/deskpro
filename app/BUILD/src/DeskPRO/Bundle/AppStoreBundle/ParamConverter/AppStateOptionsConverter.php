@@ -28,38 +28,18 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
-use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class AppStateParamConverter implements ParamConverterInterface
+class AppStateOptionsConverter implements ParamConverterInterface
 {
-    /** @var Infrastructure\ApplicationStateDoctrineFinder */
-    private $finder;
-
-    /** @var Infrastructure\IdentifierParser */
-    private $identifierParser;
-
-    public function __construct(Infrastructure\ApplicationStateDoctrineFinder $finder, Infrastructure\IdentifierParser $identifierParser)
-    {
-        $this->finder           = $finder;
-        $this->identifierParser = $identifierParser;
-    }
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        $appId     = $request->attributes->get('application');
-        $stateName = $request->attributes->get('name');
-
-        $stateKey = new Domain\ApplicationStateId($appId, $stateName);
-        $entity   = $this->finder->find($stateKey);
-        if ($entity) {
-            $attributeName = $configuration->getName();
-            $request->attributes->set($attributeName, $entity);
+        if ($request->query->has('mode')) {
+            $mode = $request->query->get('mode');
+            $request->attributes->set('options', $mode);
         }
 
         return true;
@@ -67,8 +47,7 @@ class AppStateParamConverter implements ParamConverterInterface
 
     public function supports(Configuration\ParamConverter $configuration)
     {
-        //TODO check that this class supports the configuration
-        // todo temp excluded tag request until proper statement is added
-        return $configuration->getClass() !== TagRequest::class;
+        $class = $configuration->getClass();
+        return empty($class);
     }
 }

@@ -74,6 +74,11 @@ services:
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter }
 
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateOptionsConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateOptionsConverter
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateOptionsConverter }
+
   DeskPRO\Bundle\AppStoreBundle\TypeMapping\StateScopeJmsHandler:
     class: DeskPRO\Bundle\AppStoreBundle\TypeMapping\StateScopeJmsHandler
     tags:
