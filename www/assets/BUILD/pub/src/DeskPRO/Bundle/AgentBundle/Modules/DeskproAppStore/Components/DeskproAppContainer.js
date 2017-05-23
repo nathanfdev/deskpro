@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import * as xcomponent from 'xcomponent/src';
+import * as xcomponent from 'xcomponent/dist/xcomponent';
 
 import { Widget } from '../Domain/Widget'
 import { WidgetMessage } from '../WidgetMessage'

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 
 
-import postRobot from 'post-robot/src';
+import postRobot from 'post-robot/dist/post-robot.js';
 
 function dispatchMessage (eventName, message, parentComponent)
 {

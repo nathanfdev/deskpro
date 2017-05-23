@@ -1,4 +1,4 @@
-import postRobot from 'post-robot/src';
+import postRobot from 'post-robot/dist/post-robot.js';
 import { default as serializeError } from 'serialize-error';
 
 import * as WidgetDOM from '../WidgetDOM';
