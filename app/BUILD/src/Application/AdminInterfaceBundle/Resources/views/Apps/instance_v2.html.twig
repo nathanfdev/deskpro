@@ -14,6 +14,12 @@
 						<div style="margin-left: 52px;">
 							<input type="text" class="form-control camo-input" ng-model="Ctrl.app.name" style="font-size: 22px; width: 75%; max-width: 350px; height: auto;" />
 						</div>
+						<div style="margin-left: 62px;">
+							<p class="info">
+								by {{ ng_var('Ctrl.pack.manifest.author.name') }} &middot; <a ng-href="{{ ng_var('Ctrl.pack.manifest.author.url') }}">Website</a>
+							</p>
+							<p ng-bind-html="Ctrl.pack.manifest.description"></p>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -71,22 +77,10 @@
 				</div>
 			</div>
 		</article>
-		<div ng-if="!default_form && form_template && install_ctrl" class="dp-sep-top">
-			<div ng-include="form_template" ng-controller="install_ctrl"></div>
-		</div>
-		<footer ng-hide="has_own_footer">
+		<footer ng-hide="has_own_footer" style="height: 60px;">
 			<div class="dp-content">
 				<div class="dp-delete-control">
 					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
-				</div>
-
-				<div class="dp-btn-controls">
-					<div dp-hide-spinning="saving_settings">
-						<button class="btn btn-primary" ng-click="Ctrl.saveSettings();">{{ phrase('agent.general.save') }}</button>
-					</div>
-					<div dp-show-spinning="saving_settings">
-						<i class="spinner-flat"></i>
-					</div>
 				</div>
 			</div>
 		</footer>
