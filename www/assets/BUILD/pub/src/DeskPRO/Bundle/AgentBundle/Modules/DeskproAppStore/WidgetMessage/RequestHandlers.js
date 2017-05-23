@@ -97,9 +97,7 @@ export const EVENT_STATE_GET = (response, widget, widgetMessage, services) =>
   const { api } = services;
   const { name, scope } = widgetMessage.body;
 
-
-
-  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
+  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}?mode=find`)
     .then(httpResponse => httpResponse.data)
     .catch(httpResponse => {
       if (httpResponse instanceof Error) { return httpResponse; }
@@ -125,13 +123,41 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
   const { name } = widgetMessage.body;
   const { body: state } = widgetMessage;
 
+  console.log('jonas ', api, api.sendHead);
+
+
+  //need to fix accepting head requests
+  // api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}`)
+  //   .then(httpResponse => {
+  //     if (204 === httpResponse.data.status) {
+  //       return api
+  //         .sendPost(`DP_API/apps/${widget.instanceId}/state`, state)
+  //         .then(httpResponse => httpResponse.data)
+  //       ;
+  //     } else {
+  //       return api
+  //         .sendPut(`DP_API/apps/${widget.instanceId}/state`, state)
+  //         .then(httpResponse => httpResponse.data)
+  //       ;
+  //     }
+  //   })
+  //   .then(httpResponse => httpResponse.data)
+  //   .catch(httpResponse => {
+  //     if (httpResponse instanceof Error) { return httpResponse; }
+  //
+  //     return new Error('failed to get app state');
+  //   })
+  //   .then(data => data instanceof Error ? response(data) : response(null, data))
+  // ;
+
+
   api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}`, state)
     .then(httpResponse => httpResponse.data)
     .catch(httpResponse => {
       if (httpResponse instanceof Error) { return httpResponse; }
 
       // no previous state at that key, let's try and create it
-      if (404 === httpResponse.data.status) {
+      if (204 === httpResponse.data.status) {
         return api
           .sendPost(`DP_API/apps/${widget.instanceId}/state`, state)
           .then(httpResponse => httpResponse.data)
