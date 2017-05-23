@@ -44,7 +44,7 @@ class Build1495206448 extends AbstractBuild implements OnlineBuildInterface
         $deskproUrl  = $hostChecker->simplifyUrl($this->readSetting('core.deskpro_url'), true);
         $siteUrl     = $hostChecker->simplifyUrl($this->readSetting('core.site_url'), true);
 
-        $this->saveSetting('core.deskpro_url', $deskproUrl);
-        $this->saveSetting('core.site_url', $siteUrl);
+        $this->saveSetting('core.deskpro_url', rtrim($deskproUrl, '/').'/');
+        $this->saveSetting('core.site_url', rtrim($siteUrl, '/').'/');
     }
 }
