@@ -128,7 +128,8 @@ class AppZipArchiveBundle implements Domain\AppBundle
         try {
             $resource = $this->archive->open($this->fileInfo->getRealPath(), \ZipArchive::CREATE);
             if (true === $resource) {
-                return $this->archive->getFromName($path);
+                $resource = $this->archive->getFromName($path);
+                return $resource === false ? null : $resource;
             }
         } finally {
             $this->archive->close();
