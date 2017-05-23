@@ -142,8 +142,16 @@ class TicketManager
             $container->get('brand_form_helper')
         );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($this->em->getRepository(Sla::class)->getAutoSlas(), $this->em, new SlaClientMessageSender($this->db));
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($this->em, new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\ApplySlas(
+            $this->em->getRepository(Sla::class)->getAutoSlas(),
+            $this->em,
+            new SlaClientMessageSender($this->db, $this->eventDispatcher)
+        );
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas(
+            $this->em,
+            new ActionApplicator($container),
+            $this->eventDispatcher
+        );
         $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
         $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($this->db);

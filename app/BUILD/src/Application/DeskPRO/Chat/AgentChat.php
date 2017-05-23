@@ -73,8 +73,7 @@ class AgentChat
             $this->person
         );
 
-        $client_messages = [];
-        $channel         = 'chat.message';
+        $channel = 'chat.message';
         if ($conversation['is_agent']) {
             $channel = 'agent_chat.new-message';
         }
@@ -84,7 +83,7 @@ class AgentChat
             $part_ids[] = $part['id'];
         }
 
-        App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+        App::getOrm()->transactional(function ($em) use ($conversation) {
             $em->persist($conversation);
             $em->flush();
         });
