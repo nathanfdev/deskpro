@@ -10,16 +10,16 @@
 	<container>
 		{% set message = ticket_messages|first %}
 		{% if message.person.is_agent %}
-			{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 		{% else %}
-			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 		{% endif %}
 
 		<br /><br />
 
 		{% for message in ticket_messages|slice(1) %}
 			{% if not context.message_limit or loop.index0 < context.message_limit %}
-				{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
+				{% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
 			{% endif %}
 		{% endfor %}
 

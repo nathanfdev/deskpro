@@ -20,9 +20,9 @@
 	<container>
 		{% set message = ticket_messages|first %}
 		{% if message.person.is_agent %}
-			{% include 'DeskPRO:emails_common:ticket-message-agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 		{% else %}
-			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
 		{% endif %}
 
 		<br /><br />
@@ -33,7 +33,7 @@
 
 		<br /><br />
 
-		{%  include 'DeskPRO:emails_common:ticket-props-table.html.twig' %}
+		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
 	</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}

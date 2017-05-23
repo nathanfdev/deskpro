@@ -56,13 +56,13 @@
 		<br /><br />
 
 		<h1>{{ phrase('agent.general.ticket') }}</h1>
-		{%  include 'DeskPRO:emails_common:ticket-props-table.html.twig' %}
+		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
 
 		<br /><br />
 
 		<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
 		{% for log in context.ticket_logs %}
-			{% include 'DeskPRO:emails_common:ticket-log-actiontext.html.twig' %}
+			{% include 'SendmailBundle:emails_common:ticket_log_actiontext.html.twig' %}
 		{% endfor %}
 
 		<br /><br />
@@ -75,12 +75,7 @@
 		{% endif %}
 		{% for message in messages %}
 			{% if not context.message_limit or loop.index0 < context.message_limit %}
-				{% include 'DeskPRO:emails_common:ticket-message-row.html.twig' with {
-				message: message,
-				ticketdisplay: context.ticketdisplay,
-				show_author_email: true,
-				is_to_agent: true
-				} %}
+				{% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay, show_author_email: true, is_to_agent: true } %}
 			{% endif %}
 		{% endfor %}
 	</container>

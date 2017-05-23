@@ -2183,7 +2183,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * Gets the email address that sholud be used for this ticket.
+     * Gets the email address that should be used for this ticket.
      *
      * @return PersonEmail
      */
