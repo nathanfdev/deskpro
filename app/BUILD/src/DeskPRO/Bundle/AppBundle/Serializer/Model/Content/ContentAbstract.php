@@ -164,11 +164,20 @@ abstract class ContentAbstract
     protected $dateUpdated;
 
     /**
+     * DateTime when content was published.
+     *
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    protected $datePublished;
+
+    /**
      * Vote stats object, like {"up": 1, "down": 1}.
      *
      * @JMS\Type("array")
      */
-    protected $vote_stats;
+    protected $voteStats;
 
     /**
      * Revisions of this article.
@@ -187,22 +196,23 @@ abstract class ContentAbstract
      */
     public function __construct(ContentAbstractEntity $entity)
     {
-        $this->id           = $entity->getId();
-        $this->person       = $entity->getPerson();
-        $this->language     = $entity->getLanguage();
-        $this->slug         = $entity->getSlug();
-        $this->title        = $entity->getTitle();
-        $this->content      = $entity->getRealContent();
-        $this->viewCount    = $entity->getViewCount();
-        $this->totalRating  = $entity->getTotalRating();
-        $this->numComments  = $entity->getNumComments();
-        $this->numRatings   = $entity->getNumRatings();
-        $this->status       = $entity->getStatus();
-        $this->hiddenStatus = $entity->getHiddenStatus();
-        $this->dateCreated  = $entity->getDateCreated();
-        $this->dateUpdated  = $entity->getDateUpdated();
-        $this->vote_stats   = $entity->getVoteStats();
-        $this->revisions    = $entity->getRevisions();
+        $this->id            = $entity->getId();
+        $this->person        = $entity->getPerson();
+        $this->language      = $entity->getLanguage();
+        $this->slug          = $entity->getSlug();
+        $this->title         = $entity->getTitle();
+        $this->content       = $entity->getRealContent();
+        $this->viewCount     = $entity->getViewCount();
+        $this->totalRating   = $entity->getTotalRating();
+        $this->numComments   = $entity->getNumComments();
+        $this->numRatings    = $entity->getNumRatings();
+        $this->status        = $entity->getStatus();
+        $this->hiddenStatus  = $entity->getHiddenStatus();
+        $this->dateCreated   = $entity->getDateCreated();
+        $this->dateUpdated   = $entity->getDateUpdated();
+        $this->datePublished = $entity->getDatePublished();
+        $this->voteStats     = $entity->getVoteStats();
+        $this->revisions     = $entity->getRevisions();
     }
 
     /**

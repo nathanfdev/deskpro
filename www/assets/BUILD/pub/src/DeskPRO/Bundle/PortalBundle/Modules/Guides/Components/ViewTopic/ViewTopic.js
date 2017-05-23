@@ -424,7 +424,7 @@ class ViewTopic extends React.Component {
   };
 
   render() {
-    const { topics } = this.state;
+    const { topics, topic } = this.state;
     const { locale, splat } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
     const { fixed } = this.state;
@@ -439,30 +439,30 @@ class ViewTopic extends React.Component {
         </div>
         <div className="topic" ref={(c) => { this.topic = c; }}>
           <header className="section-header">
-            <h1>{this.state.topic.title}</h1>
+            <h1>{topic.title}</h1>
             <span id="publication-date" className="publication_date">
               <label htmlFor="publication-date">{portalPhrases.get('portal.general.published')}: </label>
-              {moment(this.state.topic.date_published).format('DD/MM/YYYY')}
+              {moment(topic.date_published).format('DD/MM/YYYY')}
             </span>
             <span id="last-update-date" className="last_update_date">
               <label htmlFor="last-update-date">{portalPhrases.get('portal.general.updated')}: </label>
-              {moment(this.state.topic.date_updated).format('DD/MM/YYYY')}
+              {moment(topic.date_updated).format('DD/MM/YYYY')}
             </span>
             <hr />
           </header>
           <div className="topic-content">
-            <div dangerouslySetInnerHTML={{ __html: this.state.topic.content }} />
+            <div dangerouslySetInnerHTML={{ __html: topic.content }} />
           </div>
           <CommentsBlock
-            count={this.state.topic.calc_num_comments}
+            count={topic.calc_num_comments}
             flashes={this.state.flashes}
             postComment={this.postComment}
-            comments={this.state.topic.comments}
+            comments={topic.comments}
           />
-          <div className={classNames('loading', { active: this.state.doSpin || !this.state.topic.slug })} />
+          <div className={classNames('loading', { active: this.state.doSpin || !topic.slug })} />
         </div>
         <div className="content-summary">
-          <TopicSummary content={this.state.topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
+          <TopicSummary content={topic.content} fixed={fixed} agentBarHeight={agentBarHeight} />
         </div>
       </div>
     );
