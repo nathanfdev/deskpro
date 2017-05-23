@@ -24,8 +24,13 @@ class LegacySidebarContainer extends React.Component
     iconsContainer.addEventListener('mouseover', this.onMouseOver);
     iconsContainer.addEventListener('click', this.onMouseClick);
 
+    // add app icons
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
-    appIcons.addAppIcon('/file.php/apps/deskpro_magento/res/magento.png?v=1487683051');
+    const { widgetsConfigList } = this.props;
+    widgetsConfigList.forEach(widgetConfiguration => {
+      const { baseUrl, assets } = widgetConfiguration.appConfig;
+      appIcons.addAppIcon(assets.getIconUrl(baseUrl));
+    });
 
     //show legacy content if it is available
     if (window.AppPlatform.apps.length) {

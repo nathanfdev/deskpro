@@ -1,4 +1,5 @@
 import { AppUrlBuilder } from './AppUrlBuilder'
+import { AppAssets } from './AppAssets'
 
 class AppConfiguration
 {
@@ -32,19 +33,45 @@ class AppConfiguration
     };
   }
 
+  /**
+   * @return {String}
+   */
   get instanceId() { return this.props.instanceId; }
 
+  /**
+   * @return {String}
+   */
   get applicationId() { return this.props.applicationId; }
 
+  /**
+   * @return {String}
+   */
   get applicationTitle() { return this.props.title; }
 
+  /**
+   * @return {String}
+   */
   get applicationPackageName() { return this.props.packageName; }
 
+  /**
+   * @return {Array}
+   */
   get settings() { return this.props.settings; }
 
+  /**
+   * @return {Array}
+   */
   get targets() { return this.props.targets; }
 
+  /**
+   * @return {String}
+   */
   get baseUrl() { return this.props.baseUrl; }
+
+  /**
+   * @return {AppAssets}
+   */
+  get assets() { return new AppAssets(); }
 
   /**
    * @param {String} target

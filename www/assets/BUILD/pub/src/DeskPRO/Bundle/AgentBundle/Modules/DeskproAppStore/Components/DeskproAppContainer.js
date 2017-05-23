@@ -31,7 +31,6 @@ class DeskproAppContainer extends React.Component
 
   constructor(props) {
     super(props);
-    //this.components = new Map();
     this.widgets = [];
   }
 
