@@ -81,6 +81,30 @@ class AppStateController extends BaseController
     }
 
     /**
+     * @Rest\Head("/{name}/{scope}")
+     * @DeskproAnnotations\ApiUserContext("agent")
+     *
+     * @ParamConverter("state", class="AppStoreBundle:Domain\ApplicationState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
+     *
+     * @param Entity\AppStore\AppState $state
+     * @param string $scope
+     * @return View\View
+     */
+    public function existsStateAction(Entity\AppStore\AppState $state = null, $scope)
+    {
+        $scopeObject = StateScope::parseString($scope);
+        if (is_null($scopeObject) || !StateScope::isValid($scopeObject)) {
+            throw new BadRequestHttpException('invalid scope');
+        }
+
+        if (is_null($state)) {
+            return View\View::create([], Response::HTTP_NO_CONTENT);
+        }
+
+        return View\View::create([], Response::HTTP_OK);
+    }
+
+    /**
      * @Rest\Get("/{name}/{scope}")
      * @DeskproAnnotations\ApiUserContext("agent")
      *
@@ -156,8 +180,12 @@ class AppStateController extends BaseController
      * @param AppStateRepresentation $representation
      * @return AppStateRepresentation
      */
-    public function putStateAction(Entity\AppStore\AppState $state, AppStateRepresentation $representation)
+    public function putStateAction(Entity\AppStore\AppState $state = null, AppStateRepresentation $representation)
     {
+        if (is_null($state)) {
+            throw new NotFoundHttpException('could not find state');
+        }
+
         //TODO make sure private state is updated by owner
         $representation->mapToAppStateEntity($state);
 
