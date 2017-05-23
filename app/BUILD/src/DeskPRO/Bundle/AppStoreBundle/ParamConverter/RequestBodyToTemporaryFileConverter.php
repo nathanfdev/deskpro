@@ -28,14 +28,14 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DpRun\DpEnv;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class RequestBodyToTemporaryFileConverter
- * @package DeskPRO\Bundle\ApiBundle\ParamConverter
+ * Class RequestBodyToTemporaryFileConverter.
  */
 class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 {
@@ -43,6 +43,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
     {
         /** @var DpEnv $deskproEnv */
         $deskproEnv = $GLOBALS['DP_ENV'];
+
         return self::createFromDeskproEnv($deskproEnv);
     }
 
@@ -61,6 +62,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 
     /**
      * RequestBodyToTemporaryFileConverter constructor.
+     *
      * @param string $tmpDir
      */
     public function __construct($tmpDir)
@@ -70,12 +72,13 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $file = $this->writeInputStreamToFile();
+        $file      = $this->writeInputStreamToFile();
         $converted = $this->applyConversion($file, $request, $configuration);
 
-        if (! empty($converted)) {
+        if (!empty($converted)) {
             $attributeName = $configuration->getName();
             $request->attributes->set($attributeName, $converted);
+
             return true;
         }
 
@@ -85,6 +88,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
     protected function applyConversion($file, Request $request, ParamConverter $configuration)
     {
         $fileInfo = new \SplFileInfo($file);
+
         return $fileInfo;
     }
 
@@ -102,6 +106,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
     public function supports(ParamConverter $configuration)
     {
         // TODO: Implement supports() method.
-        return true;
+        // todo temp excluded tag request until proper statement is added
+        return $configuration->getClass() !== TagRequest::class;
     }
 }
