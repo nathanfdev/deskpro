@@ -51,7 +51,11 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 class AppsController extends BaseController
 {
     /**
-     * @ApiDoc(section="Apps")
+     * @ApiDoc(
+     *   section="Apps",
+     *   description="Returns a list of application instances",
+     *   output="array<DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstance>"
+     * )
      *
      * @Rest\Get("")
      *
