@@ -60,6 +60,7 @@ use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -2002,6 +2003,8 @@ class TicketSearchController extends AbstractController
                         $new_message = isset($opt['reply_text']) ? $this->cleaner->clean($opt['reply_text'], 'html') : '';
                         $new_message = Strings::trimHtml($new_message);
                         $new_message = Strings::prepareWysiwygHtml($new_message);
+                        $new_message = RegexUtils::safePregReplace('#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i', '$1', $new_message);
+
                         if ($new_message) {
                             $opt['reply_text'] = $new_message;
                             $contextType       = 'newreply';
