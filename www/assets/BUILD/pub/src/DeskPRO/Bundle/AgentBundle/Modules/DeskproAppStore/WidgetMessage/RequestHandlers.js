@@ -123,9 +123,6 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
   const { name } = widgetMessage.body;
   const { body: state } = widgetMessage;
 
-  console.log('jonas ', api, api.sendHead);
-
-
   //need to fix accepting head requests
   // api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}`)
   //   .then(httpResponse => {
@@ -157,7 +154,7 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
       if (httpResponse instanceof Error) { return httpResponse; }
 
       // no previous state at that key, let's try and create it
-      if (204 === httpResponse.data.status) {
+      if (404 === httpResponse.data.status) {
         return api
           .sendPost(`DP_API/apps/${widget.instanceId}/state`, state)
           .then(httpResponse => httpResponse.data)
