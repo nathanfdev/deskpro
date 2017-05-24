@@ -2141,9 +2141,10 @@ class TicketSearch extends SearcherAbstract
                                         break;
                                     case self::OP_CONTAINS:
                                     case self::OP_NOTCONTAINS:
-                                        $op = 'LIKE';
-                                        if ($op == self::OP_NOTCONTAINS) {
+                                        if ($op === self::OP_NOTCONTAINS) {
                                             $op = 'NOT LIKE';
+                                        } else {
+                                            $op = 'LIKE';
                                         }
                                         $w = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
 
