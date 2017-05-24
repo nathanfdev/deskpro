@@ -66,7 +66,7 @@ class SystemEventGenerator extends AbstractGenerator
     /**
      * @param SystemEventInterface $event
      *
-     * @return MessageInterface
+     * @return MessageInterface[]
      */
     public function createMessages(SystemEventInterface $event)
     {
@@ -87,11 +87,7 @@ class SystemEventGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        if ($event instanceof LegacySystemEvent) {
-            return true;
-        }
-
-        return false;
+        return get_class($event) === LegacySystemEvent::class;
     }
 
     /**
