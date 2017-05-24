@@ -35,7 +35,6 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewPerson as NewPersonModel;
 use Application\AgentBundle\Form\Type\NewPerson as NewPersonType;
 use Application\DeskPRO\App;
-use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
@@ -1492,10 +1491,6 @@ class PersonController extends AbstractController
                 $this->person->id
             );
 
-            // Notify about new person
-            foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                $this->em->persist($cm);
-            }
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {

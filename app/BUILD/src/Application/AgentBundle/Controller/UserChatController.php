@@ -888,16 +888,7 @@ class UserChatController extends AbstractController
      */
     protected function createJsonCmResponse(array $otherData = [])
     {
-        $clientMessages = false;
-        if ($this->in->getUint('client_messages_since')) {
-            $clientMessages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUint('client_messages_since'),
-                null
-            );
-        }
-
+        $clientMessages               = false;
         $otherData['client_messages'] = $clientMessages;
 
         return $this->createJsonResponse($otherData);

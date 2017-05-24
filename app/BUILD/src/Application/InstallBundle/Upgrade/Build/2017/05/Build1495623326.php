@@ -26,28 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace Application\DeskPRO\ClientMessage\MessageHandler;
-
-/**
- * A basic message encoder simply returns the data.
- */
-class BasicArray extends AbstractMessageHandler
+class Build1495623326 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
-    /**
-     * Get the message to give the client.
-     *
-     * @param  $context
-     *
-     * @return mixed
-     */
-    public function getMessage($context)
+    public function addNewTables()
     {
-        return $this->message['data'];
+    }
+
+    public function runAlters()
+    {
+        $this->out('Dropping old client_messages table');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS client_messages');
+    }
+
+    public function run()
+    {
     }
 }

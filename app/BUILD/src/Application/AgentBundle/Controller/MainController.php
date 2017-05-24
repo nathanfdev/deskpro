@@ -88,15 +88,7 @@ class MainController extends AbstractController
     {
         $this->person->loadPrefGroup('agent.ui');
 
-        $last_message_id = $this->db->fetchColumn('
-            SELECT id
-            FROM client_messages
-            ORDER BY id DESC
-            LIMIT 1
-        ');
-        if (!$last_message_id) {
-            $last_message_id = -1;
-        }
+        $last_message_id = -1;
 
         // Used in some header menus for search options
         $titles = [];
