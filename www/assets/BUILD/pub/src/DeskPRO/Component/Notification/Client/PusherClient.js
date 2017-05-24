@@ -80,7 +80,7 @@ export default class PusherClient extends AbstractClient {
 
     const channel = this.client.subscribe(channelName);
     channel.bind(eventName, (data) => {
-      if (data.target === that.options.me) {
+      if (parseInt(data.target, 10) === that.options.me) {
         that.options.dispatcher(eventName, data);
       }
     });
