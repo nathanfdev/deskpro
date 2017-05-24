@@ -171,10 +171,19 @@ class PhrasePopup extends React.Component {
   };
 
   render() {
+    let positionMy = 'left top-1px';
+    let positionAt = 'left bottom';
+    if (this.span) {
+      const viewportOffset = this.span.getBoundingClientRect();
+      if (window.innerHeight - viewportOffset.bottom < 450) {
+        positionMy = 'left bottom+1px';
+        positionAt = 'left top';
+      }
+    }
     return (
       <PopUp
-        positionMy="left top-1px"
-        positionAt="left bottom"
+        positionMy={positionMy}
+        positionAt={positionAt}
         zIndex={100}
         content={this.getPopUp()}
         ref={(c) => { this.popup = c; }}
@@ -184,6 +193,7 @@ class PhrasePopup extends React.Component {
       >
         <span
           onClick={this.openPopup}
+          ref={(c) => { this.span = c; }}
         >
           {this.props.text}
         </span>
