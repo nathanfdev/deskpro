@@ -28,13 +28,13 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
-use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -204,59 +204,94 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $sentCount = 0;
 
-        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
-
-        switch ($context->getEventType()) {
-            case 'newticket':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
-            case 'newreply':
-                /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
-                $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
-                $messages    = $messageRepo->getTicketMessages(
-                    $ticket,
-                    [
-                        'with_notes'       => false,
-                        'with_attachments' => true,
-                        'limit'            => 15,
-                        'order'            => 'DESC',
-                    ]
-                );
-                if ($messages) {
-                    $lastMessage = array_pop($messages);
-                    $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
-                } else {
-                    $context->getLogger()->info('No reply to send: '.$context->getEventType());
-
-                    return;
+        $state          = $ticket->getStateChangeRecorder();
+        $fnCheckNewPart = function ($agent) use ($state, $ticket) {
+            $has = false;
+            foreach ($ticket->getParticipants() as $p) {
+                if ($p->getPerson() === $agent) {
+                    $has = true;
+                    break;
                 }
-                break;
-            case 'update':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
-            default:
-                $context->getLogger()->info('Unknown event type: '.$context->getEventType());
+            }
+            if (!$has) {
+                return false;
+            }
 
-                return;
+            foreach ($state->getChangesForField('participants') as $change) {
+                if ($change instanceof ChangeCollection) {
+                    foreach ($change->getAddedElements() as $p) {
+                        if ($p->getPerson() === $agent) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        if ($context->getVars()->has('mention_agents')) {
+            $mentionedAgentsMap = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
+        } else {
+            $mentionedAgentsMap = [];
         }
 
-        $mailer = $this->getContainer()->get('mailer');
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer());
+        $emailBuilder
+            ->setTicket($ticket)
+            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
+            ->setFromEmailAccount($fromAccount)
+            ->setAgentMode()
+            ->setTemplateName($template)
+            ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
+            ->setLogger($context->getLogger())
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
+        ;
+
+        $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(true));
+
+        $changedAgent        = $state->hasChangedField('agent');
+        $changedAgentTeam    = $state->hasChangedField('agent_team');
+        $changedParticipants = $state->hasChangedField('participants');
+        $changedStatus       = $state->hasChangedField('status');
+
+        if ($state->hasChangedField('ticket_sla_status')) {
+            $change = $state->getLastChangeForField('ticket_sla_status');
+            $new    = $change->getNew();
+
+            $defaultVars['sla']        = $new['sla'];
+            $defaultVars['sla_status'] = $new['status'];
+        }
 
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
             ++$sentCount;
 
-            $context->getLogger()->debug(
-                sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName())
-            );
+            $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName()));
+            $vars = $defaultVars;
 
-            $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, ['to' => $agent]);
+            $typeFlag = null;
+            if ($changedAgent && $ticket->getAgent() && $ticket->getAgent() === $agent) {
+                $typeFlag = 'assigned';
+            } elseif ($changedAgentTeam && $ticket->getAgentTeam() && $agent->getHelper('Agent')->isTeamMember($ticket->getAgentTeam()->getId())) {
+                $typeFlag = 'assigned_team';
+            } elseif ($changedParticipants && $fnCheckNewPart($agent)) {
+                $typeFlag = 'added_part';
+            } elseif ($changedStatus) {
+                $typeFlag = 'status_changed';
+            }
+
+            $vars['type_flag'] = $typeFlag;
+            if (isset($mentionedAgentsMap[$agent->getId()])) {
+                $vars['is_my_mention'] = true;
+            }
 
             $vars['is_mention_email'] = $context->getVars()->has('mention_agents') ? true : false;
 
             try {
-                $mailer->send($message);
+                $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
+                $ticketEmail->send($vars);
+                $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(
                     sprintf('[SendAgentEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
@@ -276,7 +311,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
+            $context->getLogger()->debug('[SendAgentEmail] no outgoing email accounts are defined');
 
             return true;
         }

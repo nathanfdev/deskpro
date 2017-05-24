@@ -75,7 +75,7 @@ define [
 
         if !@esc.actions.actions? || @esc.actions.actions.length != 1
           return @esc.is_default_action = false
-        if 'SendUserEmail' == @esc.actions.actions[0].type && 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig' == @esc.actions.actions[0].options.template
+        if 'SendUserNewEmail' == @esc.actions.actions[0].type && 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig' == @esc.actions.actions[0].options.template
           @esc.is_default_action = true
         else if 3 == @esc.sys_num && 'SetStatus' == @esc.actions.actions[0].type && 'resolved' == @esc.actions.actions[0].options.status
           @esc.is_default_action = true

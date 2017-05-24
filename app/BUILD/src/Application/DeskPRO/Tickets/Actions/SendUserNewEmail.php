@@ -26,11 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
+
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -41,7 +47,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool from_account   The account to send from (falsey for ticket account)
  * @option bool do_cc_users    True to CC the email to other user parts in the ticket
  */
-class SendUserLegacyEmail extends AbstractEmailAction
+class SendUserNewEmail extends AbstractEmailAction
 {
     /**
      * {@inheritdoc}
@@ -59,13 +65,13 @@ class SendUserLegacyEmail extends AbstractEmailAction
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $context->getLogger()->debug('[SendUserLegacyEmail] Begin');
+        $context->getLogger()->debug('[SendUserNewEmail] Begin');
         $startTime = microtime(true);
 
         try {
             $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
-            $context->getLogger()->warn("[SendUserLegacyEmail] Error {$e->getMessage()}");
+            $context->getLogger()->warn("[SendUserNewEmail] Error {$e->getMessage()}");
 
             return;
         }
@@ -73,7 +79,7 @@ class SendUserLegacyEmail extends AbstractEmailAction
         try {
             $template = $this->getEmailTemplateOption($ticket, $context, false);
         } catch (\InvalidArgumentException $e) {
-            $context->getLogger()->warn("[SendUserLegacyEmail] Error {$e->getMessage()}");
+            $context->getLogger()->warn("[SendUserNewEmail] Error {$e->getMessage()}");
 
             return;
         }
@@ -88,58 +94,53 @@ class SendUserLegacyEmail extends AbstractEmailAction
         // Send emails
         //-------------------------
 
-        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
-            ->setTicket($ticket)
-            ->setToPerson($ticket->person)
-            ->setUserMode()
-            ->setTemplateName($template)
-            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
-            ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
-            ->setLogger($context->getLogger())
-            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
-            ->setFromEmailAccount($fromAccount);
+        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
 
-        if ($this->getActionOption('do_cc_users')) {
-            $emailBuilder->enableUserCc();
-        }
-
-        // If this is from a user reply, then mark the email as auto and handle disable auto setting
-        if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
-            $context->getLogger()->info('[SendUserLegacyEmail] Identified as an automatic email');
-            $emailBuilder->setIsAuto();
-
-            if ($context->getVars()->has('ticket_email')) {
-                /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticketEmail */
-                $ticketEmail = $context->getVars()->get('ticket_email');
-                if ($ticketEmail->is_bounce) {
-                    $context->getLogger()->info('Skipping email because is_bounce = true');
+        switch ($context->getEventType()) {
+            case 'newticket':
+                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
+                break;
+            case 'newreply':
+                /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
+                $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
+                $messages    = $messageRepo->getTicketMessages(
+                    $ticket,
+                    [
+                        'with_notes'       => false,
+                        'with_attachments' => true,
+                        'limit'            => 15,
+                        'order'            => 'DESC',
+                    ]
+                );
+                if ($messages) {
+                    $lastMessage = array_pop($messages);
+                    $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
+                } else {
+                    $context->getLogger()->info('No reply to send: '.$context->getEventType());
 
                     return;
                 }
-            }
-
-            if ($ticket->person->disable_autoresponses) {
-                $context->getLogger()->info('Skipping email because user is marked as an auto-responder');
+                break;
+            case 'update':
+                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
+                break;
+            default:
+                $context->getLogger()->info('Unknown event type: '.$context->getEventType());
 
                 return;
-            }
-
-            foreach ($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
-                if ($m->person->disable_autoresponses) {
-                    $context->getLogger()->info(sprintf('Skipping email because user #%d %s on message #%d is an auto-responder', $m->person->id, $m->person->getDisplayContact(), $m->id));
-
-                    return;
-                }
-            }
         }
 
-        $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(false));
+        $message = $this->getContainer()->get('email.email_sender')
+            ->prepareMessage($viewModel, ['to' => $ticket->person]);
 
-        $ticketEmail = $emailBuilder->buildTicketEmail();
+        $fromEmail = $fromAccount->getUseEmailAddress();
+        $fromName  = $this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user');
+        $message->setFrom($fromEmail, $fromName);
+
+        $mailer = $this->getContainer()->get('mailer');
 
         try {
-            $ticketEmail->send($defaultVars);
-            $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
+            $mailer->send($message);
         } catch (\Exception $e) {
             $context->getLogger()->error(
                 sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),
@@ -149,7 +150,7 @@ class SendUserLegacyEmail extends AbstractEmailAction
             throw $e;
         }
 
-        $context->getLogger()->info(sprintf('[SendUserLegacyEmail] Sent message in %.3fs', microtime(true) - $startTime));
+        $context->getLogger()->info(sprintf('[SendUserNewEmail] Sent message in %.3fs', microtime(true) - $startTime));
     }
 
     /**
@@ -158,13 +159,13 @@ class SendUserLegacyEmail extends AbstractEmailAction
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug('[SendUserLegacyEmail] no outgoing email accounts are defined');
+            $context->getLogger()->debug('[SendUserNewEmail] no outgoing email accounts are defined');
 
             return true;
         }
 
         if ($context->getVars()->get('mute_user_emails')) {
-            $context->getLogger()->debug('[SendUserLegacyEmail] mute_user_emails = true');
+            $context->getLogger()->debug('[SendUserNewEmail] mute_user_emails = true');
 
             return true;
         }

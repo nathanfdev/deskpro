@@ -26,17 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
@@ -95,63 +89,6 @@ class SendUserEmail extends AbstractEmailAction
         // Send emails
         //-------------------------
 
-        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
-
-        switch ($context->getEventType()) {
-            case 'newticket':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
-            case 'newreply':
-                /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
-                $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
-                $messages    = $messageRepo->getTicketMessages(
-                    $ticket,
-                    [
-                        'with_notes'       => false,
-                        'with_attachments' => true,
-                        'limit'            => 15,
-                        'order'            => 'DESC',
-                    ]
-                );
-                if ($messages) {
-                    $lastMessage = array_pop($messages);
-                    $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
-                } else {
-                    $context->getLogger()->info('No reply to send: '.$context->getEventType());
-
-                    return;
-                }
-                break;
-            case 'update':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
-            default:
-                $context->getLogger()->info('Unknown event type: '.$context->getEventType());
-
-                return;
-        }
-
-        $message = $this->getContainer()->get('email.email_sender')
-            ->prepareMessage($viewModel, ['to' => $ticket->person]);
-
-        $mailer = $this->getContainer()->get('mailer');
-
-        try {
-            $mailer->send($message);
-        } catch (\Exception $e) {
-            $context->getLogger()->error(
-                sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),
-                ['exception' => $e]
-            );
-
-            throw $e;
-        }
-
-        $context->getLogger()->info(sprintf('[SendUserEmail] Sent message in %.3fs', microtime(true) - $startTime));
-
-        return;
-
-        // Old code as temporary reference
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
             ->setTicket($ticket)
             ->setToPerson($ticket->person)
@@ -199,6 +136,7 @@ class SendUserEmail extends AbstractEmailAction
 
         $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(false));
 
+        /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
         try {

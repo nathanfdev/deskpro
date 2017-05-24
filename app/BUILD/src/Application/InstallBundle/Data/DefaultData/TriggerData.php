@@ -35,8 +35,8 @@
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Tickets\Actions\SendAgentEmail;
-use Application\DeskPRO\Tickets\Actions\SendUserEmail;
+use Application\DeskPRO\Tickets\Actions\SendAgentNewEmail;
+use Application\DeskPRO\Tickets\Actions\SendUserNewEmail;
 use Application\DeskPRO\Tickets\Actions\SetAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentMessage;
@@ -82,7 +82,7 @@ class TriggerData extends AbstractDefaultData
             $trigger->run_order     = 1000;
             $trigger->sys_name      = "default_{$event_trigger}_agentemail";
             $trigger->title         = 'Send agent notifications';
-            $trigger->actions->addAction(new SendAgentEmail([
+            $trigger->actions->addAction(new SendAgentNewEmail([
                 'template'  => $template_name,
                 'agent_ids' => ['notify_list'],
                 'from_name' => 'performer',
@@ -111,7 +111,7 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
+        $trigger->actions->addAction(new SendUserNewEmail([
             'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'performer',
@@ -138,7 +138,7 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
+        $trigger->actions->addAction(new SendUserNewEmail([
             'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'helpdesk_name',
@@ -165,7 +165,7 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
+        $trigger->actions->addAction(new SendUserNewEmail([
             'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'helpdesk_name',
@@ -192,7 +192,7 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
+        $trigger->actions->addAction(new SendUserNewEmail([
             'template'    => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
             'do_cc_users' => true,
             'from_name'   => 'performer',

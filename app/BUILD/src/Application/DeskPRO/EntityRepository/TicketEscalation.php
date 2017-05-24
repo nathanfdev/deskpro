@@ -34,7 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Tickets\Actions\SendUserEmail;
+use Application\DeskPRO\Tickets\Actions\SendUserNewEmail;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
@@ -133,7 +133,7 @@ class TicketEscalation extends AbstractEntityRepository
         $esc['is_enabled']         = false;
 
         if (@$def['default_template']) {
-            $esc->actions->addAction(new SendUserEmail([
+            $esc->actions->addAction(new SendUserNewEmail([
                 'template'     => $def['default_template'],
                 'do_cc_users'  => false,
                 'from_name'    => 'helpdesk_name',
