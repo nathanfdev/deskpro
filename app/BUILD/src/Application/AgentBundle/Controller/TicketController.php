@@ -3746,6 +3746,26 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException('You cannot merge a ticket with itself');
         }
 
+        if ($ticket->getLockedByAgent() && $ticket->getLockedByAgent() !== $this->person && !$this->in->getBool('ticket_force')) {
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id),
+                ],
+                400
+            );
+        }
+
+        if ($other_ticket->getLockedByAgent() && $other_ticket->getLockedByAgent() !== $this->person && !$this->in->getBool('other_ticket_force')) {
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id),
+                ],
+                400
+            );
+        }
+
         if (!$merge->checkPersonPermission()) {
             throw $this->createNotFoundException('User does not have permission to merge these tickets');
         }
@@ -3766,6 +3786,35 @@ class TicketController extends AbstractController
                 'success' => true,
                 'id'      => $ticket['id'],
                 'old_id'  => $old_ticket_id,
+            ]
+        );
+    }
+
+    private function renderMergeOverlay($ticketId, $otherTicketId)
+    {
+        $ticket = $this->getTicketOr404($ticketId, 'modify_merge');
+
+        $fieldManager = $this->container->getSystemService('ticket_fields_manager');
+        $customFields = $fieldManager->getDisplayArrayForObject($ticket);
+
+        if ($otherTicketId) {
+            $otherTicket       = $this->getTicketOr404($otherTicketId, 'view');
+            $otherCustomFields = $fieldManager->getDisplayArrayForObject($otherTicket);
+            $canMerge          = $this->person->PermissionsManager->TicketChecker->canMerge($ticket, $otherTicket);
+        } else {
+            $canMerge          = null;
+            $otherTicket       = false;
+            $otherCustomFields = false;
+        }
+
+        return $this->container->get('twig')->render(
+            'AgentBundle:Ticket:merge-overlay.html.twig',
+            [
+                'ticket'              => $ticket,
+                'custom_fields'       => $customFields,
+                'other_ticket'        => $otherTicket,
+                'other_custom_fields' => $otherCustomFields,
+                'can_merge'           => $canMerge,
             ]
         );
     }

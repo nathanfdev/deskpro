@@ -2092,6 +2092,8 @@ return [
     'agent.tickets.merge_submit_btn'                           => 'Merge these two tickets',
     'agent.tickets.merge_ticket'                               => 'Merge Ticket',
     'agent.tickets.merged_into_this'                           => 'merged into this',
+    'agent.tickets.merge_ticket_locked'                        => 'Ticket #{{id}} has been locked by {{agent_name}}',
+    'agent.tickets.merge_force'                                => 'Check this checkbox to override the lock and merge anyway.',
     'agent.tickets.message_id'                                 => 'Message ID',
     'agent.tickets.message_number'                             => 'Message #{{number}}',
     'agent.tickets.messages'                                   => 'Messages',
