@@ -48,11 +48,11 @@ class TicketUpdatedEventSpec extends ObjectBehavior
 
     public function it_can_return_data()
     {
-        $this->getData()->shouldBe(['test_data' => 2]);
+        $this->getData()->shouldBe(['test_data' => 2, 'eventType' => 'some.event', 'ticket_id' => 1]);
     }
 
     public function it_returns_propper_event_name()
     {
-        $this->getName()->shouldBe(TicketUpdatedEvent::EVENT_NAME);
+        $this->getName()->shouldBe('some.event');
     }
 }
