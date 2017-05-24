@@ -118,8 +118,8 @@ class AppStateController extends BaseController
      */
     public function getStateAction(Entity\AppStore\AppState $state = null, $scope, $options = null)
     {
-        $scopeObject = StateScope::parseString($scope);
-        if (is_null($scopeObject) || !StateScope::isValid($scopeObject)) {
+        $existingScope = StateScope::parseString($scope);
+        if (is_null($existingScope) || !StateScope::isValid($existingScope)) {
             throw new BadRequestHttpException('invalid scope');
         }
 
@@ -131,8 +131,15 @@ class AppStateController extends BaseController
             throw new NotFoundHttpException('could not find state');
         }
 
+        $actualScope = $state->getScope();
+        if (!$actualScope->equals($existingScope)) {
+            throw new NotFoundHttpException('could not find state');
+        }
 
-        if (!$state->getScope()->equals($scopeObject)) {
+        if (
+            $actualScope->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE
+            && $state->getOwnerId() != $this->getUser()->getId()
+        ) {
             throw new NotFoundHttpException('could not find state');
         }
 
@@ -184,6 +191,11 @@ class AppStateController extends BaseController
     {
         if (is_null($state)) {
             throw new NotFoundHttpException('could not find state');
+        }
+
+        if ($state->getScope()->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE) {
+            $owner = $this->getUser();
+            $state->setOwner($owner);
         }
 
         //TODO make sure private state is updated by owner
