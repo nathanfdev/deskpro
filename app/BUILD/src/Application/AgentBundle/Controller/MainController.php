@@ -52,6 +52,7 @@ use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\NewSearch\Manager\Doctrine;
 use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use Application\DeskPRO\People\PrefNoticeSet;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use DeskPRO\Component\Filesystem\SafeFile;
 use Doctrine\DBAL\Connection;
@@ -210,6 +211,7 @@ class MainController extends AbstractController
             'is_billing_error'    => $is_billing_error,
             'last_message_id'     => $last_message_id,
             'js_debug'            => App::getConfig('debug.js', []),
+            'reduce_poll_rate'    => $this->shouldReducePollRate(),
             'is_first_login'      => $is_first_login,
             'is_first_login_name' => $is_first_login_name,
             'timezones'           => \DateTimeZone::listIdentifiers(),
@@ -221,6 +223,14 @@ class MainController extends AbstractController
             'chat_snippet_cats'   => $chat_snippet_cats,
             'brand_app_settings'  => $this->getBrandAppSettings(),
         ]);
+    }
+
+    private function shouldReducePollRate()
+    {
+        $clients = $this->get('deskpro.notification.service')->getClientsSetup()->getClients();
+        $client  = $clients && count($clients) === 1 ? $clients[0] : false;
+        /* @var NotificationClient|bool $client */
+        return !$client ?: $client->getType() === 'pusher';
     }
 
     /**

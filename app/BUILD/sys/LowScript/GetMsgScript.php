@@ -134,11 +134,11 @@ class GetMsgScript extends LowScriptAbstract
             }
 
             // We don't do custom filters data based on request, but instead based on the poll count
-            // We do it every 125 polls, which is roughly 10 minutes
+            // We do it every 125 polls, which is roughly 10 minutes or on refresh_check == 1
             $dos = array_filter($dos, function ($v) {
                 return $v !== 'get-custom-filters-data';
             });
-            if ($count && $count % 125 === 0) {
+            if (($count && $count % 125 === 0) || (isset($_REQUEST['refresh_check']) && $_REQUEST['refresh_check'] == 1)) {
                 $dos[] = 'get-custom-filters-data';
             }
 
