@@ -28,7 +28,26 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 class AgentTicketUpdate extends TicketEmailType
 {
+    /**
+     * The ticket access code.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $tac;
+
+    /**
+     * @param string $tac
+     */
+    public function setTac($tac)
+    {
+        $this->tac = $tac;
+    }
+
     protected $templateFile = 'emails_agent:ticket_update.html.twig';
 }

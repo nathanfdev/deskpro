@@ -235,6 +235,8 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
             $tac = TicketUtil::getTacForPerson($ticket, $agent);
 
+            $viewModel->setTac($tac);
+
             $context->getLogger()->debug(
                 sprintf('[SendAgentNewEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName())
             );
