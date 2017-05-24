@@ -62,6 +62,7 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
         $document->set('title', implode(' ', $titles));
         $document->set('content', implode(' ', $content));
         $document->set('status', $object->getStatus());
+        $document->set('hidden_status', $object->getHiddenStatus());
 
         $cat_ids = [];
         foreach ($object->getCategories() as $c) {
