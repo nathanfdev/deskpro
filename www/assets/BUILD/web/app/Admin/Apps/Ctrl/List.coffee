@@ -9,7 +9,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @$scope.packagesFilter = (hide_installed) ->
         is_installed = !hide_installed
         return (itm) ->
-          return !itm.is_installed || itm.is_installed == is_installed
+          return !itm.is_usersource_app && (!itm.is_installed || itm.is_installed == is_installed)
 
       return
 
