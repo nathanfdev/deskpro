@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
+use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -171,6 +172,19 @@ class AppsController extends BaseController
         $em = $this->getManager();
         $em->remove($application);
         $em->remove(($application->getApp()));
+        $em->flush();
+
+        $cm = new ClientMessage();
+        $cm->fromArray([
+            'channel' => 'agent.ui.reload',
+            'data'    => [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+            ],
+        ]);
+
+        $em->persist($cm);
         $em->flush();
 
         return new View(null, HttpFoundation\Response::HTTP_NO_CONTENT);

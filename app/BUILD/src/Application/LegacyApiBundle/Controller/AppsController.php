@@ -36,6 +36,7 @@ use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
@@ -310,6 +311,19 @@ class AppsController extends AbstractController
                 $context = new SideloadSerializationContext();
                 $context->setIncludes(['app']);
                 $context->setInlineSideloads(true);
+
+                $cm = new ClientMessage();
+                $cm->fromArray([
+                    'channel' => 'agent.ui.reload',
+                    'data'    => [
+                        'type'        => 'admin',
+                        'person_id'   => 0,
+                        'person_name' => 'System',
+                    ],
+                ]);
+
+                $this->em->persist($cm);
+                $this->em->flush();
 
                 $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
 

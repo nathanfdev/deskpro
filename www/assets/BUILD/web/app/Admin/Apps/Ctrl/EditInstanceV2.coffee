@@ -190,6 +190,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
             @$scope.$parent?.ListCtrl.removeAppInstance(@app.id, true)
 
           # close this view
+          window.location.hash = '/apps/apps'
           @$state.go('apps.apps')
         )
 
