@@ -297,8 +297,8 @@ class TicketEmail
         if ($this->toPersonEmail && $this->toPerson->hasEmailAddress($this->toPersonEmail)) {
             $toEmail = $this->toPersonEmail;
         } elseif ($this->userMode == self::MODE_USER) {
-            if ($this->ticket->getPersonEmail() && $this->ticket->getPersonEmail()->getPerson() === $this->toPerson) {
-                $toEmail = $this->ticket->getPersonEmail()->getEmail();
+            if ($this->ticket->getTicketPersonEmail() && $this->ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
+                $toEmail = $this->ticket->getTicketPersonEmail()->getEmail();
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
             } elseif ($this->toPerson->getPrimaryEmail()) {
                 $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();

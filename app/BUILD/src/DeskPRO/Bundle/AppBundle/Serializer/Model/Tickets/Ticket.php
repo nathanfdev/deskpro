@@ -645,8 +645,8 @@ class Ticket
         $this->product    = $ticket->getProduct();
         $this->person     = $ticket->getPerson();
 
-        if ($ticket->getPersonEmail()) {
-            $this->personEmail = $ticket->getPersonEmail();
+        if ($ticket->getTicketPersonEmail()) {
+            $this->personEmail = $ticket->getTicketPersonEmail();
         } elseif ($ticket->getPerson() && $ticket->getPerson()->getPrimaryEmail()) {
             $this->personEmail = $ticket->getPerson()->getPrimaryEmail();
         }

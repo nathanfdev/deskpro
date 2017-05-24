@@ -2211,7 +2211,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getPersonEmailAddress()
     {
-        $email = $this->getPersonEmail();
+        $email = $this->getTicketPersonEmail();
 
         return $email['email'];
     }
