@@ -28,13 +28,13 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
+use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -191,11 +191,11 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         $sentCount = 0;
 
-        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
+        $factory = $this->getContainer()->get('email.agent_viewmodel_factory');
 
         switch ($context->getEventType()) {
             case 'newticket':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
+                $viewModel = $factory->createAgentTicketNewModel($ticket);
                 break;
             case 'newreply':
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
@@ -211,7 +211,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 );
                 if ($messages) {
                     $lastMessage = array_pop($messages);
-                    $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
+                    $viewModel   = $factory->createAgentTicketReplyModel($ticket, $lastMessage);
                 } else {
                     $context->getLogger()->info('No reply to send: '.$context->getEventType());
 
@@ -219,7 +219,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 }
                 break;
             case 'update':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
+                $viewModel = $factory->createAgentTicketUpdateModel($ticket);
                 break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
@@ -232,6 +232,8 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
             ++$sentCount;
+
+            $tac = TicketUtil::getTacForPerson($ticket, $agent);
 
             $context->getLogger()->debug(
                 sprintf('[SendAgentNewEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName())

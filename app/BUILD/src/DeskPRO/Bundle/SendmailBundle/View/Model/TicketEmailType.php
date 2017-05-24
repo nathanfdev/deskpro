@@ -91,6 +91,8 @@ abstract class TicketEmailType extends EmailBaseType
     {
         $this->ticket = $ticket;
 
+        $this->ticketPerson = $ticketPerson;
+
         $this->ticketLink = $ticketLink;
 
         $this->ticketAgent = $ticketAgent;

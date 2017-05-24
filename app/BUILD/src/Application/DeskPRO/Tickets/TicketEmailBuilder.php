@@ -420,7 +420,7 @@ class TicketEmailBuilder
             'messages' => $messages,
         ];
 
-        // If we have a speciifc 'new message', then we need to trim
+        // If we have a specific 'new message', then we need to trim
         // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
         if (isset($vars['new_message'])) {
             $got    = false;

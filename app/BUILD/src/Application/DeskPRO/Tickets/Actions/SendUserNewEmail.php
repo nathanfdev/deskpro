@@ -130,8 +130,14 @@ class SendUserNewEmail extends AbstractEmailAction
                 return;
         }
 
+        if ($ticket->getTicketPersonEmail() && $ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
+            $toEmail = $ticket->getTicketPersonEmail()->getEmail();
+        } else {
+            throw new \RuntimeException('no email address');
+        }
+
         $message = $this->getContainer()->get('email.email_sender')
-            ->prepareMessage($viewModel, ['to' => $ticket->person]);
+            ->prepareMessage($viewModel, ['to' => $toEmail]);
 
         $fromEmail = $fromAccount->getUseEmailAddress();
         $fromName  = $this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user');

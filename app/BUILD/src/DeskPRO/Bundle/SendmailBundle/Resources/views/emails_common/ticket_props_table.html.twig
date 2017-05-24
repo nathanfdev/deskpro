@@ -17,7 +17,7 @@
 	<tr>
 		<td class="dp-td-heading">{{ phrase('agent.general.ticket_starter') }}</td>
 		<td>
-			{{ ticket.person.display_name }} &lt;{% if ticket.person_email %}{{ ticket.person_email.email }}{% else %}{{ ticket.person.primary_email.email }}{% endif %}&gt;
+			{{ ticket_person.display_name }} &lt;{% if ticket.person_email %}{{ ticket.person_email.email }}{% else %}{{ ticket_person.primary_email.email }}{% endif %}&gt;
 		</td>
 	</tr>
 	{% if ticket.getUserParticipants()|length %}
@@ -38,7 +38,7 @@
 	</tr>
 	<tr>
 		<td class="dp-td-heading">{{ phrase('agent.general.agent') }}</td>
-		<td>{{ticket.agent.display_name|default(phrase('agent.general.unassigned'))}}</td>
+		<td>{{ticket_agent.display_name|default(phrase('agent.general.unassigned'))}}</td>
 	</tr>
 	{% if ticket.agent_team %}
 	<tr>

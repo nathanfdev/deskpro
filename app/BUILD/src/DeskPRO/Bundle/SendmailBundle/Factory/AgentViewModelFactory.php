@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use DateTime;
-use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangeEmailMergeUser;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentErrorInvalidForward;
@@ -235,9 +234,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentTicketNewModel(Ticket $ticket)
     {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(AgentTicketNew::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(AgentTicketNew::class, $arguments);
     }
 
     /**
@@ -247,9 +246,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentTicketUpdateModel(Ticket $ticket)
     {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(AgentTicketUpdate::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(AgentTicketUpdate::class, $arguments);
     }
 
     /**
@@ -259,8 +258,8 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentTicketReplyModel(Ticket $ticket)
     {
-        $ticketLink = $this->objectRouter->getPortalUrl($ticket);
+        $arguments = $this->getTicketArguments($ticket);
 
-        return $this->convertParameters(AgentTicketReply::class, [$ticket, $ticketLink]);
+        return $this->convertParameters(AgentTicketReply::class, $arguments);
     }
 }
