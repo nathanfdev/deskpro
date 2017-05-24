@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Event;
 
+use Application\DeskPRO\Entity\Person;
+
 /**
  * Class LegacySystemEvent.
  */
@@ -65,7 +67,15 @@ class LegacySystemEvent extends AbstractLegacyEvent
      */
     public function getTarget()
     {
-        return isset($this->data['target']) ? (int) $this->data['target'] : null;
+        if (isset($this->data['target'])) {
+            if ($this->data['target'] instanceof Person) {
+                return $this->data['target']->getId();
+            }
+
+            return (int) $this->data['target'];
+        }
+
+        return null;
     }
 
     /**
