@@ -5,6 +5,8 @@
 	{% include 'SendmailBundle:blocks:resources.html.twig' %}
 </head>
 <body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
     <container>
@@ -12,6 +14,8 @@
         <a href="{{ verify_url }}">{{ verify_url }}</a>
     </container>
 
-  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
 </body>
 </html>

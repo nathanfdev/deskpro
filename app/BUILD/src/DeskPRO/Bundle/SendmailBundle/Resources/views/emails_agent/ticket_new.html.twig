@@ -15,6 +15,8 @@
 	{% include 'SendmailBundle:blocks:resources.html.twig' %}
 </head>
 <body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
@@ -37,5 +39,7 @@
 	</container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
 </body>
 </html>

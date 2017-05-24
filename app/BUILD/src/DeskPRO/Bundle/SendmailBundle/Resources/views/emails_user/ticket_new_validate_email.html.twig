@@ -5,6 +5,8 @@
 	{% include 'SendmailBundle:blocks:resources.html.twig' %}
 </head>
 <body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
     <container>
@@ -16,6 +18,8 @@
         {% if verify_url %}<a href="{{ verify_url }}">{{ verify_url }}</a>{% else %}<a href="{{ url_full('user_validate_ticket', {'access_code': access_code}) }}">{{ url_full('user_validate_ticket', {'access_code': access_code}) }}</a>{% endif %}
     </container>
 
-  {% include 'SendmailBundle:blocks:footer.html.twig' %}
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
 </body>
 </html>
