@@ -57,7 +57,20 @@ DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit = new Orb.Class({
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
-				success: function() {
+				success: function(data) {
+					if (data.form_errors) {
+
+						$('.form-errors', form).find('li').hide();
+						Array.each(data.form_errors, function (code) {
+							var classname = code.replace(/\./g, '_');
+							$('.form-errors', form).find('li.' + classname).show();
+						});
+						$('.form-errors', form).show();
+						$('#settingswin_pages').scrollTop(0);
+
+						return;
+					}
+
 					$('#settingswin').trigger('dp_settings_macrosupdated');
 					self.fragmentOverlay.close();
 				}
