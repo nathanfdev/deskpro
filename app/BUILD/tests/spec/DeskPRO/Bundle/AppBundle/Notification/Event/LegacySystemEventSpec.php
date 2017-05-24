@@ -26,61 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event;
+namespace spec\DeskPRO\Bundle\AppBundle\Notification\Event;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use PhpSpec\ObjectBehavior;
 
 /**
- * Class LegacySystemEvent.
+ * @mixin LegacySystemEvent
  */
-class LegacySystemEvent extends AbstractLegacyEvent
+class LegacySystemEventSpec extends ObjectBehavior
 {
-    const EVENT_NAME = 'system.event';
-
-    /**
-     * @var array
-     */
-    private $data;
-
-    /**
-     * AgentStatusChangedEvent constructor.
-     *
-     * @param string $type
-     * @param array  $data
-     */
-    public function __construct($type, array $data = [])
+    public function it_returns_event_type_instead_its_name()
     {
-        parent::__construct($type);
-        $this->data = $data;
+        $this->beConstructedWith('some.event');
+        $this->getName()->shouldBe('some.event');
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function it_returns_event_name_if_empty_event_type()
     {
-        return $this->getEventType() ?: parent::getName();
+        $this->beConstructedWith('');
+        $this->getName()->shouldBe(LegacySystemEvent::EVENT_NAME);
     }
 
-    /**
-     * @return int
-     */
-    public function getTarget()
+    public function it_returns_event_type_in_data()
     {
-        return isset($this->data['target']) ? (int) $this->data['target'] : null;
+        $this->beConstructedWith('some.event', ['test.data' => 2]);
+        $this->getData()->shouldBe(['test.data' => 2, 'eventType' => 'some.event']);
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    public function it_returns_target_if_set_in_data()
     {
-        return array_merge($this->data, ['eventType' => $this->eventType]);
+        $this->beConstructedWith('some.event', ['test.data' => 2, 'target' => 1]);
+        $this->getTarget()->shouldBe(1);
     }
 
-    /**
-     * @return mixed
-     */
-    public function __sleep()
+    public function it_returns_target_null_for_target_if_not_set_in_data()
     {
-        return array_merge(parent::__sleep(), ['data', 'eventType']);
+        $this->beConstructedWith('some.event', ['test.data' => 2]);
+        $this->getTarget()->shouldBeNull();
     }
 }
