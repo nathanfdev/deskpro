@@ -32,9 +32,10 @@ interface ApplicationStateFinder
 {
     /**
      * @param ApplicationStateId $id
+     * @param string|null $stateOwnerId
      * @return ApplicationState
      */
-    public function find(ApplicationStateId $id);
+    public function find(ApplicationStateId $id, $stateOwnerId = null);
 
     /**
      * @param ApplicationInstance $application

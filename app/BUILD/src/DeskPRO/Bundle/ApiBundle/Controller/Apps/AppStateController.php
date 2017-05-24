@@ -118,6 +118,7 @@ class AppStateController extends BaseController
      */
     public function getStateAction(Entity\AppStore\AppState $state = null, $scope, $options = null)
     {
+
         $existingScope = StateScope::parseString($scope);
         if (is_null($existingScope) || !StateScope::isValid($existingScope)) {
             throw new BadRequestHttpException('invalid scope');
@@ -181,25 +182,26 @@ class AppStateController extends BaseController
      * @Rest\Put("/{name}")
      * @DeskproAnnotations\ApiUserContext("agent")
      *
-     * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("representation", class="DeskPRO\Bundle\AppStoreBundle\API\AppStateRepresentation", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter")
-     * @param Entity\AppStore\AppState $state
+     *
+     * @param Entity\AppStore\AppInstance $application
      * @param AppStateRepresentation $representation
      * @return AppStateRepresentation
      */
-    public function putStateAction(Entity\AppStore\AppState $state = null, AppStateRepresentation $representation)
+    public function putStateAction(Entity\AppStore\AppInstance $application, AppStateRepresentation $representation = null)
     {
-        if (is_null($state)) {
-            throw new NotFoundHttpException('could not find state');
+        if (is_null($representation)) {
+            throw new BadRequestHttpException('invalid representation');
         }
 
+        $state = new Entity\AppStore\AppState();
+        $state->setAppInstance($application);
+        $representation->mapToAppStateEntity($state);
         if ($state->getScope()->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE) {
             $owner = $this->getUser();
             $state->setOwner($owner);
         }
-
-        //TODO make sure private state is updated by owner
-        $representation->mapToAppStateEntity($state);
 
         $em = $this->getManager();
         $em->persist($state);
@@ -209,7 +211,7 @@ class AppStateController extends BaseController
     }
 
     /**
-     * @Rest\Delete("/{name}")
+     * @Rest\Delete("/{name}/{scope}")
      * @DeskproAnnotations\ApiUserContext("agent")
      *
      * @ParamConverter("state", class="AppBundle:Entity\AppStore\AppState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")

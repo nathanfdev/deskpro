@@ -45,9 +45,10 @@ class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
 
     /**
      * @param Domain\ApplicationStateId $id
+     * @param string|null $stateOwnerId
      * @return Entity\AppStore\AppState
      */
-    public function find(Domain\ApplicationStateId $id)
+    public function find(Domain\ApplicationStateId $id, $stateOwnerId = null)
     {
         //TODO do not assume the application state id is the same as the persistence id
         $qb = $this->entityManager->createQueryBuilder();
@@ -60,6 +61,10 @@ class ApplicationStateDoctrineFinder implements Domain\ApplicationStateFinder
             ->setParameter('name', $id->getName())
             ->setParameter('instance', $id->getInstanceId())
         ;
+
+        if (!is_null($stateOwnerId)) {
+            $qb->andWhere('a.owner = :ownerId')->setParameter('ownerId', $stateOwnerId);
+        }
 
         $result = $qb->getQuery()->getResult();
         if (1 != count($result)) { //instance not found or more than one

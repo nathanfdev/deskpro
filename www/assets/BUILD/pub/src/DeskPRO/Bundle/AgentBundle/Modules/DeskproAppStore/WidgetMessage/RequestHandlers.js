@@ -180,10 +180,10 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
  */
 export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) =>
 {
-  const { name } = widgetMessage.body;
+  const { name, scope } = widgetMessage.body;
   const { api } = services;
 
-  api.sendDelete(`DP_API/apps/${widget.instanceId}/state/${name}`)
+  api.sendDelete(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
     .then(httpResponse => httpResponse.data)
     .catch(httpResponse => {
       if (httpResponse instanceof Error) { return httpResponse; }

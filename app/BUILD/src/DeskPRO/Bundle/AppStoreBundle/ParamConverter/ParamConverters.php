@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Factory for param converters
@@ -33,12 +34,14 @@ class ParamConverters
 
     /**
      * @param ORM\EntityManager $entityManager
+     * @param TokenStorage $tokenStorage
      * @return AppStateParamConverter
+     * @internal param ORM\EntityManager $entityManager
      */
-    public static function createAppStateConverter(ORM\EntityManager $entityManager)
+    public static function createAppStateConverter(ORM\EntityManager $entityManager, TokenStorage $tokenStorage)
     {
         $finder = new Infrastructure\ApplicationStateDoctrineFinder($entityManager);
-        return new AppStateParamConverter($finder, new Infrastructure\IdentifierParser());
+        return new AppStateParamConverter($finder, new Infrastructure\IdentifierParser(), $tokenStorage);
     }
 
     /**

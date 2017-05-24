@@ -29,12 +29,16 @@
 namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
+use DeskPRO\Bundle\AppStoreBundle\Domain\StateScope;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+
 
 class AppStateParamConverter implements ParamConverterInterface
 {
@@ -44,25 +48,58 @@ class AppStateParamConverter implements ParamConverterInterface
     /** @var Infrastructure\IdentifierParser */
     private $identifierParser;
 
-    public function __construct(Infrastructure\ApplicationStateDoctrineFinder $finder, Infrastructure\IdentifierParser $identifierParser)
+    /** @var TokenStorage */
+    private $tokenStorage;
+
+    public function __construct(Infrastructure\ApplicationStateDoctrineFinder $finder, Infrastructure\IdentifierParser $identifierParser, TokenStorage $tokenStorage)
     {
         $this->finder           = $finder;
         $this->identifierParser = $identifierParser;
+        $this->tokenStorage = $tokenStorage;
     }
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
         $appId     = $request->attributes->get('application');
         $stateName = $request->attributes->get('name');
+        $scope = $request->attributes->get('scope');
+
+        $existingScope = StateScope::parseString($scope);
+        if (is_null($existingScope) || !StateScope::isValid($existingScope)) {
+            return false;
+        }
+
+        $userId = $this->getAuthUserId();
+        if ($existingScope->getPermission() == Constants::STATE_PERMISSION_PRIVATE && is_null($userId)) {
+            return false;
+        }
 
         $stateKey = new Domain\ApplicationStateId($appId, $stateName);
-        $entity   = $this->finder->find($stateKey);
+        $entity   = $userId ? $this->finder->find($stateKey, $userId) : $this->finder->find($stateKey);
+
         if ($entity) {
             $attributeName = $configuration->getName();
             $request->attributes->set($attributeName, $entity);
         }
 
         return true;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthUserId()
+    {
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return;
+        }
+
+        if (!is_object($user = $token->getUser())) {
+            // e.g. anonymous authentication
+            return;
+        }
+
+        return $user->getId();
     }
 
     public function supports(Configuration\ParamConverter $configuration)

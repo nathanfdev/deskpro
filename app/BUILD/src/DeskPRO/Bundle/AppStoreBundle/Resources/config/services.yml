@@ -58,7 +58,7 @@ services:
   DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter:
     class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter
     factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createAppStateConverter]
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter }
 
