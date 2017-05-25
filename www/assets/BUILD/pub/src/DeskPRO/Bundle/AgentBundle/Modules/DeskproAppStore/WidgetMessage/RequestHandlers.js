@@ -125,11 +125,13 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
 
   api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
     .then(httpResponse => {
-      if ('nocontent' === httpResponse.status || !httpResponse.data) {
+      if (204 === httpResponse.getResponseCode()) {
         return api.sendPost(`DP_API/apps/${widget.instanceId}/state`, state);
-      } else {
+      } else if (200 === httpResponse.getResponseCode()) {
         return api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`, state);
       }
+
+      throw new Error('could not save state');
     })
     .then(httpResponse => httpResponse.data)
     .catch(httpResponse => {
