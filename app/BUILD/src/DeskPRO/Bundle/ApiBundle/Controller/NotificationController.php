@@ -201,7 +201,25 @@ class NotificationController extends BaseController
     }
 
     /**
+     * This endpoint provide you an ability to get pusher credentials you are using (admin only).
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *         {"name"="user_id", "description"="", "dataType"="integer", "required"=true},
+     *         {"name"="channel_name", "description"="", "dataType"="string", "required"=true},
+     *         {"name"="socket_id", "description"="", "dataType"="string", "required"=true}
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Model\PusherModel>"
+     * )
+     *
      * @return View
+     *
+     * @todo move it to standalone controller
      * @Rest\Get("/notify/setup/action-alerts/pusher")
      */
     public function getPusherCredentialsAction()
@@ -222,6 +240,8 @@ class NotificationController extends BaseController
     }
 
     /**
+     * Save pusher credentials and enable/disable it.
+     *
      * @ApiDoc(
      *     section="Notifications and alerts",
      *     resourceDescription="Operations about action alerts",
