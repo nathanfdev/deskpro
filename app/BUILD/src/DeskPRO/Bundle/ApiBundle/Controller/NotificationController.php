@@ -40,6 +40,9 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Logger;
+use Orb\Logger\Handler\ArrayHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -49,7 +52,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class NotificationController.
  *
  * @ApiModes("all")
- * @ApiUserContext("agent", admin={"savePusherCredentialsAction", "getPusherCredentialsAction"})
+ * @ApiUserContext("agent", admin={"savePusherCredentialsAction", "getPusherCredentialsAction", "testPusherCredentialsAction"})
  */
 class NotificationController extends BaseController
 {
@@ -232,10 +235,13 @@ class NotificationController extends BaseController
      *     }
      * )
      *
-     * @return View
      * @Rest\Put("/notify/setup/action-alerts/pusher")
      *
      * @todo this is quick method, consider it hack
+     *
+     * @param Request $request
+     *
+     * @return View
      */
     public function savePusherCredentialsAction(Request $request)
     {
@@ -269,5 +275,64 @@ class NotificationController extends BaseController
         }
 
         return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Post("/notify/setup/action-alerts/pusher/test")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function testPusherCredentialsAction(Request $request)
+    {
+        $form = $this->createForm(PusherType::class);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            return View::create([
+                'success' => false,
+                'message' => 'Invalid settings were supplied. Make sure you have filled in all form fields.',
+            ]);
+        }
+
+        /** @var PusherModel $pusherModel */
+        $pusherModel = $form->getData();
+
+        $auth_key = $pusherModel->getKey();
+        $secret   = $pusherModel->getSecret();
+        $app_id   = $pusherModel->getId();
+
+        $p = new \Pusher($auth_key, $secret, $app_id);
+
+        $handler = new ArrayHandler();
+        $handler->setFormatter(new LineFormatter('[%datetime%] %message%'));
+        $logger = new Logger('PusherTest', [$handler]);
+        $p->set_logger(new PusherLogger($logger));
+
+        $success = $p->trigger(['private-channel-test'], 'test', 'test');
+        $message = $handler->getMessagesAsString();
+
+        return View::create(['success' => $success, 'message' => $message]);
+    }
+}
+
+class PusherLogger
+{
+    private $logger;
+
+    /**
+     * PusherLogger constructor.
+     *
+     * @param Logger $logger
+     */
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function log($msg)
+    {
+        $this->logger->log(Logger::INFO, $msg);
     }
 }

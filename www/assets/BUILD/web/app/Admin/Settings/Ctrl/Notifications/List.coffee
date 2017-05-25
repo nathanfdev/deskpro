@@ -5,32 +5,49 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @DEPS      = ['Api2', 'Growl']
 
     init: ->
-      @$scope.pusher_enabled = false;
+      @$scope.mode = 'default';
       return
 
     initialLoad: ->
       @Api2.sendGet('/notify/setup/action-alerts/pusher').then(
         (response) =>
           pusherModel = response.data.data
-          @$scope.pusher_enabled = pusherModel.pusher_enabled
+          @$scope.mode           = if pusherModel.pusher_enabled then 'pusher' else 'default'
           @$scope.id             = pusherModel.id
           @$scope.secret         = pusherModel.secret
           @$scope.key            = pusherModel.key
       )
       return
 
-    save:  =>
+    getPusherParams: ->
       params = {
         key:    @$scope.key
         id:     @$scope.id
         secret: @$scope.secret
-        pusher_enabled: @$scope.pusher_enabled
+        pusher_enabled: @$scope.mode == 'pusher'
       }
+      return params
+
+    save:  =>
+      params = @getPusherParams()
       @Api2.sendPutJson('/notify/setup/action-alerts/pusher', params).success(
         => @Growl.success('Your request is successful')
       ).error(
         =>
           @Growl.error('Something went wrong. Please contact your administrator')
+      )
+
+    testPusher: =>
+      @$scope.pusherTestResult = "Testing settings ..."
+
+      params = @getPusherParams()
+      @Api2.sendPostJson('/notify/setup/action-alerts/pusher/test', params).then( (res) =>
+        if res.data.success
+          @$scope.pusherTestResult = "Success. Settings are OK.\n\n----- Log -----\n\n" + res.data.message
+        else
+          @$scope.pusherTestResult = "FAILED. Settings are INVALID..\n\n----- Log -----\n\n" + res.data.message
+      ).error( =>
+        @$scope.pusherTestResult = "FAILED :: The test did not complete successfully"
       )
 
   Admin_Settings_Ctrl_Notifications.EXPORT_CTRL()
