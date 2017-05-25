@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
@@ -48,17 +49,21 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      */
     protected $pusher;
 
+    private $channelPrefix = '';
+
     /**
      * @var array
      */
     private $messages = [];
 
     /**
-     * @param Pusher $pusher
+     * @param Pusher           $pusher
+     * @param SettingsResolver $resolver
      */
-    public function __construct(Pusher $pusher)
+    public function __construct(Pusher $pusher, SettingsResolver $resolver)
     {
-        $this->pusher = $pusher;
+        $this->pusher        = $pusher;
+        $this->channelPrefix = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
     }
 
     /**
@@ -75,8 +80,13 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                 'type'   => $message->getType(),
             ] + $message->getData();
 
+        $channelParts = ['private-channel', $message->getTarget()];
+        if ($this->channelPrefix) {
+            array_unshift($channelParts, $this->channelPrefix);
+        }
+
         $this->messages[] = [
-            'channel' => 'private-channel-'.$message->getTarget(),
+            'channel' => implode('-', $channelParts),
             'name'    => $this->getChannel($message),
             'data'    => $data,
         ];

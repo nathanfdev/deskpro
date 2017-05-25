@@ -54,6 +54,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler
     arguments:
       - "@deskpro.notification.pusher"
+      - "@settings_resolver"
 
   deskpro.notification.pusher_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherFactory
