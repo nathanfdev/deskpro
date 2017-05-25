@@ -20,6 +20,7 @@ export default class PusherClient extends AbstractClient {
 
     this.client = new Pusher(that.options.appKey, {
       encrypted:     true,
+      cluster:       that.options.cluster,
       authEndpoint:  that.options.authEndpoint,
       authTransport: that.options.authTransport
     });
@@ -31,6 +32,7 @@ export default class PusherClient extends AbstractClient {
       authTransport: 'rest',
       appKey:        '',
       channelPrefix: '',
+      cluster:       'mt1',
       me:            0
     };
   }

@@ -194,6 +194,7 @@ class NotificationService
                 return new NotificationClient('pusher', [
                     'appKey'        => $this->settings->get('notification.settings.pusher_client.appKey'),
                     'channelPrefix' => $this->settings->get('notification.settings.pusher_client.channel_prefix'),
+                    'cluster'       => $this->settings->get('notification.settings.pusher_client.cluster'),
                     'debug'         => $this->settings->get('notification.settings.pusher_client.debug'),
                 ]);
             case 'db':

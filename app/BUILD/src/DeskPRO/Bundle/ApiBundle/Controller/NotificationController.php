@@ -217,6 +217,7 @@ class NotificationController extends BaseController
                 ->setId($bag->get('notification.settings.pusher_client.appId', ''))
                 ->setSecret($bag->get('notification.settings.pusher_client.secret', ''))
                 ->setKey($bag->get('notification.settings.pusher_client.appKey', ''))
+                ->setCluster($bag->get('notification.settings.pusher_client.cluster', PusherModel::PUSHER_CLASTER_US_WEST_1))
         ));
     }
 
@@ -255,6 +256,7 @@ class NotificationController extends BaseController
             $settingRepo->updateSetting('notification.settings.pusher_client.appId', $pusherModel->getId());
             $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
             $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
+            $settingRepo->updateSetting('notification.settings.pusher_client.cluster', $pusherModel->getCluster());
 
             $config = [
                 'strategy' => 'immediate',
