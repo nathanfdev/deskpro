@@ -120,52 +120,22 @@ export const EVENT_STATE_GET = (response, widget, widgetMessage, services) =>
 export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
 {
   const { api } = services;
-  const { name } = widgetMessage.body;
+  const { name, scope } = widgetMessage.body;
   const { body: state } = widgetMessage;
 
-  //need to fix accepting head requests
-  // api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}`)
-  //   .then(httpResponse => {
-  //     if (204 === httpResponse.data.status) {
-  //       return api
-  //         .sendPost(`DP_API/apps/${widget.instanceId}/state`, state)
-  //         .then(httpResponse => httpResponse.data)
-  //       ;
-  //     } else {
-  //       return api
-  //         .sendPut(`DP_API/apps/${widget.instanceId}/state`, state)
-  //         .then(httpResponse => httpResponse.data)
-  //       ;
-  //     }
-  //   })
-  //   .then(httpResponse => httpResponse.data)
-  //   .catch(httpResponse => {
-  //     if (httpResponse instanceof Error) { return httpResponse; }
-  //
-  //     return new Error('failed to get app state');
-  //   })
-  //   .then(data => data instanceof Error ? response(data) : response(null, data))
-  // ;
-
-
-  api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}`, state)
+  api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
+    .then(httpResponse => {
+      if ('nocontent' === httpResponse.status || !httpResponse.data) {
+        return api.sendPost(`DP_API/apps/${widget.instanceId}/state`, state);
+      } else {
+        return api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`, state);
+      }
+    })
     .then(httpResponse => httpResponse.data)
     .catch(httpResponse => {
       if (httpResponse instanceof Error) { return httpResponse; }
 
-      // no previous state at that key, let's try and create it
-      if (404 === httpResponse.data.status) {
-        return api
-          .sendPost(`DP_API/apps/${widget.instanceId}/state`, state)
-          .then(httpResponse => httpResponse.data)
-          .catch(httpResponse => {
-            if (httpResponse instanceof Error) { return httpResponse; }
-
-            return new Error('failed to set app state');
-          })
-        ;
-      }
-      return new Error('failed to set app state');
+      return new Error('failed to get app state');
     })
     .then(data => data instanceof Error ? response(data) : response(null, data))
   ;
