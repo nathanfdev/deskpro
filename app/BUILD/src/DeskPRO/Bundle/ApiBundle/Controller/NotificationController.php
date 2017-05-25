@@ -32,7 +32,10 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\PusherType;
+use DeskPRO\Bundle\AppBundle\Model\PusherModel;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -46,6 +49,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Class NotificationController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("agent", admin={"savePusherCredentialsAction", "getPusherCredentialsAction"})
  */
 class NotificationController extends BaseController
 {
@@ -194,42 +198,75 @@ class NotificationController extends BaseController
     }
 
     /**
-     * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
-     *
+     * @return View
+     * @Rest\Get("/notify/setup/action-alerts/pusher")
+     */
+    public function getPusherCredentialsAction()
+    {
+        $config        = $this->get('deskpro.notification.service')->getClientsSetup();
+        $pusherEnabled = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'pusher';
+        $bag           = $this->get('settings_resolver')->getGlobalSettings();
+        $pusherModel   = new PusherModel();
+
+        return View::create($this->wrap(
+            $pusherModel
+                ->setPusherEnabled($pusherEnabled)
+                ->setId($bag->get('notification.settings.pusher_client.appId', ''))
+                ->setSecret($bag->get('notification.settings.pusher_client.secret', ''))
+                ->setKey($bag->get('notification.settings.pusher_client.appKey', ''))
+        ));
+    }
+
+    /**
      * @ApiDoc(
      *     section="Notifications and alerts",
      *     resourceDescription="Operations about action alerts",
      *     statusCodes={
      *         204="Returned if everything is ok"
      *     },
+     *      parameters={
+     *         {"name"="id", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="key", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="secret", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="pusher_enabled", "description"="", "dataType"="boolean", "required"=false}
+     *     }
      * )
      *
      * @return View
-     * @Rest\Put("/notify/setup/action-alerts")
+     * @Rest\Put("/notify/setup/action-alerts/pusher")
      *
      * @todo this is quick method, consider it hack
      */
-    public function saveActionAlertsSetupAction(Request $request)
+    public function savePusherCredentialsAction(Request $request)
     {
-        $config = [
-            'strategy' => 'immediate',
-            'delivery' => [
-                $request->request->getBoolean('pusher_enabled') ? 'pusher' : 'db',
-            ],
-        ];
+        $form = $this->createForm(PusherType::class);
+        $form->submit($request->request->all());
+        if ($form->isValid()) {
+            /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
+            $settingRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
+            /** @var PusherModel $pusherModel */
+            $pusherModel = $form->getData();
+            $settingRepo->updateSetting('notification.settings.pusher_client.appId', $pusherModel->getId());
+            $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
+            $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
 
-        /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
-        $settingRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
-        $settingRepo->updateSetting('notification.settings.default_strategy', serialize($config));
+            $config = [
+                'strategy' => 'immediate',
+                'delivery' => [
+                    $pusherModel->isPusherEnabled() ? 'pusher' : 'db',
+                ],
+            ];
+            $settingRepo->updateSetting('notification.settings.default_strategy', serialize($config));
 
-        // this should work for immediate only, cause notification handlers already has been built
-        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload',
-                [
-                    'type'        => 'admin',
-                    'person_id'   => 0,
-                    'person_name' => 'System',
-                ])
-        );
+            // this should work for immediate only, cause notification handlers already has been built
+            $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload',
+                    [
+                        'type'        => 'admin',
+                        'person_id'   => 0,
+                        'person_name' => 'System',
+                    ])
+            );
+        }
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }

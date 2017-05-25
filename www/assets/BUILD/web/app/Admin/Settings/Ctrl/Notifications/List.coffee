@@ -9,28 +9,28 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       return
 
     initialLoad: ->
-      @Api2.sendGet('/notify/setup/action-alerts').then(
+      @Api2.sendGet('/notify/setup/action-alerts/pusher').then(
         (response) =>
-          clients = response.data.data.clients
-          if clients.length == 1 and clients[0].type == 'pusher'
-            @$scope.pusher_enabled = true
-        @$scope.$watch('pusher_enabled', @togglePusher )
+          pusherModel = response.data.data
+          @$scope.pusher_enabled = pusherModel.pusher_enabled
+          @$scope.id             = pusherModel.id
+          @$scope.secret         = pusherModel.secret
+          @$scope.key            = pusherModel.key
       )
       return
 
-    togglePusher: (newVal, oldVal) =>
-      if newVal != oldVal
-        @Api2.sendPutJson('/notify/setup/action-alerts', {'pusher_enabled': newVal}).success(
-          => @Growl.success('Your request is successful')
-          if newVal == true
-            @$state.go('server.notifications.pusher')
-        ).error(
-          =>
-            @Growl.error('Something went wrong. Please contact your administrator')
-            @$scope.pusher_enabled = oldVal
-        )
-
-
-
+    save:  =>
+      params = {
+        key:    @$scope.key
+        id:     @$scope.id
+        secret: @$scope.secret
+        pusher_enabled: @$scope.pusher_enabled
+      }
+      @Api2.sendPutJson('/notify/setup/action-alerts/pusher', params).success(
+        => @Growl.success('Your request is successful')
+      ).error(
+        =>
+          @Growl.error('Something went wrong. Please contact your administrator')
+      )
 
   Admin_Settings_Ctrl_Notifications.EXPORT_CTRL()

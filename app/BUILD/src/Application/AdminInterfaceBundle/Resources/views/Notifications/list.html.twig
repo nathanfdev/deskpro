@@ -16,10 +16,34 @@
         <section class="dp-paneblock dp-listpane">
             <header>
                 <h3>
-                    <a href="{{ ng_href('server.notifications.pusher') }}">Pusher</a>
+                    Pusher
                 </h3>
                 <input dp-slider-switch ng-model="pusher_enabled" />
-                <span class="help-block">Please click the link to setup your pusher account details</span>
             </header>
+            <div ng-show="pusher_enabled">
+                <div class="inner-group">
+                    <label>
+                        <h4>Pusher app key:</h4>
+                        <input type="text" class="form-control" ng-model="key" />
+                    </label>
+                </div>
+                <div class="inner-group">
+                    <label>
+                        <h4>Pusher app secret:</h4>
+                        <input type="text" class="form-control" ng-model="secret" />
+                    </label>
+                </div>
+                <div class="inner-group">
+                    <label>
+                        <h4>Pusher app id:</h4>
+
+                        <input type="text" class="form-control" ng-model="id" />
+                    </label>
+                </div>
+                <div class="inner-group">
+                    <button class="btn btn-success" ng-click="Notifications.save()">Save</button>
+                </div>
+            </div>
+
         </section>
 {% endblock %}
