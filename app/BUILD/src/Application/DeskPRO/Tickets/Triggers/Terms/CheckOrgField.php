@@ -65,8 +65,8 @@ class CheckOrgField extends AbstractCheckCustomField
      */
     public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context)
     {
-        if ($ticket->organization && $ticket->organization->custom_data) {
-            return $ticket->organization->custom_data;
+        if ($ticket->getOrganization() && $ticket->getOrganization()->getCustomData()) {
+            return $ticket->getOrganization()->getCustomData();
         } else {
             return [];
         }
