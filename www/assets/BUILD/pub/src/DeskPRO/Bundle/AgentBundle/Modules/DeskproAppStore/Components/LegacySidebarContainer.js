@@ -15,14 +15,30 @@ class LegacySidebarContainer extends React.Component
 
   constructor(props) {
     super(props);
+    this.iconsDOMListeners = { mouseout: [], mouseover: [], click: [] }
   }
 
   componentDidMount() {
     const { configuration } = this.props;
     const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
 
-    iconsContainer.addEventListener('mouseover', this.onMouseOver);
+    // TODO: refactor obviously
+    let onMouseOverToggle = true;
+    const onMouseOverListener = e => {
+      if (onMouseOverToggle) {
+        onMouseOverToggle = false;
+        this.onMouseOver(e);
+      }
+    };
+    iconsContainer.addEventListener('mouseover', onMouseOverListener);
+    this.iconsDOMListeners.mouseover.push(onMouseOverListener);
+
+    const onMouseOutListener = e => onMouseOverToggle = true;
+    iconsContainer.addEventListener('mouseout', onMouseOutListener);
+    this.iconsDOMListeners.mouseout.push(onMouseOverListener);
+
     iconsContainer.addEventListener('click', this.onMouseClick);
+    this.iconsDOMListeners.click.push(this.onMouseClick);
 
     // add app icons
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
@@ -37,15 +53,17 @@ class LegacySidebarContainer extends React.Component
       const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
       sidebar.showLegacyContent();
     }
-
   }
 
   componentWillUnmount () {
     const { configuration } = this.props;
     const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
 
-    iconsContainer.removeEventListener('mouseover', this.onMouseOver);
-    iconsContainer.removeEventListener('click', this.onMouseClick);
+    for (const event of ['click', 'mouseover', 'mouseover']) {
+      for (const listener of this.iconsDOMListeners[event]) {
+        iconsContainer.removeEventListener(event, listener);
+      }
+    }
   }
 
   onMouseOver = (e) => {
