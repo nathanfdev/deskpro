@@ -34,7 +34,6 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppParamConverter implements ParamConverterInterface
 {
@@ -60,14 +59,12 @@ class AppParamConverter implements ParamConverterInterface
         }
 
         $application = $this->convert($from);
-        if (empty($application)) {
-            //TODO provide a better exception context, serialization etc
-            throw new NotFoundHttpException('could not find application instance');
+        if (! empty($application)) {
+            $request->attributes->set($attributeName, $application);
+            return true;
         }
 
-        $request->attributes->set($attributeName, $application);
-
-        return true;
+        return false;
     }
 
     /**

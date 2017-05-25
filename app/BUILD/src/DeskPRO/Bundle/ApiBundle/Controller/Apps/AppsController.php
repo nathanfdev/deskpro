@@ -39,6 +39,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
@@ -87,13 +88,17 @@ class AppsController extends BaseController
     /**
      * @Rest\Get("/{application}", name="api_get_app_instance")
      *
-     * @param Entity\AppStore\AppInstance $application
+     * @param Entity\AppStore\AppInstance|null $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @return string
      */
-    public function getApplicationAction(Entity\AppStore\AppInstance $application)
+    public function getApplicationAction(Entity\AppStore\AppInstance $application = null)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         return $this->wrap($application);
     }
 
@@ -126,13 +131,17 @@ class AppsController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
      *
-     * @param Entity\AppStore\AppInstance                       $application
+     * @param Entity\AppStore\AppInstance|null                      $application
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      *
      * @return string
      */
-    public function updateFromZipFileAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
+    public function updateFromZipFileAction(Entity\AppStore\AppInstance $application = null , AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         throw new ServiceUnavailableHttpException('endpoint not available');
     }
 
@@ -153,8 +162,12 @@ class AppsController extends BaseController
      *
      * @param Entity\AppStore\App $application
      */
-    public function updateAppFromUrlAction(Entity\AppStore\App $application)
+    public function updateAppFromUrlAction(Entity\AppStore\App $application = null)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         throw new ServiceUnavailableHttpException('endpoint not available');
     }
 
@@ -164,10 +177,14 @@ class AppsController extends BaseController
      * @param Entity\AppStore\AppInstance $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
-     * @return AppStoreBundle\Domain\ApplicationInstance
+     * @return View
      */
-    public function deleteApplicationAction(Entity\AppStore\AppInstance $application)
+    public function deleteApplicationAction(Entity\AppStore\AppInstance $application = null)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         $em = $this->getManager();
         $em->remove($application);
         $em->remove(($application->getApp()));
@@ -198,8 +215,12 @@ class AppsController extends BaseController
      *
      * @return array
      */
-    public function getManifestAction(Entity\AppStore\App $application)
+    public function getManifestAction(Entity\AppStore\App $application = null)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         //TODO getManifest should return an object
         $manifestString = $application->getManifest();
         $manifestArray  = json_decode($manifestString, true);
@@ -216,8 +237,12 @@ class AppsController extends BaseController
      *
      * @return array
      */
-    public function getSettingsAction(Entity\AppStore\AppInstance $application)
+    public function getSettingsAction(Entity\AppStore\AppInstance $application = null)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         //TODO getSettings should return an object
         $settingsString = $application->getSettings();
         $settingsArray  = json_decode($settingsString, true);
@@ -234,8 +259,12 @@ class AppsController extends BaseController
      * @param Entity\AppStore\App                     $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
      */
-    public function listAssetsAction(Entity\AppStore\App $application, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
+    public function listAssetsAction(Entity\AppStore\App $application = null, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
         /** @var AppStoreBundle\Domain\AssetFinder $assetFinder */
         $assetFinder = $this->container->get(AppStoreBundle\Domain\AssetFinder::class);
         $assets      = $assetFinder->findApplicationAssets($application, $searchFilter);

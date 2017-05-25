@@ -57,12 +57,16 @@ class AppStateController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("stateFilter", class="DeskPRO\Bundle\AppStoreBundle\Domain\SearchStateFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter")
      *
-     * @param Entity\AppStore\AppInstance $application
+     * @param Entity\AppStore\AppInstance|null $application
      * @param AppStoreBundle\Domain\SearchStateFilter $stateFilter
      * @return AppStoreBundle\Domain\ApplicationState[]
      */
-    public function listStateAction(Entity\AppStore\AppInstance $application, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
+    public function listStateAction(Entity\AppStore\AppInstance $application = null, AppStoreBundle\Domain\SearchStateFilter $stateFilter)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application instance');
+        }
+
         //TODO filter by current user
         /** @var AppStoreBundle\Domain\ApplicationStateFinder $applicationStateFinder */
         $applicationStateFinder = $this->container->get(AppStoreBundle\Domain\ApplicationStateFinder::class);
@@ -87,16 +91,10 @@ class AppStateController extends BaseController
      * @ParamConverter("state", class="AppStoreBundle:Domain\ApplicationState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
      *
      * @param Entity\AppStore\AppState $state
-     * @param string $scope
      * @return View\View
      */
-    public function existsStateAction(Entity\AppStore\AppState $state = null, $scope)
+    public function existsStateAction(Entity\AppStore\AppState $state = null)
     {
-        $scopeObject = StateScope::parseString($scope);
-        if (is_null($scopeObject) || !StateScope::isValid($scopeObject)) {
-            throw new BadRequestHttpException('invalid scope');
-        }
-
         if (is_null($state)) {
             return View\View::create([], Response::HTTP_NO_CONTENT);
         }
@@ -118,7 +116,6 @@ class AppStateController extends BaseController
      */
     public function getStateAction(Entity\AppStore\AppState $state = null, $scope, $options = null)
     {
-
         $existingScope = StateScope::parseString($scope);
         if (is_null($existingScope) || !StateScope::isValid($existingScope)) {
             throw new BadRequestHttpException('invalid scope');
@@ -132,17 +129,6 @@ class AppStateController extends BaseController
             throw new NotFoundHttpException('could not find state');
         }
 
-        $actualScope = $state->getScope();
-        if (!$actualScope->equals($existingScope)) {
-            throw new NotFoundHttpException('could not find state');
-        }
-
-        if (
-            $actualScope->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE
-            && $state->getOwnerId() != $this->getUser()->getId()
-        ) {
-            throw new NotFoundHttpException('could not find state');
-        }
 
         $representation = new AppStateRepresentation();
         $representation->mapFromState($state);
@@ -160,12 +146,16 @@ class AppStateController extends BaseController
      * @param AppStateRepresentation $representation
      * @return AppStateRepresentation
      */
-    public function postStateAction(Entity\AppStore\AppInstance $application, AppStateRepresentation $representation)
+    public function postStateAction(Entity\AppStore\AppInstance $application = null, AppStateRepresentation $representation)
     {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application instance');
+        }
+
         $state = new Entity\AppStore\AppState();
         $representation->mapToAppStateEntity($state);
-        $state->setAppInstance($application);
 
+        $state->setAppInstance($application);
         if ($state->getScope()->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE) {
             $owner = $this->getUser();
             $state->setOwner($owner);
@@ -179,24 +169,27 @@ class AppStateController extends BaseController
     }
 
     /**
-     * @Rest\Put("/{name}")
+     * @Rest\Put("/{name}/{scope}")
      * @DeskproAnnotations\ApiUserContext("agent")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     * @ParamConverter("state", class="AppStoreBundle:Domain\ApplicationState", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter")
      * @ParamConverter("representation", class="DeskPRO\Bundle\AppStoreBundle\API\AppStateRepresentation", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter")
      *
-     * @param Entity\AppStore\AppInstance $application
+     * @param Entity\AppStore\AppState $state
      * @param AppStateRepresentation $representation
      * @return AppStateRepresentation
+     * @internal param Entity\AppStore\AppInstance $application
      */
-    public function putStateAction(Entity\AppStore\AppInstance $application, AppStateRepresentation $representation = null)
+    public function putStateAction(Entity\AppStore\AppState $state = null, AppStateRepresentation $representation = null)
     {
         if (is_null($representation)) {
             throw new BadRequestHttpException('invalid representation');
         }
 
-        $state = new Entity\AppStore\AppState();
-        $state->setAppInstance($application);
+        if (is_null($state)) {
+            throw new NotFoundHttpException('could not find state');
+        }
+
         $representation->mapToAppStateEntity($state);
         if ($state->getScope()->getPermission() == AppStoreBundle\Domain\Constants::STATE_PERMISSION_PRIVATE) {
             $owner = $this->getUser();
@@ -218,8 +211,12 @@ class AppStateController extends BaseController
      * @param Entity\AppStore\AppState $state
      * @return AppStateRepresentation
      */
-    public function deleteStateAction(Entity\AppStore\AppState $state)
+    public function deleteStateAction(Entity\AppStore\AppState $state = null)
     {
+        if (is_null($state)) {
+            throw new NotFoundHttpException('could not find state');
+        }
+
         $representation = new AppStateRepresentation();
         $representation->mapFromAppStateEntity($state);
 
