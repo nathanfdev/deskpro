@@ -57,7 +57,7 @@ class CodeMirror extends React.Component {
       mode:           'twig',
       lineNumbers:    true,
       theme:          'monokai',
-      lineWrapping:   true,
+      lineWrapping:   false,
       indentWithTabs: true,
       tabSize:        '2',
     }, this.props.options);
