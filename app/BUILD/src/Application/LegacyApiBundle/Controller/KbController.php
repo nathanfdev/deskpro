@@ -327,7 +327,7 @@ class KbController extends AbstractController
         $title_lang   = [];
         $content_lang = [];
 
-        if (is_array($_POST['title']) && is_array($_POST['content'])) {
+        if (isset($_POST['title']) && isset($_POST['content']) && is_array($_POST['title']) && is_array($_POST['content'])) {
             foreach ($this->container->getLanguageData()->getAll() as $lang) {
                 $lang_id = $lang->getId();
 
