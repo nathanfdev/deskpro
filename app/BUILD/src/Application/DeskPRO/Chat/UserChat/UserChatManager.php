@@ -37,15 +37,16 @@ use Application\DeskPRO\CustomFields\ChatFieldManager;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Manages interactions between users, agents and the server.
@@ -87,12 +88,23 @@ class UserChatManager
      */
     protected $activityLogger;
 
-    public function __construct(Session $session = null, EntityManager $em, Translate $translate, ActivityLogger $logger)
-    {
-        $this->em             = $em;
-        $this->db             = $em->getConnection();
-        $this->tr             = $translate;
-        $this->activityLogger = $logger;
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
+    public function __construct(
+        Session $session = null,
+        EntityManager $em,
+        Translate $translate,
+        ActivityLogger $logger,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->em              = $em;
+        $this->db              = $em->getConnection();
+        $this->tr              = $translate;
+        $this->activityLogger  = $logger;
+        $this->eventDispatcher = $eventDispatcher;
 
         if ($session) {
             $this->session = $session;
@@ -260,15 +272,7 @@ class UserChatManager
             if ($is_new_convo) {
                 $newchat_cm_data = $convo->getInfo();
 
-                $cm = new ClientMessage();
-                $cm->fromArray([
-                    'channel'           => 'chat.new',
-                    'data'              => $newchat_cm_data,
-                    'created_by_client' => $this->getCurrentClientId(),
-                ]);
-
-                $this->em->persist($cm);
-                $this->em->flush();
+                $this->dispatchLegacyEvent('chat.new', $newchat_cm_data);
             }
 
             if ($convo->person) {
@@ -359,15 +363,7 @@ class UserChatManager
         $newchat_cm_data              = $convo->getInfo();
         $newchat_cm_data['restarted'] = true;
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => 'chat.new',
-            'data'              => $newchat_cm_data,
-            'created_by_client' => $this->getCurrentClientId(),
-        ]);
-
-        $this->em->persist($cm);
-        $this->em->flush();
+        $this->dispatchLegacyEvent('chat.new', $newchat_cm_data);
     }
 
     /**
@@ -507,14 +503,10 @@ class UserChatManager
                 ['department_changed' => true, 'new_department_id' => $convo->department_id]
             );
 
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => 'chat.depchange',
-                'data'              => array_merge($convo->getInfo(), ['old_department_id' => $old_dep_id]),
-                'created_by_client' => $this->getCurrentClientId(),
-            ]);
-
-            $this->em->persist($cm);
+            $this->dispatchLegacyEvent(
+                'chat.depchange',
+                array_merge($convo->getInfo(), ['old_department_id' => $old_dep_id])
+            );
 
             $this->em->flush();
             $this->em->commit();
@@ -564,14 +556,13 @@ class UserChatManager
 
             $this->em->flush();
 
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => 'chat.reassigned',
-                'data'              => array_merge($convo->getInfo(), ['old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user]),
-                'created_by_client' => $this->getCurrentClientId(),
-            ]);
-
-            $this->em->persist($cm);
+            $this->dispatchLegacyEvent(
+                'chat.reassigned',
+                array_merge(
+                    $convo->getInfo(),
+                    ['old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user]
+                )
+            );
 
             $this->em->flush();
             $this->em->commit();
@@ -643,13 +634,10 @@ class UserChatManager
         // If no agent auto-assigned,
         // need to broadcast an alert to other agents
         if (!$convo->getAgent() && $convo->getStatus() == 'open') {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => 'chat.unassigned',
-                'data'              => array_merge($convo->getInfo(), ['old_agent_id' => $old_agent_id]),
-                'created_by_client' => $this->getCurrentClientId(),
-            ]);
-            $this->em->persist($cm);
+            $this->dispatchLegacyEvent(
+                'chat.unassigned',
+                array_merge($convo->getInfo(), ['old_agent_id' => $old_agent_id])
+            );
         }
     }
 
@@ -793,16 +781,7 @@ class UserChatManager
             }
         }
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => 'chat.ended',
-            'data'              => $convo->getInfo(),
-            'created_by_client' => $this->getCurrentClientId(),
-        ]);
-
-        $this->em->persist($cm);
-
-        $this->em->flush();
+        $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
 
         if ($reason !== 'timeout' && $reason !== 'wait_timeout' && $reason != 'abandoned') {
             $this->autoSendChatTranscript($convo);
@@ -832,15 +811,7 @@ class UserChatManager
 
         $this->addSystemMessage($convo, 'message_ended-by-user', [], ['chat_ended']);
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => 'chat.ended',
-            'data'              => $convo->getInfo(),
-            'created_by_client' => $this->getCurrentClientId(),
-        ]);
-
-        $this->em->persist($cm);
-        $this->em->flush();
+        $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
 
         $this->autoSendChatTranscript($convo);
     }
@@ -1000,16 +971,8 @@ class UserChatManager
         }
 
         $data = $msg->getInfo();
-        $cm   = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => $channel,
-            'data'              => $data,
-            'created_by_client' => $this->getCurrentClientId(),
-        ]);
 
-        $this->em->persist($cm);
-
-        $this->em->flush();
+        $this->dispatchLegacyEvent($channel, $data);
 
         return $msg;
     }
@@ -1073,14 +1036,7 @@ class UserChatManager
 
         $this->em->flush();
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel' => $channel,
-            'data'    => $msg->getInfo(),
-        ]);
-        $this->em->persist($cm);
-
-        $this->em->flush();
+        $this->dispatchLegacyEvent($channel, $msg->getInfo());
 
         return $msg;
     }
@@ -1100,23 +1056,7 @@ class UserChatManager
      */
     public function setUserTypingIndicator(ChatConversation $convo, $preview_string)
     {
-        $this->em->beginTransaction();
-
-        try {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $convo->getChannelId('usertyping'),
-                'data'              => ['preview' => $preview_string],
-                'created_by_client' => $this->getCurrentClientId(),
-            ]);
-            $this->em->persist($cm);
-
-            $this->em->flush();
-            $this->em->commit();
-        } catch (\Exception $e) {
-            $this->em->rollback();
-            throw $e;
-        }
+        $this->dispatchLegacyEvent($convo->getChannelId('usertyping'), ['preview' => $preview_string]);
     }
 
     /**
@@ -1144,15 +1084,8 @@ class UserChatManager
                 [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT]
             );
 
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $convo->getChannelId('ack_messages'),
-                'data'              => ['message_ids' => $message_ids],
-                'created_by_client' => $this->getCurrentClientId(),
-            ]);
-            $this->em->persist($cm);
+            $this->dispatchLegacyEvent($convo->getChannelId('ack_messages'), ['message_ids' => $message_ids]);
 
-            $this->em->flush();
             $this->em->commit();
         } catch (\Exception $e) {
             $this->em->rollback();
@@ -1163,5 +1096,10 @@ class UserChatManager
     public function getSession()
     {
         return $this->session;
+    }
+
+    protected function dispatchLegacyEvent($eventType, $data)
+    {
+        $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent($eventType, $data));
     }
 }

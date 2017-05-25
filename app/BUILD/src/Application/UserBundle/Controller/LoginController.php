@@ -32,7 +32,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Controller\AbstractController;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\LoginLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
@@ -60,6 +59,7 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
@@ -540,21 +540,15 @@ class LoginController extends AbstractController
      */
     protected function broadcastAgentIsOnline(Person $person)
     {
-        $cm = new ClientMessage();
-        $cm->fromArray(
-            [
-                'channel' => 'agent.new-agent-online',
-                'data'    => [
-                    'agent_id'         => $person->getId(),
-                    'agent_name'       => $person->getDisplayName(),
-                    'agent_short_name' => $person->getDisplayContactShort(4),
-                    'picture_url'      => $person->getPictureUrl(10),
-                ],
-                'created_by_client' => $this->session->getEntityId(),
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('agent.new-agent-online', [
+                'agent_id'         => $person->getId(),
+                'agent_name'       => $person->getDisplayName(),
+                'agent_short_name' => $person->getDisplayContactShort(4),
+                'picture_url'      => $person->getPictureUrl(10),
             ]
-        );
-        $this->em()->persist($cm);
-        $this->em()->flush();
+        ));
     }
 
     /**

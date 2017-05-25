@@ -123,7 +123,8 @@ class JobRouterService
                 $conn,
                 $container->getEm(),
                 $container->getBlobStorage(),
-                $container->get('serializer')
+                $container->get('serializer'),
+                $container->get('event_dispatcher')
             )
         );
 

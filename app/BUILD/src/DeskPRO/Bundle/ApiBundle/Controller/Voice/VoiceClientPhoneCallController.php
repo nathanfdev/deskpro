@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -41,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -249,23 +249,20 @@ class VoiceClientPhoneCallController extends BaseController
 
         $ticket = $messageAttribute->getMessage()->getTicket();
 
-        // send agent invite
-        $cm = new ClientMessage();
-        $cm->setChannel('agent.voice.conference.participant-invite');
-        $cm->setForPerson($person);
-        $cm->setData([
-            'number'           => $phoneCall->getExternalNumber(),
-            'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
-            'call_id'          => $phoneCall->getId(),
-            'call_type'        => $callType,
-            'conference_sid'   => $phoneCall->getConferenceSid(),
-            'from_agent_id'    => $this->getVoiceAgent()->getId(),
-            'ticket_id'        => $ticket->getId(),
-            'invite_type'      => $inviteType,
-        ]);
-
-        $em->persist($cm);
-        $em->flush();
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.participant-invite',
+            [
+                'number'           => $phoneCall->getExternalNumber(),
+                'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
+                'call_id'          => $phoneCall->getId(),
+                'call_type'        => $callType,
+                'conference_sid'   => $phoneCall->getConferenceSid(),
+                'from_agent_id'    => $this->getVoiceAgent()->getId(),
+                'ticket_id'        => $ticket->getId(),
+                'invite_type'      => $inviteType,
+                'target'           => $person->getId(),
+            ]
+        ));
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -325,17 +322,14 @@ class VoiceClientPhoneCallController extends BaseController
         $em->persist($log);
         $em->flush();
 
-        // send client notification
-        $cm = new ClientMessage();
-        $cm->setChannel('agent.voice.conference.participant-cancel');
-        $cm->setForPerson($person);
-        $cm->setData([
-            'call_id'  => $phoneCall->getId(),
-            'agent_id' => $person->getId(),
-        ]);
-
-        $em->persist($cm);
-        $em->flush();
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.participant-cancel',
+            [
+                'call_id'  => $phoneCall->getId(),
+                'agent_id' => $person->getId(),
+                'target'   => $person->getId(),
+            ]
+        ));
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -376,16 +370,13 @@ class VoiceClientPhoneCallController extends BaseController
         $em->persist($log);
         $em->flush();
 
-        // send client notification
-        $cm = new ClientMessage();
-        $cm->setChannel('agent.voice.conference.participant-ignore');
-        $cm->setData([
-            'call_id'  => $phoneCall->getId(),
-            'agent_id' => $person->getId(),
-        ]);
-
-        $em->persist($cm);
-        $em->flush();
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.participant-ignore',
+            [
+                'call_id'  => $phoneCall->getId(),
+                'agent_id' => $person->getId(),
+            ]
+        ));
 
         // try to end call for cold transfer
         $this->get('twilio_adapter')->tryEndConference($phoneCall);
@@ -440,15 +431,13 @@ class VoiceClientPhoneCallController extends BaseController
     {
         $this->get('twilio_adapter')->holdConferenceEndUser($phoneCall, $isHold);
 
-        $cm = new ClientMessage();
-        $cm->setChannel('agent.voice.conference.hold');
-        $cm->setData([
-            'call_id' => $phoneCall->getId(),
-            'hold'    => $isHold,
-        ]);
-
-        $this->getManager()->persist($cm);
-        $this->getManager()->flush();
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.hold',
+            [
+                'call_id' => $phoneCall->getId(),
+                'hold'    => $isHold,
+            ]
+        ));
     }
 
     /**

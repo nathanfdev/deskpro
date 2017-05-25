@@ -26,28 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
-
-namespace Application\DeskPRO\ClientMessage\MessageHandler;
+namespace DeskPRO\Bundle\AppBundle\Notification\Event;
 
 /**
- * A new chat message.
+ * Class AbstractSystemEvent.
  */
-class ChatMessage extends AbstractMessageHandler
+abstract class AbstractLegacyEvent extends AbstractSystemEvent implements SystemEventInterface
 {
     /**
-     * Get the message to give the client.
-     *
-     * @param  $context
-     *
-     * @return mixed
+     * @var string
      */
-    public function getMessage($context)
+    protected $eventType;
+
+    public function __construct($eventType)
     {
-        return $this->message['data'];
+        $this->eventType = $eventType;
+    }
+
+    public function getEventType()
+    {
+        return $this->eventType;
+    }
+
+    public function __sleep()
+    {
+        return ['eventType'];
     }
 }

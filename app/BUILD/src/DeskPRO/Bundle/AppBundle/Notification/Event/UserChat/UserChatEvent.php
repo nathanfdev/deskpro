@@ -26,28 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\UserChat;
 
-namespace Application\DeskPRO\ClientMessage\MessageHandler;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
-/**
- * A basic message encoder simply returns the data.
- */
-class BasicArray extends AbstractMessageHandler
+class UserChatEvent extends LegacySystemEvent
 {
-    /**
-     * Get the message to give the client.
-     *
-     * @param  $context
-     *
-     * @return mixed
-     */
-    public function getMessage($context)
-    {
-        return $this->message['data'];
-    }
+    const EVENT_NAME = 'legacy.user.chat';
 }

@@ -35,7 +35,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
  */
 class UpdateOnlineEvent extends AbstractSystemEvent
 {
-    const EVENT_NAME = 'notification.agents.update_online';
+    const EVENT_NAME = 'agents.update_online';
 
     /** @var array */
     protected $agents_online_status;

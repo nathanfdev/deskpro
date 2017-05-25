@@ -28,14 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Event\Ticket;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
  * Class TicketUpdatedEvent.
  */
-class TicketUpdatedEvent extends AbstractSystemEvent
+class TicketUpdatedEvent extends LegacySystemEvent
 {
-    const EVENT_NAME = 'notification.ticket.updated';
+    const EVENT_NAME = 'legacy.ticket.updated';
 
     /** @var int */
     protected $ticket_id;
@@ -44,13 +44,14 @@ class TicketUpdatedEvent extends AbstractSystemEvent
     protected $data;
 
     /**
-     * @param int   $ticket_id
-     * @param array $data
+     * @param string $type
+     * @param int    $ticket_id
+     * @param array  $data
      */
-    public function __construct($ticket_id, array $data)
+    public function __construct($type, $ticket_id, array $data)
     {
+        parent::__construct($type, $data);
         $this->ticket_id = $ticket_id;
-        $this->data      = $data;
     }
 
     /**
@@ -78,7 +79,7 @@ class TicketUpdatedEvent extends AbstractSystemEvent
      */
     public function getData()
     {
-        return $this->data;
+        return array_merge(parent::getData(), ['ticket_id' => $this->ticket_id]);
     }
 
     /**

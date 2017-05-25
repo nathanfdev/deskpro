@@ -39,7 +39,6 @@ use Application\DeskPRO\CustomFields\PeopleFields;
 use Application\DeskPRO\CustomFields\TicketFields;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Organization;
@@ -2071,15 +2070,6 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since') > 0) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
         $ticket_data = null;
         if ($this->in->getBool('return_data')) {
             $ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
@@ -2094,7 +2084,7 @@ class TicketSearchController extends AbstractController
             'success_tickets'           => $success,
             'failed_tickets'            => $permission_errors,
             'validation_failed_tickets' => $validation_errors,
-            'client_messages'           => $client_messages,
+            'client_messages'           => false,
             'ticket_data'               => $ticket_data,
         ]);
     }

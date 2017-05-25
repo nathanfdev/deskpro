@@ -26,31 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category ClientMessage
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace Application\DeskPRO\ClientMessage;
-
-use Application\DeskPRO\Entity\ClientMessage;
-
-class Event extends \Symfony\Component\EventDispatcher\Event
+class Build1495623326 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
-    /** @var ClientMessage */
-    protected $client_message;
-
-    public function construct(ClientMessage $client_message)
+    public function addNewTables()
     {
-        $this->client_message = $client_message;
     }
 
-    /**
-     * @return \Application\DeskPRO\Entity\ClientMessage
-     */
-    public function getClientMessage()
+    public function runAlters()
     {
-        return $this->client_message;
+        $this->out('Dropping old client_messages table');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS client_messages');
+    }
+
+    public function run()
+    {
     }
 }

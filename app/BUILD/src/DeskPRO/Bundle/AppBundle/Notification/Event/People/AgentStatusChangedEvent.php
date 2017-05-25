@@ -26,39 +26,56 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Controller
- */
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\People;
 
-namespace Application\DeskPRO\ClientMessage\MessageHandler;
+use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractLegacyEvent;
 
-use Application\DeskPRO\Entity;
-
-/**
- * A message handler decides how to take a message and compose a suitable
- * data packet for the client. For example, it might just be an ID so the
- * client can callback for full data, or it might be all the data now etc.
- */
-abstract class AbstractMessageHandler
+class AgentStatusChangedEvent extends AbstractLegacyEvent
 {
-    /**
-     * @var Application\DeskPRO\Entity\ClientMessage
-     */
-    protected $message;
+    const EVENT_NAME = 'agent.update_status';
 
-    public function __construct(Entity\ClientMessage $message)
+    /**
+     * @var int
+     */
+    private $personId;
+
+    /**
+     * @var bool
+     */
+    private $online;
+
+    /**
+     * AgentStatusChangedEvent constructor.
+     *
+     * @param $type
+     * @param $personId
+     * @param $online
+     */
+    public function __construct($type, $personId, $online)
     {
-        $this->message = $message;
+        parent::__construct($type);
+        $this->personId = $personId;
+        $this->online   = $online;
     }
 
     /**
-     * Get the message to give the client.
-     *
-     * @param  $context
-     *
-     * @return mixed
+     * @return int
      */
-    abstract public function getMessage($context);
+    public function getPersonId()
+    {
+        return $this->personId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getOnline()
+    {
+        return $this->online;
+    }
+
+    public function __sleep()
+    {
+        return ['personId', 'online'];
+    }
 }

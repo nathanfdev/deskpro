@@ -87,12 +87,20 @@ class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
             $this->cacheKey,
             function () use ($conn) {
                 try {
-                    return $conn->fetchAllKeyValue(
+                    $config = $conn->fetchAllKeyValue(
                         '
                             SELECT name, value
                             FROM settings
                         '
                     );
+                    foreach ($config as $key => $value) {
+                        $newValue = @unserialize($value);
+                        if ($value === 'b:0;' || false !== $newValue) {
+                            $config[$key] = $newValue;
+                        }
+                    }
+
+                    return $config;
                 } catch (\Exception $e) {
                     // during install and such, we expect this to happen when no "settings" table exists
                     return [];

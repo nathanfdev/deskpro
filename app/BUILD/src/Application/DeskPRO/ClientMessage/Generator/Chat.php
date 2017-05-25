@@ -36,220 +36,69 @@ namespace Application\DeskPRO\ClientMessage\Generator;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class Chat
 {
-    public static function createNewChatMessages($byClientId, ChatConversation $conversation, ChatMessage $chatMessage)
-    {
-        if ($conversation['is_agent']) {
-            $channel = 'agent_chat.new-chat';
-        } else {
-            $channel = 'chat.new-chat';
-        }
+    public static function createNewAddedPartMessage(
+        ChatConversation $conversation,
+        Person $agent,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        /** @var ChatMessage $chatMessage */
+        $chatMessage = $conversation->getMessages()->get(0);
 
-        $newChatCm = new ClientMessage();
-        $newChatCm->fromArray([
-            'channel' => $channel,
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'message_id'      => $chatMessage['id'],
-                'author_id'       => $chatMessage['author_id'],
-                'author_name'     => $chatMessage['author_name'],
-                'message'         => $chatMessage['content'],
-                'date_created'    => $chatMessage['date_created']->getTimestamp(),
-            ],
-            'created_by_client' => $byClientId,
-        ]);
-
-        return [$newChatCm];
-    }
-
-    public static function createNewAddedPartMessage($byClientId, ChatConversation $conversation, $agent)
-    {
-        $channel = 'chat_user_agent.added-as-part';
-
-        $chatMessage = $conversation->messages->get(0);
-
-        $newChatCm = new ClientMessage();
-        $newChatCm->fromArray([
-            'channel' => $channel,
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'message_id'      => $chatMessage['id'],
-                'author_id'       => $chatMessage['author_id'],
-                'author_name'     => $chatMessage['author_name'],
-                'message'         => $chatMessage['content'],
-                'date_created'    => $chatMessage['date_created']->getTimestamp(),
-            ],
-            'created_by_client' => $byClientId,
-            'for_person'        => $agent,
-        ]);
-
-        return [$newChatCm];
-    }
-
-    public static function createChatEndedMessages($byClientId, ChatConversation $conversation)
-    {
-        $channel = 'chat.chat-ended';
-
-        $chatCm = new ClientMessage();
-        $chatCm->fromArray([
-            'channel' => $channel,
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'date_created'    => time(),
-            ],
-            'created_by_client' => $byClientId,
-        ]);
-
-        return [$chatCm];
-    }
-
-    public static function createChatAssignedMessages($byClientId, ChatConversation $conversation)
-    {
-        $clientMessages = [];
-
-        $chatCm = new ClientMessage();
-
-        $chatMessage = $conversation->messages->get(0);
-
-        // We only need to notify the one guy
-        if ($conversation['agent']) {
-            $chatCm->fromArray([
-                'channel' => 'chat.new-chat-assigned',
-                'data'    => [
-                    'conversation_id' => $conversation['id'],
-                    'message_id'      => $chatMessage['id'],
-                    'author_id'       => $chatMessage['author_id'],
-                    'author_name'     => $chatMessage['author_name'],
-                    'message'         => $chatMessage['content'],
+        $eventDispatcher->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent(
+                'chat_user_agent.added-as-part',
+                [
+                    'conversation_id' => $conversation->getId(),
+                    'message_id'      => $chatMessage->getId(),
+                    'author_id'       => $chatMessage->getAuthorId(),
+                    'author_name'     => $chatMessage->getAuthorName(),
+                    'message'         => $chatMessage->getContent(),
                     'date_created'    => $chatMessage['date_created']->getTimestamp(),
-                ],
-                'created_by_client' => $byClientId,
-                'for_person'        => $conversation['agent'],
-            ]);
-
-            // Dispatch a 'new chat' type popup for everyone
-        } else {
-            $chatCm = new ClientMessage();
-            $chatCm->fromArray([
-                'channel' => 'chat.new-chat',
-                'data'    => [
-                    'conversation_id' => $conversation['id'],
-                    'message_id'      => $chatMessage['id'],
-                    'author_id'       => $chatMessage['author_id'],
-                    'author_name'     => $chatMessage['author_name'],
-                    'message'         => $chatMessage['content'],
-                    'date_created'    => $chatMessage['date_created']->getTimestamp(),
-                ],
-                'created_by_client' => $byClientId,
-            ]);
-        }
-
-        $clientMessages[] = $chatCm;
-
-        // Dispatch a general message, so the interfaces that are beeping can
-        // can hide the beep
-        $chatCm = new ClientMessage();
-        $chatCm->fromArray([
-            'channel' => 'chat_user_agent.chat-assigned',
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
-            ],
-            'created_by_client' => $byClientId,
-        ]);
-
-        $clientMessages[] = $chatCm;
-
-        // User should be notiifed too
-        if (!$conversation['is_agent'] and $conversation->session) {
-            $chatCmUser = new ClientMessage();
-            $chatCmUser->fromArray([
-                'channel' => 'chat_user.chat-assigned',
-                'data'    => [
-                    'conversation_id' => $conversation['id'],
-                    'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
-                ],
-                'created_by_client' => $byClientId,
-                'for_client'        => $conversation->session['id'],
-            ]);
-
-            $clientMessages[] = $chatCmUser;
-        }
-
-        return $clientMessages;
+                    'target'          => $agent->getId(),
+                ]
+        ));
     }
 
-    public static function createPartisipatedUpdatedMessages($byClientId, ChatConversation $conversation)
-    {
+    public static function createPartisipatedUpdatedMessages(
+        ChatConversation $conversation,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $cmData = [
             'conversation_id' => $conversation->getId(),
             'agent_id'        => $conversation['agent'] ? $conversation['agent']['id'] : 0,
             'participant_ids' => [],
         ];
 
-        foreach ($conversation->participants as $part) {
-            $cmData['participant_ids'][] = $part['id'];
+        foreach ($conversation->getParticipants() as $participant) {
+            $cmData['participant_ids'][] = $participant->getId();
         }
 
-        $channel = 'chat_user_agent.chat-parts-updated';
-
-        $cms = [];
-
-        // Assigned agent
-        if ($conversation->agent) {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_person'        => $conversation->agent,
-            ]);
-
-            $cms[] = $cm;
+        if ($conversation->getAgent()) {
+            $eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                'chat_user_agent.chat-parts-updated',
+                array_merge($cmData, ['target' => $conversation->getAgent()->getId()])
+            ));
         }
 
         // Participants first
-        foreach ($conversation->participants as $part) {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_person'        => $part,
-            ]);
-
-            $cms[] = $cm;
+        foreach ($conversation->getParticipants() as $participant) {
+            $eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                'chat_user_agent.chat-parts-updated',
+                array_merge($cmData, ['target' => $participant->getId()])
+            ));
         }
-
-        return $cms;
     }
 
-    public static function createNewChatRoundRobinMessages($byClientId, ChatConversation $conversation, ChatMessage $chatMessage)
+    public static function createNewMessageMessages(ChatMessage $chatMessage, EventDispatcherInterface $eventDispatcher)
     {
-        $newChatCm = new ClientMessage();
-        $newChatCm->fromArray([
-            'channel' => 'chat.new-chat-assigned',
-            'data'    => [
-                'conversation_id' => $conversation['id'],
-                'message_id'      => $chatMessage['id'],
-                'author_id'       => $chatMessage['author_id'],
-                'author_name'     => $chatMessage['author_name'],
-                'message'         => $chatMessage['content'],
-                'date_created'    => $chatMessage['date_created']->getTimestamp(),
-            ],
-            'created_by_client' => $byClientId,
-            'for_person'        => $conversation['agent'],
-        ]);
-
-        return [$newChatCm];
-    }
-
-    public static function createNewMessageMessages($byClientId, ChatMessage $chatMessage, &$cmData = null)
-    {
-        $conversation = $chatMessage->conversation;
+        $conversation = $chatMessage->getConversation();
 
         if ($conversation['is_agent']) {
             $channel = 'agent_chat.message';
@@ -278,89 +127,20 @@ class Chat
             unset($cmData['message']);
         }
 
-        $cms = [];
-
         // Assigned agent
-        if ($conversation->agent) {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_person'        => $conversation->agent,
-            ]);
-
-            $cms[] = $cm;
+        if ($conversation->getAgent()) {
+            $eventDispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent($channel, array_merge($cmData, ['target' => $conversation->getAgent()->getId()])
+            ));
         }
 
         // Participants first
-        foreach ($conversation->participants as $part) {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_person'        => $part,
-            ]);
-
-            $cms[] = $cm;
+        foreach ($conversation->getParticipants() as $participant) {
+            $eventDispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent($channel, array_merge($cmData, ['target' => $participant->getId()])
+            ));
         }
-
-        // And the user
-        if (!$conversation['is_agent'] and !$chatMessage['is_user_hidden']) {
-            $session = $conversation->session;
-
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_client'        => $session['id'],
-            ]);
-
-            $cms[] = $cm;
-        }
-
-        return $cms;
-    }
-
-    public static function createUserTypingMessages($byClientId, ChatConversation $conversation, $partialMessage)
-    {
-        $cmData = [
-            'conversation_id' => $conversation['id'],
-            'partial_message' => $partialMessage,
-        ];
-
-        $channel = 'chat.user-typing';
-
-        $cms = [];
-
-        // Assigned agent
-        if ($conversation->agent) {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_person'        => $conversation->agent,
-            ]);
-
-            $cms[] = $cm;
-        }
-
-        // Participants first
-        foreach ($conversation->participants as $part) {
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => $channel,
-                'data'              => $cmData,
-                'created_by_client' => $byClientId,
-                'for_person'        => $part,
-            ]);
-
-            $cms[] = $cm;
-        }
-
-        return $cms;
     }
 }

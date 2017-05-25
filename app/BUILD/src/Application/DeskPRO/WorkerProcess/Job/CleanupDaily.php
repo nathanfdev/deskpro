@@ -346,7 +346,6 @@ BODY;
 
         $tables = [
             'agent_alerts',
-            'client_messages',
         ];
 
         $threshold = 2145000000;

@@ -26,47 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Model\PusherModel;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
- * DeskPRO.
- *
- * @category ClientMessage
+ * Class PusherType.
  */
-
-namespace Application\DeskPRO\ClientMessage\Generator;
-
-use Application\DeskPRO\Entity\ClientMessage;
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\Person;
-
-class PeopleClientMessages
+class PusherType extends AbstractType
 {
-    public static function createNewPersonMessages(Person $person)
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel' => 'agent.person.added',
-            'data'    => [
-                'person_id'    => $person->id,
-                'person_name'  => $person->getDisplayName(),
-                'date_created' => $person->date_created->getTimestamp(),
-            ],
-        ]);
-
-        return [$cm];
+        $builder
+            ->add('pusher_enabled', ApiBooleanType::class)
+            ->add('key', TextType::class)
+            ->add('secret', TextType::class)
+            ->add('id', TextType::class)
+        ;
     }
 
-    public static function createNewOrgMessages(Organization $org)
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel' => 'agent.org.added',
-            'data'    => [
-                'organization_id'   => $org->id,
-                'organization_name' => $org->name,
-                'date_created'      => $org->date_created->getTimestamp(),
-            ],
+        $resolver->setDefaults([
+            'data_class' => PusherModel::class,
         ]);
-
-        return [$cm];
     }
 }

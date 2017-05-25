@@ -40,7 +40,7 @@ export default class PollingClient extends AbstractClient {
     if (last && last.timestamp) {
       that.options.last_alert = last.timestamp;
       response.data.map((datum) => {
-        if (datum.target_id === that.options.me) {
+        if (parseInt(datum.target_id, 10) === that.options.me) {
           that.options.dispatcher(that.options.eventName, datum);
         }
         return null;

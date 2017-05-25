@@ -1,0 +1,128 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+    <div class="form-horizontal dp-form">
+        <section class="dp-paneblock dp-listpane">
+            <header>
+                <h3>Realtime Event Settings</h3>
+            </header>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="form-group">
+                        <div class="col-lg-12">
+                            <p>
+                                Many actions performed in the helpdesk cause events to propagate to all online users. For example, if you
+                                change the urgency on a ticket, your colleagues will see the urgency change on their screens too. This
+                                happens without them needing to refresh the page. This "realtime" functionality is a core feature of Deskpro.
+                            </p>
+                            <p>
+                                There are multiple ways to achieve this realtime behaviour, some are better than others. This page
+                                lets you use the best settings for your environment.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="panel-heading">
+                        <h3>
+                            <label style="margin-bottom: 10px;">
+                                <input type="radio" ng-model="mode" value="default" />
+                                <spam>Polling (default)</spam>
+                            </label>
+                        </h3>
+                    </div>
+                    <div class="panel-help" ng-show="mode == 'default'">
+                        <p>
+                            The default polling mechanism has online users poll the server every few seconds to check for updates.
+                        </p>
+                        <p>
+                            <strong>Advantages:</strong> Portable and requires no setup.
+                        </p>
+                        <p>
+                            <strong>Disadvantages:</strong> Slow (events can take 5-6 seconds to reach users); Can be server intensive because users are constantly polling even if nothing happened.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            {##################################################################################################}
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="panel-heading">
+                        <h3>
+                            <label style="margin-bottom: 10px;">
+                                <input type="radio" ng-model="mode" value="pusher" />
+                                <spam>Pusher (recommended)</spam>
+                            </label>
+                        </h3>
+                    </div>
+                    <div class="panel-help" ng-show="mode == 'pusher'">
+                        <p>
+                            <a href="https://pusher.com/">Pusher</a> is a service that operates a realtime events/messaging infrastructure. Deskpro can deliver
+                            events through Pusher, and Pusher delivers them to your online users via websockets. Since there is no polling like the default
+                            mechanism, this means events are propagated instantly to your users (i.e. no 5-6 second delay).
+                        </p>
+                        <p>
+                            <strong>Advantages:</strong> Realtime distribution of events (your users see changes on their screens instantly); Reduces server load because polling is no longer necessary.
+                        </p>
+                        <p>
+                            <strong>Disadvantages:</strong> Requires you to sign up for a third-party service.
+                        </p>
+                        <p>
+                            <strong>Requirements:</strong> <a href="https://pusher.com/signup">Sign up at Pusher.com</a>, then create a new "app" to get an app ID, key, and secret.
+                        </p>
+                    </div>
+                    <div class="form-group" data-ng-show="mode == 'pusher'">
+                        <div class="col-lg-12">
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Pusher App ID:</h4>
+
+                                    <input type="text" class="form-control" ng-model="id" />
+                                </label>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Pusher App Key:</h4>
+                                    <input type="text" class="form-control" ng-model="key" />
+                                </label>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Pusher App Secret:</h4>
+                                    <input type="text" class="form-control" ng-model="secret" />
+                                </label>
+                            </div>
+                            <div class="inner-group">
+                                <button class="btn btn-default" ng-click="Notifications.testPusher()">Test Pusher Settings</button>
+                                <br/>
+                                <textarea class="form-control" ng-show="pusherTestResult" ng-bind="pusherTestResult" style="width: 65%; height: 250px; font-size: 90%; font-family: Monaco, monospace;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <footer>
+                <div class="dp-content">
+                    <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                        <div dp-hide-spinning="saving">
+                            <button class="btn btn-success" ng-click="Notifications.save()">Save Settings</button>
+                        </div>
+                        <div dp-show-spinning="saving">
+                            <i class="spinner-flat"></i>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+    </div>
+{% endblock %}

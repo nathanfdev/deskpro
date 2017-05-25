@@ -33,8 +33,9 @@
 namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractAgentNotification
 {
@@ -53,13 +54,19 @@ abstract class AbstractAgentNotification
      */
     protected $client = 'sys';
 
+    /**
+     * @var EventDispatcherInterface
+     */
+    protected $eventDispatcher;
+
     abstract public function shouldSendBrowserNotification(Person $person);
     abstract public function shouldSendEmailNotification(Person $person);
     abstract public function send();
 
     public function __construct()
     {
-        $this->em = App::getOrm();
+        $this->em              = App::getOrm();
+        $this->eventDispatcher = App::get('event_dispatcher');
     }
 
     public function setCreatedClient($client)
@@ -154,19 +161,14 @@ abstract class AbstractAgentNotification
         foreach ($notify_list['browser'] as $agent) {
             $tpl_line = App::getTemplating()->render($tpl, $vars);
 
-            $data        = $vars['notify_data'];
-            $data['row'] = $tpl_line;
+            $data           = $vars['notify_data'];
+            $data['row']    = $tpl_line;
+            $data['target'] = $agent->getId();
 
-            $cm = new ClientMessage();
-            $cm->fromArray([
-                'channel'           => 'agent-notify.'.$data['notify_type'],
-                'data'              => $data,
-                'for_person'        => $agent,
-                'created_by_client' => $this->client,
-            ]);
-            $this->em->persist($cm);
+            $this->eventDispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent-notify.'.$data['notify_type'], $data)
+            );
         }
-
-        $this->em->flush();
     }
 }

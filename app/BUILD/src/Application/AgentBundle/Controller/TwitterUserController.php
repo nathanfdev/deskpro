@@ -35,6 +35,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterUser;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
  * Handles creating/editing of Twitter Users.
@@ -349,12 +350,13 @@ class TwitterUserController extends AbstractController
             $this->em->persist($friend);
             $this->em->flush();
 
-            App::getDb()->insert('client_messages', [
-                'channel'      => 'agent.twitter-friend',
-                'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(['action' => 'new', 'account_id' => $account->id]),
-            ]);
+            App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                'agent.twitter-friend',
+                [
+                    'action'     => 'new',
+                    'account_id' => $account->getId(),
+                ]
+            ));
 
             $follower = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
                 ->findOneByAccountIdAndUserId($account['id'], $user['id']);
@@ -367,12 +369,13 @@ class TwitterUserController extends AbstractController
                 $this->em->flush();
 
                 if ($follower->is_archived != $old) {
-                    App::getDb()->insert('client_messages', [
-                        'channel'      => 'agent.twitter-follower',
-                        'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                        'date_created' => date('Y-m-d H:i:s'),
-                        'data'         => serialize(['action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id]),
-                    ]);
+                    App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                        'agent.twitter-follower',
+                        [
+                            'action'     => $follower->is_archived ? 'archived' : 'unarchived',
+                            'account_id' => $account->getId(),
+                        ]
+                    ));
                 }
             }
         }
@@ -402,12 +405,13 @@ class TwitterUserController extends AbstractController
             $this->em->remove($friend);
             $this->em->flush();
 
-            App::getDb()->insert('client_messages', [
-                'channel'      => 'agent.twitter-friend',
-                'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize(['action' => 'removed', 'account_id' => $account->id]),
-            ]);
+            App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                'agent.twitter-friend',
+                [
+                    'action'     => 'removed',
+                    'account_id' => $account->getId(),
+                ]
+            ));
         }
 
         $success = true;
@@ -432,12 +436,13 @@ class TwitterUserController extends AbstractController
             $this->em->flush();
 
             if ($follower->is_archived != $old) {
-                App::getDb()->insert('client_messages', [
-                    'channel'      => 'agent.twitter-follower',
-                    'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                    'date_created' => date('Y-m-d H:i:s'),
-                    'data'         => serialize(['action' => $follower->is_archived ? 'archived' : 'unarchived', 'account_id' => $account->id]),
-                ]);
+                App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                    'agent.twitter-follower',
+                    [
+                        'action'     => $follower->is_archived ? 'archived' : 'unarchived',
+                        'account_id' => $account->getId(),
+                    ]
+                ));
             }
         }
 

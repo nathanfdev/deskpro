@@ -36,13 +36,13 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\AgentAlert;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -271,24 +271,20 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
         // batch insert client messages
         if ($alertsMap) {
-            $clientMessages = [];
             foreach ($alertsMap as $alertRecord) {
-                $clientMessages[] = [
-                    'for_person_id'     => $alertRecord['agent_id'],
-                    'channel'           => 'agent-notify.tickets',
-                    'date_created'      => $date,
-                    'created_by_client' => 'sys',
-                    'auth'              => ClientMessage::generateAuthCode(),
-                    'data'              => serialize([
-                        'type'     => 'tickets',
-                        'alert_id' => $alertRecord['alert_id'],
-                        'row'      => $alertRecord['browser_rendered'],
-                        'icon'     => $this->getContainer()->get('avatar_resolver')->getAvatar($context->getPersonContext(), 48),
-                    ]),
-                ];
+                $this->getContainer()->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent(
+                        'agent-notify.tickets',
+                        [
+                            'type'     => 'tickets',
+                            'alert_id' => $alertRecord['alert_id'],
+                            'row'      => $alertRecord['browser_rendered'],
+                            'icon'     => $this->getContainer()->get('avatar_resolver')->getAvatar($context->getPersonContext(), 48),
+                            'target'   => $alertRecord['agent_id'],
+                        ]
+                ));
             }
-
-            $connection->batchInsert('client_messages', $clientMessages);
         }
 
         $connection->commit();

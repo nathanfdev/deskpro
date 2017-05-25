@@ -34,7 +34,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterfac
 
 /**
  * Class DeferredStrategy
- * The cloud strategy is simple: just persist SystemEvent, and then CloudService started in cron-job should
+ * The cloud strategy is simple: just persist LegacySystemEvent, and then CloudService started in cron-job should
  * calculate messages and targets, then it should deliver.
  */
 class DeferredStrategy extends AbstractStrategy

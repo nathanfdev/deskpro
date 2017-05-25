@@ -60,45 +60,6 @@ class CleanupAlways extends AbstractJob
         ");
 
         //------------------------------
-        // client_messages
-        //------------------------------
-
-        // client messages are nearly instant, so this timesnip is very low
-        $datetime = date('Y-m-d H:i:s', time() - 1800);
-
-        // Long-lived channels are still deleted after 14 days
-        $datetime2 = date('Y-m-d H:i:s', time() - 1209600);
-
-        $long_lived_channels = [
-            'agent_chat.new-message',
-        ];
-
-        // We fetch first, then delete in small batches to reduce locking
-        $ids = App::getDb()->fetchAllCol('
-            SELECT id FROM client_messages
-            WHERE (
-                date_created < ? AND channel NOT IN (?)
-            ) OR (
-                date_created < ? AND channel IN (?)
-            )
-        ',
-            [$datetime, $long_lived_channels, $datetime2, $long_lived_channels],
-            [\PDO::PARAM_STR, Connection::PARAM_STR_ARRAY, \PDO::PARAM_STR, Connection::PARAM_STR_ARRAY]);
-        if ($ids) {
-            $batch_ids = array_chunk($ids, 50, false);
-            foreach ($batch_ids as $ids) {
-                $num = App::getDb()->executeUpdate('
-                    DELETE FROM client_messages
-                    WHERE id IN (?)
-                ', [$ids], [Connection::PARAM_INT_ARRAY]);
-
-                if ($num) {
-                    $this->logStatus("Cleaned up $num old client messages");
-                }
-            }
-        }
-
-        //------------------------------
         // action_alerts
         //------------------------------
 

@@ -67,7 +67,7 @@ abstract class AbstractMessage implements MessageInterface
         $date         = new \DateTime();
         $this->target = $target;
         $this->data   = $data;
-        $this->type   = $type;
+        $this->type   = (string) $type;
         $this->date   = $date->format(\DateTime::ISO8601);
         $this->id     = RandUtils::uuidV4();
     }

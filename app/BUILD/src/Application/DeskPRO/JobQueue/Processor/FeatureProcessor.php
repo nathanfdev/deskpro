@@ -28,11 +28,11 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Setting as SettingRepository;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -121,18 +121,13 @@ class FeatureProcessor extends AbstractJobProcessor
 
             // broadcast a refresh event to all agents
             if ($feature->needAgentReload()) {
-                $cm = new ClientMessage();
-                $cm->fromArray([
-                    'channel' => 'agent.ui.reload',
-                    'data'    => [
+                $this->container
+                    ->get('event_dispatcher')
+                    ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                         'type'        => 'admin',
                         'person_id'   => 0,
                         'person_name' => 'System',
-                    ],
-                ]);
-
-                $em->persist($cm);
-                $em->flush();
+                    ]));
             }
 
             $this->runSuccessHandler($job);

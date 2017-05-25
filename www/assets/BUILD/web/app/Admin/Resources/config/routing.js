@@ -2453,6 +2453,16 @@ define(function() {
   });
 
   //###
+  //# Pusher app
+  //###
+  routes.push({
+    id: 'server.notifications',
+    url: '/settings/notifications',
+    templateName: 'Notifications/list.html',
+    controller: 'Admin_Settings_Ctrl_Notifications'
+  });
+
+  //###
   //# Server Requirements
   //###
   routes.push({

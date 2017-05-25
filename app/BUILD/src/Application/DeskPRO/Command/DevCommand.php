@@ -142,7 +142,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             'twitter_users_friends',
             'result_cache',
             'page_view_log',
-            'client_messages',
             'agent_activity',
             'sessions',
         ];

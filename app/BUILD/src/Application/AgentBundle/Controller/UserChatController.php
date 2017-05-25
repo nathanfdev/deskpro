@@ -39,13 +39,13 @@ use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -292,15 +292,12 @@ class UserChatController extends AbstractController
 
         $agent = $this->em->find('DeskPRO:Person', $agent_id);
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => 'chat.invited',
-            'data'              => $convo->getInfo(),
-            'for_person'        => $agent,
-            'created_by_client' => $this->session->getId(),
-        ]);
-        $this->em->persist($cm);
-        $this->em->flush();
+        $eventData           = $convo->getInfo();
+        $eventData['target'] = $agent;
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('chat.invited', $eventData)
+        );
 
         return $this->createJsonResponse(['success' => true]);
     }
@@ -403,50 +400,31 @@ class UserChatController extends AbstractController
     public function addPartAction($conversation_id, $agent_id)
     {
         /** @var ChatConversation $convo */
-        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $convo           = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $eventDispatcher = $this->get('event_dispatcher');
 
         if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $agent = $this->em->find('DeskPRO:Person', $agent_id);
+        $agent = $this->em->find(Person::class, $agent_id);
         if (!$agent or $convo->hasParticipant($agent)) {
             return $this->createJsonResponse([]);
         }
-
         $convo->addParticipant($agent);
 
-        $clientMessages = [];
         foreach ($convo->getCreatedMessages() as $msg) {
-            $clientMessages = array_merge($clientMessages, ChatClientMessageGenerator::createNewMessageMessages($this->session->getEntityId(), $msg));
+            ChatClientMessageGenerator::createNewMessageMessages($msg, $eventDispatcher);
         }
+        ChatClientMessageGenerator::createNewAddedPartMessage($convo, $agent, $eventDispatcher);
+        ChatClientMessageGenerator::createPartisipatedUpdatedMessages($convo, $eventDispatcher);
 
-        $clientMessages = array_merge($clientMessages, ChatClientMessageGenerator::createNewAddedPartMessage(
-            $this->session->getEntityId(),
-            $convo,
-            $agent
-        ));
-
-        $clientMessages = array_merge($clientMessages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
-            $this->session->getEntityId(),
-            $convo
-        ));
-
-        $this->em->transactional(function ($em) use ($convo, $clientMessages) {
+        $this->em->transactional(function ($em) use ($convo) {
             $em->persist($convo);
-
-            if ($clientMessages) {
-                foreach ($clientMessages as $cm) {
-                    $em->persist($cm);
-                }
-            }
-
             $em->flush();
         });
 
-        return $this->createJsonCmResponse([
-            'client_messages' => $clientMessages,
-        ]);
+        return $this->createJsonCmResponse([]);
     }
 
     /**
@@ -457,7 +435,8 @@ class UserChatController extends AbstractController
     public function syncPartsAction($conversation_id)
     {
         /** @var ChatConversation $convo */
-        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $convo           = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $eventDispatcher = $this->get('event_dispatcher');
 
         if (!$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw $this->createNotFoundException();
@@ -468,18 +447,15 @@ class UserChatController extends AbstractController
             if ($convo->getAgentId() == $part->id) {
                 continue;
             }
-
             $have[] = $part->id;
         }
 
         $target = $this->container->getIn()->getCleanValueArray('agent_ids', 'uint', 'discard');
+        $add    = array_diff($target, $have);
 
-        $add = array_diff($target, $have);
-
-        $clientMessages = [];
         if ($add) {
             foreach ($add as $pid) {
-                $agent = $this->em->getRepository('DeskPRO:Person')->find($pid);
+                $agent = $this->em->getRepository(Person::class)->find($pid);
                 if (!$agent || !$agent->is_agent) {
                     continue;
                 }
@@ -487,36 +463,20 @@ class UserChatController extends AbstractController
                 $convo->addParticipant($agent);
 
                 foreach ($convo->getCreatedMessages() as $msg) {
-                    $clientMessages = array_merge($clientMessages, ChatClientMessageGenerator::createNewMessageMessages($this->session->getEntityId(), $msg));
+                    ChatClientMessageGenerator::createNewMessageMessages($msg, $eventDispatcher);
                 }
-
-                $clientMessages = array_merge($clientMessages, ChatClientMessageGenerator::createNewAddedPartMessage(
-                    $this->session->getEntityId(),
-                    $convo,
-                    $agent
-                ));
-
-                $clientMessages = array_merge($clientMessages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
-                    $this->session->getEntityId(),
-                    $convo
-                ));
+                ChatClientMessageGenerator::createNewAddedPartMessage($convo, $agent, $eventDispatcher);
+                ChatClientMessageGenerator::createPartisipatedUpdatedMessages($convo, $eventDispatcher);
             }
 
-            $this->em->transactional(function ($em) use ($convo, $clientMessages) {
+            $this->em->transactional(function ($em) use ($convo) {
                 $em->persist($convo);
-
-                if ($clientMessages) {
-                    foreach ($clientMessages as $cm) {
-                        $em->persist($cm);
-                    }
-                }
-
                 $em->flush();
             });
         }
 
         return $this->createJsonCmResponse([
-            'client_messages' => $clientMessages,
+            'client_messages' => [],
         ]);
     }
 
@@ -928,16 +888,7 @@ class UserChatController extends AbstractController
      */
     protected function createJsonCmResponse(array $otherData = [])
     {
-        $clientMessages = false;
-        if ($this->in->getUint('client_messages_since')) {
-            $clientMessages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUint('client_messages_since'),
-                null
-            );
-        }
-
+        $clientMessages               = false;
         $otherData['client_messages'] = $clientMessages;
 
         return $this->createJsonResponse($otherData);

@@ -123,7 +123,5 @@ class ApplySlas implements TicketSaveActionInterface
                 $context->getLogger()->info(sprintf('[ApplySlas] SLA %d %s -- no match', $sla->id, $sla->title));
             }
         }
-
-        $this->cm_sender->sendQueue();
     }
 }

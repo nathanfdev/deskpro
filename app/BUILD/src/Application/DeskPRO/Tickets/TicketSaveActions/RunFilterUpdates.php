@@ -80,39 +80,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
         $personRepo     = $this->em->getRepository(Person::class);
         $onlineAgentIds = $personRepo->getActiveAgents(true);
 
-        $detector        = $this->container->getTicketFilterChangeDetector();
-        $change_set      = $detector->getFilterChangeSet($ticket, $context, $onlineAgentIds);
-        $client_messages = $change_set->getListUpdateClientMessages($onlineAgentIds);
-
-        $rows     = [];
-        $channels = [];
-        $agents   = [];
-
-        foreach ($client_messages as $cm) {
-            $channel  = $cm->getChannel();
-            $person   = $cm->getForPerson();
-            $personId = $person ? $person->getId() : null;
-
-            $channels[$channel]      = true;
-            $agents[(int) $personId] = true;
-            $rows[]                  = [
-                'channel'           => $channel,
-                'auth'              => $cm->getAuth(),
-                'data'              => serialize($cm->getData()),
-                'created_by_client' => $cm->getCreatedByClient() ?: '',
-                'for_client'        => $cm->getForClient() ?: null,
-                'date_created'      => $cm->getDateCreated()->format('Y-m-d H:i:s'),
-                'for_person_id'     => $personId,
-            ];
-        }
-
-        if ($rows) {
-            $ts = microtime(true);
-            $context->getLogger()->info(sprintf('[RunFilterUpdates] Inserting %d client_messages for %d agents in channels: %s', count($client_messages), count($agents), implode(', ', array_keys($channels))));
-            $this->container->getDb()->batchInsert('client_messages', $rows);
-            $context->getLogger()->info(sprintf('[RunFilterUpdates] Done inserts in %.3fs', microtime(true) - $ts));
-        } else {
-            $context->getLogger()->info('[RunFilterUpdates] None (empty)');
-        }
+        $detector = $this->container->getTicketFilterChangeDetector();
+        $detector->getFilterChangeSet($ticket, $context, $onlineAgentIds)->getListUpdateClientMessages($onlineAgentIds);
     }
 }
