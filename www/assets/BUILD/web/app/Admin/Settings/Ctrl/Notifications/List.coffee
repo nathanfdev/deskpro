@@ -46,7 +46,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @$scope.pusherTestResult = "Success. Settings are OK.\n\n----- Log -----\n\n" + res.data.message
         else
           @$scope.pusherTestResult = "FAILED. Settings are INVALID..\n\n----- Log -----\n\n" + res.data.message
-      ).error( =>
+      , =>
         @$scope.pusherTestResult = "FAILED :: The test did not complete successfully"
       )
 
