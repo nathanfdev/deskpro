@@ -45,7 +45,6 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestJsonReader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -305,7 +304,7 @@ class AppsController extends AbstractController
             // app v2 package info
             $appArchive = $this->getAppV2ArchiveBundle($name);
             if ($appArchive) {
-                $instanceCreator = $this->container->get(ApplicationManager::class);
+                $instanceCreator = $this->container->get('apps2.application_manager');
                 $instance        = $instanceCreator->createFirstInstance($appArchive);
 
                 $context = new SideloadSerializationContext();

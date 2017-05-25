@@ -28,11 +28,11 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
+use DeskPRO\Bundle\AppStoreBundle;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use DeskPRO\Bundle\AppStoreBundle;
 
 class InstallAppCommand extends ContainerAwareCommand
 {
@@ -48,15 +48,17 @@ class InstallAppCommand extends ContainerAwareCommand
     protected function verifyInputParameters(InputInterface $input, OutputInterface $output)
     {
         $bundleLocation = $input->getArgument('bundle');
-        $fileInfo = new \SplFileInfo($bundleLocation);
+        $fileInfo       = new \SplFileInfo($bundleLocation);
 
-        if (! $fileInfo->isFile()) {
+        if (!$fileInfo->isFile()) {
             $output->writeln("<error>Bundle file not found: $bundleLocation</error>");
+
             return false;
         }
 
-        if (! $fileInfo->isReadable()) {
+        if (!$fileInfo->isReadable()) {
             $output->writeln("<error>Bundle file not readable: $bundleLocation</error>");
+
             return false;
         }
 
@@ -68,26 +70,25 @@ class InstallAppCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (! $this->verifyInputParameters($input, $output)) {
+        if (!$this->verifyInputParameters($input, $output)) {
             return 1;
         }
 
         $bundleLocation = $input->getArgument('bundle');
-        $bundle = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($bundleLocation));
+        $bundle         = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($bundleLocation));
 
         $bundleValidator = $this->getContainer()->get(AppStoreBundle\Domain\AppBundleValidator::class);
-        $validBundle = $bundleValidator->verifyBundle($bundle);
+        $validBundle     = $bundleValidator->verifyBundle($bundle);
 
-        if (! $validBundle) { //TODO provide a more elaborate exception body
+        if (!$validBundle) { //TODO provide a more elaborate exception body
             $output->writeln("<error>File is not a valid deskpro app bundle file: $bundleLocation</error>");
+
             return 1;
         }
 
-        /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
-        $instanceCreator = $this->getContainer()->get(AppStoreBundle\Domain\ApplicationManager::class);
-        $instance = $instanceCreator->createFirstInstance($bundle);
+        $instanceCreator = $this->getContainer()->get('apps2.application_manager');
+        $instance        = $instanceCreator->createFirstInstance($bundle);
 
-        $output->writeln(sprintf("Successfully created application id : %s</error>", $instance->id));
+        $output->writeln(sprintf('Successfully created application id : %s</error>', $instance->getId()));
     }
-
 }

@@ -39,7 +39,9 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="app2_app")
+ * @ORM\Table(name="app2_app", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="name_unique", columns={"name"})
+ * })
  *
  * @JMS\ExclusionPolicy("all")
  */

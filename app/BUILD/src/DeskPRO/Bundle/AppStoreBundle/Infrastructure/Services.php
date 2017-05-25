@@ -28,29 +28,15 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
-use JsonSchema\Validator;
 use Doctrine\ORM;
+use JsonSchema\Validator;
 
 class Services
 {
     /**
      * @param ORM\EntityManager $entityManager
-     * @param DeskproBlobStorage $blobStorage
-     * @return ApplicationManagerService
-     */
-    public static function createApplicationManagerService(ORM\EntityManager $entityManager, DeskproBlobStorage $blobStorage)
-    {
-        return new ApplicationManagerService(
-            $entityManager,
-            $blobStorage,
-            new EntityIdentityMapResolver($entityManager)
-        );
-    }
-
-    /**
-     * @param ORM\EntityManager $entityManager
+     *
      * @return ApplicationInstanceDoctrineFinder
      */
     public static function createApplicationInstanceFinder(ORM\EntityManager $entityManager)
@@ -60,6 +46,7 @@ class Services
 
     /**
      * @param FileLocator $schemaLocator
+     *
      * @return AppBundleValidator
      */
     public static function createAppBundleValidator(FileLocator $schemaLocator)
@@ -68,11 +55,13 @@ class Services
         $schemaInfo = new \SplFileInfo($schemaPath);
 
         $service = new AppBundleValidator(new Validator(), $schemaInfo);
+
         return $service;
     }
 
     /**
      * @param ORM\EntityManager $entityManager
+     *
      * @return AssetDoctrineFinder
      */
     public static function createApplicationAssetService(ORM\EntityManager $entityManager)
@@ -82,6 +71,7 @@ class Services
 
     /**
      * @param ORM\EntityManager $entityManager
+     *
      * @return ApplicationDoctrineFinder
      */
     public static function createApplicationFinder(ORM\EntityManager $entityManager)
@@ -91,6 +81,7 @@ class Services
 
     /**
      * @param ORM\EntityManager $entityManager
+     *
      * @return ApplicationStateDoctrineFinder
      */
     public static function createApplicationStateFinder(ORM\EntityManager $entityManager)
@@ -98,5 +89,3 @@ class Services
         return new ApplicationStateDoctrineFinder($entityManager);
     }
 }
-
-

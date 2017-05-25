@@ -26,22 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\InstallBundle\Data\DefaultData;
 
-use DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures\Apps2Fixture;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 
-class Build1495470544 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+/**
+ * Class Apps2Data.
+ */
+class Apps2Data extends AbstractDefaultData
 {
-    public function addNewTables()
+    /**
+     * {@inheritdoc}
+     */
+    public function runInstall()
     {
+        $assetDir      = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
+        $trelloAppPath = $assetDir.'/apps/v2/deskproapps-trello.zip';
+
+        $instanceCreator = $this->getContainer()->get('apps2.application_manager');
+        $instanceCreator->createAppEntity(new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($trelloAppPath)));
     }
 
-    public function runAlters()
+    /**
+     * {@inheritdoc}
+     */
+    public function runSync()
     {
-    }
-
-    public function run()
-    {
-        Apps2Fixture::installTrelloApp($this->container);
+        $this->runInstall();
     }
 }

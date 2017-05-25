@@ -4,9 +4,8 @@ services:
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createAppBundleValidator]
     arguments: ["@file_locator"]
 
-  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager:
-    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager
-    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationManagerService]
+  apps2.application_manager:
+    class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService
     arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
 
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder:

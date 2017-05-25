@@ -26,36 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationManager;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
-use Doctrine\Common\Persistence\ObjectManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
-/**
- * Class Apps2Fixture.
- */
-class Apps2Fixture extends DeskProAbstractFixture
+class Build1495702652 extends AbstractBuild implements BlockingBuildInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function load(ObjectManager $manager)
+    public function addNewTables()
     {
-        self::installTrelloApp($this->container);
     }
 
-    /**
-     * @param ContainerInterface $container
-     */
-    public static function installTrelloApp(ContainerInterface $container)
+    public function runAlters()
     {
-        $assetDir      = $container->get('deskpro.app_env')->getAppWwwAssetDir();
-        $trelloAppPath = $assetDir.'/apps/v2/deskproapps-trello.zip';
+        $this->execDbQuery('default', 'CREATE UNIQUE INDEX name_unique ON app2_app (name)');
+    }
 
-        $instanceCreator = $container->get(ApplicationManager::class);
-        $instanceCreator->createAppEntity(new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($trelloAppPath)));
+    public function run()
+    {
     }
 }

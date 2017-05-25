@@ -115,8 +115,7 @@ class AppsController extends BaseController
             throw new UnprocessableEntityHttpException('invalid bundle');
         }
 
-        /** @var AppStoreBundle\Domain\ApplicationManager $instanceCreator */
-        $instanceCreator = $this->container->get(AppStoreBundle\Domain\ApplicationManager::class);
+        $instanceCreator = $this->container->get('apps2.application_manager');
         $instance        = $instanceCreator->createFirstInstance($bundle);
 
         return $instance;
