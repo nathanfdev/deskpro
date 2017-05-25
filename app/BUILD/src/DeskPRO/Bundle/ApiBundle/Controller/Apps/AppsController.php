@@ -187,7 +187,6 @@ class AppsController extends BaseController
 
         $em = $this->getManager();
         $em->remove($application);
-        $em->remove(($application->getApp()));
         $em->flush();
 
         $cm = new ClientMessage();
