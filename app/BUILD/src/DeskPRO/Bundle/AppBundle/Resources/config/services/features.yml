@@ -22,3 +22,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.guides:
+    class: DeskPRO\Bundle\AppBundle\Features\GuidesFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
