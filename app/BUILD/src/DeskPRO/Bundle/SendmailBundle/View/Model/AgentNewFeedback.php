@@ -28,18 +28,16 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class AgentNewFeedback extends EmailBaseType
 {
     /**
      * The feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Feedback")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
      *
      * @var Feedback
      */
@@ -48,7 +46,7 @@ class AgentNewFeedback extends EmailBaseType
     /**
      * The feedback.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */
@@ -65,10 +63,10 @@ class AgentNewFeedback extends EmailBaseType
 
     protected $templateFile = 'emails_agent:new_feedback.html.twig';
 
-    public function __construct(RouterInterface $router, Feedback $feedback)
+    public function __construct(Feedback $feedback, Person $person, $loginLink)
     {
         $this->feedback  = $feedback;
-        $this->person    = $feedback->getPerson();
-        $this->loginLink = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->person    = $person;
+        $this->loginLink = $loginLink;
     }
 }

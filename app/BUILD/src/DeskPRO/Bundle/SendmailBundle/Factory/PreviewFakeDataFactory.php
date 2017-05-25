@@ -35,6 +35,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Task;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
@@ -129,6 +130,8 @@ class PreviewFakeDataFactory
                         return $this->manager->getRepository(News::class)->findBy([], [], 10);
                     case 'updatedFeedbacks':
                         return $this->manager->getRepository(Feedback::class)->findBy([], [], 10);
+                    case 'task':
+                        return $this->manager->getRepository(Task::class)->findBy([], [], 10);
                     case 'newPassword':
                         return 'newP@ssword';
                     case 'reason':

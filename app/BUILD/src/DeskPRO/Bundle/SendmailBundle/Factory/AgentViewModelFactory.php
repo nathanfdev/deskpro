@@ -139,7 +139,10 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentNewFeedbackModel(Feedback $feedback)
     {
-        return $this->convertParameters(AgentNewFeedback::class, [$this->router, $feedback]);
+        $person    = $feedback->getPerson();
+        $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentNewFeedback::class, [$feedback, $person, $loginLink]);
     }
 
     /**
@@ -149,7 +152,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentNewRegistrationModel(Person $person)
     {
-        return $this->convertParameters(AgentNewRegistration::class, [$this->router, $person]);
+        return $this->convertParameters(AgentNewRegistration::class, [$person]);
     }
 
     /**
@@ -160,7 +163,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentPasswordResetAlertModel(Person $performer, $newPassword)
     {
-        return $this->convertParameters(AgentPasswordResetAlert::class, [$this->router, $performer, $newPassword]);
+        $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentPasswordResetAlert::class, [$performer, $newPassword, $loginLink]);
     }
 
     /**
@@ -171,7 +176,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentTaskAssignedModel(Task $task, Person $performer)
     {
-        return $this->convertParameters(AgentTaskAssigned::class, [$this->router, $task, $performer]);
+        $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentTaskAssigned::class, [$task, $performer, $loginLink]);
     }
 
     /**
@@ -192,7 +199,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      */
     public function createAgentWelcomeModel($agentPassword)
     {
-        return $this->convertParameters(AgentWelcome::class, [$this->router, $agentPassword]);
+        $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentWelcome::class, [$agentPassword, $loginLink]);
     }
 
     /**
@@ -222,9 +231,17 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      *
      * @return AgentLoginAlert
      */
-    public function createLoginAlertModel(Request $request, $firstSeen, $success)
+    public function createAgentLoginAlertModel(Request $request, DateTime $firstSeen, $success)
     {
-        return $this->convertParameters(AgentLoginAlert::class, [$request, $firstSeen, $success]);
+        $firstSeen           = $firstSeen->format('D, jS M Y g:ia');
+        $clientIp            = $request->getClientIp();
+        $clientUserAgent     = $request->headers->get('User-Agent');
+        $clientLandingPage   = $request->getRequestUri();
+        $clientReferringPage = $request->headers->get('Referer');
+
+        $arguments = [$firstSeen, $clientIp, $clientUserAgent, $clientLandingPage, $clientReferringPage, $success];
+
+        return $this->convertParameters(AgentLoginAlert::class, $arguments);
     }
 
     /**

@@ -28,16 +28,15 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\RouterInterface;
 
 class AgentNewRegistration extends EmailBaseType
 {
     /**
      * Person that registered.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */
@@ -45,7 +44,7 @@ class AgentNewRegistration extends EmailBaseType
 
     protected $templateFile = 'emails_agent:new_registration.html.twig';
 
-    public function __construct(RouterInterface $router, Person $person)
+    public function __construct(Person $person)
     {
         $this->person = $person;
     }

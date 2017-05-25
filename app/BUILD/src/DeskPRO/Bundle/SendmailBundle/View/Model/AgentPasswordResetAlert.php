@@ -28,17 +28,15 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class AgentPasswordResetAlert extends EmailBaseType
 {
     /**
      * Person that perform the password reset.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */
@@ -64,10 +62,10 @@ class AgentPasswordResetAlert extends EmailBaseType
 
     protected $templateFile = 'emails_agent:password_reset_alert.html.twig';
 
-    public function __construct(RouterInterface $router, Person $performer, $newPassword)
+    public function __construct(Person $performer, $newPassword, $loginLink)
     {
         $this->performer   = $performer;
         $this->newPassword = $newPassword;
-        $this->loginLink   = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->loginLink   = $loginLink;
     }
 }

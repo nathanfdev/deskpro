@@ -29,8 +29,6 @@
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class AgentWelcome extends EmailBaseType
 {
@@ -57,12 +55,12 @@ class AgentWelcome extends EmailBaseType
     /**
      * AgentWelcome constructor.
      *
-     * @param RouterInterface $router
-     * @param string          $agentPassword
+     * @param string $agentPassword
+     * @param $loginLink
      */
-    public function __construct(RouterInterface $router, $agentPassword)
+    public function __construct($agentPassword, $loginLink)
     {
-        $this->loginLink     = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->loginLink     = $loginLink;
         $this->agentPassword = $agentPassword;
     }
 }

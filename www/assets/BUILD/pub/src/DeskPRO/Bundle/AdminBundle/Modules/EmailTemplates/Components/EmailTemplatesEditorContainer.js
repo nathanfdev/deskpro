@@ -127,24 +127,45 @@ class EmailTemplatesEditorContainer extends React.Component {
     this.previewTemplate(body, this.props.emailTemplates.get('currentLanguage'));
   };
 
-  addTemplate = (name) => {
+  addTemplate = (name, baseTemplate) => {
     this.setState({
       addingNewTemplate: true
     });
-    const template = {
-      subject:    '',
-      body:       '',
-      create_new: true,
-    };
-    return this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)).then(
-      () => {
-        this.setState({
-          addingNewTemplate: false
+    let templatePromise;
+    if (baseTemplate) {
+      templatePromise = new Promise((resolve) => {
+        this.props.dispatch(actions.loadTemplate(baseTemplate)).then(
+          (content) => {
+            resolve({
+              subject:    content.template_code.subject,
+              body:       content.template_code.body,
+              create_new: true,
+            });
+          }
+        );
+      });
+    } else {
+      templatePromise = new Promise((resolve) => {
+        resolve({
+          subject:    '',
+          body:       '',
+          create_new: true,
         });
-        this.props.dispatch(actions.loadTemplates());
-        this.selectTemplateGroup('custom');
-      }
-    );
+      });
+    }
+    return templatePromise.then(template => this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)).then(
+        () => {
+          this.setState({
+            addingNewTemplate: false
+          });
+          this.props.dispatch(actions.loadTemplates()).then(
+            (templates) => {
+              console.log(templates);
+            }
+          );
+          this.selectTemplateGroup('custom');
+        }
+      ));
   };
 
   changeTemplateSubject = (value) => {

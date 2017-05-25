@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
@@ -194,10 +195,10 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         $factory = $this->getContainer()->get('email.agent_viewmodel_factory');
 
         switch ($context->getEventType()) {
-            case 'newticket':
+            case TicketTrigger::EVENT_TYPE_NEWTICKET:
                 $viewModel = $factory->createAgentTicketNewModel($ticket);
                 break;
-            case 'newreply':
+            case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
                 $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
                 $messages    = $messageRepo->getTicketMessages(
@@ -218,7 +219,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                     return;
                 }
                 break;
-            case 'update':
+            case TicketTrigger::EVENT_TYPE_UPDATE:
                 $viewModel = $factory->createAgentTicketUpdateModel($ticket);
                 break;
             default:

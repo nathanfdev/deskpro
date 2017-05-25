@@ -39,8 +39,8 @@ use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -141,65 +141,29 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         // Send emails
         //-------------------------
 
-        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
-
-        switch ($context->getEventType()) {
-            case 'newticket':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
-            case 'newreply':
-                /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
-                $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
-                $messages    = $messageRepo->getTicketMessages(
-                    $ticket,
-                    [
-                        'with_notes'       => false,
-                        'with_attachments' => true,
-                        'limit'            => 15,
-                        'order'            => 'DESC',
-                    ]
-                );
-                if ($messages) {
-                    $lastMessage = array_pop($messages);
-                    $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
-                } else {
-                    $context->getLogger()->info('No reply to send: '.$context->getEventType());
-
-                    return;
-                }
-                break;
-            case 'update':
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
-            default:
-                $context->getLogger()->info('Unknown event type: '.$context->getEventType());
-
-                return;
-        }
-
-        $mailer = $this->getContainer()->get('mailer');
-
         foreach ($sendPeople as $email => $person) {
-            $context->getLogger()->debug(
-                sprintf(
-                    '[SendArbitraryUserEmail] Sending to Person#%d %s <%s>',
-                    $person->id,
-                    $person->getDisplayName(),
-                    $person->primary_email ? $person->primary_email->email : '?'
-                )
-            );
+            $context->getLogger()->debug(sprintf('[SendArbitraryUserEmail] Sending to Person#%d %s <%s>', $person->id, $person->getDisplayName(), $person->primary_email ? $person->primary_email->email : '?'));
 
-            $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, ['to' => $person]);
+            $builder = TicketEmailBuilder::createFromContainer($this->getContainer())
+                ->setTicket($ticket)
+                ->setToPerson($person)
+                ->setToPersonEmail($email)
+                ->setUserMode()
+                ->setTemplateName($template)
+                ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
+                ->setMaxAttachSize(0)
+                ->setLogger($context->getLogger())
+                ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
+                ->setFromEmailAccount($fromAccount);
+
+            $ticketEmail = $builder->buildTicketEmail();
+            $defaultVars = array_merge($defaultVars, $builder->getCommonVars($person->isAgent()));
 
             try {
-                $mailer->send($message);
+                $ticketEmail->send($defaultVars);
+                $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
-                $context->getLogger()->error(
-                    sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),
-                    ['exception' => $e]
-                );
-
+                $context->getLogger()->error(sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()), ['exception' => $e]);
                 throw $e;
             }
 

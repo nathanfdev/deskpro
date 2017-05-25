@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\CheckedOptionsArray;
 
@@ -97,10 +98,10 @@ class SendUserNewEmail extends AbstractEmailAction
         $factory = $this->getContainer()->get('email.user_viewmodel_factory');
 
         switch ($context->getEventType()) {
-            case 'newticket':
+            case TicketTrigger::EVENT_TYPE_NEWTICKET:
                 $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
                 break;
-            case 'newreply':
+            case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
                 $messageRepo = $this->getContainer()->getEm()->getRepository(TicketMessage::class);
                 $messages    = $messageRepo->getTicketMessages(
@@ -121,7 +122,7 @@ class SendUserNewEmail extends AbstractEmailAction
                     return;
                 }
                 break;
-            case 'update':
+            case TicketTrigger::EVENT_TYPE_UPDATE:
                 $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
                 break;
             default:
