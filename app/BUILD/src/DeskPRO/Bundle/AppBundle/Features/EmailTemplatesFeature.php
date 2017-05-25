@@ -31,7 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Features;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\EntityRepository\Template as TemplateRepository;
+use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCode;
+use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -41,7 +43,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class EmailTemplatesFeature extends AbstractFeature
 {
-    protected static $templatesDirectCopy = [
+    protected static $legacyBlocks = [
         'DeskPRO:emails_common:email-header.html.twig'    => 'SendmailBundle:blocks:header.html.twig',
         'DeskPRO:emails_common:email-footer.html.twig'    => 'SendmailBundle:blocks:footer.html.twig',
         'DeskPRO:emails_common:email-custom-css.css.twig' => 'SendmailBundle:blocks:resources.html.twig',
@@ -76,7 +78,14 @@ class EmailTemplatesFeature extends AbstractFeature
      */
     public function getEnableDescription()
     {
-        return 'Enable new Email templates';
+        return <<<'HTML'
+Enable new Email templates<br/><br/>
+Installing Email templates will copy your email templates over to the new system and backup previous templates,
+some emails might not be able to be migrated automatically.<br />
+There will be a link in the new Email Template Editor
+to allow to carry them over.
+
+HTML;
     }
 
     /**
@@ -110,45 +119,137 @@ class EmailTemplatesFeature extends AbstractFeature
     {
         /** @var EntityManager $em */
         $em = $container->get('doctrine.orm.default_entity_manager');
+        $this->copyLegacyBlocks($em, $container);
         $this->copyLegacyTemplates($em, $container);
+    }
+
+    private function copyLegacyBlocks(EntityManager $em, ContainerInterface $container)
+    {
+        $set = $this->getTemplateSet($em, $container);
+
+        /** @var TemplateRepository $templateRepo */
+        $templateRepo = $em->getRepository(Template::class);
+        $blocks       = $templateRepo->findBy(['name' => array_keys(self::$legacyBlocks)]);
+
+        foreach ($blocks as $previousBlock) {
+            /** @var Template $previousBlock */
+            $template = $set->createCustomTemplate(self::$legacyBlocks[$previousBlock->getName()]);
+
+            /** @var TemplateCode $templateCode */
+            $templateCode = $template->getTemplateCode();
+
+            $code = $previousBlock->getTemplateCode();
+            if ($previousBlock->getName() === 'DeskPRO:emails_common:email-custom-css.css.twig') {
+                $code = $this->convertResourcesCode($code);
+            }
+            $templateCode->setCode($code);
+            $set->saveTemplate($template);
+            $this->saveLegacyTemplate($em, $previousBlock);
+            $em->remove($previousBlock);
+        }
+
+        $em->flush();
     }
 
     private function copyLegacyTemplates(EntityManager $em, ContainerInterface $container)
     {
         $set = $this->getTemplateSet($em, $container);
 
-        /** @var TemplateRepository $templateRepo */
-        $templateRepo = $em->getRepository(Template::class);
-        $templates    = $templateRepo->findBy(['name' => array_keys(self::$templatesDirectCopy)]);
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('t')
+            ->from(Template::class, 't')
+            ->where('t.name LIKE :name')
+            ->setParameter('name', 'DeskPRO:emails_%')
+        ;
+
+        $templates     = $qb->getQuery()->getResult();
+        $templatesDesc = new EmailTemplatesDesc();
+        $manifest      = $templatesDesc->getManifest();
 
         foreach ($templates as $previousTemplate) {
             /** @var Template $previousTemplate */
-            $template = $set->createCustomTemplate(self::$templatesDirectCopy[$previousTemplate->getName()]);
+            $key  = array_search($previousTemplate->getName(), array_column($manifest, 'name'));
+            $info = $manifest[$key];
 
-            /** @var TemplateCode $templateCode */
+            if ($info === false || !isset($info['newTemplate'])) {
+                continue;
+            }
+            /** @var Template $previousBlock */
+            $template = $set->createCustomTemplate($info['newTemplate']);
+
+            /** @var EmailTemplateCode $templateCode */
             $templateCode = $template->getTemplateCode();
 
-            $code = $previousTemplate->getTemplateCode();
-            if ($previousTemplate->getName() === 'DeskPRO:emails_common:email-custom-css.css.twig') {
-                $code = $this->convertResourcesCode($code);
+            if (get_class($templateCode) !== EmailTemplateCode::class) {
+                continue;
             }
+
+            $code = $previousTemplate->getTemplateCode();
             $templateCode->setCode($code);
+
+            $body = $this->convertTemplateCode($templateCode->getBody());
+            if (!$body) {
+                continue;
+            }
+            $templateCode->setBody($body);
             $set->saveTemplate($template);
             $this->saveLegacyTemplate($em, $previousTemplate);
             $em->remove($previousTemplate);
         }
-
-        $em->flush();
     }
 
     private function convertResourcesCode($code)
     {
+        $code = preg_replace('/.+/', '    $0', $code);
+
         return <<<CODE
 {{ default_css | raw }}
 <style>
     /* Enter your own custom CSS here */
-    $code
+$code
 </style>
+CODE;
+    }
+
+    private function convertTemplateCode($code)
+    {
+        if (preg_match('/<dp:/', $code)) {
+            return false;
+        }
+        if (preg_match_all('/{{[^}]+}}/', $code, $matches)) {
+            foreach ($matches[0] as $match) {
+                // Only allow phrases without variables, excluding variables or phrases with variables
+                if (preg_match('/^{{\s*phrase\s*\([^{]+\)\s*}}$/', $match)) {
+                    continue;
+                } else {
+                    return false;
+                }
+            }
+        }
+        $code = preg_replace('/.+/', '    $0', $code);
+
+        return <<<CODE
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+<container>
+
+$code
+
+</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>
 CODE;
     }
 
