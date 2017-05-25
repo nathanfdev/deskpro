@@ -131,45 +131,24 @@ class ApplicationManagerService
     }
 
     /**
-     * @param Domain\Application $application
-     * @param string|null        $settings
+     * @param App        $app
+     * @param array|null $settings
      *
      * @return AppInstance
      */
-    public function createInstance(Domain\Application $application, $settings = null)
+    public function createInstance(App $app, array $settings = [])
     {
-        $applicationEntity = $this->entityResolver->resolveApplicationEntity($application);
-        if (empty($applicationEntity)) {
-            throw new \RuntimeException('Could not find an application entity');
-        }
+        $instance = new AppInstance();
+        $instance
+            ->setApp($app)
+            ->setName($app->getParsedManifest()->getTitle())
+            ->setSettings($settings)
+            ->setScope($app->getParsedManifest()->getScope())
+        ;
 
-        $instanceEntity = new AppInstance();
-        $instanceEntity->setApp($applicationEntity);
-        $instanceEntity->setName($applicationEntity->getParsedManifest()->getTitle());
-
-        $this->mapApplicationToInstance($application, $instanceEntity);
-        if (!is_null($settings)) {
-            $instanceEntity->setSettings($settings);
-        }
-
-        $this->em->persist($instanceEntity);
+        $this->em->persist($instance);
         $this->em->flush();
 
-        return $instanceEntity;
-    }
-
-    /**
-     * @param Domain\Application $app
-     * @param AppInstance        $instance
-     */
-    private function mapApplicationToInstance(Domain\Application $app, AppInstance $instance)
-    {
-        //TODO: inject a manifest reader and properly handle this operation
-        $manifestReader = new Infrastructure\AppManifestJsonReader();
-        $manifestObject = $manifestReader->readManifest($app->getManifest());
-
-        $settings = $manifestObject->getDefaultSettings();
-        $instance->setSettings(json_encode($settings));
-        $instance->setScope($manifestObject->getScope());
+        return $instance;
     }
 }

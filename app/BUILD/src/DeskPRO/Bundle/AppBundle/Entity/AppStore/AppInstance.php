@@ -83,11 +83,14 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     private $scope;
 
     /**
-     * todo change type to array.
+     * @ORM\Column(type="json_array", nullable=true)
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
      */
-    private $settings;
+    private $settings = [];
 
     /**
      * @ORM\Column(name="secret_key", type="text", nullable=true)
@@ -159,18 +162,7 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     }
 
     /**
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("settings")
-     *
      * @return array
-     */
-    public function getSettingsArray()
-    {
-        return $this->settings ? json_decode($this->settings, true) : [];
-    }
-
-    /**
-     * @return mixed
      */
     public function getSettings()
     {
@@ -178,11 +170,11 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     }
 
     /**
-     * @param string $settings
+     * @param array $settings
      *
      * @return $this
      */
-    public function setSettings($settings)
+    public function setSettings(array $settings)
     {
         $this->setModelField('settings', $settings);
 

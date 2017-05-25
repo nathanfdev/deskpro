@@ -243,11 +243,7 @@ class AppsController extends BaseController
             throw new NotFoundHttpException('could not find application');
         }
 
-        //TODO getSettings should return an object
-        $settingsString = $application->getSettings();
-        $settingsArray  = json_decode($settingsString, true);
-
-        return $settingsArray;
+        return $application->getSettings();
     }
 
     /**
