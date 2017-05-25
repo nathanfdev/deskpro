@@ -174,7 +174,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return AppAssetBlob[]
+     * @return AppAssetBlob[]|ArrayCollection
      */
     public function getAssets()
     {

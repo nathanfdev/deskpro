@@ -103,6 +103,10 @@ class ApplicationManagerService
         $app->setName($manifest->getName());
 
         //save blob assets
+        foreach ($app->getAssets() as $asset) {
+            $app->getAssets()->removeElement($asset);
+        }
+
         foreach ($bundle->listAllResources() as $resource) {
             $fileExtension = $resource->getFileExtension();
             $contentType   = ContentTypes::getContentTypeFromExtension($fileExtension);
