@@ -114,12 +114,11 @@ class AppStateParamConverter implements ParamConverterInterface
         }
 
         $userId = $this->getOwnerId();
-        if ($existingScope->getPermission() == Constants::STATE_PERMISSION_PRIVATE && is_null($userId)) {
+        if ($existingScope->getPermission() == Constants::STATE_PERMISSION_PRIVATE) {
+            if ($userId) {
+                return $this->finder->find($id, $userId);
+            }
             return null;
-        }
-
-        if ($userId) {
-            return $this->finder->find($id, $userId);
         }
 
         return $this->finder->find($id);
