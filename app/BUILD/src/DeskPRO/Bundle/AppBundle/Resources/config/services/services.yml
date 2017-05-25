@@ -53,6 +53,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\Settings\UpdaterSettingsResolver
     arguments: ["@brand_aware_settings_resolver", "@deskpro.app_env", "@router"]
 
+  voice_settings_resolver:
+    class: DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver
+    arguments: ["@settings_resolver"]
+
   user_rule_processor:
     class: Application\DeskPRO\People\UserRuleProcessor
     arguments: ["@doctrine.orm.default_entity_manager"]
@@ -120,7 +124,7 @@ services:
 
   twilio_adapter:
     class: DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter
-    arguments: ["@doctrine.orm.entity_manager"]
+    arguments: ["@doctrine.orm.entity_manager", "@voice_settings_resolver"]
 
   twilio_sync_manager:
     class: DeskPRO\Bundle\AppBundle\Twilio\TwilioSyncManager

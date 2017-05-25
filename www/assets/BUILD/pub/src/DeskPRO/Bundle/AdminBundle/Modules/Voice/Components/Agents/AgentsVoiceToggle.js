@@ -3,6 +3,7 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form/index';
 import SectionHeader from '../../../Common/Components/SectionHeader';
+import AgentSettingsForm from './AgentSettingsForm';
 
 class AgentVoiceHeader extends React.Component {
 
@@ -22,10 +23,12 @@ class AgentsVoiceToggle extends React.Component {
   static propTypes = {
     accounts:              PropTypes.object,
     agents:                PropTypes.object,
+    settings:              PropTypes.object,
     onToggleAll:           PropTypes.func,
     onToggleEnabled:       PropTypes.func,
     onToggleOutboundCalls: PropTypes.func,
-    onGoToAccounts:        PropTypes.func
+    onGoToAccounts:        PropTypes.func,
+    onSaveSettings:        PropTypes.func
   };
 
   constructor(props) {
@@ -79,12 +82,17 @@ class AgentsVoiceToggle extends React.Component {
   }
 
   renderList() {
-    const { agents, onToggleEnabled, onToggleOutboundCalls } = this.props;
+    const { agents, settings, onToggleEnabled, onToggleOutboundCalls, onSaveSettings } = this.props;
     const { saving } = this.state;
 
     return (
       <div className="page">
         <AgentVoiceHeader />
+        <AgentSettingsForm
+          settings={settings}
+          onSubmit={onSaveSettings}
+          autoSubmit
+        />
         <div className="voice-agents-table">
           <table>
             <tbody>

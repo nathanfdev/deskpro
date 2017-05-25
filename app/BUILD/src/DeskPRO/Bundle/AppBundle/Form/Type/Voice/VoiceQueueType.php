@@ -92,6 +92,9 @@ class VoiceQueueType extends AbstractType
                 'property_path' => 'voicemailAgentTeam',
                 'class'         => AgentTeam::class,
             ])
+            ->add('voicemail_timeout', IntegerType::class, [
+                'property_path' => 'voicemailTimeout',
+            ])
             ->add('routing_model', ChoiceType::class, [
                 'property_path'     => 'routingModel',
                 'choices_as_values' => true,
