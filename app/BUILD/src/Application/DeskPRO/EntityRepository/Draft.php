@@ -170,7 +170,7 @@ class Draft extends AbstractEntityRepository
 
             if ($content_type == 'ticket') {
                 App::getContainer()
-                    ->get('debug.event_dispatcher')
+                    ->get('event_dispatcher')
                     ->dispatch(
                         TicketUpdatedEvent::EVENT_NAME,
                         new TicketUpdatedEvent(

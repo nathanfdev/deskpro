@@ -777,7 +777,7 @@ JS;
             }
 
             App::getContainer()
-                ->get('debug.event_dispatcher')
+                ->get('event_dispatcher')
                 ->dispatch(
                     TicketUpdatedEvent::EVENT_NAME,
                     new TicketUpdatedEvent(
