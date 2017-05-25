@@ -54,9 +54,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
 				this.appsSidebar.visible = true;
 			}
-			if (localStorage['apps_sidebar_width']) {
-				this.appsSidebar.width = localStorage['apps_sidebar_width'];
-			}
+      // disable reading from local storage in favor of the new 240 px width soon to be read from a config file
+			// if (localStorage['apps_sidebar_width']) {
+			// 	this.appsSidebar.width = localStorage['apps_sidebar_width'];
+			// }
 		}
 
 		this.agentNotifyListShown = false;
