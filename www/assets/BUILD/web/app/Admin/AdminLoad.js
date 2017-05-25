@@ -184,6 +184,8 @@ define([
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
   'Admin/VoiceChannel/Ctrl/ReactComponent',
   'Admin/Main/Ctrl/Features',
+  'Admin/Settings/Ctrl/Notifications/List',
+  'Admin/Settings/Ctrl/Notifications/WebSockets/Pusher',
 
   'CloudAdminLoad',
   window.DP_ADMIN_BUNDLE_PATH

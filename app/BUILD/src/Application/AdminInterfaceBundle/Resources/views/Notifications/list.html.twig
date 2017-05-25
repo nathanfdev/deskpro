@@ -1,0 +1,25 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+    <div class="form-horizontal dp-form">
+        <section class="dp-paneblock dp-listpane">
+            <header>
+                <h3>About Notifications</h3>
+            </header>
+            <div class="panel panel-innertable" style="margin-top: 0;">
+                <p>
+                    If you want to use Pusher to deliver you notifications and make them more "real time" please enable it below. <br/>
+                    In future we will provide you with flexible interface where you would able to fine tune any notifications and choose separate delivery options for each of them.
+
+                </p>
+            </div>
+        </section>
+        <section class="dp-paneblock dp-listpane">
+            <header>
+                <h3>
+                    <a href="{{ ng_href('server.notifications.pusher') }}">Pusher</a>
+                </h3>
+                <input dp-slider-switch ng-model="pusher_enabled" />
+                <span class="help-block">Please click the link to setup your pusher account details</span>
+            </header>
+        </section>
+{% endblock %}

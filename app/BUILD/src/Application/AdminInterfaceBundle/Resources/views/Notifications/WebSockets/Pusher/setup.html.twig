@@ -1,0 +1,28 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+{% block fullpane_content %}
+    <div class="form-horizontal dp-form">
+        <section class="dp-paneblock dp-listpane">
+            <header>
+                <h3>About Pusher</h3>
+            </header>
+            <div class="panel panel-innertable" style="margin-top: 0;">
+                <p>
+                    <a href="https://pusher.com/" target="_blank">Pusher <i class="fa fa-globe"></i></a> is a service which provide fast and high performance pub/sub messaging.
+                </p>
+                <p>
+                    DeskPRO's default notifications service uses your database to deliver messages. Pusher provides a faster solution which would reduce your server load.
+                </p>
+                <p>
+                    To use this feature, you will first need to register Pusher account and pick up suitable pricing plan.<br/>
+                    Then create an application in Pusher interface and obtain credentials such as app key, app id and app secret.
+                </p>
+            </div>
+        </section>
+        <section class="dp-paneblock dp-listpane">
+            <header>
+                <h3>
+                    Pusher
+                </h3>
+            </header>
+        </section>
+{% endblock %}
