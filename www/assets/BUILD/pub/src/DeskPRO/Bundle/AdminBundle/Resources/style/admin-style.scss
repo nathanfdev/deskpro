@@ -352,3 +352,7 @@ $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
     color: $dp-greyscale-250;
   }
 }
+div.field.error div.error-message {
+  font-size: 10px;
+  color: $dp-knuckles-primary;
+}

@@ -153,14 +153,32 @@ class EmailTemplatesEditorContainer extends React.Component {
         });
       });
     }
-    return templatePromise.then(template => this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)).then(
+    return templatePromise.then(template =>
+        this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)
+      ).then(
         () => {
           this.setState({
             addingNewTemplate: false
           });
           this.props.dispatch(actions.loadTemplates()).then(
             (templates) => {
-              console.log(templates);
+              const newTemplate = fromJS(templates).getIn(
+                ['list', 'custom', 'groups', 'custom', 'subGroups', 'primary', 'templates']
+              ).find(
+                element => element.get('title') === `${name}.html`
+              );
+
+              this.props.dispatch(actions.setCurrentTemplate(newTemplate));
+              this.props.dispatch(actions.loadTemplate(newTemplate.get('newTemplate'))).then(
+                (data) => {
+                  this.props.dispatch(actions.setTemplate(data));
+                }
+              );
+              if (newTemplate.get('viewModel')) {
+                this.props.dispatch(actions.loadVariables(newTemplate.get('viewModel')));
+              } else {
+                this.props.dispatch(actions.removeVariables());
+              }
             }
           );
           this.selectTemplateGroup('custom');

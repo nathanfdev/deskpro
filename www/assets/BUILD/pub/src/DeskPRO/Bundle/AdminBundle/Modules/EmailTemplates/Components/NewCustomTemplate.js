@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import { Input, Select } from 'DeskPRO/Component/Semantic/Form';
+import { Input, Field, Select } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 
 class NewCustomTemplate extends React.Component {
@@ -18,7 +18,9 @@ class NewCustomTemplate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      baseTemplate: ''
+      name:         '',
+      baseTemplate: '',
+      errors:       null
     };
   }
 
@@ -27,7 +29,10 @@ class NewCustomTemplate extends React.Component {
   };
 
   handleAddTemplate = () => {
-    this.props.addTemplate(this.nameInput.input.value, this.state.baseTemplate)
+    if (!this.state.name || this.errors) {
+      return;
+    }
+    this.props.addTemplate(this.state.name, this.state.baseTemplate)
     .then(() => {
       this.props.close();
     });
@@ -37,6 +42,35 @@ class NewCustomTemplate extends React.Component {
     this.setState({
       baseTemplate: value
     });
+  };
+
+  handleName = (value) => {
+    this.setState({
+      name: value
+    });
+    this.validateName(value);
+  };
+
+  validateName = (value) => {
+    if (!value.match(/^[a-z0-9-_.]+$/)) {
+      this.setState({
+        errors: {
+          fields: {
+            name: {
+              errors: [
+                {
+                  message: 'Invalid name'
+                }
+              ]
+            }
+          }
+        }
+      });
+    } else {
+      this.setState({
+        errors: null
+      });
+    }
   };
 
   render() {
@@ -73,8 +107,10 @@ class NewCustomTemplate extends React.Component {
       <div className="new-custom-template">
         <h2>Create custom template</h2>
         <span onClick={this.handleClose} className="close"><i className="fa fa-times" /></span>
-        <label htmlFor="template_name">Template name: </label><br />
-        <Input id="template_name" className="ui input" ref={(c) => { this.nameInput = c; }} />.html<br />
+        <Field field="name" errors={this.state.errors}>
+          <label htmlFor="template_name">Template name: </label><br />
+          <Input id="template_name" className="ui input" onChange={this.handleName} />.html<br />
+        </Field>
         <span className="help-block">
           Enter a file name for your email template. Valid characters are letters, numbers, hyphens, periods and underscores.
         </span><br />
@@ -82,7 +118,7 @@ class NewCustomTemplate extends React.Component {
         <Select options={templates} onChange={this.handleBaseTemplate} placeholder="Template" filter />< br />< br />
         <Button
           onClick={this.handleAddTemplate}
-          className={classNames({ loading: this.props.addingNewTemplate })}
+          className={classNames({ loading: this.props.addingNewTemplate, disabled: this.state.errors })}
         >
           Submit
         </Button>
