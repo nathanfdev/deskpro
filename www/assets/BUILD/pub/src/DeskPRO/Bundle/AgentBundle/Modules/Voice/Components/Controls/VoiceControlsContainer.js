@@ -129,6 +129,10 @@ class VoiceControlsContainer extends React.Component {
 
   onExternalSetHold = (event) => {
     const connection = this.getConnection();
+    if (!connection) {
+      return;
+    }
+
     if (connection.message.CallId !== parseInt(event.call_id, 10)) {
       return;
     }
