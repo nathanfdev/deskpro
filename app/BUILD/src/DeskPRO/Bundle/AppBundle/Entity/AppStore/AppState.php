@@ -36,8 +36,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(
  *  name="app2_app_state", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name"})
- *  }
-    )
+ *  })
  */
 class AppState implements Domain\ApplicationState
 {
@@ -50,20 +49,23 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance")
-     * @ORM\JoinColumn(name="app_instance_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="app_instance_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @var AppInstance
      */
     private $appInstance;
 
     /**
+     * @todo this shouldnt be here, should be getId on $appInstance
      * @ORM\Column(name="app_instance_id", type="integer", nullable=false)
+     *
      * @var int
      */
     private $appInstanceId;
 
     /**
      * @ORM\Column(type="appstore_state_scope", nullable=false)
+     *
      * @var Domain\StateScope
      */
     private $scope;
@@ -80,13 +82,14 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @ORM\ManyToOne(targetEntity="\Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     private $owner;
 
     /**
+     * @todo this shouldnt be here, shoul dbe getId on $owner
      * @ORM\Column(type="integer", nullable=true)
      */
     private $ownerId;
@@ -114,7 +117,7 @@ class AppState implements Domain\ApplicationState
      */
     public function setAppInstance(AppInstance $appInstance)
     {
-        $this->appInstance = $appInstance;
+        $this->appInstance   = $appInstance;
         $this->appInstanceId = null;
     }
 
@@ -189,7 +192,7 @@ class AppState implements Domain\ApplicationState
      */
     public function setOwner(\Application\DeskPRO\Entity\Person $person)
     {
-        $this->owner = $person;
+        $this->owner   = $person;
         $this->ownerId = null;
     }
 
@@ -216,5 +219,4 @@ class AppState implements Domain\ApplicationState
     {
         $this->targetId = $targetId;
     }
-
 }

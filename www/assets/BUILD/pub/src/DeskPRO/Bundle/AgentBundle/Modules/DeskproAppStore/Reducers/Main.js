@@ -1,11 +1,12 @@
+import cloneDeep from 'lodash/lang/cloneDeep';
 import { createReducer } from 'Ampliflux';
-import * as actions from '../Actions/Actions';
 import Immutable from 'immutable';
+import * as actions from '../Actions/Actions';
 
 const initialState = Immutable.fromJS({
-  'apps': null, //all loaded apps (instances)
-  'widgets': null, //configuration for all instances
-  'contexts': {}
+  apps:     null, // all loaded apps (instances)
+  widgets:  null, // configuration for all instances
+  contexts: {}
 });
 
 /**
@@ -15,12 +16,13 @@ const initialState = Immutable.fromJS({
  * @returns {Object}
  */
 function loadDevAppHandler(state, payload, action) {
-  switch(action.meta.sequence) {
-    case 'done' :
-    const newState = Immutable.fromJS({
-      apps: { environment: 'development', manifests: [payload] }
-    });
-    return state.merge(newState);
+  switch (action.meta.sequence) {
+    case 'done': {
+      const newState = Immutable.fromJS({
+        apps: { environment: 'development', manifests: [payload] }
+      });
+      return state.merge(newState);
+    }
     default:
       return state;
   }
@@ -33,27 +35,25 @@ function loadDevAppHandler(state, payload, action) {
  * @returns {Object}
  */
 function loadAppsHandler(state, payload, action) {
-  switch(action.meta.sequence) {
+  switch (action.meta.sequence) {
+    case 'done': {
+      const manifests = payload.data.map((instance) => {
+        const appId = instance.app;
+        const manifest = cloneDeep(payload.linked.app[appId].manifest);
 
-    case 'done' :
+        manifest.application_id = instance.application_id;
+        manifest.id = instance.id;
+        manifest.targets = instance.targets;
+        manifest.title = manifest.name;
 
-    const manifests = payload.data.map( instance => {
-      const { app } = instance;
-      const { manifest } = payload.linked.app[app];
+        return manifest;
+      });
 
-      manifest['application_id'] = instance['application_id'];
-      manifest['id'] = instance['id'];
-      manifest['targets'] = instance['targets'];
-      manifest['title'] = manifest['name'];
-
-      return manifest;
-    });
-
-
-    const newState = Immutable.fromJS({
-      apps: { environment: 'production', manifests }
-    });
-    return state.merge(newState);
+      const newState = Immutable.fromJS({
+        apps: { environment: 'production', manifests }
+      });
+      return state.merge(newState);
+    }
     default:
       return state;
   }
@@ -66,8 +66,8 @@ function loadAppsHandler(state, payload, action) {
  * @returns {Object}
  */
 function appMountedHandler(state, payload, action) {
-  switch(action.meta.sequence) {
-    case 'done' :
+  switch (action.meta.sequence) {
+    case 'done':
       return state;
     default:
       return state;
@@ -80,8 +80,7 @@ function appMountedHandler(state, payload, action) {
  * @param {Object} action
  * @returns {Object}
  */
-function loadPageFragmentAppsHandler(state, contextList, action)
-{
+function loadPageFragmentAppsHandler(state, contextList) {
   if (contextList.length === 0) { return state; }
 
   const newContexts = contextList.reduce((acc, context) => { acc[context.id] = context; return acc; }, {});
@@ -94,8 +93,8 @@ export default createReducer(
   initialState,
   {
     [actions.loadPageFragmentApps]: loadPageFragmentAppsHandler,
-    [actions.appMounted]: appMountedHandler,
-    [actions.loadApps]: loadAppsHandler,
-    [actions.loadDevApp]: loadDevAppHandler
+    [actions.appMounted]:           appMountedHandler,
+    [actions.loadApps]:             loadAppsHandler,
+    [actions.loadDevApp]:           loadDevAppHandler
   }
 );

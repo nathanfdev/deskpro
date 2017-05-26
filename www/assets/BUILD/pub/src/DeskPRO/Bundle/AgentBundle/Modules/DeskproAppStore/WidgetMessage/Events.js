@@ -18,6 +18,9 @@ export const EVENT_TAB_ACTIVATE = 'context.tab_activate';
 
 export const EVENT_TAB_CLOSE = 'context.tab_close';
 
+// APP EVENTS
+
+export const EVENT_RESET_SIZE = 'app.reset_size';
 
 export const events =
 {
@@ -41,7 +44,11 @@ export const events =
 
   EVENT_TAB_ACTIVATE,
 
-  EVENT_TAB_CLOSE
+  EVENT_TAB_CLOSE,
+
+  // APP EVENTS
+
+  EVENT_RESET_SIZE
 };
 
 export const eventNames = Object.keys(events).map(key => events[key]);
