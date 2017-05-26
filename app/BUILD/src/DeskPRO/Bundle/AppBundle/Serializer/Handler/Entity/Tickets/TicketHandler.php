@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketExcerptDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
@@ -70,6 +71,11 @@ class TicketHandler extends AbstractEntityHandler
     private $formErrorsGenerator;
 
     /**
+     * @var TicketExcerptDataService
+     */
+    private $excerptDataService;
+
+    /**
      * @var int[]
      */
     private $ticketIds = [];
@@ -77,26 +83,34 @@ class TicketHandler extends AbstractEntityHandler
     /**
      * @var array
      */
-    private $stars = [];
+    private $stars;
+
+    /**
+     * @var TicketMessage[]
+     */
+    private $excerpts;
 
     /**
      * TicketHandler constructor.
      *
-     * @param TicketLayoutFactory $layoutFactory
-     * @param EntityManager       $em
-     * @param FormFactory         $formFactory
-     * @param FormErrorsGenerator $formErrorsGenerator
+     * @param TicketLayoutFactory      $layoutFactory
+     * @param EntityManager            $em
+     * @param FormFactory              $formFactory
+     * @param FormErrorsGenerator      $formErrorsGenerator
+     * @param TicketExcerptDataService $excerptDataService
      */
     public function __construct(
-        TicketLayoutFactory $layoutFactory,
-        EntityManager       $em,
-        FormFactory         $formFactory,
-        FormErrorsGenerator $formErrorsGenerator
+        TicketLayoutFactory      $layoutFactory,
+        EntityManager            $em,
+        FormFactory              $formFactory,
+        FormErrorsGenerator      $formErrorsGenerator,
+        TicketExcerptDataService $excerptDataService
     ) {
         $this->layoutFactory       = $layoutFactory;
         $this->em                  = $em;
         $this->formFactory         = $formFactory;
         $this->formErrorsGenerator = $formErrorsGenerator;
+        $this->excerptDataService  = $excerptDataService;
     }
 
     /**
@@ -138,10 +152,14 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getExcerpt(TicketEntity $entity, SideloadSerializationContext $context)
     {
-        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $repo */
-        $repo    = $this->em->getRepository(TicketMessage::class);
-        $message = $repo->getLastReply($entity, $context->getUser() && $context->getUser()->isAgent());
+        if (null === $this->excerpts) {
+            $this->excerpts = $this->excerptDataService->getTicketsLastReply(
+                $this->ticketIds,
+                $context->getUser() && $context->getUser()->isAgent()
+            );
+        }
 
+        $message = isset($this->excerpts[$entity->getId()]) ? $this->excerpts[$entity->getId()] : null;
         if (!$message) {
             return;
         }
@@ -183,7 +201,7 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getStar(TicketEntity $entity, SideloadSerializationContext $context)
     {
-        if (!$this->stars && $context->getUser()) {
+        if (null === $this->stars && $context->getUser()) {
             /** @var \Application\DeskPRO\DBAL\Connection $connection */
             $connection  = $this->em->getConnection();
             $this->stars = $connection->fetchAllKeyValue(

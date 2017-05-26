@@ -138,7 +138,7 @@
                 {% endif %}
             {%- endmacro -%}
 
-            {%- macro col_data(ticket, ticket_view, ticket_table, col) -%}
+            {%- macro col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) -%}
                 {% if col.id == 'department_subject' %}
                     <span class="focus">[{{ ticket.department_or_default.user_title }}]</span>
                     {{ ticket.subject }}
@@ -157,10 +157,9 @@
                             <span class="person">{{ ticket.person.display_name_user }} <img src="{{ avatar_url(ticket.person) }}" class="avatar"></span>
                         {% endif %}
                     {% elseif col.id == 'date_activity' %}
-                        {% set last_message = ticket.messages|last %}
-                        {% if last_message %}
-                            <img src="{{ avatar_url(last_message.person) }}" class="avatar">
-                            <span class="person">{{ last_message.person.display_name_user }}</span>
+                        {% if ticket_exceprpt %}
+                            <img src="{{ avatar_url(ticket_exceprpt.person) }}" class="avatar">
+                            <span class="person">{{ ticket_exceprpt.person.display_name_user }}</span>
                             <span class="date">{{ ticket.last_activity_date|date("m/d/Y, g:i a") }}</span>
                         {% endif %}
                     {% elseif col.id == 'date_created' %}
@@ -244,8 +243,10 @@
                                         </td>
                                     </tr>
                                 {% endif %}
+                                {% set ticket_exceprpts = ticket_excerpts(ticket_table.pager) %}
                                 {% for ticket in ticket_table.pager %}
                                     {% set ticket_view = ticket_view(ticket) %}
+                                    {% set ticket_exceprpt = ticket_exceprpts[ticket.id] is defined ? ticket_exceprpts[ticket.id] : null %}
                                     <tr class="item-row dpx-ticket-list-row" data-status="{{ ticket.status }}">
                                         <td class="first-in-line ticket-ref">
                                             <span>{{ ticket_public_id(ticket) }}</span>
@@ -253,7 +254,7 @@
                                         {% for col in ticket_table.columns %}
                                             <td class="{{ _self.col_td_class(ticket, ticket_view, ticket_table, col) }}" data-col="{{ col.id }}"{% if not ticket_table.isActive(col) %} style="display:none;"{% endif %}>
                                                 <a href="{{ portal_path(ticket) }}">
-                                                    {{ _self.col_data(ticket, ticket_view, ticket_table, col) }}
+                                                    {{ _self.col_data(ticket, ticket_view, ticket_exceprpt, ticket_table, col) }}
                                                 </a>
                                             </td>
                                         {% endfor %}

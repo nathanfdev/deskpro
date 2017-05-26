@@ -1593,6 +1593,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param bool $includeNote
+     *
+     * @return ArrayCollection|Collection
+     */
+    public function getLastReply($includeNote = false)
+    {
+        $criteria = new Criteria();
+        $criteria->setMaxResults(1);
+        $criteria->orderBy(['id' => 'desc']);
+
+        if (!$includeNote) {
+            $criteria->andWhere($criteria->expr()->eq('is_agent_note', 0));
+        }
+
+        return $this->messages->matching($criteria)->first();
+    }
+
+    /**
      * Reset the message collection.
      * todo add onPropertyChanged() if change tracking is needed.
      *
