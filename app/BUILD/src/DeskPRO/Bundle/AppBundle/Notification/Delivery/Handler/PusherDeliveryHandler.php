@@ -80,9 +80,9 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                 'type'   => $message->getType(),
             ] + $message->getData();
 
-        $channelParts = ['private-channel', $message->getTarget()];
+        $channelParts = ['private', $message->getTarget()];
         if ($this->channelPrefix) {
-            array_unshift($channelParts, $this->channelPrefix);
+            array_splice($channelParts, 1, 0, [$this->channelPrefix]);
         }
 
         $this->messages[] = [

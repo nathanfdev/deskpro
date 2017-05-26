@@ -40,9 +40,9 @@ export default class PusherClient extends AbstractClient {
   bind(channelName, eventName) {
     const that = this;
 
-    const channelParts = [channelName];
+    const channelParts = channelName.split('-');
     if (this.options.channelPrefix) {
-      channelParts.unshift(this.options.channelPrefix);
+      channelParts.splice(1, 0, this.options.channelPrefix);
     }
 
     const preifxedChannelName = channelParts.join('-');
