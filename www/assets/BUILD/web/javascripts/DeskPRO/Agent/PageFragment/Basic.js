@@ -637,10 +637,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		});
 
 		iconsEl.on('click', function(ev) {
-			ev.stopPropagation();
-			ev.stopImmediatePropagation();
-			ev.preventDefault();
-			open(true);
+		  if (!isPlaceOver) {
+        ev.stopPropagation();
+        ev.stopImmediatePropagation();
+        ev.preventDefault();
+        open(true);
+      }
 		});
 		sidebarEl.find('.pin-btn').on('click', function(ev) {
 			ev.stopPropagation();

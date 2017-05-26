@@ -20,6 +20,9 @@ import { isVoiceEnabledSelector } from './Modules/Voice/Selectors/client';
 import { voiceBootstrap } from './Modules/Voice/Actions/clientActions';
 import store from './Services/store';
 
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import DeskproAppStore from './Modules/DeskproAppStore/DeskproAppStore';
+
 class AgentLegacyApp {
 
   rendered = [];
@@ -66,6 +69,8 @@ class AgentLegacyApp {
           this.store.dispatch(voiceBootstrap());
         }
       }
+
+      DeskproAppStore.bootstrap(api, messageBroker, this.store, window);
     }
   }
 

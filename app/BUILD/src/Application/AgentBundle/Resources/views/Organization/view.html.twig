@@ -1,105 +1,141 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Organization';
-pageMeta.title = {{ org.name|json_encode|raw }};
-pageMeta.org_id = {{org.id}};
-pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'organizations'}) }}';
-pageMeta.labelsSaveUrl = '{{ path('agent_org_ajax_labels_save', {'organization_id': org.id}) }}';
-pageMeta.url_fragment  = '{{ url_fragment('agent_org_view', {'organization_id': org.id}) }}';
-pageMeta.pageIdentity = 'organization:{{org.id}}';
+  pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Organization';
+  pageMeta.title = {{ org.name|json_encode|raw }};
+  pageMeta.org_id = {{ org.id }};
+  pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'organizations'}) }}';
+  pageMeta.labelsSaveUrl = '{{ path('agent_org_ajax_labels_save', {'organization_id': org.id}) }}';
+  pageMeta.url_fragment = '{{ url_fragment('agent_org_view', {'organization_id': org.id}) }}';
+  pageMeta.pageIdentity = 'organization:{{ org.id }}';
 
-{% if org.picture_blob %}
-pageMeta.orgPicIcon = '{{ org.picture_blob.getThumbnailUrl(13) }}';
-{% endif %}
+  {% if org.picture_blob %}
+  pageMeta.orgPicIcon = '{{ org.picture_blob.getThumbnailUrl(13) }}';
+  {% endif %}
 
-pageMeta.organization = {{ org_api|json_encode|raw }};
-pageMeta.api_data = {{ org.toApiData()|json_encode|raw }};
+  pageMeta.organization = {{ org_api|json_encode|raw }};
+  pageMeta.api_data = {{ org.toApiData()|json_encode|raw }};
 
-pageMeta.perms = {
-	edit: {% if app.user.hasPerm('agent_org.edit') %}true{% else %}false{% endif %}
-};
+  pageMeta.perms = {
+    edit: {% if app.user.hasPerm('agent_org.edit') %}true{% else %}false{% endif %}
+  };
 
-{% set baseId = el_uid() %}
-pageMeta.baseId = '{{ baseId }}';
-pageMeta.url_child_search = '{{ path('agent_org_child_search', {id: org.id}) }}';
-pageMeta.url_child_add = '{{ path('agent_org_child_add', {id: org.id}) }}';
-pageMeta.url_child_remove = '{{ path('agent_org_child_remove', {id: org.id}) }}';
+  {% set baseId = el_uid() %}
+  pageMeta.baseId = '{{ baseId }}';
+  pageMeta.url_child_search = '{{ path('agent_org_child_search', {id: org.id}) }}';
+  pageMeta.url_child_add = '{{ path('agent_org_child_add', {id: org.id}) }}';
+  pageMeta.url_child_remove = '{{ path('agent_org_child_remove', {id: org.id}) }}';
 </script>
-{# Page Containers #}
-<div class="profile org-profile profile layout-content {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
-	<div class="dp-page-content">
-{# /Page Containers #}
-
-<header class="page-header">
-	{{ dp_app_loc(baseId, 'header.top') }}
-	<table cellspacing="0" cellpadding="0" width="100%"><tr><td width="60">
-		<div class="person-picture-box tipped" style="cursor:pointer" title="{{ phrase('agent.general.click_to_upload_picture') }}" id="{{baseId}}_change_user_picture">
-			<img src="{{ org.getPictureUrl(60) }}" id="{{baseId}}_picture_display" />
-		</div>
-	</td><td>
-		<div class="titlewrap">
-			<h4 class="id-number">#{{ org.id }}</h4>
-			<h1>
-				<span class="editable person-name-editable" data-editable-for="#{{baseId}}_editname">{{ org.name|default(phrase('agent.people.double_click_set_name')) }}</span>
-				{% if app.user.hasPerm('agent_org.edit') %}<span class="edit-name-gear"></span>{% endif %}
-				<div id="{{baseId}}_editname" style="display: none">
-					<input type="hidden" name="action" value="name" />
-					<input type="text" size="20" name="name" value="{{ org.name }}" />
-				</div>
-			</h1>
-			<div class="labels-line">
-				{% if org.labels|length or app.user.hasPerm('agent_org.edit') %}
-					<input
-						type="hidden"
-						id="{{baseId}}_labels_input"
-						class="dpe_select dpe_select_noborder"
-						data-select-width="auto"
-						data-placeholder="Add a label"
-						value="{% for label in org.labels %}{{ label.label }},{% endfor %}"
-						data-allow-new="{% if app.user.hasPerm('agent_org.create_labels') %}1{% endif %}"
-					/>
-				{% endif %}
-			</div>
-		</div>
-	</td></tr></table>
-	<br class="clear" />
-	<div class="meta-line">
-		<nav class="actions" id="{{baseId}}_action_buttons">
-			<ul>
-				<li>
-					{% if app.user.hasPerm('agent_org.delete') %}
-					<button
-						id="{{baseId}}_delete_btn"
-						class="clean-white delete-trigger"
-						data-delete-url="{{ path('agent_org_delete', {'organization_id': org.id, 'security_token': security_token('delete_org') }) }}"
-					>{{ phrase('agent.general.delete') }}</button>
-					{% endif %}
-				</li>
-			</ul>
-		</nav>
-	</div>
-	<br class="clear" />
-	{{ dp_app_loc(baseId, 'header.bottom') }}
-</header>
-
-{{ dp_app_loc(baseId, 'header.after') }}
-{{ dp_app_loc(baseId, 'main.before') }}
-
-<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="60%">
-	<section class="content-col">
-		{% include 'AgentBundle:Organization:view-content-col.html.twig' %}
-	</section>
-</td><td valign="top">
-	<section class="property-col">
-		{% include 'AgentBundle:Organization:view-property-col.html.twig' %}
-	</section>
-</td></tr></table>
-
-{{ dp_app_loc(baseId, 'main.after') }}
-{{ dp_app_loc(baseId, 'footer') }}
-
-{% include 'AgentBundle:Organization:contact-overlay.html.twig' %}
-
-{# Page Containers #}
+<div
+      class="layout-sidebar"
+      id="{{ baseId }}_layout_sidebar"
+      data-deskproapp="org-sidebar"
+      data-deskproapp-render="legacy-sidebar"
+      data-deskproapp-render-sidebar="#{{ baseId }}_layout_sidebar"
+      data-deskproapp-render-icons="#{{ baseId }}_layout_sidebar_icons > ul:first-child"
+>
+    <span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
+    <div class="dp-app-context" data-deskproapp-marker style="width: 100%; margin: 30px auto auto;"></div>
 </div>
+
+{# the sidebar sizer is disabled for at the moment and the plan is to completely remove it #}
+{#<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>#}
+
+{# Page Containers #}
+<div id="{{ baseId }}_layout_content" class="layout-content profile org-profile profile {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
+    <div class="dp-page-content">
+        {# /Page Containers #}
+
+        <header class="page-header">
+            <div id="{{ baseId }}_layout_sidebar_icons" class="layout-sidebar-icons">
+                <ul></ul>
+            </div>
+            {{ dp_app_loc(baseId, 'header.top') }}
+            <div data-deskproapp="org-header-top"></div>
+            <table cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                    <td width="60">
+                        <div class="person-picture-box tipped" style="cursor:pointer"
+                             title="{{ phrase('agent.general.click_to_upload_picture') }}"
+                             id="{{ baseId }}_change_user_picture">
+                            <img src="{{ org.getPictureUrl(60) }}" id="{{ baseId }}_picture_display" />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="titlewrap">
+                            <h4 class="id-number">#{{ org.id }}</h4>
+                            <h1>
+                                <span class="editable person-name-editable"
+                                      data-editable-for="#{{ baseId }}_editname">{{ org.name|default(phrase('agent.people.double_click_set_name')) }}</span>
+                                {% if app.user.hasPerm('agent_org.edit') %}<span
+                                      class="edit-name-gear"></span>{% endif %}
+                                <div id="{{ baseId }}_editname" style="display: none">
+                                    <input type="hidden" name="action" value="name" />
+                                    <input type="text" size="20" name="name" value="{{ org.name }}" />
+                                </div>
+                            </h1>
+                            <div class="labels-line">
+                                {% if org.labels|length or app.user.hasPerm('agent_org.edit') %}
+                                    <input
+                                          type="hidden"
+                                          id="{{ baseId }}_labels_input"
+                                          class="dpe_select dpe_select_noborder"
+                                          data-select-width="auto"
+                                          data-placeholder="Add a label"
+                                          value="{% for label in org.labels %}{{ label.label }},{% endfor %}"
+                                          data-allow-new="{% if app.user.hasPerm('agent_org.create_labels') %}1{% endif %}"
+                                    />
+                                {% endif %}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <br class="clear" />
+            <div class="meta-line">
+                <nav class="actions" id="{{ baseId }}_action_buttons">
+                    <ul>
+                        <li>
+                            {% if app.user.hasPerm('agent_org.delete') %}
+                                <button
+                                      id="{{ baseId }}_delete_btn"
+                                      class="clean-white delete-trigger"
+                                      data-delete-url="{{ path('agent_org_delete', {'organization_id': org.id, 'security_token': security_token('delete_org') }) }}"
+                                >{{ phrase('agent.general.delete') }}</button>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <br class="clear" />
+            {{ dp_app_loc(baseId, 'header.bottom') }}
+            <div data-deskproapp="org-header-bottom"></div>
+        </header>
+
+        {{ dp_app_loc(baseId, 'header.after') }}
+        <div data-deskproapp="org-header-after"></div>
+        {{ dp_app_loc(baseId, 'main.before') }}
+
+        <table cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+                <td valign="top" width="60%">
+                    <section class="content-col">
+                        {% include 'AgentBundle:Organization:view-content-col.html.twig' %}
+                    </section>
+                </td>
+                <td valign="top">
+                    <section class="property-col">
+                        {% include 'AgentBundle:Organization:view-property-col.html.twig' %}
+                    </section>
+                </td>
+            </tr>
+        </table>
+
+        {{ dp_app_loc(baseId, 'main.after') }}
+        {{ dp_app_loc(baseId, 'footer') }}
+        <div data-deskproapp="org-footer"></div>
+
+        {% include 'AgentBundle:Organization:contact-overlay.html.twig' %}
+
+        {# Page Containers #}
+    </div>
 </div>
 {# /Page Containers #}

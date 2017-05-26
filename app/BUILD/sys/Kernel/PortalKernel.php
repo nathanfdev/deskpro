@@ -66,6 +66,7 @@ class PortalKernel extends BaseKernel
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
+            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
         ];
 
         if ('dev' === $this->getEnvironment()

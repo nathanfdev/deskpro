@@ -155,6 +155,14 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
+     * @param array $includes
+     */
+    public function setIncludes(array $includes)
+    {
+        $this->includes = $includes;
+    }
+
+    /**
      * @param string $type
      *
      * @return bool
