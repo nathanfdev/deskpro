@@ -214,6 +214,7 @@ export class ChatBeginContainer extends React.Component {
       fields: {}
     };
 
+    // set default chat department
     if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
       if (chatDepartments.has(chatDefaultDepartment)) {
         formData.chat_department = chatDefaultDepartment;
@@ -232,6 +233,21 @@ export class ChatBeginContainer extends React.Component {
       formData.chat_department = defaultValues.get('department');
     }
 
+    // validate if it's a leaf department
+    const leafDepartment = (depId) => {
+      const childrenDepartments = chatDepartments.filter(department => department.get('parent') === depId);
+      if (childrenDepartments.size > 0) {
+        return leafDepartment(childrenDepartments.first().get('id'));
+      }
+
+      return depId;
+    };
+
+    if (formData.chat_department) {
+      formData.chat_department = leafDepartment(formData.chat_department);
+    }
+
+    // custom field default values
     customFields.forEach((customField) => {
       const fieldId = customField.get('id');
       const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);
