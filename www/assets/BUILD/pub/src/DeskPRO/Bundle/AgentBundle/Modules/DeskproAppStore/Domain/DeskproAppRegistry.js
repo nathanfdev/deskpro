@@ -14,7 +14,7 @@ class DeskproAppRegistry
     if (config.environment == 'development') {
       manifests = rawManifests.map(manifest => ({ id: 1, application_id: 1, baseUrl: config.endpoint, ...manifest }));
     } else {
-      manifests = rawManifests.map(manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.id}/files`, ...manifest}))
+      manifests = rawManifests.map(manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}/files`, ...manifest}))
     }
 
     const appList = manifests.map(manifest => AppConfiguration.fromJS(manifest));
