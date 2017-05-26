@@ -36,12 +36,12 @@ use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
@@ -311,18 +311,13 @@ class AppsController extends AbstractController
                 $context->setIncludes(['app']);
                 $context->setInlineSideloads(true);
 
-                $cm = new ClientMessage();
-                $cm->fromArray([
-                    'channel' => 'agent.ui.reload',
-                    'data'    => [
+                $this->container
+                    ->get('event_dispatcher')
+                    ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                         'type'        => 'admin',
                         'person_id'   => 0,
                         'person_name' => 'System',
-                    ],
-                ]);
-
-                $this->em->persist($cm);
-                $this->em->flush();
+                    ]));
 
                 $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
 

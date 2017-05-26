@@ -28,12 +28,12 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppStoreBundle;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -131,12 +131,12 @@ class AppsController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
      *
-     * @param Entity\AppStore\AppInstance|null                      $application
+     * @param Entity\AppStore\AppInstance|null                  $application
      * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
      *
      * @return string
      */
-    public function updateFromZipFileAction(Entity\AppStore\AppInstance $application = null , AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
+    public function updateFromZipFileAction(Entity\AppStore\AppInstance $application = null, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
     {
         if (empty($application)) {
             throw new NotFoundHttpException('could not find application');
@@ -189,18 +189,13 @@ class AppsController extends BaseController
         $em->remove($application);
         $em->flush();
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel' => 'agent.ui.reload',
-            'data'    => [
+        $this->container
+            ->get('event_dispatcher')
+            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                 'type'        => 'admin',
                 'person_id'   => 0,
                 'person_name' => 'System',
-            ],
-        ]);
-
-        $em->persist($cm);
-        $em->flush();
+            ]));
 
         return new View(null, HttpFoundation\Response::HTTP_NO_CONTENT);
     }
