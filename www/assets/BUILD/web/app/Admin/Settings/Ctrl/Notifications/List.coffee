@@ -6,6 +6,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @$scope.mode = 'default';
+      @$scope.clusters = [
+        { title: 'mt1 (us-west-1)', value: 'mt1' }
+        { title: 'eu (eu-west-1)', value: 'eu' }
+        { title: 'ap1 (ap-southwest-1)', value: 'ap1' }
+        { title: 'ap2 (ap-south-1)', value: 'ap2' }
+      ];
       return
 
     initialLoad: ->
@@ -16,14 +22,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @$scope.id             = pusherModel.id
           @$scope.secret         = pusherModel.secret
           @$scope.key            = pusherModel.key
+          @$scope.currentCluster = pusherModel.cluster
       )
       return
 
     getPusherParams: ->
       params = {
-        key:    @$scope.key
-        id:     @$scope.id
-        secret: @$scope.secret
+        key:     @$scope.key
+        id:      @$scope.id
+        secret:  @$scope.secret
+        cluster: @$scope.currentCluster
         pusher_enabled: @$scope.mode == 'pusher'
       }
       return params

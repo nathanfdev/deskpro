@@ -40,7 +40,9 @@ class PusherFactory
             $settings->get('notification.settings.pusher_client.appKey'),
             $settings->get('notification.settings.pusher_client.secret'),
             $settings->get('notification.settings.pusher_client.appId'),
-            $settings->get('notification.settings.pusher_client.options')
+            [
+                'cluster' => $settings->get('notification.settings.pusher_client.cluster'),
+            ]
             );
     }
 }

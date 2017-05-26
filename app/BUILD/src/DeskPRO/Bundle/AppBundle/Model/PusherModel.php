@@ -35,6 +35,11 @@ use JMS\Serializer\Annotation as JMS;
  */
 class PusherModel
 {
+    const PUSHER_CLASTER_US_WEST_1      = 'mt1';
+    const PUSHER_CLASTER_EU_WEST_1      = 'eu';
+    const PUSHER_CLASTER_AP_SOUTHEAST_1 = 'ap1';
+    const PUSHER_CLASTER_AP_SOUTH_1     = 'ap2';
+
     /**
      * @JMS\Type("boolean")
      *
@@ -62,6 +67,13 @@ class PusherModel
      * @var string
      */
     protected $key;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $cluster;
 
     /**
      * @return bool
@@ -139,6 +151,26 @@ class PusherModel
     public function setKey($key)
     {
         $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCluster()
+    {
+        return $this->cluster;
+    }
+
+    /**
+     * @param string $cluster
+     *
+     * @return $this
+     */
+    public function setCluster($cluster)
+    {
+        $this->cluster = $cluster;
 
         return $this;
     }

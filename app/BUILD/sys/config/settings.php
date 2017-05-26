@@ -1099,8 +1099,8 @@ return [
     'notification.settings.pusher_client.appKey'  => '',
     'notification.settings.pusher_client.secret'  => '',
     'notification.settings.pusher_client.appId'   => '',
-    'notification.settings.pusher_client.options' => [],
-    'notification.settings.pusher_client.debug'   => true,
+    'notification.settings.pusher_client.cluster' => 'mt1',
+    'notification.settings.pusher_client.debug'   => false,
 
     // Simple delivery handler with polling
     'notification.settings.polling_client.polling_interval' => 5000,

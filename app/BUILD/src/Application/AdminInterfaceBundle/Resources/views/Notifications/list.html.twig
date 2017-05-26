@@ -102,6 +102,21 @@
                                 </label>
                             </div>
                             <div class="inner-group">
+                                <label>
+                                    <h4>Pusher cluster:</h4>
+                                    <select ui-select2 ng-model="currentCluster" style="width: 90%">
+                                        <option
+                                            ng-repeat="cluster in clusters"
+                                            value="{{ ng_var('cluster.value') }}"
+                                            ng-selected="currentCluster === cluster.value"
+                                        >
+                                            {{ ng_var('cluster.title') }}
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="inner-group">
                                 <button class="btn btn-default" ng-click="Notifications.testPusher()">Test Pusher Settings</button>
                                 <br/>
                                 <textarea class="form-control" ng-show="pusherTestResult" ng-bind="pusherTestResult" style="width: 65%; height: 250px; font-size: 90%; font-family: Monaco, monospace;"></textarea>

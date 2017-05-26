@@ -20,6 +20,7 @@ export default class PusherClient extends AbstractClient {
 
     this.client = new Pusher(that.options.appKey, {
       encrypted:     true,
+      cluster:       that.options.cluster,
       authEndpoint:  that.options.authEndpoint,
       authTransport: that.options.authTransport
     });
@@ -30,12 +31,21 @@ export default class PusherClient extends AbstractClient {
       authEndpoint:  '/api/v2/pusher/auth',
       authTransport: 'rest',
       appKey:        '',
+      channelPrefix: '',
+      cluster:       'mt1',
       me:            0
     };
   }
 
   bind(channelName, eventName) {
     const that = this;
+
+    const channelParts = channelName.split('-');
+    if (this.options.channelPrefix) {
+      channelParts.splice(1, 0, this.options.channelPrefix);
+    }
+
+    const preifxedChannelName = channelParts.join('-');
 
     Pusher.authorizers.rest = (socketId, callback) => {
       let xhr;
@@ -74,11 +84,11 @@ export default class PusherClient extends AbstractClient {
         }
       };
 
-      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: channelName, user_id: that.options.me }));
+      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: preifxedChannelName, user_id: that.options.me }));
       return xhr;
     };
 
-    const channel = this.client.subscribe(channelName);
+    const channel = this.client.subscribe(preifxedChannelName);
     channel.bind(eventName, (data) => {
       if (parseInt(data.target, 10) === that.options.me) {
         that.options.dispatcher(eventName, data);

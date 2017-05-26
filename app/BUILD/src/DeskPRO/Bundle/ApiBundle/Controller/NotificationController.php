@@ -201,7 +201,25 @@ class NotificationController extends BaseController
     }
 
     /**
+     * This endpoint provide you an ability to get pusher credentials you are using (admin only).
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *         {"name"="user_id", "description"="", "dataType"="integer", "required"=true},
+     *         {"name"="channel_name", "description"="", "dataType"="string", "required"=true},
+     *         {"name"="socket_id", "description"="", "dataType"="string", "required"=true}
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Model\PusherModel>"
+     * )
+     *
      * @return View
+     *
+     * @todo move it to standalone controller
      * @Rest\Get("/notify/setup/action-alerts/pusher")
      */
     public function getPusherCredentialsAction()
@@ -217,10 +235,13 @@ class NotificationController extends BaseController
                 ->setId($bag->get('notification.settings.pusher_client.appId', ''))
                 ->setSecret($bag->get('notification.settings.pusher_client.secret', ''))
                 ->setKey($bag->get('notification.settings.pusher_client.appKey', ''))
+                ->setCluster($bag->get('notification.settings.pusher_client.cluster', PusherModel::PUSHER_CLASTER_US_WEST_1))
         ));
     }
 
     /**
+     * Save pusher credentials and enable/disable it.
+     *
      * @ApiDoc(
      *     section="Notifications and alerts",
      *     resourceDescription="Operations about action alerts",
@@ -255,6 +276,7 @@ class NotificationController extends BaseController
             $settingRepo->updateSetting('notification.settings.pusher_client.appId', $pusherModel->getId());
             $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
             $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
+            $settingRepo->updateSetting('notification.settings.pusher_client.cluster', $pusherModel->getCluster());
 
             $config = [
                 'strategy' => 'immediate',

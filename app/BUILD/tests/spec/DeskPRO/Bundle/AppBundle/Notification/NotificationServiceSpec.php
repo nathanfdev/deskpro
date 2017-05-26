@@ -38,7 +38,6 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfigur
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -62,6 +61,8 @@ class NotificationServiceSpec extends ObjectBehavior
         $settings->get('notification.settings.polling_client.polling_interval', 5000)->willReturn(25000);
         $settings->get('notification.settings.pusher_client.appKey')->willReturn('pusherAppKey');
         $settings->get('notification.settings.pusher_client.debug')->willReturn(true);
+        $settings->get('notification.settings.pusher_client.channel_prefix')->willReturn('');
+        $settings->get('notification.settings.pusher_client.cluster')->willReturn('mt1');
         $em->getRepository(ActionAlert::class)->willReturn($repo);
         $em->getRepository(Notification::class)->willReturn($repo);
         $repo->createQueryBuilder(Argument::type('string'))->willReturn($qb);
@@ -99,8 +100,10 @@ class NotificationServiceSpec extends ObjectBehavior
         $client->shouldHaveType(NotificationClient::class);
         $client->getType()->shouldBe('pusher');
         $client->getOptions()->shouldBe([
-            'appKey' => 'pusherAppKey',
-            'debug'  => true,
+            'appKey'        => 'pusherAppKey',
+            'channelPrefix' => '',
+            'cluster'       => 'mt1',
+            'debug'         => true,
         ]);
     }
 
