@@ -29,7 +29,6 @@
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -90,7 +89,7 @@ class ZapierWebHook implements TicketSaveActionInterface
 
             $serializationContext = new SideloadSerializationContext();
 
-            $ticketMessage = $this->em->getRepository(TicketMessage::class)->getLastReply($ticket);
+            $ticketMessage = $ticket->getLastReply();
 
             $options['body'] = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
 

@@ -1042,6 +1042,19 @@ class TicketMessage extends DomainObject
         return $this->is_agent_note;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function __call($name, $arguments)
+    {
+        // hack to use doctrine property accessor with Basic domain __call magic
+        if ($name === 'getis_agent_note') {
+            return $this->isAgentNote();
+        }
+
+        return parent::__call($name, $arguments);
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

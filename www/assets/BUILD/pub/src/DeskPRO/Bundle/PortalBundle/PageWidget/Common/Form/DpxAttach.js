@@ -31,6 +31,7 @@ export default class DpxAttach extends PageWidget {
     });
 
     const $input = $(this.$element.find(':not([data-prototype=""])').data('prototype')).find('input[type=file]');
+    const $form = $(this.$element).closest('form');
     const inputName = $input.attr('name') ? $input.attr('name').replace('[__name__][blob][upload]', '') : null;
     const maxFileSize = this.$element.data('maxFileSize') || null;
     const component = React.createElement(PortalAttach, {
@@ -38,7 +39,8 @@ export default class DpxAttach extends PageWidget {
       files,
       $input,
       inputName,
-      maxFileSize
+      maxFileSize,
+      $form
     });
 
     ReactDOM.render(component, this.$rElement.get(0));

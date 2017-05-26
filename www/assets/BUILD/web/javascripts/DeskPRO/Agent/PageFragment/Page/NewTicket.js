@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.parent();
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
+		this.uploading = false;
 	},
 
 	_initLabels: function () {
@@ -89,6 +90,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			downloadTemplate: $('.template-download', this.wrapper)
 		});
 		this.wrapper.bind('fileuploaddone', function(e, data) {
+			self.uploading = false;
+			self.getEl('reply_as_type').parent().removeAttr('disabled');
+			self.getEl('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
 			self.getEl('attach_row').slideDown().removeClass('is-hidden');
 			data.result && data.result.forEach(function(el, i){
 				self.draft.addAttachment(el);
@@ -96,6 +100,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		});
 		this.wrapper.bind('fileuploadstart', function() {
+			self.uploading = true;
+			self.getEl('reply_as_type').parent().attr('disabled', 'disabled');
+			self.getEl('reply_as_type').parent().siblings('.status-menu-trigger').attr('disabled', 'disabled');
 			self.getEl('attach_row').slideDown().removeClass('is-hidden');
 		});
 
@@ -506,7 +513,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				$('.hide-note').hide();
 				$('.hide-reply').show();
         self.isNote = true;
-        emailCheckboxState = $input.prop('checked');
+				emailCheckboxState = $input.prop('checked');
 				replyAsState = self.getEl('reply_as_type').data('type');
 				storedReplyText = self.textarea.getCode();
 				self.textarea.setCode(storedNoteText || '');
@@ -753,7 +760,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	submit: function() {
-
+		if (this.uploading) {
+			return;
+		}
 		if (this.pauseSend) {
 			window.setTimeout(this.submit.bind(this), 250);
 			return;

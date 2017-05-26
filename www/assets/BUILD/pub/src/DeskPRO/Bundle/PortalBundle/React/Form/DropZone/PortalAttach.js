@@ -12,7 +12,8 @@ export default class PortalAttach extends React.Component {
     widgetOptions: PropTypes.object,
     $input:        PropTypes.object,
     inputName:     PropTypes.string,
-    maxFileSize:   PropTypes.string
+    maxFileSize:   PropTypes.string,
+    $form:         PropTypes.$form
   };
 
   constructor(props) {
@@ -24,7 +25,7 @@ export default class PortalAttach extends React.Component {
   }
 
   componentDidMount() {
-    const { $input } = this.props;
+    const { $input, $form } = this.props;
 
     pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
 
@@ -37,7 +38,7 @@ export default class PortalAttach extends React.Component {
         files: blobs
       });
     });
-    $input.closest('form').on('reset', () => {
+    $form.on('reset', () => {
       this.setState({
         files: []
       });
@@ -49,6 +50,9 @@ export default class PortalAttach extends React.Component {
   };
 
   onUploadStarted = (event, data) => {
+    const { $form } = this.props;
+    const $button = $form.find('button[type=submit]');
+    $button.attr('disabled', 'disabled').addClass('disabled');
     const files = this.state.files.slice();
     files.push({
       file: data.files[0],
@@ -62,7 +66,7 @@ export default class PortalAttach extends React.Component {
   };
 
   onUploadSuccess = (event, data) => {
-    const { $input } = this.props;
+    const { $input, $form } = this.props;
     const file = data.files[0];
     const info = data.result ? data.result.blob : {};
     const newFiles = [];
@@ -76,12 +80,15 @@ export default class PortalAttach extends React.Component {
     });
 
     $input.trigger('blobs', [newFiles]);
+    const $button = $form.find('button[type=submit]');
+    $button.removeAttr('disabled').removeClass('disabled');
     this.setState({
       files: newFiles
     });
   };
 
   onUploadFail = (event, data) => {
+    const { $form } = this.props;
     const file = data.files[0];
     const response = data.jqXHR.responseJSON;
     const error = response && response.error;
@@ -96,7 +103,8 @@ export default class PortalAttach extends React.Component {
         lastError =  `${lastError} Maximum allowed size is ${this.props.maxFileSize}`;
       }
     }
-
+    const $button = $form.find('button[type=submit]');
+    $button.removeAttr('disabled').removeClass('disabled');
     this.setState({
       files: this.state.files.filter(f => f.file !== file),
       lastError

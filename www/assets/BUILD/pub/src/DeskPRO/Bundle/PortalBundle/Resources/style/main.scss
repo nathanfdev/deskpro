@@ -410,6 +410,10 @@ button, .button, input[type="submit"] {
     width: 100%;
   }
 
+  &.disabled {
+    @include generate-background-and-border($btn-link-disabled-color);
+  }
+  
   &.right {
     float: $float-right;
   }

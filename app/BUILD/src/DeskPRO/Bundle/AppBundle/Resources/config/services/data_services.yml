@@ -79,3 +79,7 @@ services:
   data.guides:
     class: DeskPRO\Bundle\AppBundle\DataService\GuidesDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]
+
+  data.ticket_excerpt:
+    class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketExcerptDataService
+    arguments: ["@doctrine.orm.default_entity_manager"]

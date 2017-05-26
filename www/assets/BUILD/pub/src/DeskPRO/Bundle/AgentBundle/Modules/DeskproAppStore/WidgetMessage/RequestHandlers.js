@@ -217,6 +217,15 @@ export const EVENT_USER_GET = (response, widget, widgetMessage, services) => {
   response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
 };
 
+export const EVENT_RESET_SIZE = (response, widget, message) => {
+  const size = message.body.size;
+  const $el  = $(document.getElementById(widget.windowId));
+
+  $el.find('iframe')
+    .first()
+    .height(size.outerHeight + 20 /* i dont know why +20? */);
+};
+
 export const handlers = {
 
   // GENERIC REST API REQUEST EVENT
@@ -243,8 +252,11 @@ export const handlers = {
 
   // USER EVENTS
 
-  EVENT_USER_GET
+  EVENT_USER_GET,
 
+  // APP EVENTS
+
+  EVENT_RESET_SIZE
 };
 
 /**

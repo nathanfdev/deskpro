@@ -247,6 +247,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@form.factory"
       - "@form_error.form_errors_generator.api"
+      - "@data.ticket_excerpt"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
