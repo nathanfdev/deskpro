@@ -190,11 +190,11 @@
                                                     <th>{{ phrase('agent.general.usergroups') }}</th>
                                                     <td>
                                                         <div id="{{ baseId }}_ug_container">
-                                                            <select name="newperson[usergroup_ids][]" class="dpe_select">
-                                                                {% for id,name in usergroup_names %}
-                                                                    <option value="{{ id }}">{{ name }}</option>
-                                                                {% endfor %}
-                                                            </select>
+                                                            {% for id,name in usergroup_names %}
+                                                                <div>
+                                                                    <label><input type="checkbox" value="{{ id }}" name="newperson[usergroup_ids][]" class="ug-check ug-check-{{ id }}" /> {{ name }}</label>
+                                                                </div>
+                                                            {% endfor %}
                                                         </div>
                                                     </td>
                                                 </tr>
