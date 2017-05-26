@@ -63,7 +63,7 @@ class DefaultDataCommand extends ContainerAwareCommand
         $console_handler = new ConsoleHandler($output);
         $logger->pushHandler($console_handler);
 
-        $output->setVerbosity(4);
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
         $data_proc = new DefaultDataProcessor($this->getContainer());
         $data_proc->setLogger($logger);
 

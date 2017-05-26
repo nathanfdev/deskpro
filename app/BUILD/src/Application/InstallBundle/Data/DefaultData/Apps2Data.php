@@ -43,6 +43,7 @@ class Apps2Data extends AbstractDefaultData
         $assetDir      = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
         $trelloAppPath = $assetDir.'/apps/v2/deskproapps-trello.zip';
 
+        $this->getLogger()->info('Installing Trello');
         $instanceCreator = $this->getContainer()->get('apps2.application_manager');
         $instanceCreator->createAppEntity(new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($trelloAppPath)));
     }
