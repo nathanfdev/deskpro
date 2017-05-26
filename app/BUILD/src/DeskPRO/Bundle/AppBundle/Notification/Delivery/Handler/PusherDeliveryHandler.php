@@ -95,6 +95,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     public function deliver()
     {
         $this->pusher->triggerBatch($this->messages);
+        $this->messages = [];
     }
 
     /**

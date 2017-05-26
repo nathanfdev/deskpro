@@ -78,6 +78,7 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
             $this->em->persist($message);
         }
         $this->em->flush();
+        $this->messages = [];
     }
 
     /**

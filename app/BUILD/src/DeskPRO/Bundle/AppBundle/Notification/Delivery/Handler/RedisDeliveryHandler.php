@@ -86,6 +86,7 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
         foreach ($this->messages as $message) {
             $this->client->publish($message['channel'], $message['data']);
         }
+        $this->messages = [];
     }
 
     /**
