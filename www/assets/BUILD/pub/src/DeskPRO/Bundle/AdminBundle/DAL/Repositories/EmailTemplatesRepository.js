@@ -5,6 +5,10 @@ class EmailTemplatesRepository extends ApiRepository {
     return this.api.sendGet(`DP_API/${this.url}/info`);
   }
 
+  loadLegacyTemplates() {
+    return this.api.sendGet(`DP_API/${this.url}/legacy_templates`);
+  }
+
   loadTemplate(name) {
     return this.api.sendGet(`DP_API/${this.url}/template/${name}`);
   }

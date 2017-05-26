@@ -33,6 +33,8 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
+use Application\DeskPRO\Entity\Template;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use Application\EmailBundle\SwiftMailer\Message\Message;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
@@ -51,6 +53,7 @@ use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use Doctrine\ORM\Query\Expr;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -327,6 +330,33 @@ class TemplateController extends BaseController
         $this->get('mailer')->send($message);
 
         return new View('OK');
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Get legacy templates to upgrade",
+     *     output="string"
+     *)
+     * @Rest\Get("/legacy_templates")
+     *
+     * @return View
+     */
+    public function getLegacyTemplatesAction()
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb
+            ->select('t', 'GROUP_CONCAT(tt.id)')
+            ->from(Template::class, 't')
+            ->where('t.name LIKE :name')
+            ->leftJoin(TicketTrigger::class, 'tt', Expr\Join::WITH, 'tt.actions LIKE CONCAT(\'%"template":"\', t.name, \'"%\')')
+            ->groupBy('t.id')
+            ->setParameter('name', 'DeskPRO:emails_%')
+        ;
+
+        $templates = $qb->getQuery()->getResult();
+
+        return new View($templates);
     }
 
     /**

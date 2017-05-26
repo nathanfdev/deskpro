@@ -592,6 +592,10 @@ class EmailTemplatesEditor extends React.Component {
     }
   };
 
+  openLegacyTemplatesEditor = () => {
+    window.location.href = 'admin-interface#/tickets/email_templates';
+  };
+
   closeNewTemplateDialog = () => {
     this.setState({
       newCustomTemplateOpened: false
@@ -644,6 +648,14 @@ class EmailTemplatesEditor extends React.Component {
               >
                 + New Template
               </Button>
+              {this.props.emailTemplates.get('legacyTemplates') ?
+                <Button
+                  className="right basic small floated"
+                  onClick={this.openLegacyTemplatesEditor}
+                >
+                  Upgrade Legacy Templates
+                </Button> : null
+              }
               <NewCustomTemplate
                 opened={this.state.newCustomTemplateOpened}
                 addingNewTemplate={this.props.addingNewTemplate}

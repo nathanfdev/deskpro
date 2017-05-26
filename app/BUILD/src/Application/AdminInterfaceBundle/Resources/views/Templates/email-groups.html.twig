@@ -1,47 +1,61 @@
-<div class="dp-email-templates">
-    <div class="editor">
-        <div class="ui celled grid">
-            <div class="row">
-                <div class="sixteen wide column">
-                    <button class="ui button basic">
-                        <i class="icon users"></i>
-                        User email templates
-                    </button>
-                    <button class="ui button basic">
-                        <i class="flag gb"></i>
-                        English
-                    </button>
-                    <button class="ui right floated button">
-                        + New Template
-                    </button>
-                </div>
-            </div>
-            <div class="row">
-                <div class="seven wide column">
-                    <i class="icon mail"></i>
-                    Register Welcome Email
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="three wide column">
-                    <i class="icon dollar"></i>
-                    Variables
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="three wide column">
-                    <i class="icon globe"></i>
-                    Phrases
-                    <i class="fa fa-caret-down"></i>
-                </div>
-                <div class="three wide column">
-                    <i class="icon image"></i>
-                    Media
-                    <i class="fa fa-caret-down"></i>
-                </div>
-            </div>
-        </div>
-        <div class="dp-code-editor">
-            Email subject:
-            <div class="email-subject with-ace-editor">
+{% extends 'AdminInterfaceBundle:Layout:list-with-fullpage-header.html.twig' %}
+{% block fullpane_content %}
+    {% if app.hasBeta('email_templates') %}
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>{{ ng_var('ListCtrl.toUpgradeTemplates.length') }} email templates need upgrading</h3>
+			</header>
+			<article>
+				<p class="dp-empty-list-notice">
+					This is the legacy template editor. These old templates lack the new features added in DeskPRO v5.7. These old templates
+					will soon stop working. You need to update them to use the new system. Updating your templates is easy and most
+					of the times only takes a couple minutes. Please refer to our guide here.
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Template</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="template in ListCtrl.toUpgradeTemplates">
+								<td>
+									{{ ng_var('template[0].name') }}
+									(<span ng-click="ListCtrl.openEditor(template[0])">
+										<span class="linked-text">
+											<em>view</em>
+										</span>
+									</span>)
+								</td>
+								<td>status</td>
+								<td>actions</td>
+							</tr>
+						</tbody>
+					</table>
+				</p>
+			</article>
+		</section>
+    {% endif %}
+{% endblock %}
+{% block listpane_content %}
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'layout:top'}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Layout (Header, footer, CSS)</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
 
             </div>
             Email:

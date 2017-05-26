@@ -56,6 +56,17 @@ export const loadInlineImages = createAction(
   })
 );
 
+export const loadLegacyTemplates = createAction(
+  'EMAIL_TEMPLATES_LOAD_TEMPLATES',
+  () => new Promise((resolve) => {
+    repository('EmailTemplates').loadLegacyTemplates().then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
 export const loadPhrases = createAction(
   'EMAIL_TEMPLATES_LOAD_PHRASES',
   (templateGroup, languageId) => new Promise((resolve) => {

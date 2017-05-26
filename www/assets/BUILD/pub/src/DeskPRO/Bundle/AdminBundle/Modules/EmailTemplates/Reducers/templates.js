@@ -8,6 +8,7 @@ const initialState = {
   inlineImages:         {},
   attachments:          {},
   phrases:              {},
+  legacyTemplates:      {},
   template:             {},
   currentLanguage:      window.DP_PERSON_LANG_CODE,
   currentTemplate:      null,
