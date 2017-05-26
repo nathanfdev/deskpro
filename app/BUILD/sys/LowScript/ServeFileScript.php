@@ -1065,19 +1065,29 @@ class ServeFileScript extends LowScriptAbstract
     }
 
     /**
-     * Serves a v2 application asset
+     * Serves a v2 application asset.
      *
      * @param string $appId
      * @param string $assetPath
      */
-    public function handleAppsV2FileRequest($appId, $assetPath) {
-        $statement = 'SELECT blob_id, blob_authcode FROM app2_app_asset_blob WHERE app_id = :appId AND path =:assetPath LIMIT 1';
+    public function handleAppsV2FileRequest($appId, $assetPath)
+    {
+        $statement    = 'SELECT blob_id, blob_authcode FROM app2_app_asset_blob WHERE app_id = :appId AND path =:assetPath LIMIT 1';
         $pdoStatement = $this->getPdoRead()->prepare($statement);
         $pdoStatement->execute(['appId' => $appId, 'assetPath' => $assetPath]);
+        $this->addLogMessage("AppID: $appId, Path: $assetPath");
         $blobInfo = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
-        if (! empty($blobInfo)) {
+        if (!empty($blobInfo)) {
             $this->alwaysForceDownloadOfHtmlFiles = false;
             $this->showBlob($blobInfo['blob_id'], null, $blobInfo['blob_authcode']);
+        } else {
+            if ($this->error_mode == 'exception') {
+                throw new \Exception('App file not found. (bad_asset_path)', 400);
+            }
+            header('HTTP/1.0 404 Not Found');
+            echo 'App file not found. (bad_asset_path)';
+
+            return;
         }
     }
 
