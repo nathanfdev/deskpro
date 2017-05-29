@@ -42,7 +42,7 @@ class ActionAlertsHandler {
         }
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
-      case 'read.notification.alert':
+      case 'read.notifications.alert':
         break;
       case 'organization.added':
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);
