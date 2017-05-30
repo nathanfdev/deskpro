@@ -109,7 +109,9 @@ class TagProcessor
         if (!$response || ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400)) {
             return ''; // be passive and default to blank
         } elseif (!$response->isSuccessful()) {
-            SystemErrorHandler::logException(new \RuntimeException('Unable to render theme content: '.$response->getContent()));
+            if ($response->getStatusCode() >= 500) {
+                SystemErrorHandler::logException(new \RuntimeException('Unable to render theme content (status '.$response->getStatusCode().') : '.$response->getContent()));
+            }
 
             return ''; // be passive and default to blank
         }
