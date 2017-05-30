@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 
 use Application\DeskPRO\Dpql\Exception;
+use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -36,6 +37,8 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Templating\Templates\TemplateCustom;
+use Application\DeskPRO\Tickets\Actions\AbstractEmailAction;
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
 use Application\EmailBundle\SwiftMailer\Message\Message;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -46,6 +49,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
@@ -53,7 +57,6 @@ use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
-use Doctrine\ORM\Query\Expr;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -344,19 +347,133 @@ class TemplateController extends BaseController
      */
     public function getLegacyTemplatesAction()
     {
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb
-            ->select('t', 'GROUP_CONCAT(tt.id)')
-            ->from(Template::class, 't')
-            ->where('t.name LIKE :name')
-            ->leftJoin(TicketTrigger::class, 'tt', Expr\Join::WITH, 'tt.actions LIKE CONCAT(\'%"template":"\', t.name, \'"%\')')
-            ->groupBy('t.id')
-            ->setParameter('name', 'DeskPRO:emails_%')
-        ;
-
-        $templates = $qb->getQuery()->getResult();
+        $templates = $this->getManager()->getRepository(Template::class)->getLegacyTemplates();
 
         return new View($templates);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Revert legacy template to hardcoded template",
+     *     output="string"
+     *)
+     * @Rest\Get("/revert_legacy_template/{id}")
+     *
+     * @param $id
+     *
+     * @return View
+     */
+    public function getRevertLegacyTemplateAction($id)
+    {
+        $em        = $this->getManager();
+        $templates = $em->getRepository(Template::class)->getLegacyTemplates();
+
+        foreach ($templates as $template) {
+            if ($template[0]['id'] == $id) {
+                // if the template is used in some triggers
+                if ($template[1]) {
+                    $triggers = explode(',', $template[1]);
+                    foreach ($triggers as $triggerData) {
+                        $info      = explode('-', $triggerData);
+                        $triggerId = $info[1];
+                        /** @var TicketTrigger $trigger */
+                        $trigger = $em->getRepository(TicketTrigger::class)->find($triggerId);
+                        $this->upgradeTrigger($trigger, $template[0]->getName());
+                        $em->persist($trigger);
+                    }
+                }
+                $dataStore = new DataStore();
+                $dataStore->setName('legacy_email_template.'.md5($template[0]->getName()));
+                $dataStore->setData('name', $template[0]->getName());
+                $dataStore->setData('code', $template[0]->getTemplateCode());
+
+                $em->persist($dataStore);
+                $em->remove($template[0]);
+            }
+        }
+        $em->flush();
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Email Templates",
+     *     description="Delete legacy template",
+     *     output="string"
+     *)
+     * @Rest\Delete("/legacy_template/{id}")
+     *
+     * @param $id
+     */
+    public function deleteLegacyTemplateAction($id)
+    {
+        $em        = $this->getManager();
+        $templates = $em->getRepository(Template::class)->getLegacyTemplates();
+
+        foreach ($templates as $template) {
+            if ($template[0]['id'] == $id) {
+                // if the template is used in some triggers
+                if ($template[1]) {
+                    $triggers = explode(',', $template[1]);
+                    foreach ($triggers as $triggerData) {
+                        $info      = explode('-', $triggerData);
+                        $triggerId = $info[1];
+                        /** @var TicketTrigger $trigger */
+                        $trigger = $em->getRepository(TicketTrigger::class)->find($triggerId);
+                        $this->upgradeTrigger($trigger, $template[0]->getName(), false);
+                        $em->persist($trigger);
+                    }
+                }
+                $dataStore = new DataStore();
+                $dataStore->setName('legacy_email_template.'.md5($template[0]->getName()));
+                $dataStore->setData('name', $template[0]->getName());
+                $dataStore->setData('code', $template[0]->getTemplateCode());
+
+                $em->persist($dataStore);
+                $em->remove($template[0]);
+            }
+        }
+        $em->flush();
+    }
+
+    private function upgradeTrigger(TicketTrigger $trigger, $templateName, $replace = true)
+    {
+        $templatesDesc = new EmailTemplatesDesc();
+        $manifest      = $templatesDesc->getManifest();
+
+        /** @var ActionInterface[] $actions */
+        $actionsClone = clone $trigger->actions;
+        $actions      = $actionsClone->getActions();
+        $newActions   = [];
+
+        foreach ($actions as $key => $action) {
+            $options = $action->getActionOptions();
+            if ($options['template'] !== $templateName) {
+                continue;
+            }
+            if ($action instanceof AbstractEmailAction) {
+                if ($replace) {
+                    $manifestKey = array_search($options['template'], array_column($manifest, 'name'));
+                    $info        = $manifest[$manifestKey];
+
+                    if ($info === false || !isset($info['newTemplate'])) {
+                        throw new \Exception('template not present in manifest');
+                    }
+                    $options['template'] = $info['newTemplate'];
+
+                    $class        = get_class($action);
+                    $class        = str_replace('Email', 'NewEmail', $class);
+                    $newActions[] = new $class($options->all());
+                }
+                unset($actions[$key]);
+            }
+        }
+        foreach ($newActions as $newAction) {
+            $actions[] = $newAction;
+        }
+
+        $actionsClone->setActions($actions);
+        $trigger->setActions($actionsClone);
     }
 
     /**

@@ -3,7 +3,7 @@
     {% if app.hasBeta('email_templates') %}
 		<section class="dp-paneblock dp-listpane">
 			<header>
-				<h3>{{ ng_var('ListCtrl.toUpgradeTemplates.length') }} email templates need upgrading</h3>
+				<h3>{{ ng_var('toUpgradeTemplates.length') }} email templates need upgrading</h3>
 			</header>
 			<article>
 				<p class="dp-empty-list-notice">
@@ -19,17 +19,50 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-repeat="template in ListCtrl.toUpgradeTemplates">
-								<td>
-									{{ ng_var('template[0].name') }}
+							<tr ng-repeat="template in toUpgradeTemplates" ng-init="templateName = template[0].name">
+                                <td>
+									{{ ng_var('templateName') }}
 									(<span ng-click="ListCtrl.openEditor(template[0])">
 										<span class="linked-text">
 											<em>view</em>
 										</span>
 									</span>)
 								</td>
-								<td>status</td>
-								<td>actions</td>
+								<td>
+									<div ng-show="template[1]">
+										<div ng-repeat="item in template[1].split(',')">
+											Used in
+											<a ng-href="{{ ng_href('tickets.triggers.edit', '{type: item.split(\'-\')[0], id: item.split(\'-\')[1]}') }}">
+												Trigger {{ ng_var('item.split(\'-\')[1]') }}
+											</a>
+										</div>
+									</div>
+									<div ng-hide="template[1]">
+										<div ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+											Unused (safe to delete)
+										</div>
+										<div ng-hide="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+											Built-in Template
+										</div>
+									</div>
+								</td>
+								<td>
+									<a>Update Template</a> |
+									<span ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+										<span ng-click="ListCtrl.deleteTemplate(template[0].id, template[1])">
+											<span class="linked-text">
+												<em>Delete Template</em>
+											</span>
+										</span>
+									</span>
+									<span ng-hide="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+										<span ng-click="ListCtrl.revertTemplate(template[0].id, template[1])">
+											<span class="linked-text">
+												<em>Revert To Default</em>
+											</span>
+										</span>
+									</span>
+								</td>
 							</tr>
 						</tbody>
 					</table>
