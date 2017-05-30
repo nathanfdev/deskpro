@@ -94,7 +94,11 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
 
     public function deliver()
     {
-        $this->pusher->triggerBatch($this->messages);
+        if (!empty($this->messages)) {
+            foreach (array_chunk($this->messages, 10) as $chunk) {
+                $this->pusher->triggerBatch($chunk);
+            }
+        }
         $this->messages = [];
     }
 
