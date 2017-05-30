@@ -42,7 +42,7 @@ class ActionAlertsHandler {
         }
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
-      case 'read.notification.alert':
+      case 'read.notifications.alert':
         break;
       case 'organization.added':
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);
@@ -54,7 +54,11 @@ class ActionAlertsHandler {
   }
 
   static handleLegacyClientMessage(payload) {
-    DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
+    if (!payload.eventType) {
+      console.error('payload.eventType is not set', payload);
+    } else {
+      DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
+    }
   }
 }
 
