@@ -26,7 +26,7 @@
 
 							<li
 								ng-repeat="field in custom_ticket_fields"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled, 'hidden': field.is_agent_field}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="ticket_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -47,7 +47,7 @@
 							<li class="dp-layout-editor-layout-field layout-field" data-field-type="user_timezone"><span>Timezone</span></li>
 							<li
 								ng-repeat="field in custom_user_fields"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled, 'hidden': field.is_agent_field}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="user_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -56,7 +56,7 @@
 							</li>
 							<li
 								ng-repeat="field in ticket_fields_per_person"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled, 'hidden': field.is_agent_field}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="custom_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -75,7 +75,7 @@
 						<ul>
                             <li
                                 ng-repeat="field in custom_org_fields"
-                                ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                ng-class="{'disabled': !field.is_enabled, 'hidden': field.is_agent_field}"
                                 class="dp-layout-editor-layout-field layout-field"
                                 data-field-type="org_field"
                                 data-field-id="{{ ng_var('field.id') }}"
@@ -84,7 +84,7 @@
                             </li>
 							<li
 								ng-repeat="field in ticket_fields_per_org"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled, 'hidden': field.is_agent_field}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="custom_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -135,7 +135,7 @@
 						<ul>
 							<li
 								ng-repeat="field in custom_user_fields"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="user_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -144,7 +144,7 @@
 							</li>
 							<li
 								ng-repeat="field in ticket_fields_per_person"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="custom_field"
 								data-field-id="{{ ng_var('field.id') }}"
@@ -163,7 +163,7 @@
                         <ul>
                             <li
                                 ng-repeat="field in custom_org_fields"
-                                ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+                                ng-class="{'disabled': !field.is_enabled}"
                                 class="dp-layout-editor-layout-field layout-field"
                                 data-field-type="org_field"
                                 data-field-id="{{ ng_var('field.id') }}"
@@ -172,7 +172,7 @@
                             </li>
                             <li
 								ng-repeat="field in ticket_fields_per_org"
-								ng-class="{'disabled': !field.is_enabled || field.is_agent_field}"
+								ng-class="{'disabled': !field.is_enabled}"
 								class="dp-layout-editor-layout-field layout-field"
 								data-field-type="custom_field"
 								data-field-id="{{ ng_var('field.id') }}"
