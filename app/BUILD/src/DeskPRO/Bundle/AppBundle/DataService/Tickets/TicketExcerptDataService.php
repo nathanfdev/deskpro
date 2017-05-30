@@ -75,6 +75,7 @@ class TicketExcerptDataService
             ->select('MAX(m2.id) AS id')
             ->from(TicketMessage::class, 'm2')
             ->where('m2.ticket IN(:ids)')
+            ->setParameter('ids', $tickets)
             ->groupBy('m2.ticket')
         ;
 
@@ -82,12 +83,14 @@ class TicketExcerptDataService
             $qb2->andWhere('m2.is_agent_note = 0');
         }
 
+        $messageIds = $qb2->getQuery()->getResult();
+
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('m')
             ->from(TicketMessage::class, 'm')
-            ->where("m.id IN({$qb2->getDQL()})")
-            ->setParameter('ids', $tickets)
+            ->where('m.id IN(:ids)')
+            ->setParameter('ids', $messageIds)
         ;
 
         /** @var TicketMessage[] $result */
