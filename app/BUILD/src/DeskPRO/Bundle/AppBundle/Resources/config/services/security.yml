@@ -222,11 +222,6 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
-  security.voter.permission_groups.tasks:
-    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter
-    tags:
-      - { name: security.voter.permission_groups }
-
   security.voter.permission_groups.tickets:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketsVoter
     tags:

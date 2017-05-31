@@ -80,7 +80,7 @@ class LabelsController extends BaseController
      *     "",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="task|ticket|person|organization|feedback|news|chat|article|download"
+     *         "type"="ticket|person|organization|feedback|news|chat|article|download"
      *     }
      * )
      *
@@ -92,9 +92,6 @@ class LabelsController extends BaseController
     public function getLabelsAction(Request $request, $type)
     {
         switch ($type) {
-            case 'task':
-                $labelType = LabelDef::TYPE_TASKS;
-                break;
             case 'ticket':
                 $labelType = LabelDef::TYPE_TICKETS;
                 break;
