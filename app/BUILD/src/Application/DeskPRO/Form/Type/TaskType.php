@@ -30,8 +30,10 @@ namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -91,7 +93,13 @@ class TaskType extends AbstractType implements EventSubscriberInterface
             ->add('ticket', NumberType::class, [
                 'required' => false,
                 'mapped'   => false,
-            ]);
+            ])
+            ->add('labels', LabelsCollectionType::class, [
+                'labels_class'   => LabelTask::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'task',
+            ])
+        ;
 
         $builder->addEventSubscriber($this);
     }

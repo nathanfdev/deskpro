@@ -421,7 +421,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's assigned agent team's id.
      *
-     * @param int id The agent team's id
+     * @param int $id The agent team's id
      *
      * @throws \InvalidArgumentException Thrown when there's no team with that id
      */
@@ -442,19 +442,23 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Adds a label.
      *
-     * @param \Application\DeskPRO\Entity\LabelTask $label
+     * @param LabelTask $label
+     *
+     * @return $this
      */
     public function addLabel(LabelTask $label)
     {
-        $label['task'] = $this;
+        $label->setTask($this);
         $this->labels->add($label);
+
+        return $this;
     }
 
     /**
      * Adds a comment to the task.
      *
-     * @param \Application\DeskPRO\Entity\Person $author          The comment's author
-     * @param string                             $comment_content The comment's content
+     * @param Person $author          The comment's author
+     * @param string $comment_content The comment's content
      */
     public function addComment(Person $author, $comment_content)
     {
