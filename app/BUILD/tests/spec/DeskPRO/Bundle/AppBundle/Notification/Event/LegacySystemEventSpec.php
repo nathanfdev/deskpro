@@ -63,6 +63,6 @@ class LegacySystemEventSpec extends ObjectBehavior
     public function it_returns_target_null_for_target_if_not_set_in_data()
     {
         $this->beConstructedWith('some.event', ['test.data' => 2]);
-        $this->getTargets()->shouldBeNull();
+        $this->getTargets()->shouldBe([]);
     }
 }
