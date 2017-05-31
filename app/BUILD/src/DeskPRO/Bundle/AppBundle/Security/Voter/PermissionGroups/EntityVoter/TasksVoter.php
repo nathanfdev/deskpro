@@ -26,40 +26,37 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Tasks;
+namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
-use Application\DeskPRO\Form\Type\TaskType;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class BrandsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/tasks")
- * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\Task")
+ * Class TasksVoter.
  */
-class TasksController extends CrudController
+class TasksVoter implements PermissionGroupEntityVoterInterface
 {
-    public static $entity       = Task::class;
-    public static $type         = TaskType::class;
-    public static $listPaginate = true;
-    public static $listOrder    = 'ASC';
-    public static $listSort     = 'id';
-
     /**
      * {@inheritdoc}
      */
-    protected function handleForm($model, Request $request, array $options = [])
+    public static function getEntityClass()
     {
-        $options = array_merge($options, [
-            'person' => $this->getUser(),
-        ]);
-
-        return parent::handleForm($model, $request, $options);
+        return Task::class;
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
+    {
+        return $user->hasPerm('agent_tasks.use');
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
+    {
+        // no access for now
+        return false;
     }
 }
