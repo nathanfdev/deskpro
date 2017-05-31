@@ -45,7 +45,6 @@ use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
 use DpBehat\Data\DataContext;
 
 /**
@@ -233,19 +232,6 @@ class CommonFactories
         SimpleFactory::provide($def, $data);
 
         return $def;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @return Task
-     */
-    public static function task(array $data = [])
-    {
-        $task = new Task();
-        Helper::pick($data, 'title', $task, 'setTitle', uniqid('Task_'));
-
-        return SimpleFactory::provide($task, $data);
     }
 
     /**
