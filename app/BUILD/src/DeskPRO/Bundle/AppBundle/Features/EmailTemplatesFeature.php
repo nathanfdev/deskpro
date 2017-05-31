@@ -121,6 +121,7 @@ HTML;
         $em = $container->get('doctrine.orm.default_entity_manager');
         $this->copyLegacyBlocks($em, $container);
         $this->copyLegacyTemplates($em, $container);
+        $this->replaceTriggers($em, $container);
     }
 
     private function copyLegacyBlocks(EntityManager $em, ContainerInterface $container)
@@ -169,14 +170,22 @@ HTML;
 
         foreach ($templates as $previousTemplate) {
             /** @var Template $previousTemplate */
-            $key  = array_search($previousTemplate->getName(), array_column($manifest, 'name'));
-            $info = $manifest[$key];
+            if (strpos($previousTemplate->getName(), 'DeskPRO:emails_custom') === 0) {
+                $newTemplateName = str_replace('DeskPRO:emails_custom', 'SendmailBundle:emails_custom', $previousTemplate->getName());
+            } else {
+                $key = array_search($previousTemplate->getName(), array_column($manifest, 'name'));
+                if ($key === false) {
+                    continue;
+                }
+                $info = $manifest[$key];
 
-            if ($info === false || !isset($info['newTemplate'])) {
-                continue;
+                if ($info === false || !isset($info['newTemplate'])) {
+                    continue;
+                }
+                $newTemplateName = $info['newTemplate'];
             }
             /** @var Template $previousBlock */
-            $template = $set->createCustomTemplate($info['newTemplate']);
+            $template = $set->createCustomTemplate($newTemplateName);
 
             /** @var EmailTemplateCode $templateCode */
             $templateCode = $template->getTemplateCode();
@@ -197,6 +206,7 @@ HTML;
             $this->saveLegacyTemplate($em, $previousTemplate);
             $em->remove($previousTemplate);
         }
+        $em->flush();
     }
 
     private function convertResourcesCode($code)
@@ -251,6 +261,55 @@ $code
 </body>
 </html>
 CODE;
+    }
+
+    private function replaceTriggers(EntityManager $em, ContainerInterface $container)
+    {
+        $emailTriggers = [
+            'SendAgentEmail'         => 'SendAgentNewEmail',
+            'SendUserEmail'          => 'SendUserNewEmail',
+            'SendSpecificUserEmail'  => 'SendSpecificUserNewEmail',
+            'SendArbitraryUserEmail' => 'SendArbitraryUserNewEmail',
+        ];
+
+        $dbConnection  = $container->get('doctrine')->getConnection('default');
+        $templatesDesc = new EmailTemplatesDesc();
+        $manifest      = $templatesDesc->getManifest();
+
+        $triggers      = $dbConnection->executeQuery('SELECT `id`,`actions` FROM `ticket_triggers`', []);
+        $templatesStmt = $dbConnection->executeQuery('SELECT `name` FROM `templates` WHERE name LIKE ?', ['DeskPRO:emails_%']);
+        $templates     = [];
+        foreach ($templatesStmt as $template) {
+            $templates[] = $template['name'];
+        }
+
+        foreach ($triggers as $trigger) {
+            $id      = $trigger['id'];
+            $changed = false;
+            try {
+                $actions = json_decode($trigger['actions'], true);
+            } catch (\Exception $e) {
+                continue;
+            }
+            foreach ($actions['@DATA']['actions'] as $actionId => $action) {
+                if ($action['type'] && isset($emailTriggers[$action['type']])) {
+                    if (!in_array($action['options']['template'], $templates)) {
+                        $manifestKey = array_search($action['options']['template'], array_column($manifest, 'name'));
+                        $info        = $manifest[$manifestKey];
+
+                        $actions['@DATA']['actions'][$actionId]['type']                = $emailTriggers[$action['type']];
+                        $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['newTemplate'];
+                        $changed                                                       = true;
+                    }
+                }
+            }
+            if ($changed) {
+                $dbConnection->executeQuery(
+                    'UPDATE `ticket_triggers` SET `actions` = ? WHERE `id` = ?',
+                    [json_encode($actions), $id]
+                );
+            }
+        }
     }
 
     /**

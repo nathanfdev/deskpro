@@ -5,14 +5,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @DEPS      = []
 
     initialLoad: ->
-      promise1 = @Api.sendDataGet({
+      promises = []
+      promises.push(@Api.sendDataGet({
         info: '/email-templates-info'
       }).then( (res) =>
         @templateInfo = res.data.info.list
-      )
-      promise2 = @loadLegacyTemplates()
+      ))
+      if window.DP_HAS_NEW_EMAILS
+        promises.push(@loadLegacyTemplates())
 
-      return @$q.all([promise1, promise2])
+      return @$q.all(promises)
 
     loadLegacyTemplates: ->
       @Api2.sendGet('/email_templates/legacy_templates').then(
