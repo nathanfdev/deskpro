@@ -83,7 +83,13 @@ class ExceptionController extends BaseController
             $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
 
-        $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+        if ($exception instanceof HttpException) {
+            $status = $exception->getStatusCode();
+        } elseif ($exception->getCode()) {
+            $status = $exception->getCode();
+        } else {
+            $status = 500;
+        }
 
         if ($exception instanceof \Exception) {
             $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
