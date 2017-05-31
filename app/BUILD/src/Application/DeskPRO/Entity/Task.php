@@ -37,14 +37,14 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Dates;
 
 /**
  * Task entity definition.
- *
- * SWG\Model
  */
 class Task extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -65,96 +65,118 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Type("integer")
+     *
      * @var int
-     *          SWG\Property(name="id",type="integer")
      */
     protected $id = null;
 
     /**
      * Whether this task is completed.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
-     *           SWG\Property(name="is_completed",type="boolean")
      */
     protected $is_completed = false;
 
     /**
      * The task's title.
      *
+     * @JMS\Type("string")
+     *
      * @var string
-     *             SWG\Property(name="title",type="string")
      */
     protected $title = '';
 
     /**
-     * The task's visibility. On of: self::PRIVATE_VISIBILITY or self::PUBLIC_VISIBILITY.
+     * The task's visibility. On of: self::PRIVATE_VISIBILITY(0) or self::PUBLIC_VISIBILITY(1).
+     *
+     * @JMS\Type("integer")
      *
      * @var int
-     *          SWG\Property(name="visibility", type="integer")
      */
-    protected $visibility = 1;
+    protected $visibility = self::PUBLIC_VISIBILITY;
 
     /**
      * The task's optional due date.
      *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_due",type="integer")
      */
     protected $date_due = null;
 
     /**
      * The date the task was inserted into the system.
      *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_created",type="integer")
      */
     protected $date_created;
 
     /**
      * The date the task was completed.
      *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_completed", type="integer")
      */
     protected $date_completed;
 
     /**
+     * The person created this task.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
-     *                                         SWG\Property(name="person",type="Person")
      */
     protected $person;
 
     /**
+     * The person assigned to complete this task.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
-     *                                         SWG\Property(name="assigned_agent",type="Person")
      */
     protected $assigned_agent;
 
     /**
+     * The agent team assigned to complete this task.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
      * @var \Application\DeskPRO\Entity\AgentTeam
-     *                                            SWG\Property(name="assigned_agent_team",type="AgentTeam")
      */
     protected $assigned_agent_team;
 
     /**
-     * SWG\Property(name="labels",type="array").
+     * Labels associated with this task.
+     *
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelTask>>")
      */
     protected $labels;
 
     /**
+     * @JMS\Exclude()
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="comments",type="array", items="$ref:TaskComment")
      */
     protected $comments;
 
     /**
+     * @JMS\Exclude()
+     *
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="comments",type="array", items="$ref:TaskAssociation")
      */
     protected $task_associations;
 
     /**
      * Label manager for adding/removing labels.
+     *
+     * @JMS\Exclude()
      *
      * @var \Application\DeskPRO\Labels\LabelManager
      */
@@ -165,12 +187,12 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct()
     {
-        $this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->comments          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels            = new ArrayCollection();
+        $this->comments          = new ArrayCollection();
+        $this->task_associations = new ArrayCollection();
 
-        $this['date_created'] = new \DateTime();
-        $this['visibility']   = self::PUBLIC_VISIBILITY;
+        $this->date_created = new \DateTime();
+        $this->visibility   = self::PUBLIC_VISIBILITY;
     }
 
     /**
@@ -247,7 +269,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
             throw new \InvalidArgumentException('Invalid visibility');
         }
 
-        $this->setModelField('visibility', $visibility);
+        $this->setModelField('visibility', (int) $visibility);
     }
 
     /**
@@ -304,7 +326,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's person id.
      *
-     * @param int id The agent's id
+     * @param int $id The agent's id
      *
      * @throws \InvalidArgumentException Thrown when there's no preson with that
      *                                   id or the person is not an agent
