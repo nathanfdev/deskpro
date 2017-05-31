@@ -153,6 +153,7 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
           @$state.go('agents.usersources.id', { id: info.id })
         else if info.version == 2
           @$state.go('apps.apps.instance_v2', { id: 'v2_' + info.data.id })
+          location.reload()
         else
           @$state.go('apps.apps.instance', { id: info.id })
       )

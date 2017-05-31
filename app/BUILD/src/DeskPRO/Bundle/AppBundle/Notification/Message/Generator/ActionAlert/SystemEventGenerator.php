@@ -48,16 +48,16 @@ class SystemEventGenerator extends AbstractGenerator
     private $agentDataService;
 
     /**
-     * SystemEventGenerator constructor.
+     * Constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
      * @param AgentDataService      $agentDataService
      */
     public function __construct(
-        EntityManager $em,
+        EntityManager         $em,
         TokenStorageInterface $token_storage,
-        AgentDataService $agentDataService
+        AgentDataService      $agentDataService
     ) {
         parent::__construct($em, $token_storage);
         $this->agentDataService = $agentDataService;
@@ -97,10 +97,11 @@ class SystemEventGenerator extends AbstractGenerator
      */
     protected function getTarget(LegacySystemEvent $event)
     {
-        if ($target = $event->getTarget()) {
-            return [$target];
+        $targets = $event->getTargets();
+        if (!$targets) {
+            $targets = $this->agentDataService->getOnlineAgentIds();
         }
 
-        return $this->agentDataService->getOnlineAgentIds();
+        return array_diff($targets, $event->getExcludeTargets());
     }
 }

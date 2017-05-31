@@ -311,13 +311,15 @@ class AppsController extends AbstractController
                 $context->setIncludes(['app']);
                 $context->setInlineSideloads(true);
 
-                $this->container
-                    ->get('event_dispatcher')
-                    ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
-                        'type'        => 'admin',
-                        'person_id'   => 0,
-                        'person_name' => 'System',
-                    ]));
+                $this->container->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.ui.reload', [
+                        'type'           => 'admin',
+                        'person_id'      => 0,
+                        'person_name'    => 'System',
+                        'exclude_target' => $this->person->getId(),
+                    ])
+                );
 
                 $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
 
