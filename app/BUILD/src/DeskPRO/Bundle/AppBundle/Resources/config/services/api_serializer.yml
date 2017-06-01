@@ -339,8 +339,13 @@ services:
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
-  api_serializer.layout_field_required_listener:
-    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\LayoutFieldRequiredListener
+  api_serializer.ticket_layout_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\TicketLayoutListener
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.layout_field_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\LayoutFieldListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_field_settings"

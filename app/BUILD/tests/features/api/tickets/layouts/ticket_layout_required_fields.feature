@@ -13,14 +13,14 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>/default"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "fields[<dep_num>].field_id" should be equal to "department"
-    And the JSON node "fields[<dep_num>].required" should be equal to 1
+    And the JSON node "data.fields[<dep_num>].field_id" should be equal to "department"
+    And the JSON node "data.fields[<dep_num>].required" should be equal to 1
 
-    And the JSON node "fields[<subject_num>].field_id" should be equal to "subject"
-    And the JSON node "fields[<subject_num>].required" should be equal to 1
+    And the JSON node "data.fields[<subject_num>].field_id" should be equal to "subject"
+    And the JSON node "data.fields[<subject_num>].required" should be equal to 1
 
-    And the JSON node "fields[<message_num>].field_id" should be equal to "message"
-    And the JSON node "fields[<message_num>].required" should be equal to 1
+    And the JSON node "data.fields[<message_num>].field_id" should be equal to "message"
+    And the JSON node "data.fields[<message_num>].required" should be equal to 1
 
     Examples:
       | context | dep_num | subject_num | message_num |
@@ -43,8 +43,8 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>/default"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "fields[<field_num>].field_id" should be equal to "<field>"
-    And the JSON node "fields[<field_num>].required" should be equal to <required>
+    And the JSON node "data.fields[<field_num>].field_id" should be equal to "<field>"
+    And the JSON node "data.fields[<field_num>].required" should be equal to <required>
 
     Examples:
       | context | field    | field_num | required |
@@ -76,8 +76,8 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>/default"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "fields[<field_num>].field_type" should be equal to "<custom_field_type>"
-    And the JSON node "fields[<field_num>].required" should be equal to <required>
+    And the JSON node "data.fields[<field_num>].field_type" should be equal to "<custom_field_type>"
+    And the JSON node "data.fields[<field_num>].required" should be equal to <required>
 
     Examples:
       | context | custom_field_type | custom_field_class    | field_num | required_option | required |

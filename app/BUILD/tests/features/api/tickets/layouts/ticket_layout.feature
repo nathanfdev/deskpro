@@ -53,9 +53,9 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "[0].department" should be null
-    And the JSON node "[0].context" should be equal to <context>
-    And the JSON node "[1].fields" should not exist
+    And the JSON node "data[0].department" should be null
+    And the JSON node "data[0].context" should be equal to <context>
+    And the JSON node "data[1].fields" should not exist
 
     Examples:
       | context |
@@ -68,14 +68,14 @@ Feature: /ticket_layouts endpoint
       | cc           |
 
     When I send a GET request to "/api/v2/ticket_layouts/agent"
-    Then the JSON node "[0].fields" should have 7 elements
-    And the JSON node "[0].fields[0].field_id" should be equal to "person"
-    And the JSON node "[0].fields[1].field_id" should be equal to "department"
-    And the JSON node "[0].fields[2].field_id" should be equal to "cc"
-    And the JSON node "[0].fields[3].field_id" should be equal to "labels"
-    And the JSON node "[0].fields[4].field_id" should be equal to "subject"
-    And the JSON node "[0].fields[5].field_id" should be equal to "message"
-    And the JSON node "[0].fields[6].field_id" should be equal to "attachments"
+    Then the JSON node "data[0].fields" should have 7 elements
+    And the JSON node "data[0].fields[0].field_id" should be equal to "person"
+    And the JSON node "data[0].fields[1].field_id" should be equal to "department"
+    And the JSON node "data[0].fields[2].field_id" should be equal to "cc"
+    And the JSON node "data[0].fields[3].field_id" should be equal to "labels"
+    And the JSON node "data[0].fields[4].field_id" should be equal to "subject"
+    And the JSON node "data[0].fields[5].field_id" should be equal to "message"
+    And the JSON node "data[0].fields[6].field_id" should be equal to "attachments"
 
   Scenario: I check user layout field order
     Given the only default ticket layout exists with fields:
@@ -83,14 +83,14 @@ Feature: /ticket_layouts endpoint
       | cc          |
 
     When I send a GET request to "/api/v2/ticket_layouts/user"
-    Then the JSON node "[0].fields" should have 7 elements
-    And the JSON node "[0].fields[0].field_id" should be equal to "cc"
-    And the JSON node "[0].fields[1].field_id" should be equal to "department"
-    And the JSON node "[0].fields[2].field_id" should be equal to "subject"
-    And the JSON node "[0].fields[3].field_id" should be equal to "message"
-    And the JSON node "[0].fields[4].field_id" should be equal to "attachments"
-    And the JSON node "[0].fields[5].field_id" should be equal to "person"
-    And the JSON node "[0].fields[6].field_id" should be equal to "labels"
+    Then the JSON node "data[0].fields" should have 7 elements
+    And the JSON node "data[0].fields[0].field_id" should be equal to "cc"
+    And the JSON node "data[0].fields[1].field_id" should be equal to "department"
+    And the JSON node "data[0].fields[2].field_id" should be equal to "subject"
+    And the JSON node "data[0].fields[3].field_id" should be equal to "message"
+    And the JSON node "data[0].fields[4].field_id" should be equal to "attachments"
+    And the JSON node "data[0].fields[5].field_id" should be equal to "person"
+    And the JSON node "data[0].fields[6].field_id" should be equal to "labels"
 
   Scenario Outline: I check custom department layout
     Given the ticket layout exists for "<department>" department with fields:
@@ -99,7 +99,7 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>/<department>"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "fields[0].field_id" should be equal to "<expected_field>"
+    And the JSON node "data.fields[0].field_id" should be equal to "<expected_field>"
 
     Examples:
       | context | department | expected_field |
@@ -115,7 +115,7 @@ Feature: /ticket_layouts endpoint
       When I send a GET request to "/api/v2/ticket_layouts/<context>/default"
       Then the response status code should be 200
       And the response should be in JSON
-      And the JSON node "fields[0].field_id" should be equal to "<expected_field>"
+      And the JSON node "data.fields[0].field_id" should be equal to "<expected_field>"
 
       Examples:
         | context | expected_field |
@@ -139,7 +139,7 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>/default"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "fields" should have <expected_count> elements
+    And the JSON node "data.fields" should have <expected_count> elements
 
     Examples:
       | context | enabled | expected_count |
@@ -162,10 +162,10 @@ Feature: /ticket_layouts endpoint
     When I send a GET request to "/api/v2/ticket_layouts/<context>"
     Then the response status code should be 200
     And the response should be in JSON
-    And the JSON node "[0].fields" should exist
-    And the JSON node "[1].fields" should exist
-    And the JSON node "[2].fields" should exist
-    And the JSON node "[3].fields" should not exist
+    And the JSON node "data[0].fields" should exist
+    And the JSON node "data[1].fields" should exist
+    And the JSON node "data[2].fields" should exist
+    And the JSON node "data[3].fields" should not exist
 
     Examples:
       | context |

@@ -41,9 +41,9 @@ use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 
 /**
- * Class LayoutFieldRequiredListener.
+ * Class LayoutFieldListener.
  */
-class LayoutFieldRequiredListener implements EventSubscriberInterface
+class LayoutFieldListener implements EventSubscriberInterface
 {
     /**
      * @var EntityManager
