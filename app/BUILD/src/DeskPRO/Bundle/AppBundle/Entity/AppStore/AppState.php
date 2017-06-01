@@ -35,7 +35,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity()
  * @ORM\Table(
  *  name="app2_app_state", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name"})
+ *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "owner_id"})
  *  })
  */
 class AppState implements Domain\ApplicationState
