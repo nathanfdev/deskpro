@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
@@ -319,5 +320,16 @@ class CommonFactories
         }
 
         return SimpleFactory::provide($chat, $data);
+    }
+
+    public static function task_comment(array $data)
+    {
+        $me = DataContext::getReference('me', false);
+        if (isset($data['date_created'])) {
+            $data['date_created'] = new \DateTime($data['date_created']);
+        }
+        $comment = new TaskComment($me, '');
+
+        return SimpleFactory::provide($comment, $data);
     }
 }

@@ -37,6 +37,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TaskCommentType.
@@ -50,7 +51,11 @@ class TaskCommentType extends AbstractType
     {
         $builder
             ->add('content', HtmlTextareaType::class, [
-                'required' => true,
+                'required'    => true,
+                'constraints' => [
+                    new Assert\NotNull(),
+                    new Assert\NotBlank(),
+                ],
             ])
         ;
 
