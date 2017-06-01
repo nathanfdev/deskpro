@@ -37,11 +37,16 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class TicketLayout.
- *
- * @JMS\ExclusionPolicy("none")
  */
 class TicketLayout
 {
+    /**
+     * @JMS\Exclude()
+     *
+     * @var Layout
+     */
+    private $layout;
+
     /**
      * Department uses this layout.
      *
@@ -78,6 +83,7 @@ class TicketLayout
      */
     public function __construct(Layout $layout, $context, DepartmentEntity $department = null)
     {
+        $this->layout     = $layout;
         $this->department = $department;
         $this->context    = $context;
 
@@ -85,6 +91,22 @@ class TicketLayout
         foreach ($fields as $field) {
             $this->fields[] = new LayoutFieldModel($field, $context);
         }
+    }
+
+    /**
+     * @return Layout
+     */
+    public function getLayout()
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getDepartmentId()
+    {
+        return $this->department ? $this->department->getId() : 'default';
     }
 
     /**

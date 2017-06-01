@@ -286,6 +286,10 @@ class Layout implements \IteratorAggregate, \Serializable, JsonObjectSerializabl
 
         $js .= "\treturn {\n";
         $js .= "\t\tgetMatchingFields: function (ticket) {\n";
+        $js .= "\t\t\tif (typeof getReader === 'function') {\n";
+        $js .= "\t\t\t\tticket = getReader(ticket);\n";
+        $js .= "\t\t\t}\n";
+
         $js .= "\t\t\tvar match = [];\n";
         $js .= "\t\t\tfor(var i = 0; i < fields.length; i++) { if (fields[i].checkFn === null || fields[i].checkFn(ticket)) match.push(fields[i]); }\n";
         $js .= "\t\t\treturn match;\n";

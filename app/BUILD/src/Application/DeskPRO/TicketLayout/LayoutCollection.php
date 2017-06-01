@@ -36,6 +36,9 @@ namespace Application\DeskPRO\TicketLayout;
 
 use Orb\Util\Strings;
 
+/**
+ * Class LayoutCollection.
+ */
 class LayoutCollection implements \Countable, \IteratorAggregate
 {
     /**
@@ -117,9 +120,11 @@ class LayoutCollection implements \Countable, \IteratorAggregate
     }
 
     /**
+     * @param bool $withReader
+     *
      * @return string
      */
-    public function compileJsObj()
+    public function compileJsObj($withReader = false)
     {
         $js = "(function () {\n";
         $js .= "\tvar layoutMap = {\n";
@@ -136,10 +141,98 @@ class LayoutCollection implements \Countable, \IteratorAggregate
         $js .= implode(",\n", $layoutCodes)."\n";
         $js .= "\t};\n";
 
+        if ($withReader) {
+            $js .= "\n";
+            $js .= "\tfunction getReader(ticket) {\n";
+            $js .= "\t        var ticketReader;\n";
+            $js .= "\t\n";
+            $js .= "\t        // already our reader\n";
+            $js .= "\t        if (ticket._is_sanitized_reader) {\n";
+            $js .= "\t            return ticket;\n";
+            $js .= "\t        }\n";
+            $js .= "\t\n";
+            $js .= "\t        // ticket is an object with getters\n";
+            $js .= "\t        // use those getters + some cleaning/casting\n";
+            $js .= "\t        if (typeof ticket.getDepartmentId === 'function') {\n";
+            $js .= "\t            ticketReader = ticket;\n";
+            $js .= "\t\n";
+            $js .= "\t            // otherwise assume ticket is an object with all values\n";
+            $js .= "\t        } else {\n";
+            $js .= "\t            ticketReader = {\n";
+            $js .= "\t                getDepartmentId:     function() { return ticket.department || ticket.department_id || 0; },\n";
+            $js .= "\t                getCategoryId:       function() { return ticket.category   || ticket.category_id   || 0; },\n";
+            $js .= "\t                getPriorityId:       function() { return ticket.priority   || ticket.priority_id   || 0; },\n";
+            $js .= "\t                getProductId:        function() { return ticket.product    || ticket.product_id    || 0; },\n";
+            $js .= "\t                getWorkflowId:       function() { return ticket.workflow   || ticket.workflow_id   || 0; },\n";
+            $js .= "\t                getTicketFieldValue: function(fieldId) { return this._getFieldValue('ticket_field', 'ticket_fields', fieldId); },\n";
+            $js .= "\t                getUserFieldValue:   function(fieldId) { return this._getFieldValue('user_field',   'user_fields',   fieldId); },\n";
+            $js .= "\t                getOrgFieldValue:    function(fieldId) { return this._getFieldValue('org_field',    'org_fields',    fieldId); },\n";
+            $js .= "\t                _getFieldValue: function(name, subName, fieldId) {\n";
+            $js .= "\t                    var val = null;\n";
+            $js .= "\t\n";
+            $js .= "\t                    // e.g. ticket.ticket_field_123\n";
+            $js .= "\t                    if (ticket[name + '_' + fieldId]) {\n";
+            $js .= "\t                        val = ticket[name + '' + fieldId];\n";
+            $js .= "\t\n";
+            $js .= "\t                        // e.g. ticket.ticket_fields[123]\n";
+            $js .= "\t                    } else if (ticket[subName] && ticket.[subName][fieldId+'']) {\n";
+            $js .= "\t                        val = ticket.[subName][fieldId+''];\n";
+            $js .= "\t                    }\n";
+            $js .= "\t\n";
+            $js .= "\t                    return val;\n";
+            $js .= "\t                }\n";
+            $js .= "\t            };\n";
+            $js .= "\t	}\n";
+            $js .= "\t\n";
+            $js .= "\t	return {\n";
+            $js .= "\t            getDepartmentId:     function() { return parseInt(ticketReader.getDepartmentId()) || 0; },\n";
+            $js .= "\t            getCategoryId:       function() { return parseInt(ticketReader.getCategoryId())   || 0; },\n";
+            $js .= "\t            getPriorityId:       function() { return parseInt(ticketReader.getPriorityId())   || 0; },\n";
+            $js .= "\t            getProductId:        function() { return parseInt(ticketReader.getProductId())    || 0; }\n";
+            $js .= "\t            getWorkflowId:       function() { return parseInt(ticketReader.getWorkflowId())   || 0; },\n";
+            $js .= "\t            getTicketFieldValue: function(fieldId) { return this._cleanFieldValue(ticketReader.getTicketFieldValue(parseInt(fieldId))); },\n";
+            $js .= "\t            getUserFieldValue:   function(fieldId) { return this._cleanFieldValue(ticketReader.getUserFieldValue(parseInt(fieldId))); },\n";
+            $js .= "\t            getOrgFieldValue:    function(fieldId) { return this._cleanFieldValue(ticketReader.getOrgFieldValue(parseInt(fieldId))); },\n";
+            $js .= "\t            _cleanFieldValue: function(val) {\n";
+            $js .= "\t                if (val === null) {\n";
+            $js .= "\t                    return [];\n";
+            $js .= "\t                } else if (Object.prototype.toString.call(val) === '[object Array]') {\n";
+            $js .= "\t                    return val;\n";
+            $js .= "\t                } else {\n";
+            $js .= "\t                    return [val];\n";
+            $js .= "\t                }\n";
+            $js .= "\t            },\n";
+            $js .= "\t            _is_sanitized_reader: true\n";
+            $js .= "\t	}\n";
+            $js .= "\t};\n";
+            $js .= "\n";
+        }
+
         $js .= "\treturn {\n";
-        $js .= "\t\tgetLayout: function (id) {\n";
-        $js .= "\t\t\treturn layoutMap[id+''] || layoutMap['0'] || null;\n";
+        $js .= "\t\tgetLayout: function (departmentId) {\n";
+        $js .= "\t\t\treturn layoutMap[departmentId+''] || layoutMap['0'] || null;\n";
+
+        if ($withReader) {
+            $js .= "\t\t},\n";
+            $js .= "\t\tgetLayoutFields: function(departmentId) {\n";
+            $js .= "\t\t\tvar layout = this.getLayout(departmentId);\n";
+            $js .= "\t\t\tif (!layout) {\n";
+            $js .= "\t\t\t\treturn null;\n";
+            $js .= "\t\t\t}\n";
+            $js .= "\t\t\n";
+            $js .= "\t\t\treturn layout.getFields();\n";
+            $js .= "\t\t},\n";
+            $js .= "\t\tgetMatchingFields: function(ticket) {\n";
+            $js .= "\t\t\tvar layout = this.getLayout(ticket.getDepartmentId());\n";
+            $js .= "\t\t\tif (!layout) {\n";
+            $js .= "\t\t\t\treturn null;\n";
+            $js .= "\t\t\t}\n";
+            $js .= "\t\t\n";
+            $js .= "\t\t\treturn layout.getMatchingFields(getReader(ticket));\n";
+        }
+
         $js .= "\t\t}\n";
+
         $js .= "\t};\n";
 
         $js .= '})()';
