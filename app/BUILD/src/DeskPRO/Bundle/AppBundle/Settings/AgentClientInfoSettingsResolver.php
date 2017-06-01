@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
@@ -393,9 +394,17 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $user          = $this->getUser();
         $signatureHtml = $user->getHelper('Agent')->getSignatureHtml();
-        $accountInfo   = new AccountInfo();
+
+        $language = $user->getLanguage();
+        if (!$language) {
+            $language = $this->em->getRepository(Language::class)->findOneBy([
+                'sys_name' => 'default',
+            ]);
+        }
+
+        $accountInfo = new AccountInfo();
         $accountInfo
-            ->setLanguage($user->getLanguage())
+            ->setLanguage($language)
             ->setTimezone($user->getTimezone())
             ->setSignatureHtml($signatureHtml);
 
