@@ -138,28 +138,55 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   findTemplate = (info, name) => {
+    let found = false;
     info.forEach((type) => {
-      type.get('groups').forEach((group) => {
-        group.get('subGroups').forEach((subGroup) => {
-          subGroup.get('templates').forEach((template) => {
-            if (template.get('name') === name) {
-              this.props.dispatch(actions.setCurrentTemplate(template));
-              this.props.dispatch(actions.loadTemplate(template.get('newTemplate'))).then(
-                (data) => {
-                  this.props.dispatch(actions.setTemplate(data));
-                }
-              );
-              if (template.get('viewModel')) {
-                this.props.dispatch(actions.loadVariables(template.get('viewModel')));
-              } else {
-                this.props.dispatch(actions.removeVariables());
+      if (!found) {
+        type.get('groups').forEach((group) => {
+          if (!found) {
+            group.get('subGroups').forEach((subGroup) => {
+              if (!found) {
+                subGroup.get('templates').forEach((template) => {
+                  if (template.get('name') === name) {
+                    this.props.dispatch(actions.setCurrentTemplateGroup(type.get('typeId')));
+                    this.openTemplate(template);
+                    found = true;
+                  }
+                });
               }
-              return;
-            }
-          });
+            });
+          }
         });
-      });
+      }
     });
+    if (!found && name.match(/^DeskPRO:emails_custom/)) {
+      this.props.dispatch(actions.setCurrentTemplateGroup('custom'));
+      const newName = name.replace(/^DeskPRO:emails_custom:/, '').replace(/-/g, '_').replace(/\.html\.twig$/, '');
+      const newTemplate = this.props.emailTemplates
+        .getIn(['info', 'list', 'custom', 'groups', 'custom', 'subGroups', 'primary', 'templates']
+      ).find(
+        element => element.get('title') === `${newName}.html`
+      );
+      if (newTemplate) {
+        this.openTemplate(newTemplate);
+      } else {
+        const base = 'SendmailBundle:emails_common:blank.html.twig';
+        this.addTemplate(newName, base);
+      }
+    }
+  };
+
+  openTemplate = (template) => {
+    this.props.dispatch(actions.setCurrentTemplate(template));
+    this.props.dispatch(actions.loadTemplate(template.get('newTemplate'))).then(
+      (data) => {
+        this.props.dispatch(actions.setTemplate(data));
+      }
+    );
+    if (template.get('viewModel')) {
+      this.props.dispatch(actions.loadVariables(template.get('viewModel')));
+    } else {
+      this.props.dispatch(actions.removeVariables());
+    }
   };
 
   addTemplate = (name, baseTemplate) => {
@@ -203,17 +230,7 @@ class EmailTemplatesEditorContainer extends React.Component {
                 element => element.get('title') === `${name}.html`
               );
 
-              this.props.dispatch(actions.setCurrentTemplate(newTemplate));
-              this.props.dispatch(actions.loadTemplate(newTemplate.get('newTemplate'))).then(
-                (data) => {
-                  this.props.dispatch(actions.setTemplate(data));
-                }
-              );
-              if (newTemplate.get('viewModel')) {
-                this.props.dispatch(actions.loadVariables(newTemplate.get('viewModel')));
-              } else {
-                this.props.dispatch(actions.removeVariables());
-              }
+              this.openTemplate(newTemplate);
             }
           );
           this.selectTemplateGroup('custom');
