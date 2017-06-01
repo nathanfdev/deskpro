@@ -175,8 +175,8 @@ class LayoutCollection implements \Countable, \IteratorAggregate
             $js .= "\t                        val = ticket[name + '' + fieldId];\n";
             $js .= "\t\n";
             $js .= "\t                        // e.g. ticket.ticket_fields[123]\n";
-            $js .= "\t                    } else if (ticket[subName] && ticket.[subName][fieldId+'']) {\n";
-            $js .= "\t                        val = ticket.[subName][fieldId+''];\n";
+            $js .= "\t                    } else if (ticket[subName] && ticket[subName][fieldId+'']) {\n";
+            $js .= "\t                        val = ticket[subName][fieldId+''];\n";
             $js .= "\t                    }\n";
             $js .= "\t\n";
             $js .= "\t                    return val;\n";
