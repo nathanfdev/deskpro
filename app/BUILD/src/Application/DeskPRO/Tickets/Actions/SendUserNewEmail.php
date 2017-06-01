@@ -38,6 +38,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -86,16 +88,14 @@ class SendUserNewEmail extends AbstractEmailAction
         }
 
         //-------------------------
-        // Vars
-        //-------------------------
-
-        $defaultVars = $this->getStandardEmailVars($ticket, $context, 'user');
-
-        //-------------------------
         // Send emails
         //-------------------------
 
         $factory = $this->getContainer()->get('email.user_viewmodel_factory');
+
+        $messagesArgs = [
+            'template' => $template,
+        ];
 
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
@@ -131,20 +131,74 @@ class SendUserNewEmail extends AbstractEmailAction
                 return;
         }
 
+        $mailer = $this->getContainer()->get('mailer');
+
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
+            ->setTicket($ticket)
+            ->setToPerson($ticket->person)
+            ->setUserMode()
+            ->setTemplateName($template)
+            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
+            ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
+            ->setLogger($context->getLogger())
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
+            ->setFromEmailAccount($fromAccount)
+        ;
+
+        if ($this->getActionOption('do_cc_users')) {
+            $emailBuilder->enableUserCc();
+        }
+
+        // If this is from a user reply, then mark the email as auto and handle disable auto setting
+        if ($context->getEventPerformer() == 'user' && $ticket->getStateChangeRecorder()->hasNewReply()) {
+            $context->getLogger()->info('[SendUserNewEmail] Identified as an automatic email');
+            $emailBuilder->setIsAuto();
+
+            if ($context->getVars()->has('ticket_email')) {
+                /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticketEmail */
+                $ticketEmail = $context->getVars()->get('ticket_email');
+                if ($ticketEmail->is_bounce) {
+                    $context->getLogger()->info('Skipping email because is_bounce = true');
+
+                    return;
+                }
+            }
+
+            if ($ticket->person->disable_autoresponses) {
+                $context->getLogger()->info('Skipping email because user is marked as an auto-responder');
+
+                return;
+            }
+
+            foreach ($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
+                if ($m->person->disable_autoresponses) {
+                    $context->getLogger()->info(sprintf('Skipping email because user #%d %s on message #%d is an auto-responder', $m->person->id, $m->person->getDisplayContact(), $m->id));
+
+                    return;
+                }
+            }
+        }
+
+        $brandStack = $this->getContainer()->getBrandStack();
+        if ($ticket->getBrand()) {
+            $brandStack->push($ticket->getBrand());
+        }
+
         if ($ticket->getTicketPersonEmail() && $ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
             $toEmail = $ticket->getTicketPersonEmail()->getEmail();
         } else {
             throw new \RuntimeException('no email address');
         }
 
+        $messagesArgs['to'] = $toEmail;
+
+        /** @var TicketEmail $ticketEmail */
+        $ticketEmail = $emailBuilder->buildTicketEmail();
+
+        $message = $ticketEmail->prepareMailerMessage();
+
         $message = $this->getContainer()->get('email.email_sender')
-            ->prepareMessage($viewModel, ['to' => $toEmail]);
-
-        $fromEmail = $fromAccount->getUseEmailAddress();
-        $fromName  = $this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user');
-        $message->setFrom($fromEmail, $fromName);
-
-        $mailer = $this->getContainer()->get('mailer');
+            ->prepareMessage($viewModel, $messagesArgs, $message);
 
         try {
             $mailer->send($message);
@@ -155,6 +209,11 @@ class SendUserNewEmail extends AbstractEmailAction
             );
 
             throw $e;
+        }
+
+        /* If we added a brand in the stack we remove it */
+        if ($ticket->getBrand()) {
+            $brandStack->pop();
         }
 
         $context->getLogger()->info(sprintf('[SendUserNewEmail] Sent message in %.3fs', microtime(true) - $startTime));

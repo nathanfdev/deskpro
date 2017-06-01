@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
+use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
@@ -184,12 +185,6 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         }
 
         //-------------------------
-        // Vars
-        //-------------------------
-
-        $defaultVars = $this->getStandardEmailVars($ticket, $context, 'agent');
-
-        //-------------------------
         // Send emails
         //-------------------------
 
@@ -197,7 +192,9 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         $factory = $this->getContainer()->get('email.agent_viewmodel_factory');
 
-        $messagesArgs = [];
+        $messagesArgs = [
+            'template' => $template,
+        ];
 
         $state          = $ticket->getStateChangeRecorder();
         $fnCheckNewPart = function ($agent) use ($state, $ticket) {
@@ -268,8 +265,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         $mailer = $this->getContainer()->get('mailer');
 
-        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer());
-        $emailBuilder
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
             ->setTicket($ticket)
             ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
             ->setFromEmailAccount($fromAccount)
@@ -313,6 +309,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
             $messagesArgs['to'] = $agent;
 
+            /** @var TicketEmail $ticketEmail */
             $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
 
             $message = $ticketEmail->prepareMailerMessage();
