@@ -223,12 +223,13 @@ class LayoutCollection implements \Countable, \IteratorAggregate
             $js .= "\t\t\treturn layout.getFields();\n";
             $js .= "\t\t},\n";
             $js .= "\t\tgetMatchingFields: function(ticket) {\n";
+            $js .= "\t\t\tticket = getReader(ticket);\n";
             $js .= "\t\t\tvar layout = this.getLayout(ticket.getDepartmentId());\n";
             $js .= "\t\t\tif (!layout) {\n";
             $js .= "\t\t\t\treturn null;\n";
             $js .= "\t\t\t}\n";
             $js .= "\t\t\n";
-            $js .= "\t\t\treturn layout.getMatchingFields(getReader(ticket));\n";
+            $js .= "\t\t\treturn layout.getMatchingFields(ticket);\n";
         }
 
         $js .= "\t\t}\n";
