@@ -32,6 +32,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use DpSys\LowError\SystemErrorHandler;
 use Pusher;
 
 /**
@@ -96,7 +97,25 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     {
         if (!empty($this->messages)) {
             foreach (array_chunk($this->messages, 10) as $chunk) {
-                $this->pusher->triggerBatch($chunk);
+                $tries     = 3;
+                $exception = null;
+                do {
+                    $response = $this->pusher->triggerBatch($chunk, true);
+                    if ($response['status'] !== 200) {
+                        if (!$exception) {
+                            $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
+                        }
+
+                        // try again in a sec
+                        sleep(1);
+                    } else {
+                        $exception = null;
+                    }
+                } while ($response['status'] !== 200 && $tries-- > 0);
+
+                if ($exception) {
+                    SystemErrorHandler::logException($exception);
+                }
             }
         }
         $this->messages = [];
