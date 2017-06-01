@@ -42,6 +42,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketEmail;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -89,12 +91,6 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
             return;
         }
-
-        //-------------------------
-        // Vars
-        //-------------------------
-
-        $defaultVars = $this->getStandardEmailVars($ticket, $context, 'user');
 
         //-------------------------
         // Sort out the users to send to
@@ -180,6 +176,16 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
 
         $mailer = $this->getContainer()->get('mailer');
 
+        $builder = TicketEmailBuilder::createFromContainer($this->getContainer())
+            ->setTicket($ticket)
+            ->setUserMode()
+            ->setTemplateName($template)
+            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
+            ->setMaxAttachSize(0)
+            ->setLogger($context->getLogger())
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
+            ->setFromEmailAccount($fromAccount);
+
         foreach ($sendPeople as $email => $person) {
             $context->getLogger()->debug(
                 sprintf(
@@ -190,8 +196,15 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
                 )
             );
 
+            $messagesArgs['to'] = $person;
+
+            /** @var TicketEmail $ticketEmail */
+            $ticketEmail = $builder->setToPerson($person)->buildTicketEmail();
+
+            $message = $ticketEmail->prepareMailerMessage();
+
             $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, ['to' => $person]);
+                ->prepareMessage($viewModel, $messagesArgs, $message);
 
             try {
                 $mailer->send($message);
