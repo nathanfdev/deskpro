@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\Finder\Finder;
 
 class CleanupHourly extends AbstractJob
@@ -184,17 +185,19 @@ class CleanupHourly extends AbstractJob
 
     private function _cleanupEmailSources()
     {
+        $db = $this->getContainer()->getDb();
+
         // note: email_sources records are deleted via cascade
 
-        if ($storetime = App::$container->getSetting('core.email_source_storetime')) {
+        if ($storetime = $this->getContainer()->getSetting('core.email_source_storetime')) {
             $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-            $blob_ids = App::getDb()->fetchAllCol("
-                SELECT email_sources.blob_id
+            $blob_ids = ListUtils::filterOutFalsey(ListUtils::flatten($db->fetchAll("
+                SELECT email_sources.blob_id, email_sources.log_blob_id
                 FROM email_sources
                 WHERE email_sources.date_created < ? AND email_sources.status = 'complete'
                 ORDER BY email_sources.id ASC
                 LIMIT 500
-            ", [$timesnip]);
+            ", [$timesnip])));
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -203,15 +206,15 @@ class CleanupHourly extends AbstractJob
             }
         }
 
-        if ($storetime = App::$container->getSetting('core.email_source_storetime_error')) {
+        if ($storetime = $this->getContainer()->getSetting('core.email_source_storetime_error')) {
             $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-            $blob_ids = App::getDb()->fetchAllCol("
-                SELECT email_sources.blob_id
+            $blob_ids = ListUtils::filterOutFalsey(ListUtils::flatten($db->fetchAll("
+                SELECT email_sources.blob_id, email_sources.log_blob_id
                 FROM email_sources
                 WHERE email_sources.date_created < ? AND email_sources.status = 'error'
                 ORDER BY email_sources.id ASC
                 LIMIT 500
-            ", [$timesnip]);
+            ", [$timesnip])));
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -220,15 +223,15 @@ class CleanupHourly extends AbstractJob
             }
         }
 
-        if ($storetime = App::$container->getSetting('core.email_source_storetime_rejection')) {
+        if ($storetime = $this->getContainer()->getSetting('core.email_source_storetime_rejection')) {
             $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-            $blob_ids = App::getDb()->fetchAllCol("
-                SELECT email_sources.blob_id
+            $blob_ids = ListUtils::filterOutFalsey(ListUtils::flatten($db->fetchAll("
+                SELECT email_sources.blob_id, email_sources.log_blob_id
                 FROM email_sources
                 WHERE email_sources.date_created < ? AND email_sources.status = 'rejected'
                 ORDER BY email_sources.id ASC
                 LIMIT 500
-            ", [$timesnip]);
+            ", [$timesnip])));
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -242,17 +245,19 @@ class CleanupHourly extends AbstractJob
 
     private function _cleanupSendmailSources()
     {
+        $db = $this->getContainer()->getDb();
+
         // note: sendmail_sources recs are deleted by cascade
 
-        if ($storetime = App::$container->getSetting('core.sendmail_source_storetime')) {
+        if ($storetime = $this->getContainer()->getSetting('core.sendmail_source_storetime')) {
             $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-            $blob_ids = App::getDb()->fetchAllCol("
-                SELECT sendmail_sources.blob_id
+            $blob_ids = ListUtils::filterOutFalsey(ListUtils::flatten($db->fetchAll("
+                SELECT sendmail_sources.blob_id, sendmail_sources.log_blob_id
                 FROM sendmail_sources
                 WHERE sendmail_sources.date_created < ? AND sendmail_sources.status = 'complete'
                 ORDER BY sendmail_sources.id ASC
                 LIMIT 500
-            ", [$timesnip]);
+            ", [$timesnip])));
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
@@ -261,15 +266,15 @@ class CleanupHourly extends AbstractJob
             }
         }
 
-        if ($storetime = App::$container->getSetting('core.sendmail_source_storetime_error')) {
+        if ($storetime = $this->getContainer()->getSetting('core.sendmail_source_storetime_error')) {
             $timesnip = date('Y-m-d H:i:s', time() - $storetime);
-            $blob_ids = App::getDb()->fetchAllCol("
-                SELECT sendmail_sources.blob_id
+            $blob_ids = ListUtils::filterOutFalsey(ListUtils::flatten($db->fetchAll("
+                SELECT sendmail_sources.blob_id, sendmail_sources.log_blob_id
                 FROM sendmail_sources
                 WHERE sendmail_sources.date_created < ? AND sendmail_sources.status IN ('error', 'aborted')
                 ORDER BY sendmail_sources.id ASC
                 LIMIT 500
-            ", [$timesnip]);
+            ", [$timesnip])));
 
             $count = $this->_deleteBlobsBatch($blob_ids);
 
