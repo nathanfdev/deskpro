@@ -764,6 +764,24 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         return $this->task_associations;
     }
 
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("tickets")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Ticket>>")
+     *
+     * @return Ticket[]
+     */
+    public function getTickets()
+    {
+        return $this->task_associations
+            ->filter(function ($assoc) {
+                return $assoc instanceof TaskAssociatedTicket;
+            })
+            ->map(function ($assoc) {
+                return $assoc->getTicket();
+            });
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

@@ -33,12 +33,14 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -99,6 +101,12 @@ class TaskType extends AbstractType implements EventSubscriberInterface
                 'required' => false,
                 'mapped'   => false,
             ])
+            ->add('tickets', CollectionType::class, [
+                'entry_type'    => EntityType::class,
+                'entry_options' => ['class' => Ticket::class],
+                'allow_add'     => true,
+                'allow_delete'  => true,
+            ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelTask::class,
                 'labels_owner'   => $builder->getData(),
@@ -145,6 +153,16 @@ class TaskType extends AbstractType implements EventSubscriberInterface
         if ($ticket_id = $form->get('ticket')->getData()) {
             $ticket = App::getOrm()->getRepository('DeskPRO:Ticket')->find($ticket_id);
             if ($ticket) {
+                $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
+                $task          = $form->getData();
+                $assoc->ticket = $ticket;
+                $assoc->task   = $task;
+                $task->task_associations->add($assoc);
+            }
+        }
+
+        if ($tickets = $form->get('tickets')->getData()) {
+            foreach ($tickets as $ticket) {
                 $assoc         = new \Application\DeskPRO\Entity\TaskAssociatedTicket();
                 $task          = $form->getData();
                 $assoc->ticket = $ticket;

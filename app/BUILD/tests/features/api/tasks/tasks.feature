@@ -29,6 +29,23 @@ Feature: /tasks endpoint
     And the JSON node "data" should exist
     And the JSON node "data.title" should be equal to "My test task"
 
+  Scenario: Successfully create a task with tickets associated
+    Given only the following Ticket records exist:
+      | #  | Subject  |
+      | t1 | Ticket 1 |
+      | t2 | Ticket 2 |
+    When I send a POST request to "/api/v2/tasks" with body:
+    """
+{
+  "title": "My test task with tickets",
+  "tickets": [~t1~, ~t2~]
+}
+    """
+    Then the response should be in JSON
+    And the response status code should be 201
+    And the JSON node "data" should exist
+    And the JSON node "data.title" should be equal to "My test task with tickets"
+
   Scenario: I GET a single task
     When I send a GET request to "/api/v2/tasks/{task}"
     Then the response should be in JSON
