@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { fromJS } from 'immutable';
 import debounce from 'lodash/debounce';
-import { Select } from 'DeskPRO/Component/Semantic/Form';
+import { Select, Toggle } from 'DeskPRO/Component/Semantic/Form';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { EmailsAndBlockMenuContainer } from './Menus/EmailsAndBlockMenu';
 import { MediaMenuContainer } from './Menus/MediaMenu';
@@ -13,6 +13,7 @@ import DropDownMenu from './Menus/DropDownMenu';
 import LanguageSelector from './Menus/LanguageSelector';
 import * as actions from '../Actions/templatesActions';
 import PreviewEmail from './PreviewEmail';
+import CodeMirror from './CodeMirror';
 import Editor from './Editor';
 import NewCustomTemplate from './NewCustomTemplate';
 
@@ -22,7 +23,8 @@ import NewCustomTemplate from './NewCustomTemplate';
 class EmailTemplatesEditorContainer extends React.Component {
   static propTypes = {
     dispatch:       PropTypes.func,
-    emailTemplates: PropTypes.object.isRequired
+    emailTemplates: PropTypes.object.isRequired,
+    params:         PropTypes.object
   };
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -48,9 +50,17 @@ class EmailTemplatesEditorContainer extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
 
+    const promises = [];
     dispatch(actions.setCurrentTemplateGroup('user'));
     dispatch(actions.setCurrentLanguage(window.DP_PERSON_LANG_CODE));
-    dispatch(actions.loadTemplates());
+    promises.push(dispatch(actions.loadTemplates()));
+    promises.push(dispatch(actions.loadLegacyTemplates()));
+    Promise.all(promises).then(() => {
+      dispatch(actions.setLegacyTemplate(this.props.emailTemplates.get('legacyTemplates').find(
+        element => element.getIn([0, 'name']) === this.props.params.name
+      )));
+      this.findTemplate(this.props.emailTemplates.getIn(['info', 'list']), this.props.params.name);
+    });
     dispatch(actions.loadPhrases(
       this.props.emailTemplates.get('currentTemplateGroup'),
       this.props.emailTemplates.get('currentLanguage')
@@ -125,6 +135,31 @@ class EmailTemplatesEditorContainer extends React.Component {
 
     const body = this.props.emailTemplates.getIn(['template', 'template_code', 'body'], '');
     this.previewTemplate(body, this.props.emailTemplates.get('currentLanguage'));
+  };
+
+  findTemplate = (info, name) => {
+    info.forEach((type) => {
+      type.get('groups').forEach((group) => {
+        group.get('subGroups').forEach((subGroup) => {
+          subGroup.get('templates').forEach((template) => {
+            if (template.get('name') === name) {
+              this.props.dispatch(actions.setCurrentTemplate(template));
+              this.props.dispatch(actions.loadTemplate(template.get('newTemplate'))).then(
+                (data) => {
+                  this.props.dispatch(actions.setTemplate(data));
+                }
+              );
+              if (template.get('viewModel')) {
+                this.props.dispatch(actions.loadVariables(template.get('viewModel')));
+              } else {
+                this.props.dispatch(actions.removeVariables());
+              }
+              return;
+            }
+          });
+        });
+      });
+    });
   };
 
   addTemplate = (name, baseTemplate) => {
@@ -483,6 +518,7 @@ class EmailTemplatesEditor extends React.Component {
       contentChanged:          false,
       textareaDisabled:        true,
       newCustomTemplateOpened: false,
+      showLegacy:              false,
     };
   }
 
@@ -568,6 +604,12 @@ class EmailTemplatesEditor extends React.Component {
     return false;
   };
 
+  handlePreviewToggle = (value) => {
+    this.setState({
+      showLegacy: value
+    });
+  };
+
   closeMediaMenu = () => {
     this.mediaMenu.closeMenu();
   };
@@ -648,7 +690,7 @@ class EmailTemplatesEditor extends React.Component {
               >
                 + New Template
               </Button>
-              {this.props.emailTemplates.get('legacyTemplates') ?
+              {this.props.emailTemplates.get('legacyTemplates').size ?
                 <Button
                   className="right basic small floated"
                   onClick={this.openLegacyTemplatesEditor}
@@ -772,46 +814,63 @@ class EmailTemplatesEditor extends React.Component {
         </div>
         <div className="preview">
           <div className="header">
-            <p>
-              Enter details below to send a test email to yourself or a colleague.
-            </p>
-            <form className="ui form">
-              <div className="fields">
-                <div className="six wide field">
-                  <label htmlFor="test_email_from">From</label>
-                  <Select
-                    options={this.props.emailAccounts}
-                    className="email-account basic"
-                    onChange={this.props.selectEmailAccount}
-                    disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
-                    value={this.props.selectedEmailAccount}
-                  />
-                </div>
-                <div className="six wide field">
-                  <label htmlFor="test_email_to">To</label>
-                  <input
-                    type="text"
-                    name="to"
-                    id="test_email_to"
-                    onChange={this.props.handleEmailAddress}
-                    disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
-                    value={this.props.previewEmailAddress}
-                  />
-                </div>
-                <div className="four wide field">
-                  <label htmlFor="test_email_submit">&nbsp;</label>
-                  <Button
-                    className={classNames('ui basic button', { loading: this.props.previewSubmit })}
-                    disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
-                    onClick={this.props.sendPreview}
-                  >
-                    Send
-                  </Button>
-                </div>
+            {this.props.emailTemplates.get('legacyTemplate') ?
+              <div>
+                <p>
+                  Please copy your changes into the new template on the left side, you can switch to the preview to see how your email will look
+                </p>
+                <Toggle onChange={this.handlePreviewToggle} active={this.state.showLegacy}>Preview</Toggle>
               </div>
-            </form>
+              :
+              <div>
+                <p>
+                  Enter details below to send a test email to yourself or a colleague.
+                </p>
+                <form className="ui form">
+                  <div className="fields">
+                    <div className="six wide field">
+                      <label htmlFor="test_email_from">From</label>
+                      <Select
+                        options={this.props.emailAccounts}
+                        className="email-account basic"
+                        onChange={this.props.selectEmailAccount}
+                        disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
+                        value={this.props.selectedEmailAccount}
+                      />
+                    </div>
+                    <div className="six wide field">
+                      <label htmlFor="test_email_to">To</label>
+                      <input
+                        type="text"
+                        name="to"
+                        id="test_email_to"
+                        onChange={this.props.handleEmailAddress}
+                        disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
+                        value={this.props.previewEmailAddress}
+                      />
+                    </div>
+                    <div className="four wide field">
+                      <label htmlFor="test_email_submit">&nbsp;</label>
+                      <Button
+                        className={classNames('ui basic button', { loading: this.props.previewSubmit })}
+                        disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
+                        onClick={this.props.sendPreview}
+                      >
+                        Send
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            }
           </div>
-          <PreviewEmail preview={this.props.emailTemplates.get('preview')} type={this.state.templateType} />
+          {this.props.emailTemplates.get('legacyTemplate') && !this.state.showLegacy ?
+            <div>
+              <CodeMirror value={this.props.emailTemplates.getIn(['legacyTemplate', 0, 'template_code'])} />
+            </div>
+            :
+            <PreviewEmail preview={this.props.emailTemplates.get('preview')} type={this.state.templateType} />
+          }
         </div>
       </div>
     );

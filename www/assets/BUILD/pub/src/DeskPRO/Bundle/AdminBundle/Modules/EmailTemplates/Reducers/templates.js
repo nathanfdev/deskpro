@@ -15,6 +15,7 @@ const initialState = {
   currentTemplateGroup: 'user',
   emailPhrases:         null,
   exampleTicket:        null,
+  legacyTemplate:       null,
   preview:              null,
   variables:            null,
 };
@@ -32,6 +33,10 @@ export default createReducer(initialState, {
   [actions.setTemplate]:   setFullPayload('template'),
   [actions.loadTemplates]: async({
     success: setFullPayload('info')
+  }),
+  [actions.setLegacyTemplate]:   setFullPayload('legacyTemplate'),
+  [actions.loadLegacyTemplates]: async({
+    success: setFullPayload('legacyTemplates')
   }),
   [actions.loadVariables]: async({
     success: setFullPayload('variables')

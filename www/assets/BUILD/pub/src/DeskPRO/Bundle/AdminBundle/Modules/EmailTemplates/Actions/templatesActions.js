@@ -57,12 +57,12 @@ export const loadInlineImages = createAction(
 );
 
 export const loadLegacyTemplates = createAction(
-  'EMAIL_TEMPLATES_LOAD_TEMPLATES',
+  'EMAIL_TEMPLATES_LOAD_LEGACY_TEMPLATES',
   () => new Promise((resolve) => {
     repository('EmailTemplates').loadLegacyTemplates().then((promise) => {
       const res = promise.getData();
 
-      resolve(res.data);
+      resolve(res);
     });
   })
 );
@@ -228,6 +228,8 @@ export const setCurrentTemplateGroup = createAction(
 );
 
 export const setExtraTemplate = createAction('EMAIL_TEMPLATE_SET_EXTRA_TEMPLATE');
+
+export const setLegacyTemplate = createAction('EMAIL_TEMPLATES_SET_LEGACY_TEMPLATE');
 
 export const setPreview = createAction('EMAIL_TEMPLATES_SET_PREVIEW');
 

@@ -87,7 +87,7 @@ class AppContainer extends React.Component {
             }))}
           />
           <Route path="emails" key="email_routes">
-            <Route path="templates_editor" component={EmailTemplates.Editor} />
+            <Route path="templates_editor(/:name)" component={EmailTemplates.Editor} />
           </Route>
         </Router>
       </Provider>

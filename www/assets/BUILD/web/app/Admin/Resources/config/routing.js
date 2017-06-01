@@ -2163,133 +2163,151 @@ define(function() {
   });
 
   //##################################################################################################################
+  // Email templates
+  //##################################################################################################################
+
+  routes.push({
+    id:           'emails.templates_editor',
+    url:          '/templates_editor',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'emails.templates_editor.edit',
+    url:          '/{name}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  //##################################################################################################################
   // Voice channel
   //##################################################################################################################
 
   routes.push({
     id:           'voice-channel.accounts',
     url:          '/accounts',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers',
     url:          '/numbers',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers_search_available',
     url:          '/numbers/available',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers_search_existing',
     url:          '/numbers/existing',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers_edit',
     url:          '/numbers/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.extensions',
     url:          '/extensions',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.extensions_new',
     url:          '/extensions/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.extensions_edit',
     url:          '/extensions/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.queues',
     url:          '/queues',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.queues_new',
     url:          '/queues/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.queues_edit',
     url:          '/queues/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.auto_attendants',
     url:          '/auto_attendants',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.auto_attendants_new',
     url:          '/auto_attendants/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.auto_attendants_edit',
     url:          '/auto_attendants/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.agents',
     url:          '/agents',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.music_and_greetings',
     url:          '/music_and_greetings',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.call_logs',
     url:          '/call_logs',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.call_logs_view',
     url:          '/call_logs/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   //##################################################################################################################
@@ -2299,8 +2317,8 @@ define(function() {
   routes.push({
     id:           'dev.notifications',
     url:          '/notifications',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   //##################################################################################################################

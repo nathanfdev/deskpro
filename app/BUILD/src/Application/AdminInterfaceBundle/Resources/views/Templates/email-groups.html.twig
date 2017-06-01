@@ -47,7 +47,7 @@
 									</div>
 								</td>
 								<td>
-									<a>Update Template</a> |
+									<a ng-href="{{ ng_href('emails.templates_editor.edit', '{name: templateName}') }}">Update Template</a> |
 									<span ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
 										<span ng-click="ListCtrl.deleteTemplate(template[0].id, template[1])">
 											<span class="linked-text">
