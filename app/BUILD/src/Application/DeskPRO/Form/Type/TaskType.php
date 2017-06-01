@@ -46,6 +46,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class TaskType extends AbstractType implements EventSubscriberInterface
 {
@@ -53,7 +54,11 @@ class TaskType extends AbstractType implements EventSubscriberInterface
     {
         $builder
             ->add('title', TextType::class, [
-                'required' => true,
+                'required'    => true,
+                'constraints' => [
+                    new Assert\NotNull(),
+                    new Assert\NotBlank(),
+                ],
             ])
             ->add('person', EntityType::class, [
                 'class'         => Person::class,

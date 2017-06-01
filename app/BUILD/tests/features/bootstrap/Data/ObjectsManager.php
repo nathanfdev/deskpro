@@ -79,6 +79,7 @@ use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
@@ -303,6 +304,7 @@ class ObjectsManager
             'Organization'             => [Factory\SimpleFactory::class, 'create', Organization::class],
             'OrganizationNote'         => [Factory\SimpleFactory::class, 'create', OrganizationNote::class],
             'Product'                  => [Factory\CommonFactories::class, 'product'],
+            'Task'                     => [Factory\SimpleFactory::class, 'create', Task::class],
             'Ticket'                   => [Factory\CommonFactories::class, 'ticket'],
             'TicketPriority'           => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
             'TicketCategory'           => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
@@ -371,6 +373,7 @@ class ObjectsManager
             'Agent'                    => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                    => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
             'AgentData'                => [$this, 'find', AgentData::class],
+            'Task'                     => [$this, 'find', Task::class],
             'Ticket'                   => [$this, 'find', Ticket::class],
             'TicketLayout'             => [$this, 'find', TicketLayout::class],
             'TicketMessage'            => [$this, 'find', TicketMessage::class],
