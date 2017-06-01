@@ -41,7 +41,19 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/tasks")
- * @ApiDoc(target="all", section="Tasks", output="Application\DeskPRO\Entity\Task")
+ * @ApiDoc(
+ *     target="all",
+ *     section="Tasks",
+ *     output="Application\DeskPRO\Entity\Task",
+ *     input={
+ *      "class"="Application\DeskPRO\Form\Type\TaskType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Task",
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "tickets"="DeskPRO\Bundle\AppBundle\Entity\Ticket"
+ *      }
+ *     }
+ * )
  */
 class TasksController extends CrudController
 {
