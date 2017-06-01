@@ -117,9 +117,11 @@ class EmailSender
      *
      * @return Message
      */
-    public function prepareMessage(EmailBaseType $model, $args)
+    public function prepareMessage(EmailBaseType $model, $args, $message = null)
     {
-        $message = $this->getMailer()->createMessage();
+        if (!$message) {
+            $message = $this->getMailer()->createMessage();
+        }
         if (is_string($args['to'])) {
             /** @var PersonRepository $personRepository */
             $personRepository = $this->getEntityManager()->getRepository(Person::class);
@@ -139,7 +141,9 @@ class EmailSender
         } else {
             $message->setTo($args['to']);
         }
-        $emailCode = $this->getRenderer()->render($model->getTemplate(), $model);
+        $template = isset($args['template']) ? $args['template'] : $model->getTemplate();
+
+        $emailCode = $this->getRenderer()->render($template, $model);
         $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
         foreach ($emailCode->getAttachments() as $blob) {
@@ -149,6 +153,20 @@ class EmailSender
             foreach ($args['attachments'] as $attach) {
                 $message->attach($attach);
             }
+        }
+
+        if (isset($args['headers'])) {
+            foreach ($args['headers'] as $header) {
+                $message->getHeaders()->addTextHeader($header['name'], $header['value']);
+            }
+        }
+
+        if (isset($args['from_account'])) {
+            $message->setFrom($args['from_account']->getUseEmailAddress(), $args['from_name']);
+        }
+
+        if (!empty($arguments['Message-ID'])) {
+            $message->getHeaders()->get('Message-ID')->setId($arguments['Message-ID']);
         }
 
         return $message;

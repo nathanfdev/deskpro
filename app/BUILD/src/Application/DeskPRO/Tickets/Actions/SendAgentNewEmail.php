@@ -33,9 +33,12 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketFilterSubscription;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
+use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -194,6 +197,39 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         $factory = $this->getContainer()->get('email.agent_viewmodel_factory');
 
+        $messagesArgs = [];
+
+        $state          = $ticket->getStateChangeRecorder();
+        $fnCheckNewPart = function ($agent) use ($state, $ticket) {
+            $has = false;
+            foreach ($ticket->getParticipants() as $p) {
+                if ($p->getPerson() === $agent) {
+                    $has = true;
+                    break;
+                }
+            }
+            if (!$has) {
+                return false;
+            }
+
+            foreach ($state->getChangesForField('participants') as $change) {
+                if ($change instanceof ChangeCollection) {
+                    foreach ($change->getAddedElements() as $p) {
+                        if ($p->getPerson() === $agent) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        $changedAgent        = $state->hasChangedField('agent');
+        $changedAgentTeam    = $state->hasChangedField('agent_team');
+        $changedParticipants = $state->hasChangedField('participants');
+        $changedStatus       = $state->hasChangedField('status');
+
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
                 $viewModel = $factory->createAgentTicketNewModel($ticket);
@@ -220,7 +256,9 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 }
                 break;
             case TicketTrigger::EVENT_TYPE_UPDATE:
+                /** @var AgentTicketUpdate $viewModel */
                 $viewModel = $factory->createAgentTicketUpdateModel($ticket);
+
                 break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
@@ -230,6 +268,23 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         $mailer = $this->getContainer()->get('mailer');
 
+        $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer());
+        $emailBuilder
+            ->setTicket($ticket)
+            ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
+            ->setFromEmailAccount($fromAccount)
+            ->setAgentMode()
+            ->setTemplateName($template)
+            ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
+            ->setLogger($context->getLogger())
+            ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
+        ;
+
+        $brandStack = $this->getContainer()->getBrandStack();
+        if ($ticket->getBrand()) {
+            $brandStack->push($ticket->getBrand());
+        }
+
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
             ++$sentCount;
@@ -238,12 +293,32 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
             $viewModel->setTac($tac);
 
+            if ($viewModel instanceof AgentTicketUpdate) {
+                $typeFlag = null;
+                if ($changedAgent && $ticket->getAgent() && $ticket->getAgent() === $agent) {
+                    $typeFlag = 'assigned';
+                } elseif ($changedAgentTeam && $ticket->getAgentTeam() && $agent->getHelper('Agent')->isTeamMember($ticket->getAgentTeam()->getId())) {
+                    $typeFlag = 'assigned_team';
+                } elseif ($changedParticipants && $fnCheckNewPart($agent)) {
+                    $typeFlag = 'added_part';
+                } elseif ($changedStatus) {
+                    $typeFlag = 'status_changed';
+                }
+                $viewModel->setTypeFlag($typeFlag);
+            }
+
             $context->getLogger()->debug(
                 sprintf('[SendAgentNewEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName())
             );
 
+            $messagesArgs['to'] = $agent;
+
+            $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
+
+            $message = $ticketEmail->prepareMailerMessage();
+
             $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, ['to' => $agent]);
+                ->prepareMessage($viewModel, $messagesArgs, $message);
 
             try {
                 $mailer->send($message);
@@ -255,6 +330,11 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
                 throw $e;
             }
+        }
+
+        /* If we added a brand in the stack we remove it */
+        if ($ticket->getBrand()) {
+            $brandStack->pop();
         }
 
         $context->getLogger()->info(sprintf('[SendAgentNewEmail] Send %d messages in %.3fs', $sentCount, microtime(true) - $startTime));

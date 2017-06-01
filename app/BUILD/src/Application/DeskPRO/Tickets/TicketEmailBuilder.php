@@ -333,7 +333,7 @@ class TicketEmailBuilder
      */
     public function setIsNotAuto()
     {
-        $this->options->set('is_auto', true);
+        $this->options->set('is_auto', false);
 
         return $this;
     }
