@@ -119,7 +119,7 @@ class TicketLayoutsController extends BaseController
             $layouts->addLayout($this->getContextLayout($ticketLayout, $context), $departmentId);
         }
 
-        return new Response($layouts->compileJsObj());
+        return new Response($layouts->compileJsObj(true));
     }
 
     /**
