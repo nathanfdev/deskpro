@@ -2,7 +2,7 @@
 	<div class="dp-ob-standard-row">
 		<table class="display-table">
 			<tr>
-				<td class="nowrap"><label class="row-label">Send Agent Email (new)</label></td>
+				<td class="nowrap"><label class="row-label">Send Agent Email</label></td>
 				<td ng-show="rowOpts.rowEnabled" class="row-options">
 					<table class="display-table spaced">
 						<tr>
@@ -11,9 +11,9 @@
 								<select ng-if="!is_creating" ui-select2="{dropdownAutoWidth:true}" ng-model="model.template" style="min-width: 50px;" ng-init="model.template = model.template || 'DeskPRO:emails_agent:ticket-new.html.twig'" ng-change="handleTemplateChange()">
 									<optgroup label="Standard Agent Emails">
 										{% for email,label in {
-											'DeskPRO:emails_agent:ticket-new.html.twig': 'New Ticket Notification',
-											'DeskPRO:emails_agent:ticket-update.html.twig': 'Ticket Updated Notification',
-											'DeskPRO:emails_agent:ticket-reply.html.twig': 'New Reply'
+											'SendmailBundle:emails_agent:ticket_new.html.twig': 'New Ticket Notification',
+											'SendmailBundle:emails_agent:ticket_update.html.twig': 'Ticket Updated Notification',
+											'SendmailBundle:emails_agent:ticket_reply.html.twig': 'New Reply'
 										} %}
 											<option value="{{ email }}">{{ label }}</option>
 										{% endfor %}

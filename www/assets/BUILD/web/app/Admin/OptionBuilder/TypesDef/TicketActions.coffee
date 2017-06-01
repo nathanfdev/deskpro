@@ -972,7 +972,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-actions-senduseremail.html')
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendusernewemail.html')
 
         getData: ->
           return me.loadDataOptions()
@@ -1078,7 +1078,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-actions-senduserlegacyemail.html')
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-senduseremail.html')
 
         getData: ->
           return me.loadDataOptions()
@@ -1184,7 +1184,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentemail.html')
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentnewemail.html')
 
         getData: ->
           return me.loadDataOptions()
@@ -1305,7 +1305,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentlegacyemail.html')
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentemail.html')
 
         getData: ->
           return me.loadDataOptions()
@@ -1426,7 +1426,7 @@ define [
       me = @
       return {
       getTemplate: ->
-        return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html')
+        return me.dpTemplateManager.get('OptionBuilder/type-actions-sendnewemail.html')
 
       getData: ->
         return me.loadDataOptions()
@@ -1525,7 +1525,7 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendlegacyemail.html')
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html')
 
         getData: ->
           return me.loadDataOptions()
