@@ -311,6 +311,12 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
       driver:         DeskPRO_Window.ticketSnippetDriver,
       onBeforeOpen:   function() {
+        var pos = $('#dp_content').offset();
+        var contentStart = pos.left;
+
+        self.backdropEls.eq(0).css({ width: '61px' });
+        self.backdropEls.eq(1).css({ width: contentStart - 61, left: 61 });
+
         if (isWysiwyg && textarea.data('redactor')) {
           try {
             textarea.data('redactor').saveSelection();
@@ -318,8 +324,15 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
           }
         }
       },
-      onSnippetClick: function(info) {
+      onBeforeClose:   function() {
+        var pos = $('#dp_content').offset();
+        var contentStart = pos.left;
+        self.backdropEls.eq(0).css({ width: '269px' });
+        self.backdropEls.eq(1).css({ width: contentStart - 269, left: 269 });
+      },
 
+      onSnippetClick: function(info) {
+        self.backdropEls.eq(0).css({ width: '269px' });
         var snippetId = info.snippetId;
         var snippetCode = info.snippetCode;
 
