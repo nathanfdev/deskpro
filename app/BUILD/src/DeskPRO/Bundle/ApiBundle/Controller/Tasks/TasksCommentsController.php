@@ -37,7 +37,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class BrandsController.
+ * Class TasksCommentsController.
  *
  * @ApiModes("all")
  * @Rest\Route("/tasks/{parentId}/comments")
