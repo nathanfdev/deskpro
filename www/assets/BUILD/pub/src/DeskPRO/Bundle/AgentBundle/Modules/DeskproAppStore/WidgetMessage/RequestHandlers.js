@@ -168,6 +168,22 @@ export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) =>
   ;
 };
 
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetMessage} widgetMessage
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
+  const { body: tabId } = widgetMessage;
+  const tab = DeskPRO_Window.TabBar.getTab(tabId);
+  if (! tab) {
+    return response(new Error('tab not found'), tabId);
+  }
+
+  response(null, tab.page.meta.api_data);
+};
 
 /**
  * @param {function} response
@@ -213,7 +229,8 @@ export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_USER_GET = (response, widget, widgetMessage, services) => {
+export const EVENT_ME_GET = (response, widget, widgetMessage, services) =>
+{
   response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
 };
 
@@ -221,9 +238,9 @@ export const EVENT_RESET_SIZE = (response, widget, message) => {
   const size = message.body.size;
   const $el  = $(document.getElementById(widget.windowId));
 
-  $el.find('iframe')
-    .first()
-    .height(size.outerHeight + 20 /* i dont know why +20? */);
+  // $el.find('iframe')
+  //   .first()
+  //   .height(size.outerHeight + 20 /* i dont know why +20? */);
 };
 
 export const handlers = {
@@ -244,6 +261,8 @@ export const handlers = {
 
   // TAB EVENTS
 
+  EVENT_TAB_DATA,
+
   EVENT_TAB_STATUS,
 
   EVENT_TAB_ACTIVATE,
@@ -252,7 +271,7 @@ export const handlers = {
 
   // USER EVENTS
 
-  EVENT_USER_GET,
+  EVENT_ME_GET,
 
   // APP EVENTS
 

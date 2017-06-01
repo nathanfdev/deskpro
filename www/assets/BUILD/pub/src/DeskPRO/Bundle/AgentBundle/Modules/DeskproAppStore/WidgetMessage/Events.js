@@ -12,6 +12,8 @@ export const EVENT_STATE_DELETE = 'state.delete';
 
 // TAB EVENTS
 
+export const EVENT_TAB_DATA = 'context.tab_data';
+
 export const EVENT_TAB_STATUS = 'context.tab_status';
 
 export const EVENT_TAB_ACTIVATE = 'context.tab_activate';
@@ -21,6 +23,10 @@ export const EVENT_TAB_CLOSE = 'context.tab_close';
 // APP EVENTS
 
 export const EVENT_RESET_SIZE = 'app.reset_size';
+
+// USER EVENTS
+
+export const EVENT_ME_GET = 'context.me_get';
 
 export const events =
 {
@@ -40,6 +46,8 @@ export const events =
 
   // TAB EVENTS
 
+  EVENT_TAB_DATA,
+
   EVENT_TAB_STATUS,
 
   EVENT_TAB_ACTIVATE,
@@ -48,7 +56,9 @@ export const events =
 
   // APP EVENTS
 
-  EVENT_RESET_SIZE
+  EVENT_RESET_SIZE,
+
+  EVENT_ME_GET
 };
 
 export const eventNames = Object.keys(events).map(key => events[key]);
