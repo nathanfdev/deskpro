@@ -161,6 +161,12 @@ class TaskType extends AbstractType implements EventSubscriberInterface
             $task             = $event->getForm()->getData();
             $task['date_due'] = $date;
         }
+
+        $data   = $event->getData();
+        $config = $event->getForm()->getConfig();
+        if ($data instanceof Task && !$data->getId()) {
+            $data->setPerson($config->getOption('person'));
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)

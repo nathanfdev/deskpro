@@ -41,71 +41,71 @@ use Application\DeskPRO\Markdown;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 
 /**
  * TaskComment entity definition.
- *
- * SWG\Model
  */
 class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID.
      *
+     * @JMS\Type("integer")
+     *
      * @var int
-     *          SWG\Property(name="id",type="integer")
      */
     protected $id = null;
 
     /**
      * The comment's content.
      *
+     * @JMS\Type("string")
+     *
      * @var string
-     *             SWG\Property(name="content",type="string")
      */
     protected $content = '';
 
     /**
-     * @var Application\DeskPRO\Entity\Task
-     *                                      targetEntity="Task",
-     *                                      inversedBy="comments",
-     *                                      cascade={"persist", "remove", "merge"}
-     *                                      )
-     *                                      SWG\Property(name="task", type="Task")
+     * Task containing comment.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Task>")
+     *
+     * @var Task
      */
     protected $task;
 
     /**
-     * @var Application\DeskPRO\Entity\Person
-     *                                        targetEntity="Person",
-     *                                        inversedBy="task_comments",
-     *                                        cascade={"persist", "remove", "merge"}
-     *                                        )
-     *                                        SWG\Property(name="person",type="Person")
+     * Person created this comment.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @var Person
      */
     protected $person;
 
     /**
      * The date the comment was inserted into the system.
      *
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_created",type="integer")
      */
     protected $date_created;
 
     /**
      * Creates a new comment with the provided content.
      *
-     * @param \Application\DeskPRO\Entity\Person $creator The comment's creator
-     * @param string                             $content The comment's content
+     * @param Person $creator The comment's creator
+     * @param string $content The comment's content
      */
     public function __construct(Person $creator, $content)
     {
-        $this['person']  = $creator;
-        $this['content'] = $content;
+        $this->person  = $creator;
+        $this->content = $content;
 
-        $this['date_created'] = new \DateTime();
+        $this->date_created = new \DateTime();
     }
 
     /**
@@ -114,6 +114,86 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return $this
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     *
+     * @return $this
+     */
+    public function setTask(Task $task)
+    {
+        $this->setModelField('task', $task);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $dateCreated)
+    {
+        $this->setModelField('date_created', $dateCreated);
+
+        return $this;
     }
 
     /**
@@ -129,7 +209,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task comment's creator id.
      *
-     * @param int id The person's id
+     * @param int $id The person's id
      *
      * @throws \InvalidArgumentException Thrown when there's no preson with the
      *                                   id is not in the databse
