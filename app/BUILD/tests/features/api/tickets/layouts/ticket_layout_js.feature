@@ -13,8 +13,9 @@ Feature: /ticket_layouts endpoint
   Scenario Outline: I get all layouts JS
     When I send a GET request to "/api/v2/ticket_layouts/<context>.js"
     Then the response status code should be 200
-    And the response should contain "getMatchingFields: function (ticket) {"
-    And the response should contain "getLayout: function (id) {"
+    And the response should contain "getLayout: function (departmentId) {"
+    And the response should contain "getLayoutFields: function(departmentId) {"
+    And the response should contain "getMatchingFields: function(ticket) {"
 
     Examples:
       | context |
