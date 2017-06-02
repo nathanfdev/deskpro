@@ -182,8 +182,8 @@ export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
     return response(new Error('tab not found'), tabId);
   }
 
-  const { api_data } = tab.page.meta;
-  response(null, { api_data });
+  const { api_data, hasBilling, hasTimeLog } = tab.page.meta;
+  response(null, { api_data, hasBilling, hasTimeLog });
 };
 
 /**
@@ -259,6 +259,21 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
 
 };
 
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetMessage} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_SHOW_NOTIFICATION = (response, widget, message, services) => {
+  const { body: notification } = message;
+  if (typeof notification === 'string') {
+    services.showNotification(notification)
+  }
+
+};
+
 export const handlers = {
 
   // GENERIC REST API REQUEST EVENT
@@ -291,7 +306,10 @@ export const handlers = {
 
   // APP EVENTS
 
-  EVENT_RESET_SIZE
+  EVENT_RESET_SIZE,
+
+  EVENT_SHOW_NOTIFICATION
+
 };
 
 /**

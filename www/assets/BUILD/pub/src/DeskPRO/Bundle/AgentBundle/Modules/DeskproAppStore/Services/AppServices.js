@@ -29,4 +29,14 @@ export class AppServices
    * @return {*}
    */
   get $() { return this.window.$; }
+
+  showNotification = notification => {
+    if (typeof notification === 'string') {
+      console.log('will show some notification');
+      this.props.window.alert(notification);
+      return;
+    }
+
+    throw new Error('unknown notification type');
+  };
 }

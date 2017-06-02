@@ -24,6 +24,8 @@ export const EVENT_TAB_CLOSE = 'context.tab_close';
 
 export const EVENT_RESET_SIZE = 'app.reset_size';
 
+export const EVENT_SHOW_NOTIFICATION = 'app.show_notification';
+
 // USER EVENTS
 
 export const EVENT_ME_GET = 'context.me_get';
@@ -57,6 +59,8 @@ export const events =
   // APP EVENTS
 
   EVENT_RESET_SIZE,
+
+  EVENT_SHOW_NOTIFICATION,
 
   EVENT_ME_GET
 };
