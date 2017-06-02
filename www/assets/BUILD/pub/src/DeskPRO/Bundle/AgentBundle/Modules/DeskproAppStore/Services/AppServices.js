@@ -1,8 +1,10 @@
+import { WidgetDOM } from '../WidgetDOM'
 
 export class AppServices
 {
   /**
    * @param {DpApi} api
+   * @param {Window} window
    */
   constructor({ api, window }) {
     this.props = { api, window };
@@ -17,4 +19,14 @@ export class AppServices
    * @return {Window}
    */
   get window() { return this.props.window; }
+
+  get widgetDOM() {
+    const { document } = this.props.window;
+    return new WidgetDOM({ document });
+  }
+
+  /**
+   * @return {*}
+   */
+  get $() { return this.window.$; }
 }

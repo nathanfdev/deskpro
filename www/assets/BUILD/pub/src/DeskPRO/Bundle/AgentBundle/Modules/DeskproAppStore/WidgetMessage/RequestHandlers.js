@@ -234,13 +234,28 @@ export const EVENT_ME_GET = (response, widget, widgetMessage, services) =>
   response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
 };
 
-export const EVENT_RESET_SIZE = (response, widget, message) => {
-  const size = message.body.size;
-  const $el  = $(document.getElementById(widget.windowId));
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetMessage} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_RESET_SIZE = (response, widget, message, services) => {
+  const { size } = message.body;
+  const height = size.outerHeight + 20 /* i dont know why +20? */;
 
-  // $el.find('iframe')
-  //   .first()
-  //   .height(size.outerHeight + 20 /* i dont know why +20? */);
+  try {
+    const { widgetDOM, $ } = services;
+    const iframe = widgetDOM.findIframe(widget);
+    $(iframe).height(height);
+
+    response(null, { height })
+  } catch (e) {
+    console.log('app reset size failed', e);
+    response(e);
+  }
+
 };
 
 export const handlers = {
