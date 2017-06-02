@@ -317,7 +317,11 @@ function (ticket) {
   var check_value = $check_value;
   var value = $value || null;
   var op = '$op';
-  if (!value || undefined === value.length) value = [value + ''];
+  if (!value) {
+    value = [];
+  } else if (typeof value === 'string') {
+    value = (value+'').split(',');
+  }
   
   var has = false; 
   for (var i = 0; i < check_value.length; i++) {

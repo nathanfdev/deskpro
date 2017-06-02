@@ -188,7 +188,7 @@ class LayoutCollection implements \Countable, \IteratorAggregate
             $js .= "\t            getDepartmentId:     function() { return parseInt(ticketReader.getDepartmentId()) || 0; },\n";
             $js .= "\t            getCategoryId:       function() { return parseInt(ticketReader.getCategoryId())   || 0; },\n";
             $js .= "\t            getPriorityId:       function() { return parseInt(ticketReader.getPriorityId())   || 0; },\n";
-            $js .= "\t            getProductId:        function() { return parseInt(ticketReader.getProductId())    || 0; }\n";
+            $js .= "\t            getProductId:        function() { return parseInt(ticketReader.getProductId())    || 0; },\n";
             $js .= "\t            getWorkflowId:       function() { return parseInt(ticketReader.getWorkflowId())   || 0; },\n";
             $js .= "\t            getTicketFieldValue: function(fieldId) { return this._cleanFieldValue(ticketReader.getTicketFieldValue(parseInt(fieldId))); },\n";
             $js .= "\t            getUserFieldValue:   function(fieldId) { return this._cleanFieldValue(ticketReader.getUserFieldValue(parseInt(fieldId))); },\n";
