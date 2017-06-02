@@ -848,7 +848,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -866,7 +866,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'assigned_agent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'assigned_tasks',
                 'joinColumns'  => [
@@ -884,7 +884,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'assigned_agent_team',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'targetEntity' => AgentTeam::class,
                 'mappedBy'     => null,
                 'inversedBy'   => 'assigned_tasks',
                 'joinColumns'  => [
@@ -902,7 +902,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'labels',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelTask',
+                'targetEntity' => LabelTask::class,
                 'cascade'      => [
                     0 => 'remove',
                     1 => 'persist',
@@ -916,7 +916,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'comments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TaskComment',
+                'targetEntity' => TaskComment::class,
                 'mappedBy'     => 'task',
                 'dpApi'        => true,
                 'dpApiDeep'    => true,
@@ -926,7 +926,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'task_associations',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TaskAssociation',
+                'targetEntity' => TaskAssociation::class,
                 'cascade'      => [
                     0 => 'remove',
                     1 => 'persist',

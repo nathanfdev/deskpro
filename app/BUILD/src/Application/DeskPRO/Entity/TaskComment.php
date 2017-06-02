@@ -306,7 +306,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'task',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Task',
+            'targetEntity' => Task::class,
             'cascade'      => [
                 0 => 'remove',
                 1 => 'persist',
@@ -326,7 +326,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'targetEntity' => Person::class,
             'mappedBy'     => null,
             'inversedBy'   => 'task_comments',
             'joinColumns'  => [
