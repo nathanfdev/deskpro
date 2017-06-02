@@ -105,9 +105,6 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                         if (!$exception) {
                             $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
                         }
-
-                        // try again in a sec
-                        sleep(1);
                     } else {
                         $exception = null;
                     }
