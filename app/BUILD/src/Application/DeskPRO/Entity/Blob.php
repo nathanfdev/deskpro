@@ -845,6 +845,41 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    /**
+     * A list of all tables that reference blobs.
+     *
+     * @return array
+     */
+    public static function tablesWithBlobs()
+    {
+        return [
+            ['table' => 'agent_teams', 'columns' => ['avatar_blob_id']],
+            ['table' => 'app2_app_asset_blob', 'columns' => ['blob_id']],
+            ['table' => 'app_assets', 'columns' => ['blob_id']],
+            ['table' => 'article_attachments', 'columns' => ['blob_id']],
+            ['table' => 'blobs', 'columns' => ['original_blob_id']],
+            ['table' => 'brand_assets', 'columns' => ['blob_id']],
+            ['table' => 'departments', 'columns' => ['avatar_blob_id']],
+            ['table' => 'downloads', 'columns' => ['blob_id']],
+            ['table' => 'download_revisions', 'columns' => ['blob_id']],
+            ['table' => 'email_accounts', 'columns' => ['key_blob_id', 'cert_blob_id']],
+            ['table' => 'email_sources', 'columns' => ['blob_id', 'log_blob_id']],
+            ['table' => 'feedback_attachments', 'columns' => ['blob_id']],
+            ['table' => 'labels_blobs', 'columns' => ['blob_id']],
+            ['table' => 'organizations', 'columns' => ['picture_blob_id']],
+            ['table' => 'organization_files', 'columns' => ['blob_id']],
+            ['table' => 'people', 'columns' => ['picture_blob_id']],
+            ['table' => 'people_files', 'columns' => ['blob_id']],
+            ['table' => 'sendmail_sources', 'columns' => ['blob_id', 'log_blob_id']],
+            ['table' => 'task_attachments', 'columns' => ['blob_id']],
+            ['table' => 'theme_set_assets', 'columns' => ['blob_id']],
+            ['table' => 'tickets_attachments', 'columns' => ['blob_id']],
+            ['table' => 'ticket_proc_log', 'columns' => ['blob_id']],
+            ['table' => 'voice_assets', 'columns' => ['blob_id']],
+            ['table' => 'voice_phone_calls', 'columns' => ['recording_id']],
+        ];
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

@@ -41,6 +41,8 @@ class PostBuildAlways extends AbstractBuild
 
         $this->out('Clear cache table');
         $this->execDbQuery('default', 'TRUNCATE TABLE cache');
+        $this->execDbQuery('default', 'TRUNCATE TABLE log_items');
+        $this->execDbQuery('default', 'TRUNCATE TABLE result_cache');
 
         //------------------------------
         // Reset opcache

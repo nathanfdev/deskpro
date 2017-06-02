@@ -153,68 +153,6 @@ class CleanupDaily extends AbstractJob
         }
 
         //------------------------------
-        // try to fetch config.php
-        //------------------------------
-
-        if (!defined('DPC_IS_CLOUD')) {
-            $url    = rtrim(App::getContainer()->getBrandSetting('core.deskpro_url'), '/').'/config.php';
-            $config = @file_get_contents(
-                $url,
-                false,
-                stream_context_create(['http' => ['timeout' => 10]])
-            );
-
-            if ($config
-                && strpos($config, '<?') !== false
-                && (DP_DATABASE_PASSWORD === '' || strpos($config, DP_DATABASE_PASSWORD) !== false)
-                && strpos($config, 'DP_DATABASE_PASSWORD') !== false
-            ) {
-                $this->logStatus("CRITICAL: config.php file is publicly readable at $url");
-
-                $tos = array_filter(App::$container->getAgentData()->getAgents(), function ($a) {
-                    return $a->can_admin;
-                });
-                if ($tos) {
-                    $people_list = array_map(function ($a) {
-                        return $a->getDisplayContact();
-                    }, $tos);
-
-                    $to_emails = array_map(function ($a) {
-                        return strtolower($a->getPrimaryEmailAddress());
-                    }, $tos);
-
-                    if (defined('DP_TECHNICAL_EMAIL') && !in_array(strtolower(DP_TECHNICAL_EMAIL), $to_emails)) {
-                        $to_emails[]   = DP_TECHNICAL_EMAIL;
-                        $people_list[] = DP_TECHNICAL_EMAIL;
-                    }
-
-                    $people_list = implode("\n- ", $people_list);
-
-                    $mailer  = App::$container->getMailer();
-                    $message = $mailer->createMessage();
-                    $message->setTo($to_emails);
-                    $message->setPriority(1);
-                    $message->setSubject('[CRITICAL] Warning: Your config.php file is publicly readable');
-
-                    $body = <<<BODY
-Your config.php file is publicly readable at the following URL:
-$url
-
-This is a CRITICAL vulnerability in the way your web server is configured. Your config.php file contains sensitive information such as your MySQL database details (including your password).
-
-Do not ignore this notice. This requires IMMEDIATE attention from an administrator.
-
-This email has been sent to the following people:
-- $people_list
-BODY;
-
-                    $message->setBody($body);
-                    $mailer->send($message);
-                }
-            }
-        }
-
-        //------------------------------
         // Temp files
         //------------------------------
 
