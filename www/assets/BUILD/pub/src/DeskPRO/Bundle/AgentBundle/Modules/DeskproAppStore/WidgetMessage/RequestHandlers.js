@@ -182,7 +182,8 @@ export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
     return response(new Error('tab not found'), tabId);
   }
 
-  response(null, tab.page.meta.api_data);
+  const { api_data } = tab.page.meta;
+  response(null, { api_data });
 };
 
 /**
