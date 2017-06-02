@@ -71,12 +71,15 @@ class EntityHandler implements SubscribingHandlerInterface
         // we have to check what we are adding in sideloads since we can't control what is exactly happening here
         // e.g. we cant control of person from organization should be sideloaded while from ticket should not.
 
-        $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
-        if (in_array($snake, $context->getIncludes())) {
-            $context->getSideloadStore()->addSideload($entity);
+        if (!$context->isDisabledSideloads()) {
+            $snake = TypeUtils::getSnakeCaseBaseTypeName($entity);
+            if ($context->getIncludesStrategy() === SideloadSerializationContext::INCLUDE_STRATEGY_DATA
+                || in_array($snake, $context->getIncludes())) {
+                $context->getSideloadStore()->addSideload($entity);
 
-            if ($context->isInlineSideloads()) {
-                return new InlineEntitySideload($snake, $entity->getId());
+                if ($context->isInlineSideloads()) {
+                    return new InlineEntitySideload($snake, $entity->getId());
+                }
             }
         }
 

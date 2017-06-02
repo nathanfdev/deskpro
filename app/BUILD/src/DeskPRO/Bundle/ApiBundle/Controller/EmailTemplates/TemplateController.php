@@ -512,9 +512,7 @@ class TemplateController extends BaseController
         /** @var EmailBaseType $model */
         $model = call_user_func_array([$factory, $action], $arguments);
 
-        $serializationContext = new SideloadSerializationContext();
-        $serializationContext->setInlineSideloads(true);
-        $recipient = $this->get('api_serializer.handler.person')->createModel($recipient, $serializationContext);
+        $recipient = $this->get('api_serializer.handler.person')->createModel($recipient, new SideloadSerializationContext());
         $model->setRecipient($recipient);
         $model->setSiteUrl($this->container->getBrandSetting('core.site_url'));
         $model->setSiteName($this->container->getBrandSetting('core.site_name'));

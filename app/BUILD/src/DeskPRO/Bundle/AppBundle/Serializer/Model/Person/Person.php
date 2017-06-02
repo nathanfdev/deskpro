@@ -313,6 +313,15 @@ class Person extends BasePerson
     /**
      * Emails belong to user.
      *
+     * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
+     *
+     * @var array
+     */
+    protected $primaryEmail;
+
+    /**
+     * Emails belong to user.
+     *
      * @JMS\Type("deferred<collection<to_string<Application\DeskPRO\Entity\PersonEmail>>>")
      *
      * @var array
@@ -439,7 +448,7 @@ class Person extends BasePerson
     /**
      * @param CallbackDeferredProperty $contactData
      *
-     * @return $this
+     * @return $this->primaryEmail = $person->getPrimaryEmail();
      */
     public function setContactData($contactData = null)
     {

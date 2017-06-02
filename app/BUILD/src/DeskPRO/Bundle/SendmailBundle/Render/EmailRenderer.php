@@ -32,12 +32,16 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Blob;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use JMS\Serializer\Serializer;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Templating\EngineInterface;
 
+/**
+ * Class EmailRenderer.
+ */
 class EmailRenderer
 {
     /**
@@ -55,10 +59,17 @@ class EmailRenderer
      */
     private $serviceContainer;
 
-    public function __construct(Serializer $serializer, EngineInterface $engine, Container $serviceContainer)
+    /**
+     * EmailRenderer constructor.
+     *
+     * @param Serializer      $serializer
+     * @param EngineInterface $templateEngine
+     * @param Container       $serviceContainer
+     */
+    public function __construct(Serializer $serializer, EngineInterface $templateEngine, Container $serviceContainer)
     {
-        $this->setSerializer($serializer);
-        $this->setTemplateEngine($engine);
+        $this->serializer       = $serializer;
+        $this->templateEngine   = $templateEngine;
         $this->serviceContainer = $serviceContainer;
     }
 
@@ -110,10 +121,14 @@ class EmailRenderer
      */
     public function render($templateName, EmailBaseType $model)
     {
-        $serializationContext = new SideloadSerializationContext();
-        $serializationContext->setInlineSideloads(true);
-        $vars = $this->getSerializer()->toArray($model, $serializationContext);
+        $context = new SideloadSerializationContext();
+        $context->setIncludesStrategy(SideloadSerializationContext::INCLUDE_STRATEGY_DATA);
+        $context->setInlineSideloads(true);
 
+        // wrap to make sideloading works
+        $model = new ApiWrapper($model);
+
+        $vars = $this->getSerializer()->toArray($model, $context)['data'];
         $code = $this->getTemplateEngine()->render($templateName, $vars);
 
         $blobAuthIds = [];
