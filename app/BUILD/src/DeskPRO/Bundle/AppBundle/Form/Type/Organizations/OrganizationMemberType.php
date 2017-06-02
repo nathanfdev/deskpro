@@ -35,7 +35,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -93,9 +92,7 @@ class OrganizationMemberType extends AbstractType
                 'data_class' => Person::class,
             ])
             ->setRequired('organization')
-            ->addAllowedTypes([
-                'organization' => Organization::class,
-            ])
+            ->setAllowedTypes('organization', Organization::class)
         ;
     }
 
@@ -104,18 +101,12 @@ class OrganizationMemberType extends AbstractType
      */
     public function onSetOrganization(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $parent = $form->getParent();
+        $parent = $event->getForm()->getParent();
         $config = $parent->getConfig();
         $data   = $parent->getData();
 
         if ($data instanceof Person) {
-            $organization = $config->getOption('organization');
-            if (!$data->getOrganization()) {
-                $data->setOrganization($organization);
-            } elseif ($data->getOrganization()->getId() === $organization->getId()) {
-                $form->addError(new FormError('already_in_organization'));
-            }
+            $data->setOrganization($config->getOption('organization'));
         }
     }
 }
