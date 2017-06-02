@@ -55,7 +55,7 @@ class LabelsController extends BaseController
      *     requirements={
      *         {
      *             "name"="type",
-     *             "requirement"="ticket|person|organization|feedback|news|chat|article|download",
+     *             "requirement"="task|ticket|person|organization|feedback|news|chat|article|download",
      *             "description"="Which entity type labels we are searching?",
      *             "dataType"="string"
      *         }
@@ -80,7 +80,7 @@ class LabelsController extends BaseController
      *     "",
      *     name="api_person_labels_list",
      *     requirements={
-     *         "type"="ticket|person|organization|feedback|news|chat|article|download"
+     *         "type"="task|ticket|person|organization|feedback|news|chat|article|download"
      *     }
      * )
      *
@@ -92,6 +92,9 @@ class LabelsController extends BaseController
     public function getLabelsAction(Request $request, $type)
     {
         switch ($type) {
+            case 'task':
+                $labelType = LabelDef::TYPE_TASKS;
+                break;
             case 'ticket':
                 $labelType = LabelDef::TYPE_TICKETS;
                 break;
