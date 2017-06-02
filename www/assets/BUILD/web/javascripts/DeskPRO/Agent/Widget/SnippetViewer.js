@@ -35,6 +35,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 			pageSource: DeskPRO_Window.util.getPlainTpl($('#' + pageSourceId)),
 			destroyOnClose: false,
 			onPageInit: function(pop, page) {
+
 				page.addEvent('closeSelf', function(ev) {
 					ev.cancel = true;
 					self.close();
@@ -46,6 +47,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 				});
 			}
 		});
+		this.pop.addEvent('close', function() { self.close(); });
 	},
 
 	open: function() {
@@ -55,6 +57,7 @@ DeskPRO.Agent.Widget.SnippetViewer = new Orb.Class({
 	},
 
 	close: function() {
+    this.fireEvent('onBeforeClose');
 		if (this.pop) {
 			this.pop.close();
 		}

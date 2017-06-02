@@ -72,6 +72,8 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
             $context->getLogger()->debug(
                 sprintf('[%s] No app (app id: %d)', $this->getActionType(), $this->getMetaData()->get('app_id'))
             );
+
+            return;
         }
 
         //##########################################################################
