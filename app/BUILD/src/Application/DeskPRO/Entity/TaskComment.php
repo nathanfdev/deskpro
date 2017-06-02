@@ -100,7 +100,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      * @param Person $creator The comment's creator
      * @param string $content The comment's content
      */
-    public function __construct(Person $creator, $content)
+    public function __construct(Person $creator = null, $content = '')
     {
         $this->person  = $creator;
         $this->content = $content;

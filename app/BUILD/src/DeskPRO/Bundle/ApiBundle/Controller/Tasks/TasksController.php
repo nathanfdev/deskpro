@@ -50,7 +50,6 @@ use Symfony\Component\HttpFoundation\Request;
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\Task",
  *          "person"="Application\DeskPRO\Entity\Person",
- *          "tickets"="DeskPRO\Bundle\AppBundle\Entity\Ticket"
  *      }
  *     }
  * )
