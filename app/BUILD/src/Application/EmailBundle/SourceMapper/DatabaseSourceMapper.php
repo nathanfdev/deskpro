@@ -477,7 +477,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
 
         try {
-            $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', ['tag' => 'logs.sendmail_source_log']);
+            $new_log_blob = $this->bs->createBlobRowFromString(
+                $log_text,
+                'log.txt',
+                'text/plain',
+                ['tag' => 'logs.sendmail_source_log', 'prefer_gzipped' => true]
+            );
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
 

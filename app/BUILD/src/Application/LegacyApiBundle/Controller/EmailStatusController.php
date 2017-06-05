@@ -294,6 +294,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         if ($source->log_blob) {
             try {
                 $info['source_log'] = $this->container->getBlobStorage()->copyBlobRecordToString($source->log_blob);
+                if ($source->log_blob->content_type === 'application/gzip') {
+                    $info['source_log'] = gzuncompress($info['source_log']);
+                }
             } catch (\Exception $e) {
                 $info['source_log'] = "Failed to read log file ({$e->getMessage()})";
             }
@@ -494,6 +497,9 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         } else {
             if ($sendmail->getLogBlob()) {
                 $info['sendmail_log'] = $bs->copyBlobRecordToString($sendmail->getLogBlob());
+                if ($sendmail->getLogBlob()->content_type === 'application/gzip') {
+                    $info['sendmail_log'] = gzuncompress($info['sendmail_log']);
+                }
             } else {
                 $info['sendmail_log'] = null;
             }
