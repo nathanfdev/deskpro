@@ -156,5 +156,12 @@ class Util
             SET blobs.is_temp = 1
             WHERE tickets_attachments.ticket_id = ?
         ', [$ticket_id]);
+
+        $db->executeUpdate('
+            UPDATE blobs
+            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
+            SET blobs.is_temp = 1
+            WHERE ticket_proc_log.ticket_id = ?
+        ', [$ticket_id]);
     }
 }

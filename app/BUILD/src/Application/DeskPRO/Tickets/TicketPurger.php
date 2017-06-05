@@ -58,6 +58,16 @@ class TicketPurger
               AND tickets_attachments.ticket_id IS NOT NULL
         ");
 
+        $this->db->executeUpdate("
+            UPDATE blobs
+            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
+            LEFT JOIN tickets ON (tickets.id = ticket_proc_log.ticket_id)
+            SET blobs.is_temp = 1
+            WHERE
+              tickets.status = 'hidden' AND tickets.hidden_status = 'spam'
+              AND ticket_proc_log.ticket_id IS NOT NULL
+        ");
+
         $count = $this->db->delete(
             'tickets',
             ['status' => 'hidden', 'hidden_status' => 'spam']
@@ -78,6 +88,16 @@ class TicketPurger
               AND tickets_attachments.ticket_id IS NOT NULL
         ");
 
+        $this->db->executeUpdate("
+            UPDATE blobs
+            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
+            LEFT JOIN tickets ON (tickets.id = ticket_proc_log.ticket_id)
+            SET blobs.is_temp = 1
+            WHERE
+              tickets.status = 'hidden' AND tickets.hidden_status = 'deleted'
+              AND ticket_proc_log.ticket_id IS NOT NULL
+        ");
+
         $count = $this->db->delete(
             'tickets',
             ['status' => 'hidden', 'hidden_status' => 'deleted']
@@ -94,6 +114,14 @@ class TicketPurger
             SET blobs.is_temp = 1
             WHERE tickets_attachments.ticket_id IS NOT NULL
         ');
+
+        $this->db->executeUpdate('
+            UPDATE blobs
+            LEFT JOIN ticket_proc_log ON (ticket_proc_log.blob_id = blobs.id)
+            SET blobs.is_temp = 1
+            WHERE ticket_proc_log.ticket_id IS NOT NULL
+        ');
+
         $this->db->executeUpdate('delete from task_links where `type` = "ticket"');
         $this->db->executeUpdate('delete from tickets');
         $this->db->executeUpdate('delete from tickets_deleted');
