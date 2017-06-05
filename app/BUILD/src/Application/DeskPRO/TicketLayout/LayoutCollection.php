@@ -194,13 +194,8 @@ class LayoutCollection implements \Countable, \IteratorAggregate
             $js .= "\t            getUserFieldValue:   function(fieldId) { return this._cleanFieldValue(ticketReader.getUserFieldValue(parseInt(fieldId))); },\n";
             $js .= "\t            getOrgFieldValue:    function(fieldId) { return this._cleanFieldValue(ticketReader.getOrgFieldValue(parseInt(fieldId))); },\n";
             $js .= "\t            _cleanFieldValue: function(val) {\n";
-            $js .= "\t                if (val === null) {\n";
-            $js .= "\t                    return [];\n";
-            $js .= "\t                } else if (Object.prototype.toString.call(val) === '[object Array]') {\n";
-            $js .= "\t                    return val;\n";
-            $js .= "\t                } else {\n";
-            $js .= "\t                    return [val];\n";
-            $js .= "\t                }\n";
+            $js .= "\t                // return as is for now\n";
+            $js .= "\t                return val;\n";
             $js .= "\t            },\n";
             $js .= "\t            _is_sanitized_reader: true\n";
             $js .= "\t	}\n";
