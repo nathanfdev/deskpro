@@ -30,12 +30,16 @@ namespace DeskPRO\Bundle\AppBundle\Limits\Exception;
 
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class LimitExhaustedException.
+ */
 class LimitExhaustedException extends \RuntimeException
 {
-    const STANDARD_MESSAGE = 'Your limit for api calls is exhausted';
-
-    public function __construct($message = self::STANDARD_MESSAGE, $code = Response::HTTP_FORBIDDEN)
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
-        parent::__construct($message, $code);
+        parent::__construct('', Response::HTTP_FORBIDDEN);
     }
 }

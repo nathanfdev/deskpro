@@ -30,6 +30,7 @@ return [
     'api.error_codes.already_in_organization'        => 'That user is already in an organization.',
     'api.error_codes.bad_choice'                     => 'One or more of the given values is invalid.',
     'api.error_codes.bad_credentials'                => 'Bad credentials.',
+    'api.error_codes.rate_limits'                    => 'Your limit for api calls is exhausted.',
     'api.error_codes.bad_request'                    => 'Request is invalid.',
     'api.error_codes.banned_email'                   => 'Email "{{ email }}" is banned.',
     'api.error_codes.dupe_email'                     => 'Email "{{ email }}" is already in use by other user.',

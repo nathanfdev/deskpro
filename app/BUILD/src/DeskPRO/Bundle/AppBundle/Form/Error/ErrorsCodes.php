@@ -42,6 +42,7 @@ final class ErrorsCodes
     /** General purpose error codes */
     const INTERNAL_ERROR            = 'internal_error';
     const BAD_REQUEST               = 'bad_request';
+    const RATE_LIMITS               = 'rate_limits';
     const INVALID_INPUT             = 'invalid_input';
     const FORBIDDEN                 = 'unauthorized';
     const UNAUTHORIZED              = 'unauthorized';

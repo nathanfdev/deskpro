@@ -32,11 +32,9 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Annotation\Limits\Metadata\MethodMetadata;
-use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
@@ -61,7 +59,7 @@ class ApiLimitsListener implements EventSubscriberInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
@@ -104,12 +102,8 @@ class ApiLimitsListener implements EventSubscriberInterface
             }
         }
 
-        try {
-            $limits = $this->container->get('api_limits.limits_service');
-            $limits->checkLimits();
-            $limits->reduceLimits();
-        } catch (LimitExhaustedException $e) {
-            throw new AccessDeniedHttpException($e->getMessage(), $e);
-        }
+        $limits = $this->container->get('api_limits.limits_service');
+        $limits->checkLimits();
+        $limits->reduceLimits();
     }
 }
