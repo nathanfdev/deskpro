@@ -26,25 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\MassActions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Tasks\TaskMassActionsType;
-use FOS\RestBundle\Controller\Annotations as Rest;
-
-/**
- * Class TaskMassActionsController.
- *
- * @ApiModes("all")
- * @Rest\Route("/mass_actions/tasks")
- * @ApiDoc(target="all", section="Mass actions")
- * @ApiDoc(
- *     target="massAction",
- *     input="DeskPRO\Bundle\AppBundle\Form\Type\MassActions\Tasks\TaskMassActionsType"
- * )
- */
-class TaskMassActionsController extends AbstractMassActionsController
+class Build1496673220 extends AbstractBuild implements BlockingBuildInterface
 {
-    protected static $type = TaskMassActionsType::class;
+    public function addNewTables()
+    {
+        $this->execDbQuery('default', '
+SET foreign_key_checks = 0;
+DROP TABLE IF EXISTS 
+  tasks_new, 
+  tasks_assignments, 
+  task_attachments, 
+  task_comments_new, 
+  task_labels,
+  task_links,
+  task_lists,
+  task_log,
+  task_projects, 
+  task_starred, 
+  task_subtask;
+SET foreign_key_checks = 1;
+');
+    }
+
+    public function runAlters()
+    {
+    }
+
+    public function run()
+    {
+    }
 }

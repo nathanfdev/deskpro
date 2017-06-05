@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -117,11 +116,6 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $brands;
-
-    /**
-     * @var ProjectMember[]|ArrayCollection
-     */
-    protected $project_members;
 
     /**
      * @var DepartmentPermission[]|ArrayCollection
@@ -317,23 +311,6 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
     public function setRealTitle($title)
     {
         $this->setModelField('title', $title);
-    }
-
-    /**
-     * @return ProjectMember[]|ArrayCollection
-     */
-    public function getProjectMembers()
-    {
-        return $this->project_members;
-    }
-
-    /**
-     * @param ProjectMember $member
-     */
-    public function addProjectMember(ProjectMember $member)
-    {
-        $this->project_members->add($member);
-        $this->setModelField('project_member', $member);
     }
 
     /**
@@ -729,14 +706,6 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
                 'mappedBy'     => 'parent',
                 'orderBy'      => ['display_order' => 'ASC'],
                 'indexBy'      => 'id',
-            ]
-        );
-
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'project_members',
-                'targetEntity' => ProjectMember::class,
-                'mappedBy'     => 'department',
             ]
         );
 

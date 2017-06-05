@@ -55,7 +55,7 @@ class LabelsController extends BaseController
      *     requirements={
      *         {
      *             "name"="type",
-     *             "requirement"="ticket|person|organization|feedback|news|chat|article|download",
+     *             "requirement"="task|ticket|person|organization|feedback|news|chat|article|download",
      *             "description"="Which entity type labels we are searching?",
      *             "dataType"="string"
      *         }

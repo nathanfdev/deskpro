@@ -44,7 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 class TaskAssociatedOrganization extends TaskAssociation
 {
     /**
-     * @var Application\DeskPRO\Entity\Organization
+     * @var \Application\DeskPRO\Entity\Organization
      */
     protected $organization;
 
