@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Fieldset } from 'react-forms';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import { BlurInput, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import classNames from 'classnames';
 
 class AgentSettingsForm extends BaseForm {
 
@@ -18,15 +19,19 @@ class AgentSettingsForm extends BaseForm {
   }
 
   render() {
-    const { formData } = this.state;
+    const { formData, saving } = this.state;
 
     return (
       <div className="agent-settings-form">
         <Form onSubmit={this.onSubmit} formValue={formData}>
           <Fieldset>
             <Field select="agent_voicemail_timeout" label="Agent Voicemail Timeout">
-              <BlurInput select="agent_voicemail_timeout" type="number" />
+              <Input select="agent_voicemail_timeout" type="number" />
             </Field>
+
+            <button className={classNames('ui button', { loading: saving })}>
+              Save
+            </button>
           </Fieldset>
         </Form>
       </div>
