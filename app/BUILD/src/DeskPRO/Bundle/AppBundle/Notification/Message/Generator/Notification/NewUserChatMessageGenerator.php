@@ -26,38 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
+namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
-use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as TemplatingEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class UserChatMessageGenerator.
+ * Class NewUserChatMessageGenerator.
  */
-class UserChatMessageGenerator extends SystemEventGenerator
+class NewUserChatMessageGenerator extends SystemEventGenerator
 {
     /**
-     * @var TemplatingEngine
+     * @var AvatarResolver
      */
-    private $templating;
+    private $avatarResolver;
 
+    /**
+     * NewUserChatMessageGenerator constructor.
+     *
+     * @param EntityManager         $em
+     * @param TokenStorageInterface $token_storage
+     * @param AgentDataService      $agentDataService
+     * @param AvatarResolver        $avatarResolver
+     */
     public function __construct(
         EntityManager $em,
         TokenStorageInterface $token_storage,
         AgentDataService $agentDataService,
-        TemplatingEngine $templating
+        AvatarResolver $avatarResolver
     ) {
         parent::__construct($em, $token_storage, $agentDataService);
-        $this->templating = $templating;
     }
 
     /**
@@ -67,50 +74,59 @@ class UserChatMessageGenerator extends SystemEventGenerator
      */
     public function createMessages(SystemEventInterface $event)
     {
-        $event->getName();
         /* @var UserChatEvent $event */
         $messages = [];
-        foreach ($this->getTarget($event) as $agent) {
-            $messages[] = new ActionAlert((int) $agent, $this->getData($event), $event->getName());
+        foreach ($this->getTarget($event) as $target) {
+            $messages[] = new Notification($target, $this->getData($event), $event->getName());
         }
 
         return $messages;
     }
 
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return bool
+     */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof UserChatEvent;
+        if ($event instanceof UserChatEvent && $event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
+            return true;
+        }
+
+        return false;
     }
 
+    /**
+     * @param UserChatEvent $event
+     *
+     * @return array
+     */
     private function getData(UserChatEvent $event)
     {
         $data = $event->getData();
-        if ($event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
-            $convo = $this->em->find(ChatConversation::class, $data['conversation_id']);
-            if (!$convo) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-            }
 
-            $tickets = null;
-            if ($convo->person) {
-                $tickets = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($convo->person, 5, true);
-            }
+        return [
+            'title'   => 'New incoming chat!',
+            'summary' => 'New incoming chat ['.$data['subject'].'] by '
+                .($data['person_name'] ? $data['person_name'] : 'anonymous')
+                ."\r\nDepartment: ".$data['department_name'],
+            'icon' => isset($data['author_id']) ? $this->getAvatar($data['author_id']) : null,
+        ];
+    }
 
-            $waiting_secs = time() - $convo->date_created->getTimestamp();
-
-            $url = null;
-
-            $data['html'] = $this->templating->render('AgentBundle:UserChat:chat-alert.html.twig', [
-                'convo'        => $convo,
-                'person'       => $convo->person,
-                'tickets'      => $tickets,
-                'session'      => $convo->session,
-                'visitor_id'   => $convo->visitor_id,
-                'waiting_secs' => $waiting_secs,
-                'url'          => $url,
-            ]);
+    /**
+     * @param $authorId
+     *
+     * @return string|null
+     */
+    private function getAvatar($authorId)
+    {
+        $person = $this->em->find(Person::class, $authorId);
+        if ($person) {
+            return $this->avatarResolver->getAvatar($person);
         }
 
-        return $data;
+        return;
     }
 }

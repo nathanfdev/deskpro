@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
@@ -272,7 +273,10 @@ class UserChatManager
             if ($is_new_convo) {
                 $newchat_cm_data = $convo->getInfo();
 
-                $this->dispatchLegacyEvent('chat.new', $newchat_cm_data);
+                $this->eventDispatcher->dispatch(
+                    UserChatEvent::EVENT_NAME,
+                    new UserChatEvent('chat.new', $newchat_cm_data)
+                );
             }
 
             if ($convo->person) {
@@ -363,7 +367,10 @@ class UserChatManager
         $newchat_cm_data              = $convo->getInfo();
         $newchat_cm_data['restarted'] = true;
 
-        $this->dispatchLegacyEvent('chat.new', $newchat_cm_data);
+        $this->eventDispatcher->dispatch(
+            UserChatEvent::EVENT_NAME,
+            new UserChatEvent('chat.new', $newchat_cm_data)
+        );
     }
 
     /**

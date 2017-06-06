@@ -13,27 +13,40 @@ class NotificationsHandler {
 
   handle(payload) { // eslint-disable-line class-methods-use-this
     const { data } = payload;
-    switch (payload.type) {
-      case 'notification.agent_chat.new_message':
-        if (!NotificationsHandler.active && !Notify.needsPermission) {
-          const summary = striptags(emojione.shortnameToUnicode(Message.formatMessage(data.summary)));
-          const notification = new Notify(
-            data.title,
-            {
-              body:        summary,
-              timeout:     7,
-              icon:        data.icon,
-              notifyClick: () => {
-                this.options.dispatch(startChat(null, data.chat));
-                $(window).focus();
-              }
-            }
-          );
-          notification.show();
+    let summary;
+    let title;
+    let icon;
+    let notifyClick;
+    if (!NotificationsHandler.active && !Notify.needsPermission) {
+      switch (payload.type) {
+        case 'notification.agent_chat.new_message':
+          title = data.title;
+          summary = striptags(emojione.shortnameToUnicode(Message.formatMessage(data.summary)));
+          icon = data.icon;
+          notifyClick = () => {
+            this.options.dispatch(startChat(null, data.chat));
+          };
+          break;
+        case 'chat.new':
+          title   = data.title;
+          summary = data.summary;
+          icon    = data.icon;
+          notifyClick = () => {}; // nothing really need here
+          break;
+        default:
+          return; // no-op
+      }
+
+      const notification = new Notify(
+        title,
+        {
+          body:        summary,
+          timeout:     7,
+          icon,
+          notifyClick: () => { notifyClick(); $(window).focus(); }
         }
-        break;
-      default:
-        break;
+      );
+      notification.show();
     }
   }
 }
