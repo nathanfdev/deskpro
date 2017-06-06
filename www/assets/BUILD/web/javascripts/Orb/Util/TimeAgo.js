@@ -65,6 +65,7 @@ Orb.Util.TimeAgo = {
 	 * @param $els
 	 */
 	applyToJquery: function($els) {
+		if (window.DP_DISABLE_RELATIVE_TIMES) return;
 		this.applyToElements($els.toArray());
 	},
 

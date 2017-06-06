@@ -418,4 +418,9 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     {
         return App::get('brand_form_helper')->getDefaultDepartment($type);
     }
+
+    public function isRelativeTimesDisabled()
+    {
+        return App::getContainer()->get('settings_resolver')->getGlobalSettings()->get('core.disable_relative_times');
+    }
 }

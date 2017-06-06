@@ -51,61 +51,129 @@ class GeneralSettings
      */
     private $brandSettingsRepository;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $deskpro_name;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     public $deskpro_url_autocorrect;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $deskpro_url;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     public $helpdesk_disabled;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $helpdesk_disabled_message;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $site_name;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $site_url;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     public $default_from_email;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $default_timezone;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $task_reminder_time;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     public $date_fulltime;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $date_full;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $date_day;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $date_day_short;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     public $date_time;
 
-    /** @var array */
+    /**
+     * @var bool
+     */
+    public $disable_relative_times = false;
+
+    /**
+     * @var array
+     */
     public $attach_user_must_exts = [];
-    /** @var array */
+
+    /**
+     * @var array
+     */
     public $attach_user_not_exts = [];
-    /** @var int */
+
+    /**
+     * @var int
+     */
     public $attach_user_maxsize;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     public $attach_agent_must_exts = [];
-    /** @var array */
+
+    /**
+     * @var array
+     */
     public $attach_agent_not_exts = [];
-    /** @var int */
+
+    /**
+     * @var int
+     */
     public $attach_agent_maxsize;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $rate_limit_disabled;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $rate_limit_ips;
 
-    /** @var bool */
+    /**
+     * @var bool
+     */
     protected $isCloud;
 
     /**
@@ -149,11 +217,12 @@ class GeneralSettings
         $this->default_timezone   = $this->settings->getSetting('core.default_timezone');
         $this->task_reminder_time = $this->settings->getSetting('core.task_reminder_time');
 
-        $this->date_fulltime  = $this->settings->getSetting('core.date_fulltime');
-        $this->date_full      = $this->settings->getSetting('core.date_full');
-        $this->date_day       = $this->settings->getSetting('core.date_day');
-        $this->date_day_short = $this->settings->getSetting('core.date_day_short');
-        $this->date_time      = $this->settings->getSetting('core.date_time');
+        $this->date_fulltime          = $this->settings->getSetting('core.date_fulltime');
+        $this->date_full              = $this->settings->getSetting('core.date_full');
+        $this->date_day               = $this->settings->getSetting('core.date_day');
+        $this->date_day_short         = $this->settings->getSetting('core.date_day_short');
+        $this->date_time              = $this->settings->getSetting('core.date_time');
+        $this->disable_relative_times = (bool) $this->settings->getSetting('core.disable_relative_times');
 
         $this->attach_user_maxsize   = $this->settings->getSetting('core.attach_user_maxsize');
         $this->attach_user_must_exts = $this->settings->getSetting('core.attach_user_must_exts');
@@ -236,6 +305,7 @@ class GeneralSettings
             'date_day'                  => $this->date_day,
             'date_day_short'            => $this->date_day_short,
             'date_time'                 => $this->date_time,
+            'disable_relative_times'    => $this->disable_relative_times,
             'attach_user_must_exts'     => $this->attach_user_must_exts,
             'attach_user_not_exts'      => $this->attach_user_not_exts,
             'attach_user_maxsize'       => $this->attach_user_maxsize,
@@ -300,11 +370,11 @@ class GeneralSettings
         $brand = App::$container->getBrandStack()->getDefaultBrand();
 
         foreach ([
-            'core.deskpro_url',
-            'core.deskpro_name',
-            'core.site_url',
-            'core.site_name',
-        ] as $copyName) {
+                     'core.deskpro_url',
+                     'core.deskpro_name',
+                     'core.site_url',
+                     'core.site_name',
+                 ] as $copyName) {
             $db->delete('settings_brand', ['name' => $copyName]);
             $val = $db->fetchColumn('SELECT value FROM settings WHERE name = ?', [$copyName]);
             if ($val) {
@@ -322,6 +392,7 @@ class GeneralSettings
 
             $this->globalSettings->setSetting("core.$p", $val);
         }
+        $this->globalSettings->setSetting('core.disable_relative_times', $this->disable_relative_times);
 
         if ($this->attach_user_must_exts) {
             $this->attach_user_must_exts = $this->cleanExtsArray($this->attach_user_must_exts);
