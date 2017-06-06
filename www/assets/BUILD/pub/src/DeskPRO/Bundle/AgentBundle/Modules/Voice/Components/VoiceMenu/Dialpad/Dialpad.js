@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Fieldset, createValue } from 'react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
@@ -192,10 +191,10 @@ class Dialpad extends React.Component {
 
             <DialGrid onClick={this.onClickNumber} />
 
-            <Button className={classNames('green call-button', { loading: submit })}>
+            <button className={classNames('ui button green call-button', { loading: submit })}>
               <i className="icon call" />
               Call
-            </Button>
+            </button>
           </Fieldset>
         </Form>
       </div>
