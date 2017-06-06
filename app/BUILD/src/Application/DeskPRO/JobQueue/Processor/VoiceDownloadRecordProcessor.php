@@ -152,7 +152,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     {
         $client = new Client();
         $data   = $client->send(new Request('GET', $callData['RecordingUrl']))->getBody()->getContents();
-        $blob   = $this->blobStorage->createBlobRecordFromString($data, $filename, 'wav');
+        $blob   = $this->blobStorage->createBlobRecordFromString($data, $filename.'.wav', 'wav');
 
         return $blob;
     }
