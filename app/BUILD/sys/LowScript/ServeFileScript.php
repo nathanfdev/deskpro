@@ -795,6 +795,12 @@ class ServeFileScript extends LowScriptAbstract
             // Need to send through this controller if its a download
             // request and the file is usually stored with an inline disposition
             if ($this->local_mode || $this->dpEnv->getConfig('settings.remote_blobs_proxy_local')) {
+                if ($urlRewrites = $this->dpEnv->getConfig('settings.remote_blobs_local_urlrewrite')) {
+                    foreach ($urlRewrites as $pattern => $replace) {
+                        $blob['file_url'] = preg_replace($pattern, $replace, $blob['file_url']);
+                    }
+                }
+
                 $context = stream_context_create([
                     'http' => ['timeout' => 10.0], // read timeout. we do it in chunks, so this is rather low
                 ]);
@@ -822,6 +828,12 @@ class ServeFileScript extends LowScriptAbstract
                 }
 
                 $buf = null;
+            }
+
+            if ($urlRewrites = $this->dpEnv->getConfig('settings.remote_blobs_redirect_urlrewrite')) {
+                foreach ($urlRewrites as $pattern => $replace) {
+                    $blob['file_url'] = preg_replace($pattern, $replace, $blob['file_url']);
+                }
             }
 
             header('HTTP/1.1 301 Moved Permanently');
