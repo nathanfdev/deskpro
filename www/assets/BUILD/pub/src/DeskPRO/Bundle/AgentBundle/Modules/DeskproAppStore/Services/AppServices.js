@@ -5,9 +5,11 @@ export class AppServices
   /**
    * @param {DpApi} api
    * @param {Window} window
+   * @param {EventSubscribersRegistry} widgetEventRegistry
    */
-  constructor({ api, window }) {
-    this.props = { api, window };
+  constructor({ api, window, widgetEventRegistry }) {
+    this.props = { api, window, widgetEventRegistry };
+    this.state = { eventSubscribers: new Map() };
   }
 
   /**
@@ -25,6 +27,8 @@ export class AppServices
     return new WidgetDOM({ document });
   }
 
+  get widgetEventRegistry() { return this.props.widgetEventRegistry; }
+
   /**
    * @return {*}
    */
@@ -32,11 +36,12 @@ export class AppServices
 
   showNotification = notification => {
     if (typeof notification === 'string') {
-      console.log('will show some notification');
+      //console.log('will show notification', notification);
       this.props.window.alert(notification);
       return;
     }
 
     throw new Error('unknown notification type');
   };
+
 }

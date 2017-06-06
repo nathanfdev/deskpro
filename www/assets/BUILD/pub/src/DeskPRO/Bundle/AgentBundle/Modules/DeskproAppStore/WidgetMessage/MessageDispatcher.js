@@ -1,49 +1,56 @@
 import postRobot from 'post-robot/dist/post-robot.js';
-import { default as serializeError } from 'serialize-error';
 
 import * as WidgetDOM from '../WidgetDOM';
-
-/**
- * @param eventName
- * @param {Widget} widget
- * @param {Window} widgetWindow
- * @param {WidgetMessage} widgetRequestMessage
- * @param err
- * @param data
- */
-const callback = (eventName, widget, widgetWindow, widgetRequestMessage, err, data) => {
-  let message;
-
-  if (err) {
-    message = {
-      status: 'error',
-      body: err instanceof Error ? JSON.stringify(serializeError(err)) : JSON.stringify(err)
-    }
-  } else {
-    message = { status: 'success', body: JSON.stringify(data) };
-  }
-
-  postRobot.send(widgetWindow, eventName, { id: widgetRequestMessage.id, ...message });
-};
+import { createErrorResponse, createSuccessResponse, createRequest, parseIncomingMessageJS, WidgetResponse, WidgetRequest } from './Message'
 
 /**
  * @param {String} eventName
  * @param {Widget} widget
- * @param {WidgetMessage} widgetRequestMessage
+ * @param {WidgetRequest} widgetRequest
  */
-export const createCallback = (eventName, widget, widgetRequestMessage) => (err, data) => {
+const createDispatchResponse = (eventName, widget, widgetRequest) => (err, data) => {
   const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
   if (! widgetWindow) {
     throw new Error('can not find widget window');
   }
+  const widgetResponse = err ? createErrorResponse(widgetRequest, err) : createSuccessResponse(widgetRequest, data);
 
-  callback(eventName, widget, widgetWindow, widgetRequestMessage, err, data)
+  postRobot.send(widgetWindow, eventName, widgetResponse.toJS());
+};
+
+export const dispatchIncomingMessage = (eventName, widgetMessage, widget, eventDispatcher ) => {
+  //parse message
+  const message = parseIncomingMessageJS(widgetMessage);
+
+  if (message instanceof WidgetRequest) {
+    const callback = createDispatchResponse(eventName, widget, message);
+    eventDispatcher.emit(eventName, callback, widget, message);
+    return;
+  }
+
+  if (message instanceof WidgetResponse) {
+    eventDispatcher.emit(message.id, widget, message);
+  }
+
 };
 
 /**
- * @param {EventEmitter} eventDispatcher
+ * @param eventName
+ * @param message
+ * @param {EventSubscribersRegistry} eventSubscriberRegistry
  */
-export const createDispatchRequest = eventDispatcher => (eventName, widget, widgetMessage) => {
-  const callback = createCallback(eventName, widget, widgetMessage);
-  eventDispatcher.emit(eventName, callback, widget, widgetMessage);
+export const dispatchOutgoingMessage = (eventName, message, eventSubscriberRegistry) =>
+{
+  const widgetList = eventSubscriberRegistry.getSubscribers(eventName);
+  const widgetWindowList = widgetList.map(widget => WidgetDOM.findWidgetWindow(widget, window.document));
+  const widgetRequestList = widgetList.map(widget => createRequest(widget, message));
+
+  while (widgetList.length) {
+    const widgetWindow = widgetWindowList.pop();
+    const widgetRequest = widgetRequestList.pop();
+
+    if (widgetWindow) {
+      postRobot.send(widgetWindow, eventName, widgetRequest.toJS());
+    }
+  }
 };

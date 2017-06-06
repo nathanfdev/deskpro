@@ -6,7 +6,7 @@ import LegacySidebarContainer from '../Components/LegacySidebarContainer';
 import LegacyAppSidebar from '../Components/LegacyAppSidebar';
 
 import ContainerConfiguration from './ContainerConfiguration';
-import { dispatchWidgetRequestEvent } from '../WidgetMessage';
+import { dispatchIncomingWidgetMessage } from '../WidgetMessage';
 
 import { Provider } from 'react-redux';
 
@@ -30,7 +30,7 @@ class ContainerMounter
   /**
    * @param {ContainerConfiguration} configuration
    * @param {Context} context
-   * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchWidgetRequestEvent, context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *}}
+   * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchIncomingWidgetMessage, context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *}}
    */
   createProps = (configuration, context) =>
   {
@@ -40,7 +40,7 @@ class ContainerMounter
       const widgetsConfigList = appRegistry.getWidgetConfigByTargetType(targetType);
 
       return {
-        widgetsConfigList, dispatchWidgetRequestEvent
+        widgetsConfigList, dispatchIncomingWidgetMessage
         , context, appstoreDispatcher, configuration
       };
   };
@@ -66,7 +66,7 @@ class ContainerMounter
     if (!reactElement) {
       throw new Error(`unknown render strategy: ${renderStrategy}`);
     }
-    
+
     // TODO this is a temporary hack to prevent the sidebar appearing everytime
     return props.widgetsConfigList.length;
   };

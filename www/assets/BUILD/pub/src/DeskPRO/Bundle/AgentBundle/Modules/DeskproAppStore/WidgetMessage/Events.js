@@ -26,6 +26,8 @@ export const EVENT_RESET_SIZE = 'app.reset_size';
 
 export const EVENT_SHOW_NOTIFICATION = 'app.show_notification';
 
+export const EVENT_SUBSCRIBE = 'app.subscribe_to_event';
+
 // USER EVENTS
 
 export const EVENT_ME_GET = 'context.me_get';
@@ -62,7 +64,9 @@ export const events =
 
   EVENT_SHOW_NOTIFICATION,
 
-  EVENT_ME_GET
+  EVENT_ME_GET,
+
+  EVENT_SUBSCRIBE
 };
 
 export const eventNames = Object.keys(events).map(key => events[key]);
