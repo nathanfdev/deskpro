@@ -177,7 +177,7 @@ export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) =>
  */
 export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
-  const tab = DeskPRO_Window.TabBar.getTab(tabId);
+  const tab = services.tabs.getTab(tabId);
   if (! tab) {
     return response(new Error('tab not found'), tabId);
   }
@@ -206,7 +206,7 @@ export const EVENT_TAB_STATUS = (response, widget, widgetMessage, services) => {
  */
 export const EVENT_TAB_ACTIVATE = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
-  DeskPRO_Window.TabBar.activateTabById(tabId);
+  services.tabs.activateTabById(tabId);
   response(null, tabId);
 };
 
@@ -219,7 +219,7 @@ export const EVENT_TAB_ACTIVATE = (response, widget, widgetMessage, services) =>
  */
 export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
-  DeskPRO_Window.TabBar.removeTabById(tabId);
+  services.tabs.removeTabById(tabId);
   response(null, tabId);
 };
 
@@ -285,7 +285,7 @@ export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
   const { events  } = message.body;
   const { widgetEventRegistry } = services;
 
-  events.each(event => widgetEventRegistry.addSubscriber(event, widget));
+  events.each(eventName => services.addEventListener(eventName, widget));
 };
 
 export const handlers = {

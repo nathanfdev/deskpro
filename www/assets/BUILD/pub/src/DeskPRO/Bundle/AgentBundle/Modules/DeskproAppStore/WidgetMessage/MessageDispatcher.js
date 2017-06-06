@@ -31,7 +31,21 @@ export const dispatchIncomingMessage = (eventName, widgetMessage, widget, eventD
   if (message instanceof WidgetResponse) {
     eventDispatcher.emit(message.id, widget, message);
   }
+};
 
+/**
+ * @param {String} eventName
+ * @param {Widget} widget
+ */
+export const createDispatchRequest = (eventName, widget) => message => {
+  const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
+  if (! widgetWindow) {
+    const error = new Error('can not find widget window');
+    return ;
+  }
+
+  const request = createRequest(widget, message);
+  postRobot.send(widgetWindow, eventName, request.toJS());
 };
 
 /**

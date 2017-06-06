@@ -20,6 +20,10 @@ export const EVENT_TAB_ACTIVATE = 'context.tab_activate';
 
 export const EVENT_TAB_CLOSE = 'context.tab_close';
 
+// TICKET EVENTS
+
+export const EVENT_TICKET_REPLY = 'context.ticket.reply';
+
 // APP EVENTS
 
 export const EVENT_RESET_SIZE = 'app.reset_size';
@@ -58,6 +62,10 @@ export const events =
 
   EVENT_TAB_CLOSE,
 
+  // TICKET EVENTS
+
+  EVENT_TICKET_REPLY,
+
   // APP EVENTS
 
   EVENT_RESET_SIZE,
@@ -67,6 +75,7 @@ export const events =
   EVENT_ME_GET,
 
   EVENT_SUBSCRIBE
+
 };
 
 export const eventNames = Object.keys(events).map(key => events[key]);

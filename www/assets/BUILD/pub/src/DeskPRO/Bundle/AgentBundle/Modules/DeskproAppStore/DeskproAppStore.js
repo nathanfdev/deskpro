@@ -9,8 +9,7 @@ import { loadApps, loadDevApp } from './Actions/Actions'
 
 import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
 import {AppServices} from './Services/AppServices';
-import {registerWidgetRequestListeners, EventSubscribersRegistry} from './WidgetMessage';
-import {RequestEventDispatcher} from './Services/EventDispatcher';
+import {registerIncomingWidgetRequestListeners, registerOutgoingWidgetRequestListeners} from './WidgetMessage';
 
 
 class DeskproAppStore
@@ -76,8 +75,9 @@ class DeskproAppStore
   static bootstrap(api, messageBroker, reduxStore, window)
   {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
-    const appServices = new AppServices({ api, window, widgetEventRegistry: new EventSubscribersRegistry() });
-    registerWidgetRequestListeners(RequestEventDispatcher, appServices);
+    const appServices = new AppServices({ api, window });
+    registerIncomingWidgetRequestListeners(appServices);
+    registerOutgoingWidgetRequestListeners(appServices, messageBroker);
 
     const manifests = filterAppManifestsConfig(reduxStore.getState());
 

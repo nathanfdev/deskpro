@@ -1,4 +1,5 @@
 import { WidgetDOM } from '../WidgetDOM'
+import { addWidgetEventListener } from '../WidgetMessage'
 
 export class AppServices
 {
@@ -7,8 +8,8 @@ export class AppServices
    * @param {Window} window
    * @param {EventSubscribersRegistry} widgetEventRegistry
    */
-  constructor({ api, window, widgetEventRegistry }) {
-    this.props = { api, window, widgetEventRegistry };
+  constructor({ api, window }) {
+    this.props = { api, window };
     this.state = { eventSubscribers: new Map() };
   }
 
@@ -18,21 +19,26 @@ export class AppServices
   get api() { return this.props.api; }
 
   /**
+   * @return {Orb.Class|DeskPRO.Agent.WindowElement.TabBar}
+   */
+  get tabs() { return DeskPRO_Window.TabBar; }
+
+  /**
    * @return {Window}
    */
   get window() { return this.props.window; }
+
+  /**
+   * @return {*}
+   */
+  get $() { return this.window.$; }
 
   get widgetDOM() {
     const { document } = this.props.window;
     return new WidgetDOM({ document });
   }
 
-  get widgetEventRegistry() { return this.props.widgetEventRegistry; }
-
-  /**
-   * @return {*}
-   */
-  get $() { return this.window.$; }
+  addEventListener = (eventName, widget) => addWidgetEventListener(eventName, widget, this);
 
   showNotification = notification => {
     if (typeof notification === 'string') {

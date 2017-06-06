@@ -84,12 +84,18 @@ export const createSuccessResponse = (widgetRequest, data) =>
   return new WidgetResponse({ id, widgetId, correlationId, body, status: 'success' });
 };
 
+/**
+ * @param {Widget} widget
+ * @param {*} body
+ * @return {WidgetRequest}
+ */
 export const createRequest = (widget, body) => {
   const id = ++nextMessageId;
   const correlationId = ++nextCorrelationId;
-  const { widgetId } = widget;
+  const { instanceId: widgetId } = widget;
 
-  return new WidgetRequest({id, correlationId, widgetId, body});
+  const widgetRequest =  new WidgetRequest({id, correlationId, widgetId, body});
+  return widgetRequest;
 };
 
 /**
