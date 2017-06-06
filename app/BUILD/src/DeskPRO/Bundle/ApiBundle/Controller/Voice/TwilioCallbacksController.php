@@ -1216,7 +1216,7 @@ class TwilioCallbacksController extends BaseController
             ;
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();
-            $dialNumbers   = $autoAttendant->getDialNumbers();
+            $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
 
             $content = [];
             foreach ($dialNumbers as $dialNumber) {

@@ -224,6 +224,19 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return VoiceAutoAttendantDialNumber[]|ArrayCollection
+     */
+    public function getOrderedDialNumbers()
+    {
+        $values = $this->dialNumbers->getValues();
+        usort($values, function (VoiceAutoAttendantDialNumber $a, VoiceAutoAttendantDialNumber $b) {
+            return $a->getDialNum() - $b->getDialNum();
+        });
+
+        return new ArrayCollection($values);
+    }
+
+    /**
      * @param int $dialNum
      *
      * @return VoiceAutoAttendantDialNumber
