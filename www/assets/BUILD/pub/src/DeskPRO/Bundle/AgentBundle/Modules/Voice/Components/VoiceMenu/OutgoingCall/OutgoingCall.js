@@ -46,7 +46,7 @@ class OutgoingCall extends React.Component {
             onClick={this.onHangup}
           >
             <i className="icon remove" />
-            Ignore
+            Cancel
           </a>
         </div>
       </div>
