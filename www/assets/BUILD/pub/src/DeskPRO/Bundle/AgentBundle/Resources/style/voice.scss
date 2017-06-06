@@ -78,6 +78,11 @@ $voice-green-border-color: #47BF61;
 
         .voice-profile-status-checkbox-title {
           margin-left: 20px;
+
+          .voice-profile-status-checkbox-title-disabled {
+            padding-left: 10px;
+            color: $dp-greyscale-450;
+          }
         }
       }
     }

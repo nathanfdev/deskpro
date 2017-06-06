@@ -15,8 +15,9 @@ const statusChoices = [
 class StatusForm extends React.Component {
 
   static propTypes = {
-    voiceEnabled: PropTypes.bool,
-    onChange:     PropTypes.func
+    voiceAvailable: PropTypes.bool,
+    voiceEnabled:   PropTypes.bool,
+    onChange:       PropTypes.func
   };
 
   constructor(props) {
@@ -71,7 +72,7 @@ class StatusForm extends React.Component {
   );
 
   render() {
-    const { voiceEnabled } = this.props;
+    const { voiceAvailable, voiceEnabled } = this.props;
     const { formData } = this.state;
 
     return (
@@ -96,13 +97,20 @@ class StatusForm extends React.Component {
                 <Isvg src={`${assetPath}/topbar/chat.svg`} />
                 <span className="voice-profile-status-checkbox-title">Chats</span>
               </div>
-              {voiceEnabled &&
+              {voiceAvailable &&
                 <div className="voice-profile-status-checkbox">
                   <Field select="calls">
                     <Checkbox />
                   </Field>
                   <Isvg src={`${assetPath}/topbar/IM.svg`} />
-                  <span className="voice-profile-status-checkbox-title">Calls</span>
+                  <span className="voice-profile-status-checkbox-title">
+                    Calls
+                    {!voiceEnabled &&
+                      <span className="voice-profile-status-checkbox-title-disabled">
+                        (Use HTTPS for calls)
+                      </span>
+                    }
+                  </span>
                 </div>}
             </div>}
         </div>
