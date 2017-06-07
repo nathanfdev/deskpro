@@ -66,6 +66,8 @@ export const dispatchOutgoingWidgetMessage = (eventName, message, outgoingReques
   OutgoingEventDispatcher.emit(eventName, message, handler, incomingResponseHandler);
 };
 
+const hasOutgoingListeners = eventName => OutgoingEventDispatcher.listeners(eventName, true);
+
 /**
  * @param {String} eventName
  * @param {function} onResponse
@@ -83,11 +85,18 @@ export const dispatchOutgoingWidgetRequestOnIntercept = (eventName, onResponse, 
   const incomingResponseListener = (widget, message) => onResponse(trapHandler, widget, message);
 
   return (...args) => {
-    if (isTrapActive()) {
+
+    const active = isTrapActive();
+    const dispatchOutgoingMessage = active && hasOutgoingListeners(eventName);
+
+    if (dispatchOutgoingMessage) {
       const message = typeof onActivate === 'function' ? onActivate.apply(null, args) : onActivate;
       dispatchOutgoingWidgetMessage(eventName, message, null, incomingResponseListener);
     }
 
     trap.apply(null, args);
+
+    // if trap was active before applying and we did not dispatch the outgoing message and now the trap is inactive release it
+    if (active && !dispatchOutgoingMessage && !isTrapActive()) { releaseTrap(); }
   };
 };
