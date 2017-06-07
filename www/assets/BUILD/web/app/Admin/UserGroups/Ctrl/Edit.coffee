@@ -124,8 +124,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         assign = false
         full = false
 
-        if dep.permissions?.agentgroups
-          u = dep.permissions.agentgroups.filter((x) => x.id == group.id)[0]
+        if dep.permissions?.usergroups
+          u = dep.permissions.usergroups.filter((x) => x.id == group.id)[0]
           if u
             if u.name == 'full' then full = true else assign = true
 
@@ -133,8 +133,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       for dep in @chatDeps
         full = false
-        if dep.permissions?.agentgroups
-          u = dep.permissions.agentgroups.filter((x) => x.id == group.id)[0]
+        if dep.permissions?.usergroups
+          u = dep.permissions.usergroups.filter((x) => x.id == group.id)[0]
           if u
             full = true
 
