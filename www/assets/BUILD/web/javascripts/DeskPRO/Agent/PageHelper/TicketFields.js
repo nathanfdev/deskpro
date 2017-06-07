@@ -38,28 +38,34 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			},
 			getFieldValue: function(name) {
 				var $holders = self.page.getEl('field_holders');
+
+				// check single fields
 				var $field = $('[name="' + name + '"]', $holders);
-
-				// field is not present on the form
-				// e.g. org field if user doesn't belogn to a org
-				if (!$field.length) {
-					return null;
+				if ($field.length) {
+					if ($field.is(':checkbox')) {
+						return $field.is(':checked');
+					}
+					if ($field.attr('type') === 'hidden') {
+						return $.trim($field.parent().text());
+					}
+					if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
+						return $field.val();
+					}
 				}
 
-				if ($field.is(':checkbox')) {
-					return $field.is(':checked');
-				}
-				if ($field.attr('type') === 'hidden') {
-					return $.trim($field.parent().text());
-				}
-				if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
-					return $field.val();
-				}
+				// check multiple fields
 				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
+				if (!$field.length) {
+					// field is not present on the form
+					// e.g. org field if user doesn't belong to a org
+					return;
+				}
+
 				if ($field.hasClass('with-select2')) {
 					var val = $.trim($field.select2('val'));
 					return val || null;
 				}
+
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
