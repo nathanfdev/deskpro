@@ -80,7 +80,6 @@ class UsergroupsController extends AbstractController implements ProtectedContro
                 WHERE ug.is_agent_group = false
                 ORDER BY ug.title ASC
             ')->execute();
-
             $data['groups'] = $this->getApiData($ugs);
         }
 

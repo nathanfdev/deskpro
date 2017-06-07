@@ -13,6 +13,9 @@
 					<li dp-tab-btn="main.perms">
 						<a href="#"><i class="fa fa-key"></i> Permissions</a>
 					</li>
+					<li dp-tab-btn="main.deps">
+						<a href="#"><i class="fa fa-key"></i> Departments</a>
+					</li>
 				</ul>
 			</nav>
 
@@ -22,6 +25,9 @@
 				</div>
 				<div dp-tab-body="main.perms">
 					{% include 'AdminInterfaceBundle:UserGroups:edit-perms.html.twig' %}
+				</div>
+				<div dp-tab-body="main.deps">
+                    {% include 'AdminInterfaceBundle:UserGroups:edit-deps.html.twig' %}
 				</div>
 			</article>
 
@@ -38,6 +44,24 @@
 					<div class="dp-delete-control" ng-if="EditCtrl.group.id" ng-hide="form_props.$attempted && form_props.$invalid">
 						<button class="btn btn-danger" ng-click="$event.preventDefault(); EditCtrl.showDelete();">Delete</button>
 					</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 						<div dp-hide-spinning="saving">
