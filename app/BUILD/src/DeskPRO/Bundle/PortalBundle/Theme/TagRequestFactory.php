@@ -48,7 +48,7 @@ class TagRequestFactory
     /**
      * @var RequestStack
      */
-    private $stack;
+    private $requestStack;
 
     /**
      * @var LanguageManager
@@ -63,13 +63,13 @@ class TagRequestFactory
     /**
      * Constructor.
      *
-     * @param RequestStack       $stack
+     * @param RequestStack       $requestStack
      * @param LanguageManager    $languageManager
      * @param ContainerInterface $container
      */
-    public function __construct(RequestStack $stack, LanguageManager $languageManager, ContainerInterface $container)
+    public function __construct(RequestStack $requestStack, LanguageManager $languageManager, ContainerInterface $container)
     {
-        $this->stack           = $stack;
+        $this->requestStack    = $requestStack;
         $this->languageManager = $languageManager;
         $this->container       = $container;
     }
@@ -82,10 +82,13 @@ class TagRequestFactory
      */
     public function create(Tag $tag, array $arguments = [])
     {
-        $currentRequest = $this->stack->getCurrentRequest();
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if (!$currentRequest) {
+            return;
+        }
 
-        /** @var TagRequest $tr */
-        $tr = TagRequest::create(
+        /** @var TagRequest $tagRequest */
+        $tagRequest = TagRequest::create(
             '',
             'GET',
             $this->makeQuery($tag, $arguments),
@@ -93,22 +96,22 @@ class TagRequestFactory
             [],
             $currentRequest->server->all()
         );
-        $tr->attributes->add($this->makeAttributes($tag, $arguments));
+        $tagRequest->attributes->add($this->makeAttributes($tag, $arguments));
 
-        $tr->setOptionsResolver(new OptionsResolver());
+        $tagRequest->setOptionsResolver(new OptionsResolver());
         // we don't have session on preflight request (OPTIONS)
         if ($currentRequest->hasSession()) {
-            $tr->setSession($currentRequest->getSession());
+            $tagRequest->setSession($currentRequest->getSession());
         }
-        $tr->headers->replace($currentRequest->headers->all());
+        $tagRequest->headers->replace($currentRequest->headers->all());
 
         // set base url from main request
         $property = new \ReflectionProperty(Request::class, 'baseUrl');
         $property->setAccessible(true);
-        $property->setValue($tr, $currentRequest->getBaseUrl());
+        $property->setValue($tagRequest, $currentRequest->getBaseUrl());
         $property->setAccessible(false);
 
-        return $tr;
+        return $tagRequest;
     }
 
     /**
@@ -162,7 +165,7 @@ class TagRequestFactory
      */
     private function makeAttributes(Tag $tag, array $arguments)
     {
-        $currentRequest    = $this->stack->getCurrentRequest();
+        $currentRequest    = $this->requestStack->getCurrentRequest();
         $currentAttributes = $currentRequest->attributes->all();
 
         $newAttributes = [];

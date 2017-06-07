@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Theme\TagHandler;
 
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
@@ -38,6 +34,9 @@ use DeskPRO\Bundle\PortalBundle\Theme\TagHandlerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
+/**
+ * Class InlineTagHandler.
+ */
 class InlineTagHandler implements TagHandlerInterface
 {
     /**
@@ -45,19 +44,30 @@ class InlineTagHandler implements TagHandlerInterface
      */
     private $container;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface $container
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
 
-    public function handle(Tag $tag, TagRequest $tag_request)
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Tag $tag, TagRequest $tagRequest)
     {
-        $tag_request->attributes->set('_controller', $tag->getControllerName());
+        $tagRequest->attributes->set('_controller', $tag->getControllerName());
 
-        return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST);
+        return $this->container->get('http_kernel')->handle($tagRequest, HttpKernelInterface::SUB_REQUEST);
     }
 
-    public function supports(Tag $tag, TagRequest $tag_request)
+    /**
+     * {@inheritdoc}
+     */
+    public function supports(Tag $tag, TagRequest $tagRequest)
     {
         return true;
     }

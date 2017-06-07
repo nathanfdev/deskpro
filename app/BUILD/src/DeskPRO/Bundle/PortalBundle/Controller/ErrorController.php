@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
+use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,11 +52,11 @@ class ErrorController extends AbstractController
      */
     public function showExceptionAction(FlattenException $exception, $logger = null)
     {
-        $requestStack = $this->get('request_stack');
-
         // detect recursions
         // in some edge cases we can get exceptions in sub requests (using in http cache)
         // so it causes infinity recursion loops
+        $requestStack = $this->get('request_stack');
+
         $reflection = new \ReflectionClass(RequestStack::class);
         $property   = $reflection->getProperty('requests');
         $property->setAccessible(true);
@@ -65,7 +66,12 @@ class ErrorController extends AbstractController
             return new Response('', $exception->getStatusCode());
         }
 
-        if ($requestStack->getParentRequest() && $requestStack->getParentRequest()->attributes->has('tag_request')) {
+        // don't render errors for page fragments
+        $tagRequests = array_filter($requests, function (Request $request) {
+            return $request instanceof TagRequest;
+        });
+
+        if (count($tagRequests) > 0) {
             // an error here means we're an error inside of rendering a tag (either inline or esi)
             // Any 500 type error will have been logged by the exception handler, and any 300s or 400s
             // are typically caused by permission checks or permission errors.
@@ -81,6 +87,15 @@ class ErrorController extends AbstractController
             // So the only thing to do really is to return an empty response. The user never sees it because this is
             // just a fragment of a parent page.
             return new Response('', $exception->getStatusCode());
+        }
+
+        // check if the error controller was already called
+        // allow rendering error template only for the first exception
+        $appEnv = $this->container->get('deskpro.app_env');
+        if ($appEnv->hasRuntimeVar('portal.error_controller_called')) {
+            return new Response('', $exception->getStatusCode());
+        } else {
+            $appEnv->setRuntimeVar('portal.error_controller_called', true);
         }
 
         if ($response = $this->delegateApi($exception)) {

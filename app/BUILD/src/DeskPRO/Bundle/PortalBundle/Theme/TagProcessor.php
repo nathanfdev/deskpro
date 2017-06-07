@@ -68,6 +68,11 @@ class TagProcessor
     public function process(Tag $tag, array $arguments = [])
     {
         $tagRequest = $this->tagRequestFactory->create($tag, $arguments);
+        if (!$tagRequest) {
+            // unable to get current request
+            // return empty content
+            return '';
+        }
 
         if (!$handler = $this->findHandler($tag, $tagRequest)) {
             throw new \RuntimeException('no handler found for "'.$tag->getName().'"');
