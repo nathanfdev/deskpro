@@ -94,8 +94,7 @@ export const createRequest = (widget, body) => {
   const correlationId = ++nextCorrelationId;
   const { instanceId: widgetId } = widget;
 
-  const widgetRequest =  new WidgetRequest({id, correlationId, widgetId, body});
-  return widgetRequest;
+  return new WidgetRequest({id, correlationId, widgetId, body});
 };
 
 /**
@@ -105,7 +104,8 @@ export const createRequest = (widget, body) => {
 export const parseIncomingMessageJS = widgetMessage => {
   const { args, messageId, status, body, correlationId, id, widgetId } = widgetMessage;
   if (status) {
-    return new WidgetResponse({ id, widgetId, correlationId, body, status});
+    const parsedBody = status === 'error' && typeof  body === 'string' ? JSON.parse(body) : body;
+    return new WidgetResponse({ id, widgetId, correlationId, body: parsedBody, status});
   }
 
   if (args) {

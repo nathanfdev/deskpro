@@ -283,8 +283,6 @@ export const EVENT_SHOW_NOTIFICATION = (response, widget, message, services) => 
  */
 export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
   const { events  } = message.body;
-  const { widgetEventRegistry } = services;
-
   events.each(eventName => services.addEventListener(eventName, widget));
 };
 
@@ -347,5 +345,6 @@ const registerListener = ({ eventDispatcher, eventName, eventHandler, appService
 export const registerListeners = (eventDispatcher, appServices) => {
   /** @param {String} key */
   const mapper = key => registerListener({ eventName: events[key], eventHandler: handlers[key], eventDispatcher, appServices });
-  return Object.keys(events).map(mapper);
+  // intersect the handlers with events, picking entries which exist in both maps;
+  return Object.keys(handlers).filter(key => events.hasOwnProperty(key)).map(mapper);
 };

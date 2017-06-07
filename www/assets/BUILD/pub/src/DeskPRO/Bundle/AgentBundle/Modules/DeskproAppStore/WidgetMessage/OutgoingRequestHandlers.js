@@ -1,4 +1,16 @@
 import { events } from './Events';
+import { createDispatchRequestResponse, createDispatchFireAndForget } from './MessageDispatcher';
+
+/**
+ * This is the default outgoing request handler. it can be used for logging or any other generic tasks
+ *
+ * @param {function} send
+ * @param {Widget} widget
+ * @param {*} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const DEFAULT_HANDLER = (send, widget, message, services) => send(message);
 
 /**
  * @param {function} send
@@ -21,15 +33,49 @@ export const handlers = {
 
 };
 
+export const handlerForEvent = eventName => {
+  if (eventName === events.EVENT_TICKET_REPLY) {
+    return EVENT_TICKET_REPLY;
+  }
+
+  return DEFAULT_HANDLER;
+};
+
+export const chainHandlers = (firstHandler, secondHandler) => {
+
+  if (typeof firstHandler !== 'function' && typeof secondHandler !== 'function' ) {
+    throw new Error('at least one handler must be a function');
+  }
+
+  if (typeof firstHandler !== 'function') {
+    return secondHandler;
+  }
+
+  if (typeof secondHandler !== 'function') {
+    return firstHandler;
+  }
+
+  return (send, widget, message, services) => {
+    const chain = messageHandledByFirst => secondHandler(send, widget, messageHandledByFirst, services);
+    firstHandler(chain, widget, message, services);
+  };
+
+};
+
 /**
- * @param {EventDispatcher} eventDispatcher
+ * @param {String} eventName
+ * @param {EventDispatcher} incomingEventDispatcher
+ * @param {Widget} widget
  * @param {AppServices} appServices
- * @param {DeskPRO.MessageBroker} messageBroker
  */
-export const registerListeners = (eventDispatcher, appServices, messageBroker) =>
-{
-  messageBroker.addMessageListener(
-    events.EVENT_TICKET_REPLY,
-    (message) => eventDispatcher.emit(events.EVENT_TICKET_REPLY, message, EVENT_TICKET_REPLY)
-  );
+export const createListener = ({ eventName, incomingEventDispatcher, widget,  appServices }) => {
+  return (message, outgoingRequestHandler, incomingResponseHandler) => {
+    let send;
+    if (incomingResponseHandler) {
+      send = createDispatchRequestResponse(eventName, widget, incomingResponseHandler, incomingEventDispatcher);
+    } else {
+      send = createDispatchFireAndForget(eventName, widget);
+    }
+    outgoingRequestHandler(send, widget, message, appServices);
+  };
 };
