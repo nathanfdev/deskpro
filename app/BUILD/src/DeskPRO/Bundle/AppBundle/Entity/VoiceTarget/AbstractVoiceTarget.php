@@ -72,7 +72,7 @@ abstract class AbstractVoiceTarget implements EntityInterface, NotifyPropertyCha
      *
      * @var int
      */
-    private $id;
+    protected $id;
 
     /**
      * @return int

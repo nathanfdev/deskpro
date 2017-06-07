@@ -17,7 +17,7 @@ class EditAudioAsset extends React.Component {
 
     return (
       <div>
-        <b>Text to audio:</b> {value.get('text')}
+        <b>Text to audio:</b> {value.get('auto_generated') ? 'Auto generated' : value.get('text')}
         <i className="write icon" onClick={this.onClick} />
       </div>
     );

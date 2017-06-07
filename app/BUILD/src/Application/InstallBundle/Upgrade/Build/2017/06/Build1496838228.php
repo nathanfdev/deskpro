@@ -26,22 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Twilio;
+namespace Application\InstallBundle\Upgrade\Build;
 
-/**
- * Class Twiml.
- *
- * @method $this say($message, array $options = [])
- * @method $this pause(array $options = [])
- * @method $this gather(array $options)
- * @method $this play($url, array $options = [])
- * @method $this record(array $options)
- * @method $this dial(array $options = [])
- * @method $this conference($name, array $options = [])
- * @method $this hangup()
- * @method $this enqueue(array $options)
- * @method $this task($jsonOptions)
- */
-class Twiml extends \Twilio\Twiml
+class Build1496838228 extends AbstractBuild implements BlockingBuildInterface
 {
+    public function addNewTables()
+    {
+    }
+
+    public function runAlters()
+    {
+        $this->execDbQuery('default', 'ALTER TABLE voice_assets ADD auto_generated TINYINT(1) DEFAULT NULL');
+    }
+
+    public function run()
+    {
+    }
 }
