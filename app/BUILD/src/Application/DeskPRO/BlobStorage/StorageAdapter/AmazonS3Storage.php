@@ -120,7 +120,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function resolvePath($path)
     {
-        return rtrim($this->base_path, '/\\').DIRECTORY_SEPARATOR.trim($path, '/\\');
+        return rtrim($this->base_path, '/\\').'/'.trim($path, '/\\');
     }
 
     /**
