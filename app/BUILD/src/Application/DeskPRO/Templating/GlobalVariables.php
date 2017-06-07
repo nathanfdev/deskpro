@@ -421,6 +421,6 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
 
     public function isRelativeTimesDisabled()
     {
-        return App::getContainer()->get('settings_resolver')->getGlobalSettings()->get('core.disable_relative_times');
+        return App::getContainer()->get('settings_resolver')->getGlobalSettings()->getBool('core.disable_relative_times', false);
     }
 }

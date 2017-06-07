@@ -336,7 +336,7 @@
 
         window.DP_ZEROCLIPBOARD_PATH = '{{ asset('bower_components/zeroclipboard/dist/ZeroClipboard.swf') }}';
         window.DP_ADMIN_BUNDLE_PATH = '{{ asset('DeskPRO_AdminBundle.js', 'app_assets') }}';
-        window.DP_DISABLE_RELATIVE_TIMES = {{ app.isRelativeTimesDisabled() }};
+        window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
     </script>
     {{ js_error_tracking('admin_interface') }}
     <script type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
