@@ -65,6 +65,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
+
+    var boundHandleReplySave = this.handleReplySave.bind(this);
+
+    var onActivateScope = this;
+    var onActivate = function () { return { ticket_id: onActivateScope.meta.ticket_id, meta: onActivateScope.meta } };
+    onActivate.bind(this);
+
+    var onResponse = function (handlerTrap, widget, message) {
+      var response = message.body;
+      var release = response.allowReply;
+      var reason = null;
+      if (!response.allowReply) {
+        reason = response.reason ? response.reason : 'Reply is disabled';
+      }
+
+      if (reason) { DeskPRO_Window.showAlert(reason); }
+      handlerTrap(release);
+    };
+    this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
+      'context.ticket.reply',
+      onResponse,
+      onActivate,
+      boundHandleReplySave
+    );
+
+
 		this.wrapper = el;
 
 		var self = this;
@@ -640,7 +666,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -1421,7 +1447,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
-				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
 				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}
