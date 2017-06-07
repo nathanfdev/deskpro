@@ -176,7 +176,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getAllowExtension()
     {
@@ -196,7 +196,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getAllowRepeatMenu()
     {

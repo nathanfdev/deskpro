@@ -1222,6 +1222,7 @@ class TwilioCallbacksController extends BaseController
                 'numDigits'   => 1,
                 'action'      => $this->getAutoAttendantCallbackUrl($account, $autoAttendant),
                 'finishOnKey' => '',
+                'timeout'     => 30,
             ]);
 
             $asset = $autoAttendant->getAudioAsset();
@@ -1240,8 +1241,12 @@ class TwilioCallbacksController extends BaseController
                     ));
                 }
 
-                $gather->say('To repeat the main menu, press * key');
-                $gather->say('To enter agent extension number, press # key');
+                if ($autoAttendant->getAllowRepeatMenu()) {
+                    $gather->say('To repeat the main menu, press * key');
+                }
+                if ($autoAttendant->getAllowExtension()) {
+                    $gather->say('To enter agent extension number, press # key');
+                }
             } elseif ($asset instanceof VoiceTextAsset) {
                 $gather->say($asset->getText());
             } elseif ($asset instanceof AbstractVoiceBlobAsset) {
