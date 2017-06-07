@@ -107,7 +107,7 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
         $data = $event->getData();
 
         return [
-            'title'   => 'New incoming chat!',
+            'title'   => 'New incoming chat',
             'summary' => 'New incoming chat ['.$data['subject'].'] by '
                 .($data['person_name'] ? $data['person_name'] : 'anonymous')
                 ."\r\nDepartment: ".$data['department_name'],
