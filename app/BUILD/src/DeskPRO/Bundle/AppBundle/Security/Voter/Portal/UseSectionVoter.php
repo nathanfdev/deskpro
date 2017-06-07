@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\AbstractVoter;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
@@ -67,6 +69,7 @@ class UseSectionVoter extends AbstractVoter
      */
     protected function voteOnAttribute($attribute, $object, TokenInterface $token)
     {
+        /** @var Person $user */
         $user = $token->getUser();
 
         if ($this->isLoggedIn($user)) {
@@ -83,9 +86,36 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_GUIDES:
                 return $this->getActiveBrandSetting('core.apps_guides') && $permissionBag->get('guides.use');
             case static::USE_CHAT:
-                return $this->getActiveBrandSetting('core.apps_chat')
-                    && $permissionBag->get('chat.use')
-                    && $permissionBag->getAllowedChatDepartmentIds();
+                // check global settings
+                if (!$this->getActiveBrandSetting('core.apps_chat')
+                    || !$permissionBag->get('chat.use')
+                    || !$permissionBag->getAllowedChatDepartmentIds()) {
+                    return false;
+                }
+
+                // check widget brand settings
+                // get person user groups
+                if (!$this->isLoggedIn($user)) {
+                    $personUserGroupIds = [];
+                } else {
+                    $personUserGroupIds = $user->getUsergroupIds();
+                }
+
+                // get chat brand permission bag that intersects with user's user groups
+                $activeBrand   = $this->container->get('brand_stack')->getActive()->getBrand();
+                $brandSettings = $this->container->get('widget_settings_resolver')->getWidgetBrandOptions($activeBrand);
+
+                if ($brandSettings->getChat()->getUserGroups() instanceof ArrayCollection) {
+                    $brandUserGroups = $brandSettings->getChat()->getUserGroups()->toArray();
+                } else {
+                    $brandUserGroups = [];
+                }
+
+                $brandPermissionBag = $this->getPortalPermissionsManager()->getPartialPermissionBagForUsergroups(
+                    array_values(array_intersect($personUserGroupIds, $brandUserGroups))
+                );
+
+                return $brandPermissionBag->get('chat.use');
             case static::USE_DOWNLOADS:
                 return $this->getActiveBrandSetting('core.apps_downloads') && $permissionBag->get('downloads.use');
             case static::USE_NEWS:

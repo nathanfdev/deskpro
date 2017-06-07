@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat;
 
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
@@ -36,6 +37,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -103,12 +105,31 @@ class WidgetBrandChatSettingsType extends AbstractType
             ->add('required_email', ApiBooleanType::class, [
                 'property_path' => 'requiredEmail',
             ])
+            ->add('custom_fields', CollectionType::class, [
+                'property_path' => 'customFields',
+                'type'          => WidgetBrandChatCustomFieldType::class,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+            ])
+            ->add('user_groups', EntityType::class, [
+                'property_path' => 'userGroups',
+                'class'         => Usergroup::class,
+                'multiple'      => true,
+            ])
         ;
 
-        $departmentRepo = $this->em->getRepository(Department::class);
         $builder
             ->get('default_department')
-            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer($departmentRepo)))
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer(
+                $this->em->getRepository(Department::class)
+            )))
+        ;
+
+        $builder
+            ->get('user_groups')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer(
+                $this->em->getRepository(Usergroup::class)
+            )))
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onClearDefaultDepartment']);

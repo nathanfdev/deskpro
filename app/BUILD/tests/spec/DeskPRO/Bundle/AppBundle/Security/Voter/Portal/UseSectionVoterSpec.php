@@ -32,13 +32,18 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Security\Voter\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentAccessVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Doctrine\Common\Collections\ArrayCollection;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -55,18 +60,27 @@ class UseSectionVoterSpec extends ObjectBehavior
         PortalPermissionsManager $permissions_manager,
         BrandStack $brand_stack,
         BrandContainer $brand_container,
+        Brand $brand,
         Person $person,
         TokenInterface $token,
         TokenInterface $guest_token,
         PermissionsBag $person_permission_bag,
-        PermissionsBag $guest_permission_bag
+        PermissionsBag $guest_permission_bag,
+        WidgetSettingsResolver $widgetSettingsResolver,
+        WidgetBrandSettings $widgetBrandSettings,
+        WidgetBrandChatSettings $widgetBrandChatSettings
     ) {
         $person->getId()->willReturn(1);
+        $person->getUsergroupIds()->willReturn([2, 3]);
         $token->getUser()->willReturn($person);
         $guest_token->getUser()->willReturn(null);
         $brand_stack->getActive()->willReturn($brand_container);
+        $brand_container->getBrand()->willReturn($brand);
         $container->get('brand_stack')->willReturn($brand_stack);
         $container->get('portal_permissions_manager')->willReturn($permissions_manager);
+        $container->get('widget_settings_resolver')->willReturn($widgetSettingsResolver);
+        $widgetSettingsResolver->getWidgetBrandOptions($brand)->willReturn($widgetBrandSettings);
+        $widgetBrandSettings->getChat()->willReturn($widgetBrandChatSettings);
         $permissions_manager->getPermissionsBagForGuest()->willReturn($guest_permission_bag);
         $permissions_manager->getPermissionsBagForPerson($person)->willReturn($person_permission_bag);
         $permissions_manager->getPartialPermissionBagForRegisteredUsergroup()->willReturn($person_permission_bag);
@@ -137,9 +151,13 @@ class UseSectionVoterSpec extends ObjectBehavior
         PermissionsBag $person_permission_bag,
         TokenInterface $guest_token,
         PermissionsBag $guest_permission_bag,
-        BrandContainer $brand_container
+        BrandContainer $brand_container,
+        WidgetBrandChatSettings $widgetBrandChatSettings,
+        PortalPermissionsManager $permissions_manager
     ) {
+        $widgetBrandChatSettings->getUserGroups()->willReturn(new ArrayCollection([3, 4]));
         $brand_container->getSetting('core.apps_chat', Argument::any())->willReturn(true);
+        $permissions_manager->getPartialPermissionBagForUsergroups([3])->willReturn($person_permission_bag);
 
         $person_permission_bag->get('chat.use')->willReturn(true);
         $person_permission_bag->getAllowedChatDepartmentIds()->willReturn(1);
@@ -147,6 +165,7 @@ class UseSectionVoterSpec extends ObjectBehavior
 
         $guest_permission_bag->get('chat.use')->willReturn(true);
         $guest_permission_bag->getAllowedChatDepartmentIds()->willReturn(1);
+        $permissions_manager->getPartialPermissionBagForUsergroups([])->willReturn($guest_permission_bag);
         $this->verifyGrantedVote(UseSectionVoter::USE_CHAT, $guest_token);
     }
 

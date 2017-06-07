@@ -216,13 +216,15 @@
                                 <p>{{ phrase('admin.widget.chat_permissions_desc') }}</p>
                                 <div class="inline field" ng-repeat="group in user_groups">
                                     <div class="ui checkbox">
-                                        <input type="checkbox" id="permission_group_{{ ng_var('group.id') }}"
-                                               class="hidden" ng-model="user_group_permission[group.id]"
-                                               ng-disabled="Ctrl.chat_custom_fields(group)"
+                                        <input type="checkbox"
+                                               id="permission_group_{{ ng_var('group.id') }}"
+                                               class="hidden"
+                                               ng-checked="brand_settings.chat.user_groups.indexOf(group.id) != -1"
+                                               ng-disabled="user_group_permission[group.id] == false"
                                         >
                                         <label for="permission_group_{{ ng_var('group.id') }}"
                                                title="{{ ng_var('group.note') }}"
-                                               ng-click="Ctrl.changeRights(group)">{{ ng_var('group.title') }}</label>
+                                               ng-click="Ctrl.changeRights(group, $event)">{{ ng_var('group.title') }}</label>
                                     </div>
                                 </div>
                             </div>
@@ -265,7 +267,8 @@
                                             </div>
                                             <div class="inline field" ng-if="chat_departments.length > 1">
                                                 <div class="ui checkbox">
-                                                    <input type="checkbox" id="chat_department"
+                                                    <input type="checkbox"
+                                                           id="chat_department"
                                                            ng-model="brand_settings.chat.select_department"
                                                            ng-true-value="custom"
                                                            ng-false-value="default"
@@ -297,8 +300,11 @@
                                             <div ui-sortable="Ctrl.chatFieldsSortOptions" class="chat-custom-fields">
                                                 <div class="inline field with-drag-handle" ng-repeat="field in chat_custom_fields" data-id="{{ ng_var('field.id') }}">
                                                     <div class="ui checkbox">
-                                                        <input type="checkbox" id="custom_field_{{ ng_var('field.id') }}"
-                                                               ng-model="field.is_enabled" class="hidden">
+                                                        <input type="checkbox"
+                                                               id="custom_field_{{ ng_var('field.id') }}"
+                                                               ng-model="Ctrl.getBrandCustomField(field.id).is_enabled"
+                                                               ng-disabled="field.is_enabled == false"
+                                                               class="hidden">
                                                         <label for="custom_field_{{ ng_var('field.id') }}">
                                                             {{ ng_var('field.title') }}
                                                             <i class="fa fa-bars drag-handle"></i>
