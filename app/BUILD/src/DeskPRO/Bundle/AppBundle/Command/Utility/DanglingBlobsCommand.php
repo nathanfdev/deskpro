@@ -88,7 +88,7 @@ DOC
         }
 
         /** @var Connection $db */
-        $db = $this->getContainer()->get('database_connection');
+        $db = $this->getContainer()->getDbRead();
 
         $minId = $input->getOption('min-id');
         $maxId = $input->getOption('max-id');
@@ -105,6 +105,7 @@ DOC
         $countFound = 0;
         $countAll   = 0;
         $cleanCount = 0;
+        $totalSize  = 0;
 
         $parts = [];
         foreach (Blob::tablesWithBlobs() as $info) {
@@ -157,6 +158,7 @@ DOC
                         $info = $blobsInfo[$danglingId];
 
                         $status = 'Dangling';
+                        $totalSize += $info['filesize'];
 
                         if ($delete) {
                             if ($this->cleanBlob($info)) {
@@ -190,7 +192,7 @@ DOC
             $output->writeln('');
             $output->writeln('Ranges scanned:           '.sprintf('%d (%d to %d, batch size %d)', $rangeCount, $minId, $maxId, $batchSize));
             $output->writeln('Records scanned:          '.$countAll);
-            $output->writeln('Dangling records found:   '.$countFound);
+            $output->writeln('Dangling records found:   '.sprintf('%d (%d bytes)', $countFound, $totalSize));
             $output->writeln('Dangling records cleaned: '.$cleanCount);
             $output->writeln('Time:                     '.sprintf('%.3fs', microtime(true) - $startTime));
         }

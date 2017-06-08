@@ -72,10 +72,27 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
             $output->writeln("Updating preferred storage location to use adapter: $set_aid");
             $t = microtime(true);
-            $c = App::getDb()->executeUpdate('
-                UPDATE blobs
-                SET storage_loc_pref = ? WHERE storage_loc != ? AND storage_loc_specific IS NULL
-            ', [$set_aid, $set_aid]);
+
+            $minId      = $this->getContainer()->get('database_connection')->fetchColumn('SELECT id FROM blobs ORDER BY id ASC LIMIT 1');
+            $maxId      = $this->getContainer()->get('database_connection')->fetchColumn('SELECT id FROM blobs ORDER BY id DESC LIMIT 1');
+            $batchStart = $minId;
+            $batchSize  = 50000;
+
+            $c = 0;
+            while ($batchStart < $maxId) {
+                $batchEnd = ($batchStart + $batchSize) - 1;
+                echo "Updating $batchStart -> $batchEnd\n";
+                $c += App::getDb()->executeUpdate('
+                    UPDATE blobs
+                    SET storage_loc_pref = ?
+                    WHERE
+                        id BETWEEN ? AND ?
+                        AND storage_loc != ?
+                        AND storage_loc_specific IS NULL
+                ', [$set_aid, $batchStart, $batchEnd, $set_aid]);
+                $batchStart = $batchEnd;
+            }
+
             $output->writeln(sprintf("<info>$c records updated in %.3fs</info>", microtime(true) - $t));
         }
 

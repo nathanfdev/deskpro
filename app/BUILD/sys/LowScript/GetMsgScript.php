@@ -593,15 +593,14 @@ class GetMsgScript extends LowScriptAbstract
 
     protected function getDismissedNotifications()
     {
-        $person = $this->_getPerson();
-        if (!$person) {
+        if (!$this->_person_id) {
             return [];
         }
 
         $q = $this->getPdoRead()->query("
             SELECT id, typename, data
             FROM agent_alerts
-            WHERE person_id = {$person->id} AND is_dismissed = 1
+            WHERE person_id = {$this->_person_id} AND is_dismissed = 1
             ORDER BY id DESC
             LIMIT 100
         ");
@@ -612,24 +611,22 @@ class GetMsgScript extends LowScriptAbstract
 
     protected function getActionAlerts()
     {
-        $person = $this->_getPerson();
-        if (!$person || !isset($_REQUEST['last_alert'])) {
+        if (!$this->_person_id || !isset($_REQUEST['last_alert'])) {
             return [];
         }
         $last = (int) $_REQUEST['last_alert'];
 
-        return $this->transformData($this->fetch($last, $person->getId()));
+        return $this->transformData($this->fetch($last, $this->_person_id));
     }
 
     protected function getNotifications()
     {
-        $person = $this->_getPerson();
-        if (!$person || !isset($_REQUEST['last_notify'])) {
+        if (!$this->_person_id || !isset($_REQUEST['last_notify'])) {
             return [];
         }
         $last = (int) $_REQUEST['last_notify'];
 
-        return $this->transformData($this->fetch($last, $person->getId(), 'notifications'));
+        return $this->transformData($this->fetch($last, $this->_person_id, 'notifications'));
     }
 
     protected function fetch($last, $targetId, $type = 'action_alerts')

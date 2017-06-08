@@ -72,6 +72,9 @@ class LibBootTask implements BootTaskInterface
 
         \Orb\Util\Strings::setPhpUtf8Dir(DP_APP_DIR.'/vendor-src/php-utf8');
 
+        // optimized twig getter
+        require DP_APP_DIR.'/src/Application/DeskPRO/Twig/twig_template_get_attributes.php';
+
         // Set mpdf temp dirs
         if (!defined('_MPDF_TEMP_PATH')) {
             define('_MPDF_TEMP_PATH', $this->getTmpDir($env, 'mpdf').DIRECTORY_SEPARATOR);

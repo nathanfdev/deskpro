@@ -459,7 +459,7 @@ class TicketManager
                         $log_text,
                         'ticket-manager.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
                         'plain/text',
-                        ['tag' => 'logs.ticket_proc_log']
+                        ['tag' => 'logs.ticket_proc_log', 'prefer_gzipped' => true]
                     );
                 } catch (\Exception $e) {
                     $blob = null;

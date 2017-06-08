@@ -34,8 +34,11 @@ namespace Application\DeskPRO\BlobStorage;
 
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
+use GuzzleHttp;
+use GuzzleHttp\Psr7;
 use Orb\Data\ContentTypes;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
@@ -517,6 +520,17 @@ class DeskproBlobStorage implements Loggable
     {
         $this->logger->logDebug('[DeskproBlobStorage] BEGIN (saveBlobRecordFromString) From data string '.Numbers::filesizeDisplay(strlen($source_data)));
 
+        // TODO blobs need to have a separate field ot store "content encoding", so we can retain the original
+        // filename/content type. right now we are essentially re-writing the file that is stored which
+        // only works in some pretty specific cases where the implementation knows to handle gz files, or doesnt care (e.g. logs)
+        if ($props && isset($props['prefer_gzipped']) && $props['prefer_gzipped'] && function_exists('gzencode')) {
+            $this->logger->logDebug('Rewriting file to gzipped file');
+
+            $filename     = $filename.'.gz';
+            $content_type = 'application/gzip';
+            $source_data  = gzcompress($source_data);
+        }
+
         $blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
         $blob_entity_tmp->setFilesize(strlen($source_data));
         $blob_entity_tmp->setBlobHash(md5($source_data));
@@ -744,7 +758,7 @@ class DeskproBlobStorage implements Loggable
         // Can just use the public URL
         if (!$data && $blob_entity->file_url) {
             $this->logger->logDebug("[DeskproBlobStorage] (readBlobStringFromRecord) Attempting to fetch via URL: {$blob_entity->file_url}");
-            $data = @file_get_contents($blob_entity->file_url);
+            $data = $this->downloadFileUrl($blob_entity->file_url);
             if (!$data || strlen($data) != $blob_entity->filesize) {
                 $this->logger->logDebug('[DeskproBlobStorage] (readBlobStringFromRecord) Failed');
                 $data = null;
@@ -775,7 +789,7 @@ class DeskproBlobStorage implements Loggable
         // Can just use the public URL
         if (!$data && $blob_row['file_url']) {
             $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Attempting to fetch via URL: {$blob_row['file_url']}");
-            $data = @file_get_contents($blob_row['file_url']);
+            $data = $this->downloadFileUrl($blob_row['file_url']);
             if (!$data || strlen($data) != $blob_row['filesize']) {
                 $this->logger->logDebug('[DeskproBlobStorage] (readcopyBlobRowToString) Failed');
                 $data = null;
@@ -790,6 +804,40 @@ class DeskproBlobStorage implements Loggable
         }
 
         return $data;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return null|string
+     */
+    private function downloadFileUrl($url)
+    {
+        global $DP_ENV;
+
+        if ($urlRewrites = $DP_ENV->getConfig('settings.remote_blobs_local_urlrewrite')) {
+            foreach ($urlRewrites as $pattern => $replace) {
+                $url = preg_replace($pattern, $replace, $url);
+            }
+
+            $this->logger->logDebug('URL rewritten to: '.$url);
+        }
+
+        $client = new HttpClient([
+            GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
+            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 4,
+            GuzzleHttp\RequestOptions::TIMEOUT         => 10,
+        ]);
+
+        try {
+            $response = $client->request('GET', $url);
+
+            return Psr7\copy_to_string($response->getBody());
+        } catch (\Exception $e) {
+            $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
+
+            return null;
+        }
     }
 
     /**
