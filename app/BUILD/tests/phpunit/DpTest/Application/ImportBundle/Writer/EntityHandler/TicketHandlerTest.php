@@ -322,6 +322,24 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('custom brand', $entity->getBrand()->getName());
     }
 
+    public function test_set_urgency()
+    {
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals(1, $entity->getUrgency());
+
+        $model->setUrgency(5);
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals(5, $entity->getUrgency());
+    }
+
     /**
      * @return Model\Ticket
      */
