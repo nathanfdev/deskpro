@@ -31,6 +31,8 @@
 
   pageMeta.ticket = {{ ticket_api|json_encode|raw }};
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
+  pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
+  pageMeta.hasTimeLog = {{ app.getSetting('core_tickets.enable_timelog')? 'true' : 'false' }};
 
   pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
   {% if ticket.hasLock() %}
@@ -1338,3 +1340,7 @@
     </div>
 
 </div>{# /layout #}
+
+<div data-deskproapp="background" style="display: none"></div>
+
+

@@ -9,9 +9,7 @@ import { loadApps, loadDevApp } from './Actions/Actions'
 
 import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
 import {AppServices} from './Services/AppServices';
-import {registerWidgetRequestListeners} from './WidgetMessage';
-import {RequestEventDispatcher} from './Services/EventDispatcher';
-
+import {registerIncomingWidgetRequestListeners, dispatchOutgoingWidgetRequestOnIntercept} from './WidgetMessage';
 
 class DeskproAppStore
 {
@@ -77,37 +75,48 @@ class DeskproAppStore
   {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
     const appServices = new AppServices({ api, window });
-    registerWidgetRequestListeners(RequestEventDispatcher, appServices);
+    registerIncomingWidgetRequestListeners(appServices);
+    // registerOutgoingWidgetRequestListeners(appServices);
 
     const manifests = filterAppManifestsConfig(reduxStore.getState());
-
     const config = DeskproAppStore.configurationFromLocation(window.location);
+
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
 
-    const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, appRegistry);
+    /**
+     * @param {Context} context
+     * @param {ContainerMounter} containerMounter
+     */
+    const mountContext = (context, containerMounter) => {
+      // find the dom node to mount at
+      const mountAtNode = WidgetDOM.container.findContainerById(context.id, window.document);
+
+      // TODO have the context initiate any post-mounting activities. This is quick hack-fix
+      const nrOfWidgets = containerMounter.mountAt(context, mountAtNode);
+      if ( nrOfWidgets && ['ticket-sidebar', 'person-sidebar', 'org-sidebar'].indexOf(context.locationId) > -1 ) {
+        const tab = DeskPRO_Window.TabBar.getTab(context.tabId);
+        tab.page.updateAppsSidebar();
+      }
+    };
 
     // subscribe to redux store changes
     reduxStore.subscribe( () => {
       const contexts = newContextsStateSelector(reduxStore.getState());
-      if (contexts) {
-        /** @var {Context} context **/
-        for (const context of contexts.values()) {
-          // find the dom node to mount at
-          const mountAtNode = WidgetDOM.container.findContainerById(context.id, window.document);
+      if (!contexts) { return; }
 
-          // TODO have the context initiate any post-mounting activities. This is quick hack-fix
-          const nrOfWidgets = containerMounter.mountAt(context, mountAtNode);
-          if ( nrOfWidgets && ['ticket-sidebar', 'person-sidebar', 'org-sidebar'].indexOf(context.locationId) > -1 ) {
-            const tab = DeskPRO_Window.TabBar.getTab(context.tabId);
-            tab.page.updateAppsSidebar();
-          }
-        }
+      const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, appRegistry);
+      /** @var {Context} context **/
+      for (const context of contexts.values()) {
+        mountContext(context, containerMounter);
       }
     });
 
     // const validTargets = DeskproAppStoreConfiguration.validTargets;
     // const domScanner = list => ContainerDOMScanner.fromAttributeName('data-deskproapp').filterAllByTargetTypeList(list, validTargets);
     DeskproWindowMessageBrokerAdapter.registerListener(messageBroker)(reduxDispatcher);
+
+    // TODO this will have to be re-thinked properly
+    window.DeskPRO_APPSTORE = { dispatchOutgoingWidgetRequestOnIntercept };
   }
 }
 

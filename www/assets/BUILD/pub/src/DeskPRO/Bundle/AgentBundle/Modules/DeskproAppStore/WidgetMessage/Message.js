@@ -1,0 +1,119 @@
+import { default as serializeError } from 'serialize-error';
+
+let nextMessageId = 0;
+let nextCorrelationId = 0;
+
+export class WidgetRequest
+{
+  /**
+   * @param body
+   * @param id
+   * @param correlationId
+   * @param widgetId
+   */
+  constructor({ body, id, correlationId, widgetId })
+  {
+    this.props = { body, id, correlationId, widgetId };
+  }
+
+  get id() { return this.props.id };
+
+  get widgetId() { return this.props.widgetId; };
+
+  get correlationId() { return this.props.correlationId };
+
+  get body() { return this.props.body };
+
+  toJS = () => ({ ...this.props })
+}
+
+export class WidgetResponse
+{
+  /**
+   * @param id
+   * @param widgetId
+   * @param correlationId
+   * @param {*} body
+   * @param status
+   */
+  constructor({ id, widgetId, correlationId, body, status })
+  {
+    this.props = { id, widgetId, correlationId, body, status };
+  }
+
+  get id() { return this.props.id };
+
+  get widgetId() { return this.props.widgetId };
+
+  get correlationId() { return this.props.correlationId };
+
+  get status() { return this.props.status };
+
+  get body() { return this.props.body };
+
+  toJS = () => ({ ...this.props })
+}
+
+/**
+ * @param {WidgetRequest} widgetRequest
+ * @param error
+ *
+ * @return WidgetResponse
+ */
+export const createErrorResponse = (widgetRequest, error) =>
+{
+  const id = ++nextMessageId;
+  const { widgetId, correlationId } = widgetRequest;
+  const body = error instanceof Error ? JSON.stringify(serializeError(error)) : JSON.stringify(error);
+
+  return new WidgetResponse({ id, widgetId, correlationId, body, status: 'error' });
+};
+
+/**
+ * @param {WidgetRequest} widgetRequest
+ * @param data
+ *
+ * @return WidgetResponse
+ */
+export const createSuccessResponse = (widgetRequest, data) =>
+{
+  const id = ++nextMessageId;
+  const { widgetId, correlationId } = widgetRequest;
+  const body = JSON.stringify(data);
+
+  return new WidgetResponse({ id, widgetId, correlationId, body, status: 'success' });
+};
+
+/**
+ * @param {Widget} widget
+ * @param {*} body
+ * @return {WidgetRequest}
+ */
+export const createRequest = (widget, body) => {
+  const id = ++nextMessageId;
+  const correlationId = ++nextCorrelationId;
+  const { instanceId: widgetId } = widget;
+
+  return new WidgetRequest({id, correlationId, widgetId, body});
+};
+
+/**
+ * @param widgetMessage
+ * @return {WidgetRequest|WidgetResponse}
+ */
+export const parseIncomingMessageJS = widgetMessage => {
+  const { args, messageId, status, body, correlationId, id, widgetId } = widgetMessage;
+  if (status) {
+    const parsedBody = status === 'error' && typeof  body === 'string' ? JSON.parse(body) : body;
+    return new WidgetResponse({ id, widgetId, correlationId, body: parsedBody, status});
+  }
+
+  if (args) {
+    return new WidgetRequest({ id: messageId, widgetId, correlationId, body: args[0] });
+  }
+
+  if (correlationId) {
+    return new WidgetRequest({id, correlationId, widgetId, body});
+  }
+
+};

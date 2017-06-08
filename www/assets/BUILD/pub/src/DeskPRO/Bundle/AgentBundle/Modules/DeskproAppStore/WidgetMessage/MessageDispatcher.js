@@ -1,49 +1,54 @@
 import postRobot from 'post-robot/dist/post-robot.js';
-import { default as serializeError } from 'serialize-error';
 
 import * as WidgetDOM from '../WidgetDOM';
+import { createErrorResponse, createSuccessResponse, createRequest, WidgetRequest } from './Message'
 
 /**
- * @param eventName
+ * @param {String} eventName
  * @param {Widget} widget
- * @param {Window} widgetWindow
- * @param {WidgetMessage} widgetRequestMessage
- * @param err
- * @param data
+ * @param {WidgetRequest} widgetRequest
  */
-const callback = (eventName, widget, widgetWindow, widgetRequestMessage, err, data) => {
-  let message;
-
-  if (err) {
-    message = {
-      status: 'error',
-      body: err instanceof Error ? JSON.stringify(serializeError(err)) : JSON.stringify(err)
-    }
-  } else {
-    message = { status: 'success', body: JSON.stringify(data) };
+export const createDispatchResponse = (eventName, widget, widgetRequest) => (err, data) => {
+  const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
+  if (! widgetWindow) {
+    throw new Error('can not find widget window');
   }
-
-  postRobot.send(widgetWindow, eventName, { id: widgetRequestMessage.id, ...message });
+  const widgetResponse = err ? createErrorResponse(widgetRequest, err) : createSuccessResponse(widgetRequest, data);
+  postRobot.send(widgetWindow, eventName, widgetResponse.toJS());
 };
 
 /**
  * @param {String} eventName
  * @param {Widget} widget
- * @param {WidgetMessage} widgetRequestMessage
+ * @param {function} incomingResponseHandler
+ * @param {EventEmitter} eventDispatcher
  */
-export const createCallback = (eventName, widget, widgetRequestMessage) => (err, data) => {
+export const createDispatchRequestResponse = (eventName, widget, incomingResponseHandler, eventDispatcher) => message => {
   const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
-  if (! widgetWindow) {
-    throw new Error('can not find widget window');
+  if (! widgetWindow) { // TODO handle widget unloading and remove event listeners
+    const error = new Error('can not find widget window');
+    console.log(error);
+    return ;
   }
 
-  callback(eventName, widget, widgetWindow, widgetRequestMessage, err, data)
+  const request = createRequest(widget, message);
+  // register a response listener
+  eventDispatcher.once(`${eventName}.${request.correlationId}`, incomingResponseHandler);
+  postRobot.send(widgetWindow, eventName, request.toJS());
 };
 
 /**
- * @param {EventEmitter} eventDispatcher
+ * @param {String} eventName
+ * @param {Widget} widget
  */
-export const createDispatchRequest = eventDispatcher => (eventName, widget, widgetMessage) => {
-  const callback = createCallback(eventName, widget, widgetMessage);
-  eventDispatcher.emit(eventName, callback, widget, widgetMessage);
+export const createDispatchFireAndForget = (eventName, widget) => message => {
+  const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
+  if (! widgetWindow) { // TODO handle widget unloading and remove event listeners
+    const error = new Error('can not find widget window');
+    console.log(error);
+    return ;
+  }
+
+  const request = createRequest(widget, message);
+  postRobot.send(widgetWindow, eventName, request.toJS());
 };

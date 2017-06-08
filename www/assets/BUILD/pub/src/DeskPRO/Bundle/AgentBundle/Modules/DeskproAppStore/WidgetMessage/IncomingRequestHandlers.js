@@ -63,7 +63,7 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices}  services
  * @constructor
  */
@@ -88,7 +88,7 @@ export const EVENT_STATE_FIND = (response, widget, widgetMessage, services) =>
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices}  services
  * @constructor
  */
@@ -113,7 +113,7 @@ export const EVENT_STATE_GET = (response, widget, widgetMessage, services) =>
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
@@ -146,7 +146,7 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
@@ -168,11 +168,28 @@ export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) =>
   ;
 };
 
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
+  const { body: tabId } = widgetMessage;
+  const tab = services.tabs.getTab(tabId);
+  if (! tab) {
+    return response(new Error('tab not found'), tabId);
+  }
+
+  const { api_data, hasBilling, hasTimeLog } = tab.page.meta;
+  response(null, { api_data, hasBilling, hasTimeLog });
+};
 
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
@@ -183,47 +200,90 @@ export const EVENT_TAB_STATUS = (response, widget, widgetMessage, services) => {
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
 export const EVENT_TAB_ACTIVATE = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
-  DeskPRO_Window.TabBar.activateTabById(tabId);
+  services.tabs.activateTabById(tabId);
   response(null, tabId);
 };
 
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
 export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
-  DeskPRO_Window.TabBar.removeTabById(tabId);
+  services.tabs.removeTabById(tabId);
   response(null, tabId);
 };
 
 /**
  * @param {function} response
  * @param {Widget} widget
- * @param {WidgetMessage} widgetMessage
+ * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_USER_GET = (response, widget, widgetMessage, services) => {
+export const EVENT_ME_GET = (response, widget, widgetMessage, services) =>
+{
   response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
 };
 
-export const EVENT_RESET_SIZE = (response, widget, message) => {
-  const size = message.body.size;
-  const $el  = $(document.getElementById(widget.windowId));
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_RESET_SIZE = (response, widget, message, services) => {
+  const { size } = message.body;
+  const height = size.outerHeight + 20 /* i dont know why +20? */;
 
-  $el.find('iframe')
-    .first()
-    .height(size.outerHeight + 20 /* i dont know why +20? */);
+  try {
+    const { widgetDOM, $ } = services;
+    const iframe = widgetDOM.findIframe(widget);
+    $(iframe).height(height);
+
+    response(null, { height })
+  } catch (e) {
+    console.log('app reset size failed', e);
+    response(e);
+  }
+
+};
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_SHOW_NOTIFICATION = (response, widget, message, services) => {
+
+  const { body: notification } = message;
+  if (typeof notification === 'string') {
+    services.showNotification(notification)
+  }
+};
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
+  const { events  } = message.body;
+  events.each(eventName => services.addEventListener(eventName, widget));
 };
 
 export const handlers = {
@@ -244,6 +304,8 @@ export const handlers = {
 
   // TAB EVENTS
 
+  EVENT_TAB_DATA,
+
   EVENT_TAB_STATUS,
 
   EVENT_TAB_ACTIVATE,
@@ -252,11 +314,16 @@ export const handlers = {
 
   // USER EVENTS
 
-  EVENT_USER_GET,
+  EVENT_ME_GET,
 
   // APP EVENTS
 
-  EVENT_RESET_SIZE
+  EVENT_RESET_SIZE,
+
+  EVENT_SHOW_NOTIFICATION,
+
+  EVENT_SUBSCRIBE
+
 };
 
 /**
@@ -266,7 +333,7 @@ export const handlers = {
  * @param {AppServices} appServices
  */
 const registerListener = ({ eventDispatcher, eventName, eventHandler, appServices }) => {
-  const listener = (response, widget, widgetMessage) => eventHandler(response, widget, widgetMessage, appServices);
+  const listener = (response, widget, widgetRequest) => eventHandler(response, widget, widgetRequest, appServices);
   eventDispatcher.addListener(eventName, listener);
   return listener;
 };
@@ -278,5 +345,6 @@ const registerListener = ({ eventDispatcher, eventName, eventHandler, appService
 export const registerListeners = (eventDispatcher, appServices) => {
   /** @param {String} key */
   const mapper = key => registerListener({ eventName: events[key], eventHandler: handlers[key], eventDispatcher, appServices });
-  return Object.keys(events).map(mapper);
+  // intersect the handlers with events, picking entries which exist in both maps;
+  return Object.keys(handlers).filter(key => events.hasOwnProperty(key)).map(mapper);
 };

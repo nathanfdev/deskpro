@@ -24,7 +24,7 @@ class DeskproAppContainer extends React.Component
 {
   static propTypes = {
     widgetsConfigList: PropTypes.array.isRequired
-    , dispatchWidgetRequestEvent: PropTypes.func.isRequired
+    , dispatchIncomingWidgetMessage: PropTypes.func.isRequired
     , context: PropTypes.object.isRequired
     , configuration: PropTypes.object.isRequired
   };
@@ -137,17 +137,9 @@ class DeskproAppContainer extends React.Component
    */
   onXComponentMessage = (widgetConfiguration, eventName, widgetMessage) =>
   {
-    const { dispatchWidgetRequestEvent } = this.props;
+    const { dispatchIncomingWidgetMessage } = this.props;
     const widget = this.findWidgetByWidgetConfig(widgetConfiguration);
-
-    const { args, messageId, widgetId } = widgetMessage;
-    // TODO check widgetIds match
-
-    dispatchWidgetRequestEvent(
-      eventName
-      , widget
-      , new WidgetMessage({ body: args[0], id: messageId })
-    );
+    dispatchIncomingWidgetMessage(eventName, widgetMessage, widget);
   };
 
   /**
