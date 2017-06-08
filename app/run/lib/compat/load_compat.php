@@ -15,9 +15,19 @@
  */
 
 if (!function_exists('twig_template_get_attributes')) {
+
+    // This is defined because Deskpro warms twig caches with expectation that twig_template_get_attributes is defined (from c ext)
+    // but it might not be if customer doesnt have it.
+    // So this is a wrapper around getAttribute (which is what is used when c ext isnt installed).
+
     function twig_template_get_attributes($tpl, $object, $item, array $arguments = array(), $type = 'any', $isDefinedTest = false, $ignoreStrictCheck = false)
     {
         static $refl = [];
+
+        // getAttribute declared public on our override class, so we can skip reflection
+        if ($tpl instanceof \Application\DeskPRO\Twig\Template || $tpl instanceof DeskPRO\Bundle\PortalBundle\Twig\Template) {
+            return $tpl->getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
+        }
 
         $className = get_class($tpl);
         if (!isset($refl[$className])) {

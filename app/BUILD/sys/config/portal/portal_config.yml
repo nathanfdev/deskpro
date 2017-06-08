@@ -140,6 +140,7 @@ twig:
     exception_controller:  PortalBundle:Error:showException
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    base_template_class: DeskPRO\Bundle\PortalBundle\Twig\Template
     form:
         resources:
             - Theme::form_theme.html.twig
