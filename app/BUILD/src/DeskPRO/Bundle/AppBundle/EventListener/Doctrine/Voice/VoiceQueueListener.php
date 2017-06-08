@@ -85,7 +85,8 @@ class VoiceQueueListener
 
         if ($args->hasChangedField('agents')
             || $args->hasChangedField('routingModel')
-            || $args->hasChangedField('maxQueueSize')) {
+            || $args->hasChangedField('maxQueueSize')
+            || $args->hasChangedField('voicemailTimeout')) {
             $this->updateAccountDateSync($account);
         }
     }

@@ -30,11 +30,15 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Content\Categories;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Usergroup;
+use DeskPRO\Bundle\AppBundle\Form\Type\Phrase\PhraseCollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * Class ContentCategoryAbstractType.
+ */
 class ContentCategoryAbstractType extends AbstractType
 {
     /**
@@ -44,6 +48,10 @@ class ContentCategoryAbstractType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
+            ->add('title_translations', PhraseCollectionType::class, [
+                'prop_name' => 'title',
+                'owner'     => $builder->getData(),
+            ])
             ->add('brand', EntityType::class, [
                 'class' => Brand::class,
             ])

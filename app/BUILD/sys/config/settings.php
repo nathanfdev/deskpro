@@ -1070,12 +1070,12 @@ return [
      * because it could be unstable just right now.
      */
     'notification.settings.strategies' => [
-        'notification.agent_chat.new_message' => [
-            'strategy' => 'immediate',
-            'delivery' => [
-                'db',
-            ],
-        ],
+        //'notification.agent_chat.new_message' => [
+        //    'strategy' => 'immediate',
+        //    'delivery' => [
+        //        'db',
+        //    ],
+        //],
         //        'notification.yet.another.system.event' => [
         //            'strategy' => 'deferred',
         //            'delivery' => [
@@ -1089,6 +1089,7 @@ return [
     'notification.settings.default_strategy' => [
         'strategy' => 'immediate',
         'delivery' => [
+            // 'db' or 'pusher'
             'db',
         ],
     ],
@@ -1098,8 +1099,8 @@ return [
     'notification.settings.pusher_client.appKey'  => '',
     'notification.settings.pusher_client.secret'  => '',
     'notification.settings.pusher_client.appId'   => '',
-    'notification.settings.pusher_client.options' => [],
-    'notification.settings.pusher_client.debug'   => true,
+    'notification.settings.pusher_client.cluster' => 'mt1',
+    'notification.settings.pusher_client.debug'   => false,
 
     // Simple delivery handler with polling
     'notification.settings.polling_client.polling_interval' => 5000,

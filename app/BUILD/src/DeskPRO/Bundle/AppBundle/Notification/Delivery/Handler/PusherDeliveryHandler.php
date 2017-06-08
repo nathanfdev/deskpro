@@ -28,9 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use DpSys\LowError\SystemErrorHandler;
 use Pusher;
 
 /**
@@ -48,17 +50,21 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      */
     protected $pusher;
 
+    private $channelPrefix = '';
+
     /**
      * @var array
      */
     private $messages = [];
 
     /**
-     * @param Pusher $pusher
+     * @param Pusher           $pusher
+     * @param SettingsResolver $resolver
      */
-    public function __construct(Pusher $pusher)
+    public function __construct(Pusher $pusher, SettingsResolver $resolver)
     {
-        $this->pusher = $pusher;
+        $this->pusher        = $pusher;
+        $this->channelPrefix = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
     }
 
     /**
@@ -75,8 +81,13 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                 'type'   => $message->getType(),
             ] + $message->getData();
 
+        $channelParts = ['private', $message->getTarget()];
+        if ($this->channelPrefix) {
+            array_splice($channelParts, 1, 0, [$this->channelPrefix]);
+        }
+
         $this->messages[] = [
-            'channel' => 'private-channel-'.$message->getTarget(),
+            'channel' => implode('-', $channelParts),
             'name'    => $this->getChannel($message),
             'data'    => $data,
         ];
@@ -84,7 +95,27 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
 
     public function deliver()
     {
-        $this->pusher->triggerBatch($this->messages);
+        if (!empty($this->messages)) {
+            foreach (array_chunk($this->messages, 10) as $chunk) {
+                $tries     = 3;
+                $exception = null;
+                do {
+                    $response = $this->pusher->triggerBatch($chunk, true);
+                    if ($response['status'] !== 200) {
+                        if (!$exception) {
+                            $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
+                        }
+                    } else {
+                        $exception = null;
+                    }
+                } while ($response['status'] !== 200 && $tries-- > 0);
+
+                if ($exception) {
+                    SystemErrorHandler::logException($exception);
+                }
+            }
+        }
+        $this->messages = [];
     }
 
     /**

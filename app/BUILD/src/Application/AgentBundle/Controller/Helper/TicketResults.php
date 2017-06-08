@@ -26,16 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\Tickets\GroupingCounter;
 use Orb\Util\Arrays;
 
 /**
@@ -64,7 +62,7 @@ class TicketResults
     protected $group_field = null;
 
     /**
-     * @var array
+     * @var string
      */
     protected $order_by = null;
 
@@ -184,10 +182,10 @@ class TicketResults
         }
 
         $searcher = new TicketSearch();
-        $searcher->setPerson($this->controller->getPerson());
+        $searcher->setPersonContext($this->controller->getPerson());
         $searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $this->getTicketIds());
 
-        $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($this->group_field, $field_id);
+        $term = GroupingCounter::getSearchTerm($this->group_field, $field_id);
 
         $searcher->addTerm($term['type'], $term['op'], $term['options']);
 
@@ -257,7 +255,7 @@ class TicketResults
     protected function _getPageFromTicketIds(array $ticket_ids, $page, $per_page)
     {
         $page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, $per_page);
-        $tickets_raw     = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
+        $tickets_raw     = App::getEntityRepository(Ticket::class)->getTicketsResultsFromIds($page_ticket_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
@@ -282,7 +280,7 @@ class TicketResults
     protected function _getCursorPageFromTicketIds(array $ticket_ids, $cursor_start, $per_page)
     {
         $page_ticket_ids = array_slice($ticket_ids, $cursor_start, $per_page);
-        $tickets_raw     = App::getEntityRepository('DeskPRO:Ticket')->getTicketsResultsFromIds($page_ticket_ids);
+        $tickets_raw     = App::getEntityRepository(Ticket::class)->getTicketsResultsFromIds($page_ticket_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.
@@ -342,7 +340,7 @@ class TicketResults
             return;
         }
 
-        $grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+        $grouper = new GroupingCounter();
         $grouper->setGrouping($this->group_field);
         $grouper->setMode('specify', $this->getTicketIds());
 

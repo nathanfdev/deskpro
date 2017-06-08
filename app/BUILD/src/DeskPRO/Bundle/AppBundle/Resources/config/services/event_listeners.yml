@@ -23,6 +23,11 @@ services:
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
+  event_listener.phrase_translatable:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PhraseTranslatableListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.custom_per_data:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomPerDataListener
     tags:
@@ -60,7 +65,9 @@ services:
 
   event_listener.voice_settings:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
     tags:
       - { name: doctrine.entity_listener }
 

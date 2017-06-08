@@ -35,7 +35,6 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewOrganization;
 use Application\AgentBundle\Form\Type\NewOrganization as NewOrganizationType;
 use Application\DeskPRO\App;
-use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
@@ -65,6 +64,7 @@ use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\EntityRepository\TicketCharge as TicketChargeRepository;
 use Application\DeskPRO\EntityRepository\Usergroup as UsergroupRepository;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
 use Doctrine\DBAL\DBALException;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
@@ -935,11 +935,10 @@ class OrganizationController extends AbstractController
             $personPrefRepository = $this->em->getRepository(PersonPref::class);
             $personPrefRepository->deletePrefForPersonId('agent.ui.state.neworg', $this->person->getId());
 
-            // Notify about new org
-            foreach (PeopleClientMessages::createNewOrgMessages($org) as $cm) {
-                $this->em->persist($cm);
-            }
-            $this->em->flush();
+            $this->container->get('event_dispatcher')->dispatch(
+                OrganizationCreatedEvent::EVENT_NAME,
+                new OrganizationCreatedEvent($org)
+            );
 
             return $this->createJsonResponse([
                 'success' => true,

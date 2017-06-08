@@ -98,7 +98,6 @@ class MassLoader
 
     public function clearTickets()
     {
-        $this->connection->executeUpdate('TRUNCATE TABLE task_links');
         $this->connection->executeUpdate('DELETE FROM tickets');
     }
 

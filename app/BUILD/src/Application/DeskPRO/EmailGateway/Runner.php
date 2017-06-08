@@ -643,7 +643,7 @@ BODY;
                 $logMessages,
                 'email-process.log',
                 'plain/text',
-                ['tag' => 'logs.email_source_log']
+                ['tag' => 'logs.email_source_log', 'prefer_gzipped' => true]
             );
             $sourceLogger->logInfo("Log blob {$logBlobRow['id']}");
 

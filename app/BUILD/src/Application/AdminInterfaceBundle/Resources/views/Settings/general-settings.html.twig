@@ -40,8 +40,8 @@
 								to link to your helpdesk. For example, in email notifications.
 							</span>
 
-							<input type="text" name="deskpro_url" class="form-control" ng-model="settings.deskpro_url" ng-change="Settings.checkUrl()" style="width: 40%" />
-                            <div style="margin-left: 10px;" ng-show="https_url">
+							<input type="text" name="deskpro_url" class="form-control" ng-model="settings.deskpro_url" style="width: 40%" />
+                            <div ng-if="settings.deskpro_url.length > 7 && Settings.checkUrl() && https_url">
                                 <label>
                                     <input type="checkbox" ng-model="settings.deskpro_url_autocorrect" />
 									Force HTTPS
@@ -139,7 +139,15 @@
 							instead.
 						</p>
 						<div style="padding-top: 10px;">
-							Default account: <select ui-select2 ng-model="settings.default_from_email">
+							Brand: <select ui-select2 ng-model="currentBrand">
+								<option
+										ng-selected="currentBrand === brand.id"
+										ng-repeat="brand in brands" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}
+								</option>
+							</select>
+						</div>
+						<div style="padding-top: 10px;">
+							Default account: <select ui-select2 ng-model="settings.default_from_email[currentBrand]">
 								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
 							</select>
 						</div>

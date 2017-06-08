@@ -38,37 +38,31 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\PhraseTranslatableInterface;
+use DeskPRO\Bundle\AppBundle\Entity\PhraseTranslatableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Basic hierarchicial category entity.
- *
- * @JMS\ExclusionPolicy("all")
+ * Basic hierarchical category entity.
  */
-class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchical
+class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchical, PhraseTranslatableInterface
 {
+    use PhraseTranslatableTrait;
+
     /**
      * The unique id of the category.
      *
      * @var int
-     * @JMS\Expose()
-     * @JMS\Groups("list")
-     * @JMS\Type("integer")
      */
     protected $id = null;
 
     /**
      * Category`s title.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     * @JMS\Groups("list")
      *
      * @Assert\NotBlank()
      *
@@ -79,19 +73,12 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     /**
      * Category`s slug.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $slug;
 
     /**
      * Display order.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     * @JMS\Groups("product")
      *
      * @var int
      */
@@ -115,7 +102,8 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     protected $depth = 0;
 
     /**
-     *  */
+     * @var mixed
+     */
     protected $root;
 
     /**
@@ -131,7 +119,7 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     public $structure_helper;
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -347,7 +335,7 @@ class CategoryAbstract extends DomainObject implements HasPhraseName, Hierarchic
     /**
      * {@inheritdoc}
      */
-    public function getPhraseName($property, Translate $translate)
+    public function getPhraseName($property)
     {
         if (!$property) {
             $property = 'title';

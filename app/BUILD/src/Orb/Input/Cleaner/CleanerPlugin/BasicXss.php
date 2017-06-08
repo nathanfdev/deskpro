@@ -193,7 +193,7 @@ class __DP_CI_Security
         $str = $this->_remove_evil_attributes($str, $is_image);
 
         $naughty = 'alert|prompt|confirm|applet|audio|basefont|base|behavior|bgsound|blink|body|embed|expression|form|frameset|frame|head|html|ilayer|iframe|input|button|select|isindex|layer|link|meta|keygen|object|plaintext|style|script|textarea|title|math|video|svg|xml|xss';
-        $str     = preg_replace_callback('#<(/*\s*)('.$naughty.')([^><]*)([><]*)#is', [$this, '_sanitize_naughty_html'], $str);
+        $str     = preg_replace("#<(/|)($naughty)([^>]*)>#is", '[$1$2$3]', $str);
 
         $str = preg_replace(
             '#(alert|prompt|confirm|cmd|passthru|eval|exec|expression|system|fopen|fsockopen|file|file_get_contents|readfile|unlink)(\s*)\((.*?)\)#si',
@@ -335,13 +335,6 @@ class __DP_CI_Security
         }, $str);
 
         return $str;
-    }
-
-    protected function _sanitize_naughty_html($matches)
-    {
-        return '&lt;'.$matches[1].$matches[2].$matches[3] // encode opening brace
-        // encode captured opening or closing brace to prevent recursive vectors:
-.str_replace(['>', '<'], ['&gt;', '&lt;'], $matches[4]);
     }
 
     protected function _js_link_removal($match)

@@ -39,27 +39,19 @@ use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * @PortalLinkRoute("portal_kb_browse", route_param_map={"slug":"slug"})
  * @PortalLinkRoute("portal_kb_article_category_toggle_subscription", route_param_map={"slug":"slug"}, type="toggle_subscription")
- * @JMS\ExclusionPolicy("all")
  */
 class ArticleCategory extends CategoryAbstract
 {
     /**
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("entity<Application\DeskPRO\Entity\ArticleCategory>")
+     * @var ArticleCategory
      */
     protected $parent;
 
     /**
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleCategory>>")
-     *
      * @var ArrayCollection|ArticleCategory[]
      */
     protected $children;
@@ -67,31 +59,19 @@ class ArticleCategory extends CategoryAbstract
     /**
      * Articles belongs this category.
      *
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Article>>")
-     *
-     * @var ArrayCollection
+     * @var ArrayCollection|Article[]
      */
     protected $articles;
 
     /**
      * Usergroups that has access to this category.
      *
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Usergroup>>")
-     *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection|Usergroup[]
      */
     protected $usergroups;
 
     /**
      * Brand linked to the category.
-     *
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
      *
      * @var Brand
      */
@@ -102,10 +82,6 @@ class ArticleCategory extends CategoryAbstract
      * are considered agent KB articles and wont be displayed in
      * the user interface.
      *
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("boolean")
-     *
      * @var bool
      */
     protected $is_agent = false;
@@ -114,10 +90,6 @@ class ArticleCategory extends CategoryAbstract
      * If this is true, then all the articles and categories under this category
      * is treated as a book (aka manual).
      *
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("boolean")
-     *
      * @var bool
      */
     protected $is_book = false;
@@ -125,10 +97,6 @@ class ArticleCategory extends CategoryAbstract
     /**
      * The template suffix to use when rendering the category, and articles within
      * the category.
-     *
-     * @JMS\Expose()
-     * @JMS\Groups("articles_categories")
-     * @JMS\Type("string")
      *
      * Eg UserBundle:Articles:article.html.twig
      * With suffix 'download' becomes
@@ -235,6 +203,22 @@ class ArticleCategory extends CategoryAbstract
             $category->setParent($this);
             $this->children->add($category);
         }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getArticles()
+    {
+        return $this->articles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplateSuffix()
+    {
+        return $this->template_suffix;
     }
 
     //###########################################################################

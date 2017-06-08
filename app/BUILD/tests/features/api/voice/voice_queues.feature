@@ -40,7 +40,8 @@ Feature: /voice_queues endpoint
   "name": "My Queue",
   "routing_model": "least_utilized",
   "max_queue_size": 10,
-  "agents": [~p1~, ~p2~, ~p3~]
+  "agents": [~p1~, ~p2~, ~p3~],
+  "voicemail_timeout": 30
 }
     """
     Then the response status code should be 201

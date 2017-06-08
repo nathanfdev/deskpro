@@ -82,7 +82,7 @@ class EsiTagHandler implements TagHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(Tag $tag, TagRequest $tag_request)
+    public function supports(Tag $tag, TagRequest $tagRequest)
     {
         return $tag->isEsi($this->portalCacheHelper->isGuestRequest());
     }
@@ -90,18 +90,18 @@ class EsiTagHandler implements TagHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Tag $tag, TagRequest $tag_request)
+    public function handle(Tag $tag, TagRequest $tagRequest)
     {
-        $this->filterRequest($tag_request);
+        $this->filterRequest($tagRequest);
 
         try {
             return $this->container->get('fragment.renderer.esi')->render(
                 new ControllerReference(
                     $tag->getControllerName(),
-                    $tag_request->attributes->all(),
-                    $tag_request->query->all()
+                    $tagRequest->attributes->all(),
+                    $tagRequest->query->all()
                 ),
-                $tag_request,
+                $tagRequest,
                 ['ignore_errors' => false]
             );
         } catch (\Exception $e) {

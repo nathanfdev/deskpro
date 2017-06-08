@@ -44,7 +44,8 @@ class PusherFactorySpec extends ObjectBehavior
         $settings->get('notification.settings.pusher_client.appKey')->willReturn('testAppKey');
         $settings->get('notification.settings.pusher_client.secret')->willReturn('testAppSecret');
         $settings->get('notification.settings.pusher_client.appId')->willReturn('testAppId');
-        $settings->get('notification.settings.pusher_client.options')->willReturn([]);
+        $settings->get('notification.settings.pusher_client.channel_prefix')->willReturn('');
+        $settings->get('notification.settings.pusher_client.cluster')->willReturn('mt1');
         $this->beConstructedThrough('createPusher', [$resolver]);
     }
 }

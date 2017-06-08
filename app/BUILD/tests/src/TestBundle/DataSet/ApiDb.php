@@ -34,8 +34,6 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
@@ -152,18 +150,6 @@ SQL
         $team       = new AgentTeam();
         $team->name = 'test team';
 
-        // Create a basic task
-        $task = new Task();
-        $task->setCreator($admin);
-        $task->setTitle('A demo task');
-        $taskAssignment = new TaskAssignment();
-        $taskAssignment->setTask($task);
-        $taskAssignment->setPerson($admin);
-
-        $unassignedTask = new Task();
-        $unassignedTask->setCreator($admin);
-        $unassignedTask->setTitle('An unassigned task');
-
         // Create a new knowledge base article
         $article               = new Article();
         $article->slug         = 'test';
@@ -181,9 +167,6 @@ SQL
         $em->persist($dep1);
         $em->persist($dep2);
         $em->persist($dep3);
-        $em->persist($task);
-        $em->persist($taskAssignment);
-        $em->persist($unassignedTask);
         $em->persist($article);
         $em->persist($brand);
         $em->flush();
@@ -776,18 +759,6 @@ SQL
                 (1, 'First', 'first_response', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'all', 1, 'hours', 1, 'hours'),
                 (2, 'Second', 'resolution', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'auto', 1, 'days', 1, 'days'),
                 (3, 'Third', 'waiting_time', 'default', 60 * 60 * 10, 60 * 60 * 18, '1,2,3,4,5,6', 'manual', 1, 'hours', 1, 'hours')
-            ;
-SQL
-        );
-
-        // Task projects
-        $this->getDb()->exec(
-            <<<'SQL'
-            INSERT INTO `task_projects` (`id`, `title`)
-            VALUES
-                (1, 'First project'),
-                (2, 'Second project'),
-                (3, 'Third project')
             ;
 SQL
         );

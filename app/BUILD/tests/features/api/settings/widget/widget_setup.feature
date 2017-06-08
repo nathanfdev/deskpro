@@ -25,7 +25,8 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 0
     And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
     And the JSON node "data.settings.brand.button.translations[0].language" should be equal to 1
-    And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help"
+    And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Chat Now"
+    And the JSON node "data.settings.brand.button.translations[0].contact_us" should be equal to the string "Contact Us"
     And the JSON node "data.settings.brand.button.colors.background" should be equal to the string "#62ad8c"
     And the JSON node "data.settings.brand.button.colors.text" should be equal to the string "#ffffff"
     And the JSON node "data.settings.brand.chat.request_user_info" should be equal to 0
@@ -72,11 +73,13 @@ Feature: Widget Setup
         "translations": [
           {
             "language": 1,
-            "name": "Help (edited)"
+            "name": "Help (edited)",
+            "contact_us": "Contact us (edited)"
           },
           {
             "language": 2,
-            "name": "Help (fr)"
+            "name": "Help (fr)",
+            "contact_us": "Contact us (fr)"
           }
         ],
         "size": "medium"
@@ -129,7 +132,9 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.translations[0].language" should be equal to 1
     And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help (edited)"
+    And the JSON node "data.settings.brand.button.translations[0].contact_us" should be equal to the string "Contact us (edited)"
     And the JSON node "data.settings.brand.button.translations[1].name" should be equal to the string "Help (fr)"
+    And the JSON node "data.settings.brand.button.translations[1].contact_us" should be equal to the string "Contact us (fr)"
     And the JSON node "data.settings.brand.button.translations[1].language" should be equal to 2
     And the JSON node "data.settings.brand.button.size" should be equal to the string "medium"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
@@ -171,7 +176,8 @@ Feature: Widget Setup
         "translations": [
           {
             "language": 1,
-            "name": "Help (edited)"
+            "name": "Help (edited)",
+            "contact_us": "Contact us (edited)"
           }
         ],
         "size": "large"
@@ -216,6 +222,7 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.widget.position" should be equal to the string "right"
     And the JSON node "data.settings.brand.widget.agent_polling_timeout" should be equal to 400
     And the JSON node "data.settings.brand.button.translations[0].name" should be equal to the string "Help (edited)"
+    And the JSON node "data.settings.brand.button.translations[0].contact_us" should be equal to the string "Contact us (edited)"
     And the JSON node "data.settings.brand.button.size" should be equal to the string "large"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "conversation"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 40

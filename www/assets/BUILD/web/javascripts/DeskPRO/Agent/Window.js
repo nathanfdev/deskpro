@@ -47,16 +47,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.appsSidebar = {
 			visible: false,
-			width: 350
+			width: 240
 		};
 
 		if (Modernizr.localstorage) {
 			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
 				this.appsSidebar.visible = true;
 			}
-			if (localStorage['apps_sidebar_width']) {
-				this.appsSidebar.width = localStorage['apps_sidebar_width'];
-			}
+      // disable reading from local storage in favor of the new 240 px width soon to be read from a config file
+			// if (localStorage['apps_sidebar_width']) {
+			// 	this.appsSidebar.width = localStorage['apps_sidebar_width'];
+			// }
 		}
 
 		this.agentNotifyListShown = false;
@@ -2434,10 +2435,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	handleSoundElements: function(el) {
 		var self = this;
 		if ($(el).is('[data-play-sound]')) {
-			self.playLibrarySound($(el).data('play-sound'), {appendTo: el});
+			self.playLibrarySound($(el).data('play-sound'), {appendTo: el, loop: false});
 		} else {
 			$('[data-play-sound]', el).each(function() {
-				self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
+				self.playLibrarySound($(this).data('play-sound'), {appendTo: el, loop: false});
 			});
 		}
 	},
@@ -2532,7 +2533,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 			if (xhr && (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec')) {
-				this.showAlert($('<div>We could not load the page you requested because the connection timed out. Please try again.</div>'));
 				return;
 			}
 		}
@@ -2546,7 +2546,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			if (data && data.error && (data.error == 'session_expired' || data.error == 'invalid_request_token')) {
 				var url = data.redirect_login;
 				url += '?return=' + encodeURIComponent(window.location.href);
-				url += '&timeout=1'
+				url += '&timeout=1';
 
 				window.location = url;
 				ajaxOptions.error = null;
@@ -2604,7 +2604,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		};
 
 		if (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeout') {
-			this.showAlert($('<div><strong>Network Error</strong><br />The request timed out. The server may be too busy to handle your request, or you may have been disconnected from the internet. Try again.</div>'), 'network_error');
 			this.incNetworkError();
 			return;
 		}

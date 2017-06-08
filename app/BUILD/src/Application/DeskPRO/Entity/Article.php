@@ -40,7 +40,6 @@ use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -112,11 +111,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $labels;
 
     /**
-     * @var TaskLinkedArticle[]|ArrayCollection
-     */
-    protected $task_links;
-
-    /**
      * The search result highlights.
      *
      * @var array
@@ -139,7 +133,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $this->attachments        = new ArrayCollection();
         $this->custom_data        = new ArrayCollection();
         $this->labels             = new ArrayCollection();
-        $this->task_links         = new ArrayCollection();
         $this->props_translations = new ArrayCollection();
     }
 
@@ -879,14 +872,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
                 'fieldName'    => 'slug_history',
                 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
-                'mappedBy'     => 'article',
-            ]
-        );
-
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'task_links',
-                'targetEntity' => TaskLinkedArticle::class,
                 'mappedBy'     => 'article',
             ]
         );

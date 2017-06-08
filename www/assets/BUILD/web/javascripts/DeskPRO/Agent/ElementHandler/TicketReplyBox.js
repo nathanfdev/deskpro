@@ -8,6 +8,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.initRetryTimeout = 300;
 		this.baseId = this.el.data('base-id');
 		this.agentNotifyListShown = false;
+		this.uploading = false;
 	},
 
 	initPage: function() {
@@ -455,6 +456,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.bind('fileuploaddone', function() {
+			self.uploading = false;
+			self.getElById('reply_as_type').parent().removeAttr('disabled');
+			self.getElById('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
 			self.getElById('attach_row').show().removeClass('is-hidden');
 			if (self.page) {
 				self.page.updateUi();
@@ -466,6 +470,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}
 		});
 		this.el.bind('fileuploadstart', function() {
+			self.uploading = true;
+			self.getElById('reply_as_type').parent().attr('disabled', 'disabled');
+			self.getElById('reply_as_type').parent().siblings('.status-menu-trigger').attr('disabled', 'disabled');
 			self.getElById('attach_row').show().removeClass('is-hidden');
 			if (self.page) {
 				self.page.updateUi();
@@ -857,7 +864,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			agentSelCheck.on('change', function() {
 				if (agentSelCheck.get(0).checked) {
 					if (self.getElById('action').val().indexOf('macro') === -1) {
-						self.setReplyAsOptionName('awaiting_agent')
+						self.setReplyAsOptionName('awaiting_agent');
 					}
 				}
 			});
@@ -873,6 +880,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.find('.submit-trigger').on('click', function(ev) {
+			if (self.uploading) {
+				return;
+			}
 			ev.preventDefault();
 			ev.stopPropagation();
 

@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeMerge;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\People\PersonContextInterface;
 use Doctrine\DBAL\Connection;
 
@@ -126,7 +127,10 @@ class TicketMerge implements PersonContextInterface
      */
     public function checkPersonPermission()
     {
-        return $this->person->PermissionsManager->TicketChecker->canMerge($this->ticket, $this->other_ticket);
+        /** @var TicketChecker $ticketChecker */
+        $ticketChecker = $this->person->getPermissionsManager()->TicketChecker;
+
+        return $ticketChecker->canMerge($this->ticket, $this->other_ticket);
     }
 
     /**
@@ -344,6 +348,12 @@ class TicketMerge implements PersonContextInterface
     {
         $this->db->executeUpdate('
             UPDATE tickets_logs
+            SET ticket_id = ?
+            WHERE ticket_id = ?
+        ', [$this->ticket['id'], $this->other_ticket['id']]);
+
+        $this->db->executeUpdate('
+            UPDATE ticket_proc_log
             SET ticket_id = ?
             WHERE ticket_id = ?
         ', [$this->ticket['id'], $this->other_ticket['id']]);

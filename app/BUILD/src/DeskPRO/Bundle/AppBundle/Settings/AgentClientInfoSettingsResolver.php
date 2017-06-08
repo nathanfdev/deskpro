@@ -30,12 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\ChatSettings;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRMSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\CRM\CRMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\PublishSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\TasksSettings;
@@ -149,7 +150,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $model = new TicketsSettings();
         $model
-            ->setEnabled($this->getUser()->hasPerm('agent_tickets.use'))
+            ->setEnabled($this->hasPerm('agent_tickets.use'))
             ->setRefCode($this->getSetting('core_tickets.use_ref'))
             ->setArchiving($this->getSetting('core_tickets.use_archive'))
         ;
@@ -239,6 +240,50 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             );
         }
 
+        $permissions = $model->getPermissions();
+        $permissions
+            ->setCreate($this->hasPerm('agent_tickets.create'))
+            ->setCreateLabels($this->hasPerm('agent_tickets.create_labels'))
+            ->setReplyMass($this->hasPerm('agent_tickets.reply_mass'))
+            ->setModifySetArchived($this->hasPerm('agent_tickets.modify_set_archived'))
+        ;
+
+        $modifyOwnPermissions = $model->getPermissions()->getModify()->getOwn();
+        $modifyOwnPermissions
+            ->setView(true)
+            ->setReply($this->hasPerm('agent_tickets.reply_own'))
+            ->setModify($this->hasPerm('agent_tickets.modify_own'))
+            ->setModifyMessages($this->hasPerm('agent_tickets.modify_messages_own'))
+            ->setDelete($this->hasPerm('agent_tickets.delete_own'))
+        ;
+
+        $modifyFollowingPermissions = $model->getPermissions()->getModify()->getFollowing();
+        $modifyFollowingPermissions
+            ->setView(true)
+            ->setReply($this->hasPerm('agent_tickets.reply_to_followed'))
+            ->setModify($this->hasPerm('agent_tickets.modify_followed'))
+            ->setModifyMessages($this->hasPerm('agent_tickets.modify_messages_followed'))
+            ->setDelete($this->hasPerm('agent_tickets.delete_followed'))
+        ;
+
+        $modifyUnassignedPermissions = $model->getPermissions()->getModify()->getUnassing();
+        $modifyUnassignedPermissions
+            ->setView($this->hasPerm('agent_tickets.view_unassigned'))
+            ->setReply($this->hasPerm('agent_tickets.reply_unassigned'))
+            ->setModify($this->hasPerm('agent_tickets.modify_unassigned'))
+            ->setModifyMessages($this->hasPerm('agent_tickets.modify_messages_unassigned'))
+            ->setDelete($this->hasPerm('agent_tickets.delete_unassigned'))
+        ;
+
+        $modifyOthersPermissions = $model->getPermissions()->getModify()->getOthers();
+        $modifyOthersPermissions
+            ->setView($this->hasPerm('agent_tickets.view_others'))
+            ->setReply($this->hasPerm('agent_tickets.reply_others'))
+            ->setModify($this->hasPerm('agent_tickets.modify_others'))
+            ->setModifyMessages($this->hasPerm('agent_tickets.modify_messages_others'))
+            ->setDelete($this->hasPerm('agent_tickets.delete_others'))
+        ;
+
         return $model;
     }
 
@@ -248,7 +293,16 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getChatSettings()
     {
         $model = new ChatSettings();
-        $model->setEnabled($this->getSetting('core.apps_chat') && $this->getUser()->hasPerm('agent_chat.use'));
+        $model->setEnabled($this->getSetting('core.apps_chat') && $this->hasPerm('agent_chat.use'));
+
+        $permissions = $model->getPermissions();
+        $permissions
+            ->setCreateLabels($this->hasPerm('agent_chat.create_labels'))
+            ->setViewOthers($this->hasPerm('agent_chat.view_others'))
+            ->setViewTranscripts($this->hasPerm('agent_chat.view_transcripts'))
+            ->setViewUnassigned($this->hasPerm('agent_chat.view_unassigned'))
+            ->setDelete($this->hasPerm('agent_chat.delete'))
+        ;
 
         return $model;
     }
@@ -259,7 +313,31 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getCrmSettings()
     {
         $model = new CRMSettings();
-        $model->setEnabled($this->getUser()->hasPerm('agent_people.use'));
+        $model->setEnabled($this->hasPerm('agent_people.use'));
+
+        $personPermissions = $model->getPermissions()->getPerson();
+        $personPermissions
+            ->setCreateLabels($this->hasPerm('agent_people.create_labels'))
+            ->setCreate($this->hasPerm('agent_people.create'))
+            ->setEdit($this->hasPerm('agent_people.edit'))
+            ->setValidate($this->hasPerm('agent_people.validate'))
+            ->setManageEmails($this->hasPerm('agent_people.manage_emails'))
+            ->setResetPassword($this->hasPerm('agent_people.reset_password'))
+            ->setNotes($this->hasPerm('agent_people.notes'))
+            ->setDisable($this->hasPerm('agent_people.disable'))
+            ->setDelete($this->hasPerm('agent_people.delete'))
+            ->setLoginAs($this->hasPerm('agent_people.login_as'))
+            ->setMerge($this->hasPerm('agent_people.merge'))
+        ;
+
+        $organizationSettings = $model->getPermissions()->getOrganization();
+        $organizationSettings
+            ->setCreateLabels('agent_org.create_labels')
+            ->setCreate('agent_org.create')
+            ->setEdit('agent_org.edit')
+            ->setNotes('agent_org.notes')
+            ->setDelete('agent_org.delete')
+        ;
 
         return $model;
     }
@@ -270,7 +348,10 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getFeedbackSettings()
     {
         $model = new FeedbackSettings();
-        $model->setEnabled($this->getUser()->hasPerm('core.apps_feedback'));
+        $model->setEnabled($this->hasPerm('core.apps_feedback'));
+
+        $permissions = $model->getPermissions();
+        $permissions->setCreateLabels($this->hasPerm('agent_publish.feedback_create_labels'));
 
         return $model;
     }
@@ -281,7 +362,16 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getPublishSettings()
     {
         $model = new PublishSettings();
-        $model->setEnabled($this->getUser()->hasPerm('core.apps_kb'));
+        $model->setEnabled($this->hasPerm('core.apps_kb'));
+
+        $permissions = $model->getPermissions();
+        $permissions
+            ->setCreate($this->hasPerm('agent_publish.create'))
+            ->setEdit($this->hasPerm('agent_publish.edit'))
+            ->setValidate($this->hasPerm('agent_publish.validate'))
+            ->setDelete($this->hasPerm('agent_publish.delete'))
+            ->setCanInsertHtml($this->hasPerm('agent_publish.can_insert_html'))
+        ;
 
         return $model;
     }
@@ -292,7 +382,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getTasksSettings()
     {
         $model = new TasksSettings();
-        $model->setEnabled($this->getUser()->hasPerm('core.apps_tasks'));
+        $model->setEnabled($this->hasPerm('core.apps_tasks'));
 
         return $model;
     }
@@ -304,9 +394,17 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $user          = $this->getUser();
         $signatureHtml = $user->getHelper('Agent')->getSignatureHtml();
-        $accountInfo   = new AccountInfo();
+
+        $language = $user->getLanguage();
+        if (!$language) {
+            $language = $this->em->getRepository(Language::class)->findOneBy([
+                'sys_name' => 'default',
+            ]);
+        }
+
+        $accountInfo = new AccountInfo();
         $accountInfo
-            ->setLanguage($user->getLanguage())
+            ->setLanguage($language)
             ->setTimezone($user->getTimezone())
             ->setSignatureHtml($signatureHtml);
 
@@ -331,5 +429,15 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
 
         return $this->user;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    private function hasPerm($name)
+    {
+        return $this->getUser()->hasPerm($name);
     }
 }

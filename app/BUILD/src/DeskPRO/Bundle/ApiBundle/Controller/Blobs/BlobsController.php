@@ -34,6 +34,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
@@ -74,11 +76,18 @@ class BlobsController extends CrudController
      */
     public function postTempAction(Request $request)
     {
-        $file   = $request->files->get('file');
-        $accept = $this->getContainer()->getAttachmentAccepter();
-        $blob   = $accept->accept($file);
+        $form = $this->createForm(AcceptAttachmentType::class, null, [
+            'upload_context' => 'agent',
+            'required'       => true,
+            'with_context'   => true,
+        ]);
+        $form->submit($this->getRequestData($request));
 
-        return View::create($this->wrap($blob), Response::HTTP_CREATED);
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        return View::create($this->wrap($form->getData()), Response::HTTP_CREATED);
     }
 
     /**

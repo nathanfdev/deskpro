@@ -135,13 +135,15 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
 
       defer.promise.then((info) =>
         if listCtrl
-          instanceInfo = {
-            id: info.id,
-            title: setting_values.dp_app.title,
-            package_name: @pack.name,
-            package: @pack
-          }
-          listCtrl.addAppInstance(instanceInfo)
+          if info.version == 2
+            listCtrl.addAppInstance(info.data, true)
+          else
+            listCtrl.addAppInstance({
+              id: info.id,
+              title: setting_values.dp_app.title,
+              package_name: @pack.name,
+              package: @pack
+            })
 
         if @usersourceType == 'user'
           @$scope.$parent?.ListCtrl?.refresh()
@@ -149,6 +151,9 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
         else if @usersourceType == 'agent'
           @$scope.$parent?.ListCtrl?.refresh()
           @$state.go('agents.usersources.id', { id: info.id })
+        else if info.version == 2
+          @$state.go('apps.apps.instance_v2', { id: 'v2_' + info.data.id })
+          location.reload()
         else
           @$state.go('apps.apps.instance', { id: info.id })
       )

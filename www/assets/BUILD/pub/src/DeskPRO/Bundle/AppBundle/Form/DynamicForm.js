@@ -158,6 +158,7 @@ export class DynamicForm {
         const $el = this.fields.get(name);
         if (!$el) {
           console.warn('Unknown field: %s', name);
+          return;
         }
         $el.detach().appendTo(insertPoint);
       }
@@ -172,6 +173,7 @@ export class DynamicForm {
       const $el = this.fields.get(name);
       if (!$el) {
         console.warn('Unknown field: %s', name);
+        return;
       }
 
       $el.find('input, textarea, select').each((i, field) => {

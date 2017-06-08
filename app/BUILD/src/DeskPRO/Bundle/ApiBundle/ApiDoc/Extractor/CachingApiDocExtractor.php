@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor;
 
 use Doctrine\Common\Annotations\Reader;
+use DpSys\LowError\SystemErrorHandler;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Nelmio\ApiDocBundle\Util\DocCommentExtractor;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
@@ -99,10 +100,30 @@ class CachingApiDocExtractor extends ApiDocExtractor
                 }
             }
 
-            $data       = parent::all($view);
-            $serialized = serialize($data);
+            $data = parent::all($view);
 
-            $cache->write($serialized, $resources);
+            try {
+                $serialized = serialize($data);
+                $cache->write($serialized, $resources);
+            } catch (\Exception $dataException) {
+                // unable to serialize
+                // return as is as fallback
+                SystemErrorHandler::logException($dataException);
+
+                foreach ($data as $route) {
+                    try {
+                        serialize($route);
+                    } catch (\Exception $routeException) {
+                        /** @var ApiDoc $annotation */
+                        $annotation = $route['annotation'];
+
+                        $methods   = implode(',', $annotation->getRoute()->getMethods());
+                        $routePath = $annotation->getRoute()->getPath();
+
+                        SystemErrorHandler::logException(new \RuntimeException("Unable to serialize api doc for $methods $routePath"));
+                    }
+                }
+            }
 
             return $data;
         }

@@ -9,8 +9,8 @@ Feature: /tickets/{id}/messages endpoint
     And there are no Blob records in the DB
     And no TicketMessage records exist
     And only the following Ticket records exist:
-      | #  | Subject  |
-      | t1 | Ticket 1 |
+      | #  | Subject  | Status         |
+      | t1 | Ticket 1 | awaiting_agent |
 
   Scenario: I retrieve a ticket messages
     Given I create a Ticket and reference it as ticket
@@ -219,3 +219,32 @@ Feature: /tickets/{id}/messages endpoint
       | client_type   |
       | ios           |
       | iOS (v1.0.92) |
+
+  Scenario: I reply to a ticket and change its status
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "status": "awaiting_user"
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the JSON node "data.status" should be equal to the string "awaiting_user"
+
+  Scenario: If I don't send status then ticket status should not be changed
+    Given only the following Ticket records exist:
+      | #  | Subject  | Status   |
+      | t1 | Ticket 1 | resolved |
+
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message"
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the JSON node "data.status" should be equal to the string "resolved"

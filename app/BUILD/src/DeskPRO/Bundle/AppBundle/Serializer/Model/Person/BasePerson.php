@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Person;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -94,6 +95,8 @@ class BasePerson
     /**
      * True if person is agent.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $isAgent;
@@ -126,6 +129,15 @@ class BasePerson
     protected $lastSeen;
 
     /**
+     * Agent data.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AgentData")
+     *
+     * @var AgentData
+     */
+    protected $agentData;
+
+    /**
      * PersonEntity constructor.
      *
      * @param PersonEntity $person
@@ -141,6 +153,7 @@ class BasePerson
         $this->displayName  = $person->getDisplayNameUser();
         $this->isAgent      = $person->isAgent();
         $this->primaryEmail = $person->getPrimaryEmail();
+        $this->agentData    = $person->getAgentData();
         $this->avatar       = $avatar;
     }
 

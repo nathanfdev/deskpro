@@ -26,11 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
+
+use DeskPRO\Bundle\AppBundle\Limits\Exception\LimitExhaustedException;
 
 /**
  * Class ExceptionErrorCodeFactory.
@@ -39,6 +37,7 @@ class ExceptionErrorCodeFactory
 {
     public static $exceptions_to_error_codes_map = [
         'DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException' => ErrorsCodes::BAD_REQUEST,
+        LimitExhaustedException::class                                       => ErrorsCodes::RATE_LIMITS,
         'Symfony\Component\HttpKernel\Exception\BadRequestHttpException'     => ErrorsCodes::BAD_REQUEST,
         'Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException'   => ErrorsCodes::UNAUTHORIZED,
         'Symfony\Component\HttpKernel\Exception\NotFoundHttpException'       => ErrorsCodes::NOT_FOUND,

@@ -414,7 +414,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName, Hiera
     /**
      * {@inheritdoc}
      */
-    public function getPhraseName($property, Translate $translate)
+    public function getPhraseName($property)
     {
         if (!$property) {
             $property = 'title';

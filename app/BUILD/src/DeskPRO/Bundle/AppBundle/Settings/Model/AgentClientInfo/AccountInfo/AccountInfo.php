@@ -76,7 +76,7 @@ class AccountInfo
      *
      * @return $this
      */
-    public function setLanguage(Language $language)
+    public function setLanguage(Language $language = null)
     {
         $this->language = $language;
 

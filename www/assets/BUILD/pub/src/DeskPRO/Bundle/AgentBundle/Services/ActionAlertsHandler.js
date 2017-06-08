@@ -29,21 +29,37 @@ class ActionAlertsHandler {
           this.options.dispatch(startChat(null, data.chat, true));
         }
         break;
-      case 'notification.agents.update_online':
-        payload.data.online.forEach((item) => {
-          records.push({ id: item, online: true });
-        });
-        payload.data.offline.forEach((item) => {
-          records.push({ id: item, online: false });
-        });
+      case 'agents.update_online':
+        if (payload.data.online) {
+          payload.data.online.forEach((item) => {
+            records.push({ id: item, online: true });
+          });
+        }
+        if (payload.data.offline) {
+          payload.data.offline.forEach((item) => {
+            records.push({ id: item, online: false });
+          });
+        }
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
-      default:
+      case 'read.notifications.alert':
         break;
+      case 'organization.added':
+        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        break;
+      default:
+        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
     }
     this.options.dispatch(newActionAlerts(payload));
+  }
+
+  static handleLegacyClientMessage(payload) {
+    if (!payload.eventType) {
+      console.error('payload.eventType is not set', payload);
+    } else {
+      DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
+    }
   }
 }
 
 export default ActionAlertsHandler;
-

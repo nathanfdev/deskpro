@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
@@ -65,6 +66,11 @@ class TwilioAdapter
     private $em;
 
     /**
+     * @var VoiceSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @var array
      */
     private $cache = [];
@@ -72,11 +78,13 @@ class TwilioAdapter
     /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager         $em
+     * @param VoiceSettingsResolver $settingsResolver
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver)
     {
-        $this->em = $em;
+        $this->em               = $em;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -691,7 +699,7 @@ class TwilioAdapter
                         'queue'      => $queue->getTaskQueueSid(),
                         'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                         'priority'   => 1,
-                        'timeout'    => self::VOICEMAIL_WAITING_TIMEOUT,
+                        'timeout'    => $queue->getVoicemailTimeout() ?: self::VOICEMAIL_WAITING_TIMEOUT,
                     ],
                     [
                         'queue' => $account->getVoicemailQueueSid(),
@@ -714,7 +722,7 @@ class TwilioAdapter
                         'queue'      => $agent->getVoiceTaskQueueSid(),
                         'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                         'priority'   => 1,
-                        'timeout'    => self::VOICEMAIL_WAITING_TIMEOUT,
+                        'timeout'    => $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout(),
                     ],
                     [
                         'queue' => $account->getVoicemailQueueSid(),

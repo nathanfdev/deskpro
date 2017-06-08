@@ -4,6 +4,7 @@ define([
 
   'Admin/Apps/Ctrl/List',
   'Admin/Apps/Ctrl/EditInstance',
+  'Admin/Apps/Ctrl/EditInstanceV2',
   'Admin/Apps/Ctrl/EditCustomInstance',
   'Admin/Apps/Ctrl/InstallProgress',
   'Admin/Apps/Ctrl/PackageInfo',
@@ -184,6 +185,7 @@ define([
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
   'Admin/VoiceChannel/Ctrl/ReactComponent',
   'Admin/Main/Ctrl/Features',
+  'Admin/Settings/Ctrl/Notifications/List',
 
   'CloudAdminLoad',
   window.DP_ADMIN_BUNDLE_PATH

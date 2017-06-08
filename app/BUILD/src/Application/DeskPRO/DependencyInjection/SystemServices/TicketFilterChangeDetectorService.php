@@ -49,6 +49,9 @@ class TicketFilterChangeDetectorService
      */
     public static function create(DeskproContainer $container)
     {
-        return new FilterChangeDetector($container->getEm());
+        return new FilterChangeDetector(
+            $container->getEm(),
+            $container->get('event_dispatcher')
+        );
     }
 }

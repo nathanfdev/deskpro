@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Class TicketAwarePersistModelTrait.
@@ -40,7 +41,7 @@ trait TicketAwarePersistModelTrait
     /**
      * {@inheritdoc}
      */
-    protected function persistModel($entity)
+    protected function persistModel($entity, FormInterface $form = null)
     {
         $this->saveTicket($entity->getTicket());
 

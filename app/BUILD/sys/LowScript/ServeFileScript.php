@@ -78,6 +78,9 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected $error_mode = 'error';
 
+    /** @var bool this setting is only overwritten by the apps v2 asset serving router */
+    private $alwaysForceDownloadOfHtmlFiles = true;
+
     /**
      * @var bool
      */
@@ -169,6 +172,8 @@ class ServeFileScript extends LowScriptAbstract
                 $this->handleGradientRequest();
             } elseif (preg_match('#^/apps/([a-zA-Z0-9_\-\.]+)/(app|js|css|html|res)/(.*?)$#', $pathinfo, $m)) {
                 $this->handleAppsRequest($m[1], $m[2], $m[3]);
+            } elseif (preg_match('#^/apps/([^/]+)/files/(.+)$#', $pathinfo, $m)) {
+                $this->handleAppsV2FileRequest($m[1], $m[2]);
             } else {
                 if ($this->error_mode == 'exception') {
                     throw new \Exception('File not found. (bad_route)', 400);
@@ -790,6 +795,12 @@ class ServeFileScript extends LowScriptAbstract
             // Need to send through this controller if its a download
             // request and the file is usually stored with an inline disposition
             if ($this->local_mode || $this->dpEnv->getConfig('settings.remote_blobs_proxy_local')) {
+                if ($urlRewrites = $this->dpEnv->getConfig('settings.remote_blobs_local_urlrewrite')) {
+                    foreach ($urlRewrites as $pattern => $replace) {
+                        $blob['file_url'] = preg_replace($pattern, $replace, $blob['file_url']);
+                    }
+                }
+
                 $context = stream_context_create([
                     'http' => ['timeout' => 10.0], // read timeout. we do it in chunks, so this is rather low
                 ]);
@@ -819,6 +830,12 @@ class ServeFileScript extends LowScriptAbstract
                 $buf = null;
             }
 
+            if ($urlRewrites = $this->dpEnv->getConfig('settings.remote_blobs_redirect_urlrewrite')) {
+                foreach ($urlRewrites as $pattern => $replace) {
+                    $blob['file_url'] = preg_replace($pattern, $replace, $blob['file_url']);
+                }
+            }
+
             header('HTTP/1.1 301 Moved Permanently');
             header("Location: {$blob['file_url']}");
             exit;
@@ -843,7 +860,8 @@ class ServeFileScript extends LowScriptAbstract
         header('Content-Type: '.$blob['content_type'].'; filename="'.addslashes($blob['filename']).'"');
         header('Content-Length: '.$blob['filesize']);
 
-        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'], true, $blob['filename'])) {
+        $safeInlineContent = $this->alwaysForceDownloadOfHtmlFiles;
+        if (!isset($_GET['dl']) && \Orb\Data\ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
             header('Content-Disposition: inline; filename="'.addslashes($blob['filename']).'"');
         } else {
             header('Content-Disposition: attachment; filename="'.addslashes($blob['filename_safe']).'"');
@@ -1056,6 +1074,33 @@ class ServeFileScript extends LowScriptAbstract
         $new_blob_info['filename_safe'] = $blob->getFilenameSafe();
 
         return $new_blob_info;
+    }
+
+    /**
+     * Serves a v2 application asset.
+     *
+     * @param string $appId
+     * @param string $assetPath
+     */
+    public function handleAppsV2FileRequest($appId, $assetPath)
+    {
+        $statement    = 'SELECT blob_id, blob_authcode FROM app2_app_asset_blob WHERE app_id = :appId AND path =:assetPath LIMIT 1';
+        $pdoStatement = $this->getPdoRead()->prepare($statement);
+        $pdoStatement->execute(['appId' => $appId, 'assetPath' => $assetPath]);
+        $this->addLogMessage("AppID: $appId, Path: $assetPath");
+        $blobInfo = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (!empty($blobInfo)) {
+            $this->alwaysForceDownloadOfHtmlFiles = false;
+            $this->showBlob($blobInfo['blob_id'], null, $blobInfo['blob_authcode']);
+        } else {
+            if ($this->error_mode == 'exception') {
+                throw new \Exception('App file not found. (bad_asset_path)', 400);
+            }
+            header('HTTP/1.0 404 Not Found');
+            echo 'App file not found. (bad_asset_path)';
+
+            return;
+        }
     }
 
     /**

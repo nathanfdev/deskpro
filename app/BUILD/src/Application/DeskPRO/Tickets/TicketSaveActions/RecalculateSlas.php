@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use Application\DeskPRO\Tickets\Slas\SlaProcessor;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterface
 {
@@ -54,13 +55,23 @@ class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterfac
     private $action_applicator;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
      * @param EntityManager             $em
      * @param ActionApplicatorInterface $action_applicator
+     * @param EventDispatcherInterface  $eventDispatcher
      */
-    public function __construct(EntityManager $em, ActionApplicatorInterface $action_applicator)
-    {
+    public function __construct(
+        EntityManager $em,
+        ActionApplicatorInterface $action_applicator,
+        EventDispatcherInterface $eventDispatcher
+    ) {
         $this->em                = $em;
         $this->action_applicator = $action_applicator;
+        $this->eventDispatcher   = $eventDispatcher;
     }
 
     /**
@@ -73,7 +84,7 @@ class RecalculateSlas implements TicketSaveActionInterface, ErrorCheckedInterfac
             return;
         }
 
-        $cm_sender = new SlaClientMessageSender($this->em->getConnection());
+        $cm_sender = new SlaClientMessageSender($this->em->getConnection(), $this->eventDispatcher);
         if ($context->getPersonContext() && $context->getPersonContext()->getId()) {
             $cm_sender->setPersonContext($context->getPersonContext());
         }

@@ -35,10 +35,19 @@ use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestJsonReader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
@@ -135,7 +144,52 @@ class AppsController extends AbstractController
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
-            throw $this->createNotFoundException();
+            // app v2 package info
+            $app = $this->em->getRepository(App::class)->findOneBy([
+                'name' => $name,
+            ]);
+
+            if ($app) {
+                $manifest = $app->getParsedManifest();
+                $iconBlob = $app->getIconAsset()->getBlob();
+            } else {
+                $appArchive = $this->getAppV2ArchiveBundle($name);
+                if (!$appArchive) {
+                    throw $this->createNotFoundException();
+                }
+
+                $manifestReader = new AppManifestJsonReader();
+                $manifest       = $manifestReader->readManifest($appArchive->getManifestAsString());
+                $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
+                    $appArchive->getIcon(),
+                    'icon.png',
+                    'image/png'
+                );
+
+                $iconBlob->setIsTemp(true);
+                $this->em->persist($iconBlob);
+                $this->em->flush();
+            }
+
+            $data = [
+                'name'         => $manifest->getName(),
+                'native_name'  => $manifest->getName(),
+                'title'        => $manifest->getTitle(),
+                'scope'        => $manifest->getScope(),
+                'is_installed' => false,
+                'readme'       => $manifest->getDescription(),
+                'readme_html'  => $manifest->getDescription(),
+                'settings_def' => [],
+                'assets'       => [],
+                'icon_32'      => $iconBlob->getThumbnailUrl(32),
+                'icon_48'      => $iconBlob->getThumbnailUrl(48),
+                'icon_64'      => $iconBlob->getThumbnailUrl(64),
+                'author_name'  => $manifest->getAuthor()->getName(),
+                'author_email' => $manifest->getAuthor()->getEmail(),
+                'author_link'  => $manifest->getAuthor()->getUrl(),
+            ];
+
+            return $this->createApiResponse(['package' => $data]);
         }
 
         $package = $manager->getPackage($name);
@@ -246,7 +300,35 @@ class AppsController extends AbstractController
     {
         $manager = $this->container->getAppManager();
 
-        if (!$manager->getPackage($name)) {
+        if (!$manager->hasPackage($name)) {
+            // app v2 package info
+            $appArchive = $this->getAppV2ArchiveBundle($name);
+            if ($appArchive) {
+                $instanceCreator = $this->container->get('apps2.application_manager');
+                $instance        = $instanceCreator->createFirstInstance($appArchive);
+
+                $context = new SideloadSerializationContext();
+                $context->setIncludes(['app']);
+                $context->setInlineSideloads(true);
+
+                $this->container->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.ui.reload', [
+                        'type'           => 'admin',
+                        'person_id'      => 0,
+                        'person_name'    => 'System',
+                        'exclude_target' => $this->person->getId(),
+                    ])
+                );
+
+                $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
+
+                return $this->createApiCreateResponse(
+                    array_merge($serialized, ['version' => 2]),
+                    $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
+                );
+            }
+
             throw $this->createNotFoundException();
         }
 
@@ -829,6 +911,49 @@ class AppsController extends AbstractController
             return $this->createApiErrorResponse('missing_manifest', 'Missing manifest.json');
         }
 
+        // detect apps v2
+        $json = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
+        $data = @json_decode($json, true);
+
+        if (isset($data['version']) && version_compare($data['version'], '2.0.0', '>=')) {
+            $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
+            $bundleValidator = $this->container->get(AppBundleValidator::class);
+
+            if (!$bundleValidator->validateBundle($appBundle)) {
+                return $this->createApiErrorResponse('invalid_file', 'Uploaded app archive file is not valid.');
+            }
+
+            $slug    = Strings::slugifyTitle($data['name']);
+            $sysName = 'apps_v2_zip_'.$slug;
+
+            // delete previous blobs
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->delete(Blob::class, 'b')
+                ->where('b.sys_name = :sys_name')
+                ->setParameter('sys_name', $sysName)
+            ;
+
+            $qb->getQuery()->execute();
+
+            // save uploaded one
+            $file   = $request->files->get('file');
+            $accept = $this->getContainer()->getAttachmentAccepter();
+            $blob   = $accept->accept($file);
+            $blob->setIsTemp(true);
+            $blob->setSysName($sysName);
+
+            $this->em->persist($blob);
+            $this->em->flush();
+
+            return $this->createApiCreateResponse(
+                [
+                    'package_name' => $slug,
+                ],
+                $this->generateUrl('api_apps_package', ['name' => $slug])
+            );
+        }
+
         try {
             $app_package = new Package($app_dir);
         } catch (\Exception $e) {
@@ -884,5 +1009,33 @@ class AppsController extends AbstractController
         $meta = $meta ? $meta->toArray() : null;
 
         return $this->createApiResponse(['enabled' => $js->isEnabled(), 'meta' => $meta]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return AppZipArchiveBundle|null
+     */
+    private function getAppV2ArchiveBundle($name)
+    {
+        $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
+        $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
+
+        if (!file_exists($blobPath)) {
+            $blob = $this->em->getRepository(Blob::class)->findOneBy([
+                'sys_name' => 'apps_v2_zip_'.$name,
+            ]);
+
+            if (!$blob) {
+                return;
+            }
+
+            $appEnv   = $this->container->get('deskpro.app_env');
+            $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
+
+            $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
+        }
+
+        return new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($blobPath));
     }
 }

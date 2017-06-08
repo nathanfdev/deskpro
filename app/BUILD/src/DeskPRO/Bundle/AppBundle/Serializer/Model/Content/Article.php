@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Content;
 
 use Application\DeskPRO\Entity\Article as ArticleEntity;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ObjectLang;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -47,6 +48,24 @@ class Article extends ContentAbstract
     protected $categories;
 
     /**
+     * Article title translations.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\ObjectLang>")
+     *
+     * @var ObjectLang[]
+     */
+    protected $titleTranslations;
+
+    /**
+     * Article content translations.
+     *
+     * @JMS\Type("array<Application\DeskPRO\Entity\ObjectLang>")
+     *
+     * @var ObjectLang[]
+     */
+    protected $contentTranslations;
+
+    /**
      * Constructor.
      *
      * @param ArticleEntity $entity
@@ -54,6 +73,9 @@ class Article extends ContentAbstract
     public function __construct(ArticleEntity $entity)
     {
         parent::__construct($entity);
-        $this->categories = $entity->getCategories();
+
+        $this->categories          = $entity->getCategories();
+        $this->titleTranslations   = $entity->getTitleTranslations();
+        $this->contentTranslations = $entity->getContentTranslations();
     }
 }

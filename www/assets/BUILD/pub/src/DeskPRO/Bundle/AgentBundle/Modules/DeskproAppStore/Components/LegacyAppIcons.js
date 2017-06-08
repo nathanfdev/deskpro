@@ -1,0 +1,48 @@
+function matches(elem, root, selector)
+{
+  const matched = root.querySelectorAll(selector);
+
+  let i = matched.length;
+  while (--i >= 0 && elem !== matched.item(i)) {}
+
+  return  i > -1;
+}
+
+/**
+ * A bridge to the legacy app icons container
+ */
+class LegacyAppIcons
+{
+  /**
+   * @param {String} selector
+   * @return {LegacyAppIcons}
+   */
+  static fromSelector(selector) {
+    const domRoot = window.document.querySelector(selector);
+    return new LegacyAppIcons(domRoot);
+  }
+
+  constructor(domRoot)
+  {
+    this.domRoot = domRoot;
+  }
+
+  isAppIconDOM = (domNode) =>
+  {
+    return matches(domNode, this.domRoot, 'li[data-deskproapp-marker]') || matches(domNode, this.domRoot, 'li[data-deskproapp-marker] *');
+  };
+
+  isLegacyAppIconDOM = (domNode) =>
+  {
+    return matches(domNode, this.domRoot, 'li:not([data-deskproapp-marker])') || matches(domNode, this.domRoot, 'li:not([data-deskproapp-marker]) *');
+  };
+
+  addAppIcon = (imageUrl) => {
+    const markup = `<li class="is-enabled" data-deskproapp-marker><img src="${imageUrl}" style="width:48px; height:48px"></li>`;
+    this.domRoot.insertAdjacentHTML('beforeend', markup);
+
+    return true;
+  }
+}
+
+export default LegacyAppIcons;

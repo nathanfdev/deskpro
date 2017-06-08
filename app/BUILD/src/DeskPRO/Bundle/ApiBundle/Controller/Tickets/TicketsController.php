@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
-use DeskPRO\Bundle\ApiBundle\Traits\Labels\LabelsHelper;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -65,7 +64,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketsController extends AbstractTicketsController
 {
-    use LabelsHelper, TicketsPagerTrait, TicketSaveTrait;
+    use TicketsPagerTrait, TicketSaveTrait;
 
     public static $type = TicketType::class;
 

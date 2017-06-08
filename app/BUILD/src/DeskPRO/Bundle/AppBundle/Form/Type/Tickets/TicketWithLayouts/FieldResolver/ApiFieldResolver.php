@@ -93,10 +93,9 @@ class ApiFieldResolver extends AbstractFieldResolver
     protected function createPerson(TicketWithLayoutsContext $context)
     {
         return new FormField(PersonAssignType::class, [
-            'property_path'    => 'person',
-            'person'           => $context->getPerson(),
-            'available_fields' => ['id', 'email', 'name'],
-            'allow_create'     => true,
+            'property_path' => 'person',
+            'person'        => $context->getPerson(),
+            'allow_create'  => true,
         ]);
     }
 

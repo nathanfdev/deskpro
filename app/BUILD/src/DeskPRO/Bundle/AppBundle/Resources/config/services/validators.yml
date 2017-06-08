@@ -88,9 +88,15 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
-  deskpro.validator.valid_recaptcha:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ValidRecaptcha2Validator
+  validator.valid_recaptcha:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ValidRecaptcha2Validator
     arguments: ["@brand_stack", "@request_stack"]
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.valid_api_captcha:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ApiCaptchaValidator
+    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: validator.constraint_validator }
 
@@ -105,5 +111,20 @@ services:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\PermissionValidator
     arguments:
       - "@security.authorization_checker"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.custom_field_date:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateValidator
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: validator.constraint_validator }
+
+
+  validator.custom_field_datetime:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateTimeValidator
+    arguments:
+      - "@security.token_storage"
     tags:
       - { name: validator.constraint_validator }

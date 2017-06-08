@@ -86,8 +86,7 @@ class SystemAlertsMonologHandler extends AbstractProcessingHandler
                 return;
             }
             $this->lastRecordHash = $hash;
-
-            SystemErrorHandler::logException(new \RuntimeException($code, $message, $file, $line, null, $record));
+            SystemErrorHandler::logErrorInfo(SystemErrorHandler::getErrorInfo(E_ERROR, $message, $file, $line));
         }
     }
 

@@ -38,4 +38,6 @@ return [
     'standard_2' => '#^\s*Forward(ed)?( Message):\s*$#im',
 
     'outlook_1' => '#^\-+Original Message\-+\s*$#im',
+
+    'swedish' => '#^\s*Vidarebefordrat brev:\s*$#mi',
 ];

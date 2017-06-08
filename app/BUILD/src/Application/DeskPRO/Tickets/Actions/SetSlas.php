@@ -67,7 +67,10 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
         $em          = $this->getContainer()->getEm();
         $ticket_slas = $this->getContainer()->getSystemService('ticket_slas');
 
-        $cm_sender = new SlaClientMessageSender($this->getContainer()->getDb());
+        $cm_sender = new SlaClientMessageSender(
+            $this->getContainer()->getDb(),
+            $this->getContainer()->get('event_dispatcher')
+        );
 
         //--------------------
         // Add SLAs
@@ -121,8 +124,6 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
             // These are saved so it can be used in ApplySlas.php
             $context->getVars()->set('removed_slas', $removed_ids);
         }
-
-        $cm_sender->sendQueue();
     }
 
     /**

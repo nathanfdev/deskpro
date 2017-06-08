@@ -28,6 +28,8 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use PhpSpec\ObjectBehavior;
@@ -39,9 +41,11 @@ use Pusher;
  */
 class PusherDeliveryHandlerSpec extends ObjectBehavior
 {
-    public function let(Pusher $pusher)
+    public function let(Pusher $pusher, SettingsResolver $resolver, SettingsBag $bag)
     {
-        $this->beConstructedWith($pusher);
+        $this->beConstructedWith($pusher, $resolver);
+        $resolver->getGlobalSettings()->willReturn($bag);
+        $bag->get('notification.settings.pusher_client.channel_prefix', '')->willReturn('');
     }
 
     public function it_can_deliver_message(ActionAlert $actionAlert, Pusher $pusher)
@@ -57,7 +61,7 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
 
-        $pusher->triggerBatch(Argument::type('array'))->shouldBeCalled();
+        $pusher->triggerBatch(Argument::type('array'), true)->shouldBeCalled();
         $this->schedule($actionAlert);
         $this->deliver();
     }

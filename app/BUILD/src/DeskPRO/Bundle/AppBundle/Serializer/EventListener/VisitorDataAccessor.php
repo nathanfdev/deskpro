@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\EventListener;
 
-use JMS\Serializer\GenericSerializationVisitor;
+use JMS\Serializer\JsonSerializationVisitor;
 use JMS\Serializer\VisitorInterface;
 
 /**
@@ -66,7 +66,7 @@ class VisitorDataAccessor
      */
     private static function getReflectionProperty()
     {
-        $property = new \ReflectionProperty(GenericSerializationVisitor::class, 'data');
+        $property = new \ReflectionProperty(JsonSerializationVisitor::class, 'data');
         $property->setAccessible(true);
 
         return $property;

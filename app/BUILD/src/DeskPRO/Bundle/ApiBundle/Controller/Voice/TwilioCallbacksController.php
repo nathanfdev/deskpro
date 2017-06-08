@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -59,6 +58,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\AppBundle\Twilio\Twiml;
@@ -576,12 +576,10 @@ class TwilioCallbacksController extends BaseController
             $statusParams['hold'] = $adapter->isConferenceOnHold($phoneCall);
         }
 
-        $cm = new ClientMessage();
-        $cm->setChannel('agent.voice.conference.status');
-        $cm->setData($statusParams);
-
-        $em->persist($cm);
-        $em->flush();
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.status',
+            $statusParams
+        ));
     }
 
     /**

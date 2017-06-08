@@ -32,25 +32,33 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Form\Model\NewPerson as NewPersonModel;
+use Application\AgentBundle\Form\Type\NewPerson as NewPersonType;
 use Application\DeskPRO\App;
-use Application\DeskPRO\ClientMessage\Generator\PeopleClientMessages;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person as Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\ChatConversation as ChatConversationRepository;
-use Application\DeskPRO\EntityRepository\Person;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
+use Application\DeskPRO\HttpFoundation\Cookie;
 use Application\DeskPRO\Log\Event\UserMerged;
 use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\People\PersonMerge\PersonMerge;
+use Application\DeskPRO\Reader\VCard;
+use Application\EmailBundle\SwiftMailer\Mailer;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
+use Orb\Validator\StringEmail;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -781,7 +789,7 @@ class PersonController extends AbstractController
         $person = $this->getPersonOr404($person_id);
 
         if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $email = $person->getEmailId($email_id);
@@ -809,7 +817,7 @@ class PersonController extends AbstractController
         $person = $this->getPersonOr404($person_id);
 
         if (!$this->person->hasPerm('agent_people.edit') || !$this->isPersonEditable($person)) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $this->em->beginTransaction();
@@ -1024,7 +1032,7 @@ class PersonController extends AbstractController
     public function ajaxSaveOrganizationAction($person_id)
     {
         if (!$this->person->hasPerm('agent_people.manage_emails')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $person = $this->getPersonOr404($person_id);
@@ -1071,7 +1079,7 @@ class PersonController extends AbstractController
     public function ajaxSaveNoteAction($person_id)
     {
         if (!$this->person->hasPerm('agent_people.notes')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $person = $this->getPersonOr404($person_id);
@@ -1138,7 +1146,7 @@ class PersonController extends AbstractController
     public function ajaxSaveFileAction($person_id)
     {
         if (!$this->person->hasPerm('agent_people.notes')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         $person = $this->getPersonOr404($person_id);
@@ -1260,7 +1268,7 @@ class PersonController extends AbstractController
 
         $oldPersonId = $otherPerson['id'];
 
-        $logEvent = new Entity\LogEvent(new UserMerged($person, $otherPerson), $this->person);
+        $logEvent = new LogEvent(new UserMerged($person, $otherPerson), $this->person);
         $merge    = new PersonMerge($this->person, $person, $otherPerson);
         $merge->merge();
         $this->container->get('deskpro.logger.changelog')->info($logEvent);
@@ -1346,11 +1354,11 @@ class PersonController extends AbstractController
                 }
             }
 
-            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie($cookie_name);
+            $cookie = Cookie::makeDeleteCookie($cookie_name);
             $cookie->send();
         }
 
-        $tmp = Entity\TmpData::create('agent_user_login', [
+        $tmp = TmpData::create('agent_user_login', [
             'agent_id'  => $this->person->getId(),
             'person_id' => $person->id,
         ], '+5 minutes');
@@ -1380,10 +1388,10 @@ class PersonController extends AbstractController
         // So dont remove it even though it looks like it's not used! :-)
         $custom_fields_form = $this->get('form.factory')->createNamedBuilder('newperson_custom_fields', 'form');
         $field_manager      = $this->container->getPersonFieldManager();
-        $custom_fields      = $field_manager->getDisplayArrayForObject(new Entity\Person(), $custom_fields_form);
+        $custom_fields      = $field_manager->getDisplayArrayForObject(new Person(), $custom_fields_form);
 
         $manager                   = $this->container->getCustomFieldManager();
-        $custom_fields_definitions = $manager->createDefinitionsFormForContext(new Entity\Person());
+        $custom_fields_definitions = $manager->createDefinitionsFormForContext(new Person());
 
         $timezone_options = \DateTimeZone::listIdentifiers();
         $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -1401,12 +1409,12 @@ class PersonController extends AbstractController
     public function newPersonSaveAction(Request $request)
     {
         if (!$this->person->hasPerm('agent_people.create')) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
-        $newperson = new \Application\AgentBundle\Form\Model\NewPerson($this->person);
+        $newperson = new NewPersonModel($this->person, $this->get('doctrine.orm.default_entity_manager'));
 
-        $isVCard = $this->in->getBoolean('isVCard');
+        $isVCard = $this->in->getBool('isVCard');
 
         if ($this->in->getString('newperson.set_password')) {
             $password = 'generate' === $this->in->getString('newperson.set_password_radio') || !$this->in->getString('newperson.new_password')
@@ -1416,7 +1424,7 @@ class PersonController extends AbstractController
         }
 
         if ($isVCard) {
-            $blobId = $this->in->getBoolean('blobId');
+            $blobId = $this->in->getBool('blobId');
             if (!$blobId) {
                 throw new \Exception('Invalid Blob ID');
             }
@@ -1424,7 +1432,7 @@ class PersonController extends AbstractController
             $blob    = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
             $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-            $vCardReader = new \Application\DeskPRO\Reader\VCard($this->em);
+            $vCardReader = new VCard($this->em);
 
             $fields = $vCardReader->parseVCard($content);
 
@@ -1443,7 +1451,7 @@ class PersonController extends AbstractController
         $account_manager = App::$container->getEmailAccountManager();
 
         // Check for dupe email address
-        if (!$new_email || !\Orb\Validator\StringEmail::isValueValid($new_email)) {
+        if (!$new_email || !StringEmail::isValueValid($new_email)) {
             return $this->createJsonResponse([
                 'success'        => false,
                 'error_messages' => ['Please enter a valid email address'],
@@ -1454,7 +1462,9 @@ class PersonController extends AbstractController
                 'error_messages' => ['That email address is in use by a ticket account'],
             ]);
         } else {
-            $check_exists = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($new_email);
+            /** @var PersonRepository $personRepository */
+            $personRepository = $this->em->getRepository(Person::class);
+            $check_exists     = $personRepository->findOneByEmail($new_email);
             if ($check_exists) {
                 return $this->createJsonResponse([
                     'success'        => false,
@@ -1463,8 +1473,10 @@ class PersonController extends AbstractController
             }
         }
 
-        if ($language = $this->in->getUint('newperson.language')) {
-            $newperson->language = $this->container->getDataService('Language')->get($language);
+        if ($language = $this->in->getUInt('newperson.language')) {
+            /** @var LanguageDataService $languageDataService */
+            $languageDataService = $this->container->getDataService('Language');
+            $newperson->language = $languageDataService->get($language);
         }
 
         if ($isVCard) {
@@ -1474,15 +1486,11 @@ class PersonController extends AbstractController
 
             $vCardReader->applyToPerson($content, $person);
 
-            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId(
+            $this->em->getRepository(PersonPref::class)->deletePrefForPersonId(
                 'agent.ui.state.newperson',
                 $this->person->id
             );
 
-            // Notify about new person
-            foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                $this->em->persist($cm);
-            }
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
@@ -1507,7 +1515,7 @@ class PersonController extends AbstractController
             );
         }
 
-        $formType = new \Application\AgentBundle\Form\Type\NewPerson();
+        $formType = new NewPersonType();
         $form     = $this->get('form.factory')->create($formType, $newperson);
 
         if ($request->getMethod() == 'POST') {
@@ -1522,7 +1530,10 @@ class PersonController extends AbstractController
 
             $fieldErrors = [];
             foreach ($personFields as $field) {
-                $errors = $field->getHandler()->validateFormData($newperson->custom_fields ?: [], HandlerAbstract::CONTEXT_AGENT);
+                $errors = $field->getHandler()->validateFormData(
+                    $newperson->custom_fields ?: [],
+                    HandlerAbstract::CONTEXT_AGENT
+                );
 
                 foreach ($errors as $code) {
                     $title = $field->getTitle();
@@ -1569,11 +1580,7 @@ class PersonController extends AbstractController
 
             $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
-            // Notify about new person
-            foreach (PeopleClientMessages::createNewPersonMessages($person) as $cm) {
-                $this->em->persist($cm);
-            }
-            $this->em->flush();
+            $this->get('event_dispatcher')->dispatch(PersonCreatedEvent::EVENT_NAME, new PersonCreatedEvent($person));
 
             if ($this->in->getString('newperson.send_welcome_email')) {
                 $trans = $this->container->getTranslator();
@@ -1645,14 +1652,16 @@ class PersonController extends AbstractController
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Person
+     * @param int $person_id
+     *
+     * @return Person
      */
     protected function getPersonOr404($person_id)
     {
-        $person = $this->em->find('DeskPRO:Person', $person_id);
+        $person = $this->em->find(Person::class, $person_id);
 
         if (!$person) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no person with ID $person_id");
+            throw new NotFoundHttpException("There is no person with ID $person_id");
         }
 
         return $person;
@@ -1665,8 +1674,8 @@ class PersonController extends AbstractController
      */
     public function listAction()
     {
-        /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-        $rep = $this->em->getRepository('DeskPRO:Person');
+        /** @var PersonRepository $rep */
+        $rep = $this->em->getRepository(Person::class);
         $ret = $rep->getAgentsRaw();
 
         return $this->createJsonResponse($ret);
@@ -1689,8 +1698,8 @@ class PersonController extends AbstractController
      */
     public function getNotifierMapAction()
     {
-        /** @var Person $personRepo */
-        $personRepo = $this->em->getRepository(Entity\Person::class);
+        /** @var PersonRepository $personRepo */
+        $personRepo = $this->em->getRepository(Person::class);
         $agents     = $personRepo->getAgents();
         $agentMap   = [];
 

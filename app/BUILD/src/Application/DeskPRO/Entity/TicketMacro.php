@@ -126,11 +126,31 @@ class TicketMacro extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
      * @return Person
      */
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @param bool $is_global
+     *
+     * @return $this
+     */
+    public function setIsGlobal($is_global)
+    {
+        $this->setModelField('is_global', $is_global);
+
+        return $this;
     }
 
     /**

@@ -187,8 +187,6 @@ class SlaProcessor
                 }
             }
         }
-
-        $this->cm_sender->sendQueue();
     }
 
     /**
@@ -222,7 +220,6 @@ class SlaProcessor
                 $this->em->flush($ticket_sla);
 
                 $this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
-                $this->cm_sender->sendQueue();
 
                 ++$count;
 
@@ -273,7 +270,6 @@ class SlaProcessor
                 ++$count;
 
                 $this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
-                $this->cm_sender->sendQueue();
 
                 $context = $context_factory($ticket_sla->ticket, $ticket_sla->sla, $ticket_sla, 'warning');
                 if (!($context instanceof ExecutorContextInterface)) {

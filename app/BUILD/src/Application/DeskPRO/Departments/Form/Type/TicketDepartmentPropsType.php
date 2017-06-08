@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Departments\Form\Type;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityRepository;
@@ -39,6 +40,8 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TicketDepartmentPropsType extends AbstractType
@@ -72,6 +75,24 @@ class TicketDepartmentPropsType extends AbstractType
                     'by_reference' => false,
             ])
         ;
+
+        /** @var \Application\DeskPRO\EntityRepository\Brand $brandRepos */
+        $brandRepos = App::$container->getEm()->getRepository(Brand::class);
+
+        // The brands select is hidden on dep edit form if there's only 1 brand defined
+        // This makes sure that if (for some reason) no brand is already set on the dep that
+        // the single brand is set
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($brandRepos) {
+            $data = $event->getData();
+            if (empty($data['brands'])) {
+                /** @var Brand[] $brands */
+                $brands = $brandRepos->findAll();
+                if (count($brands) === 1) {
+                    $data['brands'] = [$brands[0]->getId()];
+                    $event->setData($data);
+                }
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -53,6 +53,9 @@ class Cleaner
      */
     protected $cleaners = [];
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $basic = new \Orb\Input\Cleaner\CleanerPlugin\Basic();
@@ -64,7 +67,7 @@ class Cleaner
     /**
      * Add a cleaner.
      *
-     * @param CleanerPlugin\CleanerPlugin $cleaner
+     * @param CleanerPlugin $cleaner
      */
     public function addCleaner(CleanerPlugin $cleaner)
     {
@@ -80,7 +83,7 @@ class Cleaner
      *
      * @param $id
      *
-     * @return CleanerPlugin\CleanerPlugin
+     * @return CleanerPlugin
      */
     public function getCleaner($id)
     {
@@ -116,7 +119,7 @@ class Cleaner
      *
      * @param string $type
      *
-     * @return CleanerPlugin\CleanerPlugin
+     * @return CleanerPlugin
      */
     public function getCleanerForType($type)
     {
@@ -132,9 +135,9 @@ class Cleaner
     /**
      * Clean a value.
      *
-     * @param mixed $value   The value to clean
-     * @param int   $type    The type to cast to
-     * @param mixed $options Options for the type
+     * @param mixed  $value   The value to clean
+     * @param string $type    The type to cast to
+     * @param mixed  $options Options for the type
      *
      * @return mixed The cleaned value
      */
@@ -155,11 +158,11 @@ class Cleaner
      * Clean an array of values. $type_key can be TYPE_DISCARD if you dont want to keep the keys. In such cases,
      * the array indecies will be integers (i.e., array will be build via $array[]=$val).
      *
-     * @param array $array       The array to clean
-     * @param int   $type_val    The type to cast values to
-     * @param int   $type_key    The type to cast keys to
-     * @param mixed $options_val Options for the val type
-     * @param mixed $options_key Options for the key type
+     * @param array  $array       The array to clean
+     * @param string $type_val    The type to cast values to
+     * @param string $type_key    The type to cast keys to
+     * @param mixed  $options_val Options for the val type
+     * @param mixed  $options_key Options for the key type
      *
      * @return array
      */

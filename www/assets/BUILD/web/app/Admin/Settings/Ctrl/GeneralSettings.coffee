@@ -14,9 +14,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				attach_user_not_exts: []
 			}
 			@$scope.settings = angular.copy(@settings)
+			@$scope.currentBrand = 1
 			@skip_url_check = false
 
 		initialLoad: ->
+
+			brandsPromise = @Api2.sendGet('/brands').then( (response) =>
+				@$scope.brands = response.data.data;
+			);
 			data_promise = @Api.sendDataGet({
 				'settings': '/general_settings',
 				'email_accounts':	'/email_accounts',
@@ -30,7 +35,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
 				if @$scope.email_accounts.length
 					if not @$scope.settings.default_from_email or not @$scope.email_accounts.filter((x) => x.address == @$scope.settings.default_from_email).length
-						@$scope.settings.default_from_email = @$scope.email_accounts[0].address
+						@$scope.settings.default_from_email[1] = @$scope.email_accounts[0].address
 				
 				if @settings.attach_user_must_exts.length
 					@$scope.attach_user_exts_limitmode = 'allow'
@@ -49,7 +54,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@orig_url = @$scope.settings.deskpro_url || null
 			)
 
-			return @$q.all([data_promise])
+			return @$q.all([data_promise, brandsPromise])
 
 		isDirtyState: ->
 			return false
@@ -137,7 +142,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 			)
 
 		checkUrl: ->
-			if @$scope.settings.deskpro_url.match(/^https:/)
+			if @$scope.settings.deskpro_url and @$scope.settings.deskpro_url.match(/^https:/)
 				@$scope.https_url = true
 			else
 				@$scope.https_url = false

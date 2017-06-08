@@ -63,9 +63,12 @@ class TicketMessagesController extends CrudSubController
     public static $entity         = TicketMessage::class;
     public static $type           = TicketMessageType::class;
     public static $parentProperty = 'ticket';
-    public static $sortOptions    = ['date' => 'date_created'];
     public static $listSort       = 'id';
     public static $listOrder      = 'asc';
+    public static $sortOptions    = [
+        'date_created' => 'date_created',
+        'date'         => 'date_created', // alias
+    ];
 
     /**
      * {@inheritdoc}
@@ -77,6 +80,8 @@ class TicketMessagesController extends CrudSubController
             'person'                 => $this->getUser(),
             'has_attachments'        => true,
             'with_ticket_validation' => $request->get('with_ticket_validation'),
+            'allow_set_status'       => true,
+            'allow_apply_macros'     => true,
         ]);
 
         return parent::handleForm($model, $request, $options);

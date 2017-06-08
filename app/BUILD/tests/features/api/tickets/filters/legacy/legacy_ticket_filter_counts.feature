@@ -14,6 +14,7 @@ Feature: /ticket_filters_counts endpoint
       | f2 | Custom filter 2 | 1          | 1         | NULL     | [{"type":"agent","op":"is","options":{"agent":"~admin~"}}]                                                               | 2             |
       | f3 | All Filter 1    | 1          | 1         | agent    | [{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}] | 3             |
     And no Ticket records exist
+    And no Language records exist
 
   Scenario: I retrieve list of ticket filters counts
     Given only the following Ticket records exist:
@@ -119,7 +120,7 @@ Feature: /ticket_filters_counts endpoint
       | AgentTeam    | agent_team   | Unassigned       | Name       |
       | Organization | organization | None             | Name       |
       | Department   | department   | None             | Title      |
-      | Language     | language     | English          | Title      |
+      | Language     | language     | None             | Title      |
 
   Scenario: I group by urgency
     Given only the following Ticket records exist:

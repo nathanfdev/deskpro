@@ -29,14 +29,15 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Task;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
+use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\TaskComment;
+use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TaskCommentType.
@@ -44,13 +45,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TaskCommentType extends AbstractType
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('comment', TextType::class);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onTransformStringComment'], 100);
+        $builder
+            ->add('content', HtmlTextareaType::class, [
+                'required'    => true,
+                'constraints' => [
+                    new Assert\NotNull(),
+                    new Assert\NotBlank(),
+                ],
+            ])
+        ;
+
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelatedData'], 100);
     }
 
@@ -60,26 +68,13 @@ class TaskCommentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['task', 'person'])
             ->setDefaults([
                 'data_class' => TaskComment::class,
             ])
+            ->setRequired(['task', 'person'])
             ->setAllowedTypes('person', Person::class)
             ->setAllowedTypes('task', Task::class)
         ;
-    }
-
-    /**
-     * @param FormEvent $event
-     */
-    public function onTransformStringComment(FormEvent $event)
-    {
-        $data = $event->getData();
-        if (is_scalar($data)) {
-            $data = ['comment' => $data];
-        }
-
-        $event->setData($data);
     }
 
     /**
@@ -91,7 +86,6 @@ class TaskCommentType extends AbstractType
     {
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();
-
         if ($data instanceof TaskComment && !$data->getId()) {
             $data->setTask($config->getOption('task'));
             $data->setPerson($config->getOption('person'));

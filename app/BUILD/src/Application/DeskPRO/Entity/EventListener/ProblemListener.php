@@ -32,11 +32,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use Orb\Util\DpStrings;
-use Orb\Util\Strings;
 
 class ProblemListener
 {
@@ -70,10 +69,11 @@ class ProblemListener
 
     public function __construct(DeskproContainer $container)
     {
-        $this->inserts = new \SplQueue();
-        $this->updates = new \SplQueue();
-        $this->conn    = $container->getEm()->getConnection();
-        $this->cont    = $container;
+        $this->inserts         = new \SplQueue();
+        $this->updates         = new \SplQueue();
+        $this->conn            = $container->getEm()->getConnection();
+        $this->cont            = $container;
+        $this->eventDispatcher = $container->get('event_dispatcher');
     }
 
     /**
@@ -101,26 +101,22 @@ class ProblemListener
     {
         while (!$this->updates->isEmpty()) {
             $data = $this->updates->dequeue();
-            /* @var Problem $p */
+            /* @var Problem $problem */
             $problem = $data['entity'];
             $filter  = $event->getEntityManager()->getRepository(LegacyTicketFilter::class)->findOneBy([
-                'sys_name' => Problem::FILTER_PREFIX.$problem->id,
+                'sys_name' => Problem::FILTER_PREFIX.$problem->getId(),
             ]);
 
-            $this->queue[] = [
-                'channel'      => self::CHANNEL_UPDATE,
-                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize([
-                    'id'        => $problem->id,
-                    'title'     => $problem->title,
-                    'filter_id' => $filter ? $filter->id : 0,
+            $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                self::CHANNEL_UPDATE,
+                [
+                    'id'        => $problem->getId(),
+                    'title'     => $problem->getTitle(),
+                    'filter_id' => $filter ? $filter->getId() : 0,
                     'changeset' => $data['changeset'],
-                ]),
-            ];
+                ]
+            ));
         }
-
-        $this->sendQueue();
     }
 
     /**
@@ -133,36 +129,15 @@ class ProblemListener
             $problem  = $this->inserts->dequeue();
             $filterId = $this->createFilter($event->getEntityManager(), $problem);
 
-            $this->queue[] = [
-                'channel'      => self::CHANNEL_NEW,
-                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize([
-                    'id'        => $problem->id,
-                    'title'     => $problem->title,
+            $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                self::CHANNEL_NEW,
+                [
+                    'id'        => $problem->getId(),
+                    'title'     => $problem->getTitle(),
                     'filter_id' => $filterId,
-                ]),
-            ];
+                ]
+            ));
         }
-
-        $this->sendQueue();
-    }
-
-    /**
-     * @return int
-     */
-    public function sendQueue()
-    {
-        if (!$this->queue) {
-            return 0;
-        }
-
-        $q           = $this->queue;
-        $this->queue = [];
-
-        $this->conn->batchInsert('client_messages', $q);
-
-        return count($q);
     }
 
     /**

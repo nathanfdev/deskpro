@@ -88,7 +88,6 @@ class LanguagesController extends CrudController
             'agent.general.on',
             'agent.general.organization',
             'agent.general.person',
-            'agent.general.task',
             'agent.general.ticket',
             'agent.general.topic',
             'agent.general.your_profile',

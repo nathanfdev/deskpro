@@ -431,6 +431,16 @@
         margin-left: 10px;
       }
     }
+    &.voice-voicemail-timeout {
+      label {
+        font-weight: normal !important;
+        font-size: 14px !important;
+      }
+
+      input {
+        width: 100px !important;
+      }
+    }
   }
 
   .routing-model {
@@ -665,4 +675,8 @@
       color: #FFFFFF;
     }
   }
+}
+
+.agent-settings-form {
+  width: 328px;
 }

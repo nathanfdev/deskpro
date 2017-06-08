@@ -16,7 +16,7 @@
 	</article>
 </section>
 
-<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length">
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length || ListCtrl.apps_v2.length">
 	<header>
 		<h3 style="margin-bottom: 0;">Installed Apps</h3>
 	</header>
@@ -34,7 +34,22 @@
 						</a>
 					</h4>
 					<p class="info">
-						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}">Website</a>
+						by {{ ng_var('app.package.author_name') }} &bull; <a ng-href="{{ ng_var('app.package.author_link') }}" target="_blank">Website</a>
+					</p>
+				</div>
+			</li>
+			<li ng-repeat="app in ListCtrl.apps_v2" dp-state-mark="apps.apps.instance_v2.{{ ng_var('app.id') }}">
+				<aside ng-if="!app.package.is_usersource_app">
+					<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}"><img ng-src="{{ ng_var('app.app.icon_32') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content" ng-if="!app.package.is_usersource_app">
+					<h4>
+						<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}">
+							<span class="title-text">{{ ng_var('app.name') }}</span>
+						</a>
+					</h4>
+					<p class="info">
+						by {{ ng_var('app.app.manifest.author.name') }} &bull; <a ng-href="{{ ng_var('app.app.manifest.author.url') }}" target="_blank">Website</a>
 					</p>
 				</div>
 			</li>
@@ -50,6 +65,18 @@
 		<h4><a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><span class="title-text">{{ ng_var('package.title') }}</span></a></h4>
 		<p class="info">
 			by {{ ng_var('package.author_name') }} &middot; <a ng-href="{{ ng_var('package.author_link') }}">Website</a>
+		</p>
+		<p ng-bind-html="package.description"></p>
+	</div>
+{% endmacro %}
+{% macro package_v2_row() %}
+	<aside>
+		<a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><img ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+	</aside>
+	<div class="content">
+		<h4><a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><span class="title-text">{{ ng_var('package.manifest.title') }}</span></a></h4>
+		<p class="info">
+			by {{ ng_var('package.manifest.author.name') }} &middot; <a ng-href="{{ ng_var('package.manifest.author.url') }}">Website</a>
 		</p>
 		<p ng-bind-html="package.description"></p>
 	</div>
@@ -73,6 +100,9 @@
 		<ul class="dp-item-list dp-icon-list">
 			<li ng-repeat="package in ListCtrl.packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
 				{{ _self.package_row() }}
+			</li>
+			<li ng-repeat="package in ListCtrl.apps_v2_packages" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
+				{{ _self.package_v2_row() }}
 			</li>
 		</ul>
 	</article>
@@ -109,7 +139,7 @@
 			
 						<dt><em>Q:</em>I can't get an app to work - where can I get help?</dt>
 			<dd><em>A:</em>
-				There are  <a href="https://manuals.deskpro.com/html/admin/apps/apps.html" target="_blank">full installation guides for most apps in the admin manual</a>; <a href="https://manuals.deskpro.com/html/admin/authentication/authentication.html" target="_blank">see here for authentication app instructions</a>.
+				There are  <a href="https://support.deskpro.com/guides/topic/411" target="_blank">full installation guides for most apps in the admin manual</a>; <a href="https://support.deskpro.com/guides/topic/426" target="_blank">see here for authentication app instructions</a>.
 			</dd>
 			
 			
@@ -119,9 +149,9 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/admin/apps/apps.html" target="_blank">Installing apps</a> </li>
+				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/411" target="_blank">Installing apps</a> </li>
 			
-				<li> <i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/admin/authentication/authentication.html"
+				<li> <i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/426"
 				target="_blank">Authentication and SSO apps</a>
 
 

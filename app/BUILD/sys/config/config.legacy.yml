@@ -21,7 +21,7 @@ services:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
 
   form.captcha:
-      class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
+      class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType
       arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
       tags:
         - { name: form.type }

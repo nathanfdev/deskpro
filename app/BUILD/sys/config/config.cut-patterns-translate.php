@@ -103,4 +103,24 @@ return [
         '%BCC%'     => 'BCC',
         '%CC%'      => 'CC',
     ],
+
+    'swedish' => [
+        '%From%'    => 'Från',
+        '%Sent%'    => 'Sände',
+        '%Date%'    => 'Skickat',
+        '%To%'      => 'Till',
+        '%Subject%' => 'Ämne',
+        '%BCC%'     => 'BCC',
+        '%CC%'      => 'CC',
+    ],
+
+    'swedish2' => [
+        '%From%'    => 'Från',
+        '%Sent%'    => 'Sände',
+        '%Date%'    => 'Datum',
+        '%To%'      => 'Till',
+        '%Subject%' => 'Ämne',
+        '%BCC%'     => 'BCC',
+        '%CC%'      => 'CC',
+    ],
 ];

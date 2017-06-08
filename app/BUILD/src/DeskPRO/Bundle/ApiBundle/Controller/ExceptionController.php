@@ -29,13 +29,17 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\Exception\WrappedApiErrorException;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\AbuseCaptchaFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\FormExceptionInterface;
 use DeskPRO\Bundle\AppBundle\Validator\ValidatorErrorsException;
 use FOS\RestBundle\View\View;
+use Orb\Util\DpStrings;
+use Orb\Util\Strings;
 use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 
@@ -57,11 +61,13 @@ class ExceptionController extends BaseController
             $exception  = $exception->getException();
         }
 
-        $errors_array = [];
-        if ($exception instanceof FormExceptionInterface) {
-            $errors_array = $this->get('form_error.form_errors_generator.api')->generateFormErrors($exception->getForm());
+        $errorsArray = [];
+        if ($exception instanceof AbuseCaptchaFormException) {
+            return $this->createCaptchaResponse($exception);
+        } elseif ($exception instanceof FormExceptionInterface) {
+            $errorsArray = $this->get('form_error.form_errors_generator.api')->generateFormErrors($exception->getForm());
         } elseif ($exception instanceof ValidatorErrorsException) {
-            $errors_array = $this->get('form_error.validator_errors_generator.api')->generateValidatorErrors($exception->getErrors());
+            $errorsArray = $this->get('form_error.validator_errors_generator.api')->generateValidatorErrors($exception->getErrors());
         }
 
         // Log exceptions if in production
@@ -77,7 +83,13 @@ class ExceptionController extends BaseController
             $exception = new AccessDeniedHttpException($exception->getMessage(), $exception);
         }
 
-        $status = $exception instanceof HttpException ? $exception->getStatusCode() : 500;
+        if ($exception instanceof HttpException) {
+            $status = $exception->getStatusCode();
+        } elseif ($exception->getCode()) {
+            $status = $exception->getCode();
+        } else {
+            $status = 500;
+        }
 
         if ($exception instanceof \Exception) {
             $code    = $this->get('form_error.code_factory')->getErrorCodeForException($exception);
@@ -94,7 +106,7 @@ class ExceptionController extends BaseController
             $status,
             $code,
             $message,
-            $errors_array
+            $errorsArray
         );
 
         $representation = $this->addExceptionInfo($exception, $representation);
@@ -127,5 +139,32 @@ class ExceptionController extends BaseController
         }
 
         return $representation;
+    }
+
+    /**
+     * @param AbuseCaptchaFormException $exception
+     *
+     * @return View
+     */
+    private function createCaptchaResponse(AbuseCaptchaFormException $exception)
+    {
+        $token   = DpStrings::random(20, Strings::CHARS_KEY_ALPHA);
+        $message = $this->container->get('form_error.message_factory.api')->createMessage($exception->getMessage());
+
+        return View::create(
+            [
+                'code'              => $exception->getMessage(),
+                'message'           => $message,
+                'captcha_token'     => $token,
+                'captcha_image_url' => $this->get('router')->generate(
+                    'gregwar_captcha.generate_api_captcha',
+                    [
+                        'token' => $token,
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+            ],
+            $exception->getStatusCode()
+        );
     }
 }

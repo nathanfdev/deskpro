@@ -20,6 +20,9 @@ import { isVoiceEnabledSelector } from './Modules/Voice/Selectors/client';
 import { voiceBootstrap } from './Modules/Voice/Actions/clientActions';
 import store from './Services/store';
 
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import DeskproAppStore from './Modules/DeskproAppStore/DeskproAppStore';
+
 class AgentLegacyApp {
 
   rendered = [];
@@ -47,9 +50,7 @@ class AgentLegacyApp {
       this.renderPiece(AgentList, AgentList.getType());
       this.renderPiece(SideBarContainer, SideBarContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
-      if (window.DP_HAS_NEW_IM) {
-        this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
-      }
+      this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
       window.$('#dp_loading').remove();
 
       const messageBroker = window.DeskPRO_Window.getMessageBroker();
@@ -68,6 +69,8 @@ class AgentLegacyApp {
           this.store.dispatch(voiceBootstrap());
         }
       }
+
+      DeskproAppStore.bootstrap(api, messageBroker, this.store, window);
     }
   }
 

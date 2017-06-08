@@ -161,42 +161,53 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 	},
 
 	submit: function() {
-            var self = this;
-            console.log(self.isVCard);
-            //return true;
-            if (self.isVCard) {
-                $.ajax({
-			url: BASE_URL + 'agent/people/new/save',
-			type: 'POST',
-			data: {isVCard: true, 'blobId': self.blobId},
-			dataType: 'json',
-			context: this,
-			success: function(data) {
-                            console.log(data);
-                            return self.createCallback(data);
-                        }
-                });
-            } else {
-	            var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-	            $('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', this.form).each(function(){
-					var name = $(this).attr('name');
-					var val  = $(this).val();
-					if (name && val !== null) {
-						formData[$(this).attr('name')] = $(this).val();
-					}
-	            });
+		var self = this;
+		//return true;
+		if (self.isVCard) {
+			$.ajax({
+				url: BASE_URL + 'agent/people/new/save',
+				type: 'POST',
+				data: {isVCard: true, 'blobId': self.blobId},
+				dataType: 'json',
+				context: this,
+				success: function(data) {
+					return self.createCallback(data);
+				}
+			});
+		} else {
+			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
+			$('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', this.form).each(function() {
+				var name = $(this).attr('name');
+				var val  = $(this).val();
 
-		$.ajax({
-			url: BASE_URL + 'agent/people/new/save',
-			type: 'POST',
-			data: formData,
-			dataType: 'json',
-			context: this,
-			success: function(data) {
-                            return self.createCallback(data);
-			}
-		});
-            }
+				if (name && val !== null) {
+					if (name.match(/.+\[\]$/)) {
+						if (!formData[name]) {
+							formData[name] = [];
+						}
+
+						if (Array.isArray(val)) {
+							formData[name] = val;
+						} else {
+							formData[name].push(val);
+						}
+					} else {
+						formData[name] = val;
+					}
+				}
+			});
+
+			$.ajax({
+				url: BASE_URL + 'agent/people/new/save',
+				type: 'POST',
+				data: formData,
+				dataType: 'json',
+				context: this,
+				success: function(data) {
+					return self.createCallback(data);
+				}
+			});
+		}
 	},
 
         createCallback: function(data) {

@@ -156,6 +156,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('feedback_icon', [$this, 'makeFeedbackIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('content_icon', [$this, 'makeContentIcon'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('ticket_view', [$this, 'getTicketView']),
+            new \Twig_SimpleFunction('ticket_excerpts', [$this, 'getTicketExcerpts']),
             new \Twig_SimpleFunction('phrase_form_error', [$this, 'makeFormError'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('insert_glossary_js', [$this, 'makeGlossaryJs'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
@@ -382,6 +383,16 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getTicketView(Entity\Ticket $ticket)
     {
         return $this->container->get('tickets.view')->getUserTicketView($ticket);
+    }
+
+    /**
+     * @param array $tickets
+     *
+     * @return array
+     */
+    public function getTicketExcerpts($tickets)
+    {
+        return $this->container->get('data.ticket_excerpt')->getTicketsLastReply($tickets);
     }
 
     /**

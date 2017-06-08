@@ -151,21 +151,25 @@ export class SideBarContainer extends SeparateComponent {
     const reportsFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports;
     const adminFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.admin;
 
-    if (reportsFrame && reportsFrame.opened) {
-      dispatch(actions.changeSection({ section: 'menu_reports' }));
-    } else if (adminFrame && adminFrame.opened) {
-      if (adminFrame.getFrameWindow().location.hash === '#/license') {
-        dispatch(actions.changeSection({ section: 'menu_billing' }));
+    try {
+      if (reportsFrame && reportsFrame.opened) {
+        dispatch(actions.changeSection({ section: 'menu_reports' }));
+      } else if (adminFrame && adminFrame.opened) {
+        if (adminFrame.getFrameWindow().location.hash === '#/license') {
+          dispatch(actions.changeSection({ section: 'menu_billing' }));
+        } else {
+          dispatch(actions.changeSection({ section: 'menu_admin' }));
+        }
       } else {
-        dispatch(actions.changeSection({ section: 'menu_admin' }));
-      }
-    } else {
-      const section = window.DeskPRO_Window.getOpenSection();
-      if (section && section.section_id) {
-        const sectionId = section.section_id.replace(/_section/, '');
+        const section = window.DeskPRO_Window.getOpenSection();
+        if (section && section.section_id) {
+          const sectionId = section.section_id.replace(/_section/, '');
 
-        dispatch(actions.changeSection({ section: `menu_${sectionId}` }));
+          dispatch(actions.changeSection({ section: `menu_${sectionId}` }));
+        }
       }
+    } catch (e) {
+      console.log(e);
     }
   };
 

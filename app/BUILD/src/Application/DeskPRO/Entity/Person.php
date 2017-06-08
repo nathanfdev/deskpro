@@ -43,8 +43,6 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -586,16 +584,6 @@ class Person extends DomainObject implements
     protected $notes;
 
     /**
-     * @var TaskAssignment[]|ArrayCollection
-     */
-    protected $assigned_tasks;
-
-    /**
-     * @var ProjectMember[]|ArrayCollection
-     */
-    protected $project_members;
-
-    /**
      * @var TicketParticipant[]|ArrayCollection
      */
     protected $tickets;
@@ -700,8 +688,6 @@ class Person extends DomainObject implements
         $this->department_permissions = new ArrayCollection();
         $this->teams                  = new ArrayCollection();
         $this->notes                  = new ArrayCollection();
-        $this->assigned_tasks         = new ArrayCollection();
-        $this->project_members        = new ArrayCollection();
         $this->tickets                = new ArrayCollection();
         $this->chats                  = new ArrayCollection();
         $this->voiceQueues            = new ArrayCollection();
@@ -933,11 +919,6 @@ class Person extends DomainObject implements
         return $this;
     }
 
-    public function getProjectMembers()
-    {
-        return $this->project_members;
-    }
-
     /**
      * Is agent.
      *
@@ -1081,6 +1062,18 @@ class Person extends DomainObject implements
     public function getRealCanBilling()
     {
         return $this->can_billing;
+    }
+
+    /**
+     * @param string
+     *
+     * @return $this
+     */
+    public function setCreationSystem($creationSystem = null)
+    {
+        $this->setModelField('creation_system', $creationSystem);
+
+        return $this;
     }
 
     /**
@@ -1542,10 +1535,14 @@ class Person extends DomainObject implements
      * Set the raw password field (ie already hashed).
      *
      * @param $password
+     *
+     * @return $this
      */
     public function setRawPassword($password)
     {
         $this->setModelField('password', $password);
+
+        return $this;
     }
 
     /**
@@ -3762,23 +3759,6 @@ class Person extends DomainObject implements
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Entity\TaskAssignment[]|ArrayCollection
-     */
-    public function getAssignedTasks()
-    {
-        return $this->assigned_tasks;
-    }
-
-    /**
-     * @param TaskAssignment $assignment
-     */
-    public function addAssignedTask(TaskAssignment $assignment)
-    {
-        $this->assigned_tasks->add($assignment);
-        $this->setModelField('assigned_tasks', $assignment);
-    }
-
-    /**
      * Get person`s phones.
      *
      * @return array
@@ -4502,15 +4482,6 @@ class Person extends DomainObject implements
                 'mappedBy'     => 'person',
             ]
         );
-        $metadata->mapOneToMany(
-            [
-                'fieldName'     => 'assigned_tasks',
-                'targetEntity'  => TaskAssignment::class,
-                'mappedBy'      => 'person',
-                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
-                'orphanRemoval' => true,
-            ]
-        );
 
         $metadata->mapOneToMany(
             [
@@ -4560,14 +4531,6 @@ class Person extends DomainObject implements
                         'onDelete'             => 'set null',
                     ],
                 ],
-            ]
-        );
-
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'project_members',
-                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
-                'mappedBy'     => 'person',
             ]
         );
 

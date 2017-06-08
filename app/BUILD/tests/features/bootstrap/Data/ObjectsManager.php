@@ -74,10 +74,13 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
+use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
@@ -85,6 +88,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
@@ -98,17 +102,6 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
-use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
-use DeskPRO\Bundle\AppBundle\Entity\TaskAttachment;
-use DeskPRO\Bundle\AppBundle\Entity\TaskComment;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedChat;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedTicket;
-use DeskPRO\Bundle\AppBundle\Entity\TaskList;
-use DeskPRO\Bundle\AppBundle\Entity\TaskProject;
-use DeskPRO\Bundle\AppBundle\Entity\TaskSubtask;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -306,22 +299,14 @@ class ObjectsManager
             'FeedbackStatusCategory'   => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
             'FeedbackComment'          => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
             'GlossaryWord'             => [Factory\SimpleFactory::class, 'create', GlossaryWord::class],
-            'Task'                     => [Factory\CommonFactories::class, 'task'],
-            'TaskComment'              => [Factory\SimpleFactory::class, 'create', TaskComment::class],
-            'TaskAssignment'           => [Factory\SimpleFactory::class, 'create', TaskAssignment::class],
-            'TaskProject'              => [Factory\SimpleFactory::class, 'create', TaskProject::class],
-            'ProjectMember'            => [Factory\SimpleFactory::class, 'create', ProjectMember::class],
-            'TaskList'                 => [Factory\SimpleFactory::class, 'create', TaskList::class],
-            'TaskLinkedArticle'        => [Factory\SimpleFactory::class, 'create', TaskLinkedArticle::class],
-            'TaskLinkedTicket'         => [Factory\SimpleFactory::class, 'create', TaskLinkedTicket::class],
-            'TaskLinkedChat'           => [Factory\SimpleFactory::class, 'create', TaskLinkedChat::class],
-            'TaskSubtask'              => [Factory\SimpleFactory::class, 'create', TaskSubtask::class],
             'GlossaryWordDefinition'   => [Factory\SimpleFactory::class, 'create', GlossaryWordDefinition::class],
             'News'                     => [Factory\SimpleFactory::class, 'create', News::class],
             'NewsCategory'             => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
             'Organization'             => [Factory\SimpleFactory::class, 'create', Organization::class],
             'OrganizationNote'         => [Factory\SimpleFactory::class, 'create', OrganizationNote::class],
             'Product'                  => [Factory\CommonFactories::class, 'product'],
+            'Task'                     => [Factory\SimpleFactory::class, 'create', Task::class],
+            'TaskComment'              => [Factory\CommonFactories::class, 'task_comment'],
             'Ticket'                   => [Factory\CommonFactories::class, 'ticket'],
             'TicketPriority'           => [Factory\SimpleFactory::class, 'create', TicketPriority::class],
             'TicketCategory'           => [Factory\SimpleFactory::class, 'create', TicketCategory::class],
@@ -332,6 +317,7 @@ class ObjectsManager
             'TicketMacro'              => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
             'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
             'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
+            'TicketLog'                => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
@@ -371,6 +357,7 @@ class ObjectsManager
             'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
             'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
             'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
+            'Phrase'                   => [Factory\SimpleFactory::class, 'create', Phrase::class],
         ];
     }
 
@@ -388,6 +375,8 @@ class ObjectsManager
             'Agent'                    => [$this, 'find', Person::class, ['is_agent' => true, 'can_admin' => false]],
             'Admin'                    => [$this, 'find', Person::class, ['is_agent' => false, 'can_admin' => true]],
             'AgentData'                => [$this, 'find', AgentData::class],
+            'Task'                     => [$this, 'find', Task::class],
+            'TaskComment'              => [$this, 'find', TaskComment::class],
             'Ticket'                   => [$this, 'find', Ticket::class],
             'TicketLayout'             => [$this, 'find', TicketLayout::class],
             'TicketMessage'            => [$this, 'find', TicketMessage::class],
@@ -400,6 +389,7 @@ class ObjectsManager
             'TicketMacro'              => [$this, 'find', TicketMacro::class],
             'TicketFilter'             => [$this, 'find', TicketFilter::class],
             'TicketSla'                => [$this, 'find', TicketSla::class],
+            'TicketLog'                => [$this, 'find', TicketLog::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],
@@ -416,17 +406,6 @@ class ObjectsManager
             'CustomFieldDefinition'    => [$this, 'find', CustomFieldDefinition::class],
             'CustomPerUserDef'         => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
             'CustomPerOrgDef'          => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Organization::class]],
-            'Task'                     => [$this, 'find', Task::class],
-            'TaskComment'              => [$this, 'find', TaskComment::class],
-            'TaskProject'              => [$this, 'find', TaskProject::class],
-            'TaskList'                 => [$this, 'find', TaskList::class],
-            'TaskAttachment'           => [$this, 'find', TaskAttachment::class],
-            'TaskAssignment'           => [$this, 'find', TaskAssignment::class],
-            'TaskLinkedArticle'        => [$this, 'find', TaskLinkedArticle::class],
-            'TaskLinkedTicket'         => [$this, 'find', TaskLinkedTicket::class],
-            'TaskLinkedChat'           => [$this, 'find', TaskLinkedChat::class],
-            'TaskSubtask'              => [$this, 'find', TaskSubtask::class],
-            'ProjectMember'            => [$this, 'find', ProjectMember::class],
             'Article'                  => [$this, 'find', Article::class],
             'PendingArticle'           => [$this, 'find', ArticlePendingCreate::class],
             'News'                     => [$this, 'find', News::class],
@@ -480,6 +459,7 @@ class ObjectsManager
             'TextSnippet'              => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],
+            'Phrase'                   => [$this, 'find', Phrase::class],
         ];
     }
 }

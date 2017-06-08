@@ -208,9 +208,7 @@ class RunCommand extends ContainerAwareCommand
             passthru($cmd, $ret);
 
             if ($ret) {
-                $logger->notice("--> Error status: $ret");
-
-                return $ret;
+                $logger->warn("--> dp:update:tasks:run-sync exited with error status: $ret");
             }
         }
 
@@ -304,7 +302,7 @@ class RunCommand extends ContainerAwareCommand
         // 443, we need to reset version back in a time a bit before running the
         // upgrade because the upgrade scripts need to run from the proper position
         // at build Build1464777281
-        if ($dbVersionName && strpos($dbVersionName, '443.') === 0) {
+        if ($dbVersionName && ($dbVersionName === '443' || strpos($dbVersionName, '443.') === 0)) {
             $hasStarted = $this->getContainer()->get('database_connection')->fetchColumn("
                 SELECT data
                 FROM install_data

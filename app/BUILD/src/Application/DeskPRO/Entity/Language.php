@@ -38,7 +38,6 @@ use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use JMS\Serializer\Annotation as JMS;
 
 // This class_exists check is needed because when doing a schema check,
 // doctrine will try to load this source file. But the Language class
@@ -47,16 +46,11 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
 
     /**
      * A language groups phrases and defines a locale code.
-     *
-     * @JMS\ExclusionPolicy("all")
      */
     class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
     {
         /**
          * The unique ID.
-         *
-         * @JMS\Expose()
-         * @JMS\Type("integer")
          *
          * @var int
          */
@@ -65,9 +59,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * The unique sys name assigned to the language.
          *
-         * @JMS\Expose()
-         * @JMS\Type("string")
-         *
          * @var string
          */
         protected $sys_name = '';
@@ -75,18 +66,12 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * The three-letter ISO 639-2 code.
          *
-         * @JMS\Expose()
-         * @JMS\Type("string")
-         *
          * @var string
          */
         protected $lang_code = '';
 
         /**
          * Title of the language.
-         *
-         * @JMS\Expose()
-         * @JMS\Type("string")
          *
          * @var string
          */
@@ -102,18 +87,12 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * The locale code.
          *
-         * @JMS\Expose()
-         * @JMS\Type("string")
-         *
          * @var string
          */
         protected $locale = 'en_US';
 
         /**
          * String path to image.
-         *
-         * @JMS\Expose()
-         * @JMS\Type("string")
          *
          * @var string
          */
@@ -129,9 +108,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * True if has user.
          *
-         * @JMS\Expose()
-         * @JMS\Type("boolean")
-         *
          * @var bool
          */
         protected $has_user = true;
@@ -139,18 +115,12 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * True if has agent.
          *
-         * @JMS\Expose()
-         * @JMS\Type("boolean")
-         *
          * @var bool
          */
         protected $has_agent = true;
 
         /**
          * True if has admin.
-         *
-         * @JMS\Expose()
-         * @JMS\Type("boolean")
          *
          * @var bool
          */
@@ -221,7 +191,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         /**
          * @return bool
          */
-        public function isIsRtl()
+        public function isRtl()
         {
             return $this->is_rtl;
         }
@@ -235,9 +205,41 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         }
 
         /**
+         * @return bool
+         */
+        public function hasUser()
+        {
+            return $this->has_user;
+        }
+
+        /**
+         * @return bool
+         */
+        public function hasAgent()
+        {
+            return $this->has_agent;
+        }
+
+        /**
+         * @return bool
+         */
+        public function hasAdmin()
+        {
+            return $this->has_admin;
+        }
+
+        /**
+         * @return string
+         */
+        public function getFlagImage()
+        {
+            return $this->flag_image;
+        }
+
+        /**
          * {@inheritdoc}
          */
-        public function getPhraseName($property, Translate $translate)
+        public function getPhraseName($property)
         {
             return 'user.lang.lang_title_'.$this->sys_name;
         }

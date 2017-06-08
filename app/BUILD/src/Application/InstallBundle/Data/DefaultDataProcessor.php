@@ -220,12 +220,16 @@ class DefaultDataProcessor
             $specific_class = strtolower($specific_class);
         }
 
+        $didRun = false;
+
         foreach ($this->getDataClasses() as $classname) {
             if ($specific_class) {
                 if (strtolower($classname) != $specific_class && strtolower(Util::getBaseClassname($classname)) != $specific_class) {
                     continue;
                 }
             }
+
+            $didRun = true;
 
             if (!$this->isInstalled($classname)) {
                 $this->logger->info('Running install via upgrade on '.Util::getBaseClassname($classname));
@@ -247,6 +251,10 @@ class DefaultDataProcessor
 
                 $this->logger->info(sprintf('... done in %.4fs', microtime(true) - $start_time));
             }
+        }
+
+        if (!$didRun && $specific_class) {
+            $this->logger->error("Unknown data class: $specific_class");
         }
     }
 

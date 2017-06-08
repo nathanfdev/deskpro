@@ -47,7 +47,6 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Draft;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -1667,15 +1666,6 @@ class TicketController extends AbstractController
             );
         }
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since') > 0) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
         $close_tab = $this->in->getBool('options.close_tab');
 
         $data = $this->_getMessageBlockInfo(
@@ -1792,7 +1782,7 @@ class TicketController extends AbstractController
                 'status'                         => $ticket['status'],
                 'close_tab'                      => $close_tab,
                 'refresh_tab'                    => $refresh_tab,
-                'client_messages'                => $client_messages,
+                'client_messages'                => false,
                 'cc_list'                        => $cc_list,
                 'error_messages'                 => $error_messages ?: false,
                 'notified_agents'                => $notify_agent_ids,
@@ -2458,19 +2448,6 @@ class TicketController extends AbstractController
         $data['holders']        = $this->getDataHolders($ticket);
         $data['labels']         = $ticket->getLabelManager()->getLabelsArray();
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since')) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
-        if ($client_messages) {
-            $data['client_messages'] = $client_messages;
-        }
-
         $data['data']['can_view'] = $this->person->PermissionsManager->TicketChecker->canView($ticket);
 
         $perms_after = $this->_getTicketPerms($ticket);
@@ -2754,6 +2731,9 @@ class TicketController extends AbstractController
                 if ($actions_collection->hasActionType('Reply')) {
                     $reply_action = $actions_collection->getActionType('Reply');
                     $actions_collection->removeActionType('Reply');
+                } elseif ($actions_collection->hasActionType('ReplySnippet')) {
+                    $reply_action = $actions_collection->getActionType('ReplySnippet');
+                    $actions_collection->removeActionType('ReplySnippet');
                 }
 
                 $actions_collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
@@ -3325,19 +3305,6 @@ class TicketController extends AbstractController
             $data = ['inserted' => false];
         }
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since')) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
-        if ($client_messages) {
-            $data['client_messages'] = $client_messages;
-        }
-
         return $this->createJsonResponse($data);
     }
 
@@ -3363,19 +3330,6 @@ class TicketController extends AbstractController
         $data = [
             'success' => true,
         ];
-
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since')) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
-        if ($client_messages) {
-            $data['client_messages'] = $client_messages;
-        }
 
         return $this->createJsonResponse($data);
     }
@@ -3743,6 +3697,26 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException('You cannot merge a ticket with itself');
         }
 
+        if ($ticket->getLockedByAgent() && $ticket->getLockedByAgent() !== $this->person && !$this->in->getBool('ticket_force')) {
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id),
+                ],
+                400
+            );
+        }
+
+        if ($other_ticket->getLockedByAgent() && $other_ticket->getLockedByAgent() !== $this->person && !$this->in->getBool('other_ticket_force')) {
+            return $this->createJsonResponse(
+                [
+                    'success' => false,
+                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id),
+                ],
+                400
+            );
+        }
+
         if (!$merge->checkPersonPermission()) {
             throw $this->createNotFoundException('User does not have permission to merge these tickets');
         }
@@ -3763,6 +3737,35 @@ class TicketController extends AbstractController
                 'success' => true,
                 'id'      => $ticket['id'],
                 'old_id'  => $old_ticket_id,
+            ]
+        );
+    }
+
+    private function renderMergeOverlay($ticketId, $otherTicketId)
+    {
+        $ticket = $this->getTicketOr404($ticketId, 'modify_merge');
+
+        $fieldManager = $this->container->getSystemService('ticket_fields_manager');
+        $customFields = $fieldManager->getDisplayArrayForObject($ticket);
+
+        if ($otherTicketId) {
+            $otherTicket       = $this->getTicketOr404($otherTicketId, 'view');
+            $otherCustomFields = $fieldManager->getDisplayArrayForObject($otherTicket);
+            $canMerge          = $this->person->PermissionsManager->TicketChecker->canMerge($ticket, $otherTicket);
+        } else {
+            $canMerge          = null;
+            $otherTicket       = false;
+            $otherCustomFields = false;
+        }
+
+        return $this->container->get('twig')->render(
+            'AgentBundle:Ticket:merge-overlay.html.twig',
+            [
+                'ticket'              => $ticket,
+                'custom_fields'       => $customFields,
+                'other_ticket'        => $otherTicket,
+                'other_custom_fields' => $otherCustomFields,
+                'can_merge'           => $canMerge,
             ]
         );
     }
@@ -5504,16 +5507,6 @@ CSS;
         $this->em->flush($problem);
 
         $data = [];
-        if ($this->in->getUInt('client_messages_since')) {
-            if ($client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            )
-            ) {
-                $data['client_messages'] = $client_messages;
-            }
-        }
 
         return $this->createJsonResponse($data);
     }
@@ -5539,16 +5532,6 @@ CSS;
         $this->em->flush($problem);
 
         $data = [];
-        if ($this->in->getUInt('client_messages_since')) {
-            if ($client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            )
-            ) {
-                $data['client_messages'] = $client_messages;
-            }
-        }
 
         return $this->createJsonResponse($data);
     }

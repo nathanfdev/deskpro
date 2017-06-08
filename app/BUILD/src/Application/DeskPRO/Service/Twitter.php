@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\TwitterStatusMention;
 use Application\DeskPRO\Entity\TwitterStatusTag;
 use Application\DeskPRO\Entity\TwitterStatusUrl;
 use Application\DeskPRO\Entity\TwitterUser;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class Twitter
@@ -886,24 +887,19 @@ class Twitter
 
     public function insertNewTweetClientMessage(TwitterAccountStatus $account_status)
     {
-        App::getDb()->insert('client_messages', [
-            'channel'      => 'agent.tweet-added',
-            'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-            'date_created' => date('Y-m-d H:i:s'),
-            'data'         => serialize($this->_getCmBaseData($account_status)),
-        ]);
+        App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.tweet-added',
+            $this->_getCmBaseData($account_status)
+        ));
     }
 
     public function insertUpdatedTweetClientMessage(TwitterAccountStatus $account_status, array $changes)
     {
         $data = array_merge($this->_getCmBaseData($account_status), $changes);
-
-        App::getDb()->insert('client_messages', [
-            'channel'      => 'agent.tweet-updated',
-            'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-            'date_created' => date('Y-m-d H:i:s'),
-            'data'         => serialize($data),
-        ]);
+        App::getContainer()->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.tweet-updated',
+            $data
+        ));
     }
 
     protected function _getCmBaseData(TwitterAccountStatus $account_status)
