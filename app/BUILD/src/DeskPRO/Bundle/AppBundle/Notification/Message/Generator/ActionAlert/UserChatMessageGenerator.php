@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as TemplatingEngine;

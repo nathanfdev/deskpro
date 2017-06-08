@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 
 class TicketMessageGenerator extends SystemEventGenerator
 {

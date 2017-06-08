@@ -26,22 +26,66 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-if (!function_exists('twig_template_get_attributes')) {
-    function twig_template_get_attributes($tpl, $object, $item, array $arguments = [], $type = 'any', $isDefinedTest = false, $ignoreStrictCheck = false)
+namespace DeskPRO\Bundle\AppBundle\Features;
+
+/**
+ * Class VoiceFeature.
+ */
+class GuidesFeature extends AbstractFeature
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
     {
-        static $refl = [];
+        return 'guides';
+    }
 
-        // getAttribute declared public on our override class, so we can skip reflection
-        if ($tpl instanceof \Application\DeskPRO\Twig\Template) {
-            return $tpl->getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return 'Guides';
+    }
 
-        $className = get_class($tpl);
-        if (!isset($refl[$className])) {
-            $refl[$className] = new \ReflectionMethod($className, 'getAttribute');
-            $refl[$className]->setAccessible(true);
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function getShortDescription()
+    {
+        return 'New Generation manuals.';
+    }
 
-        return $refl[$className]->invoke($tpl, $object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
+    /**
+     * {@inheritdoc}
+     */
+    public function getEnableDescription()
+    {
+        return 'Enable access to guides.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDisableDescription()
+    {
+        return 'Disable access to guides.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAvailability()
+    {
+        return [self::AVAILABLE_AT_QA];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function needAgentReload()
+    {
+        return true;
     }
 }

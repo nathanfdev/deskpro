@@ -66,6 +66,7 @@ class Topic extends ContentAbstract
      * @var Topic[]
      */
     protected $children;
+
     /**
      * Display order.
      *
@@ -93,13 +94,13 @@ class Topic extends ContentAbstract
     public function __construct(TopicEntity $entity, $templatingExtension)
     {
         parent::__construct($entity);
+
         $this->person          = null;
         $this->children        = $entity->getChildren();
         $this->displayOrder    = $entity->getDisplayOrder();
         $this->parent          = $entity->getParent();
         $this->calcNumComments = $entity->getCalcNumComments();
         $this->comments        = $entity->getComments();
-
-        $this->content = $templatingExtension->replaceContent($this->content);
+        $this->content         = $templatingExtension->replaceContent($this->content);
     }
 }

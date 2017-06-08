@@ -43,6 +43,8 @@ class ActionAlertsHandler {
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
       case 'read.notifications.alert':
+      case 'notification.agent_chat.mark_message':
+        // no-op
         break;
       case 'organization.added':
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);

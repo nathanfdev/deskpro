@@ -26,41 +26,45 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
+namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
- * Class SystemEventGenerator.
+ * Class NewUserChatMessageGenerator.
  */
-class SystemEventGenerator extends AbstractGenerator
+class NewUserChatMessageGenerator extends SystemEventGenerator
 {
     /**
-     * @var AgentDataService
+     * @var AvatarResolver
      */
-    private $agentDataService;
+    private $avatarResolver;
 
     /**
-     * Constructor.
+     * NewUserChatMessageGenerator constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $token_storage
      * @param AgentDataService      $agentDataService
+     * @param AvatarResolver        $avatarResolver
      */
     public function __construct(
-        EntityManager         $em,
+        EntityManager $em,
         TokenStorageInterface $token_storage,
-        AgentDataService      $agentDataService
+        AgentDataService $agentDataService,
+        AvatarResolver $avatarResolver
     ) {
-        parent::__construct($em, $token_storage);
-        $this->agentDataService = $agentDataService;
+        parent::__construct($em, $token_storage, $agentDataService);
     }
 
     /**
@@ -70,11 +74,10 @@ class SystemEventGenerator extends AbstractGenerator
      */
     public function createMessages(SystemEventInterface $event)
     {
-        $event->getName();
-        /* @var LegacySystemEvent $event */
+        /* @var UserChatEvent $event */
         $messages = [];
-        foreach ($this->getTarget($event) as $agent) {
-            $messages[] = new ActionAlert((int) $agent, $event->getData(), $event->getName());
+        foreach ($this->getTarget($event) as $target) {
+            $messages[] = new Notification($target, $this->getData($event), $event->getName());
         }
 
         return $messages;
@@ -87,21 +90,43 @@ class SystemEventGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return get_class($event) === LegacySystemEvent::class;
+        if ($event instanceof UserChatEvent && $event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * @param LegacySystemEvent $event
+     * @param UserChatEvent $event
      *
-     * @return array|\int[]
+     * @return array
      */
-    protected function getTarget(LegacySystemEvent $event)
+    private function getData(UserChatEvent $event)
     {
-        $targets = $event->getTargets();
-        if (!$targets) {
-            $targets = $this->agentDataService->getOnlineAgentIds();
+        $data = $event->getData();
+
+        return [
+            'title'   => 'New incoming chat',
+            'summary' => 'New incoming chat ['.$data['subject'].'] by '
+                .($data['person_name'] ? $data['person_name'] : 'anonymous')
+                ."\r\nDepartment: ".$data['department_name'],
+            'icon' => isset($data['author_id']) ? $this->getAvatar($data['author_id']) : null,
+        ];
+    }
+
+    /**
+     * @param $authorId
+     *
+     * @return string|null
+     */
+    private function getAvatar($authorId)
+    {
+        $person = $this->em->find(Person::class, $authorId);
+        if ($person) {
+            return $this->avatarResolver->getAvatar($person);
         }
 
-        return array_diff($targets, $event->getExcludeTargets());
+        return;
     }
 }
