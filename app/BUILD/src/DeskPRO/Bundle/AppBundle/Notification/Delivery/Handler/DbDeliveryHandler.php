@@ -28,8 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
-use DeskPRO\Bundle\AppBundle\Entity\ActionAlert as ActionAlertEntity;
-use DeskPRO\Bundle\AppBundle\Entity\Notification as NotificationEntity;
+use Application\DeskPRO\DBAL\Connection;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
@@ -42,13 +41,16 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
 {
     const TYPE = 'notification.delivery.handler.db';
 
+    const ACTION_ALERT_TABLE = 'notify_action_alerts';
+    const NOTIFICATION_TABLE = 'notify_notificatoins';
+
     /**
      * @var EntityManager
      */
     protected $em;
 
     /**
-     * @var MessageInterface[]
+     * @var array
      */
     private $messages = [];
 
@@ -62,36 +64,47 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
 
     public function schedule(MessageInterface $message)
     {
-        $persistTo = $this->getChannel($message);
-        $persistTo
-            ->setUuid($message->getId())
-            ->setTargetId($message->getTarget())
-            ->setDateCreated(new \DateTime($message->getDate()))
-            ->setData($message->getData()['data'])
-            ->setType($message->getType());
-        $this->messages[] = $persistTo;
+        $table = $this->getChannel($message);
+        if (!isset($this->messages[$table])) {
+            $this->messages[$table] = [];
+        }
+
+        $date = new \DateTime($message->getDate());
+
+        $this->messages[$table][] = [
+            'uuid'         => $message->getId(),
+            'target_id'    => $message->getTarget(),
+            'date_created' => $date->format('Y-m-d H:i:s'),
+            'data'         => json_encode($message->getData()['data']),
+            'type'         => $message->getType(),
+        ];
     }
 
     public function deliver()
     {
-        foreach ($this->messages as $message) {
-            $this->em->persist($message);
+        /** @var Connection $connection */
+        $connection = $this->em->getConnection();
+
+        foreach ($this->messages as $table => $messages) {
+            if (!empty($messages)) {
+                $connection->batchInsert($table, $messages);
+            }
         }
-        $this->em->flush();
+
         $this->messages = [];
     }
 
     /**
      * @param MessageInterface $message
      *
-     * @return ActionAlertEntity|NotificationEntity
+     * @return string
      */
     protected function getChannel(MessageInterface $message)
     {
         if ($message instanceof ActionAlert) {
-            return new ActionAlertEntity();
+            return self::ACTION_ALERT_TABLE;
         } elseif ($message instanceof Notification) {
-            return new NotificationEntity();
+            return self::NOTIFICATION_TABLE;
         }
 
         throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
