@@ -28,6 +28,7 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\DBAL\Connection;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use Doctrine\ORM\EntityManager;
@@ -45,8 +46,9 @@ class DbDeliveryHandlerSpec extends ObjectBehavior
      */
     protected $em;
 
-    public function let(EntityManager $em)
+    public function let(EntityManager $em, Connection $connection)
     {
+        $em->getConnection()->willReturn($connection);
         $this->beConstructedWith($em);
     }
 

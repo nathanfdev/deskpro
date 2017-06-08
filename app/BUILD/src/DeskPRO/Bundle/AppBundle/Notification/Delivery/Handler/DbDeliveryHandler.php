@@ -42,7 +42,7 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
     const TYPE = 'notification.delivery.handler.db';
 
     const ACTION_ALERT_TABLE = 'notify_action_alerts';
-    const NOTIFICATION_TABLE = 'notify_notificatoins';
+    const NOTIFICATION_TABLE = 'notify_notifications';
 
     /**
      * @var EntityManager
