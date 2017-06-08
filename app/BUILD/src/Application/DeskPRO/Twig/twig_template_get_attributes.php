@@ -33,7 +33,7 @@ if (!function_exists('twig_template_get_attributes')) {
 
         // getAttribute declared public on our override class, so we can skip reflection
         if ($tpl instanceof \Application\DeskPRO\Twig\Template) {
-            return $tpl->getAttribute($tpl, $object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
+            return $tpl->getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
         }
 
         $className = get_class($tpl);
