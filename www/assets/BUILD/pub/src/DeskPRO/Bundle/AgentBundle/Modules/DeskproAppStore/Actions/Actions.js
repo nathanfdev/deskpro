@@ -20,26 +20,30 @@ export const DESKPRO_APPSTORE_USER_GET = 'DESKPRO_APPSTORE_USER_GET';
 */
 function pageToContext(page)
 {
-  const { fragmentElement } = page;
-  const foundNodes = WidgetDOM.container.findAllFromList( fragmentElement.get() );
-  if (foundNodes.length === 0) { return []; }
+  try {
+    const foundNodes = WidgetDOM.container.findAllFromList( page.wrapper.get() );
+    if (foundNodes.length === 0) { return []; }
 
-  // make sure all dom nodes have an id
-  WidgetDOM.container.ensureContainerIds(foundNodes);
+    // make sure all dom nodes have an id
+    WidgetDOM.container.ensureContainerIds(foundNodes);
 
-  // extract tab props
-  const { TYPENAME: type } = page;
-  const metadata = page.getMetaData(type);
-  const routeUrl = page.getMetaData('routeUrl');
-  const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
-  const tabProps = { type, entityId: metadata.id, tabId: tab.id };
+    // extract tab props
+    const { TYPENAME: type } = page;
+    const metadata = page.getMetaData(type);
+    const routeUrl = page.getMetaData('routeUrl');
+    const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
+    const tabProps = { type, entityId: metadata.id, tabId: tab.id };
 
-  // extract container props
-  const attributeToProp = ({ id, 'data-deskproapp': locationId }) => ({id, locationId});
-  const containerPropList = WidgetDOM.container.extractConfigurationFromList(foundNodes, attributeToProp);
+    // extract container props
+    const attributeToProp = ({ id, 'data-deskproapp': locationId }) => ({id, locationId});
+    const containerPropList = WidgetDOM.container.extractConfigurationFromList(foundNodes, attributeToProp);
 
-  // create context list
-  return containerPropList.map(containerProps => new Context(Object.assign({}, tabProps, containerProps)));
+    // create context list
+    return containerPropList.map(containerProps => new Context(Object.assign({}, tabProps, containerProps)));
+  } catch (e) {
+    console.log('failed to extract app context from page fragment', e);
+    return [];
+  }
 }
 
 export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, pageToContext);

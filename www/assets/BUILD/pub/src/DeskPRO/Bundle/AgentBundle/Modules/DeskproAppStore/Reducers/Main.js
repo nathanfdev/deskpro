@@ -80,7 +80,7 @@ function appMountedHandler(state, payload, action) {
  * @param {Object} action
  * @returns {Object}
  */
-function loadPageFragmentAppsHandler(state, contextList) {
+function loadPageFragmentAppsHandler(state, contextList, action) {
   if (contextList.length === 0) { return state; }
 
   const newContexts = contextList.reduce((acc, context) => { acc[context.id] = context; return acc; }, {});
