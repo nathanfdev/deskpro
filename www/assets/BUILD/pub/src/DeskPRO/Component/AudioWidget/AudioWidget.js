@@ -10,10 +10,16 @@ import RecordTab from './RecordTab';
 class AudioWidgetForm extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.object,
-    errors:   PropTypes.object,
-    saving:   PropTypes.bool,
-    onSubmit: PropTypes.func
+    value:           PropTypes.object,
+    errors:          PropTypes.object,
+    saving:          PropTypes.bool,
+    onSubmit:        PropTypes.func,
+    hasAutoSpeech:   PropTypes.bool,
+    autoSpeechLabel: PropTypes.string
+  };
+
+  static defaultProps = {
+    hasAutoSpeech: false
   };
 
   constructor(props) {
@@ -55,7 +61,7 @@ class AudioWidgetForm extends React.Component {
   };
 
   getDefaultState() {
-    const { value, errors } = this.props;
+    const { value, errors, hasAutoSpeech } = this.props;
     const type = value ? value.get('type') : 'text';
     const blobAuth = value ? value.getIn(['blob', 'blob_auth']) : null;
     const downloadUrl = value ? value.getIn(['blob', 'download_url']) : null;
@@ -68,8 +74,9 @@ class AudioWidgetForm extends React.Component {
           blob: {
             type,
             text: {
-              text:     value ? value.get('text') : '',
-              language: value ? value.get('language') : null
+              text:           value ? value.get('text') : '',
+              language:       value ? value.get('language') : null,
+              auto_generated: value && hasAutoSpeech ? value.get('auto_generated') : false
             },
             upload: {
               blob: {
@@ -93,14 +100,17 @@ class AudioWidgetForm extends React.Component {
   }
 
   render() {
-    const { saving } = this.props;
+    const { saving, hasAutoSpeech, autoSpeechLabel } = this.props;
 
     return (
       <div>
         <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
           <Fieldset>
             <Field select="blob" label="Choose source">
-              <AudioSource />
+              <AudioSource
+                hasAutoSpeech={hasAutoSpeech}
+                autoSpeechLabel={autoSpeechLabel}
+              />
             </Field>
 
             <button className={classNames('ui primary', { loading: saving }, 'button')}>
@@ -116,8 +126,10 @@ class AudioWidgetForm extends React.Component {
 class AudioSource extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.object,
-    onChange: PropTypes.func
+    value:           PropTypes.object,
+    onChange:        PropTypes.func,
+    hasAutoSpeech:   PropTypes.bool,
+    autoSpeechLabel: PropTypes.string
   };
 
   constructor(props) {
@@ -139,7 +151,7 @@ class AudioSource extends React.Component {
   };
 
   render() {
-    const { value } = this.props;
+    const { value, hasAutoSpeech, autoSpeechLabel } = this.props;
     const type = value.type;
     const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 
@@ -171,7 +183,11 @@ class AudioSource extends React.Component {
         </div>
         <Tab active={type === 'text'}>
           <Field select="text">
-            <TextTab ref={(c) => { this.tabs.text = c; }} />
+            <TextTab
+              ref={(c) => { this.tabs.text = c; }}
+              hasAutoSpeech={hasAutoSpeech}
+              autoSpeechLabel={autoSpeechLabel}
+            />
           </Field>
         </Tab>
         <Tab active={type === 'upload'}>

@@ -203,9 +203,11 @@
 			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
 					{{ ticket.person.getNameWithTitle() }}
-                    <span class="email"
-                          id="{{ baseId }}_user_email_text">({{ ticket.person_email.email|default(ticket.person_email_address) }}
-                        )</span>
+                    {% if ticket.person.emails|length > 1 or ticket.person_email_address %}
+                        <span class="email" id="{{ baseId }}_user_email_text">
+                            ({{ ticket.person_email.email|default(ticket.person_email_address) }})
+                        </span>
+                    {% endif %}
 				</span>
                     </a>
                     {% if ticket.person.emails|length > 1 %}

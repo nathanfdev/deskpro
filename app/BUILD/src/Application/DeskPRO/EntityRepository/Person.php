@@ -742,7 +742,6 @@ class Person extends AbstractEntityRepository
             if (!$person) {
                 $person = new PersonEntity();
                 $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
-                $person->setEmail('incoming.call.'.$phoneNumber.'@example.com');
 
                 $this->_em->persist($person);
                 $this->_em->flush();

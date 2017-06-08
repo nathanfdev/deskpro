@@ -18,6 +18,7 @@ class PopUp extends React.Component {
     children:       PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     autoClose:      PropTypes.bool,
     autoOpen:       PropTypes.bool,
+    allowClose:     PropTypes.bool,
     className:      PropTypes.string,
     innerClassName: PropTypes.string,
     id:             PropTypes.number.isRequired,         // eslint-disable-line react/no-unused-prop-types
@@ -32,7 +33,8 @@ class PopUp extends React.Component {
     innerClasses:   [],
     classes:        [],
     autoClose:      false,
-    autoOpen:       false
+    autoOpen:       false,
+    allowClose:     true
   };
 
   constructor(props) {
@@ -74,6 +76,10 @@ class PopUp extends React.Component {
   };
 
   closePopup = () => {
+    if (!this.props.allowClose) {
+      return;
+    }
+
     this.setState({
       isOpen: false
     });

@@ -77,17 +77,21 @@ export const outgoingCallSelector = createSelector(
   state => state.get('outgoingCall')
 );
 
-export const isVoiceEnabledSelector = createSelector(
+export const isVoiceAvailableSelector = createSelector(
   meSelector,
   idleActivitySidSelector,
   phoneTokenSelector,
   workerTokenSelector,
   (me, idleSid, phoneToken, workerToken) =>
-    isSecure
-    && me.getIn(['agent_data', 'is_voice_enabled'])
-    && idleSid
-    && phoneToken
-    && workerToken
+      me.getIn(['agent_data', 'is_voice_enabled'])
+      && idleSid
+      && phoneToken
+      && workerToken
+);
+
+export const isVoiceEnabledSelector = createSelector(
+  isVoiceAvailableSelector,
+  voiceAvailable => voiceAvailable && isSecure
 );
 
 // settings

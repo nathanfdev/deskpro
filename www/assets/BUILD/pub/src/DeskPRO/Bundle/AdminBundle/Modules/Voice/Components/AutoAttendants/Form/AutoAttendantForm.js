@@ -81,7 +81,10 @@ class AutoAttendantForm extends React.Component {
                 <Input type="text" />
               </Field>
               <Field select="audio_asset" className="audio-asset" label="Audio">
-                <AudioWidgetFormContainer />
+                <AudioWidgetFormContainer
+                  hasAutoSpeech
+                  autoSpeechLabel="Auto generate speech for choices in the form 'For X press 1'"
+                />
               </Field>
               <Field select="targets" label="Dialpad inputs and targets">
                 <DialNumbers autoAttendant={autoAttendant} />

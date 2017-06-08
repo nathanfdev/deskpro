@@ -91,7 +91,6 @@ class AgentsVoiceToggle extends React.Component {
         <AgentSettingsForm
           settings={settings}
           onSubmit={onSaveSettings}
-          autoSubmit
         />
         <div className="voice-agents-table">
           <table>

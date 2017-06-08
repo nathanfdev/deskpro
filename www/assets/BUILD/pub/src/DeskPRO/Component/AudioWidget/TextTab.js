@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Field, Textarea, Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Field, Textarea, Select, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 
 const languageChoices = [
   { value: 'da-DK', label: 'Danish, Denmark' },
@@ -33,15 +33,23 @@ const languageChoices = [
 class TextTab extends React.Component {
 
   static propTypes = {
-    value: PropTypes.object
+    value:           PropTypes.object,
+    hasAutoSpeech:   PropTypes.bool,
+    autoSpeechLabel: PropTypes.string
   };
 
   render() {
+    const { value, hasAutoSpeech, autoSpeechLabel } = this.props;
+
     return (
       <div className="text-tab">
         <Field select="text" label="Type the text you’d like to be read out.">
-          <Textarea />
+          <Textarea disabled={hasAutoSpeech && value.auto_generated} />
         </Field>
+        {hasAutoSpeech &&
+        <Field select="auto_generated">
+          <Checkbox label={autoSpeechLabel || 'Auto generate speech'} />
+        </Field>}
         <div className="language-wrapper">
           <Field select="language" className="language-field">
             <Select choices={languageChoices} clearable={false} />

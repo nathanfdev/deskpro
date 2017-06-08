@@ -8,6 +8,7 @@ class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
     incomingCall:   PropTypes.object,
+    outgoingCall:   PropTypes.object,
     onlineAgents:   PropTypes.object,
     voiceEnabled:   PropTypes.bool,
     outboundNumber: PropTypes.string
@@ -57,7 +58,7 @@ class VoiceMenuDropdown extends React.Component {
   };
 
   render() {
-    const { incomingCall } = this.props;
+    const { incomingCall, outgoingCall } = this.props;
 
     return (
       <div className="voice">
@@ -68,6 +69,7 @@ class VoiceMenuDropdown extends React.Component {
           zIndex={99999}
           content={<VoiceMenu {...this.props} />}
           className={classNames('voice-menu-popup', { green: incomingCall })}
+          allowClose={!incomingCall && !outgoingCall}
         >
           {this.getIcon()}
           {this.getStatus()}
