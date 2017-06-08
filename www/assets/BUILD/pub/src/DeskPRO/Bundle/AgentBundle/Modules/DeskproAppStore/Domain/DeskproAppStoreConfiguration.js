@@ -26,8 +26,10 @@ class DeskproAppStoreConfiguration {
       'org-contact-before', 'org-contact-after', 'org-properties-before', 'org-properties-after',
       'org-email-assoc-before', 'org-email-assoc-after', 'org-usergroups-before', 'org-usergroups-after',
       'org-hierarchy-before', 'org-hierarchy-after', 'org-footer',
-      'org-summary-new-tab', 'org-content-box-new-tab', 'org-notes-new-tab'
+      'org-summary-new-tab', 'org-content-box-new-tab', 'org-notes-new-tab',
 
+      //background location
+      'background'
     ];
   }
 
