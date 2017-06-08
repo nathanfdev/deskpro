@@ -159,7 +159,6 @@ services:
         - "@data.agent"
       tags:
         - { name: deskpro.notification.action_alert.generator }
-        - { name: deskpro.notification.user_notify.generator }
 
   deskpro.notification.generator.action_alert.organization:
       class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\OrganizationMessageGenerator
