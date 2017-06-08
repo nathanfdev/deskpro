@@ -106,7 +106,7 @@ class VoiceClientController extends BaseController
         try {
             return new View($this->wrap($adapter->getActivities($account)));
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if (in_array($e->getStatusCode(), [Response::HTTP_UNAUTHORIZED, Response::HTTP_NOT_FOUND])) {
                 return new TwilioActivities('', '', '', '', '');
             }
 
