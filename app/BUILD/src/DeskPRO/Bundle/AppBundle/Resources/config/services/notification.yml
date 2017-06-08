@@ -86,6 +86,19 @@ services:
       - { name: deskpro.notification.user_notify.generator }
 
   #
+  # UserNotification message generators
+  #
+  deskpro.notification.generator.user_notify.new_user_chat:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification\NewUserChatMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@data.agent"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.user_notify.generator }
+
+  #
   # ActionAlert message generators
   #
   deskpro.notification.generator.action_alert.agent_chat_new_message:
@@ -138,14 +151,15 @@ services:
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
-  deskpro.notification.generator.action_alert.system_event:
-      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\SystemEventGenerator
+  deskpro.notification.generator.system_event:
+      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator
       arguments:
         - "@doctrine.orm.default_entity_manager"
         - "@security.token_storage"
         - "@data.agent"
       tags:
         - { name: deskpro.notification.action_alert.generator }
+        - { name: deskpro.notification.user_notify.generator }
 
   deskpro.notification.generator.action_alert.organization:
       class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\OrganizationMessageGenerator
