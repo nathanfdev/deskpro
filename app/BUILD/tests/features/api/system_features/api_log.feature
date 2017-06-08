@@ -7,15 +7,15 @@ Feature: Api should log any request
     And my request is authenticated
 
   Scenario: I send some request to API
-    When I send a PUT request to "/api/v2/notify/heartbeat"
-    And the response status code should be 204
+    When I send a GET request to "/api/v2/notify/setup/action-alerts"
+    And the response status code should be 200
     And the header "X-DeskPRO-Request-ID" should match "#\d+-[a-zA-Z0-9]{30}#"
     And api log should appear in table
 
   Scenario: I send some request to API and provide an client request id with
     Given I add "X-DeskPRO-Client-Request-ID" header equal to "de_dupe_header"
-    When I send a PUT request to "/api/v2/notify/heartbeat"
-    Then the response status code should be 204
+    When I send a GET request to "/api/v2/notify/setup/action-alerts"
+    Then the response status code should be 200
     And the header "X-DeskPRO-Request-ID" should be equal to "de_dupe_header-c"
     And api log with "de_dupe_header-c" id should appear in table
 
@@ -23,14 +23,14 @@ Feature: Api should log any request
     Checking different duplicate modes.
     Given I add "X-DeskPRO-Client-Request-ID" header equal to "de_dupe_header"
     And I set duplicate mode as <dup_mode>, failure mode as <fail_mode>, eager as 0 in request
-    When I send a PUT request to "/api/v2/notify/heartbeat"
+    When I send a GET request to "/api/v2/notify/setup/action-alerts"
     Then the response status code should be <status>
     And the header "X-DeskPRO-Request-ID" should be equal to "de_dupe_header-c"
 
     Examples:
       | dup_mode | fail_mode | status |
       | fail     | skip       | 409   |
-      | resend   | skip       | 204   |
+      | resend   | skip       | 200   |
 
   Scenario Outline: I send some request to API and provide duplicate client request id.
     Request is failed. Checking different modes.
@@ -48,10 +48,10 @@ Feature: Api should log any request
       | resend   | skip       | 400   |
 
   Scenario Outline: I send some request to API and previous request was sent with eager mode, and still in progress.
-    Given There is the eager log with <gen_id> to "/api/v2/notify/heartbeat"
+    Given There is the eager log with <gen_id> to "/api/v2/notify/setup/action-alerts"
     And I add "X-DeskPRO-Client-Request-ID" header equal to <id>
     And I set duplicate mode as <dup_mode>, failure mode as <fail_mode>, eager as 0 in request
-    When I send a PUT request to "/api/v2/notify/heartbeat"
+    When I send a GET request to "/api/v2/notify/setup/action-alerts"
     Then the response status code should be <status>
     And the header "X-DeskPRO-Request-ID" should be equal to <gen_id>
 
