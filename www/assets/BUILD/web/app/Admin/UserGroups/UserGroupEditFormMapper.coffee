@@ -22,6 +22,7 @@ define [
       postData.title = formModel.title
       postData.note = formModel.note
       postData.is_enabled = formModel.is_enabled
+      postData.dep_perms = Util.clone(formModel.deps_perms);
 
       if formPermsModel
         postData.perms = Util.clone(formPermsModel)

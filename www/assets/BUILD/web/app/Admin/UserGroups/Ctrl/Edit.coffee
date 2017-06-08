@@ -17,6 +17,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         deps_perms:
           tickets: {full: false}
           chat: {full: false}
+        all_tickets_locked: false
+        all_chat_locked: false
 
       @group = null
 
@@ -25,10 +27,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       promises = [groupPromise, @service.ticketDeps.all(), @service.chatDeps.all()]
 
       @$q.all(promises).then (res) =>
-
-        @group     = res[0].group
-        @form      = res[0].form
-        @perm_form = @group.perms
+        @group             = res[0].group
+        @everyoneGroup     = res[0].everyone_group;
+        @registeredGroup   = res[0].reg_group;
+        @form              = res[0].form
+        @perm_form         = @group.perms
         @perm_form.options = {}
 
         if @group.sys_name == 'everyone'
@@ -45,7 +48,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @perm_form.options.reopen_resolved_createnew = 'new_ticket'
         else
           @perm_form.options.reopen_resolved_createnew = 'reject'
-
 
         # deps need to be flattened to show in the table
         @chatDeps = []
@@ -66,7 +68,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
               subdep.depth = 1
               @ticketDeps.push(subdep)
 
+        @assignDepsPerms @everyoneGroup
+        @assignDepsPerms @registeredGroup
         @assignDepsPerms @group
+
+        if (Object.keys(@group.deps_perms.tickets).reduce (x, y) => x && @isLocked(y, 'tickets')) then @all_perms.all_tickets_locked = true;
+        if (Object.keys(@group.deps_perms.chat).reduce (x, y) => x && @isLocked(y, 'chat')) then @all_perms.all_chat_locked = true;
+
         @updateAllPermsState()
 
     saveForm: ->
@@ -74,7 +82,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         return
 
       is_new = !@group.id
-      promise = @ugData.saveFormModel(@group, @form, @perm_form)
+      promise = @ugData.saveFormModel(@group, @form)
 
       @startSpinner('saving')
       promise.then( =>
@@ -121,22 +129,30 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       }
 
       for dep in @ticketDeps
-        assign = false
         full = false
-
         if dep.permissions?.usergroups
           u = dep.permissions.usergroups.filter((x) => x.id == group.id)[0]
-          if u
-            if u.name == 'full' then full = true else assign = true
+          if group.sys_name == 'everyone'
+            if u then full = true
+          else if group.sys_name == 'registered'
+            if u || @everyoneGroup.deps_perms.tickets[dep.id].full == true then full = true
+          else
+            if u || @everyoneGroup.deps_perms.tickets[dep.id].full == true || @registeredGroup.deps_perms.tickets[dep.id].full == true then full = true
 
-        group.deps_perms.tickets[dep.id] = { assign: assign, full: full }
+          u = dep.permissions.usergroups.filter((x) => x.sys_name == group.id)[0]
+
+        group.deps_perms.tickets[dep.id] = { full: full }
 
       for dep in @chatDeps
         full = false
         if dep.permissions?.usergroups
           u = dep.permissions.usergroups.filter((x) => x.id == group.id)[0]
-          if u
-            full = true
+          if group.sys_name == 'everyone'
+            if u then full = true
+          else if group.sys_name == 'registered'
+            if u || @everyoneGroup.deps_perms.chat[dep.id].full == true then full = true
+          else
+            if u || @everyoneGroup.deps_perms.chat[dep.id].full == true || @registeredGroup.deps_perms.chat[dep.id].full == true then full = true
 
         group.deps_perms.chat[dep.id] = { full: full }
 
@@ -160,22 +176,23 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
               enabled = false
           @all_perms.deps_perms[type][section] = enabled
 
-  changeAllPerms: (type, section) ->
-    return if !@group?
+    changeAllPerms: (type) ->
+      return if !@group?
 
-    if 'perms' == type and @group.perms and @group.perms[section]
-      for own perm of @group.perms[section]
-        @group.perms[section][perm] = @all_perms[type][section]
+      if 'deps_perms_tickets' == type and @group.deps_perms.tickets
+        for own dep of @group.deps_perms.tickets
+          if(!@isLocked(dep, 'tickets'))
+            @group.deps_perms.tickets[dep].full = @all_perms.deps_perms.tickets.full
 
-      if 'people' == section
-        @changeAllPerms('perms', 'org')
+      else if 'deps_perms_chat' == type and @group.deps_perms.chat
+        for own dep of @group.deps_perms.chat
+          if(!@isLocked(dep, 'chat'))
+            @group.deps_perms.chat[dep].full = @all_perms.deps_perms.chat.full
 
-    else if 'deps_perms_tickets' == type and @group.deps_perms.tickets
-      for own dep of @group.deps_perms.tickets
-        @group.deps_perms.tickets[dep][section] = @all_perms.deps_perms.tickets[section]
+    isLocked: (depId, type) ->
+      if @group.sys_name == 'everyone' then return false
+      else if @group.sys_name == 'registered' then return @everyoneGroup.deps_perms[type][depId].full == true
+      else return @everyoneGroup.deps_perms[type][depId].full == true || @registeredGroup.deps_perms[type][depId].full == true
 
-    else if 'deps_perms_chat' == type and @group.deps_perms.chat
-      for own dep of @group.deps_perms.chat
-        @group.deps_perms.chat[dep][section] = @all_perms.deps_perms.chat[section]
 
   Admin_UserGroups_Ctrl_Edit.EXPORT_CTRL()

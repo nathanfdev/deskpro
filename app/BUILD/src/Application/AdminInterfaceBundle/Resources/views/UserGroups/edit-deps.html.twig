@@ -37,6 +37,8 @@
                                 ng-model="EditCtrl.all_perms.deps_perms.tickets.full"
                                 ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'full')"
                                 is-on="EditCtrl.all_perms.deps_perms.tickets.full"
+								is-locked="EditCtrl.all_perms.all_tickets_locked"
+								locked-tip="All these departments are enabled for Registered or Everyone usergroups"
                                 />
                     </td>
                 </tr>
@@ -53,8 +55,8 @@
 								dp-slider-switch
 								ng-model="EditCtrl.group.deps_perms.tickets[dep.id].full"
 								is-on="EditCtrl.group.deps_perms.tickets[dep.id].full"
-								locked-tip="This permission is locked because the permission is granted through an enabled agent group"
-								is-locked="all_locked_perms"
+								locked-tip="This permission is locked because the permission is granted through Everyone or Registered group"
+								is-locked="EditCtrl.isLocked(dep.id, 'tickets')"
                                 ng-change="EditCtrl.updateAllPermsState()"
 							/>
 						</div>
@@ -84,6 +86,8 @@
                             dp-slider-switch
                             ng-model="EditCtrl.all_perms.deps_perms.chat.full"
                             ng-change="EditCtrl.changeAllPerms('deps_perms_chat', 'full')"
+							is-locked="EditCtrl.all_perms.all_chat_locked"
+							locked-tip="All these departments are enabled for Registered or Everyone usergroups"
                             />
                     </td>
                 </tr>
@@ -100,7 +104,8 @@
 								dp-slider-switch
 								ng-model="EditCtrl.group.deps_perms.chat[dep.id].full"
 								is-on="EditCtrl.group.deps_perms.chat[dep.id].full"
-								is-locked="all_locked_perms"
+								is-locked="EditCtrl.everyoneGroup.deps_perms.chat[dep.id].full || EditCtrl.registeredGroup.deps_perms.chat[dep.id].full"
+								locked-tip="This permission is locked because the permission is granted through Everyone or Registered group"
                                 ng-change="EditCtrl.updateAllPermsState()"
 							/>
 						</div>
