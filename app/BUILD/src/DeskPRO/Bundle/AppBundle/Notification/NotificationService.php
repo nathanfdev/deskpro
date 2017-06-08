@@ -202,12 +202,7 @@ class NotificationService
                     'last_alert'  => $this->lastAlert(),
                     'last_notify' => $this->lastNotify(),
                 ]);
-            case 'db_new':
 
-                return new NotificationClient('polling', [
-                    'last_alert'       => $this->lastAlert(),
-                    'polling_interval' => $this->settings->get('notification.settings.polling_client.polling_interval', 5000),
-                ]);
             default:
                 throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));
         }

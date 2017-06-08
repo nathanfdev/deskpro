@@ -6,8 +6,8 @@ Feature: API limits
     And my request is authenticated
 
   Scenario: I'm getting standard API endpoint
-    When I send a PUT request to "/api/v2/notify/heartbeat"
-    Then the response status code should be 204
+    When I send a GET request to "/api/v2/tickets"
+    Then the response status code should be 200
 
   Scenario: I'm getting API endpoint
     Given my key limit almost exhausted
@@ -16,8 +16,9 @@ Feature: API limits
     And the response status code should be 200
     When I send a GET request to "/api/v2/user_groups"
     Then the response status code should be 403
-    But I send a PUT request to "/api/v2/notify/heartbeat"
-    And the response status code should be 204
+    #there is no api with disabled limits now
+    #But I send a GET request to "/api/v2/tickets"
+    #And the response status code should be 200
 
   Scenario: My key limit replenished
    Given my key limit will be replenished

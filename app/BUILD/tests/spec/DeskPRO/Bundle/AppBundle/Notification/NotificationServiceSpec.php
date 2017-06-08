@@ -116,12 +116,6 @@ class NotificationServiceSpec extends ObjectBehavior
                     'db',
                 ],
             ],
-            'notification.yet.another.system.event_for_polling' => [
-                'strategy' => 'immediate',
-                'delivery' => [
-                    'db_new',
-                ],
-            ],
             'notification.yet.another.system.event_for_pusher' => [
                 'strategy' => 'immediate',
                 'delivery' => [
