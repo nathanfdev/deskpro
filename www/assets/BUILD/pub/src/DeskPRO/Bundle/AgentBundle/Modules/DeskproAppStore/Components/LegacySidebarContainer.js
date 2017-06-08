@@ -7,7 +7,7 @@ class LegacySidebarContainer extends React.Component
 {
   static propTypes = {
     widgetsConfigList: PropTypes.array.isRequired
-    , dispatchWidgetRequestEvent: PropTypes.func.isRequired
+    , dispatchIncomingWidgetMessage: PropTypes.func.isRequired
 
     , context: PropTypes.object.isRequired
     , configuration: PropTypes.object.isRequired
@@ -110,7 +110,7 @@ class LegacySidebarContainer extends React.Component
   render() {
     return (<DeskproAppContainer
       widgetsConfigList = {this.props.widgetsConfigList}
-      dispatchWidgetRequestEvent = {this.props.dispatchWidgetRequestEvent}
+      dispatchIncomingWidgetMessage = {this.props.dispatchIncomingWidgetMessage}
       context = {this.props.context}
       configuration = {this.props.configuration}
     />);
