@@ -57,6 +57,9 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
     const TOARRAY_ONLY_PRIMATIVES = 4;
     const TOARRAY_LOAD_UNLOADED   = 8;
 
+    const MAGIC_OFFSETGET_PROP   = 1;
+    const MAGIC_OFFSETGET_GETTER = 2;
+
     /**
      * Array of listeners.
      *
@@ -70,6 +73,11 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
      * @var array
      */
     private $_custom_callables = [];
+
+    /**
+     * @var array
+     */
+    protected $_magic_offsetget_map = [];
 
     /**
      * @var StateChangeRecorder
@@ -314,14 +322,28 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
     public function offsetExists($offset)
     {
+        if (isset($this->_magic_offsetget_map[$offset])) {
+            return true;
+        }
+
         if (strpos($offset, 'is_') !== false) {
             $func = str_replace('_', '', $offset);
         } else {
             $func = 'get'.str_replace('_', '', $offset);
         }
         if (method_exists($this, $func)) {
+            $this->_magic_offsetget_map[$offset] = [
+                self::MAGIC_OFFSETGET_GETTER,
+                $func,
+            ];
+
             return true;
         } elseif (property_exists($this, $offset) and $offset[0] != '_') {
+            $this->_magic_offsetget_map[$offset] = [
+                self::MAGIC_OFFSETGET_PROP,
+                $offset,
+            ];
+
             return true;
         } else {
             // Handle _id's
@@ -354,14 +376,36 @@ abstract class BasicDomainObject implements \ArrayAccess, NotifyPropertyChanged
 
     public function offsetGet($offset)
     {
+        if (isset($this->_magic_offsetget_map[$offset])) {
+            if ($this->_magic_offsetget_map[$offset][0] === self::MAGIC_OFFSETGET_GETTER) {
+                $func = $this->_magic_offsetget_map[$offset][1];
+
+                return $this->$func();
+            } elseif ($this->_magic_offsetget_map[$offset][0] === self::MAGIC_OFFSETGET_PROP) {
+                $prop = $this->_magic_offsetget_map[$offset][1];
+
+                return $this->$prop;
+            }
+        }
+
         if (strpos($offset, 'is_') !== false) {
             $func = str_replace('_', '', $offset);
         } else {
             $func = 'get'.str_replace('_', '', $offset);
         }
         if (method_exists($this, $func) || isset($this->_custom_callables[strtolower($func)])) {
+            $this->_magic_offsetget_map[$offset] = [
+                self::MAGIC_OFFSETGET_GETTER,
+                $func,
+            ];
+
             return $this->$func();
         } elseif (property_exists($this, $offset) and $offset[0] != '_') {
+            $this->_magic_offsetget_map[$offset] = [
+                self::MAGIC_OFFSETGET_PROP,
+                $offset,
+            ];
+
             return $this->$offset;
         } else {
             // Handle _id's
