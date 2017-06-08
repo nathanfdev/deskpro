@@ -3199,157 +3199,166 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param context
 	 */
 	initInterfaceLayerEvents: function(context) {
-		var self = this;
 		if ($(context).is('.dp-interface-layer')) {
 			return;
 		}
 
 		$(context).addClass('dp-interface-layer');
-		var cancelRouteSelection = function(ev) {
-			ev.preventDefault();
-			ev.stopPropagation();
 
-			// This is because shift-clicking a non-link can result
-			// in text selection
-			if (ev.shiftKey) {
-				if (document.getSelection) {
-					document.getSelection().removeAllRanges();
-				}
-			}
-		};
+		this.initRoutes(context);
+		this.initQtip(context);
 
-		window.setTimeout(function() {
-			// Accept clicks on routes
-			$(context).on('mousedown', '[data-route]', function(ev) {
-				cancelRouteSelection(ev);
-			});
-			$(context).on('click', '[data-route]', function(ev) {
-				if ($(this).is('.as-popover') || $(this).is('.cancel-route')) {
-					return;
-				}
+		$('.timeago', context).timeago();
+		DeskPRO.ElementHandler_Exec(context);
+	},
 
-				if ($(this).is('.row-item') && (!$(ev.target).is('.click-through') && $(ev.target).is('input, a, button, textarea'))) {
-					return;
-				}
+	initRoutes: function(context) {
+		var self = this;
 
-				cancelRouteSelection(ev);
+    function cancelRouteSelection(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
 
-				self.runPageRouteFromElement($(this), { event: ev });
+      // This is because shift-clicking a non-link can result
+      // in text selection
+      if (ev.shiftKey) {
+        if (document.getSelection) {
+          document.getSelection().removeAllRanges();
+        }
+      }
+    }
 
-				if (window.DP_FRAME_OVERLAYS) {
+    window.setTimeout(function() {
+      // Accept clicks on routes
+      $(context).on('mousedown', '[data-route]', function(ev) {
+        cancelRouteSelection(ev);
+      });
+      $(context).on('click', '[data-route]', function(ev) {
+        if ($(this).is('.as-popover') || $(this).is('.cancel-route')) {
+          return;
+        }
+
+        if ($(this).is('.row-item') && (!$(ev.target).is('.click-through') && $(ev.target).is('input, a, button, textarea'))) {
+          return;
+        }
+
+        cancelRouteSelection(ev);
+
+        self.runPageRouteFromElement($(this), { event: ev });
+
+        if (window.DP_FRAME_OVERLAYS) {
           Object.keys(window.DP_FRAME_OVERLAYS).forEach(function(key) {
             var iframe = window.DP_FRAME_OVERLAYS[key];
             if (iframe.opened) {
               iframe.close();
             }
           });
-				}
+        }
 
-				// If this was a list-pane and we have an open popover,
-				// we need to close the popover so the listpane can actually load
-				if ($(this).data('route').indexOf('listpane:') === 0) {
-					Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
-						if (inst.isOpen()) {
-							inst.close();
-						}
-					}, this);
-				}
-			});
+        // If this was a list-pane and we have an open popover,
+        // we need to close the popover so the listpane can actually load
+        if ($(this).data('route').indexOf('listpane:') === 0) {
+          Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+            if (inst.isOpen()) {
+              inst.close();
+            }
+          }, this);
+        }
+      });
 
-			$(context).on('click', '.agent-link', function(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
+      $(context).on('click', '.agent-link', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
 
-				var agentId = $(this).data('agent-id');
-				DP.console.log('Agent click %i', agentId);
-				if (!agentId || agentId === '0' || agentId === '' || agentId == DESKPRO_PERSON_ID) {
-					return;
-				}
+        var agentId = $(this).data('agent-id');
+        DP.console.log('Agent click %i', agentId);
+        if (!agentId || agentId === '0' || agentId === '' || agentId == DESKPRO_PERSON_ID) {
+          return;
+        }
 
-				if (!DeskPRO_Window.sections.agent_chat_section) {
-					DP.console.warn('The agent chat section is not enabled');
-					return;
-				}
+        if (!DeskPRO_Window.sections.agent_chat_section) {
+          DP.console.warn('The agent chat section is not enabled');
+          return;
+        }
 
-				DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
-			});
+        DeskPRO_Window.sections.agent_chat_section.newChatWindow([agentId]);
+      });
 
-			$(context).on('click', '.as-popover', function(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-				self._initInterfacePopover($(this)).toggle();
-			});
-		}, 100);
+      $(context).on('click', '.as-popover', function(ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        self._initInterfacePopover($(this)).toggle();
+      });
+    }, 100);
+	},
 
-		window.setTimeout(function() {
-			$(context).find('.tipped').one('mouseover', function(ev) {
+	initQtip: function(context) {
+    window.setTimeout(function() {
+      $(context).find('.tipped').one('mouseover', function(ev) {
 
-				if ($(this).hasClass('tipped-inited')) {
-					return;
-				}
-				$(this).addClass('tipped-inited');
+        if ($(this).hasClass('tipped-inited')) {
+          return;
+        }
+        $(this).addClass('tipped-inited');
 
 				var options = {};
 				if ($(this).data('tipped-options')) {
 					eval('options = {' + $(this).data('tipped-options') + '}');
 				}
 
-				qtipOptions = {};
+        var qtipOptions = {};
 
-				if (options.ajax) {
-					qtipOptions.content = {
-						text: 'Loading...',
-						ajax: {
-							url: $(this).data('tipped'),
-							type: 'GET'
-						}
-					};
-				} else if ($(this).data('tipped')) {
-					qtipOptions.content = {
-						attr: 'data-tipped'
-					};
-				} else {
-					qtipOptions.content = {
-						attr: 'title'
-					};
-				}
+        if (options.ajax) {
+          qtipOptions.content = {
+            text: 'Loading...',
+            ajax: {
+              url: $(this).data('tipped'),
+              type: 'GET'
+            }
+          };
+        } else if ($(this).data('tipped')) {
+          qtipOptions.content = {
+            attr: 'data-tipped'
+          };
+        } else {
+          qtipOptions.content = {
+            attr: 'title'
+          };
+        }
 
-				if (options.inline) {
-					qtipOptions.content.attr = null;
-					var el = $('#' + $(this).data('tipped'));
-					qtipOptions.content.text = function() {
-						return Orb.escapeHtml(el.text());
-					};
-				}
+        if (options.inline) {
+          qtipOptions.content.attr = null;
+          var el = $('#' + $(this).data('tipped'));
+          qtipOptions.content.text = function() {
+            return Orb.escapeHtml(el.text());
+          };
+        }
 
-				if (qtipOptions.content.attr && !$(this).data('as-html')) {
-					var me = $(this);
-					var attr = qtipOptions.content.attr;
-					qtipOptions.content.text = function() {
-						return Orb.escapeHtml(me.attr(attr) || '');
-					};
-					qtipOptions.content.attr = null;
-				}
+        if (qtipOptions.content.attr && !$(this).data('as-html')) {
+          var me = $(this);
+          var attr = qtipOptions.content.attr;
+          qtipOptions.content.text = function() {
+            return Orb.escapeHtml(me.attr(attr) || '');
+          };
+          qtipOptions.content.attr = null;
+        }
 
-				qtipOptions.style = {
-					classes: 'ui-tooltip-shadow ui-tooltip-rounded'
-				};
+        qtipOptions.style = {
+          classes: 'ui-tooltip-shadow ui-tooltip-rounded'
+        };
 
-				qtipOptions.position = {
-					my: 'top center',
-					at: 'bottom center',
-					viewport: $(window)
-				};
+        qtipOptions.position = {
+          my: 'top center',
+          at: 'bottom center',
+          viewport: $(window)
+        };
 
-				qtipOptions = $.extend(true, qtipOptions, options);
+        qtipOptions = $.extend(true, qtipOptions, options);
 
-				$(this).qtip(qtipOptions).qtip('show', ev);
-				$(this).addClass('tipped-inited');
-			});
-		}, 200);
-
-		$('.timeago', context).timeago();
-		DeskPRO.ElementHandler_Exec(context);
+        $(this).qtip(qtipOptions).qtip('show', ev);
+        $(this).addClass('tipped-inited');
+      });
+    }, 200);
 	},
 
 	initInterfaceServices: function(context) {
@@ -3387,71 +3396,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			DeskPRO_Window.util.dpCheckbox($(this));
 		});
 
-		window.setTimeout(function() {
-			$(context).find('.tipped').one('mouseover', function(ev) {
-
-				if ($(this).hasClass('tipped-inited')) {
-					return;
-				}
-				$(this).addClass('tipped-inited');
-
-				var options = {};
-				if ($(this).data('tipped-options')) {
-					eval('options = {' + $(this).data('tipped-options') + '}');
-				}
-
-				qtipOptions = {};
-
-				if (options.ajax) {
-					qtipOptions.content = {
-						text: 'Loading...',
-						ajax: {
-							url: $(this).data('tipped'),
-							type: 'GET'
-						}
-					};
-				} else if ($(this).data('tipped')) {
-					qtipOptions.content = {
-						attr: 'data-tipped'
-					};
-				} else {
-					qtipOptions.content = {
-						attr: 'title'
-					};
-				}
-
-				if (options.inline) {
-					qtipOptions.content.attr = null;
-					var el = $('#' + $(this).data('tipped'));
-					qtipOptions.content.text = function() {
-						return el.html();
-					};
-				}
-
-				if (qtipOptions.content.attr && !$(this).data('as-html')) {
-					var me = $(this);
-					var attr = qtipOptions.content.attr;
-					qtipOptions.content.text = function() {
-						return Orb.escapeHtml(me.attr(attr) || '');
-					};
-					qtipOptions.content.attr = null;
-				}
-
-				qtipOptions.style = {
-					classes: 'ui-tooltip-shadow ui-tooltip-rounded'
-				};
-
-				qtipOptions.position = {
-					my: 'top center',
-					at: 'bottom center',
-					viewport: $(window)
-				};
-
-				qtipOptions = $.extend(true, qtipOptions, options);
-
-				$(this).qtip(qtipOptions).qtip('show', ev);
-			});
-		}, 200);
+		this.initQtip(context);
 	},
 
 	getSectionData: function(section_id, callback, extra_data) {

@@ -115,9 +115,9 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
 		this.resultsBox.on('click', function(ev) { ev.stopPropagation(); });
-
-		$(document).on('click', this.close.bind(this));
-		$(this.termInput).closest('.doc-layer').on('click', this.close.bind(this));
+    this.closeFunction = this.close.bind(this);
+		$(document).on('click', this.closeFunction);
+		$(this.termInput).closest('.doc-layer').on('click', this.closeFunction);
 
 		//------------------------------
 		// Clicking on an item fires an event that
@@ -310,12 +310,28 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 	 * Destroys the widget
 	 */
 	destroy: function() {
-		if (this._hasInitResultsBox) {
+		if (this.resultsBox) {
 			this.resultsBox.remove();
 		}
 
+    if (this.closeFunction) {
+      $(document).off('click', this.closeFunction);
+
+      if (this.termInput) {
+        $(this.termInput).closest('.doc-layer').off('click', this.closeFunction);
+      }
+      this.closeFunction = null;
+    }
+
 		this.resultsBox = null;
+    this.termInput = null;
 		this.idInput = null;
-		this.resultsBox = null;
+    this.resultsList = null;
+    this.boundEl = null;
+
+    this.updateCaller && this.updateCaller.destroy();
+    this.updateCaller = null;
+
+		this.destroyEl();
 	}
 });

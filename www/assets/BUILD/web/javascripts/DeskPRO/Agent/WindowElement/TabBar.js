@@ -290,6 +290,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		data.callback_remove_content = function(data, container) {
 			if (data.isInited) {
 				page.fireEvent('destroy');
+        page.destroyEvents();
 			}
 		};
 		data.callback_activate = function() {
@@ -398,8 +399,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       if (data.callback_render !== undefined) {
         data.callback_render(data.wrapper);
       }
-
-      this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
     }
 
 		this.fireEvent('addTab', [data, this]);
@@ -412,10 +411,18 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
 		this.isAdding = false;
 
-		this.$timeout(function() {
-			self.tabBarOverflow.update();
-		});
+		this.updateTabBarOverflow();
+
 		return id;
+	},
+
+	updateTabBarOverflow: function() {
+		var self = this;
+    this.$timeout(function updateTabBarOverflow() {
+      if (self.tabBarOverflow) {
+        self.tabBarOverflow.update();
+      }
+    });
 	},
 
 	/**
@@ -500,8 +507,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			if (data.callback_render !== undefined) {
 				data.callback_render(wrapper);
 			}
-
-			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId), this]);
 		}
 
 		if (data.callback_activate !== undefined) {
@@ -565,7 +570,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var guess_slack = Math.round(($el.outerWidth() - $el.innerWidth()) / 2);
 		var right = left + $el.innerWidth() + guess_slack;
 
-		var bounds = this.tabBarOverflow.getBounds();
+		var bounds = this.tabBarOverflow ? this.tabBarOverflow.getBounds() : {};
 
 		return !(right < bounds.left || left > bounds.right);
 	},
@@ -664,7 +669,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			}
 		}
 
-		this.$timeout(function() {
+    if (this.tabBarOverflow) {
+      this.tabBarOverflow.debouncedUpdate();
+    }
+
+    this.$timeout(function() {
 			self.tabBarOverflow.update();
 		});
 
@@ -753,7 +762,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 			this._tabs.unshift(tab);
 		}
 
-		this.tabBarOverflow.resetScroll();
+		if (this.tabBarOverflow) {
+			this.tabBarOverflow.resetScroll();
+		}
 
 		if(!noalert) {
 			$(tab.tabBtnId).effect("pulsate", { times:4 }, 500);

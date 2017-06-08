@@ -66,16 +66,22 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		//------------------------------
 
 		// Touch the timer so we will search in a few seconds
-		this.termInput.on('keyup', function() { updateCaller.touch(self.getTerm()); }).on('change', function() { updateCaller.touch(self.getTerm()); });
+		this.termInput.on('keyup', function() {
+			updateCaller.touch(self.getTerm());
+		}).on('change', function() {
+			updateCaller.touch(self.getTerm());
+		});
 
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
 		this.resultsBox.on('click', function(ev) { ev.stopPropagation(); });
 
+		this.closeFunction = this.close.bind(this);
+
 		if (this.el.data('super-container')) {
-			this.el.closest(this.el.data('super-container')).on('click', this.close.bind(this));
+			this.el.closest(this.el.data('super-container')).on('click', this.closeFunction);
 		} else {
-			$(document).on('click', this.close.bind(this));
+			$(document).on('click', this.closeFunction);
 		}
 
 		var footer = this.resultsBox.find('footer');
@@ -288,8 +294,26 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			this.resultsBox.remove();
 		}
 
-		this.resultsBox = null;
-		this.idInput = null;
-		this.resultsBox = null;
-	}
+		if (this.el && this.closeFunction) {
+      if (this.el.data('super-container')) {
+        this.el.closest(this.el.data('super-container')).off('click', this.closeFunction);
+      } else {
+        $(document).off('click', this.closeFunction);
+      }
+      this.closeFunction = null;
+		}
+
+    this.resultsBox && this.resultsBox.remove();
+    this.resultsBox  = null;
+
+    this.termInput   = null;
+    this.idInput     = null;
+    this.resultsList = null;
+    this.boundEl 		 = null;
+    this.updateCaller && this.updateCaller.destroy();
+    this.updateCaller = null;
+    this.optios = null;
+
+    this.destroyEl();
+  }
 });

@@ -77,10 +77,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 	_setupMenuElement: function() {
 		var self = this;
-		var origMenuElement = $(this.options.menuElement);
+		this.origMenuElement = $(this.options.menuElement);
 
-		if (origMenuElement.data('menu-flag') && origMenuElement.data('menu-flag').indexOf('copy-menu') !== -1) {
-			origMenuElement = origMenuElement.clone();
+		if (this.origMenuElement.data('menu-flag') && this.origMenuElement.data('menu-flag').indexOf('copy-menu') !== -1) {
 			if (origMenuElement.attr('id')) {
 				origMenuElement.attr('id', origMenuElement.attr('id') + '_' + Orb.uuid());
 			}
@@ -90,12 +89,12 @@ DeskPRO.UI.Menu = new Orb.Class({
 		// Set up a bound select box
 		//------------------------------
 
-		if (origMenuElement.is('select')) {
+		if (this.origMenuElement.is('select')) {
 			var html = [];
 			html.push('<ul class="menu" style="display:none">');
 
 			var selected_text = null;
-			var options = $('option', origMenuElement);
+			var options = $('option', this.origMenuElement);
 			var is_sub = false;
 			options.each(function(index, el) {
 				el = $(el);
@@ -124,14 +123,14 @@ DeskPRO.UI.Menu = new Orb.Class({
 			var menuElement = $(html.join('')).appendTo('body');
 			this.options.menuElement = menuElement;
 
-			origMenuElement.css({
+      this.origMenuElement.css({
 				'display': 'none'
 			});
 
 			if (!this.options.triggerElement) {
 				var text = selected_text;
 				if (!text.length) text = self.options.noValText || 'Choose...';
-				var spanEl = this.options.triggerElement = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(origMenuElement);
+				var spanEl = this.options.triggerElement = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(this.origMenuElement);
 
 				this.addEvent('itemClicked', function(ev) {
 					var itemEl = $(ev.itemEl);
@@ -150,14 +149,14 @@ DeskPRO.UI.Menu = new Orb.Class({
 				var itemEl = $(ev.itemEl);
 				var value = itemEl.data('value');
 
-				if (value != origMenuElement.val()) {
-					origMenuElement.val(value);
-					origMenuElement.change();
+				if (value != self.origMenuElement.val()) {
+          self.origMenuElement.val(value);
+          self.origMenuElement.change();
 				}
 			});
 
 			if (spanEl) {
-				origMenuElement.on('change', function() {
+				this.origMenuElement.on('change', function() {
 					var opt = $('option:selected', this);
 					var text = opt.text().trim();
 					if (!text.length) text = self.options.noValText || 'Choose...';
@@ -872,8 +871,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.subMenus = [];
     this.elements = null;
     this.options.subMenuConfig = null;
+    this.options.triggerElement && this.options.triggerElement.remove();
     this.options.triggerElement = null;
     this.options.menuEl = null;
+    this.origMenuElement && this.origMenuElement.remove();
+    this.options.menuElement && this.options.menuElement.remove();
     this.options.menuElement = null;
     this.options = null;
     this.destroyEvents();

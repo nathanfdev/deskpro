@@ -12,7 +12,7 @@
             {% if agentTabs is empty %}
                 <h4 class="agent-icon">{{ phrase('agent.general.agent') }}</h4>
             {% else %}
-                <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<nav>
                     <ul>
                         <li class="on" data-tab-for="#{{ baseId }}_agent_tab">
                             <span class="agent-icon">{{ phrase('agent.general.agent') }}</span>
@@ -43,7 +43,7 @@
 <div class="profile-box-container dp-simpletab-container summary">
     <header>
         {% if perms.edit %}<span class="edit-gear contact-edit"></span>{% endif %}
-        <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
             <ul>
                 <li data-tab-for="#{{ baseId }}_contact_body">{{ phrase('agent.people.contact_info') }}</li>
             </ul>
@@ -82,7 +82,7 @@
                     <button class="saved" style="display: none">{{ phrase('agent.general.saved') }}</button>
                 </div>
             {% endif %}
-            <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<nav>
                 <ul>
                     <li data-tab-for="#{{ baseId }}_organization_body">{{ phrase('agent.general.organization') }}</li>
                 </ul>
@@ -191,7 +191,7 @@
                 <button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
             </div>
         {% endif %}
-        <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
             <ul>
                 <li data-tab-for="#{{ baseId }}_usergroups_body">{{ phrase('agent.general.usergroups') }}</li>
             </ul>
@@ -268,7 +268,7 @@
                     <button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
                 </div>
             {% endif %}
-            <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
                 <ul>
                     <li data-tab-for="#{{ baseId }}_us_body">{{ phrase('agent.general.usersources') }}</li>
                 </ul>

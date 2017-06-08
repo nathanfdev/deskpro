@@ -17,11 +17,9 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 
 		this.setOptions(options);
 		this.page = page;
+    this.page.addEvent('destroy', this.destroy, this);
 
 		this.wrapper = this.page.wrapper;
-
-		this.page.addEvent('destroy', this.destroy, this);
-
 		this.phone_numbers = new DeskPRO.UI.PhoneNumberInputs();
 
 		this.initEditorOverlay();
@@ -63,20 +61,20 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			this.contactNewMenu = null;
 		}
 
-		var contactEditor = $('.profile-contact-editor-wrapper', this.wrapper);
+		this.contactEditor = $('.profile-contact-editor-wrapper', this.wrapper);
 
 		this.contactOverlay = new DeskPRO.UI.Overlay({
 			customClassname: 'profile-contact-editor',
 			triggerElement: $('.contact-edit', this.wrapper),
-			contentElement: contactEditor,
+			contentElement: this.contactEditor,
 			zIndex: 'none'
 		});
 
-		$('.save-trigger', contactEditor).on('click', function(ev) {
+		$('.save-trigger', this.contactEditor).on('click', function(ev) {
 
-			var formData = $(':input, select, textarea', contactEditor).serializeArray();
+			var formData = $(':input, select, textarea', self.contactEditor).serializeArray();
 
-			contactEditor.addClass('loading');
+			self.contactEditor.addClass('loading');
 
 			$.ajax({
 				url: self.options.saveUrl,
@@ -84,7 +82,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				dataType: 'json',
 				data: formData,
 				complete: function() {
-					contactEditor.removeClass('loading');
+					self.contactEditor.removeClass('loading');
 				},
 				success: function(data) {
 					self.contactOverlay.close();
@@ -154,7 +152,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 				input.attr('name', removeName);
 				input.val(removeVal);
 
-				input.appendTo(contactEditor);
+				input.appendTo(self.contactEditor);
 			}
 
 			row.fadeOut('fast', function() {
@@ -168,7 +166,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			});
 		}
 
-		contactEditor.on('click', '.remove', function(ev) {
+		this.contactEditor.on('click', '.remove', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 			var row = $(this).closest('li');
 
@@ -181,7 +179,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			}
 		});
 
-		contactEditor.on('click', '.add-trigger', function(ev) {
+		this.contactEditor.on('click', '.add-trigger', function(ev) {
 			var rowTypeEl = $(this).closest('.row-type');
 
 			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl)),
@@ -215,5 +213,15 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			this.contactOverlay.destroy();
 			this.contactOverlay = null;
 		}
+
+		this.contactEditor && this.contactEditor.remove();
+    this.contactEditor = null;
+
+		this.page = null;
+    this.wrapper = null;
+    this.options = null;
+    this.phone_numbers = null;
+
+		this.destroyEvents();
 	}
 });

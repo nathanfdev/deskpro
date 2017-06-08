@@ -66,6 +66,8 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		var allowNew = !(this.input[0] && 'SELECT' !== this.input.tagName && 1 !== this.input.data('allow-new'));
 
+		self.$scope = DeskPRO_Window.$scope.$new();
+
 		DP.select(this.input, {
 			tags: tagSource,
 			multiple: true,
@@ -90,7 +92,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				container.parent().attr('dp-label-string', name);
 				container.parent().attr('dp-label-type', self.options.type);
 				window.AppPlatform.getNgInjector().invoke(['$compile', function($compile) {
-					$compile(container.parent())(DeskPRO_Window.$scope);
+					$compile(container.parent())(self.$scope);
 				}]);
 				return name;
 			},
@@ -148,6 +150,8 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 	},
 
 	destroy: function() {
+    this.$scope && this.$scope.$destroy();
+    this.$scope = null;
 		this.input.off();
     this.input.select2 && this.input.select2('destroy');
 		this.input = null;

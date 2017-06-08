@@ -19,7 +19,7 @@
 <div data-deskproapp="person-summary-before"></div>
 {% if person.summary|length or perms.edit %}
     <div class="profile-box-container dp-simpletab-container dp-simpletab-container summary"
-         data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+		 id="{{ baseId }}_summary_saver"
          data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
     >
         <header>
@@ -30,7 +30,7 @@
                     <div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
                 </div>
             {% endif %}
-            <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+			<nav>
                 <ul>
                     <li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
                     <div data-deskproapp="person-summary-new-tab"></div>
@@ -65,7 +65,7 @@
                 <button class="save" style="display: none">{{ phrase('agent.general.save') }}</button>
             </div>
         {% endif %}
-        <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
             <ul>
                 <li data-tab-for="#{{ baseId }}_properties_body">{{ phrase('agent.general.properties') }}</li>
                 <div data-deskproapp="person-summary-new-tab"></div>
@@ -376,7 +376,7 @@
 <div data-deskproapp="person-notes-before"></div>
 <div class="profile-box-container dp-simpletab-container tabbed">
     <header>
-        <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+		<nav>
             <ul>
                 {% if notes|length or perms.notes %}
                     <li data-tab-for="#{{ baseId }}_notes_tab" class="on">{{ phrase('agent.general.notes') }} <span
@@ -403,7 +403,7 @@
                         {% endfor %}
                         {% if perms.notes %}
                             <li class="new-note"
-                                data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+								id="{{ baseId }}_new_note"
                                 data-form-list-selector="ul"
                                 data-form-result-html-key="note_li_html"
                                 data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"

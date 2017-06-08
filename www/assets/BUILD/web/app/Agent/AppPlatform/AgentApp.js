@@ -1093,14 +1093,33 @@ define([
 					$inner = $popover.children(),
 					$tpl = $('#' + attr.dpMenu);
 
+				var onClick = function(e){
+          scope.$broadcast('dp-menu.opened');
+          $inner.empty();
+          $inner.html($tpl.html());
+          $compile($inner.contents())(scope);
+
+          $popover.addClass('open');
+          $backdrop.show();
+          $inner.css('max-height', parseInt($(window).height() / 2 - 40));
+          $popover.position({
+            of: $el,
+            my: 'center top',
+            at: 'center bottom',
+            collision: 'flipfit'
+          });
+        };
+
+				var onBackdropClick = function(){
+          $backdrop.hide();
+          $popover.removeClass('open');
+          $inner.children().remove();
+        };
+
 				if (!$backdrop.length) {
 					$backdrop = $('<div id="dp-menu-backdrop" class="dp-popover-backdrop"></div>')
 						.appendTo('body').hide()
-						.on('click', function(){
-							$backdrop.hide();
-							$popover.removeClass('open');
-							$inner.children().remove();
-						});
+						.on('click', onBackdropClick);
 				}
 				if (!$popover.length) {
 					$popover = $('<div id="dp-menu-popover" class="dp-popover"><div class="dp-popover-inner"></div></div>')
@@ -1108,20 +1127,10 @@ define([
 					$inner = $popover.children();
 				}
 
-				$el.on('click', function(e){
-					scope.$broadcast('dp-menu.opened');
-					$inner.html($tpl.html());
-					$compile($inner.contents())(scope);
+				$el.on('click', onClick);
 
-					$popover.addClass('open');
-					$backdrop.show();
-					$inner.css('max-height', parseInt($(window).height() / 2 - 40));
-					$popover.position({
-						of: $el,
-						my: 'center top',
-						at: 'center bottom',
-						collision: 'flipfit'
-					});
+				scope.$on('$destroy', function(){
+          $backdrop.off('click', onBackdropClick);
 				});
 			}
 		};
