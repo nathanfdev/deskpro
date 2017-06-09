@@ -35,6 +35,7 @@ namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Aws\S3\S3Client;
+use Orb\Util\Strings;
 
 class AmazonS3Storage extends AbstractStorageAdapter
 {
@@ -108,7 +109,18 @@ class AmazonS3Storage extends AbstractStorageAdapter
             $path[] = md5(uniqid('', true));
         }
 
-        return implode('/', $path).'-'.$blob->getFilenameSafe();
+        $filename = $blob->getFilenameSafe();
+
+        // sanity check on very long filenames
+        if (strlen($filename) > 100) {
+            $filename = trim(substr($filename, 0, 100), '/\\.-_');
+            $ext      = Strings::getExtension($filename);
+            if ($ext && strlen($ext) <= 20) {
+                $filename .= '.'.$ext;
+            }
+        }
+
+        return implode('/', $path).'-'.$filename;
     }
 
     /**
