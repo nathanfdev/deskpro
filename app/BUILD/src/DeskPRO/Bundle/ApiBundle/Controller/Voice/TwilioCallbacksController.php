@@ -807,10 +807,8 @@ class TwilioCallbacksController extends BaseController
         // get voicemail message
         $twiml = new Twiml();
 
-        if ($asset instanceof VoiceTextAsset) {
-            $twiml->say($asset->getText());
-        } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-            $twiml->play($asset->getBlob()->getDownloadUrl(true));
+        if ($asset) {
+            $this->playGreetAsset($twiml, $asset);
         } else {
             $twiml->say('You have reached voicemail. Please leave a message.');
         }
@@ -1185,13 +1183,7 @@ class TwilioCallbacksController extends BaseController
 
         if ($target instanceof VoiceQueueTarget) {
             $queue = $target->getQueue();
-            $asset = $queue->getGreetAsset();
-
-            if ($asset instanceof VoiceTextAsset) {
-                $twiml->say($asset->getText());
-            } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-                $twiml->play($asset->getBlob()->getDownloadUrl(true));
-            }
+            $this->playGreetAsset($twiml, $queue->getGreetAsset());
 
             $twiml
                 ->enqueue([
@@ -1247,10 +1239,8 @@ class TwilioCallbacksController extends BaseController
                 if ($autoAttendant->getAllowExtension()) {
                     $gather->say('To enter agent extension number, press # key');
                 }
-            } elseif ($asset instanceof VoiceTextAsset) {
-                $gather->say($asset->getText());
-            } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-                $gather->play($asset->getBlob()->getDownloadUrl(true));
+            } else {
+                $this->playGreetAsset($gather, $asset);
             }
         }
     }
@@ -1388,5 +1378,37 @@ class TwilioCallbacksController extends BaseController
             'callId'      => $phoneCall->getId(),
 
         ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param Twiml                   $twiml
+     * @param AbstractVoiceAsset|null $asset
+     */
+    private function playGreetAsset(Twiml $twiml, AbstractVoiceAsset $asset = null)
+    {
+        if ($asset instanceof VoiceTextAsset) {
+            $pattern = '#({{(?:\s+|)pause(?:\s+|)(?:\d+|)(?:\s+|)}})#';
+
+            $text = $asset->getText();
+            $text = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+            foreach ($text as $part) {
+                if (preg_match($pattern, $part)) {
+                    if (preg_match('#\d+#', $part, $m)) {
+                        $pause = $m[0];
+                    } else {
+                        $pause = 2;
+                    }
+
+                    $twiml->pause([
+                        'length' => $pause,
+                    ]);
+                } else {
+                    $twiml->say($part);
+                }
+            }
+        } elseif ($asset instanceof AbstractVoiceBlobAsset) {
+            $twiml->play($asset->getBlob()->getDownloadUrl(true));
+        }
     }
 }
