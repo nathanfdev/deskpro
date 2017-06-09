@@ -5,7 +5,12 @@
 		</div>
 		<div class="message-body">
 			<div class="message-meta">
-				<time class="timeago" title="{{note.date_created|date('c', 'UTC')}}">{{note.date_created|date('day')}}</time>
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					title="{{note.date_created|date('c', 'UTC')}}"
+				>
+					{{note.date_created|date('fulltime')}}
+				</time>
 				<h4>{{note.agent.name}}:</h4>
                 {% if app.user.hasPerm('agent_org.notes') %}
                     <div class="delete" style="float: right;">Delete</div>

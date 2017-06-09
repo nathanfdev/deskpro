@@ -2276,6 +2276,7 @@ return [
     'agent.tickets.view_older_messages'                        => 'View older messages',
     'agent.tickets.view_ticket_id'                             => 'View Ticket #{{id}}',
     'agent.tickets.waiting_til_first_reply'                    => 'Waiting until first reply',
+    'agent.tickets.date_first_reply'                           => 'First agent reply date',
     'agent.tickets.written_after'                              => 'Written after',
     'agent.tickets.written_any_time'                           => 'Written any time',
     'agent.tickets.written_before'                             => 'Written before',

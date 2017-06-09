@@ -5,7 +5,15 @@
 		</div>
 		<div class="message-body">
 			<div class="message-meta">
-				<h5>{{ phrase('agent.general.note_by', {name: note.person.name}) }} (<time class="timeago" title="{{note.date_created|date('c', 'UTC')}}">{{note.date_created|date('day')}}</time>)</h5>
+				<h5>
+					{{ phrase('agent.general.note_by', {name: note.person.name}) }}
+					(<time
+						{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+						title="{{note.date_created|date('c', 'UTC')}}"
+					>
+						{{note.date_created|date('fulltime')}}
+					</time>)
+				</h5>
 			</div>
 			<div class="message-text">
 				{{note.text|nl2br}}

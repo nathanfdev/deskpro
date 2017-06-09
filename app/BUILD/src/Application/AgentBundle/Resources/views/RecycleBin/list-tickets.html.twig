@@ -7,7 +7,13 @@
 		</tr>
 		<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2">
 			<td>
-				<time class="timeago" style="float:right" title="{{ deleted_tickets[ticket.id].date_created|date('c', 'UTC') }}">{{ deleted_tickets[ticket.id].date_created|date('day') }}</time>
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					style="float:right"
+					title="{{ deleted_tickets[ticket.id].date_created|date('c', 'UTC') }}"
+				>
+					{{ deleted_tickets[ticket.id].date_created|date('fulltime') }}
+				</time>
 				{{ phrase('agent.tickets.deleted_by_name', {'name':deleted_tickets[ticket.id].by_person.display_name}) }}
 				{% if deleted_tickets[ticket.id].reason %}
 					<br />

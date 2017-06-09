@@ -36,7 +36,12 @@
 				</td>
 			{% elseif field == 'date_created' %}
 				<td class="{{field}}">
-					<span class="timestamp timeago" title="{{ticket.date_created|date('c', 'UTC')}}">{{ticket.date_created|date('day')}}</span>
+					<span
+						class="timestamp{% if not app.isRelativeTimesDisabled() %} timeago{% endif %}"
+						title="{{ticket.date_created|date('c', 'UTC')}}"
+					>
+						{{ticket.date_created|date('fulltime')}}
+					</span>
 				</td>
 			{% elseif field == 'deleted_reason' %}
 				<td class="{{field}}">
@@ -106,7 +111,7 @@
 			{% elseif field == 'date_user_waiting' %}
 				<td class="{{field}}">
 					{% if ticket.date_user_waiting %}
-						<time class="timestamp timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}">{{ticket.date_user_waiting|date('day')}}</time>
+						<time class="timestamp timeago" data-timeago-no-ago="1" datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}">{{ticket.date_user_waiting|date('fulltime')}}</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
@@ -122,7 +127,12 @@
 			{% elseif field == 'date_last_agent_reply' %}
 				<td class="{{field}}">
 					{% if ticket.date_last_agent_reply %}
-						<time class="timestamp timeago" datetime="{{ ticket.date_last_agent_reply|date('c', 'UTC') }}">{{ticket.date_last_agent_reply|date('day')}}</time>
+						<time
+							class="timestamp{% if not app.isRelativeTimesDisabled() %} timeago{% endif %}"
+							datetime="{{ ticket.date_last_agent_reply|date('c', 'UTC') }}"
+						>
+							{{ticket.date_last_agent_reply|date('fulltime')}}
+						</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
@@ -130,7 +140,12 @@
 			{% elseif field == 'date_last_user_reply' %}
 				<td class="{{field}}">
 					{% if ticket.date_last_user_reply %}
-						<time class="timestamp timeago" datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}">{{ticket.date_last_user_reply|date('day')}}</time>
+						<time
+							class="timestamp{% if not app.isRelativeTimesDisabled() %} timeago{% endif %}"
+							datetime="{{ ticket.date_last_user_reply|date('c', 'UTC') }}"
+						>
+							{{ticket.date_last_user_reply|date('fulltime')}}
+						</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}
@@ -138,7 +153,12 @@
 			{% elseif field == 'date_resolved' %}
 				<td class="{{field}}">
 					{% if ticket.date_resolved %}
-						<time class="timestamp timeago" datetime="{{ ticket.date_resolved|date('c', 'UTC') }}">{{ticket.date_resolved|date('day')}}</time>
+						<time
+								class="timestamp{% if not app.isRelativeTimesDisabled() %} timeago{% endif %}"
+							datetime="{{ ticket.date_resolved|date('c', 'UTC') }}"
+						>
+							{{ticket.date_resolved|date('fulltime')}}
+						</time>
 					{% else %}
 						{{ phrase('agent.tickets.na') }}
 					{% endif %}

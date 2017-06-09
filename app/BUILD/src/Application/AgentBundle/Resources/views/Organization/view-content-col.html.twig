@@ -433,8 +433,12 @@
                                         </div>
                                         <div class="bound-fade"></div>
                                     </div>
-                                    <time class="timeago"
-                                          datetime="{{ action.date_created|date('c', 'UTC') }}">{{ action.date_created|date('day') }}</time>
+                                    <time
+                                        {% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+                                        datetime="{{ action.date_created|date('c', 'UTC') }}"
+                                    >
+                                        {{ action.date_created|date('fulltime') }}
+                                    </time>
                                 </td>
                             </tr>
                         {% endfor %}

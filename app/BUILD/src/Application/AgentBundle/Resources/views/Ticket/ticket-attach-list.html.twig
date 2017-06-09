@@ -24,7 +24,12 @@
 						{% if attach.person %}
 							<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': attach.person.id}) }}">{{ attach.person.display_name }}</a>,
 						{% endif %}
-						<time class="timeago" title="{{ attach.blob.date_created|date('c', 'UTC') }}">{{ attach.blob.date_created|date('day') }}</time>
+						<time
+							{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+							title="{{ attach.blob.date_created|date('c', 'UTC') }}"
+						>
+							{{ attach.blob.date_created|date('fulltime') }}
+						</time>
 					</div>
 
 					<div class="attach">

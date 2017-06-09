@@ -14,7 +14,12 @@
 			<span class="message-counter">{{ phrase('agent.tickets.draft') }}</span>
 			<h4	class="agent-link" data-agent-id="{{ draft.person.id }}">{{draft.person.display_name}} <span class="email-part">&lt;{{ draft.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 			<time class="full-time">{{draft.date_created|date('fulltime')}}</time>
-			<time class="timeago" datetime="{{draft.date_created|date('c', 'UTC')}}">{{draft.date_created|date('fulltime')}}</time>
+			<time
+				{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+				datetime="{{draft.date_created|date('c', 'UTC')}}"
+			>
+				{{draft.date_created|date('fulltime')}}
+			</time>
 		</header>
 		<div class="body-text">
 			<div class="draft-block">{% if draft.extras.is_note %}{{ phrase('agent.tickets.draft_note') }}{% else %}{{ phrase('agent.tickets.draft_message') }}{% endif %}</div>

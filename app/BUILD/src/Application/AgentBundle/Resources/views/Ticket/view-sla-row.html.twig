@@ -9,14 +9,28 @@
 	</td>
 	<td class="warn-date">
 		{% if ticket_sla.warn_date %}
-			<span title="{{ticket_sla.warn_date|date('fulltime')}}"><time class="timeago" datetime="{{ticket_sla.warn_date|date('c', 'UTC')}}"></time></span>
+			<span title="{{ticket_sla.warn_date|date('fulltime')}}">
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					datetime="{{ticket_sla.warn_date|date('c', 'UTC')}}"
+				>
+					{{ticket_sla.warn_date|date('fulltime')}}
+				</time>
+			</span>
 		{% else %}
 			{{ phrase('agent.general.na') }}
 		{% endif %}
 	</td>
 	<td class="fail-date">
 		{% if ticket_sla.fail_date %}
-			<span title="{{ticket_sla.fail_date|date('fulltime')}}"><time class="timeago" datetime="{{ticket_sla.fail_date|date('c', 'UTC')}}"></time></span>
+			<span title="{{ticket_sla.fail_date|date('fulltime')}}">
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					datetime="{{ticket_sla.fail_date|date('c', 'UTC')}}"
+				>
+					{{ ticket_sla.fail_date|date('fulltime') }}
+				</time>
+			</span>
 		{% else %}
 			{{ phrase('agent.general.na') }}
 		{% endif %}

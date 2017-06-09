@@ -871,8 +871,13 @@
                                             <span class="tipped small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.current_user_waiting_time|time_length }}"></span>
                                         {% else %}
-                                            <time class="timeago" data-timeago-no-ago="1"
-                                                  datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"></time>
+                                            <time
+                                                {% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+                                                data-timeago-no-ago="1"
+                                                datetime="{{ ticket.date_user_waiting|date('c', 'UTC') }}"
+                                            >
+                                                {{ ticket.date_user_waiting|date('fulltime') }}
+                                            </time>
                                         {% endif %}
                                         ({{ phrase('agent.general.since_time', {time: ticket.date_user_waiting|date('fulltime')}) }}
                                         )
@@ -900,15 +905,23 @@
                         {% if ticket.total_to_first_reply and ticket.total_to_first_reply > 0 %}
                             <tbody>
                                 <tr>
-                                    <th>{{ phrase('agent.tickets.waiting_til_first_reply') }}:</th>
+                                    <th>
+                                        {% if not app.isRelativeTimesDisabled() %}
+                                            {{ phrase('agent.tickets.waiting_til_first_reply') }}:
+                                        {% else %}
+                                            {{ phrase('agent.tickets.date_first_reply') }}:
+                                        {% endif %}
+                                    </th>
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.work_time_to_first_reply|time_length('hours') }}
                                             <span class="tipped small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.total_to_first_reply|time_length }}"></span>
-                                        {% else %}
+                                        {% elseif not app.isRelativeTimesDisabled() %}
                                             <time class="timeago" data-timeago-no-ago="1"
                                                   datetime="{{ ticket.date_first_agent_reply|date('c', 'UTC') }}"></time>
+                                        {% else %}
+                                            <time>{{ ticket.date_first_agent_reply|date('fulltime') }}</time>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -934,7 +947,7 @@
                                     <td>
                                         <time class="timeago"
                                               datetime="{{ ticket.date_resolved|date('c', 'UTC') }}"></time>
-                                        ({{ ticket.date_resolved|date }})
+                                        ({{ ticket.date_resolved|date('fulltime') }})
                                     </td>
                                 </tr>
                             </tbody>
@@ -961,7 +974,7 @@
                                     <td>
                                         <time class="timeago"
                                               datetime="{{ ticket.date_archived|date('c', 'UTC') }}"></time>
-                                        ({{ ticket.date_archived|date }})
+                                        ({{ ticket.date_archived|date('fulltime') }})
                                     </td>
                                 </tr>
                             </tbody>

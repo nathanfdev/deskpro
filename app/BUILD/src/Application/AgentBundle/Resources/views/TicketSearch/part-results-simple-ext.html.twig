@@ -177,7 +177,12 @@
 						<span class="prop-val sla-status-{{ticket_sla.sla_status}}">
 							{{ ticket_sla.title }}
 							{% if ticket_display.getNextSlaTriggerDate(ticket_sla) %}
-								(<time class="timeago" datetime="{{ ticket_display.getNextSlaTriggerDate(ticket_sla)|date('c', 'UTC') }}"></time>)
+								(<time
+									{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+									datetime="{{ ticket_display.getNextSlaTriggerDate(ticket_sla)|date('c', 'UTC') }}"
+							>
+								{{ ticket_display.getNextSlaTriggerDate(ticket_sla)|date('c', 'UTC')|date('fulltime') }}
+							</time>)
 							{% endif %}
 						</span>
 					</li>
@@ -206,7 +211,12 @@
 				<li class="{{field}}">
 					<span class="prop-title">{{ phrase('agent.general.date_created') }}:</span>
 					<span class="prop-val">
-						<time class="timeago timestamp" datetime="{{ ticket.date_created|date('c', 'UTC') }}"></time>
+						<time
+							class="{% if not app.isRelativeTimesDisabled() %}timeago{% endif %}timestamp"
+							datetime="{{ ticket.date_created|date('c', 'UTC') }}"
+						>
+							{{ ticket.date_created|date('fulltime') }}
+						</time>
 					</span>
 				</li>
 			{% elseif field == 'date_last_agent_reply' %}

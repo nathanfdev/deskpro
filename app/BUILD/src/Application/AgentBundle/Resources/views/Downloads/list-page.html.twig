@@ -11,7 +11,12 @@
 					<li>{{ download.filename }}</li>
 				</ul>
 			</div>
-			<time class="timeago" datetime="{{ download.date_created|date('c', 'UTC') }}">{{ download.date_created|date('day_short') }}</time>
+			<time
+				{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+				datetime="{{ download.date_created|date('c', 'UTC') }}"
+			>
+				{{ download.date_created|date('fulltime') }}
+			</time>
 		</article>
 	{% endfor %}
 </section>
