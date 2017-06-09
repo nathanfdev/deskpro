@@ -1,8 +1,12 @@
 export class AppAssets
 {
-  getIconUrl = (url) => [ url, this.iconPath ].join('/');
+  constructor({ appVersion })
+  {
+    this.props = { appVersion };
+  }
+  getIconUrl = (baseUrl) => [ baseUrl, this.props.appVersion, 'files', this.iconPath ].join('/');
 
-  getReadmeUrl = (url) => [ url, this.readmePath ].join('/');
+  getReadmeUrl = (baseUrl) => [ baseUrl, this.props.appVersion, 'files', this.readmePath ].join('/');
 
   get iconPath() { return 'assets/icon.png' ; }
 

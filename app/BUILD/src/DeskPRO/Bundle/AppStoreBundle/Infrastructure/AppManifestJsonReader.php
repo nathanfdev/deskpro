@@ -55,6 +55,7 @@ class AppManifestJsonReader
         // todo refactor
         $serializer = App::$container->get('serializer');
         $manifest
+            ->setVersion($manifestMap['appVersion'])
             ->setName($manifestMap['name'])
             ->setTitle($manifestMap['title'])
             ->setDescription($manifestMap['description'])

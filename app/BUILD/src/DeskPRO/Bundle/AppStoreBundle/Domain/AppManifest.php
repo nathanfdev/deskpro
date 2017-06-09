@@ -47,6 +47,13 @@ class AppManifest
      *
      * @var string
      */
+    private $version;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     private $title;
 
     /**
@@ -101,6 +108,25 @@ class AppManifest
     {
         $this->name = $name;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param string $version
+     *
+     * @return $this
+     */
+    public function setVersion($version)
+    {
+        $this->version = $version;
         return $this;
     }
 

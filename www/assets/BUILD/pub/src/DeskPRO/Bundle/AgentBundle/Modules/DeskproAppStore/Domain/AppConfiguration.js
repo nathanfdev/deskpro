@@ -8,28 +8,39 @@ class AppConfiguration
    * @return {AppConfiguration}
    */
   static fromJS(config) {
-    const { id, application_id, settings, targets, baseUrl, title, name } = config;
-    return new AppConfiguration(id.toString(), application_id.toString(), settings, targets, baseUrl, title, name);
+    const { id, application_id, settings, targets, baseUrl, title, name, version } = config;
+    return new AppConfiguration({
+      instanceId: id.toString(),
+      applicationId: application_id.toString(),
+      settings,
+      targets,
+      baseUrl,
+      title,
+      packageName: name,
+      version
+    });
   }
 
   /**
-   * @param {String} id
+   * @param {String} instanceId
    * @param {String} applicationId
    * @param {Array} settings
    * @param {Array} targets
    * @param {String} baseUrl
    * @param {String} title
    * @param {String} packageName
+   * @param version
    */
-  constructor(id, applicationId, settings, targets, baseUrl, title, packageName) {
+  constructor({instanceId, applicationId, settings, targets, baseUrl, title, packageName, version}) {
     this.props = {
-      instanceId: id,
+      instanceId,
       applicationId,
       settings,
       targets,
       baseUrl,
       title,
-      packageName
+      packageName,
+      version
     };
   }
 
@@ -69,9 +80,14 @@ class AppConfiguration
   get baseUrl() { return this.props.baseUrl; }
 
   /**
+   * @return {String}
+   */
+  get version() { return this.props.version; }
+
+  /**
    * @return {AppAssets}
    */
-  get assets() { return new AppAssets(); }
+  get assets() { return new AppAssets({ appVersion: 'v' + this.props.version }); }
 
   /**
    * @param {String} target
@@ -95,6 +111,7 @@ class AppConfiguration
     const { baseUrl } = this.props;
     const builder = new AppUrlBuilder({ baseUrl });
     builder.setBundlePath(targetDefs[0].url);
+    builder.setAppVersion('v' + this.props.version);
 
     return builder;
   };
