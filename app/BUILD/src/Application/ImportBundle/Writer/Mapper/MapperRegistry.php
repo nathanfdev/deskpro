@@ -55,6 +55,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\TextSnippetCategory;
@@ -64,6 +65,7 @@ use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketPriority;
+use Application\DeskPRO\Entity\TicketWorkflow;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -321,6 +323,26 @@ class MapperRegistry
     public function getTicketCategoryMapper()
     {
         return $this->getMapper(TicketCategory::class);
+    }
+
+    /**
+     * Returns the ticket workflow mapper.
+     *
+     * @return CommonMapper
+     */
+    public function getTicketWorkflowMapper()
+    {
+        return $this->getMapper(TicketWorkflow::class);
+    }
+
+    /**
+     * Returns the ticket product mapper.
+     *
+     * @return TicketProductMapper
+     */
+    public function getTicketProductMapper()
+    {
+        return $this->getMapper(Product::class);
     }
 
     /**

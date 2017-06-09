@@ -144,6 +144,13 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      *
      * @JMS\Type("string")
      */
+    private $priority;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
     private $workflow;
 
     /**
@@ -413,6 +420,26 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     public function setLanguage($language)
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param string $priority
+     *
+     * @return $this
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
 
         return $this;
     }

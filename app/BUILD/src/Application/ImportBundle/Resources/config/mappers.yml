@@ -112,6 +112,12 @@ services:
     tags:
       - { name: dp.importer.writer.mapper }
 
+  dp.importer.writer.mapper.ticket_product:
+    class: Application\ImportBundle\Writer\Mapper\TicketProductMapper
+    arguments: ["@doctrine.orm.entity_manager"]
+    tags:
+      - { name: dp.importer.writer.mapper }
+
   dp.importer.writer.mapper.import_map:
     class: Application\ImportBundle\Writer\Mapper\ImportMapMapper
     arguments: ["@doctrine.orm.entity_manager"]
