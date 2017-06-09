@@ -200,9 +200,9 @@ class TaskType extends AbstractType implements EventSubscriberInterface
                 'timezone'                      => null,
                 'csrf_protection'               => false,
                 'csrf_double_submit_protection' => false,
+                'person'                        => null,
             ])
-            ->setRequired(['person'])
-            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('person', ['null', Person::class])
         ;
     }
 
