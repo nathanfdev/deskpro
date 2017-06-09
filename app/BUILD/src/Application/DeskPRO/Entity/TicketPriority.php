@@ -93,6 +93,18 @@ class TicketPriority extends DomainObject implements HasPhraseName
     }
 
     /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getTitle()

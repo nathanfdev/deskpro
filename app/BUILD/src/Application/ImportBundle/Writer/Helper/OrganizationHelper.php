@@ -68,8 +68,12 @@ class OrganizationHelper
      * @param EntityPersister    $persister
      * @param LoggerInterface    $logger
      */
-    public function __construct(OrganizationMapper $organizationMapper, ImportMapMapper $importMapMapper, EntityPersister $persister, LoggerInterface $logger)
-    {
+    public function __construct(
+        OrganizationMapper $organizationMapper,
+        ImportMapMapper    $importMapMapper,
+        EntityPersister    $persister,
+        LoggerInterface    $logger
+    ) {
         $this->organizationMapper = $organizationMapper;
         $this->importMapMapper    = $importMapMapper;
         $this->persister          = $persister;
