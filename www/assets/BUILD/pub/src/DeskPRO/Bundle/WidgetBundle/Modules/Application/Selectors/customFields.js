@@ -1,17 +1,29 @@
 import { createSelector } from 'reselect';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import { chatEnabledCustomFieldsSelector } from './dpWindow';
+import { chatBrandCustomFieldsSelector } from './dpWindow';
 
 const allFieldsSelector = allSelectorFactory('CustomDefChat', 'all');
+const geBrandField = (brandFields, id) => brandFields.filter(brandField => brandField.get('id') === id).first();
 
 export const customChatFieldsSelector = createSelector(
   allFieldsSelector,
-  chatEnabledCustomFieldsSelector,
-  (fields, enabledIds) => fields.filter(field =>
-    field.get('is_enabled') && (!enabledIds || enabledIds.contains(field.get('id'))
-  ))
+  chatBrandCustomFieldsSelector,
+  (fields, brandFields) => fields.filter((field) => {
+    const brandField = geBrandField(brandFields, field.get('id'));
+    if (!brandField) {
+      return false;
+    }
+
+    return field.get('is_enabled') && brandField.get('is_enabled');
+  })
 );
 export const customChatFieldsOrderedSelector = createSelector(
   customChatFieldsSelector,
-  fields => fields.toOrderedMap().sort((a, b) => a.get('display_order') - b.get('display_order'))
+  chatBrandCustomFieldsSelector,
+  (fields, brandFields) => fields.toOrderedMap().sort((a, b) => {
+    const brandA = geBrandField(brandFields, a.get('id'));
+    const brandB = geBrandField(brandFields, b.get('id'));
+
+    return brandA.get('display_order') - brandB.get('display_order');
+  })
 );

@@ -29,13 +29,16 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatCustomField;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
@@ -362,6 +365,46 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $buttonSettings->setTranslations(new ArrayCollection($buttonSettings->getTranslations()->getValues()));
         $popupSettings->setTranslations(new ArrayCollection($popupSettings->getTranslations()->getValues()));
+
+        // custom fields
+        $chatSettings = $model->getChat();
+        $chatFields   = $this->em->getRepository(CustomDefChat::class)->findAll();
+        $chatFieldIds = [];
+
+        // add missing chat fields
+        if (!$chatSettings->getCustomFields() instanceof ArrayCollection) {
+            $chatSettings->setCustomFields(new ArrayCollection());
+        }
+        foreach ($chatFields as $chatField) {
+            $chatFieldIds[] = $chatField->getId();
+
+            if (!$chatSettings->getCustomField($chatField->getId())) {
+                $brandCustomField = new WidgetBrandChatCustomField();
+                $brandCustomField->setId($chatField->getId());
+                $brandCustomField->setIsEnabled($chatField->isEnabled());
+                $brandCustomField->setDisplayOrder($chatField->getDisplayOrder());
+
+                $chatSettings->addCustomField($brandCustomField);
+            }
+        }
+
+        // remove deleted fields
+        foreach ($chatSettings->getCustomFields() as $brandCustomField) {
+            if (!in_array($brandCustomField->getId(), $chatFieldIds)) {
+                $chatSettings->removeCustomField($brandCustomField);
+            }
+        }
+
+        // usergroups
+        if (!$chatSettings->getUserGroups() instanceof ArrayCollection) {
+            $userGroups   = $this->em->getRepository(Usergroup::class)->findAll();
+            $userGroupIds = new ArrayCollection();
+            foreach ($userGroups as $userGroup) {
+                $userGroupIds->add($userGroup->getId());
+            }
+
+            $chatSettings->setUserGroups($userGroupIds);
+        }
 
         return $model;
     }

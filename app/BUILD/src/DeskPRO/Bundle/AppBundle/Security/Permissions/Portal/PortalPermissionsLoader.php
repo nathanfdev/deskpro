@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\EntityRepository\Guide as GuideRepository;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
@@ -80,8 +81,33 @@ class PortalPermissionsLoader
      */
     public function getUsergroupPermissions(array $userGroups)
     {
+        $userGroups = new ArrayCollection($this->em->getRepository(Usergroup::class)->findBy([
+            'id' => $userGroups,
+        ]));
+
+        // add 'everyone' and 'registered' group inherit permissions
+        $everyoneGroup = $this->em->getRepository(Usergroup::class)->findOneBy([
+            'sys_name' => Usergroup::EVERYONE,
+        ]);
+        $registeredGroup = $this->em->getRepository(Usergroup::class)->findOneBy([
+            'sys_name' => Usergroup::REGISTERED,
+        ]);
+
+        if ($everyoneGroup && !$userGroups->contains($everyoneGroup)) {
+            $userGroups->add($everyoneGroup);
+        }
+        if ($registeredGroup && !$userGroups->contains($registeredGroup)) {
+            $customGroups = $userGroups->filter(function (Usergroup $userGroup) {
+                return !in_array($userGroup->getSysName(), [Usergroup::EVERYONE, Usergroup::REGISTERED]);
+            });
+
+            if ($customGroups->count() > 0) {
+                $userGroups->add($registeredGroup);
+            }
+        }
+
         return $this->em->getRepository(Permission::class)->findBy([
-            'usergroup' => $userGroups,
+            'usergroup' => $userGroups->toArray(),
             'person'    => null,
         ]);
     }
@@ -146,6 +172,11 @@ class PortalPermissionsLoader
         return $this->getAllowedUsergroupDepartments($userGroups, DepartmentPermission::APP_CHAT);
     }
 
+    /**
+     * @param array $userGroups
+     *
+     * @return array
+     */
     public function getAllowedGuides(array $userGroups)
     {
         /** @var GuideRepository $repository */

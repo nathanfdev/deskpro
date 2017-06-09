@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\GroupSequenceProviderInterface;
@@ -113,11 +114,25 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     private $requiredEmail = false;
 
     /**
+     * @var WidgetBrandChatCustomField[]
+     *
+     * @Assert\Valid()
+     */
+    private $customFields;
+
+    /**
+     * @var int[]
+     */
+    private $userGroups;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->popup = new WidgetBrandChatPopupSettings();
+        $this->popup        = new WidgetBrandChatPopupSettings();
+        $this->customFields = new ArrayCollection();
+        $this->userGroups   = new ArrayCollection();
     }
 
     /**
@@ -261,7 +276,7 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRequiredName()
     {
@@ -269,7 +284,7 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     }
 
     /**
-     * @param boolean $requiredName
+     * @param bool $requiredName
      *
      * @return $this
      */
@@ -281,7 +296,7 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isRequiredEmail()
     {
@@ -289,7 +304,7 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
     }
 
     /**
-     * @param boolean $requiredEmail
+     * @param bool $requiredEmail
      *
      * @return $this
      */
@@ -311,5 +326,81 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
         }
 
         return $groups;
+    }
+
+    /**
+     * @return WidgetBrandChatCustomField[]
+     */
+    public function getCustomFields()
+    {
+        return $this->customFields;
+    }
+
+    /**
+     * @param int $fieldId
+     *
+     * @return ArrayCollection|\Doctrine\Common\Collections\Collection
+     */
+    public function getCustomField($fieldId)
+    {
+        return $this->customFields->filter(function (WidgetBrandChatCustomField $customField) use ($fieldId) {
+            return $customField->getId() === $fieldId;
+        })->first();
+    }
+
+    /**
+     * @param WidgetBrandChatCustomField $customField
+     *
+     * @return $this
+     */
+    public function addCustomField(WidgetBrandChatCustomField $customField)
+    {
+        $this->customFields->add($customField);
+
+        return $this;
+    }
+
+    /**
+     * @param WidgetBrandChatCustomField $customField
+     *
+     * @return $this
+     */
+    public function removeCustomField(WidgetBrandChatCustomField $customField)
+    {
+        $this->customFields->removeElement($customField);
+
+        return $this;
+    }
+
+    /**
+     * @param ArrayCollection|WidgetBrandChatCustomField[] $customFields
+     *
+     * @return $this
+     */
+    public function setCustomFields(ArrayCollection $customFields)
+    {
+        $this->customFields = $customFields;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getUserGroups()
+    {
+        return $this->userGroups;
+    }
+
+    /**
+     * @param ArrayCollection $userGroups
+     *
+     * @return $this
+     */
+    public function setUserGroups(ArrayCollection $userGroups)
+    {
+        $this->userGroups = $userGroups;
+
+        return $this;
     }
 }

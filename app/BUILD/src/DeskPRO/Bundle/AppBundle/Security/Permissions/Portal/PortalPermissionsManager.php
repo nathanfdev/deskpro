@@ -180,12 +180,29 @@ class PortalPermissionsManager
      */
     public function getPartialPermissionBagForRegisteredUsergroup()
     {
+        return $this->getPartialPermissionBagForUsergroups([
+            $this->em->getRepository(Usergroup::class)->findOneBy(['sys_name' => Usergroup::REGISTERED]),
+        ]);
+    }
+
+    /**
+     * Get permissions for specific user groups.
+     *
+     * WARNING: this is a partial permissions bag, and is only meant to be used for permissions (not allowed cat ids, deps, etc).
+     *
+     * @param array $userGroups
+     *
+     * @return mixed|null
+     */
+    public function getPartialPermissionBagForUsergroups(array $userGroups)
+    {
         return $this->generateAndCache(
-            ['getPartialPermissionBagForRegisteredUsergroup'],
-            function () {
-                /** @var \Application\DeskPRO\Entity\Usergroup $registered */
-                $registered = $this->em->getRepository(Usergroup::class)->findOneBy(['sys_name' => Usergroup::REGISTERED]);
-                $permissions = $this->permissionsLoader->getUsergroupPermissions([$registered->getId()]);
+            [
+                'getPartialPermissionBagForUsergroups',
+                $userGroups,
+            ],
+            function () use ($userGroups) {
+                $permissions = $this->permissionsLoader->getUsergroupPermissions($userGroups);
 
                 return new PermissionsBag($permissions);
             }

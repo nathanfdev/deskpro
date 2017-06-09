@@ -12,12 +12,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.brand_settings = {}
       @$scope.global_settings = {}
       @$scope.chat_custom_fields = []
-      @$scope.remote_chat_custom_fields = []
       @$scope.user_groups = []
+      @$scope.user_group_permission = []
       @$scope.everyone_group = false
       @$scope.reg_group = false
-      @$scope.user_group_permission = []
-      @$scope.remote_user_group_permission = []
       @$scope.enabled_on_portal = false
       @$scope.widgetLoaded = false
       @$scope.departments = []
@@ -41,7 +39,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
           @$scope.$apply =>
             displayOrder = 0
             $('.chat-custom-fields').children().each (i, item) =>
-              for field in @$scope.chat_custom_fields
+              for field in @$scope.brand_settings.chat.custom_fields
                 if field.id == parseInt($(item).data('id'))
                   field.display_order = displayOrder
                   displayOrder += 10
@@ -58,8 +56,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.$watch('enabled_on_portal', updateLiveDemoDebounce, true)
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
-      @$scope.$watch('chat_custom_fields', updateLiveDemoDebounce, true)
-      @$scope.$watch('user_group_permission', updateLiveDemoDebounce, true)
 
       # widget editor bootstrap promises
       # preload form data
@@ -102,10 +98,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         @$scope.languages = res.data.data
       promises.push(promise)
 
-      promise = @Api2.sendGet('/user_chat_custom_fields?is_enabled=-1&order_by=display_order&order_dir=asc')
+      promise = @Api2.sendGet('/user_chat_custom_fields?is_enabled=-1')
       promise.then (res) =>
         @$scope.chat_custom_fields = res.data.data
-        @$scope.remote_chat_custom_fields = $.extend(true, [], @$scope.chat_custom_fields)
       promises.push(promise)
 
       promise = @Api2.sendGet('/ticket_departments?selectable=1')
@@ -126,6 +121,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promise = @Api2.sendGet('/user_groups')
       promise.then (res) =>
         @$scope.user_groups = res.data.data
+
+        # global user group permissions
         for group in res.data.data
           if group.sys_name == 'everyone'
             @$scope.everyone_group = group
@@ -135,14 +132,33 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
           @$scope.user_group_permission[group.id] = false
           for permission in group.permissions
             if permission.name == 'chat.use'
-              @$scope.user_group_permission[group.id] = permission.value and permission.is_active
+              @$scope.user_group_permission[group.id] = (permission.value and permission.is_active)
 
-          @$scope.remote_user_group_permission = @$scope.user_group_permission.slice()
+        for group in res.data.data
+          if @$scope.user_group_permission[@$scope.everyone_group.id]
+            @$scope.user_group_permission[group.id] = true
+          if @$scope.user_group_permission[@$scope.reg_group.id] and group.sys_name != 'everyone'
+            @$scope.user_group_permission[group.id] = true
+
       promises.push(promise)
 
       @$q.all(promises).then =>
         @initLiveDemo()
         @updateLiveDemo()
+
+        # order custom fields by brand display order
+        for field in @$scope.chat_custom_fields
+          brandField = @getBrandCustomField(field.id)
+          if brandField
+            field.display_order = brandField.display_order
+
+        @$scope.chat_custom_fields.sort((a, b) =>
+          if a.display_order < b.display_order
+            return -1
+          if a.display_order > b.display_order
+            return 1
+          return 0
+        )
 
     getFrameNode: ->
       document.getElementById('live-demo')
@@ -167,6 +183,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         brand: @$scope.brand_settings
       }
     }
+
+    getBrandCustomField: (fieldId) ->
+      for field in @$scope.brand_settings.chat.custom_fields
+        if field.id == parseInt(fieldId)
+          return field
 
     getLanguage: (translation) ->
       for language in @$scope.languages
@@ -228,36 +249,33 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       if (@getDpWidget())
         @getDpWidget().dispatchCustomEvent('changeLiveDemoStage', state)
 
-    changeRights: (group) ->
-      everyone = @$scope.everyone_group.id
-      reg = @$scope.reg_group.id
-      if group.id == everyone
-        for own id,g of @$scope.user_group_permission
-          if parseInt(id) != everyone && !@$scope.user_group_permission[group.id]
-            @$scope.user_group_permission[id] = true
-        return true
-      else if group.id == reg
-        for own id,g of @$scope.user_group_permission
-          if parseInt(id) != everyone && parseInt(id) != reg && !@$scope.user_group_permission[group.id]
-            @$scope.user_group_permission[id] = true
-        return true
-      return true
+    changeRights: (group, $event) ->
+      $event.preventDefault()
 
-    checkRights: (group) ->
-      if !@$scope.user_group_permission
-        return false
-      if @$scope.everyone_group.id == group.id
-        return false
-      if @$scope.reg_group.id == group.id
-        return @$scope.user_group_permission[@$scope.everyone_group.id]
-      return @$scope.user_group_permission[@$scope.reg_group.id]
+      index = @$scope.brand_settings.chat.user_groups.indexOf(group.id)
+      if index != -1
+        @$scope.brand_settings.chat.user_groups.splice(index, 1)
+      else
+        @$scope.brand_settings.chat.user_groups.push(group.id)
+
+        everyone = @$scope.everyone_group.id
+        reg = @$scope.reg_group.id
+        if group.id == everyone
+          for own i,g of @$scope.user_groups
+            if g.id != everyone && @$scope.brand_settings.chat.user_groups.indexOf(g.id) == -1
+              @$scope.brand_settings.chat.user_groups.push(g.id)
+          return true
+        else if group.id == reg
+          for own i,g of @$scope.user_groups
+            if g.id != everyone && g.id != reg && @$scope.brand_settings.chat.user_groups.indexOf(g.id) == -1
+              @$scope.brand_settings.chat.user_groups.push(g.id)
+          return true
+        return true
 
     hasChanged: ->
       angular.toJson(@$scope.enabled_on_portal) != angular.toJson(@$scope.remote_settings.enabled_on_portal) or
       angular.toJson(@$scope.global_settings) != angular.toJson(@$scope.remote_settings.global) or
-      angular.toJson(@$scope.brand_settings) != angular.toJson(@$scope.remote_settings.brand) or
-      angular.toJson(@$scope.user_group_permission) != angular.toJson(@$scope.remote_user_group_permission) or
-      angular.toJson(@$scope.chat_custom_fields) != angular.toJson(@$scope.remote_chat_custom_fields)
+      angular.toJson(@$scope.brand_settings) != angular.toJson(@$scope.remote_settings.brand)
 
     loadCode: ->
       @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code')
@@ -270,16 +288,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.saving_code = true
 
       promises = []
-      promises.push @Api.sendPutJson(
-        '/user_groups/permissions/chat.use',
-        {permissions: @$scope.user_group_permission}, null, headers: { 'X-Agent-Request': 'true'}
-      )
-
-      # api/v2 batch controller doesn't handle PUT request for now
-      # so do separate request for each field
-      for field in @$scope.chat_custom_fields
-        promises.push @Api2.sendPutJson('/user_chat_custom_fields/'+field.id, field, null, headers: {'X-Agent-Request': 'true'})
-
       promise = @Api2.sendPostJson('/settings/brands/'+@$scope.brand_id+'/widget/setup', @getWidgetSaveData(), null, headers: {'X-Agent-Request': 'true'})
       promise.then(
         () => @loadCode().then (codeResponse) =>

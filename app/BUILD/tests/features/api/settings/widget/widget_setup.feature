@@ -3,6 +3,10 @@ Feature: Widget Setup
   Background:
     Given I'm authenticated as "admin"
     And I have only default brand
+    And only the following custom chat fields exist:
+      | #   | Type |
+      | cf1 | text |
+      | cf2 | text |
 
   Scenario: I get initial widget configuration
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/widget/setup"
@@ -37,6 +41,13 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.popup.style" should be equal to the string "agent_text_button"
     And the JSON node "data.settings.brand.chat.begin_mode" should be equal to the string "form"
     And the JSON node "data.settings.brand.chat.waiting_timeout" should be equal to 150
+    And the JSON node "data.settings.brand.chat.custom_fields" should have 2 elements
+    And the JSON node "data.settings.brand.chat.custom_fields[0].id" should be equal to "{cf1}"
+    And the JSON node "data.settings.brand.chat.custom_fields[0].display_order" should be equal to 0
+    And the JSON node "data.settings.brand.chat.custom_fields[0].is_enabled" should be equal to 1
+    And the JSON node "data.settings.brand.chat.custom_fields[1].id" should be equal to "{cf2}"
+    And the JSON node "data.settings.brand.chat.custom_fields[1].display_order" should be equal to 0
+    And the JSON node "data.settings.brand.chat.custom_fields[1].is_enabled" should be equal to 1
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
     And the JSON node "data.settings.brand.ticket.default_department" should be equal to 0
 
@@ -106,7 +117,20 @@ Feature: Widget Setup
             }
           ],
           "style": "agent_text_input"
-        }
+        },
+        "custom_fields": [
+          {
+            "id": ~cf1~,
+            "display_order": 10,
+            "is_enabled": true
+          },
+          {
+            "id": ~cf2~,
+            "display_order": 20,
+            "is_enabled": false
+          }
+        ],
+        "user_groups": [1, 2]
       },
       "ticket": {
         "select_department": "custom"
@@ -150,6 +174,16 @@ Feature: Widget Setup
     And the JSON node "data.settings.brand.chat.popup.translations[1].message" should be equal to the string "Need help? Just reply to start a live chat with one of our team. (fr)"
     And the JSON node "data.settings.brand.chat.popup.translations[1].heading" should be equal to the string "Ask us a question! (fr)"
     And the JSON node "data.settings.brand.chat.popup.translations[1].subheading" should be equal to the string "Our team are online and ready to help with your enquiries. Send us a message to get started. (fr)"
+    And the JSON node "data.settings.brand.chat.custom_fields" should have 2 elements
+    And the JSON node "data.settings.brand.chat.custom_fields[0].id" should be equal to "{cf1}"
+    And the JSON node "data.settings.brand.chat.custom_fields[0].display_order" should be equal to 10
+    And the JSON node "data.settings.brand.chat.custom_fields[0].is_enabled" should be equal to 1
+    And the JSON node "data.settings.brand.chat.custom_fields[1].id" should be equal to "{cf2}"
+    And the JSON node "data.settings.brand.chat.custom_fields[1].display_order" should be equal to 20
+    And the JSON node "data.settings.brand.chat.custom_fields[1].is_enabled" should be equal to 0
+    And the JSON node "data.settings.brand.chat.user_groups" should have 2 elements
+    And the JSON node "data.settings.brand.chat.user_groups[0]" should be equal to 1
+    And the JSON node "data.settings.brand.chat.user_groups[1]" should be equal to 2
     And the JSON node "data.settings.brand.ticket.select_department" should be equal to the string "custom"
 
   Scenario: I apply chat widget to the portal
