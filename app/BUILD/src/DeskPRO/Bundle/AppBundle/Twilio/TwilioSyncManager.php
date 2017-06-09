@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Twilio;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Twilio\Exceptions\RestException;
@@ -82,6 +83,11 @@ class TwilioSyncManager
             try {
                 $this->twilioAdapter->clearWorkflow($account, $this->getAssignmentUrl($account));
             } catch (RestException $e) {
+                // unable to connect or bad credentials, skip syncing
+                if ($e->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
+                    return;
+                }
+
                 if ($e->getStatusCode() !== 404) {
                     throw $e;
                 }
