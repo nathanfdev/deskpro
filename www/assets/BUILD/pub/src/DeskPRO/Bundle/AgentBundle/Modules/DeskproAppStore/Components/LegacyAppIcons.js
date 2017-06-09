@@ -27,6 +27,12 @@ class LegacyAppIcons
     this.domRoot = domRoot;
   }
 
+  hasLegacyAppIcons = () =>
+  {
+    const firstLegacyIcon = this.domRoot.querySelector('li:not([data-deskproapp-marker])');
+    return !!firstLegacyIcon;
+  }
+
   isAppIconDOM = (domNode) =>
   {
     return matches(domNode, this.domRoot, 'li[data-deskproapp-marker]') || matches(domNode, this.domRoot, 'li[data-deskproapp-marker] *');
