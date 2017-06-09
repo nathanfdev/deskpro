@@ -49,7 +49,7 @@ class LegacySidebarContainer extends React.Component
     });
 
     //show legacy content if it is available
-    if (window.AppPlatform.apps.length) {
+    if (appIcons.hasLegacyAppIcons()) {
       const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
       sidebar.showLegacyContent();
     }
