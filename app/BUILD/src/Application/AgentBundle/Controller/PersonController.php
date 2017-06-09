@@ -56,6 +56,7 @@ use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\People\PersonMerge\PersonMerge;
 use Application\DeskPRO\Reader\VCard;
 use Application\EmailBundle\SwiftMailer\Mailer;
+use DeskPRO\Bundle\AppBundle\Notification\Event\People\PersonCreatedEvent;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Validator\StringEmail;
