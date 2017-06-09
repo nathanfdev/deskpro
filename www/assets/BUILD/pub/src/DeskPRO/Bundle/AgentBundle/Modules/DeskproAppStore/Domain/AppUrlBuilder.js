@@ -17,17 +17,31 @@ export class AppUrlBuilder
     return this;
   }
 
+  setAppVersion(version) {
+    this.state.appVersion = version;
+    return this;
+  }
+
   setXconfTag(tag) {
     this.state['dp.xconf.tag'] = tag;
     return this;
   }
 
   build () {
-    const url = new URL([this.props.baseUrl, this.state.bundlePath].join('/'), true);
+    const path = [
+      this.props.baseUrl,
+      this.state.appVersion ? this.state.appVersion : null,
+      'files',
+      this.state.bundlePath || null
+    ].filter(segment => segment !== null).join('/');
 
-    const query = url.query;
-    query['dp.xconf.tag'] = this.state['dp.xconf.tag'];
-    url.set('query', query);
+    const url = new URL(path, true);
+
+    if (this.state['dp.xconf.tag']) {
+      const query = url.query;
+      query['dp.xconf.tag'] = this.state['dp.xconf.tag'];
+      url.set('query', query);
+    };
 
     return url.toString();
   }

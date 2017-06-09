@@ -172,7 +172,7 @@ class ServeFileScript extends LowScriptAbstract
                 $this->handleGradientRequest();
             } elseif (preg_match('#^/apps/([a-zA-Z0-9_\-\.]+)/(app|js|css|html|res)/(.*?)$#', $pathinfo, $m)) {
                 $this->handleAppsRequest($m[1], $m[2], $m[3]);
-            } elseif (preg_match('#^/apps/([^/]+)/files/(.+)$#', $pathinfo, $m)) {
+            } elseif (preg_match('#^/apps/([^/]+)/v[^/]+/files/(.+)$#', $pathinfo, $m)) {
                 $this->handleAppsV2FileRequest($m[1], $m[2]);
             } else {
                 if ($this->error_mode == 'exception') {
