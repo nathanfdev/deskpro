@@ -120,7 +120,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function resolvePath($path)
     {
-        return rtrim($this->base_path, '/\\').'/'.trim($path, '/\\');
+        return trim($this->base_path, '/\\').'/'.trim($path, '/\\');
     }
 
     /**
@@ -175,7 +175,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 $this->s3->putObject([
                     'Bucket'             => $this->bucket,
                     'Body'               => $data,
-                    'Key'                => ltrim($path, '/'),
+                    'Key'                => $path,
                     'ContentType'        => $blob->getContentType(),
                     'ContentDisposition' => $disposition,
                     'ACL'                => 'public-read',
@@ -194,9 +194,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
         }
 
         if (!$this->file_url_domain) {
-            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com'.$path);
+            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com/'.$path);
         } else {
-            $blob->setMeta('file_url', 'https://'.$this->file_url_domain.$path);
+            $blob->setMeta('file_url', 'https://'.$this->file_url_domain.'/'.$path);
         }
 
         return strlen($data);
