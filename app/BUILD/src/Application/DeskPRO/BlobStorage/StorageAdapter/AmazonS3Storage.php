@@ -77,8 +77,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $this->s3                = $this->options->get('s3_client');
         $this->bucket            = $this->options->get('bucket');
-        $this->file_url_domain   = $this->options->get('file_url_domain');
-        $this->base_path         = rtrim($this->options->get('base_path', ''), '/\\');
+        $this->file_url_domain   = rtrim($this->options->get('file_url_domain'), '/');
+        $this->base_path         = rtrim($this->options->get('base_path', ''), '/');
         $this->attempts          = $this->options->get('attempts', 1);
         $this->retry_sleep       = $this->options->get('retry_sleep', 1);
         $this->cumulativeTimeout = $this->options->get('cumulative_timeout', null);
@@ -113,7 +113,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
 
         // sanity check on very long filenames
         if (strlen($filename) > 100) {
-            $filename = trim(substr($filename, 0, 100), '/\\.-_');
+            $filename = trim(substr($filename, 0, 100), '/.-_');
             $ext      = Strings::getExtension($filename);
             if ($ext && strlen($ext) <= 20) {
                 $filename .= '.'.$ext;
@@ -132,7 +132,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function resolvePath($path)
     {
-        return trim($this->base_path, '/\\').'/'.trim($path, '/\\');
+        return trim($this->base_path.'/'.trim($path, '/'), '/');
     }
 
     /**
