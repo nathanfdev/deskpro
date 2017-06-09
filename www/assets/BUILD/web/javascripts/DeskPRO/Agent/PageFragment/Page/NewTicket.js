@@ -1652,7 +1652,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	openSnippetsViewer: function() {
-		this.snippetsViewer.open();
+		// this.snippetsViewer.open();
+    var event = new CustomEvent('dpLeftDrawer', { 'detail': { module: 'SnippetsMenu'}});
+    window.document.dispatchEvent(event);
 	},
 
 	//#########################################################################

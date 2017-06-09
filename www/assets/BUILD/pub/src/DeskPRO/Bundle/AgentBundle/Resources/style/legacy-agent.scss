@@ -1,5 +1,7 @@
+$flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 @import 'variables';
 @import 'joyride';
+@import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/css3/_placeholder";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/addons/_clearfix";
 @import "../../../../../../node_modules/emojione-picker/css/picker.css";
@@ -18,6 +20,11 @@
 @import 'global-widgets/publish';
 @import '../../../AppBundle/Resources/style/widget-modal';
 @import 'tree/node-renderer-default';
+
+$dp-styles-font-path: '../../../../../../node_modules/deskpro-styles/src/styles/fonts/';
+$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
+@import "../../../../../../node_modules/deskpro-styles/src/styles/bundles/deskpro-styles";
+@import "snippets";
 
 .menu-with-panel {
   td {

@@ -11,6 +11,7 @@ import { ContentRepository } from './Repositories/ContentRepository';
 import { CommentsRepository } from './Repositories/CommentsRepository';
 import GuideRepository from './Repositories/GuideRepository';
 import OnboardingRepository from './Repositories/OnboardingRepository';
+import TicketSnippetsRepository from './Repositories/TicketSnippetsRepository';
 
 export const repositoriesConfig = {
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
@@ -21,7 +22,6 @@ export const repositoriesConfig = {
   FeedbackCategory:     { type: 'api', url: '/feedback_categories' },
   FeedbackComment:      { type: 'api', url: '/feedback_comments', repositoryClass: FeedbackCommentRepository },
   Guide:                { type: 'api', url: '/guides', repositoryClass: GuideRepository },
-  Topic:                { type: 'api', url: '/topics' },
   Organization:         { type: 'api', url: '/organizations' },
   Onboarding:           { type: 'api', url: '/people/onboarding', repositoryClass: OnboardingRepository },
   Person:               { type: 'api', url: '/people' },
@@ -32,7 +32,9 @@ export const repositoriesConfig = {
   TaskList:             { type: 'api', url: '/task_lists', allowAll: true },
   Ticket:               { type: 'api', url: '/tickets' },
   TicketFilter:         { type: 'api', url: '/new/ticket_filters', repositoryClass: TicketFilterRepository },
+  TicketSnippets:       { type: 'api', url: '/ticket_snippets', repositoryClass: TicketSnippetsRepository },
   Timezone:             { type: 'api', url: '/timezones', allowAll: true },
+  Topic:                { type: 'api', url: '/topics' },
   UserChat:             { type: 'api', url: '/user_chats', repositoryClass: UserChatRepository },
   ArticlePendingCreate: {
     type:            'api',
