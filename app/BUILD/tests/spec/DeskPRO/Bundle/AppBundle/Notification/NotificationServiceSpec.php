@@ -78,7 +78,7 @@ class NotificationServiceSpec extends ObjectBehavior
         $this->getClientsSetup()->shouldHaveType(NotificationConfiguration::class);
         $clients = $this->getClientsSetup()->getClients();
         $clients->shouldBeArray();
-        $clients->shouldHaveCount(3);
+        $clients->shouldHaveCount(2);
 
         $client = $clients[0];
         $client->shouldHaveType(NotificationClient::class);
@@ -89,14 +89,6 @@ class NotificationServiceSpec extends ObjectBehavior
         ]);
 
         $client = $clients[1];
-        $client->shouldHaveType(NotificationClient::class);
-        $client->getType()->shouldBe('polling');
-        $client->getOptions()->shouldBe([
-            'last_alert'       => $this->lastAlert(),
-            'polling_interval' => 25000,
-        ]);
-
-        $client = $clients[2];
         $client->shouldHaveType(NotificationClient::class);
         $client->getType()->shouldBe('pusher');
         $client->getOptions()->shouldBe([
