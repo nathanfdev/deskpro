@@ -92,7 +92,20 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $shortcutCode = '';
 
     /**
-     * @ORM\Column(type="text", name="types")
+     * Snippet title.
+     *
+     * @ORM\Column(type="text")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
+     * @var string
+     */
+    protected $title;
+
+    /**
+     * @ORM\Column(type="simple_array", name="types")
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -100,9 +113,9 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *
      * @Assert\NotBlank()
      *
-     * @var string
+     * @var array
      */
-    protected $types = '';
+    protected $types = [];
 
     /**
      * Flag indicates that request is dupe.
@@ -139,7 +152,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *
      * @var bool
      */
-    protected $ownershipGlobal = false;
+    protected $isOwnershipGlobal = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\AgentTeam")
@@ -171,7 +184,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *
      * @var bool
      */
-    protected $visibleGlobal = false;
+    protected $isVisibleGlobal = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Department")
@@ -265,13 +278,33 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return Snippet
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
     public function getTypes()
     {
         return $this->types;
     }
 
     /**
-     * @param string $types
+     * @param array $types
      *
      * @return Snippet
      */
@@ -315,17 +348,17 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      */
     public function isOwnershipGlobal()
     {
-        return $this->ownershipGlobal;
+        return $this->isOwnershipGlobal;
     }
 
     /**
-     * @param bool $ownershipGlobal
+     * @param bool $isOwnershipGlobal
      *
      * @return Snippet
      */
-    public function setOwnershipGlobal($ownershipGlobal)
+    public function setIsOwnershipGlobal($isOwnershipGlobal)
     {
-        $this->setModelField('ownershipGlobal', $ownershipGlobal);
+        $this->setModelField('isOwnershipGlobal', $isOwnershipGlobal);
 
         return $this;
     }
@@ -369,17 +402,17 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      */
     public function isVisibleGlobal()
     {
-        return $this->visibleGlobal;
+        return $this->isVisibleGlobal;
     }
 
     /**
-     * @param bool $visibleGlobal
+     * @param bool $isVisibleGlobal
      *
      * @return Snippet
      */
-    public function setVisibleGlobal($visibleGlobal)
+    public function setIsVisibleGlobal($isVisibleGlobal)
     {
-        $this->setModelField('visibleGlobal', $visibleGlobal);
+        $this->setModelField('isVisibleGlobal', $isVisibleGlobal);
 
         return $this;
     }

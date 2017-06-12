@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class SnippetLabel.
  *
  * @JMS\ExclusionPolicy("all")
- * @ORM\Table(name="snippet_labels")
+ * @ORM\Table(name="snippet_labels", indexes={@ORM\Index(name="label", columns={"label"})})
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
@@ -46,20 +46,8 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
-     * @var int
-     */
-    protected $id;
-
-    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Snippet")
-     * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Snippet>")
@@ -82,23 +70,11 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
     protected $label;
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getId()
     {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return SnippetLabel
-     */
-    public function setId($id)
-    {
-        $this->setModelField('id', $id);
-
-        return $this;
+        return [$this->snippet->getId(), $this->label];
     }
 
     /**

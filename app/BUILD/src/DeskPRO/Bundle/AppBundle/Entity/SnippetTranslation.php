@@ -40,6 +40,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class SnippetTranslation.
  *
  * @JMS\ExclusionPolicy("all")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetTranslationRepository")
  * @ORM\Table(name="snippet_translations")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
@@ -49,10 +50,24 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
+     * The unique ID.
+     *
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $id;
+
+    /**
      * Snippet translated.
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Snippet", inversedBy="translations")
-     * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Snippet>")
@@ -67,7 +82,7 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
      * Snippet translated.
      *
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Language")
-     * @ORM\JoinColumn(name="language_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="language_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Language>")
@@ -92,7 +107,7 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     protected $content;
 
     /**
-     * Snippet content.
+     * Snippet title.
      *
      * @ORM\Column(type="text")
      *
@@ -105,7 +120,16 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     protected $title;
 
     /**
-     * @ORM\OneToMany(targetEntity="Application\DeskPRO\Entity\Blob")
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Blob")
+     * @ORM\JoinTable(
+     *     name="snippet_translation_blob",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="snippet_translation_id", referencedColumnName="id", onDelete="CASCADE")
+     *     },
+     *     inverseJoinColumns={
+     *          @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE")
+     *     }
+     * )
      *
      * @JMS\Expose()
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Blob>>")
@@ -127,7 +151,7 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
      */
     public function getId()
     {
-        return [$this->snippet->getId(), $this->language->getId()];
+        return $this->id;
     }
 
     /**
