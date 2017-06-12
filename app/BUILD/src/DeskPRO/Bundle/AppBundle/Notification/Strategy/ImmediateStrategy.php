@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
 
 /**
  * Class ImmediateStrategy.
@@ -45,16 +45,16 @@ class ImmediateStrategy extends AbstractStrategy
     {
         $messages = $this->createMessages($event);
         foreach ($messages as $message) {
-            $this->delivery_service->schedule($message);
+            $this->deliveryService->schedule($message);
         }
     }
 
     /**
-     * This is just a proxy.
+     * {@inheritdoc}
      */
     public function deliver()
     {
-        $this->delivery_service->deliver();
+        $this->deliveryService->deliver();
     }
 
     /**
@@ -65,7 +65,7 @@ class ImmediateStrategy extends AbstractStrategy
     protected function createMessages(SystemEventInterface $event)
     {
         $messages = [];
-        foreach ($this->event_handlers as $handler) {
+        foreach ($this->eventHandlers as $handler) {
             /** @var NotifyHandlerInterface $handler */
             $messages = array_merge($messages, $handler->processEvent($event));
         }
@@ -76,11 +76,11 @@ class ImmediateStrategy extends AbstractStrategy
     /**
      * For immediate strategy it's just a stub - no need to persist anything.
      *
-     * @param PersistanceAdapterInterface $persistance_adapter
+     * @param PersistenceAdapterInterface $persistenceAdapter
      *
      * @return $this
      */
-    public function setPersistanceAdapter(PersistanceAdapterInterface $persistance_adapter)
+    public function setPersistenceAdapter(PersistenceAdapterInterface $persistenceAdapter)
     {
         return $this;
     }

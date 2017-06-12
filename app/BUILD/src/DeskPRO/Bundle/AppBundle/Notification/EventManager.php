@@ -68,14 +68,14 @@ class EventManager implements EventSubscriberInterface
     /**
      * @var StrategyFactory
      */
-    protected $strategy_factory;
+    protected $strategyFactory;
 
     /**
-     * @param StrategyFactory $strategy_factory
+     * @param StrategyFactory $strategyFactory
      */
-    public function __construct(StrategyFactory $strategy_factory)
+    public function __construct(StrategyFactory $strategyFactory)
     {
-        $this->strategy_factory = $strategy_factory;
+        $this->strategyFactory = $strategyFactory;
     }
 
     /**
@@ -94,6 +94,43 @@ class EventManager implements EventSubscriberInterface
      */
     protected function getStrategyForEvent(SystemEventInterface $event)
     {
-        return $this->strategy_factory->create($event);
+        return $this->strategyFactory->create($event);
+    }
+
+    public function deliver()
+    {
+        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+            $strategy->deliver();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function startBatch()
+    {
+        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+            $strategy->startBatch();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resetBatch()
+    {
+        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+            $strategy->resetBatch();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function stopBatch()
+    {
+        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+            $strategy->stopBatch();
+        }
     }
 }

@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
 
 /**
  * Class DeferredStrategy
@@ -47,19 +47,35 @@ class DeferredStrategy extends AbstractStrategy
         $this->persistEvent($event);
     }
 
+    /**
+     * @param SystemEventInterface $event
+     */
     public function handlePersistedEvent(SystemEventInterface $event)
     {
         $messages = $this->createMessages($event);
         foreach ($messages as $message) {
-            $this->delivery_service->schedule($message);
+            $this->deliveryService->schedule($message);
         }
-        $this->delivery_service->deliver();
+        $this->deliveryService->deliver();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function deliver()
+    {
+        $this->deliveryService->deliver();
+    }
+
+    /**
+     * @param SystemEventInterface $event
+     *
+     * @return array
+     */
     protected function createMessages(SystemEventInterface $event)
     {
         $messages = [];
-        foreach ($this->event_handlers as $handler) {
+        foreach ($this->eventHandlers as $handler) {
             /** @var NotifyHandlerInterface $handler */
             $messages = array_merge($messages, $handler->processEvent($event));
         }
@@ -68,13 +84,15 @@ class DeferredStrategy extends AbstractStrategy
     }
 
     /**
-     * @param PersistanceAdapterInterface $persistance_adapter
+     * @param PersistenceAdapterInterface $persistenceAdapter
      *
      * @return DeferredStrategy
      */
-    public function setPersistanceAdapter(PersistanceAdapterInterface $persistance_adapter)
+    public function setPersistenceAdapter(PersistenceAdapterInterface $persistenceAdapter)
     {
-        $this->persistance_adapter = $persistance_adapter;
+        $this->persistenceAdapter = $persistenceAdapter;
+
+        return $this;
     }
 
     /**
@@ -82,6 +100,6 @@ class DeferredStrategy extends AbstractStrategy
      */
     protected function persistEvent($event)
     {
-        $this->persistance_adapter->persist($event);
+        $this->persistenceAdapter->persist($event);
     }
 }

@@ -44,12 +44,26 @@ class DeliveryService
     /**
      * @var bool
      */
-    protected $immediateDelivery;
+    protected $cliProcess;
 
-    public function __construct($immediateDeliver = false)
+    /**
+     * @var bool
+     */
+    protected $batchMode = false;
+
+    protected $defaultBatchMode = true;
+
+    /**
+     * DeliveryService constructor.
+     *
+     * @param bool $cliProcess
+     */
+    public function __construct($cliProcess = false)
     {
-        $this->immediateDelivery = $immediateDeliver;
-        $this->collection        = new DeliveryHandlerCollection();
+        $this->cliProcess       = $cliProcess;
+        $this->batchMode        = !$cliProcess; // if cli then should be no batch until set manually
+        $this->defaultBatchMode = !$cliProcess;
+        $this->collection       = new DeliveryHandlerCollection();
     }
 
     /**
@@ -61,7 +75,7 @@ class DeliveryService
             /* @var DeliveryHandlerInterface $handler */
             $handler->schedule($message);
         }
-        if ($this->immediateDelivery) {
+        if ($this->cliProcess && !$this->batchMode) {
             $this->deliver();
         }
     }
@@ -72,6 +86,40 @@ class DeliveryService
             /* @var DeliveryHandlerInterface $handler */
             $handler->deliver();
         }
+    }
+
+    /**
+     * @return $this
+     */
+    public function startBatch()
+    {
+        if ($this->batchMode === false) {
+            $this->deliver(); // deliver all messages if any (actually there should not be)
+        }
+        $this->batchMode = true;
+
+        return $this;
+    }
+
+    public function stopBatch()
+    {
+        if ($this->batchMode === true) {
+            $this->deliver(); // deliver all messages if any
+        }
+        $this->batchMode = false;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetBatch()
+    {
+        if ($this->batchMode !== $this->defaultBatchMode) {
+            $this->batchMode = $this->defaultBatchMode;
+            $this->deliver(); // always deliver messages if batching mode changed
+        }
+
+        return $this;
     }
 
     /**
