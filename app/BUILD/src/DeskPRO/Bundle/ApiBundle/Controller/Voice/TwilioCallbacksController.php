@@ -241,7 +241,7 @@ class TwilioCallbacksController extends BaseController
 
                     $ticket = new Ticket();
                     $ticket->disableAutoTicketProcess();
-                    $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
+                    $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
                     $ticket->setPerson($phoneCall->getPerson());
                     $ticket->addMessage($ticketMessage);
 
