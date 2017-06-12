@@ -14,7 +14,8 @@ class SnippetsLabels extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels: []
+      labels:      [],
+      labelFilter: '',
     };
   }
 
@@ -48,6 +49,14 @@ class SnippetsLabels extends React.Component {
       </ListElement>
     ];
     this.state.labels
+      .filter((value) => {
+        const { labelFilter } = this.state;
+        if (this.state.labelFilter === '') {
+          return true;
+        }
+        const re = new RegExp(labelFilter, 'i');
+        return value.tag.match(re);
+      })
       .sort((a, b) => {
         const atag = a.tag.toLowerCase();
         const btag = b.tag.toLowerCase();
@@ -102,6 +111,12 @@ class SnippetsLabels extends React.Component {
     });
   };
 
+  updateLabelFilter = (value) => {
+    this.setState({
+      labelFilter: value
+    });
+  };
+
   render() {
     return (
       <div className="snippets__labels">
@@ -109,7 +124,7 @@ class SnippetsLabels extends React.Component {
           <i className="fa fa-tag" />
           Labels
         </div>
-        <Input />
+        <Input value={this.state.labelFilter} onChange={this.updateLabelFilter} />
         <List>
           {this.getLabels()}
         </List>
