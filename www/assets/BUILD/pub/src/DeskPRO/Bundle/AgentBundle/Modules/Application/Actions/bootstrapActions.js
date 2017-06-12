@@ -8,9 +8,8 @@ import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicatio
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
-
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproAppStore/DeskproAppStore';
+import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
@@ -59,6 +58,7 @@ export const preloadData    = createAction(
       if (window.DP_HAS_VOICE) {
         batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
         batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
+        batchComponents.voice_settings   = { endpoint: 'voice_settings' };
         batchComponents.voice_numbers    = { endpoint: 'voice_numbers' };
       }
 
@@ -68,7 +68,7 @@ export const preloadData    = createAction(
 
       dispatch(loadAgentPhraseTranslations());
 
-      //bootstrap deskpro app store
+      // bootstrap deskpro app store
       const configuration = DeskproAppStore.configurationFromLocation(window.location);
       DeskproAppStore.dispatchLoadAppManifestsAction(dispatch, api, configuration);
 
@@ -115,6 +115,7 @@ export const preloadData    = createAction(
           if (window.DP_HAS_VOICE) {
             dispatch(setVoiceTokens(data.voice_tokens));
             dispatch(setVoiceActivities(data.voice_activities));
+            dispatch(setVoiceSettings(data.voice_settings));
             dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
           }
 

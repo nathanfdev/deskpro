@@ -13,6 +13,7 @@ import { allNumbersSelector } from '../Selectors/numbers';
 
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
 export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
+export const setVoiceSettings = createAction('VOICE_AGENT_SET_SETTINGS');
 export const addIncomingCall = createAction('VOICE_AGENT_ADD_RESERVATION');
 export const updateIncomigCall = createAction('VOICE_AGENT_UPDATE_RESERVATION');
 export const removeIncomingCall = createAction('VOICE_AGENT_REMOVE_RESERVATION');

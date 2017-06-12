@@ -22,6 +22,7 @@ const initialState = {
 export default createReducer(initialState, {
   [actions.setVoiceTokens]:     setFullPayload('tokens'),
   [actions.setVoiceActivities]: setFullPayload('activities'),
+  [actions.setVoiceSettings]:   setFullPayload('settings'),
   [actions.addIncomingCall]:    pushPayloadToCollection('incomingCalls'),
   [actions.updateIncomigCall]:  (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
