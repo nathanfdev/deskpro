@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Bundle\AppBundle\Notification\EventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -64,6 +65,11 @@ class FilterChangeDetector
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+
+    /**
+     * @var EventManager
+     */
+    private $eventManager;
 
     /**
      * Add a filter check for an agent explicitly. Usually this only goes through
@@ -114,12 +120,14 @@ class FilterChangeDetector
      *
      * @param EntityManager            $em
      * @param EventDispatcherInterface $eventDispatcher
+     * @param EventManager             $eventManager
      */
-    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher)
+    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher, EventManager $eventManager)
     {
         $this->em              = $em;
         $this->connection      = $this->em->getConnection();
         $this->eventDispatcher = $eventDispatcher;
+        $this->eventManager    = $eventManager;
 
         $this->explicitFilterIds = $this->connection->fetchAllCol('
             SELECT DISTINCT filter_id FROM ticket_filter_subscriptions WHERE email_property_change = 1 OR alert_property_change = 1
@@ -469,7 +477,8 @@ class FilterChangeDetector
             $checker->getAffectedFilters(),
             $changed_filters,
             $checker->getNewestFieldVersions(),
-            $this->eventDispatcher
+            $this->eventDispatcher,
+            $this->eventManager
         );
 
         if ($context) {

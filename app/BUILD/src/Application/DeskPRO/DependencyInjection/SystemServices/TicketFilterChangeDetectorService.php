@@ -51,7 +51,8 @@ class TicketFilterChangeDetectorService
     {
         return new FilterChangeDetector(
             $container->getEm(),
-            $container->get('event_dispatcher')
+            $container->get('event_dispatcher'),
+            $container->get('deskpro.notification.event_manager')
         );
     }
 }

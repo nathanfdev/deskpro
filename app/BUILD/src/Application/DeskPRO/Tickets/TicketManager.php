@@ -48,6 +48,7 @@ use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\EventManager;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -97,6 +98,11 @@ class TicketManager
     private $auto_vars = [];
 
     /**
+     * @var EventManager
+     */
+    private $eventManager;
+
+    /**
      * Constructor.
      *
      * @param DeskproContainer $container
@@ -108,6 +114,7 @@ class TicketManager
         $this->db              = $container->getDb();
         $this->blob_storage    = $container->getBlobStorage();
         $this->eventDispatcher = $container->get('event_dispatcher');
+        $this->eventManager    = $container->get('deskpro.notification.event_manager');
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
         $organizationRepo = $this->em->getRepository(Organization::class);
@@ -295,6 +302,8 @@ class TicketManager
             $this->em->persist($ticket);
             $this->em->flush();
 
+            $this->eventManager->deliver();
+
             return;
         }
 
@@ -305,8 +314,11 @@ class TicketManager
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+            $this->eventManager->deliver();
             throw $e;
         }
+
+        $this->eventManager->deliver();
 
         return $ret;
     }
