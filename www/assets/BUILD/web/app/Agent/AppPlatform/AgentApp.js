@@ -243,36 +243,42 @@ define([
 						time = now;
 					}
 
-					// Cancel interval if its an old date that is unlikely to change in realtime
-					// Saves some cycles when many timeago's are visible
-					if (timeoutId && Math.abs(moment().unix() - time.unix()) < 86400) {
-						$interval.cancel(timeoutId);
-						timeoutId = null;
+					var fulltime = $filter('formatTimestamp')(time, 'fulltime');
+          if(window.DP_DISABLE_RELATIVE_TIMES) {
+            element.text(fulltime);
+					} else {
+            // Cancel interval if its an old date that is unlikely to change in realtime
+            // Saves some cycles when many timeago's are visible
+            if (timeoutId && Math.abs(moment().unix() - time.unix()) < 86400) {
+              $interval.cancel(timeoutId);
+              timeoutId = null;
+            }
+            element.text(TimeAgo.get(time.toDate(), !noSuffix)).attr('title', fulltime);
 					}
+        }
 
-					element.text(TimeAgo.get(time.toDate(), !noSuffix)).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
-				}
+        if(window.DP_DISABLE_RELATIVE_TIMES) {
+          element.on('$destroy', function() {
+            if (timeoutId) {
+              $interval.cancel(timeoutId);
+              timeoutId = null;
+            }
+          });
 
-				element.on('$destroy', function() {
-					if (timeoutId) {
-						$interval.cancel(timeoutId);
-						timeoutId = null;
-					}
-				});
+          element.on('dp_update', function() {
+            update();
+          });
 
-				element.on('dp_update', function() {
-					update();
-				});
+          if (attrs['autoUpdate'] || attrs['updateInterval']) {
+            timeoutId = $interval(function() {
+              update();
+            }, parseInt(attrs['updateInterval'], 10) || 15000);
 
-				if (attrs['autoUpdate'] || attrs['updateInterval']) {
-					timeoutId = $interval(function() {
-						update();
-					}, parseInt(attrs['updateInterval']) || 15000);
-
-					scope.$watch('timestamp', function() {
-						update();
-					});
-				}
+            scope.$watch('timestamp', function() {
+              update();
+            });
+          }
+        }
 
 				update();
 			}

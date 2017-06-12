@@ -9,7 +9,12 @@
             {% elseif entry.person %}
                 by <a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': entry.person.id}) }}">{{ entry.person.display_name }}</a>,
             {% endif %}
-            <time class="timeago" title="{{ entry.timestamp|date('c', 'UTC') }}">{{ entry.timestamp|date('fulltime') }}</time>
+            <time
+                {% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+                title="{{ entry.timestamp|date('c', 'UTC') }}"
+            >
+                {{ entry.timestamp|date('fulltime') }}
+            </time>
         </div>
 
         <div class="{{ entry.event }}">

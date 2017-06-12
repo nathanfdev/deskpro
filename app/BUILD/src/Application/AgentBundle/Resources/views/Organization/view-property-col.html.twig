@@ -62,8 +62,12 @@
                 <dl class="table-list">
                     <dt class="type-labels">{{ phrase('agent.general.date_created') }}</dt>
                     <dd>
-                        <time class="timeago"
-                              datetime="{{ org.date_created|date('c', 'UTC') }}">{{ org.date_created|date('day') }}</time>
+                        <time
+                            {% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+                            datetime="{{ org.date_created|date('c', 'UTC') }}"
+                        >
+                            {{ org.date_created|date('fulltime') }}
+                        </time>
                     </dd>
                 </dl>
                 <br class="clear" />

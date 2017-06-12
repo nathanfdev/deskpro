@@ -79,7 +79,15 @@
 			{% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
 			{% set elid = el_uid() %}
-			<time class="timeago with-stickytip" datetime="{{message.date_created|date('c', 'UTC')}}" data-stickytip-target="#{{ elid }}">{{message.date_created|date('fulltime')}}</time>
+			<time
+				{% if not app.isRelativeTimesDisabled() %}
+					class="timeago with-stickytip"
+					datetime="{{message.date_created|date('c', 'UTC')}}"
+					data-stickytip-target="#{{ elid }}"
+				{% endif %}
+			>
+				{{message.date_created|date('fulltime')}}
+			</time>
 			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>

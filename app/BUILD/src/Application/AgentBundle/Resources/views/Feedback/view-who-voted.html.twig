@@ -42,7 +42,14 @@
 						{% endif %}
 					</td>
 					<td>{{ vote.num_votes }}</td>
-					<td><time class="timeago" datetime="{{ vote.date_created|date('c', 'UTC') }}">{{ vote.date_created|date('day_short') }}</time></td>
+					<td>
+						<time
+							{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+							datetime="{{ vote.date_created|date('c', 'UTC') }}"
+						>
+							{{ vote.date_created|date('fulltime') }}
+						</time>
+					</td>
 				</tr>
 			{% else %}
 				<tr>

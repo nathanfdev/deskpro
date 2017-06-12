@@ -7,7 +7,12 @@
 		{% endif %}
 		<div class="message-body">
 			<div class="message-meta">
-				<time class="timeago" title="{{file.date_created|date('c', 'UTC')}}">{{file.date_created|date('day')}}</time>
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					title="{{file.date_created|date('c', 'UTC')}}"
+				>
+					{{file.date_created|date('fulltime')}}
+				</time>
 				<span style="float:right; font-size: 10px; padding-right: 5px;">{{ file.agent.display_name }} &middot; </span>
 				<h4 style="font-size: 10pt;">
 					<a href="{{ file.blob.getDownloadUrl(true) }}" title="{{ file.blob.filename }}" target="_blank">{{ file.blob.filename }}</a>

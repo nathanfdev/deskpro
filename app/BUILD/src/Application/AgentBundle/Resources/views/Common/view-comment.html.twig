@@ -32,7 +32,12 @@
 					{% endif %}
 				</h4>
 			{% endif %}
-			<time class="timeago" datetime="{{comment.date_created|date('c', 'UTC')}}"></time>
+			<time
+				{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+				datetime="{{comment.date_created|date('c', 'UTC')}}"
+			>
+                {{ comment.date_created|date('fulltime') }}
+			</time>
 		</header>
 		<div class="body-text">
 			<div class="rendered-message">{{ comment.content_html|raw }}</div>
