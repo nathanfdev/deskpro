@@ -42,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @JMS\ExclusionPolicy("all")
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetRepository")
- * @ORM\Table(name="snippet")
+ * @ORM\Table(name="snippets")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
@@ -140,6 +140,17 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * @var SnippetTranslation[]|ArrayCollection
      */
     protected $translations;
+
+    /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetLabel", mappedBy="snippet",
+     *     cascade={"persist", "remove"}, orphanRemoval=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\SnippetLabel>>")
+     *
+     * @var SnippetLabel[]|ArrayCollection
+     */
+    protected $labels;
 
     /**
      * Flag indicates that request is dupe.
@@ -341,6 +352,14 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function getTranslations()
     {
         return $this->translations;
+    }
+
+    /**
+     * @return SnippetLabel[]|ArrayCollection
+     */
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
     /**

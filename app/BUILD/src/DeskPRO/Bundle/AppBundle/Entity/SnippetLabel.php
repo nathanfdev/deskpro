@@ -37,6 +37,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class SnippetLabel.
  *
  * @JMS\ExclusionPolicy("all")
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetLabelRepository")
  * @ORM\Table(name="snippet_labels", indexes={@ORM\Index(name="label", columns={"label"})})
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
@@ -46,6 +47,7 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
+     * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Snippet")
      * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="CASCADE")
      *
@@ -57,6 +59,7 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
     protected $snippet;
 
     /**
+     * @ORM\Id()
      * @ORM\Column(type="string", length=255, name="label")
      *
      * @JMS\Expose()
@@ -70,7 +73,12 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
     protected $label;
 
     /**
-     * {@inheritdoc}
+     * Composite id (person_id + name).
+     *
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("id")
+     *
+     * return array
      */
     public function getId()
     {
