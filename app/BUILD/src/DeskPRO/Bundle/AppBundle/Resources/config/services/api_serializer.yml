@@ -251,6 +251,11 @@ services:
       - { name: "jms_serializer.subscribing_handler" }
 
   api_serializer.handler.text_snippet:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\SnippetHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.text_snippet:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
     arguments:
       - "@twig_template_renderer"

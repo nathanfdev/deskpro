@@ -44,6 +44,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 /**
  * Class TextSnippetsController.
  *
+ * @deprecated
  * @ApiModes("all")
  * @Rest\Route("/{context}_snippets", requirements={"context"="(ticket|chat)"})
  * @ApiDoc(
