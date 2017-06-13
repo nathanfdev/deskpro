@@ -100,7 +100,7 @@ class TicketManager
     /**
      * @var NotificationEventManager
      */
-    private $eventManager;
+    private $notificationEventManager;
 
     /**
      * Constructor.
@@ -109,12 +109,12 @@ class TicketManager
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container       = $container;
-        $this->em              = $container->getEm();
-        $this->db              = $container->getDb();
-        $this->blob_storage    = $container->getBlobStorage();
-        $this->eventDispatcher = $container->get('event_dispatcher');
-        $this->eventManager    = $container->get('deskpro.notification.event_manager');
+        $this->container                = $container;
+        $this->em                       = $container->getEm();
+        $this->db                       = $container->getDb();
+        $this->blob_storage             = $container->getBlobStorage();
+        $this->eventDispatcher          = $container->get('event_dispatcher');
+        $this->notificationEventManager = $container->get('deskpro.notification.event_manager');
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
         $organizationRepo = $this->em->getRepository(Organization::class);
@@ -302,7 +302,7 @@ class TicketManager
             $this->em->persist($ticket);
             $this->em->flush();
 
-            $this->eventManager->deliver();
+            $this->notificationEventManager->deliver();
 
             return;
         }
@@ -314,11 +314,11 @@ class TicketManager
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
-            $this->eventManager->deliver();
+            $this->notificationEventManager->deliver();
             throw $e;
         }
 
-        $this->eventManager->deliver();
+        $this->notificationEventManager->deliver();
 
         return $ret;
     }

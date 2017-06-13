@@ -69,7 +69,7 @@ class FilterChangeDetector
     /**
      * @var NotificationEventManager
      */
-    private $eventManager;
+    private $notificationEventManager;
 
     /**
      * Add a filter check for an agent explicitly. Usually this only goes through
@@ -120,14 +120,17 @@ class FilterChangeDetector
      *
      * @param EntityManager            $em
      * @param EventDispatcherInterface $eventDispatcher
-     * @param NotificationEventManager $eventManager
+     * @param NotificationEventManager $notificationEventManager
      */
-    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher, NotificationEventManager $eventManager)
-    {
-        $this->em              = $em;
-        $this->connection      = $this->em->getConnection();
-        $this->eventDispatcher = $eventDispatcher;
-        $this->eventManager    = $eventManager;
+    public function __construct(
+        EntityManager $em,
+        EventDispatcherInterface $eventDispatcher,
+        NotificationEventManager $notificationEventManager
+    ) {
+        $this->em                       = $em;
+        $this->connection               = $this->em->getConnection();
+        $this->eventDispatcher          = $eventDispatcher;
+        $this->notificationEventManager = $notificationEventManager;
 
         $this->explicitFilterIds = $this->connection->fetchAllCol('
             SELECT DISTINCT filter_id FROM ticket_filter_subscriptions WHERE email_property_change = 1 OR alert_property_change = 1
@@ -299,7 +302,7 @@ class FilterChangeDetector
 
                     ++$scope_cached_counts;
 
-                // RESULT_NOT_CACHED
+                    // RESULT_NOT_CACHED
                 } else {
                     $reset_status = false;
                     if ($filter['sys_name']) {
@@ -478,7 +481,7 @@ class FilterChangeDetector
             $changed_filters,
             $checker->getNewestFieldVersions(),
             $this->eventDispatcher,
-            $this->eventManager
+            $this->notificationEventManager
         );
 
         if ($context) {
@@ -528,8 +531,7 @@ class FilterChangeDetector
                 'p.is_deleted = 0',
                 'p.id IN (:ids)'
             )
-            ->setParameter('ids', $agentIds)
-        ;
+            ->setParameter('ids', $agentIds);
 
         $query = $qb->getQuery();
         $query->setFetchMode(Person::class, 'primary_email', ClassMetadata::FETCH_LAZY);
@@ -566,8 +568,7 @@ class FilterChangeDetector
             $qb
                 ->select('f.id, f.sys_name, f.person_id, f.terms')
                 ->from('ticket_filters', 'f')
-                ->where('f.person_id IS NULL')
-            ;
+                ->where('f.person_id IS NULL');
 
             $result = $qb->execute()->fetchAll();
             foreach ($result as $filter) {
@@ -593,8 +594,7 @@ class FilterChangeDetector
             ->select('f.id, f.sys_name, f.person_id, f.terms')
             ->from('ticket_filters', 'f')
             ->where('f.person_id IN (:ids)')
-            ->setParameter('ids', $agentIds, Connection::PARAM_INT_ARRAY)
-        ;
+            ->setParameter('ids', $agentIds, Connection::PARAM_INT_ARRAY);
 
         $result = $qb->execute()->fetchAll();
         foreach ($result as $filter) {
