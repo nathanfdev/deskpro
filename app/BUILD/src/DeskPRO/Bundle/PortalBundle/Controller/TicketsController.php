@@ -422,7 +422,7 @@ class TicketsController extends AbstractController
         $participant = $this->getEm()->getRepository('DeskPRO:TicketParticipant')->find($cc_id);
 
         if (!$participant) {
-            throw $redirect_response;
+            return $redirect_response;
         }
 
         $cc_person = $participant->getPerson();
