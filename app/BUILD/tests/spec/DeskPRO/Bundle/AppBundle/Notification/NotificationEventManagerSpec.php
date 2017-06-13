@@ -47,9 +47,9 @@ use PhpSpec\ObjectBehavior;
 class NotificationEventManagerSpec extends ObjectBehavior
 {
     public function let(
-        StrategyFactory $strategy_factory
+        StrategyFactory $strategyFactory
     ) {
-        $this->beConstructedWith($strategy_factory);
+        $this->beConstructedWith($strategyFactory);
     }
 
     public function it_is_an_event_subscriber()
