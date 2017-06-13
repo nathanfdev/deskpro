@@ -12,7 +12,8 @@ export class LeftDrawerContainer extends SeparateComponent {
     super(props);
     this.state = {
       active: false,
-      module: null
+      module: null,
+      width:  600
     };
   }
 
@@ -28,7 +29,8 @@ export class LeftDrawerContainer extends SeparateComponent {
       }
       if (Module) {
         this.setState({
-          module: <Module />
+          module: <Module />,
+          width:  e.detail.width
         });
         this.openDrawer();
       } else {
@@ -53,8 +55,9 @@ export class LeftDrawerContainer extends SeparateComponent {
   };
 
   render() {
-    const { active } = this.state;
-    return <LeftDrawer active={active}>{this.state.module}</LeftDrawer>;
+    const { active, width } = this.state;
+    const style = { width: active ? width : 0 };
+    return <LeftDrawer active={active} style={style}>{this.state.module}</LeftDrawer>;
   }
 }
 
@@ -62,6 +65,7 @@ export class LeftDrawer extends React.Component {
   static propTypes = {
     active:   PropTypes.bool,
     children: PropTypes.node,
+    style:    PropTypes.object,
   };
 
   static defaultProps = {
@@ -69,9 +73,9 @@ export class LeftDrawer extends React.Component {
   };
 
   render() {
-    const { active, children } = this.props;
+    const { active, children, style } = this.props;
     return (
-      <div className={classNames('left-drawer', { active })}>
+      <div className={classNames('left-drawer', { active })} style={style}>
         {children}
       </div>
     );

@@ -1,0 +1,190 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Features;
+
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+/**
+ * Class NewSnippetsFeature.
+ */
+class NewSnippetsFeature extends AbstractFeature
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return 'new_snippets';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return 'New snippets';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getShortDescription()
+    {
+        return 'New snippets interface for tickets and chats.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEnableDescription()
+    {
+        return <<<'HTML'
+New Snippets replaces the current interface in chat and tickets with a new and improved version more modern and more 
+reactive.<br/><br/>
+Installing New Snippets will copy your current snippets over to the new system, snippets categories will be replaced
+by snippets labels allowing you to assign several labels to the same snippet.
+
+HTML;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDisableDescription()
+    {
+        return <<<'HTML'
+Disabling New Snippets will revert your helpdesk back to using the previous snippet system.<br/><br/>
+Edits to the snippets and snippets added will be <string>lost</string> forever 
+HTML;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAvailability()
+    {
+        return [self::AVAILABLE_AT_QA];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function needAgentReload()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeEnable(ContainerInterface $container)
+    {
+        $em = $container->get('doctrine.orm.default_entity_manager');
+        $this->copySnippets($em);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeDisable(ContainerInterface $container)
+    {
+        $em         = $container->get('doctrine.orm.default_entity_manager');
+        $connection = $em->getConnection();
+
+        $em->beginTransaction();
+        try {
+            $queries[] = 'SET FOREIGN_KEY_CHECKS = 0;';
+            $queries[] = 'TRUNCATE TABLE deskpro.snippet_visible_departments;';
+            $queries[] = 'TRUNCATE TABLE deskpro.snippet_translation_blob;';
+            $queries[] = 'TRUNCATE TABLE deskpro.snippet_ownership_teams;';
+            $queries[] = 'TRUNCATE TABLE deskpro.snippet_labels;';
+            $queries[] = 'TRUNCATE TABLE deskpro.snippet_translations;';
+            $queries[] = 'TRUNCATE TABLE deskpro.snippets;';
+            $queries[] = 'SET FOREIGN_KEY_CHECKS = 1;';
+
+            foreach ($queries as $query) {
+                $connection->query($query);
+            }
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+        }
+    }
+
+    /**
+     * @param EntityManager $em
+     */
+    private function copySnippets(EntityManager $em)
+    {
+        $connection = $em->getConnection();
+
+        $em->beginTransaction();
+        try {
+            $connection->query(
+                "INSERT INTO snippets 
+                      SELECT
+                          ts.id,
+                          ts.person_id,
+                          ts.shortcut_code,
+                          ol_title.value as title,
+                          REPLACE('ticket', 'tickets', tcs.typename) as types,
+                          ts.is_draft,
+                          tcs.is_global as ownership_global,
+                          0 as visible_global
+                    FROM text_snippets ts
+                    LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = 1
+                    LEFT JOIN text_snippet_categories tcs ON ts.category_id = tcs.id;");
+            $connection->query(
+                'INSERT INTO snippet_labels
+                      SELECT 
+                        ts.id, 
+                        ol_category.value
+                    FROM text_snippet_categories tsc
+                    LEFT JOIN text_snippets ts ON tsc.id = ts.category_id
+                    LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT(\'text_snippet_categories.\', tsc.id)');
+            $connection->query(
+                'INSERT INTO snippet_translations
+                    SELECT
+                      NULL as id,
+                      ts.id as snippet_id,
+                      ol_title.language_id,
+                      ol_content.value as content,
+                      ol_title.value as title
+                    FROM text_snippets ts
+                      LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_title.prop_name = \'title\'
+                      LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_content.prop_name = \'snippet\'');
+            // Set the auto_increment to the minimum value it needs
+            $connection->query('ALTER TABLE snippets AUTO_INCREMENT = 1');
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+        }
+    }
+}

@@ -70,3 +70,28 @@ export const snippetsState = Immutable.Map({
     messageSeven
   ])
 });
+
+export const editSnippet = Immutable.fromJS({
+  id:     3,
+  title:  'eum cum necessitatibus',
+  person: null,
+  types:  [
+    'ticket'
+  ],
+  shortcut_code: 'natus maxime',
+  labels:        [
+    'enim ullam aut'
+  ],
+  translations: [
+    {
+      id:       3,
+      snippet:  3,
+      language: 1,
+      content:  "Alice had no very clear notion how delightful it will be the right words,' said poor Alice, who felt very glad to find my way into a pig, and she ran with all.",
+      title:    'eum cum necessitatibus',
+      blobs:    []
+    }
+  ],
+  is_draft: false
+});
+

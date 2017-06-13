@@ -121,10 +121,15 @@ class SnippetsLabels extends React.Component {
     return (
       <div className="snippets__labels">
         <div className="title">
-          <i className="fa fa-tag" />
+          <i className="fa fa-tag" />&nbsp;
           Labels
         </div>
-        <Input value={this.state.labelFilter} onChange={this.updateLabelFilter} />
+        <Input
+          value={this.state.labelFilter}
+          className="search"
+          onChange={this.updateLabelFilter}
+          icon="search"
+        />
         <List>
           {this.getLabels()}
         </List>

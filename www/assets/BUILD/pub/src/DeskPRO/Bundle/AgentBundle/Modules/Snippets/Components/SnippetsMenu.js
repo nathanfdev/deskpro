@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Input from 'deskpro-styles/lib/Components/Input';
+import Button from 'deskpro-styles/lib/Components/Button';
 import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import * as actions from '../Actions/snippetsActions';
@@ -58,8 +59,13 @@ export class SnippetsMenu extends React.Component {
             <i className="fa fa-star-o favorite" />
           </div>
           <div className="top">
-            <h1>Snippets</h1><span className="count">(7)</span>
+            <h1>Snippets</h1> <span className="count">({snippets.get('snippets').size})</span>
             {/* <Select />*/}
+            <Button
+              className="dp-button--secondary add-snippet"
+            >
+              + Snippet
+            </Button>
           </div>
         </div>
         <div className="body">
