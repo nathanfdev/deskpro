@@ -420,7 +420,12 @@ class TicketsController extends AbstractController
         $redirect_response = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
 
         $participant = $this->getEm()->getRepository('DeskPRO:TicketParticipant')->find($cc_id);
-        $cc_person   = $participant->getPerson();
+
+        if (!$participant) {
+            return $redirect_response;
+        }
+
+        $cc_person = $participant->getPerson();
 
         // the passed participant must be a participant on the passed ticket ref
         if ($participant->getTicket() === $ticket) {
