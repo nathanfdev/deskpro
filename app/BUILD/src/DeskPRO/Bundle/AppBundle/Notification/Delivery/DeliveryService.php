@@ -51,6 +51,9 @@ class DeliveryService
      */
     protected $batchMode = false;
 
+    /**
+     * @var bool
+     */
     protected $defaultBatchMode = true;
 
     /**
@@ -93,20 +96,20 @@ class DeliveryService
      */
     public function startBatch()
     {
-        if ($this->batchMode === false) {
-            $this->deliver(); // deliver all messages if any (actually there should not be)
-        }
         $this->batchMode = true;
 
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function stopBatch()
     {
-        if ($this->batchMode === true) {
-            $this->deliver(); // deliver all messages if any
-        }
+        $this->deliver();
         $this->batchMode = false;
+
+        return $this;
     }
 
     /**
@@ -114,10 +117,8 @@ class DeliveryService
      */
     public function resetBatch()
     {
-        if ($this->batchMode !== $this->defaultBatchMode) {
-            $this->batchMode = $this->defaultBatchMode;
-            $this->deliver(); // always deliver messages if batching mode changed
-        }
+        $this->batchMode = $this->defaultBatchMode;
+        $this->deliver();
 
         return $this;
     }
