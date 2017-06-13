@@ -106,6 +106,20 @@ class PortalHttpCache extends EventDispatchingHttpCache
 
         try {
             $response = parent::handle($request, $type, $catch);
+
+            // response can be false somehow
+            if ($response === false) {
+                try {
+                    return $this->kernel->handle($request, $type, false);
+                } catch (\Exception $e) {
+                    $r = new Response($response);
+                    $r->setMaxAge(0);
+                    $r->setSharedMaxAge(0);
+                    $r->setPrivate();
+
+                    return $r;
+                }
+            }
         } catch (\Exception $e) {
             $statusCode = RegexUtils::getMatch(
                 '/Error when rendering ".*?" \(Status code is (?P<statusCode>\d+)\)./',
