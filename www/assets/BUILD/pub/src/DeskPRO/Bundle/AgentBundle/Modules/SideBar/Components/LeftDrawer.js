@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import SnippetsMenuContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
+import { SnippetsMenuContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 
 export class LeftDrawerContainer extends SeparateComponent {
