@@ -99,7 +99,7 @@ class NotificationEventManager implements EventSubscriberInterface
 
     public function deliver()
     {
-        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+        foreach ($this->strategyFactory->getAllBuiltStrategies() as $strategy) {
             $strategy->deliver();
         }
     }
@@ -109,7 +109,7 @@ class NotificationEventManager implements EventSubscriberInterface
      */
     public function startBatch()
     {
-        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+        foreach ($this->strategyFactory->getAllBuiltStrategies() as $strategy) {
             $strategy->startBatch();
         }
     }
@@ -119,7 +119,7 @@ class NotificationEventManager implements EventSubscriberInterface
      */
     public function resetBatch()
     {
-        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+        foreach ($this->strategyFactory->getAllBuiltStrategies() as $strategy) {
             $strategy->resetBatch();
         }
     }
@@ -129,7 +129,7 @@ class NotificationEventManager implements EventSubscriberInterface
      */
     public function stopBatch()
     {
-        foreach ($this->strategyFactory->getAllBuildStrategies() as $strategy) {
+        foreach ($this->strategyFactory->getAllBuiltStrategies() as $strategy) {
             $strategy->stopBatch();
         }
     }

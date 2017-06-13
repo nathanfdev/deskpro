@@ -121,7 +121,7 @@ class StrategyFactory
     /**
      * @return NotificationStrategyInterface[]
      */
-    public function getAllBuildStrategies()
+    public function getAllBuiltStrategies()
     {
         return $this->builtStrategies;
     }
