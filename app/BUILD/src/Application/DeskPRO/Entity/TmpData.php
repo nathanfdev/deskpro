@@ -224,6 +224,14 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateExpire()
+    {
+        return $this->date_expire;
+    }
+
+    /**
      * Splits a code into its id and auth.
      *
      * @param  $code

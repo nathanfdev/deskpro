@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Features;
 /**
  * Class VoiceFeature.
  */
-class GuidesFeature extends AbstractFeature
+class GuidesFeature extends AbstractBetaFeature
 {
     /**
      * {@inheritdoc}

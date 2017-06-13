@@ -83,4 +83,11 @@ interface BetaFeatureInterface extends FeatureInterface
      * @return bool
      */
     public function needAgentReload();
+
+    /**
+     * Feature route path, redirects after enable.
+     *
+     * @return string
+     */
+    public function getRoutePath();
 }

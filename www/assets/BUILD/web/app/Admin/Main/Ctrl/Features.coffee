@@ -9,7 +9,6 @@ define [
     @DEPS    = ['Api2', 'Growl', '$stateParams', '$sce', '$state']
 
     init: ->
-
       @feature = {
         id: @$stateParams.id
       }
@@ -17,10 +16,17 @@ define [
       return
 
     initialLoad: ->
-      @Api2.sendGet('/features/' + @$stateParams.id).then( (res) =>
-        @feature = res.data.data;
-        @enable_description = @$sce.trustAsHtml(res.data.data.enable_description)
-        @disable_description = @$sce.trustAsHtml(res.data.data.disable_description)
+      return new Promise( (resolve) =>
+        @Api2.sendGet('/features/' + @$stateParams.id).then( (res) =>
+          @feature = res.data.data;
+          @enable_description = @$sce.trustAsHtml(@feature.enable_description)
+          @disable_description = @$sce.trustAsHtml(@feature.disable_description)
+
+          if @$state.current.name == 'features.enable' and @feature.enabled and @feature.route_path
+            window.location.hash = @feature.route_path
+          else
+            resolve()
+        )
       )
 
     disableFeature: ->

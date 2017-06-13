@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Features;
 /**
  * Class VoiceFeature.
  */
-class VoiceFeature extends AbstractFeature
+class VoiceFeature extends AbstractBetaFeature
 {
     /**
      * {@inheritdoc}
@@ -87,5 +87,13 @@ class VoiceFeature extends AbstractFeature
     public function needAgentReload()
     {
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoutePath()
+    {
+        return '/voice_channel/accounts';
     }
 }
