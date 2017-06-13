@@ -127,7 +127,7 @@ class BlobStorageService
             $s3_adapter = new AmazonS3Storage([
                 's3_client'              => $client,
                 'bucket'                 => $settingsBag->get('core.filestorage_s3_bucket'),
-                'file_url_domain'        => $settingsBag->get('core.filestorage_s3_endpoint'),
+                'file_url_domain'        => $settingsBag->get('core.filestorage_s3_file_url_domain'),
                 'base_path'              => $settingsBag->get('core.filestorage_s3_basepath'),
                 'fail_limit_per_request' => 1,
                 'cumulative_timeout'     => $cumulativeTimeout,

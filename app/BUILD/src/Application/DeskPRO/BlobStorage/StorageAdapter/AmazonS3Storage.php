@@ -35,6 +35,7 @@ namespace Application\DeskPRO\BlobStorage\StorageAdapter;
 use Application\DeskPRO\BlobStorage\Blob;
 use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Aws\S3\S3Client;
+use Orb\Util\Strings;
 
 class AmazonS3Storage extends AbstractStorageAdapter
 {
@@ -76,8 +77,8 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $this->s3                = $this->options->get('s3_client');
         $this->bucket            = $this->options->get('bucket');
-        $this->file_url_domain   = $this->options->get('file_url_domain');
-        $this->base_path         = rtrim($this->options->get('base_path', ''), '/\\');
+        $this->file_url_domain   = rtrim($this->options->get('file_url_domain'), '/');
+        $this->base_path         = rtrim($this->options->get('base_path', ''), '/');
         $this->attempts          = $this->options->get('attempts', 1);
         $this->retry_sleep       = $this->options->get('retry_sleep', 1);
         $this->cumulativeTimeout = $this->options->get('cumulative_timeout', null);
@@ -108,7 +109,18 @@ class AmazonS3Storage extends AbstractStorageAdapter
             $path[] = md5(uniqid('', true));
         }
 
-        return implode('/', $path).'-'.$blob->getFilenameSafe();
+        $filename = $blob->getFilenameSafe();
+
+        // sanity check on very long filenames
+        if (strlen($filename) > 100) {
+            $filename = trim(substr($filename, 0, 100), '/.-_');
+            $ext      = Strings::getExtension($filename);
+            if ($ext && strlen($ext) <= 20) {
+                $filename .= '.'.$ext;
+            }
+        }
+
+        return implode('/', $path).'-'.$filename;
     }
 
     /**
@@ -120,7 +132,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
      */
     public function resolvePath($path)
     {
-        return rtrim($this->base_path, '/\\').'/'.trim($path, '/\\');
+        return trim($this->base_path.'/'.trim($path, '/'), '/');
     }
 
     /**
@@ -175,7 +187,7 @@ class AmazonS3Storage extends AbstractStorageAdapter
                 $this->s3->putObject([
                     'Bucket'             => $this->bucket,
                     'Body'               => $data,
-                    'Key'                => ltrim($path, '/'),
+                    'Key'                => $path,
                     'ContentType'        => $blob->getContentType(),
                     'ContentDisposition' => $disposition,
                     'ACL'                => 'public-read',
@@ -194,9 +206,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
         }
 
         if (!$this->file_url_domain) {
-            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com'.$path);
+            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com/'.$path);
         } else {
-            $blob->setMeta('file_url', 'https://'.$this->file_url_domain.$path);
+            $blob->setMeta('file_url', 'https://'.$this->file_url_domain.'/'.$path);
         }
 
         return strlen($data);
