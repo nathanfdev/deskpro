@@ -87,4 +87,53 @@ class DeliveryServiceSpec extends ObjectBehavior
         $delivery_handler->deliver()->shouldBeCalled();
         $another_delivery_handler->deliver()->shouldBeCalled();
     }
+
+    public function it_can_change_its_mode_when_cli(
+        DeliveryHandlerInterface $delivery_handler,
+        DeliveryHandlerInterface $another_delivery_handler,
+        MessageInterface $message
+    ) {
+        $this->beConstructedWith(true); //emulate it's cli
+        $this->attachHandler($delivery_handler);
+        $this->attachHandler($another_delivery_handler);
+
+        $this->startBatch(); // force batching
+        $this->schedule($message);
+        $delivery_handler->schedule($message)->shouldBeCalled(); // should call schedule
+        $another_delivery_handler->schedule($message)->shouldBeCalled();
+        $delivery_handler->deliver()->shouldNotBeCalled(); // but not deliver
+        $another_delivery_handler->deliver()->shouldNotBeCalled();
+
+        $this->stopBatch(); // after stopping batch
+        $delivery_handler->deliver()->shouldBeCalled(); // deliver method should be called
+        $another_delivery_handler->deliver()->shouldBeCalled();
+
+        $this->resetBatch(); // also after reset
+        $delivery_handler->deliver()->shouldBeCalled();
+        $another_delivery_handler->deliver()->shouldBeCalled();
+    }
+
+    public function it_can_change_its_mode_when_web(
+        DeliveryHandlerInterface $delivery_handler,
+        DeliveryHandlerInterface $another_delivery_handler,
+        MessageInterface $message
+    ) {
+        $this->beConstructedWith(false); //emulate it's web
+        $this->attachHandler($delivery_handler);
+        $this->attachHandler($another_delivery_handler);
+
+        $this->schedule($message);
+        $delivery_handler->schedule($message)->shouldBeCalled(); // should call schedule
+        $another_delivery_handler->schedule($message)->shouldBeCalled();
+        $delivery_handler->deliver()->shouldNotBeCalled(); // but not deliver (batching is enabled by default)
+        $another_delivery_handler->deliver()->shouldNotBeCalled();
+
+        $this->stopBatch(); // after stopping batch
+        $delivery_handler->deliver()->shouldBeCalled(); // deliver method should be called
+        $another_delivery_handler->deliver()->shouldBeCalled();
+
+        $this->resetBatch(); // also after reset
+        $delivery_handler->deliver()->shouldBeCalled();
+        $another_delivery_handler->deliver()->shouldBeCalled();
+    }
 }
