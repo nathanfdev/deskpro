@@ -148,27 +148,33 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return bool
      */
-    public function isChatEnabled()
+    public function isChatEnabled(Brand $brand = null)
     {
-        return (bool) $this->getSetting(self::CHAT_ENABLED);
+        return (bool) $this->getSetting(self::CHAT_ENABLED, $brand);
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return bool
      */
-    public function isChatEmailValidation()
+    public function isChatEmailValidation(Brand $brand = null)
     {
-        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);
+        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION, $brand);
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return bool
      */
-    public function isChatRequireLogin()
+    public function isChatRequireLogin(Brand $brand = null)
     {
-        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
+        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN, $brand);
     }
 
     /**
@@ -254,7 +260,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $model = new WidgetOptions();
         $model
-            ->setGlobal($this->getWidgetGlobalOptions())
+            ->setGlobal($this->getWidgetGlobalOptions($brand))
             ->setBrand($this->getWidgetBrandOptions($brand))
         ;
 
@@ -262,16 +268,18 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetGlobalSettings
      */
-    public function getWidgetGlobalOptions()
+    public function getWidgetGlobalOptions(Brand $brand = null)
     {
         $model = new WidgetGlobalSettings();
         $chat  = $model->getChat();
         $chat
-            ->setEnabled($this->isChatEnabled())
-            ->setEmailValidation($this->isChatEmailValidation())
-            ->setRequireLogin($this->isChatRequireLogin())
+            ->setEnabled($this->isChatEnabled($brand))
+            ->setEmailValidation($this->isChatEmailValidation($brand))
+            ->setRequireLogin($this->isChatRequireLogin($brand))
         ;
 
         $company = $model->getCompany();
