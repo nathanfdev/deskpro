@@ -19,6 +19,11 @@ services:
     tags:
       - { name: kernel.event_subscriber, priority: -10 }
 
+  deskpro.notification.cli_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\CliStrategyListener
+    tags:
+      - { name: kernel.event_subscriber, priority: -10 }
+
   deskpro.notification.event_manager:
     class: DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager
     arguments:

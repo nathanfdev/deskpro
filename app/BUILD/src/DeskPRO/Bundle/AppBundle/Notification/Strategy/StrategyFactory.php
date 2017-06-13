@@ -137,10 +137,14 @@ class StrategyFactory
             case 'immediate':
                 $immediateStrategy = new ImmediateStrategy();
                 $this->container->get('deskpro.notification.immediate_listener')->pushStrategy($immediateStrategy);
+                $this->container->get('deskpro.notification.cli_listener')->pushStrategy($immediateStrategy);
 
                 return $immediateStrategy;
             case 'deferred':
-                return new DeferredStrategy();
+                $deferredStrategy = new DeferredStrategy();
+                $this->container->get('deskpro.notification.cli_listener')->pushStrategy($deferredStrategy);
+
+                return $deferredStrategy;
             default:
                 throw new \RuntimeException(sprintf('Strategy with alias [ %s ] wasn\'t found!', $strategy_name));
         }
