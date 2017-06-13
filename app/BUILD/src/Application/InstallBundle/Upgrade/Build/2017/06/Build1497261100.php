@@ -26,33 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace Application\InstallBundle\Upgrade\Build;
 
-/**
- * Representation of a Deskpro app store application.
- *
- * @deprecated Use entity class instead
- */
-interface Application
+class Build1497261100 extends AbstractBuild implements BlockingBuildInterface
 {
-    /**
-     * Returns the system identifier assigned to the application.
-     *
-     * @return string
-     */
-    public function getId();
+    public function addNewTables()
+    {
+    }
 
-    /**
-     * Returns the name given by the owner.
-     *
-     * @return string
-     */
-    public function getName();
+    public function runAlters()
+    {
+        $this->execDbQuery('default', 'ALTER TABLE app2_app_state DROP ownerId');
+    }
 
-    /**
-     * Returns the manifest.
-     *
-     * @return array
-     */
-    public function getManifest();
+    public function run()
+    {
+    }
 }

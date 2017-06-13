@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace spec\DeskPRO\Bundle\ApiBundle\Serializer\EventListener;
 
 use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;

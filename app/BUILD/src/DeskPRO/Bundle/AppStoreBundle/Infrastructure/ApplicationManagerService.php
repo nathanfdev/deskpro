@@ -92,14 +92,14 @@ class ApplicationManagerService
     public function createAppEntity(Domain\AppBundle $bundle)
     {
         $manifestReader = new Infrastructure\AppManifestJsonReader();
-        $manifest       = $manifestReader->readManifest($bundle->getManifestAsString());
+        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
 
         $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
         if (!$app) {
             $app = new App();
         }
 
-        $app->setManifest($bundle->getManifestAsString());
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
         $app->setName($manifest->getName());
 
         //save blob assets

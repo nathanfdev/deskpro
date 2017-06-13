@@ -28,17 +28,19 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository")
  * @ORM\Table(
  *  name="app2_app_state", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "owner_id"})
  *  })
  */
-class AppState implements Domain\ApplicationState
+class AppState implements Domain\ApplicationState, EntityInterface
 {
     /**
      * @ORM\Id()
@@ -56,14 +58,6 @@ class AppState implements Domain\ApplicationState
     private $appInstance;
 
     /**
-     * @todo this shouldnt be here, should be getId on $appInstance
-     * @ORM\Column(name="app_instance_id", type="integer", nullable=false)
-     *
-     * @var int
-     */
-    private $appInstanceId;
-
-    /**
      * @ORM\Column(type="appstore_state_scope", nullable=false)
      *
      * @var Domain\StateScope
@@ -72,11 +66,15 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @ORM\Column(type="string", nullable=false)
+     *
+     * @return string
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=false)
+     *
+     * @return string
      */
     private $value;
 
@@ -89,12 +87,6 @@ class AppState implements Domain\ApplicationState
     private $owner;
 
     /**
-     * @todo this shouldnt be here, shoul dbe getId on $owner
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $ownerId;
-
-    /**
      * @ORM\Column(type="integer", nullable=true)
      */
     private $targetId;
@@ -103,6 +95,22 @@ class AppState implements Domain\ApplicationState
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $createdAt;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return AppInstance
@@ -114,22 +122,29 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @param AppInstance $appInstance
+     *
+     * @return $this
      */
-    public function setAppInstance(AppInstance $appInstance)
+    public function setAppInstance(AppInstance $appInstance = null)
     {
-        $this->appInstance   = $appInstance;
-        $this->appInstanceId = null;
+        $this->appInstance = $appInstance;
+
+        return $this;
     }
 
+    /**
+     * todo BC, remove.
+     *
+     * {@inheritdoc}
+     */
     public function getInstanceId()
     {
-        if (empty($this->appInstanceId) && !empty($this->appInstance)) {
-            return $this->appInstance->getId();
-        }
-
-        return $this->appInstanceId;
+        return $this->appInstance ? $this->appInstance->getId() : null;
     }
 
+    /**
+     * @return Domain\StateScope
+     */
     public function getScope()
     {
         return $this->scope;
@@ -137,10 +152,14 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @param Domain\StateScope $scope
+     *
+     * @return $this
      */
     public function setScope(Domain\StateScope $scope)
     {
         $this->scope = $scope;
+
+        return $this;
     }
 
     /**
@@ -153,10 +172,14 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @param mixed $name
+     *
+     * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -169,31 +192,36 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @param mixed $value
+     *
+     * @return $this
      */
     public function setValue($value)
     {
         $this->value = $value;
+
+        return $this;
     }
 
     /**
+     * todo BC, remove.
+     *
      * @return int
      */
     public function getOwnerId()
     {
-        if (empty($this->ownerId) && !empty($this->owner)) {
-            return $this->owner->getId();
-        }
-
-        return $this->ownerId;
+        return $this->owner ? $this->owner->getId() : null;
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
+     *
+     * @return $this
      */
-    public function setOwner(\Application\DeskPRO\Entity\Person $person)
+    public function setOwner(Person $person = null)
     {
-        $this->owner   = $person;
-        $this->ownerId = null;
+        $this->owner = $person;
+
+        return $this;
     }
 
     /**
@@ -214,9 +242,13 @@ class AppState implements Domain\ApplicationState
 
     /**
      * @param mixed $targetId
+     *
+     * @return $this
      */
     public function setTargetId($targetId)
     {
         $this->targetId = $targetId;
+
+        return $this;
     }
 }

@@ -215,11 +215,7 @@ class AppsController extends BaseController
             throw new NotFoundHttpException('could not find application');
         }
 
-        //TODO getManifest should return an object
-        $manifestString = $application->getManifest();
-        $manifestArray  = json_decode($manifestString, true);
-
-        return $manifestArray;
+        return $application->getManifest();
     }
 
     /**

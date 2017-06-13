@@ -26,33 +26,78 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\ApiBundle\Proxy;
 
 /**
- * Representation of a Deskpro app store application.
- *
- * @deprecated Use entity class instead
+ * Class ProxyRequest.
  */
-interface Application
+class ProxyRequest
 {
     /**
-     * Returns the system identifier assigned to the application.
-     *
-     * @return string
+     * @var string
      */
-    public function getId();
+    private $proxyMethod;
 
     /**
-     * Returns the name given by the owner.
-     *
-     * @return string
+     * @var string
      */
-    public function getName();
+    private $proxyUrl;
 
     /**
-     * Returns the manifest.
+     * @var array
+     */
+    private $proxyHeaders;
+
+    /**
+     * @var string[]
+     */
+    private $whiteList;
+
+    /**
+     * Constructor.
      *
+     * @param string $proxyMethod
+     * @param string $proxyUrl
+     * @param array  $proxyHeaders
+     * @param array  $whiteList
+     */
+    public function __construct($proxyMethod, $proxyUrl, array $proxyHeaders, array $whiteList)
+    {
+        $this->proxyMethod  = $proxyMethod;
+        $this->proxyUrl     = $proxyUrl;
+        $this->proxyHeaders = $proxyHeaders;
+        $this->whiteList    = $whiteList;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProxyMethod()
+    {
+        return $this->proxyMethod;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProxyUrl()
+    {
+        return $this->proxyUrl;
+    }
+
+    /**
      * @return array
      */
-    public function getManifest();
+    public function getProxyHeaders()
+    {
+        return $this->proxyHeaders;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getWhiteList()
+    {
+        return $this->whiteList;
+    }
 }

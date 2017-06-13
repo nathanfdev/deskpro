@@ -68,7 +68,9 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\Column(type="text", nullable=false)
+     * @ORM\Column(type="json_array", nullable=false)
+     *
+     * @return array
      */
     private $manifest;
 
@@ -104,7 +106,9 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return string
+     * Returns the manifest.
+     *
+     * @return array
      */
     public function getManifest()
     {
@@ -122,18 +126,18 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     {
         if (null === $this->parsedManifest) {
             $manifestReader       = new AppManifestJsonReader();
-            $this->parsedManifest = $manifestReader->readManifest($this->manifest);
+            $this->parsedManifest = $manifestReader->readManifestFromArray($this->manifest);
         }
 
         return $this->parsedManifest;
     }
 
     /**
-     * @param string $manifest
+     * @param array $manifest
      *
      * @return $this
      */
-    public function setManifest($manifest)
+    public function setManifest(array $manifest)
     {
         $this->setModelField('manifest', $manifest);
 

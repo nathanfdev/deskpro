@@ -159,7 +159,7 @@ class AppsController extends AbstractController
                 }
 
                 $manifestReader = new AppManifestJsonReader();
-                $manifest       = $manifestReader->readManifest($appArchive->getManifestAsString());
+                $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
                 $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
                     $appArchive->getIcon(),
                     'icon.png',

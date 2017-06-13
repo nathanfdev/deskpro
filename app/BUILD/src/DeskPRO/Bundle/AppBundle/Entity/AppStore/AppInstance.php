@@ -227,7 +227,7 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
             return [];
         }
 
-        $manifest = json_decode($this->app->getManifest(), true);
+        $manifest = $this->app->getManifest();
 
         return isset($manifest['targets']) ? $manifest['targets'] : [];
     }

@@ -31,29 +31,34 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 
+/**
+ * Class AppManifestJsonReader.
+ */
 class AppManifestJsonReader
 {
     /**
-     * @param $jsonString
+     * @param string $jsonString
      *
      * @return Domain\AppManifest
      */
-    public function readManifest($jsonString)
+    public function readManifestFromJson($jsonString)
     {
-        $manifestMap = json_decode($jsonString, true);
-        $manifest    = new Domain\AppManifest();
-
-        $this->mapManifestMapToObject($manifestMap, $manifest);
-
-        return $manifest;
+        return $this->readManifestFromArray(json_decode($jsonString, true));
     }
 
-    private function mapManifestMapToObject(array $manifestMap, Domain\AppManifest $manifest)
+    /**
+     * @param array $manifestMap
+     *
+     * @return Domain\AppManifest
+     */
+    public function readManifestFromArray(array $manifestMap)
     {
         // temp get serializer from static container
         // temp manifest setters
         // todo refactor
         $serializer = App::$container->get('serializer');
+
+        $manifest = new Domain\AppManifest();
         $manifest
             ->setVersion($manifestMap['appVersion'])
             ->setName($manifestMap['name'])
@@ -62,6 +67,7 @@ class AppManifestJsonReader
             ->setScope($manifestMap['scope'])
             ->setAuthor($serializer->fromArray($manifestMap['author'], Domain\AppManifestAuthor::class))
             ->setSettings($serializer->fromArray($manifestMap['settings'], 'array<'.Domain\AppManifestSetting::class.'>'))
+            ->setExternalApis($manifestMap['external_apis'])
         ;
 
         $value           = $manifestMap['settings'];
@@ -75,6 +81,9 @@ class AppManifestJsonReader
                 $defaultSettings[$setting['name']] = $setting['default_value'];
             }
         }
+
         $manifest->setDefaultSettings($defaultSettings);
+
+        return $manifest;
     }
 }

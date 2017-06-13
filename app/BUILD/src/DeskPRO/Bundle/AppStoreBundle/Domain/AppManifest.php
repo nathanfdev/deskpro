@@ -92,6 +92,13 @@ class AppManifest
     private $author;
 
     /**
+     * @JMS\Type("array<string>")
+     *
+     * @var string[]
+     */
+    private $externalApis = [];
+
+    /**
      * @return string
      */
     public function getName()
@@ -240,9 +247,33 @@ class AppManifest
 
     /**
      * @param AppManifestSetting[] $settings
+     *
+     * @return $this
      */
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getExternalApis()
+    {
+        return $this->externalApis;
+    }
+
+    /**
+     * @param string[] $externalApis
+     *
+     * @return $this
+     */
+    public function setExternalApis(array $externalApis)
+    {
+        $this->externalApis = $externalApis;
+
+        return $this;
     }
 }
