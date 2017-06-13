@@ -117,7 +117,7 @@ class RedirectProtectionListener implements EventSubscriberInterface, SkipLowReq
                 return; // matches brand settings
             }
 
-            $this->logger->warning(sprintf('invalid redirect detected: attempted to redirect to unauthorized host "%s" (brand URL is "%s")', $location, $deskpro_url_setting));
+            $this->logger->info(sprintf('invalid redirect detected: attempted to redirect to unauthorized host "%s" (brand URL is "%s")', $location, $deskpro_url_setting));
 
             $event->setResponse(new Response(
                 sprintf(
