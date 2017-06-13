@@ -32,13 +32,13 @@
 
 namespace DpBehat;
 
-use Behat\MinkExtension\Context\RawMinkContext;
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
+use Sanpi\Behatch\Context\BaseContext as BaseBehatContext;
 
 /**
  * Class BaseContext.
  */
-abstract class BaseContext extends RawMinkContext implements KernelAwareContextInterface
+abstract class BaseContext extends BaseBehatContext implements KernelAwareContextInterface
 {
     use KernelAwareTrait;
 

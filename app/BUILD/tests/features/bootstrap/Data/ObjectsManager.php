@@ -97,11 +97,13 @@ use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Entity\Usersource;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
+use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -358,6 +360,8 @@ class ObjectsManager
             'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
             'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
             'Phrase'                   => [Factory\SimpleFactory::class, 'create', Phrase::class],
+            'ActionAlert'              => [Factory\SimpleFactory::class, 'create', ActionAlert::class],
+            'Notification'             => [Factory\SimpleFactory::class, 'create', Notification::class],
         ];
     }
 
@@ -460,6 +464,8 @@ class ObjectsManager
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],
             'Phrase'                   => [$this, 'find', Phrase::class],
+            'ActionAlert'              => [$this, 'find', ActionAlert::class],
+            'Notification'             => [$this, 'find', Notification::class],
         ];
     }
 }
