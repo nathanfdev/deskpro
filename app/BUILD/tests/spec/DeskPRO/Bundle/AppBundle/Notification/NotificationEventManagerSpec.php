@@ -44,7 +44,7 @@ use PhpSpec\ObjectBehavior;
 /**
  * @mixin NotificationEventManager
  */
-class EventManagerSpec extends ObjectBehavior
+class NotificationEventManagerSpec extends ObjectBehavior
 {
     public function let(
         StrategyFactory $strategy_factory
