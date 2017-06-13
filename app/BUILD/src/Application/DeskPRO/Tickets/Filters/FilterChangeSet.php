@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Tickets\Filters;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
-use DeskPRO\Bundle\AppBundle\Notification\EventManager;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -75,7 +75,7 @@ class FilterChangeSet
     private $eventDispatcher;
 
     /**
-     * @var EventManager
+     * @var NotificationEventManager
      */
     private $eventManager;
 
@@ -88,7 +88,7 @@ class FilterChangeSet
      * @param array                    $changed_filters
      * @param array                    $field_versions
      * @param EventDispatcherInterface $eventDispatcher
-     * @param EventManager             $eventManager
+     * @param NotificationEventManager $eventManager
      */
     public function __construct(
         Ticket $ticket,
@@ -97,7 +97,7 @@ class FilterChangeSet
         array $changed_filters,
         array $field_versions,
         EventDispatcherInterface $eventDispatcher,
-        EventManager $eventManager
+        NotificationEventManager $eventManager
     ) {
         $this->ticket           = $ticket;
         $this->state_id         = $state_id;

@@ -43,9 +43,9 @@ use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Class EventManager.
+ * Class NotificationEventManager.
  */
-class EventManager implements EventSubscriberInterface
+class NotificationEventManager implements EventSubscriberInterface
 {
     /**
      * {@inheritdoc}

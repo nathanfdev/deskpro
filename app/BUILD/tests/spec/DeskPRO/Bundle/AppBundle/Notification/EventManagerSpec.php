@@ -37,12 +37,12 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\EventManager;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use PhpSpec\ObjectBehavior;
 
 /**
- * @mixin EventManager
+ * @mixin NotificationEventManager
  */
 class EventManagerSpec extends ObjectBehavior
 {

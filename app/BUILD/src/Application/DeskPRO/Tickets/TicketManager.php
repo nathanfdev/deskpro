@@ -48,7 +48,7 @@ use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
-use DeskPRO\Bundle\AppBundle\Notification\EventManager;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -98,7 +98,7 @@ class TicketManager
     private $auto_vars = [];
 
     /**
-     * @var EventManager
+     * @var NotificationEventManager
      */
     private $eventManager;
 

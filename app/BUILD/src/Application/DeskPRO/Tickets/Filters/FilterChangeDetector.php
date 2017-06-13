@@ -41,7 +41,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Bundle\AppBundle\Notification\EventManager;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -67,7 +67,7 @@ class FilterChangeDetector
     private $eventDispatcher;
 
     /**
-     * @var EventManager
+     * @var NotificationEventManager
      */
     private $eventManager;
 
@@ -120,9 +120,9 @@ class FilterChangeDetector
      *
      * @param EntityManager            $em
      * @param EventDispatcherInterface $eventDispatcher
-     * @param EventManager             $eventManager
+     * @param NotificationEventManager $eventManager
      */
-    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher, EventManager $eventManager)
+    public function __construct(EntityManager $em, EventDispatcherInterface $eventDispatcher, NotificationEventManager $eventManager)
     {
         $this->em              = $em;
         $this->connection      = $this->em->getConnection();
