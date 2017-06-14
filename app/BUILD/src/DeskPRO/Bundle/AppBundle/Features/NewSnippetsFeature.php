@@ -34,7 +34,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Class NewSnippetsFeature.
  */
-class NewSnippetsFeature extends AbstractFeature
+class NewSnippetsFeature extends AbstractBetaFeature
 {
     /**
      * {@inheritdoc}
