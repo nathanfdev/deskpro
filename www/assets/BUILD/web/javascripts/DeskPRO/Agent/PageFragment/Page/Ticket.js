@@ -3616,7 +3616,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 		}
 		this.focusOnReply();
-		this.ticketReplyBox.snippetsViewer.open();
+		if (window.DP_HAS_NEW_SNIPPETS) {
+      var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745}});
+      window.document.dispatchEvent(event);
+    } else {
+      this.ticketReplyBox.snippetsViewer.open();
+    }
 	},
 
 	shortcutSendReply: function() {

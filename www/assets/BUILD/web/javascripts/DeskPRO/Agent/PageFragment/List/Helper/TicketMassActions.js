@@ -291,7 +291,12 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
           snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
           snippetBtn.on('click', function(ev) {
             Orb.cancelEvent(ev);
-            self.snippetsViewer.open();
+            if (window.DP_HAS_NEW_SNIPPETS) {
+              var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745}});
+              window.document.dispatchEvent(event);
+            } else {
+              self.snippetsViewer.open();
+            }
           });
 
           var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
