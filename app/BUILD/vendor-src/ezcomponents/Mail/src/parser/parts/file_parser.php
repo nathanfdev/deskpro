@@ -119,7 +119,7 @@ class ezcMailFileParser extends ezcMailPartParser
         // search Content-Disposition first as specified by RFC 2183
         $fileName = '';
         $matches = array();
-        if ( preg_match( '/\s*filename="?([^;"\s]*);?/i',
+        if ( preg_match( '/\s*filename="?([^;"]*);?/i',
                         $this->headers['Content-Disposition'], $matches ) && $matches[1])
         {
             $fileName = trim( $matches[1], '" ' );
