@@ -48,6 +48,7 @@ class RunCommand extends ContainerAwareCommand
             ->addOption('fast-sync', null, InputOption::VALUE_OPTIONAL, 'After a full upgrade, attempt to use fast post-build sync scripts. This is just a hint unless you use --fast-sync=FORCE', false)
             ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any commands, just show a preview of what will happen')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Continue even if a build task returns an error status')
+            ->addOption('skip-refresh-signal', null, InputOption::VALUE_NONE, 'Do not send refresh signal')
         ;
     }
 
@@ -224,6 +225,29 @@ class RunCommand extends ContainerAwareCommand
                     $buildStatus->setSchemaBuild(time());
                 } else {
                     $buildStatus->setSchemaBuild(DP_BUILD_TIME);
+                }
+            }
+        }
+
+        //------------------------------
+        // Send refresh signal
+        //------------------------------
+
+        if (!$input->getOption('skip-refresh-signal')) {
+            // This is as a command because the logic for deploying the message
+            $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand([
+                'dp:utility:refresh-agent-interface',
+                '--who', 'Helpdesk Upgrade',
+                '--message', 'The helpdesk was upgraded. Your browser will now refresh.',
+                '--reason-code', 'upgrade_complete',
+            ], false);
+            $logger->debug("Refresh signal with command: $cmd");
+            $ret = null;
+            if (!$isPreview) {
+                passthru($cmd, $ret);
+
+                if ($ret) {
+                    $logger->warn("--> dp:utility:refresh-agent-interface exited with error status: $ret");
                 }
             }
         }
