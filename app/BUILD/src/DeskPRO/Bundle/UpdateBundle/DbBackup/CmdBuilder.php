@@ -55,7 +55,7 @@ class CmdBuilder implements CmdBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDumpCmd($filename, array $dbInfo, array $options)
+    public function getDumpCmd($filename, array $dbInfo, array $options = [])
     {
         $cmd = [
             escapeshellarg($this->mysqldumpPath),
