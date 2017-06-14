@@ -333,22 +333,42 @@ class Ticket extends AbstractEntityRepository
      *
      * @return array
      */
-    public function getPersonTickets(Entity\Person $person, $limit = null, $sort_by = null, $sort_order = 'DESC')
-    {
+    public function getPersonTickets(
+        Entity\Person $person,
+        $limit = null,
+        $sort_by = null,
+        $sort_order = 'DESC',
+        $departmentIds = []
+    ) {
         if (!$person->is_agent) {
-            $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
+            $params      = [$person->id, $person->id];
+            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT];
+            if ($departmentIds) {
+                $where       = 'AND department_id IN (?)';
+                $where2      = 'inner join tickets on tickets.id = tickets_participants.ticket_id AND tickets.department_id IN (?)';
+                $params      = [$person->getId(), $departmentIds, $departmentIds, $person->getId()];
+                $paramsTypes = [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT];
+            }
+            $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT DISTINCT id FROM (
-                    SELECT id FROM tickets WHERE person_id = ?
+                    SELECT tickets.id FROM tickets WHERE tickets.person_id = ? $where
                     UNION
-                    SELECT ticket_id FROM tickets_participants WHERE person_id = ?
+                    SELECT tickets_participants.ticket_id FROM tickets_participants $where2 WHERE tickets_participants.person_id = ?
                     LIMIT 2000
                 ) AS t
-            ', [$person->id, $person->id]);
+            ", $params, $paramsTypes);
         } else {
-            $ids = $this->getEntityManager()->getConnection()->fetchAllCol('
-                SELECT id FROM tickets WHERE person_id = ?
+            $params      = [$person->getId()];
+            $paramsTypes = [\PDO::PARAM_INT];
+            if ($departmentIds) {
+                $where         = 'AND department_id IN (?)';
+                $params[]      = [$departmentIds];
+                $paramsTypes[] = [Connection::PARAM_INT_ARRAY];
+            }
+            $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+                SELECT id FROM tickets WHERE person_id = ? $where
                 LIMIT 2000
-            ', [$person->id]);
+            ", $params, $paramsTypes);
         }
 
         if (!$ids) {

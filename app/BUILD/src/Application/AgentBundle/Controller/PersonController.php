@@ -115,8 +115,12 @@ class PersonController extends AbstractController
 
         $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
         /** @var Ticket $rep */
-        $rep                  = $this->em->getRepository('DeskPRO:Ticket');
-        $person_tickets       = $rep->getPersonTickets($person, 251, 'status');
+        $rep = $this->em->getRepository('DeskPRO:Ticket');
+
+        $allowedDepartmentIds = $this->person->getHelper('AgentPermissions')->getAllowedDepartments('tickets',
+            false, 'assign');
+
+        $person_tickets       = $rep->getPersonTickets($person, 251, 'status', 'DESC', $allowedDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
             $person,
             ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden']
