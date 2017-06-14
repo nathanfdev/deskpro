@@ -8,20 +8,8 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
 import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
-import {
-  requireChatLoginSelector,
-  requireChatEmailValidationSelector,
-  widgetHasChatSelector,
-  widgetSessionChatIdSelector,
-  buildNumSelector
-} from '../Selectors/bootstrap';
-
-import {
-  liveDemoSelector,
-  noFetchOptionsSelector,
-  widgetLanguageSelector,
-  widgetEnabledSelector
-} from '../Selectors/dpWindow';
+import { widgetHasChatSelector, widgetSessionChatIdSelector, buildNumSelector } from '../Selectors/bootstrap';
+import { liveDemoSelector, noFetchOptionsSelector, widgetLanguageSelector, widgetEnabledSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 
 export const ajaxOptions = { crossDomain: true, dataType: 'json' };
@@ -36,32 +24,21 @@ export const setLiveDemoSession = createAction(
 );
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
-  () => dispatch => new Promise((resolve) => {
-    const visitorId =
-      (window.DP_SEND_VISITOR_TRACK && window.DP_SEND_VISITOR_TRACK.visitorId)
-      ? window.DP_SEND_VISITOR_TRACK.visitorId
-      : '';
+  () => dispatch => new Promise(resolve => widgetApi
+    .sendPost('DP_API/auth/session', {
+      trackVisitor: window.DP_SEND_VISITOR_TRACK || {}
+    }, { ...ajaxOptions })
+    .success((response) => {
+      const data = response.data;
 
-    return widgetApi
-      .sendPost(`DP_API/auth/session?dp__v=${visitorId}`, {
-        dpsid:        storageAvailable('localStorage') && localStorage.getItem('dpWidget.sessionCode'),
-        trackVisitor: window.DP_SEND_VISITOR_TRACK || {}
-      }, { ...ajaxOptions })
-      .success((response) => {
-        const data = response.data;
+      dispatch(setSettings(data.global_settings));
+      resolve(data);
 
-        if (storageAvailable('localStorage')) {
-          localStorage.setItem('dpWidget.sessionCode', data.session_code);
-        }
-
-        dispatch(setSettings(data.global_settings));
-        resolve(data);
-
-        if (data.person) {
-          dispatch(loadBatch('Person', [data.person], 'all'));
-        }
-      });
-  })
+      if (data.person) {
+        dispatch(loadBatch('Person', [data.person], 'all'));
+      }
+    })
+  )
 );
 
 // live demo action
@@ -71,8 +48,6 @@ export const reloadSettings = createAction(
       let state = getState();
 
       // get current settings
-      const requireChatLogin = requireChatLoginSelector(state);
-      const requireChatEmailValidation = requireChatEmailValidationSelector(state);
       const widgetHasChat = widgetHasChatSelector(state);
 
       // update settings state and re-select settings
@@ -91,12 +66,6 @@ export const reloadSettings = createAction(
         } else {
           dispatch(closeWidget());
         }
-      } else if (settings.chat.require_login !== requireChatLogin) {
-        // display require chat login changes
-        dispatch(reopenWidget());
-      } else if (settings.chat.email_validation !== requireChatEmailValidation) {
-        // display require email validation changes
-        dispatch(reopenWidget());
       }
     }
 );
@@ -211,12 +180,8 @@ export const bootstrapWidget = createAction(
               resolve(response);
             };
 
-            const onError = (data) => {
-              // Remove from local storage broken chat id
-              if (data && data.code === 400 && data.message === 'wrong_session_code') {
-                dispatch(unsetChatId());
-              }
-
+            const onError = () => {
+              dispatch(unsetChatId());
               onFinish();
             };
 

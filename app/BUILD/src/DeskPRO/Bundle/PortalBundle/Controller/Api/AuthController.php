@@ -28,9 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
@@ -65,79 +63,15 @@ class AuthController extends AbstractApiController
      */
     public function getSessionAction(Request $request)
     {
-        /** @var \Application\DeskPRO\EntityRepository\Session $repository */
-        $repository = $this->getDoctrine()->getRepository(Session::class);
-
-        // try to get session from widget dpsid
-        /** @var Session $session */
-        $session = $repository->getSessionFromCode($request->request->get('dpsid'));
-
         $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
         $request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $visitorId);
 
-        $impersonateToken = null;
-        $token            = $this->get('security.token_storage')->getToken();
-        if ($token instanceof AgentImpersonateToken) {
-            $impersonateToken = $token;
-        }
-        // try to get session from portal session
-        if (!$session && $request->getSession() && $request->getSession()->getId()) {
-            $authCode = substr($request->getSession()->getId(), 0, 15);
-            $session  = $repository->findOneBy([
-                'auth' => $authCode,
-            ]);
-        }
+        $lastChat     = $this->getLastChat();
+        $trackVisitor = $request->request->get('trackVisitor');
 
-        $changed = false;
-        if (!$session) {
-            // create a new session
-            $session = new Session();
-            if ($request->getSession() && $request->getSession()->getId()) {
-                $session->setAuth($request->getSession()->getId());
-            }
-
-            $changed = true;
-        }
-
-        if (!$session->getIpAddress()) {
-            $session->setIpAddress($request->getClientIp());
-            $changed = true;
-        }
-
-        if (!$session->getPerson() && $this->getUser()) {
-            $session->setPerson($this->getUser());
-            $changed = true;
-        }
-
-        if ($impersonateToken) {
-            $ss = $this->getContainer()->getSession();
-            $ss->set('impersonate', $impersonateToken->getUser()->getId());
-            $changed = true;
-        }
-
-        if ($visitorId && $visitorId !== $session->visitor_id) {
-            $session->visitor_id = $visitorId;
-            $changed             = true;
-        }
-
-        if ($changed) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($session);
-            $em->flush();
-        }
-
-        $this->get('dpsid.listener')->setPortalApiToken($session, $request);
-
-        $lastChat = $this->getLastChat();
-
-        if ($trackVisitor = $request->request->get('trackVisitor')) {
+        if ($trackVisitor) {
             try {
-                $hit = $this->get('hitrecord.record_factory')->fromParameters(
-                    $trackVisitor,
-                    $request,
-                    $visitorId
-                );
-
+                $hit = $this->get('hitrecord.record_factory')->fromParameters($trackVisitor, $request, $visitorId);
                 $this->get('hitrecord.record_storage')->record($hit);
             } catch (\Exception $e) {
                 $hit = null;
@@ -161,13 +95,15 @@ class AuthController extends AbstractApiController
             }
         }
 
-        return new View($this->wrap(new WidgetSession(
-            $session,
+        $model = new WidgetSession(
+            $this->get('security.token_storage')->getToken(),
             $this->container->get('widget_settings_resolver')->getWidgetGlobalOptions(),
             $this->isGranted(UseSectionVoter::USE_CHAT),
             $this->container->get('language_stack')->getActiveOrDefault(),
-            $lastChat ? $lastChat->getId() : null,
+            $lastChat ? $lastChat->getAuthId() : null,
             $this->get('deskpro.app_env')->getVersionName()
-        )));
+        );
+
+        return new View($this->wrap($model));
     }
 }

@@ -20,8 +20,6 @@ Feature: Widget Setup
     And the JSON node "data.settings.global.company.name" should exist
     And the JSON node "data.settings.global.company.logo" should exist
     And the JSON node "data.settings.global.chat.enabled" should be equal to 0
-    And the JSON node "data.settings.global.chat.require_login" should be equal to 0
-    And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to the string "column"
     And the JSON node "data.settings.brand.widget.enabled" should be equal to true
@@ -68,9 +66,7 @@ Feature: Widget Setup
   "settings": {
     "global": {
       "chat": {
-        "enabled": true,
-        "email_validation": true,
-        "require_login": true
+        "enabled": true
       }
     },
     "brand": {
@@ -146,8 +142,6 @@ Feature: Widget Setup
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.enabled" should be equal to 1
-    And the JSON node "data.settings.global.chat.require_login" should be equal to 1
-    And the JSON node "data.settings.global.chat.email_validation" should be equal to 1
     And the JSON node "data.enabled_on_portal" should be equal to 0
 
     And the JSON node "data.settings.brand.widget.type" should be equal to the string "bubble"
@@ -194,9 +188,7 @@ Feature: Widget Setup
   "settings": {
     "global": {
       "chat": {
-        "enabled": false,
-        "email_validation": false,
-        "require_login": false
+        "enabled": false
       }
     },
     "brand": {
@@ -247,8 +239,6 @@ Feature: Widget Setup
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.settings.global.chat.enabled" should be equal to 0
-    And the JSON node "data.settings.global.chat.require_login" should be equal to 0
-    And the JSON node "data.settings.global.chat.email_validation" should be equal to 0
     And the JSON node "data.enabled_on_portal" should be equal to 1
 
     And the JSON node "data.settings.brand.widget.type" should be equal to the string "column"

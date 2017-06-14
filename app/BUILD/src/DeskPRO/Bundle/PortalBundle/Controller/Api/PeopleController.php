@@ -28,11 +28,9 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
-use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,7 +47,6 @@ class PeopleController extends AbstractApiController
 {
     /**
      * @Rest\Get("/online_agents")
-     * @Dpsid()
      *
      * @return View
      */
@@ -76,7 +73,6 @@ class PeopleController extends AbstractApiController
 
     /**
      * @Rest\Get("")
-     * @Dpsid()
      *
      * @param Request $request
      *
@@ -86,33 +82,29 @@ class PeopleController extends AbstractApiController
     {
         // allow to fetch only people who is in person's chat
         $allowedIds = [];
-        $lastChatId = $this->getLastChatId();
+        $lastChat   = $this->getLastChat();
 
         if ($this->getUser() && $this->getUser()->getId()) {
             $allowedIds[] = $this->getUser()->getId();
         }
-        if ($lastChatId) {
+        if ($lastChat) {
+            if ($lastChat->getAgent()) {
+                $allowedIds[] = $lastChat->getAgent()->getId();
+            }
+
             /** @var \Application\DeskPRO\DBAL\Connection $connection */
-            $connection   = $this->getManager()->getConnection();
-            $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($lastChatId);
+            $connection       = $this->getManager()->getConnection();
+            $messagePeopleIds = $connection->fetchAllCol(
+                'SELECT DISTINCT author_id FROM chat_messages WHERE conversation_id = :last_chat_id',
+                [
+                    'last_chat_id' => $lastChat->getId(),
+                ]
+            );
 
-            if ($conversation) {
-                if ($conversation->getAgent()) {
-                    $allowedIds[] = $conversation->getAgent()->getId();
-                }
-
-                $messagePeopleIds = $connection->fetchAllCol(
-                    'SELECT DISTINCT author_id FROM chat_messages WHERE conversation_id = :last_chat_id',
-                    [
-                        'last_chat_id' => $lastChatId,
-                    ]
-                );
-
-                $messagePeopleIds = array_map('intval', $messagePeopleIds);
-                foreach ($messagePeopleIds as $id) {
-                    if ($id) {
-                        $allowedIds[] = $id;
-                    }
+            $messagePeopleIds = array_map('intval', $messagePeopleIds);
+            foreach ($messagePeopleIds as $id) {
+                if ($id) {
+                    $allowedIds[] = $id;
                 }
             }
         }

@@ -1,36 +1,31 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { history, getLocation } from '../../../../Services/history';
 import moment from 'moment';
+import { history, getLocation } from '../../../../Services/history';
 import { pollingChat, unsetLoaded, unsetChatId } from '../../Actions/chatActions';
 import {
   chatIdSelector,
   hasChatInfoSelector,
   lastMessageIdSelector,
   authorEmailSelector,
-  isEndedSelector,
-  needValidateEmailSelector
+  isEndedSelector
 } from '../../Selectors/chat';
 
 @connect(state => ({
-  chatId:            chatIdSelector(state),
-  hasChatInfo:       hasChatInfoSelector(state),
-  lastMessageId:     lastMessageIdSelector(state),
-  authorEmail:       authorEmailSelector(state),
-  isEnded:           isEndedSelector(state),
-  needValidateEmail: needValidateEmailSelector(state)
+  chatId:        chatIdSelector(state),
+  hasChatInfo:   hasChatInfoSelector(state),
+  lastMessageId: lastMessageIdSelector(state),
+  authorEmail:   authorEmailSelector(state),
+  isEnded:       isEndedSelector(state)
 }))
 export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
-    dispatch:          PropTypes.func.isRequired,
-    chatId:            PropTypes.number,
-    hasChatInfo:       PropTypes.bool,
-    lastMessageId:     PropTypes.any,
-    children:          PropTypes.node,
-    authorEmail:       PropTypes.string,
-    isEnded:           PropTypes.bool,
-    needValidateEmail: PropTypes.bool
+    dispatch:      PropTypes.func.isRequired,
+    chatId:        PropTypes.number,
+    hasChatInfo:   PropTypes.bool,
+    lastMessageId: PropTypes.number,
+    children:      PropTypes.node
   };
 
   componentDidMount() {
@@ -43,29 +38,22 @@ export class ChatPollingContainer extends React.Component {
   }
 
   pollingRequest = () => {
-    const { dispatch, chatId, hasChatInfo, lastMessageId, needValidateEmail } = this.props;
+    const { dispatch, chatId, hasChatInfo, lastMessageId } = this.props;
     if (!chatId || !this.mounted) {
       return;
     }
 
-    getLocation(location => {
+    getLocation((location) => {
       // Redirect if has chat info only
       if (!hasChatInfo) {
         return;
       }
 
-      if (needValidateEmail) {
-        // Auto redirect to validate email stage
-        if (location.pathname !== '/chat/validation/email') {
-          history.replace('/chat/validation/email');
-        }
-      } else {
-        if (location.pathname !== '/chat/active') {
-          // If agent id is defined auto redirect to active stage
-          history.replace('/chat/active');
-          // Mark chat unloaded to show spinner until get messages in the next polling request
-          dispatch(unsetLoaded());
-        }
+      if (location.pathname !== '/chat/active') {
+        // If agent id is defined auto redirect to active stage
+        history.replace('/chat/active');
+        // Mark chat unloaded to show spinner until get messages in the next polling request
+        dispatch(unsetLoaded());
       }
     });
 
@@ -81,7 +69,7 @@ export class ChatPollingContainer extends React.Component {
     }
 
     const onSuccessResponse = () => setTimeout(this.pollingRequest, 3000);
-    const onErrorResponse = response => {
+    const onErrorResponse = (response) => {
       // Stop polling on wring session code
       const data = response.data;
       if (data && data.code === 400 && data.message === 'wrong_session_code') {

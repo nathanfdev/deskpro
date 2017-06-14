@@ -30,9 +30,9 @@ namespace DeskPRO\Bundle\PortalBundle\Model;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * Class WidgetSession.
@@ -47,15 +47,6 @@ class WidgetSession
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings")
      */
     private $globalSettings;
-
-    /**
-     * Widget session code.
-     *
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    private $sessionCode;
 
     /**
      * Widget person.
@@ -99,7 +90,7 @@ class WidgetSession
     /**
      * Constructor.
      *
-     * @param Session              $session
+     * @param TokenInterface       $token
      * @param WidgetGlobalSettings $globalSettings
      * @param bool                 $isChatGranted
      * @param Language             $defaultLanguage
@@ -107,15 +98,14 @@ class WidgetSession
      * @param int                  $buildNum
      */
     public function __construct(
-        Session $session,
+        TokenInterface       $token,
         WidgetGlobalSettings $globalSettings,
         $isChatGranted,
         Language $defaultLanguage,
         $chatId,
         $buildNum
     ) {
-        $this->sessionCode    = $session->getSessionCode();
-        $this->person         = $session->getPerson();
+        $this->person         = $token->getUser() instanceof Person ? $token->getUser() : null;
         $this->globalSettings = $globalSettings;
         $this->isChatGranted  = $isChatGranted;
         $this->chatId         = $chatId;
@@ -126,21 +116,5 @@ class WidgetSession
         } else {
             $this->language = $defaultLanguage;
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getSessionCode()
-    {
-        return $this->sessionCode;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPerson()
-    {
-        return $this->person;
     }
 }

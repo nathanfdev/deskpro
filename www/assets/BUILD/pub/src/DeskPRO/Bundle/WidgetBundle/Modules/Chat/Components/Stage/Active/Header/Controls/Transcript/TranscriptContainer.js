@@ -14,34 +14,26 @@ import {
   transcriptSentSelector,
   disabledPollingSelector
 } from '../../../../../../Selectors/chat';
-import {
-  requireChatEmailValidationSelector,
-  requireChatLoginSelector
-} from '../../../../../../../Application/Selectors/bootstrap';
 
 @connect(state => ({
-  chatId:          chatIdSelector(state),
-  authorName:      authorNameSelector(state),
-  authorEmail:     authorEmailSelector(state),
-  checked:         transcriptCheckedSelector(state),
-  sent:            transcriptSentSelector(state),
-  disabled:        disabledPollingSelector(state),
-  emailValidation: requireChatEmailValidationSelector(state),
-  requireLogin:    requireChatLoginSelector(state)
+  chatId:      chatIdSelector(state),
+  authorName:  authorNameSelector(state),
+  authorEmail: authorEmailSelector(state),
+  checked:     transcriptCheckedSelector(state),
+  sent:        transcriptSentSelector(state),
+  disabled:    disabledPollingSelector(state)
 }))
 export class TranscriptContainer extends React.Component {
 
   static propTypes = {
-    dispatch:        PropTypes.func,
-    chatId:          PropTypes.number,
-    authorName:      PropTypes.string,
-    authorEmail:     PropTypes.string,
-    checked:         PropTypes.bool,
-    disabled:        PropTypes.bool,
-    sent:            PropTypes.bool,
-    children:        PropTypes.node,
-    emailValidation: PropTypes.bool,
-    requireLogin:    PropTypes.bool
+    dispatch:    PropTypes.func,
+    chatId:      PropTypes.number,
+    authorName:  PropTypes.string,
+    authorEmail: PropTypes.string,
+    checked:     PropTypes.bool,
+    disabled:    PropTypes.bool,
+    sent:        PropTypes.bool,
+    children:    PropTypes.node
   };
 
   constructor(props) {
@@ -51,7 +43,7 @@ export class TranscriptContainer extends React.Component {
     };
   }
 
-  onClick = event => {
+  onClick = (event) => {
     event.preventDefault();
     const { dispatch, chatId, authorEmail, checked, sent } = this.props;
 
@@ -94,7 +86,7 @@ export class TranscriptContainer extends React.Component {
   };
 
   render() {
-    const { authorName, authorEmail, checked, disabled, sent, children, emailValidation, requireLogin } = this.props;
+    const { authorName, authorEmail, checked, disabled, sent, children } = this.props;
     const childProps = children.props;
 
     return (
@@ -103,14 +95,14 @@ export class TranscriptContainer extends React.Component {
           ...childProps,
 
           disabled,
-          ref:     'button',
+          ref:     (c) => { this.button = c; },
           active:  checked,
           onClick: this.onClick
         })}
 
         <Simple
           isOpen={this.state.formOpened}
-          positionTarget={this.refs.button}
+          positionTarget={this.button}
           positionAt="center+40 bottom"
           positionMy="center top"
           zIndex={1000}
@@ -127,7 +119,6 @@ export class TranscriptContainer extends React.Component {
                 <TranscriptForm
                   name={authorName}
                   email={authorEmail}
-                  disabledEmail={emailValidation || requireLogin}
                   onSubmit={this.onSubmit}
                 />
               }
