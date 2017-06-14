@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -80,11 +81,21 @@ use Symfony\Component\HttpFoundation\Request;
  *         {"name"="group_by", "pattern"="status_category|hidden_status|category|custom_category", "description"="how to group counts", "dataType"="boolean"}
  *     }
  * )
+ * @ApiDoc(
+ *     target="postAction,putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Feedback",
+ *          "person"="Application\DeskPRO\Entity\Person"
+ *      }
+ *     }
+ * )
  */
 class FeedbackController extends AbstractFeedbackController
 {
-    public static $exposeOnly  = ['get', 'list', 'count', 'delete'];
     public static $entity      = Feedback::class;
+    public static $type        = FeedbackType::class;
     public static $sortOptions = [
         'date_created' => 'date_created',
         'total_rating' => 'total_rating',
@@ -168,5 +179,18 @@ class FeedbackController extends AbstractFeedbackController
 
                 break;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'agent_interface' => true,
+            'person'          => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
     }
 }
