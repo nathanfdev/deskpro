@@ -107,6 +107,8 @@ class CustomDataType extends AbstractType
     /**
      * Generate form fields.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onGenerateFields(FormEvent $event)
@@ -137,6 +139,8 @@ class CustomDataType extends AbstractType
     /**
      * Transforms form data to modified custom data collection.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onTransformToCustomData(FormEvent $event)
@@ -160,14 +164,14 @@ class CustomDataType extends AbstractType
 
             $exist = $customDefData
                 ->map(function (CustomDataAbstract $custom_data) {
-                    return $custom_data->field->getId();
+                    return $custom_data->getField()->getId();
                 })
                 ->toArray()
             ;
 
             // remove deleted items
             foreach ($customDefData as $customData) {
-                if (!in_array($customData->field->getId(), $data)) {
+                if (!in_array($customData->getField()->getId(), $data)) {
                     $customDefData->removeElement($customData);
                 }
             }
@@ -198,11 +202,11 @@ class CustomDataType extends AbstractType
 
         // Set reference to custom def field.
         foreach ($customDefData as $customData) {
-            $customData->root_field = $customDef;
+            $customData->setRootField($customDef);
 
             if (!$customDef->isChoiceType()) {
                 // for simple custom data field = root field
-                $customData->field = $customDef;
+                $customData->setField($customDef);
             }
         }
 
@@ -213,7 +217,7 @@ class CustomDataType extends AbstractType
             }
         }
         foreach ($allCustomData as $customData) {
-            if ($customData->root_field === $customDef && !$customDefData->contains($customData)) {
+            if ($customData->getRootField() === $customDef && !$customDefData->contains($customData)) {
                 $allCustomData->removeElement($customData);
             }
         }
@@ -226,6 +230,8 @@ class CustomDataType extends AbstractType
      *
      * Because we have single custom data collection for all custom def fields we need to get validation errors from
      * unmapped field. So validate the data manually via another validator to keep custom data mapped.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -314,7 +320,7 @@ class CustomDataType extends AbstractType
      *
      * @return mixed
      */
-    protected function getFormData($customData, CustomDefAbstract $customDef)
+    private function getFormData($customData, CustomDefAbstract $customDef)
     {
         $allCustomData = $customData ?: new ArrayCollection();
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
@@ -352,11 +358,11 @@ class CustomDataType extends AbstractType
      *
      * @return CustomDataAbstract[]|ArrayCollection|Collection
      */
-    protected function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
+    private function filterCustomDefData(Collection $allCustomData, CustomDefAbstract $customDef)
     {
         $defaultValue  = $this->getDefaultValue($customDef);
-        $customDefData = $allCustomData->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
-            return $custom_data->root_field === $customDef && null !== $custom_data->field;
+        $customDefData = $allCustomData->filter(function (CustomDataAbstract $customData) use ($customDef) {
+            return $customData->getRootField() === $customDef && null !== $customData->getField();
         });
 
         if (!$customDefData->count()) {
@@ -398,7 +404,7 @@ class CustomDataType extends AbstractType
      *
      * @return mixed
      */
-    protected function getDefaultValue(CustomDefAbstract $customDef)
+    private function getDefaultValue(CustomDefAbstract $customDef)
     {
         if (!$customDef->isChoiceType()) {
             $defaultValue = $customDef->getDefaultValue();

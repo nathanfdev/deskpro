@@ -93,14 +93,18 @@ class CustomDataHandler implements SubscribingHandlerInterface
                 case CustomDefAbstract::TYPE_DATETIME:
                     $value = $customData->getData();
 
-                    try {
-                        $value = new \DateTime('@'.$value);
-                    } catch (\Exception $e) {
+                    if ($value) {
                         try {
-                            $value = new \DateTime($value);
+                            $value = new \DateTime('@'.$value);
                         } catch (\Exception $e) {
-                            $value = null;
+                            try {
+                                $value = new \DateTime($value);
+                            } catch (\Exception $e) {
+                                $value = null;
+                            }
                         }
+                    } else {
+                        $value = null;
                     }
 
                     $result[$defId]['value'] = $context->accept($value);

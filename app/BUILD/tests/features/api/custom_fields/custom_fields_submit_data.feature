@@ -83,8 +83,9 @@ Feature: Custom fields
       | request_value         | response_value             |
       | "2016-02-09 17:28:00" | "2016-02-09T00:00:00+0000" |
       | "2016-02-09"          | "2016-02-09T00:00:00+0000" |
+      | ""                    | ""                         |
 
-  Scenario: I check datetime field
+  Scenario Outline: I check datetime field
     Given only the following custom ticket fields exist:
       | #  | Type     | Title          |
       | f1 | datetime | DateTime field |
@@ -96,13 +97,18 @@ Feature: Custom fields
     """
 {
   "fields": {
-    "~f1~": "2016-02-09 17:28:00"
+    "~f1~": <request_value>
   }
 }
     """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/tickets/{t1}"
-    Then the JSON node "data.fields.{f1}.value" should be equal to the string "2016-02-09T17:28:00+0000"
+    Then the JSON node "data.fields.{f1}.value" should be equal to the string <response_value>
+
+    Examples:
+      | request_value         | response_value             |
+      | "2016-02-09 17:28:00" | "2016-02-09T17:28:00+0000" |
+      | ""                    | ""                         |
 
   Scenario Outline: I check single selectbox/radio group fields
     Given only the following custom ticket fields exist:
