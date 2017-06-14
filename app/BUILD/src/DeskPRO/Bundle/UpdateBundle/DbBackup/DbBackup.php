@@ -84,13 +84,13 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function backupDatabase($targetPath, array $dbInfo)
+    public function backupDatabase($targetPath, array $dbInfo, array $options = [])
     {
         $t = Timer::start();
         $this->logger->debug('backupDatabase -- begin', ['keyEvent' => LogKeyEvent::create('DbBackup.start')]);
 
         try {
-            $this->doBackupDatabase($targetPath, $dbInfo);
+            $this->doBackupDatabase($targetPath, $dbInfo, $options);
             $this->logger->info('Database backup OK', ['keyEvent' => LogKeyEvent::create('DbBackup.success')]);
         } catch (\Exception $e) {
             $this->logger->error(
@@ -106,16 +106,17 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
     /**
      * @param       $targetPath
      * @param array $dbInfo
+     * @param array $options
      *
      * @throws DbBackupException
      * @throws \Exception
      */
-    private function doBackupDatabase($targetPath, array $dbInfo)
+    private function doBackupDatabase($targetPath, array $dbInfo, array $options)
     {
         $targetDir = dirname($targetPath);
         $this->fs->mkdir($targetDir);
 
-        $cmd = $this->cmdBuilder->getDumpCmd($targetPath, $dbInfo);
+        $cmd = $this->cmdBuilder->getDumpCmd($targetPath, $dbInfo, $options);
 
         $this->logger->info(sprintf('Backup target:  %s', $targetPath));
         $this->logger->info(sprintf('Backup command: %s', str_replace($dbInfo['password'], '***', $cmd)));
@@ -129,37 +130,41 @@ class DbBackup implements DbBackupInterface, LoggerAwareInterface
             );
         }
 
-        try {
-            $pdo    = \DpRun\LowUtil::getPdoFromMysqlInfo($dbInfo);
-            $dbSize = $pdo->query("
-                SELECT SUM(data_length + index_length) AS 'size'
-                FROM information_schema.TABLES
-                WHERE table_schema = '{$dbInfo['dbname']}'
-            ")->fetchColumn(0);
+        if (!isset($options['skip_diskspace_check']) || !$options['skip_diskspace_check']) {
+            try {
+                $pdo    = \DpRun\LowUtil::getPdoFromMysqlInfo($dbInfo);
+                $dbSize = $pdo->query("
+                    SELECT SUM(data_length + index_length) AS 'size'
+                    FROM information_schema.TABLES
+                    WHERE table_schema = '{$dbInfo['dbname']}'
+                ")->fetchColumn(0);
 
-            if (!$dbSize || $dbSize < 9000000) {
+                if (!$dbSize || $dbSize < 9000000) {
+                    $this->logger->critical(sprintf('Could not determine how much disk space is required'));
+                    throw new DbBackupException(
+                        'Could not determine how much disk space is required because query returned an unexpected result',
+                        DbBackupException::DISK_SPACE_UNKNOWN
+                    );
+                }
+            } catch (\Exception $e) {
                 $this->logger->critical(sprintf('Could not determine how much disk space is required'));
                 throw new DbBackupException(
-                    'Could not determine how much disk space is required because query returned an unexpected result',
-                    DbBackupException::DISK_SPACE_UNKNOWN
+                    'Could not determine how much disk space is required because PDO failed',
+                    DbBackupException::DISK_SPACE_UNKNOWN,
+                    $e
                 );
             }
-        } catch (\Exception $e) {
-            $this->logger->critical(sprintf('Could not determine how much disk space is required'));
-            throw new DbBackupException(
-                'Could not determine how much disk space is required because PDO failed',
-                DbBackupException::DISK_SPACE_UNKNOWN,
-                $e
-            );
-        }
 
-        if ($freeSpace < ($dbSize * 2.5)) {
-            $msg = sprintf('Detected insufficient disk space. Free disk space: %s, Database size: %s', $freeSpace, $dbSize);
-            $this->logger->critical($msg);
-            throw new DbBackupException(
-                $msg,
-                DbBackupException::DISK_SPACE_INSUFFICIENT
-            );
+            if ($freeSpace < ($dbSize * 1.5)) {
+                $msg = sprintf('Detected insufficient disk space. Free disk space: %s, Database size: %s', $freeSpace, $dbSize);
+                $this->logger->critical($msg);
+                throw new DbBackupException(
+                    $msg,
+                    DbBackupException::DISK_SPACE_INSUFFICIENT
+                );
+            }
+        } else {
+            $this->logger->info('Disk space check was skipped');
         }
 
         $t      = Timer::start();

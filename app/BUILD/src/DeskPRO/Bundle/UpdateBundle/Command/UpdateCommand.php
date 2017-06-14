@@ -159,6 +159,9 @@ class UpdateCommand extends ContainerAwareCommand
      */
     private function doExecute($sessionId, InputInterface $input, OutputInterface $output)
     {
+        /* @var \DpRun\DpEnv $DP_ENV */
+        global $DP_ENV;
+
         $t = Timer::start();
 
         $logger = $this->getContainer()->get('monolog.logger.updater.general');
@@ -201,17 +204,17 @@ class UpdateCommand extends ContainerAwareCommand
 
         $skipBackup = false;
 
+        $output->writeln('A new update is available. Do you want to download and install it now?');
+        $helper   = $this->getHelper('question');
+        $question = new ConfirmationQuestion('[y/N]> ', false);
+
+        if (!$helper->ask($input, $output, $question)) {
+            $logger->debug('User answered "no" to confirmation');
+
+            return 0;
+        }
+
         if ($input->isInteractive()) {
-            $output->writeln('A new update is available. Do you want to download and install it now?');
-            $helper   = $this->getHelper('question');
-            $question = new ConfirmationQuestion('[y/N]> ', false);
-
-            if (!$helper->ask($input, $output, $question)) {
-                $logger->debug('User answered "no" to confirmation');
-
-                return 0;
-            }
-
             $output->writeln('Do you want to perform a database backup before installing database updates?');
             $helper   = $this->getHelper('question');
             $question = new ConfirmationQuestion('[Y/n]> ', true);
@@ -220,6 +223,9 @@ class UpdateCommand extends ContainerAwareCommand
                 $logger->debug('User answered "no" to database backup');
                 $skipBackup = true;
             }
+        } elseif ($DP_ENV->getConfig('upgrader.backup.skip')) {
+            $skipBackup = true;
+            $logger->debug('Backup skipped because config.upgrader.backup.skip');
         }
 
         //------------------------------
@@ -259,11 +265,20 @@ class UpdateCommand extends ContainerAwareCommand
                 ['keyEvent' => LogKeyEvent::create('AutoUpgrade.db_backup.start')]
             );
 
-            $command = $this->getApplication()->find('dp:database-backup');
-            $args    = new ArrayInput([
+            $command   = $this->getApplication()->find('dp:database-backup');
+            $argsArray = [
                 'command'      => 'dp:database-backup',
                 '--session-id' => $sessionId,
-            ]);
+            ];
+            if ($DP_ENV->getConfig('upgrader.backup.skip_diskspace_check')) {
+                $logger->debug('Skip diskspace check because config.upgrader.backup.skip_diskspace_check');
+                $argsArray['--skip-diskspace-check'] = true;
+            }
+            if ($DP_ENV->getConfig('upgrader.backup.with_gzip')) {
+                $logger->debug('Using gzip because config.upgrader.backup.with_gzip');
+                $argsArray['--with-gzip'] = true;
+            }
+            $args = new ArrayInput($argsArray);
 
             if ($ret = $command->run($args, $output)) {
                 $logger->info(

@@ -55,7 +55,7 @@ class CmdBuilder implements CmdBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDumpCmd($filename, array $dbInfo)
+    public function getDumpCmd($filename, array $dbInfo, array $options)
     {
         $cmd = [
             escapeshellarg($this->mysqldumpPath),
@@ -76,13 +76,24 @@ class CmdBuilder implements CmdBuilderInterface
             $password = escapeshellarg($dbInfo['password']);
         }
 
-        $cmd = array_merge($cmd, [
-            '-u '.escapeshellarg($dbInfo['user']),
-            '-p'.$password,
-            '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
-            escapeshellarg($dbInfo['dbname']),
-            '>', escapeshellarg($filename),
-        ]);
+        if ((isset($options['with_gzip']) && $options['with_gzip']) && !defined('PHP_WINDOWS_VERSION_BUILD')) {
+            $cmd = array_merge($cmd, [
+                '-u '.escapeshellarg($dbInfo['user']),
+                '-p'.$password,
+                '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
+                escapeshellarg($dbInfo['dbname']),
+                '|', 'gzip',
+                '>', escapeshellarg($filename),
+            ]);
+        } else {
+            $cmd = array_merge($cmd, [
+                '-u '.escapeshellarg($dbInfo['user']),
+                '-p'.$password,
+                '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
+                escapeshellarg($dbInfo['dbname']),
+                '>', escapeshellarg($filename),
+            ]);
+        }
 
         return implode(' ', $cmd);
     }
