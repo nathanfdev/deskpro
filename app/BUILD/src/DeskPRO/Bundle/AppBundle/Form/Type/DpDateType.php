@@ -118,17 +118,24 @@ class DpDateType extends AbstractType
     /**
      * Transform datetime string to date string.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
     public function onParseDateTime(FormEvent $event)
     {
-        try {
-            $data = new \DateTime($event->getData());
-            $data = $data->format('Y-m-d');
-        } catch (\Exception $e) {
-            $data = $event->getData();
+        $data = $event->getData();
+        if (!$data) {
+            return;
         }
 
-        $event->setData($data);
+        try {
+            $data = new \DateTime($data);
+            $data = $data->format('Y-m-d');
+
+            $event->setData($data);
+        } catch (\Exception $e) {
+            // unable to parse, leave as is
+        }
     }
 }
