@@ -33,4 +33,25 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message;
  */
 class ActionAlert extends AbstractMessage
 {
+    /**
+     * @var array
+     */
+    private $metaData;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($target, $data, $type, array $metaData = [])
+    {
+        parent::__construct($target, $data, $type);
+        $this->metaData = $metaData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMetaData()
+    {
+        return $this->metaData;
+    }
 }

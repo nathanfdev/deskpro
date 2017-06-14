@@ -117,7 +117,7 @@ class DeliveryHandlerCollection extends AbstractCollection
      *
      * @return bool
      */
-    protected function hasHandler($handler_type)
+    public function hasHandler($handler_type)
     {
         return array_key_exists($handler_type, $this->attached_types);
     }
