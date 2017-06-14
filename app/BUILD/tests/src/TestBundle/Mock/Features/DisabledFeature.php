@@ -115,4 +115,11 @@ class DisabledFeature implements BetaFeatureInterface
     {
         return true;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoutePath()
+    {
+    }
 }

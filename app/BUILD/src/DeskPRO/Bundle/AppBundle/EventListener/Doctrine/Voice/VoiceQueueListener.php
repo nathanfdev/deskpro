@@ -32,6 +32,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * Class VoiceQueueListener.
@@ -83,7 +84,10 @@ class VoiceQueueListener
             return;
         }
 
+        $agents = $queue->getAgents();
+
         if ($args->hasChangedField('agents')
+            || ($agents instanceof PersistentCollection && $agents->isDirty())
             || $args->hasChangedField('routingModel')
             || $args->hasChangedField('maxQueueSize')
             || $args->hasChangedField('voicemailTimeout')) {

@@ -34,7 +34,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Class AbstractFeature.
  */
-abstract class AbstractFeature implements BetaFeatureInterface
+abstract class AbstractBetaFeature implements BetaFeatureInterface
 {
     /**
      * @var SettingsResolver
@@ -73,5 +73,12 @@ abstract class AbstractFeature implements BetaFeatureInterface
         $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $this->getId());
 
         return $this->settingsResolver->getGlobalSettings()->getBool($key, false);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRoutePath()
+    {
     }
 }

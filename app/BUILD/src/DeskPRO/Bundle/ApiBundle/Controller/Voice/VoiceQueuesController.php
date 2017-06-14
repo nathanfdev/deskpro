@@ -38,6 +38,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Twilio\Exceptions\RestException;
 
 /**
  * Class VoiceQueuesController.
@@ -90,6 +91,16 @@ class VoiceQueuesController extends AbstractVoiceCrudController
             $queue->addAgent($person);
         } else {
             $queue->removeAgent($person);
+        }
+
+        // disable async sync
+        $this->get('event_listener.voice_queue')->setAllowSync(false);
+
+        // force update twilio worker
+        try {
+            $this->get('twilio_adapter')->updateAgentWorker($queue->getAccount(), $person);
+        } catch (RestException $e) {
+            throw $this->createBadRequestException('Unable to sync Twilio account');
         }
 
         $em = $this->getManager();

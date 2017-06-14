@@ -10,6 +10,16 @@ export const tokensSelector = createSelector(
   state => state.get('tokens')
 );
 
+export const voiceSettingsSelector = createSelector(
+  stateSelector,
+  state => state.get('settings')
+);
+
+export const agentVoicemailTimeoutSelector = createSelector(
+  voiceSettingsSelector,
+  settings => settings && settings.get('agent_voicemail_timeout')
+);
+
 export const phoneTokenSelector = createSelector(
   tokensSelector,
   tokens => tokens && tokens.get('phone_token')

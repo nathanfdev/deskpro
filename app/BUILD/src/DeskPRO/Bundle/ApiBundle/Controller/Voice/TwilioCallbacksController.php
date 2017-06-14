@@ -241,7 +241,7 @@ class TwilioCallbacksController extends BaseController
 
                     $ticket = new Ticket();
                     $ticket->disableAutoTicketProcess();
-                    $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
+                    $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
                     $ticket->setPerson($phoneCall->getPerson());
                     $ticket->addMessage($ticketMessage);
 
@@ -625,7 +625,9 @@ class TwilioCallbacksController extends BaseController
                 $number = $phoneCall->getNumber();
                 $target = $number->getTarget();
 
-                $twiml->say('Required dial number is not supported.');
+                $twiml->say('Required dial number is not supported.', [
+                    'voice' => 'alice',
+                ]);
                 $this->addTargetResponse($phoneCall, $target, $twiml);
             }
         } elseif ($enteredCode === '*') {
@@ -639,7 +641,9 @@ class TwilioCallbacksController extends BaseController
                     'numDigits' => 4,
                     'action'    => $this->getAgentExtensionCallbackUrl($account),
                 ])
-                ->say('Please enter agent extension number')
+                ->say('Please enter agent extension number', [
+                    'voice' => 'alice',
+                ])
             ;
         }
 
@@ -698,10 +702,9 @@ class TwilioCallbacksController extends BaseController
                     'numDigits' => 4,
                     'action'    => $this->getAgentExtensionCallbackUrl($account),
                 ])
-                ->say(sprintf(
-                    'Requested agent with %d extension number does not exist. Please enter agent extension number again.',
-                    $enteredCode
-                ))
+                ->say(sprintf('Requested agent with %d extension number does not exist. Please enter agent extension number again.', $enteredCode), [
+                    'voice' => 'alice',
+                ])
             ;
         }
 
@@ -807,12 +810,12 @@ class TwilioCallbacksController extends BaseController
         // get voicemail message
         $twiml = new Twiml();
 
-        if ($asset instanceof VoiceTextAsset) {
-            $twiml->say($asset->getText());
-        } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-            $twiml->play($asset->getBlob()->getDownloadUrl(true));
+        if ($asset) {
+            $this->playGreetAsset($twiml, $asset);
         } else {
-            $twiml->say('You have reached voicemail. Please leave a message.');
+            $twiml->say('You have reached voicemail. Please leave a message.', [
+                'voice' => 'alice',
+            ]);
         }
 
         $twiml->record([
@@ -910,7 +913,8 @@ class TwilioCallbacksController extends BaseController
         $twiml = new Twiml();
         if ($asset instanceof VoiceTextAsset) {
             $twiml->say($asset->getText(), [
-                'loop' => 0,
+                'loop'  => 0,
+                'voice' => 'alice',
             ]);
         } elseif ($asset instanceof AbstractVoiceBlobAsset) {
             $twiml->play($asset->getBlob()->getDownloadUrl(true), [
@@ -1011,8 +1015,12 @@ class TwilioCallbacksController extends BaseController
 
         if (!$number || !$number->getTarget()) {
             $twiml = new Twiml();
-            $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()));
-            $twiml->say('Required phone number is out of service.');
+            $twiml->say(sprintf('Thank you for calling, %s', $this->getHelpdeskName()), [
+                'voice' => 'alice',
+            ]);
+            $twiml->say('Required phone number is out of service.', [
+                'voice' => 'alice',
+            ]);
         } else {
             $em = $this->getManager();
 
@@ -1143,7 +1151,10 @@ class TwilioCallbacksController extends BaseController
             if ($e->getStatusCode() === 400) {
                 $twiml->say(
                     'Unable to make a call to this number.
-                     Please check your international permissions to ensure you can call to this country.'
+                     Please check your international permissions to ensure you can call to this country.',
+                    [
+                        'voice' => 'alice',
+                    ]
                 );
                 $twiml->hangup();
 
@@ -1185,13 +1196,7 @@ class TwilioCallbacksController extends BaseController
 
         if ($target instanceof VoiceQueueTarget) {
             $queue = $target->getQueue();
-            $asset = $queue->getGreetAsset();
-
-            if ($asset instanceof VoiceTextAsset) {
-                $twiml->say($asset->getText());
-            } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-                $twiml->play($asset->getBlob()->getDownloadUrl(true));
-            }
+            $this->playGreetAsset($twiml, $queue->getGreetAsset());
 
             $twiml
                 ->enqueue([
@@ -1229,7 +1234,9 @@ class TwilioCallbacksController extends BaseController
 
             // no asset or text asset with enabled auto generated option
             if (!$asset || ($asset instanceof VoiceTextAsset && $asset->getAutoGenerated())) {
-                $gather->say('Welcome to '.$this->getHelpdeskName());
+                $gather->say('Welcome to '.$this->getHelpdeskName(), [
+                    'voice' => 'alice',
+                ]);
                 $gather->pause([
                     'length' => 2,
                 ]);
@@ -1238,19 +1245,23 @@ class TwilioCallbacksController extends BaseController
                     $gather->say(sprintf(
                         'For call %s, press %d',
                         $dialNumber->getTarget()->getTargetName(), $dialNumber->getDialNum()
-                    ));
+                    ), [
+                        'voice' => 'alice',
+                    ]);
                 }
 
                 if ($autoAttendant->getAllowRepeatMenu()) {
-                    $gather->say('To repeat the main menu, press * key');
+                    $gather->say('To repeat the main menu, press * key', [
+                        'voice' => 'alice',
+                    ]);
                 }
                 if ($autoAttendant->getAllowExtension()) {
-                    $gather->say('To enter agent extension number, press # key');
+                    $gather->say('To enter agent extension number, press # key', [
+                        'voice' => 'alice',
+                    ]);
                 }
-            } elseif ($asset instanceof VoiceTextAsset) {
-                $gather->say($asset->getText());
-            } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-                $gather->play($asset->getBlob()->getDownloadUrl(true));
+            } else {
+                $this->playGreetAsset($gather, $asset);
             }
         }
     }
@@ -1388,5 +1399,40 @@ class TwilioCallbacksController extends BaseController
             'callId'      => $phoneCall->getId(),
 
         ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param Twiml                   $twiml
+     * @param AbstractVoiceAsset|null $asset
+     */
+    private function playGreetAsset(Twiml $twiml, AbstractVoiceAsset $asset = null)
+    {
+        if ($asset instanceof VoiceTextAsset) {
+            $pattern = '#({{(?:\s+|)pause(?:\s+|)(?:\d+|)(?:\s+|)}})#';
+
+            $text = $asset->getText();
+            $text = preg_split($pattern, $text, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+            foreach ($text as $part) {
+                if (preg_match($pattern, $part)) {
+                    if (preg_match('#\d+#', $part, $m)) {
+                        $pause = $m[0];
+                    } else {
+                        $pause = 2;
+                    }
+
+                    $twiml->pause([
+                        'length' => $pause,
+                    ]);
+                } else {
+                    $twiml->say($part, [
+                        'voice'    => 'alice',
+                        'language' => $asset->getLanguage(),
+                    ]);
+                }
+            }
+        } elseif ($asset instanceof AbstractVoiceBlobAsset) {
+            $twiml->play($asset->getBlob()->getDownloadUrl(true));
+        }
     }
 }

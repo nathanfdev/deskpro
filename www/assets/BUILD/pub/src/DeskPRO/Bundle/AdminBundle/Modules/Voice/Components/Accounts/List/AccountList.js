@@ -27,14 +27,15 @@ class AccountList extends React.Component {
   }
 
   renderTable() {
-    const { accounts = [], onNewAccount, onEditAccount } = this.props;
+    const { accounts = [], onEditAccount } = this.props;
 
     return (
       <div className="page">
-        <button className="ui right floated basic button" onClick={onNewAccount}>
+        {/* disabled for now because we can just support only one account at the moment
+        <button className="ui right floated basic button" onClick={onNewAccount} disabled="disabled">
           <i className="icon plus" />
           Add new Twilio account
-        </button>
+        </button>*/}
         <SectionHeader title="General Settings" />
 
         <div className="twilio-list-table">

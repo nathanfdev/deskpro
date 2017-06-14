@@ -28,31 +28,30 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Request\ParamConverter;
 
-use Application\DeskPRO\Entity\Department;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\AppBundle\Features\FeaturesCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class TicketLayoutDepartmentConverter.
+ * Class FeatureConverter.
  */
-class TicketLayoutDepartmentConverter implements ParamConverterInterface
+class FeatureConverter implements ParamConverterInterface
 {
     /**
-     * @var EntityManager
+     * @var FeaturesCollection
      */
-    private $em;
+    private $featuresCollection;
 
     /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param FeaturesCollection $featuresCollection
      */
-    public function __construct(EntityManager $em)
+    public function __construct(FeaturesCollection $featuresCollection)
     {
-        $this->em = $em;
+        $this->featuresCollection = $featuresCollection;
     }
 
     /**
@@ -60,17 +59,14 @@ class TicketLayoutDepartmentConverter implements ParamConverterInterface
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $department   = null;
-        $departmentId = $request->attributes->get($configuration->getName());
+        $id      = $request->attributes->get($configuration->getName());
+        $feature = $this->featuresCollection->getFeature($id);
 
-        if ($departmentId !== 'default') {
-            $department = $this->em->getRepository(Department::class)->find((int) $departmentId);
-            if (!$department) {
-                throw new NotFoundHttpException('Department object not found.');
-            }
+        if (!$feature) {
+            throw new NotFoundHttpException("Feature `$id` not found.");
         }
 
-        $request->attributes->set($configuration->getName(), $department);
+        $request->attributes->set($configuration->getName(), $feature);
     }
 
     /**
@@ -78,6 +74,6 @@ class TicketLayoutDepartmentConverter implements ParamConverterInterface
      */
     public function supports(ParamConverter $configuration)
     {
-        return $configuration->getConverter() === 'ticket_layout_department';
+        return $configuration->getConverter() === 'feature';
     }
 }
