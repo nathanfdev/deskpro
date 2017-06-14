@@ -2904,10 +2904,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			DeskPRO_Window.showRefreshAlert(info.person_name);
 		});
 
-    DeskPRO_Window.getMessageBroker().addMessageListener('helpdesk.agent.refresh_interface', function (info) {
-      console.log(info);
-    });
-
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 	},
 
