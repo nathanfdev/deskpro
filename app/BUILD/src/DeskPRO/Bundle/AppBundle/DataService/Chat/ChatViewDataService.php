@@ -33,8 +33,8 @@
 namespace DeskPRO\Bundle\AppBundle\DataService\Chat;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\CustomField\CustomFieldUtil;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
+use DeskPRO\Bundle\AppBundle\DataService\CustomFieldUtil;
 
 class ChatViewDataService extends AbstractDataService
 {

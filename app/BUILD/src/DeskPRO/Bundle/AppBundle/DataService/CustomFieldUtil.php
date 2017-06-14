@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\CustomField;
+namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
 use Application\DeskPRO\CustomFields\Handler\Date;
