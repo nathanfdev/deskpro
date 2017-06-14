@@ -117,10 +117,10 @@ class PersonController extends AbstractController
         /** @var Ticket $rep */
         $rep = $this->em->getRepository('DeskPRO:Ticket');
 
-        $allowedDepartmentIds = $this->person->getHelper('AgentPermissions')->getAllowedDepartments('tickets',
-            false, 'assign');
+        $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
 
-        $person_tickets       = $rep->getPersonTickets($person, 251, 'status', 'DESC', $allowedDepartmentIds);
+        $person_tickets       = $rep->getPersonTickets($person, 251, 'status', 'DESC', $allowedTicketDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
             $person,
             ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden']
@@ -209,9 +209,11 @@ class PersonController extends AbstractController
             }
         }
 
+        $allowedChatDepartmentsIds = $permissionsHelper->getAllowedDepartments('chat');
+
         /** @var ChatConversationRepository $chatConversationRepository */
         $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
-        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person);
+        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person, 'date_created', 'DESC', $allowedChatDepartmentsIds);
         $person_chats_count         = count($person_chats);
 
         $is_editable = $this->isPersonEditable($person);

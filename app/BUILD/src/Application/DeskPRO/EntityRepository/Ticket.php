@@ -340,6 +340,7 @@ class Ticket extends AbstractEntityRepository
         $sort_order = 'DESC',
         $departmentIds = []
     ) {
+        $where = $where2 = '';
         if (!$person->is_agent) {
             $params      = [$person->id, $person->id];
             $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT];

@@ -352,19 +352,33 @@ class ChatConversation extends AbstractEntityRepository
      * @param PersonEntity $person
      * @param string       $orderBy
      * @param string       $orderDir
+     * @param array        $departmentsIds
      *
      * @return mixed
      */
-    public function getPastChatsForPerson(PersonEntity $person, $orderBy = 'date_created', $orderDir = 'DESC')
-    {
-        return $this->getEntityManager()->createQuery("
+    public function getPastChatsForPerson(
+        PersonEntity $person,
+        $orderBy = 'date_created',
+        $orderDir = 'DESC',
+        $departmentsIds = []
+    ) {
+        $where = '';
+        if ($departmentsIds) {
+            $where = 'AND c.department IN (?3)';
+        }
+
+        $query = $this->getEntityManager()->createQuery("
             SELECT c
             FROM DeskPRO:ChatConversation c INDEX BY c.id
-            WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended'
+            WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended' $where
             ORDER BY c.{$orderBy} {$orderDir}
         ")->setParameter(1, $person)
-          ->setParameter(2, $person->getPrimaryEmailAddress())
-          ->execute();
+          ->setParameter(2, $person->getPrimaryEmailAddress());
+        if ($departmentsIds) {
+            $query->setParameter(3, $departmentsIds, Connection::PARAM_INT_ARRAY);
+        }
+
+        return $query->execute();
     }
 
     public function getLatestChatForSession($session, $allow_timeout = false)
