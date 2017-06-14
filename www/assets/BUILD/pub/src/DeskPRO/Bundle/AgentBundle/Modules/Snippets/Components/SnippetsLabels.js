@@ -21,13 +21,13 @@ class SnippetsLabels extends React.Component {
 
   componentWillMount() {
     if (this.props.snippets) {
-      this.extractLabels(this.props.snippets.get('snippets'));
+      this.extractLabels(this.props.snippets);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.snippets) {
-      this.extractLabels(nextProps.snippets.get('snippets'));
+      this.extractLabels(nextProps.snippets);
     }
   }
 
@@ -45,7 +45,7 @@ class SnippetsLabels extends React.Component {
         key="all"
         onClick={() => this.props.selectLabel('')}
       >
-        All ({this.props.snippets.get('snippets').size})
+        All ({this.props.snippets.size})
       </ListElement>
     ];
     this.state.labels

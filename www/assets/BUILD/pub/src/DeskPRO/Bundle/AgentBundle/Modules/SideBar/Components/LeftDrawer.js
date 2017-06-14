@@ -19,18 +19,18 @@ export class LeftDrawerContainer extends SeparateComponent {
 
   componentWillMount = () => {
     window.document.addEventListener('dpLeftDrawer', (e) => {
-      let Module;
+      let module;
       switch (e.detail.module) {
         case 'SnippetsMenu':
-          Module = SnippetsMenuContainer;
+          module = <SnippetsMenuContainer closeMenu={this.closeDrawer} type="ticket" />;
           break;
         default:
-          Module = false;
+          module = false;
       }
-      if (Module) {
+      if (module) {
         this.setState({
-          module: <Module />,
-          width:  e.detail.width
+          module,
+          width: e.detail.width
         });
         this.openDrawer();
       } else {

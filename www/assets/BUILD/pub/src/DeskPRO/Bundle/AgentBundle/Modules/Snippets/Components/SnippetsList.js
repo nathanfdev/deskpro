@@ -6,6 +6,7 @@ export class SnippetsListElement extends React.Component {
   static propTypes = {
     snippet:     PropTypes.object,
     editSnippet: PropTypes.func,
+    langId:      PropTypes.number,
   };
 
   static defaultProps = {
@@ -44,6 +45,15 @@ export class SnippetsListElement extends React.Component {
     return null;
   };
 
+  getContent = () => {
+    const { snippet, langId } = this.props;
+    const translation = snippet.get('translations').find(element => element.get('language') === langId);
+    if (translation) {
+      return translation.get('content');
+    }
+    return null;
+  };
+
   render() {
     const { snippet } = this.props;
     return (
@@ -53,7 +63,7 @@ export class SnippetsListElement extends React.Component {
           <span className="shortcode dp-code">{`%${snippet.get('shortcut_code')}%`}</span><br />
           {this.getLanguages()}
           {this.getLabels()}
-          <span className="content">{snippet.get('content')}</span>
+          <span className="content">{this.getContent()}</span>
         </div>
         <i className="fa fa-pencil edit-snippet" onClick={() => this.props.editSnippet(snippet)} />
       </div>
@@ -63,7 +73,9 @@ export class SnippetsListElement extends React.Component {
 export class SnippetsList extends React.Component {
   static propTypes = {
     snippets:      PropTypes.object,
-    selectedLabel: PropTypes.string
+    selectedLabel: PropTypes.string,
+    langId:        PropTypes.number,
+    editSnippet:   PropTypes.func,
   };
 
   constructor(props) {
@@ -96,15 +108,32 @@ export class SnippetsList extends React.Component {
     if (!this.props.snippets) {
       return null;
     }
-    this.props.snippets.get('snippets')
+    this.props.snippets
       .filter((snippet) => {
         if (!this.props.selectedLabel) {
           return true;
         }
         return snippet.get('labels').find(label => label === this.props.selectedLabel);
       })
+      .sort((a, b) => {
+        const titleA = a.get('title').toLowerCase();
+        const titleB = b.get('title').toLowerCase();
+        if (titleA > titleB) {
+          return 1;
+        } else if (titleA < titleB) {
+          return -1;
+        }
+        return 0;
+      })
       .forEach((element) => {
-        elements.push(<SnippetsListElement key={element.get('id')} snippet={element} />);
+        elements.push(
+          <SnippetsListElement
+            key={element.get('id')}
+            snippet={element}
+            langId={this.props.langId}
+            editSnippet={this.props.editSnippet}
+          />
+        );
       });
     return elements;
   };
@@ -116,7 +145,10 @@ export class SnippetsList extends React.Component {
   };
 
   render() {
-    const height = this.state.height - this.offsetTop;
+    let height = this.state.height - this.offsetTop;
+    if (isNaN(height)) {
+      height = 0;
+    }
     return (
       <div className="snippets__list" ref={(c) => { this.list = c; }} style={{ height }}>
         {this.getElements()}

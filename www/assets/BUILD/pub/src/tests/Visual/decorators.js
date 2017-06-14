@@ -5,12 +5,6 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import $ from 'jquery';
 
-if (window.location.href.startsWith('http://localhost:9001/')) {
-  window.DESKPRO_APP_ASSETS_URL = 'http://localhost:9666/pub/build';
-} else {
-  window.DESKPRO_APP_ASSETS_URL = '';
-}
-
 // If the requested URL matches storybook server URL, then using the default webpack URL to load assets
 // and make an AJAX request to load the assets URL otherwise (in case of browsing a static storybook dump)
 let assetsUrl = window.location.href.startsWith('http://localhost:9001/')

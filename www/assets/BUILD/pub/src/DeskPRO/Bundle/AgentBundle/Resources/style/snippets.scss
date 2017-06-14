@@ -4,21 +4,56 @@
   height: 100%;
   box-shadow: 1px 0 5px $dp-greyscale-850;
   .header {
-    .search {
-      .dp-input input {
-        border: 0;
-        caret-color: $dp-sonic-primary;
-      }
-      .fa {
-        font-size: $icon-size-s;
-      }
+    > .search {
+      position: relative;
       height: 51px;
-      border-bottom: solid 1px $dp-greyscale-250;
+      border-bottom: 1px solid $dp-greyscale-250;
+      .isvg.search {
+        padding-top: 15px;
+        padding-left: 15px;
+        line-height: 28px;
+        display: inline-block;
+        svg {
+          height: 18px;
+        }
+      }
+      .dp-input {
+        padding-top: 11px;
+        display: inline-block;
+        vertical-align: top;
+        input {
+          border: 0;
+          width: 400px;
+          caret-color: $dp-sonic-primary;
+        }
+      }
+      .fa-star-o {
+        font-size: $icon-size-m;
+        position: absolute;
+        right: 50px;
+        top: 15px;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+      .isvg.close-icon {
+        vertical-align: middle;
+        svg {
+          height: 18px;
+        }
+      }
+      a.close-icon {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        padding: 5px 5px 5px 10px;
+        border-left: 1px solid $dp-greyscale-250;
+        cursor: pointer;
+      }
     }
     .top {
       margin: 20px 20px 0;
       padding-bottom: 10px;
-      border-bottom: solid 1px $dp-greyscale-250;
+      border-bottom: 1px solid $dp-greyscale-250;
       h1 {
         font-family: $primary-font;
         font-size: $font-size-xl;
@@ -44,7 +79,7 @@
 .snippets__labels {
   padding-right: 10px;
   width: 165px;
-  border-right: solid 1px $dp-greyscale-250;
+  border-right: 1px solid $dp-greyscale-250;
   .title {
     margin-bottom: 5px;
     font-family: $primary-font;
@@ -80,7 +115,7 @@
 }
 .snippet_list_element_wrapper {
   .snippets__list__element {
-    border: solid 1px $dp-greyscale-250;
+    border: 1px solid $dp-greyscale-250;
     border-width: 1px 0 0;
     position: relative;
     padding: 5px 10px;

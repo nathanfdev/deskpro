@@ -10,7 +10,7 @@ storiesOf('Agent: Snippets', module)
   .addDecorator(story => css(story()))
   .add(
     'Left menu',
-    () => <SnippetsMenu snippets={snippetsState} />
+    () => <SnippetsMenu snippets={snippetsState} langId={1} />
   )
   .add(
     'Modal',

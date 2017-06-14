@@ -1,4 +1,3 @@
-import React from 'react';
 import Immutable from 'immutable';
 
 const messageOne = {
@@ -7,7 +6,16 @@ const messageOne = {
   shortcut_code: 'admin',
   labels:        ['General', 'DeskPRO Cloud'],
   lang:          ['en', 'es', 'de'],
-  content:       <a>here</a>
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'here',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 const messageTwo = {
   id:            2,
@@ -15,7 +23,16 @@ const messageTwo = {
   shortcut_code: 'agent',
   labels:        ['General', 'DeskPRO Cloud', 'Agents'],
   lang:          ['en', 'es'],
-  content:       <a>here</a>
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'here',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 const messageThree = {
   id:            3,
@@ -23,7 +40,16 @@ const messageThree = {
   shortcut_code: 'api',
   labels:        ['Docs'],
   lang:          ['en', 'es', 'de'],
-  content:       <a>here</a>
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'here',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 const messageFour = {
   id:            4,
@@ -31,7 +57,16 @@ const messageFour = {
   shortcut_code: 'price',
   labels:        ['General', 'Sales'],
   lang:          ['en', 'es', 'de'],
-  content:       'We are very transparent about pricing and prices are as shown as on the content is longer to check emphasis'
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'We are very transparent about pricing and prices are as shown as on the content is longer to check emphasis',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 const messageFive = {
   id:            5,
@@ -39,7 +74,16 @@ const messageFive = {
   shortcut_code: 'deleteagent',
   labels:        ['General'],
   lang:          ['en', 'es'],
-  content:       'When you delete an agent you can choose from one of two option'
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'When you delete an agent you can choose from one of two option',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 const messageSix = {
   id:            6,
@@ -47,7 +91,16 @@ const messageSix = {
   shortcut_code: 'SSL',
   labels:        ['Docs'],
   lang:          ['en'],
-  content:       'Sure -- we can install a custom SSL cert for you on your own domain'
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'Sure -- we can install a custom SSL cert for you on your own domain',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 const messageSeven = {
   id:            7,
@@ -56,20 +109,27 @@ const messageSeven = {
   shortcut_code: 'datahost',
   labels:        ['General'],
   lang:          ['en', 'es', 'de'],
-  content:       'In the US in secure dedicated data centres. You can choose EU hosting'
+  translations:  [
+    {
+      id:       1,
+      snippet:  1,
+      language: 1,
+      content:  'In the US in secure dedicated data centres. You can choose EU hosting',
+      title:    'alias et aut',
+      blobs:    []
+    }
+  ]
 };
 
-export const snippetsState = Immutable.Map({
-  snippets: Immutable.fromJS([
-    messageOne,
-    messageTwo,
-    messageThree,
-    messageFour,
-    messageFive,
-    messageSix,
-    messageSeven
-  ])
-});
+export const snippetsState = Immutable.fromJS([
+  messageOne,
+  messageTwo,
+  messageThree,
+  messageFour,
+  messageFive,
+  messageSix,
+  messageSeven
+]);
 
 export const editSnippet = Immutable.fromJS({
   id:     3,

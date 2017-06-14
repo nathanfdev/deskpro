@@ -590,7 +590,7 @@ export class AgentTopBar extends React.Component {
           onClearInput={onClearSearchInput}
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
           ref={(c) => { this.searchBox = c; }}
-          icon={<Isvg className="search" src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/search.svg`} />}
+          icon={<Isvg className="search" src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`} />}
         />
       </TopBarItem>
       <TopBarItem

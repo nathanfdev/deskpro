@@ -2,7 +2,7 @@ import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses, getLinkedData } from 'DeskPRO/Component/Util/Api';
-import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
@@ -66,6 +66,13 @@ export const preloadData    = createAction(
         batchComponents.defaultBrand  = { endpoint: 'brands/default' };
       }
 
+      if (window.DP_HAS_NEW_SNIPPETS) {
+        batchComponents.snippets  = {
+          endpoint: 'snippets',
+          query:    'count=200&inline_sideloads=true&include=snippet_translation'
+        };
+      }
+
       dispatch(loadAgentPhraseTranslations());
 
       // bootstrap deskpro app store
@@ -117,6 +124,24 @@ export const preloadData    = createAction(
             dispatch(setVoiceActivities(data.voice_activities));
             dispatch(setVoiceSettings(data.voice_settings));
             dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
+          }
+
+          if (window.DP_HAS_NEW_SNIPPETS) {
+            dispatch(setCollection('Snippets', 'all', data.snippets));
+            const pagination = responses.snippets.meta.pagination;
+            let currentPage = pagination.current_page;
+            while (currentPage < pagination.total_pages) {
+              currentPage += 1;
+              const extraSnippets = {
+                endpoint: 'snippets',
+                query:    `count=${pagination.count}&page=${currentPage}&inline_sideloads=true&include=snippet_translation`
+              };
+              api.sendGet(api.prepareParams({ snippets: extraSnippets }))
+                .success((response) => {
+                  dispatch(addToCollection('Snippets', 'all', response.responses.snippets.data));
+                })
+              ;
+            }
           }
 
           dispatch(donePreloading());
