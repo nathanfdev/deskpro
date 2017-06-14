@@ -48,6 +48,7 @@ use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -97,17 +98,23 @@ class TicketManager
     private $auto_vars = [];
 
     /**
+     * @var NotificationEventManager
+     */
+    private $notificationEventManager;
+
+    /**
      * Constructor.
      *
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container       = $container;
-        $this->em              = $container->getEm();
-        $this->db              = $container->getDb();
-        $this->blob_storage    = $container->getBlobStorage();
-        $this->eventDispatcher = $container->get('event_dispatcher');
+        $this->container                = $container;
+        $this->em                       = $container->getEm();
+        $this->db                       = $container->getDb();
+        $this->blob_storage             = $container->getBlobStorage();
+        $this->eventDispatcher          = $container->get('event_dispatcher');
+        $this->notificationEventManager = $container->get('deskpro.notification.event_manager');
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
         $organizationRepo = $this->em->getRepository(Organization::class);
@@ -295,6 +302,8 @@ class TicketManager
             $this->em->persist($ticket);
             $this->em->flush();
 
+            $this->notificationEventManager->deliver();
+
             return;
         }
 
@@ -305,8 +314,11 @@ class TicketManager
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+            $this->notificationEventManager->deliver();
             throw $e;
         }
+
+        $this->notificationEventManager->deliver();
 
         return $ret;
     }

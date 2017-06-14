@@ -182,6 +182,8 @@ abstract class AbstractRunner
             call_user_func($this->post_job_callback, $this, $worker_job, $logger);
         }
 
+        App::getContainer()->get('deskpro.notification.event_manager')->deliver();
+
         unset($GLOBALS['DP_CRON_LOGGER']);
     }
 

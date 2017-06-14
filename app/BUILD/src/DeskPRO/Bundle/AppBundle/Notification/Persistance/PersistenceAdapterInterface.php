@@ -31,9 +31,9 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Persistance;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 
 /**
- * Class PersistanceAdapterInterface.
+ * Class PersistenceAdapterInterface.
  */
-interface PersistanceAdapterInterface
+interface PersistenceAdapterInterface
 {
     public function persist(SystemEventInterface $event);
 }

@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Event;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use Doctrine\ORM\EntityManager;
 
-class DbAdapter implements PersistanceAdapterInterface
+class DbAdapter implements PersistenceAdapterInterface
 {
     /**
      * @var EntityManager

@@ -26,33 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
+namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Tickets\Filters\FilterChangeDetector;
-
-/**
- * Class TicketFilterChangeDetectorService.
- */
-class TicketFilterChangeDetectorService
+class CliStrategyListener implements EventSubscriberInterface
 {
     /**
-     * @param DeskproContainer $container
-     *
-     * @return FilterChangeDetector
+     * @var NotificationStrategyInterface[]
      */
-    public static function create(DeskproContainer $container)
+    private $strategies = [];
+
+    /**
+     * @param NotificationStrategyInterface $strategy
+     */
+    public function pushStrategy(NotificationStrategyInterface $strategy)
     {
-        return new FilterChangeDetector(
-            $container->getEm(),
-            $container->get('event_dispatcher'),
-            $container->get('deskpro.notification.event_manager')
-        );
+        $this->strategies[] = $strategy;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            ConsoleEvents::TERMINATE => ['onTerminate', 2],
+        ];
+    }
+
+    /**
+     * Deliver scheduled messages in immediate strategy.
+     */
+    public function onTerminate()
+    {
+        foreach ($this->strategies as $strategy) {
+            $strategy->deliver();
+        }
     }
 }

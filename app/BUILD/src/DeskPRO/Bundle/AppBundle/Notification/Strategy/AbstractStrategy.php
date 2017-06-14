@@ -32,27 +32,43 @@ use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerCollection;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
 
 abstract class AbstractStrategy implements NotificationStrategyInterface
 {
-    /** @var DeliveryService */
-    protected $delivery_service;
+    /**
+     * @var DeliveryService
+     */
+    protected $deliveryService;
 
-    /** @var NotifyHandlerCollection */
-    protected $event_handlers;
+    /**
+     * @var NotifyHandlerCollection
+     */
+    protected $eventHandlers;
 
-    /** @var PersistanceAdapterInterface */
-    protected $persistance_adapter;
+    /**
+     * @var PersistenceAdapterInterface
+     */
+    protected $persistenceAdapter;
 
+    /**
+     * AbstractStrategy constructor.
+     */
     public function __construct()
     {
-        $this->event_handlers = new NotifyHandlerCollection();
+        $this->eventHandlers = new NotifyHandlerCollection();
     }
 
-    public function setDeliveryService(DeliveryService $delivery_service)
+    /**
+     * @param DeliveryService $deliveryService
+     *
+     * @return $this
+     */
+    public function setDeliveryService(DeliveryService $deliveryService)
     {
-        $this->delivery_service = $delivery_service;
+        $this->deliveryService = $deliveryService;
+
+        return $this;
     }
 
     /**
@@ -62,15 +78,53 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
      */
     public function attachEventHandler(NotifyHandlerInterface $handler)
     {
-        $this->event_handlers->attachHandler($handler);
+        $this->eventHandlers->attachHandler($handler);
 
         return $this;
     }
 
+    /**
+     * @param SystemEventInterface $event
+     */
     public function handlePersistedEvent(SystemEventInterface $event)
     {
         // this is just a stub for edge case when someone switched deferred strategy to immediate
         // and factory returns immediate strategy, that couldn't process persisted events
         return;
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function deliver();
+
+    /**
+     * @return $this
+     */
+    public function startBatch()
+    {
+        $this->deliveryService->startBatch();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetBatch()
+    {
+        $this->deliveryService->resetBatch();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function stopBatch()
+    {
+        $this->deliveryService->stopBatch();
+
+        return $this;
     }
 }

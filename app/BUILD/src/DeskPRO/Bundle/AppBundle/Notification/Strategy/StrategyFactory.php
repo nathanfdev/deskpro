@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -51,7 +51,10 @@ class StrategyFactory
     protected $config;
 
     /** @var NotificationStrategyInterface */
-    protected $default_strategy;
+    protected $defaultStrategy;
+
+    /** @var NotificationStrategyInterface[] */
+    protected $builtStrategies;
 
     /**
      * @param ContainerInterface $container
@@ -65,12 +68,19 @@ class StrategyFactory
             'notification.settings.strategies',
             $this->container->getParameter('notification.settings')
         );
-        $this->createDefaultStrategy($global_settings->get('notification.settings.default_strategy'));
+        $this->createDefaultStrategy(
+            'notification.settings.default_strategy',
+            $global_settings->get('notification.settings.default_strategy')
+        );
     }
 
-    private function createDefaultStrategy($config)
+    /**
+     * @param string $eventName
+     * @param array  $config
+     */
+    private function createDefaultStrategy($eventName, $config)
     {
-        $this->default_strategy = $this->internalCreate($config);
+        $this->defaultStrategy = $this->internalCreate($eventName, $config);
     }
 
     /**
@@ -81,25 +91,39 @@ class StrategyFactory
     public function create(SystemEventInterface $event)
     {
         if (array_key_exists($event->getName(), $this->config)) {
-            return $this->internalCreate($this->config[$event->getName()]);
+            return $this->internalCreate($event->getName(), $this->config[$event->getName()]);
         } else {
-            return $this->default_strategy;
+            return $this->defaultStrategy;
         }
     }
 
     /**
-     * @param $config
+     * @param array  $config
+     * @param string $eventName
      *
      * @return NotificationStrategyInterface
      */
-    private function internalCreate($config)
+    private function internalCreate($eventName, $config)
     {
-        $strategy = $this->getStrategy($config['strategy']);
-        $this->setDeliveryService($strategy, $config);
-        $this->setNotifyHandlers($strategy, $config);
-        $this->setPersistanceAdapter($strategy, $config);
+        //let us gonna check if we already have strategy for this event
 
-        return $strategy;
+        if (!isset($this->builtStrategies[$eventName])) {
+            $strategy = $this->getStrategy($config['strategy']);
+            $this->setDeliveryService($strategy, $config);
+            $this->setNotifyHandlers($strategy, $config);
+            $this->setPersistanceAdapter($strategy, $config);
+            $this->builtStrategies[$eventName] = $strategy;
+        }
+
+        return $this->builtStrategies[$eventName];
+    }
+
+    /**
+     * @return NotificationStrategyInterface[]
+     */
+    public function getAllBuiltStrategies()
+    {
+        return $this->builtStrategies;
     }
 
     /**
@@ -113,10 +137,14 @@ class StrategyFactory
             case 'immediate':
                 $immediateStrategy = new ImmediateStrategy();
                 $this->container->get('deskpro.notification.immediate_listener')->pushStrategy($immediateStrategy);
+                $this->container->get('deskpro.notification.cli_listener')->pushStrategy($immediateStrategy);
 
                 return $immediateStrategy;
             case 'deferred':
-                return new DeferredStrategy();
+                $deferredStrategy = new DeferredStrategy();
+                $this->container->get('deskpro.notification.cli_listener')->pushStrategy($deferredStrategy);
+
+                return $deferredStrategy;
             default:
                 throw new \RuntimeException(sprintf('Strategy with alias [ %s ] wasn\'t found!', $strategy_name));
         }
@@ -182,11 +210,11 @@ class StrategyFactory
         if (array_key_exists('persistance', $config)) {
             $adapter_id = sprintf('deskpro.notification.peristance.adapter.%s', $config['persistance']);
             if ($this->container->has($adapter_id)) {
-                /** @var PersistanceAdapterInterface $adapter */
+                /** @var PersistenceAdapterInterface $adapter */
                 $adapter = $this->container->get($adapter_id);
-                $strategy->setPersistanceAdapter($adapter);
+                $strategy->setPersistenceAdapter($adapter);
             } else {
-                throw new \RuntimeException(sprintf('Persistance adapter with alias [ %s ] wasn\'t found!', $config['persistance']));
+                throw new \RuntimeException(sprintf('Persistence adapter with alias [ %s ] wasn\'t found!', $config['persistance']));
             }
         }
     }

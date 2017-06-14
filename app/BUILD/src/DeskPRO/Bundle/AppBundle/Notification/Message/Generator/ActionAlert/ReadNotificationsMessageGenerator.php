@@ -120,16 +120,23 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
      */
     protected function getChatTargets(AbstractMessageEvent $event)
     {
-        $chat = $this->getChatMessage($event)->getChat();
+        $agentChatMessage = $this->getChatMessage($event);
+        $chat             = $agentChatMessage->getChat();
+
+        $filterFunction = function ($target) use ($agentChatMessage) {
+            /* @var Person $target */
+            return $target->getId() !== $agentChatMessage->getPerson()->getId();
+        };
+
         if ($chat->getType() === AgentChat::TYPE_EVERYONE) {
-            return $this->em->getRepository(Person::class)->findBy([
+            return array_filter($this->em->getRepository(Person::class)->findBy([
                 'is_agent'    => true,
                 'is_deleted'  => false,
                 'is_disabled' => false,
-            ]);
+            ]), $filterFunction);
         }
 
-        return $chat->getPersonList();
+        return array_filter($chat->getPersonList(), $filterFunction);
     }
 
     /**
