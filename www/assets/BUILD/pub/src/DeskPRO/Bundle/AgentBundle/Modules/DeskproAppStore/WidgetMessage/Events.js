@@ -28,9 +28,13 @@ export const EVENT_TICKET_REPLY = 'context.ticket.reply';
 
 export const EVENT_RESET_SIZE = 'app.reset_size';
 
-export const EVENT_SHOW_NOTIFICATION = 'app.show_notification';
-
 export const EVENT_SUBSCRIBE = 'app.subscribe_to_event';
+
+// DESKPRO WINDOW EVENTS
+
+export const EVENT_DESKPROWINDOW_SHOW_NOTIFICATION = 'deskpro_window.show_notification';
+
+export const EVENT_DESKPROWINDOW_INSERT_MARKUP = 'deskpro_window.insert_markup';
 
 // USER EVENTS
 
@@ -70,11 +74,15 @@ export const events =
 
   EVENT_RESET_SIZE,
 
-  EVENT_SHOW_NOTIFICATION,
-
   EVENT_ME_GET,
 
-  EVENT_SUBSCRIBE
+  EVENT_SUBSCRIBE,
+
+  // DESKPRO WINDOW EVENTS
+
+  EVENT_DESKPROWINDOW_SHOW_NOTIFICATION,
+
+  EVENT_DESKPROWINDOW_INSERT_MARKUP
 
 };
 

@@ -266,7 +266,21 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_SHOW_NOTIFICATION = (response, widget, message, services) => {
+export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
+  const { events  } = message.body;
+  events.each(eventName => services.addEventListener(eventName, widget));
+};
+
+// DESKPRO WINDOW EVENT HANDLERS
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} message
+ * @param {AppServices} services
+ * @constructor
+ */
+export const EVENT_DESKPROWINDOW_SHOW_NOTIFICATION = (response, widget, message, services) => {
 
   const { body: notification } = message;
   if (typeof notification === 'string') {
@@ -281,10 +295,26 @@ export const EVENT_SHOW_NOTIFICATION = (response, widget, message, services) => 
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
-  const { events  } = message.body;
-  events.each(eventName => services.addEventListener(eventName, widget));
+export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, services) => {
+  const { body: markup } = message;
+  const { $, window } = services;
+
+  try {
+    if (markup instanceof Array) {
+      markup.forEach(markupFragment => {
+        $(window.document.body).append(markupFragment);
+      });
+    } else if (typeof markup === 'string') {
+      $(window.document.body).append(markup);
+    }
+    response(null, markup);
+  } catch(e) {
+    console.log(e);
+    response(e);
+  }
+
 };
+
 
 export const handlers = {
 
@@ -320,9 +350,13 @@ export const handlers = {
 
   EVENT_RESET_SIZE,
 
-  EVENT_SHOW_NOTIFICATION,
+  EVENT_SUBSCRIBE,
 
-  EVENT_SUBSCRIBE
+  // DESKPRO WINDOW EVENTS
+
+  EVENT_DESKPROWINDOW_SHOW_NOTIFICATION,
+
+  EVENT_DESKPROWINDOW_INSERT_MARKUP
 
 };
 
