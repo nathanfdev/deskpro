@@ -143,9 +143,13 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->request->get('CallSid')) {
+        $callSid    = $request->request->get('CallSid');
+        $callStatus = $request->request->get('CallStatus');
+
+        if ($callSid && $callStatus === 'completed') {
+            // log call participants
             $participant = $this->getRepository(AbstractVoicePhoneCallParticipant::class)->findOneBy([
-                'callSid' => $request->request->get('CallSid'),
+                'callSid' => $callSid,
             ]);
 
             if ($participant) {
@@ -165,6 +169,19 @@ class TwilioCallbacksController extends BaseController
                 $em = $this->getManager();
                 $em->persist($log);
                 $em->flush();
+            }
+
+            // check voicemail worker status
+            // in case if voicemail callback wasn't called for some reason
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+                'callSid' => $callSid,
+            ]);
+
+            if ($phoneCall && $phoneCall->getStatus() === VoicePhoneCall::STATUS_VOICEMAIL) {
+                $voicemailWorker = $this->get('twilio_adapter')->getVoicemailWorker($account);
+                if ($voicemailWorker->activityName === 'Busy') {
+                    $this->get('twilio_adapter')->updateVoicemailWorkerActivity($account, 'Idle');
+                }
             }
         }
     }

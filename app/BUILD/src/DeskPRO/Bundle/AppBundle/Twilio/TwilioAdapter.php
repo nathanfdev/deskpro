@@ -295,6 +295,16 @@ class TwilioAdapter
 
     /**
      * @param VoiceAccount $account
+     *
+     * @return WorkerInstance
+     */
+    public function getVoicemailWorker(VoiceAccount $account)
+    {
+        return $this->getWorkspace($account)->workers($account->getVoicemailWorkerSid())->fetch();
+    }
+
+    /**
+     * @param VoiceAccount $account
      * @param string       $activityName
      *
      * @return WorkerInstance
