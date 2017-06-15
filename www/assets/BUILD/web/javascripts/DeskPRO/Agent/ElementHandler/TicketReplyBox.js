@@ -43,6 +43,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		var storedReplyText = '';
 		var storedNoteText = '';
+		var storedFWDText = '';
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val() || "";
@@ -298,60 +299,101 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var replyMode = 'reply';
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
-			if (replyMode == 'reply') {
-				return;
+			switch(replyMode) {
+				case 'note':
+					// process elements
+          self.getElById('replybox_notetab_btn').removeClass('on');
+          self.el.removeClass('dp-note-on');
+          self.getElById('is_note').val('0');
+          self.isNote = false;
+          // process stored text
+          if (isWysiwyg && textarea.data('redactor')) {
+            storedNoteText = textarea.getCode();
+            textarea.setCode(storedReplyText || '');
+          } else {
+            storedNoteText = textarea.val();
+            textarea.val(storedReplyText || '');
+          }
+					break;
+				case 'fwd':
+          self.getElById('replybox_fwdtab_btn').removeClass('on');
+          if (isWysiwyg && textarea.data('redactor')) {
+            storedFWDText = textarea.getCode();
+            textarea.setCode(storedReplyText || '');
+          } else {
+            storedFWDText = textarea.val();
+            textarea.val(storedReplyText || '');
+          }
+					break;
+        case 'reply':
+				default:
+					//no-op
+					return;
 			}
+
+      $('.show-fwd', self.el).hide();
+      $('.show-reply', self.el).show();
+      $('.show-note', self.el).hide();
+
+      // process special stuff
+      if (closeReply) {
+        closeTabCheck.prop('checked', true);
+      } else {
+        closeTabCheck.prop('checked', false);
+      }
+      if (wasAgentChecked) {
+        agentSelCheck.prop('checked', true);
+      }
+      if (wasTeamChecked) {
+        teamSelCheck.prop('checked', true);
+      }
+
+      var actionsRow = self.getElById('actions_row');
+      if (actionsRow.find('ul').find('li')[0]) {
+        actionsRow.show();
+      }
+
+      $(this).addClass('on');
 			replyMode = 'reply';
-
-			self.el.removeClass('dp-note-on');
-			$(this).addClass('on');
-			self.getElById('replybox_notetab_btn').removeClass('on');
-			$('.hide-note:not(.is-hidden)', self.el).show();
-			$('.hide-reply', self.el).hide();
-			self.getElById('is_note').val('0');
-			self.isNote = false;
-			self.hideAgentNotifyList();
-
-			if (closeReply) {
-				closeTabCheck.prop('checked', true);
-			} else {
-				closeTabCheck.prop('checked', false);
-			}
-
-			if (wasAgentChecked) {
-				agentSelCheck.prop('checked', true);
-			}
-			if (wasTeamChecked) {
-				teamSelCheck.prop('checked', true);
-			}
-
-			if (isWysiwyg && textarea.data('redactor')) {
-				storedNoteText = textarea.getCode();
-				textarea.setCode(storedReplyText || '');
-			} else {
-				storedNoteText = textarea.val();
-				textarea.val(storedReplyText || '');
-			}
-
-			var actionsRow = self.getElById('actions_row');
-			if (actionsRow.find('ul').find('li')[0]) {
-				actionsRow.show();
-			}
+      self.hideAgentNotifyList();
 		});
 
-		this.getElById('replybox_notetab_btn').on('click', function() {
-			if (replyMode == 'note') {
-				return;
-			}
+    this.getElById('replybox_notetab_btn').on('click', function() {
+
+      switch(replyMode) {
+        case 'reply':
+          self.getElById('replybox_replytab_btn').removeClass('on');
+          if (isWysiwyg && textarea.data('redactor')) {
+            storedReplyText = textarea.getCode();
+            textarea.setCode(storedNoteText || '');
+          } else {
+            storedReplyText = textarea.val();
+            textarea.val(storedNoteText || '');
+          }
+          break;
+        case 'fwd':
+          self.getElById('replybox_fwdtab_btn').removeClass('on');
+          if (isWysiwyg && textarea.data('redactor')) {
+            storedFWDText = textarea.getCode();
+            textarea.setCode(storedNoteText || '');
+          } else {
+            storedFWDText = textarea.val();
+            textarea.val(storedNoteText || '');
+          }
+          break;
+        case 'note':
+        default:
+          // no-op
+          return;
+      }
+
 			replyMode = 'note';
-
+      $('.show-fwd', self.el).hide();
+      $('.show-reply', self.el).hide();
+      $('.show-note', self.el).show();
 			self.getElById('actions_row').hide();
-
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
-			self.getElById('replybox_replytab_btn').removeClass('on');
-			$('.hide-note', self.el).hide();
-			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 			self.isNote = true;
 			self.hideAgentNotifyList();
@@ -361,21 +403,54 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			} else {
 				closeTabCheck.prop('checked', false);
 			}
-
-			if (isWysiwyg && textarea.data('redactor')) {
-				storedReplyText = textarea.getCode();
-				textarea.setCode(storedNoteText || '');
-			} else {
-				storedReplyText = textarea.val();
-				textarea.val(storedNoteText || '');
-			}
-
 			wasAgentChecked = agentSelCheck.prop('checked');
 			wasTeamChecked  = teamSelCheck.prop('checked');
-
 			agentSelCheck.prop('checked', false);
 			teamSelCheck.prop('checked', false);
 		});
+
+    this.getElById('replybox_fwdtab_btn').on('click', function() {
+      switch(replyMode) {
+        case 'reply':
+          self.getElById('replybox_replytab_btn').removeClass('on');
+
+          if (isWysiwyg && textarea.data('redactor')) {
+            storedReplyText = textarea.getCode();
+            textarea.setCode(storedFWDText || '');
+          } else {
+            storedReplyText = textarea.val();
+            textarea.val(storedFWDText || '');
+          }
+          break;
+        case 'note':
+          self.getElById('replybox_notetab_btn').removeClass('on');
+
+          self.el.removeClass('dp-note-on');
+          self.getElById('is_note').val('0');
+          self.isNote = false;
+          // process stored text
+          if (isWysiwyg && textarea.data('redactor')) {
+            storedNoteText = textarea.getCode();
+            textarea.setCode(storedFWDText || '');
+          } else {
+            storedNoteText = textarea.val();
+            textarea.val(storedFWDText || '');
+          }
+          break;
+        case 'fwd':
+        default:
+          // no-op
+          return;
+      }
+      $('.show-fwd', self.el).show();
+      $('.show-reply', self.el).hide();
+      $('.show-note', self.el).hide();
+      replyMode = 'fwd';
+      self.getElById('actions_row').hide();
+      self.el.addClass('dp-fwd-on');
+      $(this).addClass('on');
+      self.hideAgentNotifyList();
+    });
 
 		//------------------------------
 		// Expanding cc row

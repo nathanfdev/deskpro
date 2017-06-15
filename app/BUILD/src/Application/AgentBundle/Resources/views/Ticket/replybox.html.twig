@@ -91,7 +91,7 @@
 		</strong>
 	</div>
 	<div class="ticket-sending-overlay" style="display: none;">
-		<strong><span class="hide-note">{{ phrase('agent.tickets.sending_your_message') }}</span><span class="hide-reply" style="display: none">{{ phrase('agent.tickets.adding_your_note') }}</span></strong>
+		<strong><span class="show-reply">{{ phrase('agent.tickets.sending_your_message') }}</span><span class="show-note" style="display: none">{{ phrase('agent.tickets.adding_your_note') }}</span></strong>
 	</div>
 	<header>
 		{% if app.isAppInstalled('deskpro_ms_translator') %}
@@ -125,6 +125,7 @@
 			<ul>
 				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.general.reply') }}</li>{% endif %}
 				{% if ticket_perms.modify_notes %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.general.note') }}</li>{% endif %}
+                {% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_fwdtab_btn" class="fwd-type">{{ phrase('agent.tickets.forward') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
@@ -133,7 +134,7 @@
 			<section>
 				<div class="option-rows">
 					<ul id="{{replyBaseId}}_option_rows">
-						<li class="to-row hide-note">
+						<li class="to-row show-reply">
 							<label>
 	                            {% if ticket_perms.modify_cc or user_parts|length %}
 								    <span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row">+/-</span>
@@ -151,7 +152,7 @@
 						</li>
 						{% if not app.user.getPref('agent.ticket_reverse_order') %}
 							{% if ticket_perms.modify_cc or user_parts|length %}
-								<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
+								<li id="{{replyBaseId}}_cc_row" class="cc-row show-reply {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
 									<label>{{ phrase('agent.tickets.cc') }}:</label>
 									<div class="cc-container">
 										<div id="{{replyBaseId}}_newcc" style="display: none;"></div>
@@ -251,7 +252,7 @@
 	<footer>
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
-				<div class="hide-note">
+				<div class="show-reply">
 					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 50;">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
@@ -284,7 +285,7 @@
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
 				</div>
-				<div class="hide-reply" style="display: none">
+				<div class="show-note" style="display: none">
 					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
 						<i class="icon-share"></i>&nbsp;
 						{{ phrase('agent.tickets.add_note') }}
@@ -367,7 +368,7 @@
 					</div>
 				</div>
 
-				<div class="cell hide-note">
+				<div class="cell show-reply">
 					<div class="inner-cell" style="padding-left: 11px;">
 						<input type="checkbox" id="{{ replyBaseId }}_email_user" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
 						<label for="{{ replyBaseId }}_email_user">{{ phrase('agent.general.email_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_tip') }}"></span></label>
