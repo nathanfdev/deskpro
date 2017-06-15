@@ -46,6 +46,9 @@ class DbBackupCommand extends ContainerAwareCommand
             ->setName('dp:database-backup')
             ->setDescription('Wraps mysqldump utility to help make backups of your DeskPRO database.')
             ->addOption('session-id', null, InputOption::VALUE_REQUIRED, '(internal)')
+            ->addOption('skip-diskspace-check', null, InputOption::VALUE_NONE, 'Skip the disk space check')
+            ->addOption('output-command', null, InputOption::VALUE_NONE, 'Output the backup command instead of running it')
+            ->addOption('with-gzip', null, InputOption::VALUE_NONE, 'Gzip the backup (only available on *nix)')
             ->addArgument('targetPath', InputArgument::OPTIONAL, 'The the target dump file. E.g. /mypath/db.sql. Use BACKUPS_DIR as placeholder for the backups dir. If not specified, a random name will be created based on the current time.')
         ;
     }
@@ -70,6 +73,10 @@ class DbBackupCommand extends ContainerAwareCommand
             $targetPath
         );
 
+        if ($input->getOption('with-gzip')) {
+            $targetPath .= '.gz';
+        }
+
         $logger->debug('targetPath: '.$targetPath);
 
         if (file_exists($targetPath)) {
@@ -79,15 +86,30 @@ class DbBackupCommand extends ContainerAwareCommand
             return 1;
         }
 
+        $dbInfo = \DpRun\LowUtil::getMysqlInfoFromConfigArray($this->getContainer()->get('deskpro.app_env')->getConfig('database'));
+
+        if ($input->getOption('output-command')) {
+            $cmdBuilder = $this->getContainer()->get('dp.updater.backup.cmd_builder');
+            echo $cmdBuilder->getDumpCmd($targetPath, $dbInfo, ['with_gzip' => $input->getOption('with-gzip')]);
+            echo "\n";
+
+            return;
+        }
+
         $dbBackup = $this->getContainer()->get('dp.updater.backup.db_backup');
 
         try {
             $t = Timer::start();
             $output->writeln('Backing up the databse ...');
+            $output->writeln('  Target: '.$targetPath);
 
             $dbBackup->backupDatabase(
                 $targetPath,
-                \DpRun\LowUtil::getMysqlInfoFromConfigArray($this->getContainer()->get('deskpro.app_env')->getConfig('database'))
+                $dbInfo,
+                [
+                    'skip_diskspace_check' => $input->getOption('skip-diskspace-check'),
+                    'with_gzip'            => $input->getOption('with-gzip'),
+                ]
             );
             $t->end();
 
