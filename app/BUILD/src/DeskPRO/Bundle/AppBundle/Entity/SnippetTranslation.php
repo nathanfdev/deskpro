@@ -109,7 +109,7 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     /**
      * Snippet title.
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Type("string")
@@ -266,5 +266,29 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     public function getBlobs()
     {
         return $this->blobs;
+    }
+
+    /**
+     * @param Blob $blob
+     *
+     * @return $this
+     */
+    public function addBlob(Blob $blob)
+    {
+        $this->blobs->add($blob);
+
+        return $this;
+    }
+
+    /**
+     * @param Blob $blob
+     *
+     * @return $this
+     */
+    public function removeBlob(Blob $blob)
+    {
+        $this->blobs->removeElement($blob);
+
+        return $this;
     }
 }

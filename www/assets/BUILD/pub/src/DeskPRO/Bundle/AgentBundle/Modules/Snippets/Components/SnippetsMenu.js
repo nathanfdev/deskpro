@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Input from 'deskpro-styles/lib/Components/Input';
 import Button from 'deskpro-styles/lib/Components/Button';
@@ -76,6 +77,14 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
+  newSnippet = () => {
+    const snippet = Immutable.fromJS({});
+    this.setState({
+      editOpen:    true,
+      snippetEdit: snippet,
+    });
+  };
+
   closeEditSnippet = () => {
     this.setState({
       editOpen:    false,
@@ -107,6 +116,7 @@ export class SnippetsMenu extends React.Component {
             {/* <Select />*/}
             <Button
               className="dp-button--secondary add-snippet"
+              onClick={this.newSnippet}
             >
               + Snippet
             </Button>

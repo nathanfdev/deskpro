@@ -22,7 +22,41 @@ export class SnippetsModalContainer extends React.Component {
   }
 
   saveSnippet = () => {
-    console.log(this.modal.textArea.value);
+    const { snippet, langId } = this.props;
+    const snippetData = {
+      id:            snippet.get('id', 0),
+      title:         this.modal.title.input.value,
+      shortcut_code: this.modal.shortcut_code.input.value,
+      labels:        [],
+      translations:  [
+        {
+          language: langId,
+          content:  this.modal.textArea.value,
+          title:    this.modal.title.input.value,
+          blobs:    []
+        }
+      ]
+    };
+    const snippetModel = {
+      title:  'Test title',
+      types:  ['ticket'],
+      labels: [
+        {
+          label: 'test_label'
+        }
+      ],
+      translations:
+      [
+        {
+          language: 1,
+          content:  'test content'
+        }
+      ],
+      shortcut_code: 'shortcut',
+      is_draft:      '1'
+    };
+    console.log(snippetModel);
+    console.log(snippetData);
   };
 
   render() {
@@ -63,6 +97,12 @@ export class SnippetsModal extends React.Component {
 
   getContent = (props) => {
     const { snippet, langId } = props;
+    if (!snippet.has('translations')) {
+      this.setState({
+        content: ''
+      });
+      return;
+    }
     const translation = snippet.get('translations').find(element => element.get('language') === langId);
     let content = '';
     if (translation) {
@@ -81,7 +121,7 @@ export class SnippetsModal extends React.Component {
     return (
       <div id="snippets__modal">
         <Modal
-          title="Edit snippet"
+          title={snippet.get('id', false) ? 'Edit snippet' : 'New snippet'}
           closeModal={this.props.closeModal}
           buttons={
             <div>
@@ -91,7 +131,11 @@ export class SnippetsModal extends React.Component {
         }
         >
           <InputLabel htmlFor="snippet_title">Title</InputLabel>
-          <Input id="snippet_title" defaultValue={snippet.get('title')} /><br />
+          <Input
+            id="snippet_title"
+            defaultValue={snippet.get('title')}
+            ref={(c) => { this.title = c; }}
+          /><br />
           <textarea
             name="editor"
             id="snippet__editor"
@@ -106,6 +150,7 @@ export class SnippetsModal extends React.Component {
             defaultValue={snippet.get('shortcut_code')}
             prefix="%"
             suffix="%"
+            ref={(c) => { this.shortcut_code = c; }}
           />
           <InputLabel htmlFor="snippet_ownership">Ownership</InputLabel>
           <Input id="snippet_ownership" />

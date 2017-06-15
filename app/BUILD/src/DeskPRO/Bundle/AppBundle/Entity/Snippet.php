@@ -224,6 +224,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         $this->translations       = new ArrayCollection();
         $this->ownershipTeams     = new ArrayCollection();
         $this->visibleDepartments = new ArrayCollection();
+        $this->labels             = new ArrayCollection();
     }
 
     /**
@@ -326,6 +327,25 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         return $this;
     }
 
+    public function addType($type)
+    {
+        if (!in_array($type, $this->types, true)) {
+            $this->types[] = $type;
+        }
+
+        return $this;
+    }
+
+    public function removeEvent($type)
+    {
+        if (false !== $key = array_search($type, $this->types, true)) {
+            unset($this->types[$key]);
+            $this->types = array_values($this->types);
+        }
+
+        return $this;
+    }
+
     /**
      * @return bool
      */
@@ -355,11 +375,70 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @param SnippetTranslation $translation
+     *
+     * @return $this
+     */
+    public function addTranslation(SnippetTranslation $translation)
+    {
+        foreach ($this->translations as $t) {
+            if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()) {
+                $t->setContent($translation->getContent());
+
+                return $this;
+            }
+        }
+        $translation->setSnippet($this);
+        $this->translations->add($translation);
+
+        return $this;
+    }
+
+    /**
+     * @param SnippetTranslation $translation
+     *
+     * @return $this
+     */
+    public function removeTranslation(SnippetTranslation $translation)
+    {
+        $this->translations->removeElement($translation);
+
+        return $this;
+    }
+
+    /**
      * @return SnippetLabel[]|ArrayCollection
      */
     public function getLabels()
     {
         return $this->labels;
+    }
+
+    /**
+     * @param SnippetLabel $label
+     *
+     * @return $this
+     */
+    public function addLabel(SnippetLabel $label)
+    {
+        if (!$this->labels->contains($label)) {
+            $this->labels->add($label);
+            $label->setSnippet($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param SnippetLabel $label
+     *
+     * @return $this
+     */
+    public function removeLabel(SnippetLabel $label)
+    {
+        $this->labels->removeElement($label);
+
+        return $this;
     }
 
     /**

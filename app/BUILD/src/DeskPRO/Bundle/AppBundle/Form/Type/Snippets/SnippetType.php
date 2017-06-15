@@ -33,6 +33,8 @@ use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -48,8 +50,38 @@ class SnippetType extends AbstractType
             ->add('person', PersonAssignType::class, [
                 'person' => $options['person'],
             ])
+            ->add('title', TextType::class)
+            ->add('labels', CollectionType::class, [
+                'entry_type'     => SnippetLabelType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+                'options'        => [
+                    'error_bubbling' => true,
+                'snippet'            => $builder->getData(),
+                ],
+                'by_reference' => false,
+            ])
+            ->add('types', ChoiceType::class, [
+                'multiple'          => true,
+                'choices_as_values' => true,
+                'choices'           => ['chat', 'ticket'],
+            ])
+            ->add('translations', CollectionType::class, [
+                'entry_type'     => SnippetTranslationType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+                'options'        => [
+                    'error_bubbling' => true,
+                    'snippet'        => $builder->getData(),
+                ],
+                'by_reference' => false,
+            ])
             ->add('shortcut_code', TextType::class)
             ->add('is_draft', ApiBooleanType::class)
+            ->add('is_ownership_global', ApiBooleanType::class)
+            ->add('is_visible_global', ApiBooleanType::class)
         ;
     }
 
@@ -60,6 +92,7 @@ class SnippetType extends AbstractType
             ->setDefaults([
                 'data_class' => Snippet::class,
             ])
-            ->setAllowedTypes('person', Person::class);
+            ->setAllowedTypes('person', Person::class)
+        ;
     }
 }

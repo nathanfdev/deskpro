@@ -84,4 +84,16 @@ class SnippetsController extends CrudController
                 ->setParameter('type', '%'.$type.'%');
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'person' => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 }
