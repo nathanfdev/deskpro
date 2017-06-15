@@ -10,6 +10,7 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 }
 
 const initialState = {
+  micEnabled:     false,
   tokens:         {},
   activities:     {},
   incomingCalls:  [],
@@ -20,6 +21,7 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  [actions.setMicEnabled]:      setFullPayload('micEnabled'),
   [actions.setVoiceTokens]:     setFullPayload('tokens'),
   [actions.setVoiceActivities]: setFullPayload('activities'),
   [actions.setVoiceSettings]:   setFullPayload('settings'),

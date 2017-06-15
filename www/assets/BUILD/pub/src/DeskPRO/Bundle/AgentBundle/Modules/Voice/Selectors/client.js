@@ -10,6 +10,11 @@ export const tokensSelector = createSelector(
   state => state.get('tokens')
 );
 
+export const isVoiceMicEnabled = createSelector(
+  stateSelector,
+  state => state.get('micEnabled')
+);
+
 export const voiceSettingsSelector = createSelector(
   stateSelector,
   state => state.get('settings')
