@@ -1,15 +1,16 @@
 import { ApiRepository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 class SnippetsRepository extends ApiRepository {
-  loadTicketSnippets(page) {
-    return new Promise((resolve) => {
-      this.api.sendGet(`DP_API/${this.url}/counts?type=ticket`).then((promise) => {
-        this.api.sendGet(`DP_API/${this.url}?type=ticket&inline_sideloads=true&include=snippet_translation,language&count=${promise.data.data.count}${page ? `&page=${page}` : ''}`)
-          .then((snippets) => {
-            resolve(snippets);
-          });
-      });
-    });
+  getSnippet(id) {
+    return this.api.sendGet(`DP_API/${this.url}/${id}?inline_sideloads=true&include=snippet_translation`);
+  }
+  saveSnippet(data) {
+    if (data.id) {
+      const snippet = Object.assign({}, data);
+      delete snippet.id;
+      return this.api.sendPut(`DP_API/${this.url}/${data.id}?inline_sideloads=true&include=snippet_translation`, snippet);
+    }
+    return this.api.sendPost(`DP_API/${this.url}?inline_sideloads=true&include=snippet_translation`, data);
   }
 }
 export default SnippetsRepository;

@@ -50,7 +50,9 @@ class SnippetType extends AbstractType
             ->add('person', PersonAssignType::class, [
                 'person' => $options['person'],
             ])
-            ->add('title', TextType::class)
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
             ->add('labels', CollectionType::class, [
                 'entry_type'     => SnippetLabelType::class,
                 'allow_add'      => true,

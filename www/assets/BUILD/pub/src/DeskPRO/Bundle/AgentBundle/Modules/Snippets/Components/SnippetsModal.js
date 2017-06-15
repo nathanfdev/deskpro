@@ -1,14 +1,18 @@
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import Modal from 'deskpro-styles/lib/Components/Modal';
 import Button from 'deskpro-styles/lib/Components/Button';
 import Input from 'deskpro-styles/lib/Components/Input';
 import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
+import * as actions from '../Actions/snippetsActions';
 
+@connect()
 export class SnippetsModalContainer extends React.Component {
   static propTypes = {
     snippet:    PropTypes.object,
     langId:     PropTypes.number,
     closeModal: PropTypes.func,
+    dispatch:   PropTypes.func,
   };
 
   componentDidMount() {
@@ -22,41 +26,29 @@ export class SnippetsModalContainer extends React.Component {
   }
 
   saveSnippet = () => {
-    const { snippet, langId } = this.props;
+    const { snippet, langId, dispatch, closeModal } = this.props;
     const snippetData = {
       id:            snippet.get('id', 0),
       title:         this.modal.title.input.value,
+      types:         snippet.get('types', ['ticket']),
       shortcut_code: this.modal.shortcut_code.input.value,
-      labels:        [],
+      labels:        snippet.get('labels', []).map(label => ({ label })),
       translations:  [
         {
           language: langId,
           content:  this.modal.textArea.value,
-          title:    this.modal.title.input.value,
           blobs:    []
         }
-      ]
-    };
-    const snippetModel = {
-      title:  'Test title',
-      types:  ['ticket'],
-      labels: [
-        {
-          label: 'test_label'
-        }
       ],
-      translations:
-      [
-        {
-          language: 1,
-          content:  'test content'
-        }
-      ],
-      shortcut_code: 'shortcut',
-      is_draft:      '1'
+      is_draft: '0'
     };
-    console.log(snippetModel);
-    console.log(snippetData);
+    dispatch(actions.saveSnippet(snippetData))
+      .then(() => {
+        closeModal();
+      }, (error) => {
+        console.log(error);
+      })
+    ;
   };
 
   render() {
