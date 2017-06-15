@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Snippets;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
 use Doctrine\ORM\QueryBuilder;
@@ -42,6 +43,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/snippets")
+ * @Feature("new_snippets")
  * @ApiDoc(
  *     target="all",
  *     section="Snippets",

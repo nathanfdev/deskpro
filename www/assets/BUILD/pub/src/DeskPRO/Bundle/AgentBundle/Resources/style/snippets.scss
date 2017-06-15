@@ -181,3 +181,23 @@
     }
   }
 }
+#snippets__modal {
+  .snippet-attachment {
+    border: 1px solid $dp-sonic-primary;
+    border-radius: $rad-size-m-l;
+    display: inline-block;
+    padding: 2px 5px;
+    font-family: $primary-font;
+    font-size: $font-size-s;
+    background-color: $dp-morning-sky;
+    color: $dp-sonic-primary;
+    margin-right: 5px;
+    .close-icon {
+      vertical-align: middle;
+      cursor: pointer;
+      svg {
+        width: 10px;
+      }
+    }
+  }
+}

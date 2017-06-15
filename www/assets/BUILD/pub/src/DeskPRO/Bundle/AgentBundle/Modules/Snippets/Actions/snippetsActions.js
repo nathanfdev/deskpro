@@ -1,6 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { replaceIds } from 'DeskPRO/Component/Util/Api';
 
 export const getSnippet = createAction(
   'SNIPPETS_GET_SNIPPET',
@@ -35,4 +36,10 @@ export const saveSnippet = createAction(
         );
       }
     )
+);
+export const addSnippetAttachment = createAction(
+  'SNIPPETS_ADD_ATTACHMENT',
+  blob => (dispatch) => {
+    dispatch(addToCollection('SnippetsBlobs', 'all', replaceIds([blob], 'blob_id')));
+  }
 );
