@@ -20,3 +20,15 @@ Feature: New ticket form validation
     And I press "Submit"
     Then "ticket[person][user_email][email]" form field should have error with the phrase "12356"
     And "ticket[person][user_email][email]" form field should have 1 error
+
+  Scenario: I check system email validation
+    Given only the following EmailAccount records exist:
+      | #   | Is Enabled | Address            | Account Type |
+      | ea1 | 1          | dev@deskprodev.com | outgoing     |
+
+    When I go to "/new-ticket"
+    And I fill in "ticket[person][user_email][email]" with "dev@deskprodev.com"
+    And I press "Submit"
+
+    Then "ticket[person][user_email][email]" form field should have 1 error
+    Then "ticket[person][user_email][email]" form field should have error with the phrase "used as email account"

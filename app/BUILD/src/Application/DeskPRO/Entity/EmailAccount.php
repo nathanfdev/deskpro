@@ -160,9 +160,12 @@ class EmailAccount extends DomainObject
     /**
      * @param string $account_type
      */
-    public function __construct($account_type)
+    public function __construct($account_type = null)
     {
-        $this->setAccountType($account_type);
+        if ($account_type) {
+            $this->setAccountType($account_type);
+        }
+
         $this->date_created    = new \DateTime();
         $this->date_read_start = new \DateTime();
     }
