@@ -835,9 +835,43 @@ class TwilioCallbacksController extends BaseController
         }
 
         $twiml->record([
+            'action'                        => $this->getVoicemailEndUrl($account),
+            'method'                        => 'POST',
             'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
             'recordingStatusCallbackMethod' => 'POST',
         ]);
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Voicemail end callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/voicemail_complete", name="twilio_voicemail_end")
+     *
+     * @param VoiceAccount $account
+     * @param string       $accountAuth
+     *
+     * @return Response
+     */
+    public function voicemailEndAction(VoiceAccount $account, $accountAuth)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $twiml = new Twiml();
+        $twiml->hangup();
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1381,7 +1415,19 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'asset'       => $asset ? $asset->getId() : null,
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
 
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getVoicemailEndUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_voicemail_end', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1397,7 +1443,6 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'asset'       => $asset ? $asset->getId() : null,
-
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1413,7 +1458,6 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'callId'      => $phoneCall->getId(),
-
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
