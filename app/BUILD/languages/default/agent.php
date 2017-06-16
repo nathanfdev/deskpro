@@ -2017,6 +2017,7 @@ return [
     'agent.tickets.forward_header'                             => 'This message has been forwarded to you from {{hd}} by {{user}}',
     'agent.tickets.forward_message'                            => 'Forward Message',
     'agent.tickets.forward'                                    => 'Forward',
+    'agent.tickets.forward_ticket_from_here'                   => 'Forward Ticket From Here',
     'agent.tickets.forward_noreply_header'                     => 'Please do NOT reply to this message. If you need to reply, consider replying directly to {{user}}',
     'agent.tickets.forwarded_message'                          => 'Forwarded Message',
     'agent.tickets.from_email'                                 => '(submitted via email from {{address}})',

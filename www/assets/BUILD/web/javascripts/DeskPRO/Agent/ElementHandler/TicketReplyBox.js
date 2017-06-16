@@ -9,6 +9,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.baseId = this.el.data('base-id');
 		this.agentNotifyListShown = false;
 		this.uploading = false;
+		this.fwdMessages =[];
+		this.dontDispatch = false;
 	},
 
 	initPage: function() {
@@ -317,6 +319,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					break;
 				case 'fwd':
           self.getElById('replybox_fwdtab_btn').removeClass('on');
+          self.getElById('fwd_body').html('');
+          self.fwdMessages = [];
           if (isWysiwyg && textarea.data('redactor')) {
             storedFWDText = textarea.getCode();
             textarea.setCode(storedReplyText || '');
@@ -373,6 +377,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           break;
         case 'fwd':
           self.getElById('replybox_fwdtab_btn').removeClass('on');
+          self.getElById('fwd_body').html('');
+          self.fwdMessages = [];
           if (isWysiwyg && textarea.data('redactor')) {
             storedFWDText = textarea.getCode();
             textarea.setCode(storedNoteText || '');
@@ -450,6 +456,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       self.el.addClass('dp-fwd-on');
       $(this).addClass('on');
       self.hideAgentNotifyList();
+      if(!self.dontDispatch) {
+        DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket.fwdtab.open', { mode: 'all' });
+			}
+			self.dontDispatch = false;
     });
 
 		//------------------------------
@@ -972,7 +982,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (agentSel.data('auto-switch-status')) {
 				if (agentSelCheck.get(0).checked) {
 					if (self.getElById('action').val().indexOf('macro') === -1) {
-						self.setReplyAsOptionName('awaiting_agent')
+						self.setReplyAsOptionName('awaiting_agent');
 					}
 				}
 			}
@@ -1632,5 +1642,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 
     this.destroyEl();
+	},
+
+	clearFwd() {
+		this.getElById('fwd_body').html('');
+		this.fwdMessages = [];
+	},
+
+	appendFwdText(html, messageId) {
+		this.getElById('fwd_body').append(html);
+		this.getElById('fwd_body').append("<br/><br/>");
+		this.fwdMessages.push(messageId);
 	}
 });

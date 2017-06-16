@@ -132,6 +132,66 @@
 	<section class="ticketreply">
 		<article>
 			<section>
+                {# Forward #}
+				<div class="forward-wrapper show-fwd fwd-controls" style="display: none;">
+                    {% set to_id = el_uid() %}
+					<div class="header-line to-line">
+						<div class="label">
+							To:
+						</div>
+						<div
+								class="email-address-wrap input"
+								style="position: relative; top: 3px; display: inline-block;"
+								data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+								data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
+								data-search-param="term"
+								data-position-bound="#{{to_id}}"
+						>
+							<input
+									id="{{to_id}}"
+									class="email-address-input term"
+									type="text"
+									name="to[{{ to_id }}]"
+									value=""
+									placeholder="{{ phrase('agent.general.email_address') }}"
+									style="width: 500px;"
+							/>
+							<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+								<li>
+									<a>
+									<span class="user-name"></span>
+									<address>&lt;<span class="user-email"></span>&gt;</address>
+									<div class="bound-fade"></div>
+								</a></li>
+							</script>
+							<div class="person-search-box" style="display: none">
+								<section>
+									<ul class="results-list">
+
+									</ul>
+								</section>
+							</div>
+						</div>
+						<div class="fwd-control-panel" style="float: right; display: inline-block;">
+							<div class="label">
+								Add:
+							</div>
+							<span data-add="to" class="fwd-control-add">To</span> |
+							<span data-add="cc" class="fwd-control-add">Cc</span> |
+							<span data-add="ccs" class="fwd-control-add">Cc sender</span> |
+							<span data-add="bcc" class="fwd-control-add">BCC</span>
+						</div>
+					</div>
+					<div class="label">
+						From:
+					</div>
+					<div style="display: inline-block">
+						<select name="from">
+							<option value="to">me</option>
+							<option value="cc">not me</option>
+						</select>
+					</div>
+				</div>
 				<div class="option-rows">
 					<ul id="{{replyBaseId}}_option_rows">
 						<li class="to-row show-reply">
@@ -227,6 +287,7 @@
 				</div>
 				<div class="input-wrap unreset editor-row">
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
+					<div id="{{replyBaseId}}_fwd_body" class="fwd-body show-fwd" style="display:none; opacity: 0.5"></div>
 					<textarea id="{{replyBaseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
 					<textarea id="{{replyBaseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
 					{% if draft %}
@@ -289,6 +350,12 @@
 					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
 						<i class="icon-share"></i>&nbsp;
 						{{ phrase('agent.tickets.add_note') }}
+					</a>
+				</div>
+				<div class="show-fwd" style="display: none">
+					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
+						<i class="icon-share"></i>&nbsp;
+                        {{ phrase('agent.tickets.forward_message') }}
 					</a>
 				</div>
 			</td><td valign="middle" style="vertical-align: middle;">

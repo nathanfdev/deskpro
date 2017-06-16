@@ -65,7 +65,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
-		
+
     var boundHandleReplySave = this.handleReplySave.bind(this);
 
     var onActivateScope = this;
@@ -202,6 +202,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initSlas();
     this._initProblems();
 		this._initVoice();
+		this._initForward();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -2327,6 +2328,41 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}, this);
 	},
 
+	_initForward() {
+    DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket.fwdtab.open',  this.handleFwd.bind(this) );
+	},
+
+	handleFwd(info) {
+		var self = this;
+		this.ticketReplyBox.clearFwd();
+    switch (info.mode) {
+      case 'all':
+				this.wrapper.find('.content-message').map(function(index, element) {
+					self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
+        });
+        break;
+			case 'single':
+				this.ticketReplyBox.dontDispatch = true;
+				this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+      	this.ticketReplyBox.appendFwdText(
+          this.wrapper.find('.content-message.message-'+info.messageId).eq(0).find('.body-text-message').eq(0).html(),
+					info.messageId
+				);
+        break;
+      case 'from':
+        this.ticketReplyBox.dontDispatch = true;
+        this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+        this.wrapper.find('.content-message').map(function(index, element) {
+        	if (info.messageId <= $(element).data('message-id')) {
+            self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
+					}
+        });
+        break;
+      default:
+        return;
+    }
+  },
+
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
@@ -2639,8 +2675,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				break;
 
 			case 'fwd':
-				this.showFwdOverlay(messageId);
+				this.handleFwd({ mode: 'single', messageId: messageId });
 				break;
+
+      case 'fwd-from-here':
+        this.handleFwd({ mode: 'from', messageId: messageId });
+        break;
 
 			case 'edit':
 				this.showMessageEditor(messageId);
