@@ -305,6 +305,10 @@ export const declinePhoneCall = createAction(
     const state = getState();
     const me = meSelector(state);
 
+    if (!incomingCall) {
+      return;
+    }
+
     dispatch(removeIncomingCall(incomingCall));
 
     if (incomingCall.task) {
