@@ -423,7 +423,9 @@ class TwilioCallbacksController extends BaseController
         $adapter = $this->get('twilio_adapter');
         $em      = $this->getManager();
 
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy(['conferenceSid' => $conferenceSid]);
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'conferenceSid' => $conferenceSid,
+        ]);
 
         // we set conference sid on first user participant join
         // otherwise we should have the phone call tied to voice model
@@ -569,11 +571,8 @@ class TwilioCallbacksController extends BaseController
         // for real time ui updates
         $statusParams = $request->request->all();
         if ($phoneCall) {
-            $serializer        = $this->get('serializer');
-            $serializerContext = new SideloadSerializationContext();
-
             // phone call
-            $statusParams['phone_call'] = $serializer->toArray($phoneCall, $serializerContext);
+            $statusParams['phone_call'] = $this->get('serializer')->toArray($phoneCall, new SideloadSerializationContext());
             unset($statusParams['phone_call']['ticket']);
 
             // current participant
@@ -593,10 +592,10 @@ class TwilioCallbacksController extends BaseController
             $statusParams['hold'] = $adapter->isConferenceOnHold($phoneCall);
         }
 
-        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.voice.conference.status',
-            $statusParams
-        ));
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('agent.voice.conference.status', $statusParams)
+        );
     }
 
     /**
