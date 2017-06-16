@@ -33,6 +33,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -40,6 +41,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\SnippetFormatter;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 
@@ -464,8 +466,12 @@ class NewTicket
 
         // Message Attachments
         foreach ($this->attach as $blob_id) {
-            $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
+            $blob = $this->_em->getRepository(Blob::class)->find($blob_id);
 
+            if ($this->_em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
+                $blob = clone $blob;
+                $this->_em->persist($blob);
+            }
             $attach           = new TicketAttachment();
             $attach['blob']   = $blob;
             $attach['person'] = $this->_person_context;

@@ -150,7 +150,7 @@ class TextSnippetsController extends AbstractController
 
     public function getSnippetAction($typename, $id)
     {
-        $snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+        $snippet = $this->em->find(TextSnippet::class, $id);
         if (!$snippet) {
             throw $this->createNotFoundException();
         }

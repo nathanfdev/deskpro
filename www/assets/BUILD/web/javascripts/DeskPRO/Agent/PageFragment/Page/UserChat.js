@@ -235,6 +235,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				textarea: ed,
 				onCombo: function(combo, ev) {
 					combo = combo.replace(/%/g, '');
+          console.log(window.DESKPRO_TICKET_SNIPPET_SHORTCODES);
 					if (window.DESKPRO_CHAT_SNIPPET_SHORTCODES && window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo]) {
 						ev.preventDefault();
 						var arr = window.DESKPRO_CHAT_SNIPPET_SHORTCODES[combo];

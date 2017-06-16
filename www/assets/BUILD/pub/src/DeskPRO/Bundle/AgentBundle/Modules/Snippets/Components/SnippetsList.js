@@ -4,9 +4,10 @@ import Label from 'deskpro-styles/lib/Components/Label';
 
 export class SnippetsListElement extends React.Component {
   static propTypes = {
-    snippet:     PropTypes.object,
-    editSnippet: PropTypes.func,
-    langId:      PropTypes.number,
+    snippet:       PropTypes.object,
+    editSnippet:   PropTypes.func,
+    insertSnippet: PropTypes.func,
+    langId:        PropTypes.number,
   };
 
   static defaultProps = {
@@ -55,17 +56,17 @@ export class SnippetsListElement extends React.Component {
   };
 
   render() {
-    const { snippet } = this.props;
+    const { snippet, editSnippet, insertSnippet } = this.props;
     return (
       <div className="snippet_list_element_wrapper">
-        <div className="snippets__list__element">
+        <div className="snippets__list__element" onClick={() => insertSnippet(snippet)}>
           <span className="title">{snippet.get('title')} </span>
           <span className="shortcode dp-code">{`%${snippet.get('shortcut_code')}%`}</span><br />
           {this.getLanguages()}
           {this.getLabels()}
           <span className="content">{this.getContent()}</span>
         </div>
-        <i className="fa fa-pencil edit-snippet" onClick={() => this.props.editSnippet(snippet)} />
+        <i className="fa fa-pencil edit-snippet" onClick={() => editSnippet(snippet)} />
       </div>
     );
   }
@@ -76,6 +77,7 @@ export class SnippetsList extends React.Component {
     selectedLabel: PropTypes.string,
     langId:        PropTypes.number,
     editSnippet:   PropTypes.func,
+    insertSnippet: PropTypes.func,
   };
 
   constructor(props) {
@@ -103,17 +105,24 @@ export class SnippetsList extends React.Component {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-  getElements = () => {
+  updateWindowDimensions = () => {
+    this.setState({
+      height: window.innerHeight
+    });
+  };
+
+  renderElements = () => {
     const elements = [];
-    if (!this.props.snippets) {
+    const { snippets, selectedLabel, langId, editSnippet, insertSnippet } = this.props;
+    if (!snippets) {
       return null;
     }
-    this.props.snippets
+    snippets
       .filter((snippet) => {
-        if (!this.props.selectedLabel) {
+        if (!selectedLabel) {
           return true;
         }
-        return snippet.get('labels').find(label => label === this.props.selectedLabel);
+        return snippet.get('labels').find(label => label === selectedLabel);
       })
       .sort((a, b) => {
         const titleA = a.get('title').toLowerCase();
@@ -130,18 +139,13 @@ export class SnippetsList extends React.Component {
           <SnippetsListElement
             key={element.get('id')}
             snippet={element}
-            langId={this.props.langId}
-            editSnippet={this.props.editSnippet}
+            langId={langId}
+            editSnippet={editSnippet}
+            insertSnippet={insertSnippet}
           />
         );
       });
     return elements;
-  };
-
-  updateWindowDimensions = () => {
-    this.setState({
-      height: window.innerHeight
-    });
   };
 
   render() {
@@ -151,7 +155,7 @@ export class SnippetsList extends React.Component {
     }
     return (
       <div className="snippets__list" ref={(c) => { this.list = c; }} style={{ height }}>
-        {this.getElements()}
+        {this.renderElements()}
       </div>
     );
   }

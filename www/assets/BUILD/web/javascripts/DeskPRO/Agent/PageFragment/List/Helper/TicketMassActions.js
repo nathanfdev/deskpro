@@ -400,6 +400,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         textarea: ed,
         onCombo: function(combo, ev) {
           combo = combo.replace(/%/g, '');
+          console.log(window.DESKPRO_TICKET_SNIPPET_SHORTCODES);
           if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES || !window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
             return;
           }

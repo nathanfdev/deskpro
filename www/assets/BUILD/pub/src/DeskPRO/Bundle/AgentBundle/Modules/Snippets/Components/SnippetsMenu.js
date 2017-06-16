@@ -19,12 +19,17 @@ export class SnippetsMenuContainer extends React.Component {
     type:      PropTypes.string
   };
 
+  insertSnippet = (snippet) => {
+    console.log(snippet);
+  };
+
   render() {
     const { closeMenu, type } = this.props;
     const snippets = this.props.snippets.filter(snippet => snippet.get('types').includes(this.props.type));
     return (
       <SnippetsMenu
         closeMenu={closeMenu}
+        insertSnippet={this.insertSnippet}
         snippets={snippets}
         type={type}
         langId={window.DP_PERSON_LANG_ID}
@@ -35,9 +40,10 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    snippets:  PropTypes.object,
-    langId:    PropTypes.number,
-    closeMenu: PropTypes.func
+    snippets:      PropTypes.object,
+    langId:        PropTypes.number,
+    closeMenu:     PropTypes.func,
+    insertSnippet: PropTypes.func,
   };
 
   constructor(props) {
@@ -93,7 +99,7 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { snippets, closeMenu, langId } = this.props;
+    const { snippets, closeMenu, langId, insertSnippet } = this.props;
     return (
       <div id="snippets__menu">
         <div className="header">
@@ -133,6 +139,7 @@ export class SnippetsMenu extends React.Component {
             langId={langId}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}
+            insertSnippet={insertSnippet}
           />
         </div>
         {this.getEditSnippet()}

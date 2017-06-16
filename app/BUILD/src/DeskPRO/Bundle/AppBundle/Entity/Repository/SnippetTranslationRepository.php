@@ -28,8 +28,27 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
+use Application\DeskPRO\Entity\Blob;
 use Doctrine\ORM\EntityRepository;
 
 class SnippetTranslationRepository extends EntityRepository
 {
+    /**
+     * @param Blob $blob
+     *
+     * @return Blob|null
+     */
+    public function findSnippetBlob(Blob $blob)
+    {
+        $qb = $this->createQueryBuilder('st');
+
+        $qb
+            ->select('st')
+            ->innerJoin('st.blobs', 'b')
+            ->where('b.id = :blob')
+            ->setParameter('blob', $blob->getId())
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 }

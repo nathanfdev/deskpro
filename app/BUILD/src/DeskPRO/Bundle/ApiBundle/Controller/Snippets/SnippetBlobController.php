@@ -53,13 +53,6 @@ class SnippetBlobController extends BaseController
      * @ApiDoc(
      *     description="Add a new attachment",
      *     tags={"CRUD"="#ffa500"},
-     *     requirements={
-     *         {
-     *             "name"="type",
-     *             "description"="The asset type 'inline-image' or 'attachment'",
-     *             "dataType"="string"
-     *         }
-     *     },
      *     input={
      *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType"
      *     },

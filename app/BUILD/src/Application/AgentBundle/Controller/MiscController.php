@@ -37,11 +37,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 use Application\DeskPRO\Routing\Generator\UrlGenerator;
 use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService;
+use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
@@ -160,42 +162,80 @@ class MiscController extends AbstractController
         $js[]    = 'window.DESKPRO_TICKET_DISPLAY = '.$layouts->compileJsObj().';';
 
         // Snippet short codes
-        $ticket_snippets     = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
-        $snippet_short_codes = [];
-        foreach ($ticket_snippets as $snippet_cat) {
-            if ($snippet_cat['snippets']) {
-                foreach ($snippet_cat['snippets'] as $snippet) {
-                    if ($snippet->shortcut_code) {
-                        if (!isset($snippet_short_codes[$snippet->shortcut_code])) {
-                            $snippet_short_codes[$snippet->shortcut_code] = [];
+        $snippetShortCodes = [];
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+            $ticketSnippets = $this->em->getRepository(Snippet::class)->getSnippetsForAgent(
+                $this->person,
+                Snippet::TYPE_TICKET
+            );
+            /** @var Snippet $snippet */
+            foreach ($ticketSnippets as $snippet) {
+                if ($snippet->getShortcutCode()) {
+                    if (!isset($snippetShortCodes[$snippet->getShortcutCode()])) {
+                        $snippetShortCodes[$snippet->getShortcutCode()] = [];
+                    }
+                    $snippetShortCodes[$snippet->getShortcutCode()][] = $snippet->getId();
+                }
+            }
+        } else {
+            $ticketSnippets = $this->em->getRepository(TextSnippet::class)->getSnippetsForAgent(
+                'tickets',
+                $this->person
+            );
+            foreach ($ticketSnippets as $snippetCat) {
+                if ($snippetCat['snippets']) {
+                    /** @var TextSnippet $snippet */
+                    foreach ($snippetCat['snippets'] as $snippet) {
+                        if ($snippet->getShortcutCode()) {
+                            if (!isset($snippetShortCodes[$snippet->getShortcutCode()])) {
+                                $snippetShortCodes[$snippet->getShortcutCode()] = [];
+                            }
+                            $snippetShortCodes[$snippet->getShortcutCode()][] = $snippet->getId();
                         }
-                        $snippet_short_codes[$snippet->shortcut_code][] = $snippet->id;
                     }
                 }
             }
         }
 
-        if ($snippet_short_codes) {
-            $js[] = 'window.DESKPRO_TICKET_SNIPPET_SHORTCODES = '.json_encode($snippet_short_codes).';';
+        if ($snippetShortCodes) {
+            $js[] = 'window.DESKPRO_TICKET_SNIPPET_SHORTCODES = '.json_encode($snippetShortCodes).';';
         } else {
             $js[] = 'window.DESKPRO_TICKET_SNIPPET_SHORTCODES = {};';
         }
 
         // Snippet short codes
-        $text_snippets       = $this->em->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('chat', $this->person);
-        $snippet_short_codes = [];
-        foreach ($text_snippets as $snippet_cat) {
-            if ($snippet_cat['snippets']) {
-                foreach ($snippet_cat['snippets'] as $snippet) {
-                    if ($snippet->shortcut_code) {
-                        $snippet_short_codes[$snippet->shortcut_code] = $snippet->id;
+        $snippetShortCodes = [];
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+            $chatSnippets = $this->em->getRepository(Snippet::class)->getSnippetsForAgent(
+                $this->person,
+                Snippet::TYPE_CHAT
+            );
+            /** @var Snippet $snippet */
+            foreach ($chatSnippets as $snippet) {
+                if ($snippet->getShortcutCode()) {
+                    if (!isset($snippetShortCodes[$snippet->getShortcutCode()])) {
+                        $snippetShortCodes[$snippet->getShortcutCode()] = [];
+                    }
+                    $snippetShortCodes[$snippet->getShortcutCode()][] = $snippet->getId();
+                }
+            }
+        } else {
+            $chatSnippets      = $this->em->getRepository(TextSnippet::class)->getSnippetsForAgent('chat', $this->person);
+            $snippetShortCodes = [];
+            foreach ($chatSnippets as $snippetCat) {
+                if ($snippetCat['snippets']) {
+                    /** @var TextSnippet $snippet */
+                    foreach ($snippetCat['snippets'] as $snippet) {
+                        if ($snippet->getShortcutCode()) {
+                            $snippetShortCodes[$snippet->getShortcutCode()] = $snippet->getId();
+                        }
                     }
                 }
             }
         }
 
-        if ($snippet_short_codes) {
-            $js[] = 'window.DESKPRO_CHAT_SNIPPET_SHORTCODES = '.json_encode($snippet_short_codes).';';
+        if ($snippetShortCodes) {
+            $js[] = 'window.DESKPRO_CHAT_SNIPPET_SHORTCODES = '.json_encode($snippetShortCodes).';';
         } else {
             $js[] = 'window.DESKPRO_CHAT_SNIPPET_SHORTCODES = {};';
         }
