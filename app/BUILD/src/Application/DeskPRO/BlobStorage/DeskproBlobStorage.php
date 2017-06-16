@@ -528,7 +528,7 @@ class DeskproBlobStorage implements Loggable
 
             $filename     = $filename.'.gz';
             $content_type = 'application/gzip';
-            $source_data  = gzcompress($source_data);
+            $source_data  = gzencode($source_data);
         }
 
         $blob_entity_tmp = $this->_createBlobEntity($filename, $content_type, $props);
