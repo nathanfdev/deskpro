@@ -1612,6 +1612,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	showRefreshAlert: function(admin_name, message, allowIgnore) {
 
+		if (typeof allowIgnore == 'undefined') {
+      allowIgnore = true;
+		}
+
 		var self = this;
 
 		if (this._refreshAlertTimeout) {
