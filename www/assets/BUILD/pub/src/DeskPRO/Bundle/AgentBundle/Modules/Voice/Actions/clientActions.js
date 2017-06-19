@@ -10,6 +10,7 @@ import { callsEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allNumbersSelector } from '../Selectors/numbers';
+import { closeIframes } from '../../Application/Actions/bootstrapActions';
 
 export const setMicEnabled = createAction('VOICE_AGENT_SET_MIC_ENABLED');
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
@@ -146,6 +147,8 @@ export const voiceBootstrap = createAction(
               api
                 .sendPut(`DP_API/voice_client/phone_call/${connection.message.CallId}/assign_agent`)
                 .success(({ data }) => {
+                  closeIframes();
+
                   connection.message.TicketId = data.id;
                   window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
                 });

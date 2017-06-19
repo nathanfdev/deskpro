@@ -24,6 +24,7 @@ import AvatarHelper from '../../IM/Components/New/IMTabs/AvatarHelper';
 import { isVoiceAvailableSelector } from '../../Voice/Selectors/client';
 import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
 import { toggleUserChat } from '../../Agent/Actions/agentActions';
+import { closeIframes } from '../../Application/Actions/bootstrapActions';
 
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),
@@ -246,15 +247,6 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  static closeIframes() {
-    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
-      const iframe = window.DP_FRAME_OVERLAYS[key];
-      if (iframe.opened) {
-        iframe.close();
-      }
-    }
-  }
-
   onToggleChat = (enabled) => {
     this.props.dispatch(toggleUserChat(enabled));
   };
@@ -360,7 +352,6 @@ export class AgentTopBarContainer extends SeparateComponent {
       toggleViewMode:       AgentTopBarContainer.toggleViewMode,
       onRecent:             AgentTopBarContainer.onRecent,
       onNotification:       AgentTopBarContainer.onNotification,
-      closeIframes:         AgentTopBarContainer.closeIframes,
       onClearSearchInput:   AgentTopBarContainer.onClearSearchInput,
       notificationCount:    this.state.notificationCount,
       toggleImOverlay:      this.toggleImOverlay,
@@ -407,7 +398,6 @@ export class AgentTopBar extends React.Component {
     onSearchBlur:         PropTypes.func,
     onRecent:             PropTypes.func,
     onNotification:       PropTypes.func,
-    closeIframes:         PropTypes.func,
     toggleViewMode:       PropTypes.func,
     toggleImOverlay:      PropTypes.func,
     openGroupDrawer:      PropTypes.func,
@@ -579,7 +569,7 @@ export class AgentTopBar extends React.Component {
   render() {
     const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceAvailable } = this.props;
     const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent } = this.props;
-    const { closeIframes, toggleViewMode, onNotification, onToggleChat } = this.props;
+    const { toggleViewMode, onNotification, onToggleChat } = this.props;
 
     return (<TopBar>
       <TopBarItem className="search-box legacy-omnibox">
