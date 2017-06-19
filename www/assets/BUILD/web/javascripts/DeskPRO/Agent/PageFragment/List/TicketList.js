@@ -1504,14 +1504,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         var url = self.meta.refreshUrl;
         url = Orb.appendQueryData(url, 'group_by', prop);
 
-        if (self.meta.viewType === 'list') {
-          self.loadNewListviewUrl(url + '&view_type=list');
-        } else {
-          self.wrapper.find('header.list-grouping-bar').hide();
-          self.getEl('grouping_loading').show();
-          self.getEl('grouping_bar').hide();
-          DeskPRO_Window.loadListPane(url);
-        }
+        self.wrapper.find('header.list-grouping-bar').hide();
+        self.getEl('grouping_loading').show();
+        self.getEl('grouping_bar').hide();
+        DeskPRO_Window.loadListPane(url);
       }
     });
     this.ownObject(groupingMenu);
