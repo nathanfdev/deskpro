@@ -1784,6 +1784,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         api.setBuffer();
       } catch (e) {}
       api.insertHtml(data.html());
+
+      var event = new CustomEvent('dpLeftDrawerClose');
+      window.document.dispatchEvent(event);
+      self.isSnippetOpen = false;
     }
     api.syncCode();
 	},

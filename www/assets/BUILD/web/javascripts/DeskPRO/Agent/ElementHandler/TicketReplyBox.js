@@ -1400,12 +1400,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         api.setBuffer();
       } catch (e) {}
     	api.insertHtml(data.html());
+	
+			var event = new CustomEvent('dpLeftDrawerClose');
+			window.document.dispatchEvent(event);
+			self.isSnippetOpen = false;
 		}
 		api.syncCode();
-
-    var event = new CustomEvent('dpLeftDrawerClose');
-    window.document.dispatchEvent(event);
-    self.isSnippetOpen = false;
 	},
 
 	refreshMessageTranslation: function(to) {
