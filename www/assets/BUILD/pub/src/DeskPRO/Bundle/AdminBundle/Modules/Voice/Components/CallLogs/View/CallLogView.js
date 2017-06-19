@@ -3,6 +3,7 @@ import moment from 'moment';
 import Immutable from 'immutable';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import MediaControls from 'DeskPRO/Component/MediaControls';
+import Duration from 'DeskPRO/Component/Duration';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import PersonName from '../../../../Common/Components/PersonName';
@@ -105,10 +106,15 @@ class CallLogView extends React.Component {
                   <tbody>
                     {call.get('phone_call_logs').map((log, index) => {
                       const person = people.get(log.get('person')) || Immutable.fromJS({});
+                      const logDate  = moment(log.get('date_created'));
+                      const callDate = moment(call.get('date_created'));
+                      const duration = logDate.unix() - callDate.unix();
 
                       return (
                         <tr key={index}>
-                          <td width="80">[{moment(log.get('date_created')).format('hh:mm:ss')}]</td>
+                          <td width="80">
+                            [<Duration value={duration} />]
+                          </td>
                           <td>
                             {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
                               '{number}':       call.get('external_number'),

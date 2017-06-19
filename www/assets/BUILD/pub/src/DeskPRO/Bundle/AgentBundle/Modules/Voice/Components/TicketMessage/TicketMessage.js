@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import Immutable from 'immutable';
+import moment from 'moment';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import MediaControls from 'DeskPRO/Component/MediaControls';
+import Duration from 'DeskPRO/Component/Duration';
 import classNames from 'classnames';
 import Avatar from '../Common/Avatar';
 
@@ -123,23 +125,29 @@ class TicketMessage extends React.Component {
               onClick={this.onToggleLog}
             />
             {logExpanded &&
-            <span className="voice-ticket-message-transcript-text">
-              <ul>
-                {phoneCall.get('phone_call_logs').map((log, index) => {
-                  const person = people.get(log.get('person')) || Immutable.fromJS({});
+            <table>
+              {phoneCall.get('phone_call_logs').map((log, index) => {
+                const person   = people.get(log.get('person')) || Immutable.fromJS({});
+                const logDate  = moment(log.get('date_created'));
+                const callDate = moment(phoneCall.get('date_created'));
+                const duration = logDate.unix() - callDate.unix();
 
-                  return (
-                    <li key={index}>
+                return (
+                  <tr key={index}>
+                    <td>
+                      [<Duration value={duration} />]
+                    </td>
+                    <td>
                       {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
                         '{number}':       phoneCall.get('external_number'),
                         '{person_name}':  person.get('first_name') || '',
                         '{person_email}': person.get('primary_email') || ''
                       })}
-                    </li>
-                  );
-                })}
-              </ul>
-            </span>}
+                    </td>
+                  </tr>
+                );
+              })}
+            </table>}
           </div>
         </div>
       </div>
