@@ -83,7 +83,7 @@ class InterfaceUrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $newUrl = $request->getUriForPath("/{$urlParts['iface']}/{$urlParts['path']}");
-        $this->logger->warning(sprintf('[InterfaceUrlCorrector] Correcting: %s -> %s', $pathInfo, $newUrl));
+        $this->logger->debug(sprintf('[InterfaceUrlCorrector] Correcting: %s -> %s', $pathInfo, $newUrl));
 
         $event->setResponse(new RedirectResponse($newUrl));
         $event->stopPropagation();
