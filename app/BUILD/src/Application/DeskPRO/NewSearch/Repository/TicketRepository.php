@@ -69,9 +69,11 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
 
         $assigned_filter = new Query\BoolQuery();
         $assigned_filter->addShould(new Query\Term(['agent' => $this->person->getId()]));
-        $team_ids = $this->person->getHelper('Agent')->getTeamIds();
-        if ($team_ids) {
-            $assigned_filter->addShould(new Query\Terms('agent_team', $team_ids));
+
+        $this->person->loadHelper('Agent');
+        $teamIds = $this->person->getHelper('Agent')->getTeamIds();
+        if ($teamIds) {
+            $assigned_filter->addShould(new Query\Terms('agent_team', $teamIds));
         }
 
         $main_filter->addShould($assigned_filter);
