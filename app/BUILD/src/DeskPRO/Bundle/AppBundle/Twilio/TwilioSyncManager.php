@@ -78,6 +78,7 @@ class TwilioSyncManager
     public function syncWorkflow(VoiceAccount $account)
     {
         // reset workflow config to avoid twilio FK errors
+        // e.g. attempt to delete a queue or worker but the sid reference is still in the workflow config
         $workflowSid = $account->getQueueWorkflowSid();
         if ($workflowSid) {
             try {
@@ -88,7 +89,8 @@ class TwilioSyncManager
                     return;
                 }
 
-                if ($e->getStatusCode() !== 404) {
+                // unexpected response exception, bubble the exception and stop syncing
+                if ($e->getStatusCode() !== Response::HTTP_NOT_FOUND) {
                     throw $e;
                 }
             }
@@ -108,7 +110,7 @@ class TwilioSyncManager
                 try {
                     $this->twilioAdapter->updateTaskQueue($queue);
                 } catch (RestException $e) {
-                    if ($e->getStatusCode() === 404) {
+                    if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                         // task queue was deleted, re-create it
                         $taskQueue = $this->twilioAdapter->createTaskQueue($queue);
                         $queue->setTaskQueueSid($taskQueue->sid);
@@ -143,7 +145,7 @@ class TwilioSyncManager
                 try {
                     $this->twilioAdapter->updateAgentWorker($account, $person, $activityStatus);
                 } catch (RestException $e) {
-                    if ($e->getStatusCode() === 404) {
+                    if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                         $worker = $this->twilioAdapter->createAgentWorker($account, $person, $activityStatus);
                         $agentData->setVoiceWorkerSid($worker->sid);
 
@@ -164,7 +166,7 @@ class TwilioSyncManager
                 try {
                     $this->twilioAdapter->updateAgentTaskQueue($account, $person);
                 } catch (RestException $e) {
-                    if ($e->getStatusCode() === 404) {
+                    if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                         $taskQueue = $this->twilioAdapter->createAgentTaskQueue($account, $person);
                         $agentData->setVoiceTaskQueueSid($taskQueue->sid);
 

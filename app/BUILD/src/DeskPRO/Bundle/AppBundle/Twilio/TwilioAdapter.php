@@ -41,6 +41,7 @@ use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 use Twilio\Exceptions\RestException;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Jwt\ClientToken;
@@ -327,7 +328,7 @@ class TwilioAdapter
             $taskRouter = $this->getClient($account)->taskrouter;
             $taskRouter->workspaces($account->getWorkspaceSid())->delete();
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 
@@ -420,7 +421,7 @@ class TwilioAdapter
         try {
             $this->getWorkspace($account)->taskQueues($queueSid)->delete();
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 
@@ -524,7 +525,7 @@ class TwilioAdapter
             ]);
             $worker->delete();
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 
