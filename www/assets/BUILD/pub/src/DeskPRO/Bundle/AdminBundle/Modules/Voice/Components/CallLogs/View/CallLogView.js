@@ -119,7 +119,8 @@ class CallLogView extends React.Component {
                             {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
                               '{number}':       call.get('external_number'),
                               '{person_name}':  person.get('first_name') || '',
-                              '{person_email}': person.get('primary_email') || ''
+                              '{person_email}': person.get('primary_email') || '',
+                              '{key}':          log.getIn(['details', 'Digits']) || ''
                             })}
                           </td>
                         </tr>

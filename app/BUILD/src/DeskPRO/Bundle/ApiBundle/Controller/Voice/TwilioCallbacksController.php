@@ -663,6 +663,16 @@ class TwilioCallbacksController extends BaseController
             ;
         }
 
+        // log auto-attendant press key event
+        $log = new VoicePhoneCallLog();
+        $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_KEY);
+        $log->setDetails($request->request->all());
+        $log->setPhoneCall($phoneCall);
+
+        $em = $this->getManager();
+        $em->persist($log);
+        $em->flush();
+
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
 
@@ -723,6 +733,16 @@ class TwilioCallbacksController extends BaseController
                 ])
             ;
         }
+
+        // log agent extension event
+        $log = new VoicePhoneCallLog();
+        $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_EXTENSION);
+        $log->setDetails($request->request->all());
+        $log->setPhoneCall($phoneCall);
+
+        $em = $this->getManager();
+        $em->persist($log);
+        $em->flush();
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
