@@ -48,21 +48,12 @@ class EditNumberContainer extends React.Component {
     const { dispatch } = this.props;
     const number = this.getNumber();
 
-    this.setState({
-      saving: true,
-      errors: {}
-    });
-
     const promise = dispatch(editNumber(number.get('id'), data));
     promise.success(() => {
       replaceRoute('/voice_channel/numbers');
     });
-    promise.error((result) => {
-      this.setState({
-        errors: result.errors,
-        saving: false
-      });
-    });
+
+    return promise;
   };
 
   getNumber() {

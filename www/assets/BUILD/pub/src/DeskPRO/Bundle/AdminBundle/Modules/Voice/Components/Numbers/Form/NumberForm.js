@@ -1,51 +1,19 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset } from 'react-forms';
 import classNames from 'classnames';
 import { Input, Form, Field, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import NumberTargetSelect from '../../Common/NumberTarget/NumberTargetSelect';
 
-class NumberForm extends React.Component {
+class NumberForm extends BaseForm {
 
   static propTypes = {
     number:       PropTypes.object,
     onReturnBack: PropTypes.func.isRequired,
     onSubmit:     PropTypes.func,
-    saving:       PropTypes.bool,
-    errors:       PropTypes.object // eslint-disable-line react/no-unused-prop-types
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = this.getDefaultState();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      formData: createValue({
-        value:     this.state.formData.value,
-        errorList: nextProps.errors,
-        onChange:  this.onChange
-      })
-    });
-  }
-
-  onChange = (formData) => {
-    this.setState({ formData });
-  };
-
-  onSubmit = (event) => {
-    event.preventDefault();
-
-    const { onSubmit } = this.props;
-    const { formData } = this.state;
-    const value = formData.value;
-
-    const submitData = { ...value };
-    delete submitData.number;
-
-    onSubmit(submitData);
+    saving:       PropTypes.bool
   };
 
   onCancel = (event) => {
@@ -57,17 +25,16 @@ class NumberForm extends React.Component {
     const { number } = this.props;
 
     return {
-      formData: createValue({
-        value: {
-          number:                 number.get('number'),
-          nickname:               number.get('nickname') || '',
-          target:                 number.get('target') && number.get('target').toJS(),
-          outbound_calls_enabled: number.get('outbound_calls_enabled')
-        },
-        errorList: {},
-        onChange:  this.onChange
-      })
+      number:                 number.get('number'),
+      nickname:               number.get('nickname') || '',
+      target:                 number.get('target') && number.get('target').toJS(),
+      outbound_calls_enabled: number.get('outbound_calls_enabled')
     };
+  }
+
+  transformSubmitData(submitData) { // eslint-disable-line
+    delete submitData.number;
+    return submitData;
   }
 
   render() {

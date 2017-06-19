@@ -50,7 +50,12 @@ class BaseForm extends React.Component {
       saving: true
     });
 
-    const promise = onSubmit(formData.value);
+    let submitData = formData.value;
+    if (this.transformSubmitData) {
+      submitData = this.transformSubmitData({ ...formData.value });
+    }
+
+    const promise = onSubmit(submitData);
     promise.success(() => {
       if (this.mounted) {
         this.setState({
