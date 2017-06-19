@@ -129,7 +129,7 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget", cascade={"persist"}, orphanRemoval=true)
-     * @ORM\JoinColumn(name="target_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="target_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @JMS\Expose()
      *
