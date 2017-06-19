@@ -134,51 +134,51 @@
 			<section>
                 {# Forward #}
 				<div class="forward-wrapper show-fwd fwd-controls" style="display: none;">
-                    {% set to_id = el_uid() %}
-					<div class="header-line to-line">
-						<div class="label">
-							To:
-						</div>
-						<div
-								class="email-address-wrap input"
-								style="position: relative; top: 3px; display: inline-block;"
-								data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-								data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
-								data-search-param="term"
-								data-position-bound="#{{to_id}}"
-						>
-							<input
-									id="{{to_id}}"
-									class="email-address-input term"
-									type="text"
-									name="to[{{ to_id }}]"
-									value=""
-									placeholder="{{ phrase('agent.general.email_address') }}"
-									style="width: 500px;"
-							/>
-							<script type="text/x-deskpro-tmpl" class="user-row-tpl">
-								<li>
-									<a>
-									<span class="user-name"></span>
-									<address>&lt;<span class="user-email"></span>&gt;</address>
-									<div class="bound-fade"></div>
-								</a></li>
-							</script>
-							<div class="person-search-box" style="display: none">
-								<section>
-									<ul class="results-list">
+					<div class="header-line" id="{{ replyBaseId }}_fwd_to_container">
+						<span type="text/x-deskpro-tmpl" id="{{ replyBaseId }}_template" style="display: none">
+							<div class="to-line">
+								<div class="label">
+									To:
+								</div>
+								<div
+									class="email-address-wrap input"
+									style="position: relative; top: 3px; display: inline-block;"
+									data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+									data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
+									data-search-param="term"
+								>
+									<input
+											class="email-address-input term"
+											type="text"
+											value=""
+											placeholder="{{ phrase('agent.general.email_address') }}"
+											style="width: 500px;"
+									/>
+									<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+										<li>
+											<a>
+											<span class="user-name"></span>
+											<address>&lt;<span class="user-email"></span>&gt;</address>
+											<div class="bound-fade"></div>
+										</a></li>
+									</script>
+									<div class="person-search-box" style="display: none">
+										<section>
+											<ul class="results-list">
 
-									</ul>
-								</section>
+											</ul>
+										</section>
+									</div>
+								</div>
 							</div>
-						</div>
+              			</span>
+
 						<div class="fwd-control-panel" style="float: right; display: inline-block;">
 							<div class="label">
 								Add:
 							</div>
 							<span data-add="to" class="fwd-control-add">To</span> |
 							<span data-add="cc" class="fwd-control-add">Cc</span> |
-							<span data-add="ccs" class="fwd-control-add">Cc sender</span> |
 							<span data-add="bcc" class="fwd-control-add">BCC</span>
 						</div>
 					</div>
@@ -353,7 +353,7 @@
 					</a>
 				</div>
 				<div class="show-fwd" style="display: none">
-					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
+					<a class="dp-btn dp-btn-primary fwd-trigger" style="position: relative; z-index: 50;">
 						<i class="icon-share"></i>&nbsp;
                         {{ phrase('agent.tickets.forward_message') }}
 					</a>

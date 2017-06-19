@@ -1053,6 +1053,65 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			}]);
 		});
 
+		this.el.find('.fwd-trigger').on('click', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      var api = textarea.data('redactor');
+      if (isWysiwyg && api) {
+        api.$editor.linkify();
+        api.syncCode();
+      }
+
+      var formData = {
+      	custom_message: api.getCode(),
+				messages_ids:   self.fwdMessages
+      };
+
+      $.ajax({
+        url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
+        data: formData,
+        type: 'POST',
+        dataType: 'json'
+      });
+
+		});
+
+		this.el.find('.fwd-control-add').on('click', function (ev) {
+      var copy = self.getElById('template > .to-line').clone();
+      var container = self.getElById('fwd_to_container');
+      var header = copy.find('.label');
+      var input = copy.find('.email-address-input');
+      var eventTarget    = $(ev.target);
+      var wrap = copy.find('.email-address-wrap').removeClass('with-handler').removeClass('with-display-handler');
+      wrap.on('personsearchboxclick', function (event, personId, name, email, box) {
+        input.val(email);
+        box.close();
+      });
+      var id = Orb.getUniqueId();
+
+      wrap.data('position-bound', '#'+id)
+      input.attr('id', id);
+      switch(eventTarget.data('add')) {
+        case 'to':
+          input.data('type', 'to');
+          header.text('To:');
+          break;
+        case 'cc':
+          input.data('type', 'cc');
+          header.text('CC:');
+          break;
+        case 'bcc':
+          input.data('type', 'bcc');
+          header.text('BCC:');
+          break;
+        default:
+          return;
+     }
+      container.append(copy);
+      DeskPRO.ElementHandler_Exec(self.el);
+    });
+
 		this.getElById('keep_open_toggle').on('click', function(ev) {
 			ev.preventDefault();
 			if ($(this).hasClass('radio-on')) {

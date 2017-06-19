@@ -3878,15 +3878,12 @@ class TicketController extends AbstractController
         );
     }
 
-    public function forwardSendAction($ticket_id, $message_id)
+    public function forwardSendAction($ticket_id)
     {
         $ticket = $this->getTicketOr404($ticket_id);
 
-        $message = $this->em->find(TicketMessage::class, $message_id);
-        if (!$message || $message->ticket->getId() != $ticket->getId()) {
-            throw $this->createNotFoundException();
-        }
-
+        $messagesIds    = $this->in->getCleanValueArray('messages_ids', 'int', 'int');
+        $messages       = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds]);
         $custom_message = $this->in->getString('custom_message');
 
         $all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
@@ -3952,10 +3949,17 @@ class TicketController extends AbstractController
 
         $subject = $this->in->getString('subject');
 
-        $message_raw = $message->getMessageFull();
-        if (!$message_raw) {
-            $message_raw = $message->getMessageHtml();
+        $messagesRaw = [];
+
+        foreach ($messages as $message) {
+            $messageRaw = $message->getMessageFull();
+            if (!$messageRaw) {
+                $messageRaw = $message->getMessageHtml();
+            }
+            $messagesRaw[] = $messageRaw;
         }
+
+        $message_raw = implode('<br /><br />', $messagesRaw);
 
         $date_created = clone $message->date_created;
         $date_created->setTimezone($this->person->getDateTimezone());
