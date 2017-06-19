@@ -1,45 +1,21 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset } from 'react-forms';
 import classNames from 'classnames';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import DialNumberCheckbox from './DialNumber/DialNumberCheckbox';
 import DialNumbers from './DialNumber/DialNumbers';
 import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 
-class AutoAttendantForm extends React.Component {
+class AutoAttendantForm extends BaseForm {
 
   static propTypes = {
     autoAttendant: PropTypes.object,
     onReturnBack:  PropTypes.func,
     onSubmit:      PropTypes.func,
-    saving:        PropTypes.bool,
-    errors:        PropTypes.object // eslint-disable-line react/no-unused-prop-types
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = this.getDefaultState();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      formData: createValue({
-        value:     this.state.formData.value,
-        errorList: nextProps.errors,
-        onChange:  this.onChange
-      })
-    });
-  }
-
-  onChange = (formData) => {
-    this.setState({ formData });
-  };
-
-  onSubmit = (event) => {
-    event.preventDefault();
-    this.props.onSubmit(this.state.formData.value);
+    saving:        PropTypes.bool
   };
 
   onCancel = (event) => {
@@ -49,20 +25,14 @@ class AutoAttendantForm extends React.Component {
 
   getDefaultState() {
     const autoAttendant = this.props.autoAttendant;
-    const audioAsset = autoAttendant && autoAttendant.get('audio_asset');
+    const audioAsset    = autoAttendant && autoAttendant.get('audio_asset');
 
     return {
-      formData: createValue({
-        value: {
-          name:              autoAttendant ? autoAttendant.get('name') : '',
-          audio_asset:       audioAsset ? audioAsset.toJS() : null,
-          targets:           autoAttendant ? autoAttendant.get('targets').toJS() : {},
-          allow_repeat_menu: autoAttendant ? autoAttendant.get('allow_repeat_menu') : true,
-          allow_extension:   autoAttendant ? autoAttendant.get('allow_extension') : true
-        },
-        errorList: {},
-        onChange:  this.onChange
-      })
+      name:              autoAttendant ? autoAttendant.get('name') : '',
+      audio_asset:       audioAsset ? audioAsset.toJS() : null,
+      targets:           autoAttendant ? autoAttendant.get('targets').toJS() : {},
+      allow_repeat_menu: autoAttendant ? autoAttendant.get('allow_repeat_menu') : true,
+      allow_extension:   autoAttendant ? autoAttendant.get('allow_extension') : true
     };
   }
 

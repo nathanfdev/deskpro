@@ -20,6 +20,14 @@ class BaseForm extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+  }
+
   onChange = (formData) => {
     const { autoSubmit } = this.props;
 
@@ -44,9 +52,11 @@ class BaseForm extends React.Component {
 
     const promise = onSubmit(formData.value);
     promise.success(() => {
-      this.setState({
-        saving: false
-      });
+      if (this.mounted) {
+        this.setState({
+          saving: false
+        });
+      }
     });
     promise.error((result) => {
       this.setState({

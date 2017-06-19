@@ -1,14 +1,15 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset } from 'react-forms';
 import { Input, Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 import AgentsSelectContainer from '../../../../Common/Components/Select/AgentsSelectContainer';
 
-class QueueForm extends React.Component {
+class QueueForm extends BaseForm {
 
   static propTypes = {
     queueId:           PropTypes.number,
@@ -17,35 +18,10 @@ class QueueForm extends React.Component {
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
     ticketDepartments: PropTypes.object,
-    errors:            PropTypes.object,
     onSubmit:          PropTypes.func.isRequired,
     onDelete:          PropTypes.func,
     saving:            PropTypes.bool,
     onCancel:          PropTypes.func
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = this.getDefaultState();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      formData: createValue({
-        value:     this.state.formData.value,
-        errorList: nextProps.errors,
-        onChange:  this.onChange
-      })
-    });
-  }
-
-  onChange = (formData) => {
-    this.setState({ formData });
-  };
-
-  onSubmit = (event) => {
-    event.preventDefault();
-    this.props.onSubmit(this.state.formData.value);
   };
 
   onCancel = (event) => {
@@ -59,7 +35,7 @@ class QueueForm extends React.Component {
   };
 
   getDefaultState() {
-    const { queueId, queues, accounts, errors } = this.props;
+    const { queueId, queues, accounts } = this.props;
 
     let queue;
     if (queueId) {
@@ -78,24 +54,18 @@ class QueueForm extends React.Component {
     }
 
     return {
-      formData: createValue({
-        value: {
-          account,
-          name:                 queue ? queue.get('name') : '',
-          agents:               queue ? queue.get('agents').toArray() : [],
-          routing_model:        queue ? queue.get('routing_model') : 'automatic',
-          max_queue_size:       queue ? queue.get('max_queue_size') : 0,
-          greet_asset:          greetAsset ? greetAsset.toJS() : null,
-          loop_asset:           loopAsset ? loopAsset.toJS() : null,
-          voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
-          voicemail_department: queue ? queue.get('voicemail_department') : null,
-          voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
-          voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
-          voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 30
-        },
-        errorList: errors,
-        onChange:  this.onChange
-      })
+      account,
+      name:                 queue ? queue.get('name') : '',
+      agents:               queue ? queue.get('agents').toArray() : [],
+      routing_model:        queue ? queue.get('routing_model') : 'automatic',
+      max_queue_size:       queue ? queue.get('max_queue_size') : 0,
+      greet_asset:          greetAsset ? greetAsset.toJS() : null,
+      loop_asset:           loopAsset ? loopAsset.toJS() : null,
+      voicemail_asset:      voicemailAsset ? voicemailAsset.toJS() : null,
+      voicemail_department: queue ? queue.get('voicemail_department') : null,
+      voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
+      voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
+      voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 30
     };
   }
 
