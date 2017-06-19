@@ -542,7 +542,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
     if (window.DP_HAS_NEW_SNIPPETS) {
       snippetBtn.on('click', function (e) {
-        var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745}});
+        var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745, insertSnippet: self.insertSnippet.bind(self)}});
         window.document.dispatchEvent(event);
         self.isSnippetOpen = true;
 			});
@@ -739,98 +739,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                 },
                 success:  function (data) {
                   var snippet = data.data;
-                  var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
-                  var snippetId = snippet.id;
-                  var snippetCode = snippet.translations;
-
-                  recordSnippetUse(snippetId);
-
-                  var agentText;
-                  var defaultText;
-                  var wantText;
-                  var useText;
-                  var result;
-
-                  Array.each(snippetCode, function (info) {
-                    if (info.content) {
-                      if (info.language_id === ticketLangId) {
-                        wantText = info;
-                      }
-                      if (info.language_id === DESKPRO_PERSON_LANG_ID) {
-                        agentText = info;
-                      }
-                      if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
-                        defaultText = info;
-                      }
-                      useText = info;
-                    }
-                  });
-
-                  if (wantText) {
-                    useText = wantText;
-                  } else if (agentText) {
-                    useText = agentText;
-                  } else if (defaultText) {
-                    useText = defaultText;
-                  }
-
-                  if (useText.blobs.length) {
-                    var $attachRow = self.getElById('attach_row');
-                    Array.each(useText.blobs, function (info) {
-                      var blob = data.linked.blob[info];
-                      if (blob) {
-                        var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});
-                        $attachRow.find('ul.files:first').append(html);
-                      }
-                    });
-                    $attachRow.slideDown().removeClass('is-hidden');
-                  }
-
-                  useText = useText.content;
-
-
-									try {
-										var tpl = twig({
-											data: useText,
-											strict_variables: false
-										});
-										if (tpl) {
-											result = tpl.render({
-												ticket: self.page.meta.api_data
-											}, {
-												strict_variables: false
-											});
-											if (!result) {
-												result = useText;
-											}
-										} else {
-											result = useText;
-										}
-									} catch (e) {
-										console.log("Snippet render failed: %o", e);
-										result = useText;
-									}
-
-
-									var data = result;
-									data = data.replace(/<\/p>\s*<p>/g, '<br/>');
-									data = data.replace(/^<p>/, '');
-									data = data.replace(/<\/p>$/, '');
-									data = $('<div>' + data + '</div>');
-
-									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-									var cursor = $('<span class="_cursor"></span>');
-									var cursorPos = data.find('> p');
-									if (!cursorPos[0]) {
-										cursorPos = data;
-									}
-
-									el.after(data);
-									cursorPos.append(cursor);
-									el.remove();
-
-									api.setSelection(cursor[0], 0, cursor[0], 0);
-									api.syncCode();
+                  self.insertSnippet(snippet, data.linked.blob).bind(self);
 								}
               });
             } else {
@@ -1381,6 +1290,122 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		} else {
 			textarea.val(val);
 		}
+	},
+
+  recordSnippetUse: function(snippetId) {
+    var el = $("#" + this.page.meta.baseId + "_snippet_ids");
+    var current = el.val() || '';
+    var newval = current.length ? current + ',' + snippetId : snippetId+'';
+    el.val(newval);
+  },
+
+	insertSnippet: function(snippet, blobs) {
+		var self = this;
+    var ticketLangId = this.page ? this.page.getEl('value_form').find('.language_id').val() : 0;
+    var snippetId = snippet.id;
+    var snippetCode = snippet.translations;
+
+    this.recordSnippetUse(snippetId);
+
+    var agentText;
+    var defaultText;
+    var wantText;
+    var useText;
+    var result;
+
+    Array.each(snippetCode, function (info) {
+      if (info.content) {
+        if (info.language_id === ticketLangId) {
+          wantText = info;
+        }
+        if (info.language_id === DESKPRO_PERSON_LANG_ID) {
+          agentText = info;
+        }
+        if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
+          defaultText = info;
+        }
+        useText = info;
+      }
+    });
+
+    if (wantText) {
+      useText = wantText;
+    } else if (agentText) {
+      useText = agentText;
+    } else if (defaultText) {
+      useText = defaultText;
+    }
+
+    if (useText.blobs.length) {
+      var $attachRow = this.getElById('attach_row');
+      Array.each(useText.blobs, function (info) {
+        var blob = blobs[info];
+        if (blob) {
+          var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});
+          $attachRow.find('ul.files:first').append(html);
+        }
+      });
+      $attachRow.slideDown().removeClass('is-hidden');
+    }
+
+    useText = useText.content;
+
+
+    try {
+      var tpl = twig({
+        data: useText,
+        strict_variables: false
+      });
+      if (tpl) {
+        result = tpl.render({
+          ticket: self.page.meta.api_data
+        }, {
+          strict_variables: false
+        });
+        if (!result) {
+          result = useText;
+        }
+      } else {
+        result = useText;
+      }
+    } catch (e) {
+      console.log("Snippet render failed: %o", e);
+      result = useText;
+    }
+
+
+    var data = result;
+    data = data.replace(/<\/p>\s*<p>/g, '<br/>');
+    data = data.replace(/^<p>/, '');
+    data = data.replace(/<\/p>$/, '');
+    data = $('<div>' + data + '</div>');
+
+    var api = this.textarea.data('redactor');
+    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+    if (el.length) {
+			var cursor = $('<span class="_cursor"></span>');
+			var cursorPos = data.find('> p');
+			if (!cursorPos[0]) {
+				cursorPos = data;
+			}
+
+			el.after(data);
+			cursorPos.append(cursor);
+			el.remove();
+
+			api.setSelection(cursor[0], 0, cursor[0], 0);
+		} else {
+      try {
+        api.restoreSelection();
+        api.setBuffer();
+      } catch (e) {}
+    	api.insertHtml(data.html());
+		}
+		api.syncCode();
+
+    var event = new CustomEvent('dpLeftDrawerClose');
+    window.document.dispatchEvent(event);
+    self.isSnippetOpen = false;
 	},
 
 	refreshMessageTranslation: function(to) {

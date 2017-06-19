@@ -7,20 +7,23 @@ import Button from 'deskpro-styles/lib/Components/Button';
 import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
-import { allSnippetsSelector } from '../Selectors/snippets';
+import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
 
 @connect(state => ({
-  snippets: allSnippetsSelector(state)
+  snippets: allSnippetsSelector(state),
+  blobs:    allSnippetBlobsSelector(state)
 }))
 export class SnippetsMenuContainer extends React.Component {
   static propTypes = {
-    snippets:  PropTypes.object,
-    closeMenu: PropTypes.func,
-    type:      PropTypes.string
+    snippets:      PropTypes.object,
+    blobs:         PropTypes.object,
+    closeMenu:     PropTypes.func,
+    insertSnippet: PropTypes.func,
+    type:          PropTypes.string
   };
 
   insertSnippet = (snippet) => {
-    console.log(snippet);
+    this.props.insertSnippet(snippet.toJS(), this.props.blobs.toJS());
   };
 
   render() {
