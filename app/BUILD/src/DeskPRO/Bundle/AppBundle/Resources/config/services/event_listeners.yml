@@ -53,7 +53,7 @@ services:
 
   event_listener.voice_worker:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
-    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager"]
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@event_dispatcher"]
     tags:
       - { name: doctrine.entity_listener }
 

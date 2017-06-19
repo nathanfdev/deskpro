@@ -61,7 +61,7 @@ class TwilioSync extends AbstractJob
         }
 
         // sync twilio account
-        $this->getContainer()->get('twilio_sync_manager')->syncWorkflow($account);
+        $this->getContainer()->get('twilio_sync_manager')->syncAccount($account);
 
         $account->setDateLastSync($account->getDateSync());
         $em->persist($account);

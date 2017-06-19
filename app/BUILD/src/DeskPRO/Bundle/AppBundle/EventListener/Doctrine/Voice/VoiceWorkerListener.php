@@ -30,10 +30,12 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class VoiceWorkerListener.
@@ -53,15 +55,22 @@ class VoiceWorkerListener
     private $em;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * Constructor.
      *
-     * @param TwilioAdapter $twilioAdapter
-     * @param EntityManager $em
+     * @param TwilioAdapter            $twilioAdapter
+     * @param EntityManager            $em
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em)
+    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em, EventDispatcherInterface $dispatcher)
     {
         $this->twilioAdapter = $twilioAdapter;
         $this->em            = $em;
+        $this->dispatcher    = $dispatcher;
     }
 
     /**
@@ -111,6 +120,14 @@ class VoiceWorkerListener
                 $activity = TwilioAdapter::getActivityStatus($agentData);
                 $this->twilioAdapter->updateAgentWorker($account, $agentData->getPerson(), $activity);
             }
+        } elseif ($args->hasChangedField('outboundCallsEnabled')) {
+            // force reload agent's interface to show/hide outbound dialpad
+            $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+                'target'      => $agentData->getPerson()->getId(),
+            ]));
         }
     }
 
@@ -145,6 +162,14 @@ class VoiceWorkerListener
         $this->em->getConnection()->executeQuery('DELETE FROM voice_targets WHERE agent_id = :person_id', [
             'person_id' => $agentData->getPerson()->getId(),
         ]);
+
+        // force reload agent's interface to hide voice UI components before real sync
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+            'type'        => 'admin',
+            'person_id'   => 0,
+            'person_name' => 'System',
+            'target'      => $agentData->getPerson()->getId(),
+        ]));
 
         $this->updateAccountDateSync($this->getVoiceAccount());
     }
