@@ -857,7 +857,7 @@ class TwilioCallbacksController extends BaseController
      *     output="string"
      * )
      *
-     * @Rest\Post("/voicemail_complete", name="twilio_voicemail_end")
+     * @Rest\Post("/voicemail_end", name="twilio_voicemail_end")
      *
      * @param VoiceAccount $account
      * @param string       $accountAuth
