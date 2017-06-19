@@ -133,19 +133,17 @@
 		<article>
 			<section>
                 {# Forward #}
-				<div class="forward-wrapper show-fwd fwd-controls" style="display: none;">
-					<div class="header-line" id="{{ replyBaseId }}_fwd_to_container">
-						<span type="text/x-deskpro-tmpl" id="{{ replyBaseId }}_template" style="display: none">
+				<span type="text/x-deskpro-tmpl" id="{{ replyBaseId }}_template" style="display: none">
 							<div class="to-line">
 								<div class="label">
 									To:
 								</div>
 								<div
-									class="email-address-wrap input"
-									style="position: relative; top: 3px; display: inline-block;"
-									data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-									data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
-									data-search-param="term"
+										class="email-address-wrap input"
+										style="position: relative; top: 3px; display: inline-block;"
+										data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+										data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
+										data-search-param="term"
 								>
 									<input
 											class="email-address-input term"
@@ -172,7 +170,8 @@
 								</div>
 							</div>
               			</span>
-
+				<div class="forward-wrapper show-fwd fwd-controls" style="display: none;">
+					<div class="header-line" id="{{ replyBaseId }}_fwd_to_container">
 						<div class="fwd-control-panel" style="float: right; display: inline-block;">
 							<div class="label">
 								Add:

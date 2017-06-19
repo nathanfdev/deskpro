@@ -1065,8 +1065,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
       var formData = {
       	custom_message: api.getCode(),
-				messages_ids:   self.fwdMessages
+				messages_ids:   self.fwdMessages,
+				to: {},
+				to_type: {}
       };
+
+      $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){
+      	var $item = $(item);
+				formData.to[$item.attr('id')] = $item.val();
+				formData.to_type[$item.attr('id')] = $item.data('type');
+			}));
 
       $.ajax({
         url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
@@ -1078,39 +1086,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.find('.fwd-control-add').on('click', function (ev) {
-      var copy = self.getElById('template > .to-line').clone();
-      var container = self.getElById('fwd_to_container');
-      var header = copy.find('.label');
-      var input = copy.find('.email-address-input');
-      var eventTarget    = $(ev.target);
-      var wrap = copy.find('.email-address-wrap').removeClass('with-handler').removeClass('with-display-handler');
-      wrap.on('personsearchboxclick', function (event, personId, name, email, box) {
-        input.val(email);
-        box.close();
-      });
-      var id = Orb.getUniqueId();
-
-      wrap.data('position-bound', '#'+id)
-      input.attr('id', id);
-      switch(eventTarget.data('add')) {
-        case 'to':
-          input.data('type', 'to');
-          header.text('To:');
-          break;
-        case 'cc':
-          input.data('type', 'cc');
-          header.text('CC:');
-          break;
-        case 'bcc':
-          input.data('type', 'bcc');
-          header.text('BCC:');
-          break;
-        default:
-          return;
-     }
-      container.append(copy);
-      DeskPRO.ElementHandler_Exec(self.el);
+			self.addTo((ev.target).data('add'));
     });
+		this.addTo('to');
 
 		this.getElById('keep_open_toggle').on('click', function(ev) {
 			ev.preventDefault();
@@ -1236,6 +1214,40 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			this.getElById('replybox_notetab_btn').click();
 		}
 	},
+
+  addTo: function(type) {
+    var copy = this.getElById('template > .to-line').clone();
+    var container = this.getElById('fwd_to_container');
+    var header = copy.find('.label');
+    var input = copy.find('.email-address-input');
+    var wrap = copy.find('.email-address-wrap').removeClass('with-handler').removeClass('with-display-handler');
+    wrap.on('personsearchboxclick', function (event, personId, name, email, box) {
+      input.val(email);
+      box.close();
+    });
+    var id = Orb.getUniqueId();
+
+    wrap.data('position-bound', '#'+id);
+    input.attr('id', id);
+    switch(type) {
+      case 'to':
+        input.data('type', 'to');
+        header.text('To:');
+        break;
+      case 'cc':
+        input.data('type', 'cc');
+        header.text('CC:');
+        break;
+      case 'bcc':
+        input.data('type', 'bcc');
+        header.text('BCC:');
+        break;
+      default:
+        return;
+    }
+    container.append(copy);
+    DeskPRO.ElementHandler_Exec(this.el);
+  },
 
 	setReplyAsOptionName: function(name) {
 		var item = this.getElById('status_menu').find('li[data-type="' + name + '"]').first();
