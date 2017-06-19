@@ -775,12 +775,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                   }
 
                   if (useText.blobs.length) {
-                    var $attachRow = self.page.getEl('attach_row');
+                    var $attachRow = self.getElById('attach_row');
                     Array.each(useText.blobs, function (info) {
                       var blob = data.linked.blob[info];
                       if (blob) {
-                        self.page.draft.addAttachment(blob);
-                        var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+                        var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});
                         $attachRow.find('ul.files:first').append(html);
                       }
                     });
