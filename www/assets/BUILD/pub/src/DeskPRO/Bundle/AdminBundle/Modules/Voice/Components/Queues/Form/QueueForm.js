@@ -70,8 +70,8 @@ class QueueForm extends BaseForm {
   }
 
   render() {
-    const { queueId, accounts, agents, agentTeams, ticketDepartments, saving, onCancel } = this.props;
-    const { formData } = this.state;
+    const { queueId, accounts, agents, agentTeams, ticketDepartments, onCancel } = this.props;
+    const { formData, saving } = this.state;
 
     return (
       <div className="twilio-queue-form">

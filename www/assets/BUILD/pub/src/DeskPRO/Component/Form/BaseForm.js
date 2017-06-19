@@ -44,7 +44,11 @@ class BaseForm extends React.Component {
     }
 
     const { onSubmit } = this.props;
-    const { formData } = this.state;
+    const { formData, saving } = this.state;
+
+    if (saving) {
+      return;
+    }
 
     this.setState({
       saving: true

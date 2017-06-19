@@ -38,8 +38,8 @@ class NumberForm extends BaseForm {
   }
 
   render() {
-    const { onReturnBack, saving } = this.props;
-    const { formData } = this.state;
+    const { onReturnBack } = this.props;
+    const { formData, saving } = this.state;
 
     return (
       <div className="page">

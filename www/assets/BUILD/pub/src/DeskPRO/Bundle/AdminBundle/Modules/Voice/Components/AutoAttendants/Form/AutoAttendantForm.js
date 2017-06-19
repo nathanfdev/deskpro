@@ -43,7 +43,8 @@ class AutoAttendantForm extends BaseForm {
   }
 
   render() {
-    const { autoAttendant, onReturnBack, saving } = this.props;
+    const { autoAttendant, onReturnBack } = this.props;
+    const { saving } = this.state;
 
     return (
       <div className="page">
