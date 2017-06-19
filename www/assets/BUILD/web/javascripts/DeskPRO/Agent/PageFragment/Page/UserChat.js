@@ -277,7 +277,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
               if (window.DP_HAS_NEW_SNIPPETS) {
               	$.ajax({
-                  url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/ticket/0?inline_sideloads=true&include=snippet_translation,blob',
+                  url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/chat/0?inline_sideloads=true&include=snippet_translation,blob',
 									dataType: 'json',
 									complete: function () {
 										if (self.page) self.page.pauseSend = false;
@@ -302,17 +302,19 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 											useText = defaultText;
 										}
 
-                    if (useText.blobs.length) {
-                      var $attachRow = self.getEl('attach_row');
-                      Array.each(useText.blobs, function (info) {
-                        var blob = data.linked.blob[info];
-                        if (blob) {
-                          var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
-                          $attachRow.find('ul.files:first').append(html);
-                        }
-                      });
-                      $attachRow.slideDown().removeClass('is-hidden');
-                    }
+										// At the moment attachment as sent straight away we need to be able to edit them or review the message
+										// before sending them
+                    // if (useText.blobs.length) {
+                    //   var $attachRow = self.getEl('attach_row');
+                    //   Array.each(useText.blobs, function (info) {
+                    //     var blob = data.linked.blob[info];
+                    //     if (blob) {
+                    //       var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+                    //       $attachRow.find('ul.files:first').append(html);
+                    //     }
+                    //   });
+                    //   $attachRow.slideDown().removeClass('is-hidden');
+                    // }
 
                     useText = useText.content;
 

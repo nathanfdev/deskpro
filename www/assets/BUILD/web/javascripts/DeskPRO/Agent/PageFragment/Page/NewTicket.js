@@ -1428,107 +1428,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
                   },
                   success:  function (data) {
 										var snippet = data.data;
-                    var ticketLangId = self.getEl('value_form').find('.language_id').val();
-                    var snippetId = snippet.id;
-                    var snippetCode = snippet.translations;
-
-                    var agentText;
-                    var defaultText;
-                    var wantText;
-                    var useText;
-                    var result;
-
-                    Array.each(snippetCode, function (info) {
-                      if (info.content) {
-                        if (info.language_id === ticketLangId) {
-                          wantText = info;
-                        }
-                        if (info.language_id === DESKPRO_PERSON_LANG_ID) {
-                          agentText = info;
-                        }
-                        if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
-                          defaultText = info;
-                        }
-                        useText = info;
-                      }
-                    });
-
-                    if (wantText) {
-                      useText = wantText;
-                    } else if (agentText) {
-                      useText = agentText;
-                    } else if (defaultText) {
-                      useText = defaultText;
-                    }
-
-                    if (useText.blobs.length) {
-                      var $attachRow = self.getEl('attach_row');
-                      Array.each(useText.blobs, function (info) {
-                      	var blob = data.linked.blob[info];
-												if (blob) {
-													self.draft.addAttachment(blob);
-													var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
-                          $attachRow.find('ul.files:first').append(html);
-												}
-                      });
-                      $attachRow.slideDown().removeClass('is-hidden');
-										}
-
-                    useText = useText.content;
-
-                    self.recordSnippetUse(snippetId);
-
-                    try {
-                      var tpl = twig({
-                        data:             useText,
-                        strict_variables: true
-                      });
-                      result = tpl.render({
-                        ticket: {
-                          person: self.meta.person_api_data
-                        }
-                      }, {
-                        strict_variables: true
-                      });
-                      if (!result) {
-                        result = useText;
-                      }
-                    } catch (e) {
-                      console.log("Snippet render failed: %o", e);
-                      result = useText;
-                    }
-
-                    data = result;
-
-                    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-                    data = $('<div>' + data + '</div>');
-
-                    // trailing newlines
-                    var coll = data.find('> br');
-                    coll.last().remove();
-
-                    var cursor = $('<span class="_cursor"></span>');
-                    var cursorPos = data.find('> p');
-                    if (!cursorPos[0]) {
-                      cursorPos = data;
-                    }
-
-                    el.after(data);
-                    cursorPos.append(cursor);
-                    el.remove();
-
-                    var next = data.next();
-                    if (next.is('br')) {
-                      next.remove();
-                    }
-                    if (cursor.next().is('br')) {
-                      cursor.next().remove();
-                    }
-                    if (cursor.prev().is('br')) {
-                      cursor.prev().remove();
-                    }
-                    api.setSelection(cursor[0], 0, cursor[0], 0);
-                    api.syncCode();
+                    self.insertSnippet(snippet, data.linked.blob).bind(self);
                   }
                 });
               } else {
@@ -1767,11 +1667,125 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	openSnippetsViewer: function() {
 		if (window.DP_HAS_NEW_SNIPPETS) {
-			var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745}});
+			var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745, insertSnippet: this.insertSnippet.bind(this)}});
 			window.document.dispatchEvent(event);
 		} else {
 			this.snippetsViewer.open();
 		}
+	},
+
+	insertSnippet: function(snippet, blobs) {
+		var self = this;
+		var ticketLangId = self.getEl('value_form').find('.language_id').val();
+		var snippetId = snippet.id;
+		var snippetCode = snippet.translations;
+
+		var agentText;
+		var defaultText;
+		var wantText;
+		var useText;
+		var result;
+
+		Array.each(snippetCode, function (info) {
+			if (info.content) {
+				if (info.language_id === ticketLangId) {
+					wantText = info;
+				}
+				if (info.language_id === DESKPRO_PERSON_LANG_ID) {
+					agentText = info;
+				}
+				if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
+					defaultText = info;
+				}
+				useText = info;
+			}
+		});
+
+		if (wantText) {
+		  useText = wantText;
+		} else if (agentText) {
+		  useText = agentText;
+		} else if (defaultText) {
+		  useText = defaultText;
+		}
+		
+		if (useText.blobs.length) {
+      var $attachRow = self.getEl('attach_row');
+		  Array.each(useText.blobs, function (info) {
+		    var blob = blobs[info];
+		    if (blob) {
+		      self.draft.addAttachment(blob);
+		      var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+		      $attachRow.find('ul.files:first').append(html);
+		    }
+		  });
+		  $attachRow.slideDown().removeClass('is-hidden');
+		}
+
+		useText = useText.content;
+
+		self.recordSnippetUse(snippetId);
+
+		try {
+		  var tpl = twig({
+		    data:             useText,
+		    strict_variables: true
+		  });
+		  result = tpl.render({
+		    ticket: {
+		      person: self.meta.person_api_data
+		    }
+		  }, {
+		    strict_variables: true
+		  });
+		  if (!result) {
+		    result = useText;
+		  }
+		} catch (e) {
+		  console.log("Snippet render failed: %o", e);
+		  result = useText;
+		}
+
+		var data = result;
+		data = $('<div>' + data + '</div>');
+
+
+		// trailing newlines
+		var coll = data.find('> br');
+		coll.last().remove();
+
+		var api = this.textarea.data('redactor');
+    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+    if (el.length) {
+      var cursor = $('<span class="_cursor"></span>');
+      var cursorPos = data.find('> p');
+      if (!cursorPos[0]) {
+        cursorPos = data;
+      }
+
+      el.after(data);
+      cursorPos.append(cursor);
+      el.remove();
+
+      var next = data.next();
+      if (next.is('br')) {
+        next.remove();
+      }
+      if (cursor.next().is('br')) {
+        cursor.next().remove();
+      }
+      if (cursor.prev().is('br')) {
+        cursor.prev().remove();
+      }
+      api.setSelection(cursor[0], 0, cursor[0], 0);
+    } else {
+      try {
+        api.restoreSelection();
+        api.setBuffer();
+      } catch (e) {}
+      api.insertHtml(data.html());
+    }
+    api.syncCode();
 	},
 
 	//#########################################################################
