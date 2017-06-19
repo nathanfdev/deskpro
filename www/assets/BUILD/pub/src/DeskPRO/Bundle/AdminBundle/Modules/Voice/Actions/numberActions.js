@@ -3,7 +3,7 @@ import Immutable from 'immutable';
 import toastr from 'toastr';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
-import { loadAll, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadAll, addToCollection, updateCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const changeExistingNumbersFilter = createAction('VOICE_CHANGE_EXISTING_NUMBERS_FILTER');
 export const changeAvailableNumbersFilter = createAction('VOICE_CHANGE_AVAILABLE_NUMBERS_FILTER');
@@ -18,6 +18,13 @@ export const editNumber = createAction(
   (id, data) => dispatch => repository('VoiceNumber').update(data, id).success(() => {
     const number = Immutable.fromJS({ ...data, id });
     dispatch(updateCollection('VoiceNumber', Immutable.List([number]), 'merge'));
+  })
+);
+
+export const deleteNumber = createAction(
+  'VOICE_DELETE_NUMBER',
+  id => dispatch => repository('VoiceNumber').remove(id).success(() => {
+    dispatch(removeFromCollection('VoiceNumber', 'all', [id]));
   })
 );
 

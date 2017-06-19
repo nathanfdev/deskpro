@@ -11,7 +11,6 @@ class ExtensionForm extends BaseForm {
 
   static propTypes = {
     agent:        PropTypes.object,
-    saving:       PropTypes.bool,
     deleting:     PropTypes.bool,
     onSubmit:     PropTypes.func,
     onDelete:     PropTypes.func,

@@ -13,7 +13,6 @@ class AutoAttendantForm extends BaseForm {
 
   static propTypes = {
     autoAttendant: PropTypes.object,
-    saving:        PropTypes.bool,
     onReturnBack:  PropTypes.func,
     onSubmit:      PropTypes.func,
     onDelete:      PropTypes.func

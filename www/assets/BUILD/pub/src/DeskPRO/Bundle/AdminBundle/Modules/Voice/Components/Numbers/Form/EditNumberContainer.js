@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import NumberForm from './NumberForm';
-import { loadNumbers, editNumber } from '../../../Actions/numberActions';
+import { loadNumbers, editNumber, deleteNumber } from '../../../Actions/numberActions';
 import { loadAgents } from '../../../../Application/Actions/peopleActions';
 import { loadQueues } from '../../../Actions/queueActions';
 import { loadAutoAttendants } from '../../../Actions/autoAttendantActions';
@@ -56,6 +56,18 @@ class EditNumberContainer extends React.Component {
     return promise;
   };
 
+  onDelete = () => {
+    const { dispatch } = this.props;
+    const number = this.getNumber();
+    const promise = dispatch(deleteNumber(number.get('id')));
+
+    promise.success(() => {
+      replaceRoute('/voice_channel/numbers');
+    });
+
+    return promise;
+  };
+
   getNumber() {
     const { params, numbers } = this.props;
     const numberId = parseInt(params.numberId, 10);
@@ -77,6 +89,7 @@ class EditNumberContainer extends React.Component {
         number={number}
         onReturnBack={this.onReturnBack}
         onSubmit={this.onSubmit}
+        onDelete={this.onDelete}
       />
     );
   }

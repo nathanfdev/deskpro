@@ -13,12 +13,17 @@ class NumberForm extends BaseForm {
     number:       PropTypes.object,
     onReturnBack: PropTypes.func.isRequired,
     onSubmit:     PropTypes.func,
-    saving:       PropTypes.bool
+    onDelete:     PropTypes.func
   };
 
   onCancel = (event) => {
     event.preventDefault();
     this.props.onReturnBack();
+  };
+
+  onDelete = (event) => {
+    event.preventDefault();
+    this.props.onDelete();
   };
 
   getDefaultState() {
@@ -75,6 +80,9 @@ class NumberForm extends BaseForm {
               >
                 Cancel
               </button>
+              <span className="voice-delete-button" onClick={this.onDelete}>
+                Delete this number
+              </span>
             </Fieldset>
           </Form>
         </div>
