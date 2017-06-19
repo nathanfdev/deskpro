@@ -13,14 +13,20 @@ class AutoAttendantForm extends BaseForm {
 
   static propTypes = {
     autoAttendant: PropTypes.object,
+    saving:        PropTypes.bool,
     onReturnBack:  PropTypes.func,
     onSubmit:      PropTypes.func,
-    saving:        PropTypes.bool
+    onDelete:      PropTypes.func
   };
 
   onCancel = (event) => {
     event.preventDefault();
     this.props.onReturnBack();
+  };
+
+  onDelete = (event) => {
+    event.preventDefault();
+    this.props.onDelete();
   };
 
   getDefaultState() {
@@ -84,6 +90,11 @@ class AutoAttendantForm extends BaseForm {
               >
                 Cancel
               </button>
+
+              {autoAttendant &&
+              <span className="voice-delete-button" onClick={this.onDelete}>
+                Delete this auto-attendant
+              </span>}
             </Fieldset>
           </Form>
         </div>

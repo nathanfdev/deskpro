@@ -18,9 +18,9 @@ class QueueForm extends BaseForm {
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
     ticketDepartments: PropTypes.object,
+    saving:            PropTypes.bool,
     onSubmit:          PropTypes.func.isRequired,
     onDelete:          PropTypes.func,
-    saving:            PropTypes.bool,
     onCancel:          PropTypes.func
   };
 

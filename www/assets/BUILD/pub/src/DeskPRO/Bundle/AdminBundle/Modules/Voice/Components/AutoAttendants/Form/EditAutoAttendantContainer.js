@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import AutoAttendantForm from './AutoAttendantForm';
 import BaseAutoAttendantFormContainer from './BaseAutoAttendantFormContainer';
-import { loadAutoAttendants, editAutoAttendant } from '../../../Actions/autoAttendantActions';
+import { replaceRoute } from '../../../../../Services/history';
+import { loadAutoAttendants, editAutoAttendant, deleteAutoAttendant } from '../../../Actions/autoAttendantActions';
 import { allAutoAttendantsSelector } from '../../../Selectors/autoAttendant';
 import LoadingContainer from './LoadingContainer';
 
@@ -20,6 +21,17 @@ class EditAutoAttendantContainer extends BaseAutoAttendantFormContainer {
   componentDidMount() {
     this.props.dispatch(loadAutoAttendants());
   }
+
+  onDelete = () => {
+    const { dispatch } = this.props;
+    const promise = dispatch(deleteAutoAttendant(this.getAutoAttendantId()));
+
+    promise.success(() => {
+      replaceRoute('/voice_channel/auto_attendants');
+    });
+
+    return promise;
+  };
 
   submitData = data => this.props.dispatch(editAutoAttendant(this.getAutoAttendantId(), data));
 
@@ -39,6 +51,7 @@ class EditAutoAttendantContainer extends BaseAutoAttendantFormContainer {
           autoAttendant={autoAttendant}
           onSubmit={this.onSubmit}
           onReturnBack={this.onReturnBack}
+          onDelete={this.onDelete}
         />
       </LoadingContainer>
     );
