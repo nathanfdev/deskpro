@@ -1074,14 +1074,14 @@ $voice-green-border-color: #47BF61;
       background-color: #FFFFFF;
       border: 1px solid #CCCCCC;
       border-top: 0;
-      height: 38px;
+      min-height: 38px;
+      overflow: auto;
 
       .media-controls {
         display: inline-block;
 
         .media-timeline {
           display: inline-block;
-          width: 300px;
 
           .range {
             width: 100%;
