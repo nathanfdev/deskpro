@@ -1067,7 +1067,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       	custom_message: api.getCode(),
 				messages_ids:   self.fwdMessages,
 				to: {},
-				to_type: {}
+				to_type: {},
+			  from: self.getElById('fwd_from').val(),
       };
 
       $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){

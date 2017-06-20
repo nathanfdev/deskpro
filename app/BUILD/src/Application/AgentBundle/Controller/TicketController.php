@@ -3882,9 +3882,10 @@ class TicketController extends AbstractController
     {
         $ticket = $this->getTicketOr404($ticket_id);
 
-        $messagesIds    = $this->in->getCleanValueArray('messages_ids', 'int', 'int');
-        $messages       = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds]);
-        $custom_message = $this->in->getString('custom_message');
+        $messagesIds   = $this->in->getCleanValueArray('messages_ids', 'int', 'int');
+        $messages      = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds]);
+        $customMessage = $this->in->getString('custom_message');
+        $useMyAddress  = $this->in->getString('from') === 'me';
 
         $all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
         $all_to_types = $this->in->getCleanValueArray('to_type', 'str', 'str');
@@ -3952,14 +3953,10 @@ class TicketController extends AbstractController
         $messagesRaw = [];
 
         foreach ($messages as $message) {
-            $messageRaw = $message->getMessageFull();
-            if (!$messageRaw) {
-                $messageRaw = $message->getMessageHtml();
-            }
-            $messagesRaw[] = $messageRaw;
+            $messagesRaw[] = $message->getMessageHtml();
         }
 
-        $message_raw = implode('<br /><br />', $messagesRaw);
+        $messageRaw = implode('<br /><br />', $messagesRaw);
 
         $date_created = clone $message->date_created;
         $date_created->setTimezone($this->person->getDateTimezone());
@@ -3967,12 +3964,12 @@ class TicketController extends AbstractController
 
         $top = '';
 
-        if ($custom_message) {
+        if ($customMessage) {
             if ($top) {
                 $top .= '<br/><br/>';
             }
             $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
-            $top .= nl2br(htmlspecialchars($custom_message));
+            $top .= nl2br(htmlspecialchars($customMessage));
 
             if ($sig = $this->person->getSignatureHtml()) {
                 $top .= '<br/><br/>'.$sig.'<br/><br/><br/>';
@@ -3985,12 +3982,13 @@ class TicketController extends AbstractController
             $top .= '<br/><br/>';
         }
 
+        // we gonna use latest message we're forwading
         $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
         $top .= '--- Forwarded Message ---<br/>';
-        $top .= 'From: '.$message->getPerson()->getDisplayNameUser().' &lt;<a href="mailto:'.$message->getPerson()
-                ->getPrimaryEmailAddress().'">'.$message->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
+        $top .= 'From: '.$messages[0]->getPerson()->getDisplayNameUser().' &lt;<a href="mailto:'.$messages[0]->getPerson()
+                ->getPrimaryEmailAddress().'">'.$messages[0]->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
 
-        if ($message->getPerson()->isAgent()) {
+        if ($messages[0]->getPerson()->isAgent()) {
             $to = $ticket->getPerson();
             $top .= 'To: '.$to->getDisplayName().' &lt;<a href="mailto:'.$to->getPrimaryEmailAddress(
                 ).'">'.$to->getPrimaryEmailAddress().'</a>&gt;<br/>';
@@ -4005,13 +4003,13 @@ class TicketController extends AbstractController
         $top .= 'Date: '.$date_created.'<br/>';
         $top .= '</div>';
 
-        $message_raw = $top.'<br/><br/>'.$message_raw;
+        $messageRaw = $top.'<br/><br/>'.$messageRaw;
 
-        if (strpos($message_raw, '<body') === false) {
-            $message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>'.$message_raw.'</body></html>';
+        if (strpos($messageRaw, '<body') === false) {
+            $messageRaw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>'.$messageRaw.'</body></html>';
         }
 
-        $message_raw = $message->procInlineAttach($message_raw);
+        $messageRaw = $message->procInlineAttach($messageRaw);
 
         $email = $this->container->getMailer()->createMessage();
         foreach ($tos as $k => $x) {
@@ -4023,10 +4021,11 @@ class TicketController extends AbstractController
         foreach ($bccs as $k => $x) {
             $email->addBcc($k, $x);
         }
-        $email->setBody($message_raw, 'text/html');
+        $email->setBody($messageRaw, 'text/html');
         $email->setSubject($subject);
 
         $account = null;
+
         if ($this->container->getSetting('core_tickets.fwd_use_account')) {
             try {
                 $account = $this->container->getEmailAccountManager()->getAccount(
@@ -4045,12 +4044,10 @@ class TicketController extends AbstractController
         if (!$account || !$account->is_enabled || !$account->outgoing_account) {
             $account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
         }
-
-        if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
-            $use_from   = true;
+        $useMyAddress = $useMyAddress && $this->container->getSetting('core_tickets.fwd_use_agent_address');
+        if ($useMyAddress) {
             $from_email = $this->person->getEmailAddress();
         } else {
-            $use_from   = false;
             $from_email = $account->getUseEmailAddress();
         }
 
@@ -4069,7 +4066,7 @@ class TicketController extends AbstractController
             if ($tr) {
                 $email->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
             }
-            if ($use_from) {
+            if ($useMyAddress) {
                 $email->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $from_email);
             }
         }
@@ -4121,7 +4118,7 @@ class TicketController extends AbstractController
                             'bcc_string'     => implode(', ', array_keys($bccs)),
                             'from_email'     => $from_email,
                             'from_name'      => $from_name,
-                            'custom_message' => $custom_message ?: null,
+                            'custom_message' => $customMessage ?: null,
                         ]
                     ),
                     'date_created' => date('Y-m-d H:i:s'),
@@ -4140,11 +4137,11 @@ class TicketController extends AbstractController
     {
         $message = $this->em->find(TicketMessage::class, $message_id);
 
-        $message_raw = $message->message_raw ?: '';
-        if (!$message_raw) {
-            $message_raw = $message->message_full;
-            if (!$message_raw) {
-                $message_raw = $message->message;
+        $messageRaw = $message->message_raw ?: '';
+        if (!$messageRaw) {
+            $messageRaw = $message->message_full;
+            if (!$messageRaw) {
+                $messageRaw = $message->message;
             }
         }
 
@@ -4178,16 +4175,16 @@ class TicketController extends AbstractController
             );
             $config->set('URI.DisableExternalResources', true);
 
-            $message_raw = $note.$purifier->purify($message_raw, $config);
+            $messageRaw = $note.$purifier->purify($messageRaw, $config);
         }
 
-        if (strpos($message_raw, '<body') === false) {
-            $message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style><script type="text/javascript">document.domain = document.domain;</script></head><body>'.$message_raw.'</body></html>';
+        if (strpos($messageRaw, '<body') === false) {
+            $messageRaw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style><script type="text/javascript">document.domain = document.domain;</script></head><body>'.$messageRaw.'</body></html>';
         }
 
-        $message_raw = $message->procInlineAttach($message_raw);
+        $messageRaw = $message->procInlineAttach($messageRaw);
 
-        $res = new Response($message_raw);
+        $res = new Response($messageRaw);
 
         return $res;
     }
@@ -4208,8 +4205,8 @@ class TicketController extends AbstractController
             'type'    => $type,
         ];
 
-        if (!$message_raw = $message->message_raw ?: '') {
-            $message_raw = $message->message_full ?: $message->message;
+        if (!$messageRaw = $message->message_raw ?: '') {
+            $messageRaw = $message->message_full ?: $message->message;
         }
 
         switch ($type) {
@@ -4230,7 +4227,7 @@ class TicketController extends AbstractController
                     'class,id,alt,title,align,border,width,height,valign,style,cellspacing,cellpadding,colspan,rowspan,bgcolor,dir,href,target,name,rel,size,type,value,src'
                 );
                 $config->set('URI.DisableExternalResources', true);
-                $message_raw = $purifier->purify($message_raw, $config);
+                $messageRaw = $purifier->purify($messageRaw, $config);
                 break;
 
             case 'email_source':
@@ -4254,7 +4251,7 @@ class TicketController extends AbstractController
                 break;
         }
 
-        $vars['message_raw'] = $message_raw;
+        $vars['message_raw'] = $messageRaw;
 
         return $this->render('AgentBundle:Ticket:ticket-message-window.html.twig', $vars);
     }

@@ -181,14 +181,16 @@
 							<span data-add="bcc" class="fwd-control-add">BCC</span>
 						</div>
 					</div>
-					<div class="label">
-						From:
-					</div>
-					<div style="display: inline-block">
-						<select name="from">
-							<option value="to">me</option>
-							<option value="cc">not me</option>
-						</select>
+					<div class="header-line">
+						<div class="label">
+							From:
+						</div>
+						<div style="display: inline-block">
+							<select name="from" id="{{ replyBaseId }}_fwd_from">
+								<option value="me">me</option>
+								<option value="system">system</option>
+							</select>
+						</div>
 					</div>
 				</div>
 				<div class="option-rows">
