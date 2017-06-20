@@ -155,3 +155,86 @@ export const editSnippet = Immutable.fromJS({
   is_draft: false
 });
 
+export const editTranslation = Immutable.fromJS({
+  id:       1,
+  snippet:  1,
+  language: 1,
+  content:  'In the US in secure dedicated data centres. You can choose EU hosting',
+  title:    'alias et aut',
+  blobs:    []
+});
+
+export const languages = Immutable.fromJS([
+  {
+    has_agent:  true,
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    has_admin:  true,
+    has_user:   true,
+    is_rtl:     false,
+    title:      'English',
+    locale:     'en_US',
+    id:         1,
+    sys_name:   'default',
+    lang_code:  'eng'
+  },
+  {
+    has_agent:  true,
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    has_admin:  true,
+    has_user:   true,
+    is_rtl:     false,
+    title:      'Dev Blank Out',
+    locale:     'en_T1',
+    id:         2,
+    sys_name:   'dev_blankout',
+    lang_code:  'eng'
+  },
+  {
+    has_agent:  true,
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    has_admin:  true,
+    has_user:   true,
+    is_rtl:     false,
+    title:      'Dev Long String',
+    locale:     'en_T2',
+    id:         3,
+    sys_name:   'dev_longstring',
+    lang_code:  'eng'
+  },
+  {
+    has_agent:  true,
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    has_admin:  true,
+    has_user:   true,
+    is_rtl:     true,
+    title:      'Dev RTL',
+    locale:     'en_T3',
+    id:         4,
+    sys_name:   'dev_rtl',
+    lang_code:  'eng'
+  },
+  {
+    has_agent:  true,
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/arabic.png',
+    has_admin:  true,
+    has_user:   true,
+    is_rtl:     true,
+    title:      'العربية',
+    locale:     'ar',
+    id:         5,
+    sys_name:   'arabic',
+    lang_code:  'ara'
+  },
+  {
+    has_agent:  true,
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/fr.png',
+    has_admin:  false,
+    has_user:   true,
+    is_rtl:     false,
+    title:      'Français',
+    locale:     'fr',
+    id:         6,
+    sys_name:   'french',
+    lang_code:  'fre'
+  }
+]);

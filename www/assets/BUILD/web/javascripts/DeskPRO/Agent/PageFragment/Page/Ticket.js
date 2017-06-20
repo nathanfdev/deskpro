@@ -65,6 +65,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		
+		console.log('initPage');
 
     var boundHandleReplySave = this.handleReplySave.bind(this);
 

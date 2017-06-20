@@ -200,4 +200,16 @@
       }
     }
   }
+  .field {
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 5px;
+  }
+  .language-field {
+    width: 140px;
+    position: absolute;
+    right: 16px;
+    top: 107px;
+    z-index: 1;
+  }
 }

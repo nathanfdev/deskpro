@@ -52,6 +52,12 @@ class SnippetTranslationType extends AbstractType
                 'class'    => Blob::class,
                 'multiple' => true,
             ])
+            ->add('snippet', EntityType::class, [
+                'class' => Snippet::class,
+            ])
+            ->add('id', TextType::class, [
+                'mapped' => false,
+            ])
         ;
     }
 

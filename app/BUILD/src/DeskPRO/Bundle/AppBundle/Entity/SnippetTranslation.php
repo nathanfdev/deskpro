@@ -111,10 +111,6 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\Column(type="text", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     * @JMS\Groups({"list"})
-     *
      * @var string
      */
     protected $title;

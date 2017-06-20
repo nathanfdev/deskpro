@@ -28,6 +28,9 @@ export class LeftDrawerContainer extends SeparateComponent {
             type={type}
             insertSnippet={e.detail.insertSnippet}
           />);
+          if (e.detail.onClose) {
+            this.onClose = e.detail.onClose;
+          }
           break;
         }
         default:
@@ -58,6 +61,9 @@ export class LeftDrawerContainer extends SeparateComponent {
   };
 
   closeDrawer = () => {
+    if (this.onClose) {
+      this.onClose();
+    }
     this.setState({
       active: false
     });

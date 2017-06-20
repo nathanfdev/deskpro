@@ -542,7 +542,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
     if (window.DP_HAS_NEW_SNIPPETS) {
       snippetBtn.on('click', function (e) {
-        var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745, insertSnippet: self.insertSnippet.bind(self)}});
+        var event = new CustomEvent('dpLeftDrawer', {detail: {
+        	module: 'SnippetsMenu',
+					width: 745,
+					insertSnippet: self.insertSnippet.bind(self),
+          onClose: self.registerCloseSnippetViewer.bind(self)
+        }});
         window.document.dispatchEvent(event);
         self.isSnippetOpen = true;
 			});
@@ -674,7 +679,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.el.bind('page_activate', function() {
 			if (self.wasSnippetOpen) {
         if (window.DP_HAS_NEW_SNIPPETS) {
-          var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745}});
+          var event = new CustomEvent('dpLeftDrawer', {detail: {
+          	module: 'SnippetsMenu',
+						width: 745,
+						insertSnippet: self.insertSnippet.bind(self),
+            onClose: self.registerCloseSnippetViewer.bind(self)
+          }});
           window.document.dispatchEvent(event);
           self.isSnippetOpen = true;
         } else {
@@ -1299,6 +1309,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     el.val(newval);
   },
 
+  registerCloseSnippetViewer: function() {
+		console.log('onClose');
+    this.isSnippetOpen = false;
+  },
+
 	insertSnippet: function(snippet, blobs) {
 		var self = this;
     var ticketLangId = this.page ? this.page.getEl('value_form').find('.language_id').val() : 0;
@@ -1400,7 +1415,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         api.setBuffer();
       } catch (e) {}
     	api.insertHtml(data.html());
-	
+
 			var event = new CustomEvent('dpLeftDrawerClose');
 			window.document.dispatchEvent(event);
 			self.isSnippetOpen = false;

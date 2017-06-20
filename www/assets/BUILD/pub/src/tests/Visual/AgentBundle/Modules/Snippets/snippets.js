@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
 import { SnippetsMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
 import { SnippetsModal } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
-import { snippetsState, editSnippet } from 'DemoState/AgentBundle/Modules/Snippets/snippets';
+import { snippetsState, editSnippet, editTranslation, languages } from 'DemoState/AgentBundle/Modules/Snippets/snippets';
 
 import { css } from '../../../decorators';
 
@@ -14,6 +14,6 @@ storiesOf('Agent: Snippets', module)
   )
   .add(
     'Modal',
-    () => <SnippetsModal snippet={editSnippet} />
+    () => <SnippetsModal snippet={editSnippet} translation={editTranslation} languages={languages} langId={1} />
   )
 ;

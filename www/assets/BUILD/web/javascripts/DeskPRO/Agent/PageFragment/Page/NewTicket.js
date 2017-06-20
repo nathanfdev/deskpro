@@ -62,6 +62,30 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           self.setUser(pid);
         }
 			}, 60);
+			if (self.wasSnippetOpen) {
+				if (window.DP_HAS_NEW_SNIPPETS) {
+					var event = new CustomEvent('dpLeftDrawer', {detail: {
+						module: 'SnippetsMenu',
+						width: 745,
+						insertSnippet: self.insertSnippet.bind(self),
+            onClose: self.registerCloseSnippetViewer.bind(self)
+					}});
+					window.document.dispatchEvent(event);
+					self.isSnippetOpen = true;
+			    self.wasSnippetOpen = false;
+				}
+			}
+		});
+
+    this.addEvent('deactivate', function() {
+			if (window.DP_HAS_NEW_SNIPPETS) {
+				if (self.isSnippetOpen) {
+					var event = new CustomEvent('dpLeftDrawerClose');
+					window.document.dispatchEvent(event);
+					self.wasSnippetOpen = true;
+					self.isSnippetOpen  = false;
+				}
+			}
 		});
 
 		if (this.getEl('headerbox_box_billing').length) {
@@ -1288,7 +1312,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var self = this;
 		this.getEl('text_snippets_btn').on('click', function(ev) {
 			ev.preventDefault();
-			self.openSnippetsViewer();
+      var openSnippetsViewer = self.openSnippetsViewer.bind(self);
+			openSnippetsViewer();
 		});
 
 		this.loadSnippetsViewer();
@@ -1308,7 +1333,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					var $translations = self.getEl('editor_translations');
 					obj.addBtnFirst('dp_attach', $translations.data('attach-description'), function(){});
 					obj.addBtnAfter('dp_attach', 'dp_snippets', $translations.data('snippets-description'), function(){
-						self.openSnippetsViewer();
+						var openSnippetsViewer = self.openSnippetsViewer.bind(self);
+            openSnippetsViewer();
 					});
 					obj.addBtnSeparatorAfter('dp_attach');
 					obj.addBtnSeparatorAfter('dp_snippets');
@@ -1358,7 +1384,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					if (isCtrl && (ev.which === 83)) {
 						ev.preventDefault();
 						window.setTimeout(function() {
-							self.shortcutOpenSnippets();
+							self.shortcutOpenSnippets().bind(self);
 						}, 10);
 						return;
 					}
@@ -1667,11 +1693,26 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	openSnippetsViewer: function() {
 		if (window.DP_HAS_NEW_SNIPPETS) {
-			var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745, insertSnippet: this.insertSnippet.bind(this)}});
+			var event = new CustomEvent('dpLeftDrawer', 
+				{
+					detail: 
+						{ 
+							module: 'SnippetsMenu', 
+							width: 745, 
+							insertSnippet: this.insertSnippet.bind(this), 
+							onClose: this.registerCloseSnippetViewer.bind(this)
+						}
+				}
+			);
 			window.document.dispatchEvent(event);
+			this.isSnippetOpen = true;
 		} else {
 			this.snippetsViewer.open();
 		}
+	},
+
+	registerCloseSnippetViewer: function() {
+    this.isSnippetOpen = false;
 	},
 
 	insertSnippet: function(snippet, blobs) {
@@ -1898,7 +1939,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	shortcutOpenSnippets: function() {
-		this.openSnippetsViewer();
+    var openSnippetsViewer = this.openSnippetsViewer.bind(this);
+		openSnippetsViewer();
 	},
 
 	shortcutSendReply: function() {
@@ -2112,6 +2154,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     this._updateFields = null;
     this.fieldDisplayFetch && this.fieldDisplayFetch.destroy();
     this.fieldDisplayFetch = null;
+    if (window.DP_HAS_NEW_SNIPPETS) {
+      if (self.isSnippetOpen) {
+        var event = new CustomEvent('dpLeftDrawerClose');
+        window.document.dispatchEvent(event);
+      }
+    }
 
     this.openStatusMenu = null;
     this.statusMenu && this.statusMenu.remove(); // detached

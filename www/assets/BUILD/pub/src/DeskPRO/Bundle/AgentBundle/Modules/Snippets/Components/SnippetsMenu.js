@@ -19,7 +19,7 @@ export class SnippetsMenuContainer extends React.Component {
     blobs:         PropTypes.object,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
-    type:          PropTypes.string
+    type:          PropTypes.string,
   };
 
   insertSnippet = (snippet) => {
@@ -47,6 +47,7 @@ export class SnippetsMenu extends React.Component {
     langId:        PropTypes.number,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
+    type:          PropTypes.string,
   };
 
   constructor(props) {
@@ -69,6 +70,7 @@ export class SnippetsMenu extends React.Component {
     return (<SnippetsModalContainer
       snippet={this.state.snippetEdit}
       langId={this.props.langId}
+      type={this.props.type}
       closeModal={this.closeEditSnippet}
     />);
   };
