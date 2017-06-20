@@ -40,6 +40,7 @@ use Twilio\Rest\Api\V2010\Account\ApplicationInstance;
 use Twilio\Rest\Client;
 use Twilio\Rest\Taskrouter;
 use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueInstance;
+use Twilio\Rest\Taskrouter\V1\Workspace\WorkerInstance;
 use Twilio\Rest\Taskrouter\V1\WorkspaceInstance;
 
 /**
@@ -172,7 +173,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function updateTaskQueue(VoiceQueue $queue)
+    public function updateTaskQueue(VoiceQueue $queue, TaskQueueInstance $existingTaskQueue = null)
     {
     }
 
@@ -210,7 +211,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function updateAgentWorker(VoiceAccount $account, Person $person, $activityName = null)
+    public function updateAgentWorker(VoiceAccount $account, Person $person, $activityName = null, WorkerInstance $existingWorker = null)
     {
     }
 
@@ -232,7 +233,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function updateAgentTaskQueue(VoiceAccount $account, Person $person)
+    public function updateAgentTaskQueue(VoiceAccount $account, Person $person, TaskQueueInstance $existingTaskQueue = null)
     {
         return $this->getTaskQueue();
     }
@@ -373,7 +374,7 @@ class TwilioNullAdapter extends TwilioAdapter
     }
 
     /**
-     * @return Taskrouter\V1\Workspace\WorkerInstance
+     * @return WorkerInstance
      */
     private function getWorker()
     {
@@ -394,6 +395,6 @@ class TwilioNullAdapter extends TwilioAdapter
 
         ];
 
-        return new Taskrouter\V1\Workspace\WorkerInstance($this->getVersion(), $payload, 'workspace_sid');
+        return new WorkerInstance($this->getVersion(), $payload, 'workspace_sid');
     }
 }
