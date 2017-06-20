@@ -55,6 +55,11 @@ class ActionsCollection extends \ArrayObject implements JsonObjectSerializable
     {
         $obj = new self();
         foreach ($data as $v) {
+            // skip empty actions
+            if (empty($v['data'])) {
+                continue;
+            }
+
             try {
                 $action = AbstractAction::fromArray($v);
                 $obj[]  = $action;
