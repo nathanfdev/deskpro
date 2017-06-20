@@ -1,5 +1,6 @@
 parameters:
  security.authentication.switchuser_listener.class: DeskPRO\Bundle\AppBundle\Security\SwitchUserListener
+ security.http_utils.class: DeskPRO\Bundle\AppBundle\Security\Http\HttpUtils
 
 services:
 
