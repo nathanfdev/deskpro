@@ -149,7 +149,7 @@ class PeopleController extends CrudController
         /** @var Person $person */
         $person   = $this->findEntity($id, $request);
         $personId = $person->getId();
-        $options  = ['not-status' => [Ticket::HIDDEN_STATUS_DELETED, Ticket::HIDDEN_STATUS_SPAM]];
+        $options  = ['not_status' => [Ticket::HIDDEN_STATUS_DELETED, Ticket::HIDDEN_STATUS_SPAM]];
 
         if ($person->isAgent()) {
             $options['agent'] = $personId;
