@@ -204,17 +204,19 @@ class UpdateCommand extends ContainerAwareCommand
 
         $skipBackup = false;
 
-        $output->writeln('A new update is available. Do you want to download and install it now?');
-        $helper   = $this->getHelper('question');
-        $question = new ConfirmationQuestion('[y/N]> ', false);
-
-        if (!$helper->ask($input, $output, $question)) {
-            $logger->debug('User answered "no" to confirmation');
-
-            return 0;
-        }
+        $logger->info('[Auto-Upgrade] An update is available');
 
         if ($input->isInteractive()) {
+            $output->writeln('A new update is available. Do you want to download and install it now?');
+            $helper   = $this->getHelper('question');
+            $question = new ConfirmationQuestion('[y/N]> ', false);
+
+            if (!$helper->ask($input, $output, $question)) {
+                $logger->debug('User answered "no" to confirmation');
+
+                return 0;
+            }
+
             $output->writeln('Do you want to perform a database backup before installing database updates?');
             $helper   = $this->getHelper('question');
             $question = new ConfirmationQuestion('[Y/n]> ', true);
