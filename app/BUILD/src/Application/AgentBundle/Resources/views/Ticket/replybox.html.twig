@@ -12,9 +12,7 @@
     {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}
 	{% if app.user.getPref('agent.ticket_reverse_order') %}data-is-top-order="1"{% endif %}
 	{% if app.getSetting('core_tickets.resolve_auto_close_tab') %}data-resolve-auto-close="1"{% endif %}
-	{% if draft and draft.extras.is_note %}
-		data-draft-is-note="1"
-	{% endif %}
+	{% if draft and draft.extras.is_note %}data-draft-is-note="1"{% endif %}
 	data-dp-lang="{{ {
 		'attach_btn': phrase('agent.general.attach'),
 		'snippets_btn': phrase('agent.general.snippets')
@@ -186,10 +184,18 @@
 							From:
 						</div>
 						<div style="display: inline-block">
+							{% if app.getSetting('core_tickets.fwd_use_agent_address') %}
 							<select name="from" id="{{ replyBaseId }}_fwd_from">
-								<option value="me">me</option>
-								<option value="system">system</option>
+								<option value="me">{{ app.user.getDisplayContact() }}</option>
+								<option value="system">{{ app.user.getDisplayName() }} {{'<'~system_account.getUseEmailAddress()~">"}}</option>
 							</select>
+							{% elseif app.getSetting('core_tickets.fwd_use_agent_address') %}
+                                {{ app.user.getDisplayName() }} <{{ app.getSetting('core_tickets.fwd_use_agent_address') }}>
+								<input type="hidden" disabled="disabled" value="{{ app.getSetting('core_tickets.fwd_use_agent_address') }}" />
+							{% else %}
+                                {{ app.user.getDisplayName() }} <{{ ticket.getEmailAccountAddress() }}>
+								<input type="hidden" value="{{ app.getSetting('core_tickets.fwd_use_agent_address') }}" />
+							{% endif  %}
 						</div>
 					</div>
 				</div>

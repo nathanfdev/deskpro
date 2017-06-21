@@ -497,8 +497,9 @@ class TicketController extends AbstractController
             'person_object_counts' => $this->em->getRepository(Person::class)->getPersonObjectCounts(
                 $ticket->getPerson()
             ),
-            'open_problems' => $open_problems,
-            'incidents'     => $incidents,
+            'open_problems'  => $open_problems,
+            'incidents'      => $incidents,
+            'system_account' => $this->getAccount($ticket),
         ];
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
@@ -1713,6 +1714,7 @@ class TicketController extends AbstractController
                 'agent_signature'      => $this->person->getSignature(),
                 'agent_signature_html' => $this->person->getSignatureHtml(),
                 'ticket_perms'         => $this->_getTicketPerms($ticket),
+                'system_account'       => $this->getAccount($ticket),
             ]
         );
 
@@ -1845,6 +1847,7 @@ class TicketController extends AbstractController
                 'agent_signature'      => $this->person->getSignature(),
                 'agent_signature_html' => $this->person->getSignatureHtml(),
                 'ticket_perms'         => $this->_getTicketPerms($ticket),
+                'system_account'       => $this->getAccount($ticket),
             ]
         );
 
@@ -4024,26 +4027,8 @@ class TicketController extends AbstractController
         $email->setBody($messageRaw, 'text/html');
         $email->setSubject($subject);
 
-        $account = null;
+        $account = $this->getAccount($ticket);
 
-        if ($this->container->getSetting('core_tickets.fwd_use_account')) {
-            try {
-                $account = $this->container->getEmailAccountManager()->getAccount(
-                    $this->container->getSetting('core_tickets.fwd_use_account')
-                );
-                if (!($account && $account->is_enabled && $account->outgoing_account)) {
-                    $account = null;
-                }
-            } catch (\OutOfBoundsException $e) {
-                $account = null;
-            }
-        }
-        if (!$account || !$account->is_enabled || !$account->outgoing_account) {
-            $account = $ticket->email_account;
-        }
-        if (!$account || !$account->is_enabled || !$account->outgoing_account) {
-            $account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
-        }
         $useMyAddress = $useMyAddress && $this->container->getSetting('core_tickets.fwd_use_agent_address');
         if ($useMyAddress) {
             $from_email = $this->person->getEmailAddress();
@@ -5575,5 +5560,36 @@ CSS;
         }
 
         return $brands;
+    }
+
+    /**
+     * @param $ticket
+     *
+     * @return Entity\EmailAccount|null
+     */
+    protected function getAccount($ticket)
+    {
+        $account = null;
+
+        if ($this->container->getSetting('core_tickets.fwd_use_account')) {
+            try {
+                $account = $this->container->getEmailAccountManager()->getAccount(
+                    $this->container->getSetting('core_tickets.fwd_use_account')
+                );
+                if (!($account && $account->is_enabled && $account->outgoing_account)) {
+                    $account = null;
+                }
+            } catch (\OutOfBoundsException $e) {
+                $account = null;
+            }
+        }
+        if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+            $account = $ticket->email_account;
+        }
+        if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+            $account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
+        }
+
+        return $account;
     }
 }
