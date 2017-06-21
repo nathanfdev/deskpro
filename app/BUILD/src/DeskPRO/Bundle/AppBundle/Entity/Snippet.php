@@ -100,6 +100,8 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("string")
      * @JMS\Groups({"list"})
      *
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title;

@@ -56,7 +56,8 @@ class SnippetTranslationType extends AbstractType
                 'class' => Snippet::class,
             ])
             ->add('id', TextType::class, [
-                'mapped' => false,
+                'mapped'   => false,
+                'required' => false,
             ])
         ;
     }

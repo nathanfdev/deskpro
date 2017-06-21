@@ -102,7 +102,7 @@ export class SnippetsModalContainer extends React.Component {
   componentWillMount() {
     this.setState({
       translations: this.props.snippet.get('translations', []),
-      labels:       this.props.snippet.get('labels', []).toArray()
+      labels:       this.props.snippet.get('labels', new Immutable.List()).toArray()
     });
   }
 
@@ -157,7 +157,6 @@ export class SnippetsModalContainer extends React.Component {
     const { snippet, dispatch, closeModal, type } = this.props;
     const translations = this.saveTranslation();
     const snippetData = {
-      id:            snippet.get('id', 0),
       title:         this.modal.title.input.value,
       types:         snippet.get('types', [type]),
       shortcut_code: this.modal.shortcut_code.input.value,
@@ -165,6 +164,9 @@ export class SnippetsModalContainer extends React.Component {
       translations:  translations.toJS(),
       is_draft:      '0'
     };
+    if (snippet.get('id', false)) {
+      snippetData.id = snippet.get('id');
+    }
     dispatch(actions.saveSnippet(snippetData))
       .then(() => {
         closeModal();
@@ -274,63 +276,68 @@ export class SnippetsModal extends React.Component {
             </div>
         }
         >
-          <div className="title-field field">
-            <InputLabel htmlFor="snippet_title">Title</InputLabel>
+          <form id="snippet_form">
+
+            <div className="title-field field">
+              <InputLabel htmlFor="snippet_title" required>Title</InputLabel>
+              <Input
+                id="snippet_title"
+                defaultValue={snippet.get('title')}
+                ref={(c) => { this.title = c; }}
+                required
+              />
+            </div>
+            <div className="language-field field">
+              <Select
+                id="snippet_modal_language"
+                onChange={setLanguage}
+                optionComponent={LanguageOption}
+                options={languageOptions.toArray()}
+                value={langId}
+                clearable={false}
+                valueComponent={LanguageValue}
+              />
+            </div>
+            <textarea
+              name="editor"
+              id="snippet__editor"
+              cols="30"
+              rows="10"
+              defaultValue={translation.get('content', '')}
+              ref={(c) => { this.textArea = c; }}
+            /><br />
+            {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}<br />
+            <UploadButton
+              id={'upload_attachment'}
+              ref={(c) => { this.uploadButton = c; }}
+              name="file"
+              onSuccess={this.props.addAttachment}
+              uploadUrl={this.getUploadUrl()}
+            />
+            <InputLabel htmlFor="snippet_label_input">Labels</InputLabel>
+            <LabelInput
+              labels={labels}
+              onChange={this.props.changeLabels}
+              inputProps={{
+                placeholder: 'Add a label',
+                id:          'snippet_label_input'
+              }}
+            />
+            <InputLabel htmlFor="snippet_shortcut_code" required>Shortcode</InputLabel>
             <Input
-              id="snippet_title"
-              defaultValue={snippet.get('title')}
-              ref={(c) => { this.title = c; }}
+              id="snippet_shortcut_code"
+              className="snippet_shortcut_code"
+              defaultValue={snippet.get('shortcut_code')}
+              prefix="%"
+              suffix="%"
+              required
+              ref={(c) => { this.shortcut_code = c; }}
             />
-          </div>
-          <div className="language-field field">
-            <Select
-              id="snippet_modal_language"
-              onChange={setLanguage}
-              optionComponent={LanguageOption}
-              options={languageOptions.toArray()}
-              value={langId}
-              clearable={false}
-              valueComponent={LanguageValue}
-            />
-          </div>
-          <textarea
-            name="editor"
-            id="snippet__editor"
-            cols="30"
-            rows="10"
-            defaultValue={translation.get('content', '')}
-            ref={(c) => { this.textArea = c; }}
-          /><br />
-          {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}<br />
-          <UploadButton
-            id={'upload_attachment'}
-            ref={(c) => { this.uploadButton = c; }}
-            name="file"
-            onSuccess={this.props.addAttachment}
-            uploadUrl={this.getUploadUrl()}
-          />
-          <InputLabel htmlFor="snippet_label_input">Labels</InputLabel>
-          <LabelInput
-            labels={labels}
-            onChange={this.props.changeLabels}
-            inputProps={{
-              placeholder: 'Add a label',
-              id:          'snippet_label_input'
-            }}
-          />
-          <InputLabel htmlFor="snippet_shortcut_code">Shortcode</InputLabel>
-          <Input
-            id="snippet_shortcut_code"
-            className="snippet_shortcut_code"
-            defaultValue={snippet.get('shortcut_code')}
-            prefix="%"
-            suffix="%"
-            ref={(c) => { this.shortcut_code = c; }}
-          />
-          <InputLabel htmlFor="snippet_ownership">Ownership</InputLabel>
-          <Input id="snippet_ownership" />
-          <InputLabel htmlFor="snippet_visibility">Visibility</InputLabel>
-          <Input id="snippet_visibility" />
+            <InputLabel htmlFor="snippet_ownership">Ownership</InputLabel>
+            <Input id="snippet_ownership" />
+            <InputLabel htmlFor="snippet_visibility">Visibility</InputLabel>
+            <Input id="snippet_visibility" />
+          </form>
         </Modal>
       </div>
     );
