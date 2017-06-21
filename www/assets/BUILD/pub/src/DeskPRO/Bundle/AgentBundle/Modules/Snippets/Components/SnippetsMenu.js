@@ -56,6 +56,7 @@ export class SnippetsMenu extends React.Component {
       selectedLabel: '',
       editOpen:      false,
       snippetEdit:   {},
+      filter:        '',
     };
   }
 
@@ -73,6 +74,10 @@ export class SnippetsMenu extends React.Component {
       type={this.props.type}
       closeModal={this.closeEditSnippet}
     />);
+  };
+
+  handleFilter = (filter) => {
+    this.setState({ filter });
   };
 
   selectLabel = (label) => {
@@ -113,7 +118,12 @@ export class SnippetsMenu extends React.Component {
               className="search"
               src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`}
             />
-            <Input className="input--large" ref={(c) => { this.searchInput = c; }} />
+            <Input
+              className="input--large"
+              ref={(c) => { this.searchInput = c; }}
+              value={this.state.filter}
+              onChange={this.handleFilter}
+            />
             <i className="fa fa-star-o favorite" />
             <a className="close-icon" onClick={closeMenu}>
               <Isvg
@@ -142,6 +152,7 @@ export class SnippetsMenu extends React.Component {
           <SnippetsList
             snippets={snippets}
             langId={langId}
+            filter={this.state.filter}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}

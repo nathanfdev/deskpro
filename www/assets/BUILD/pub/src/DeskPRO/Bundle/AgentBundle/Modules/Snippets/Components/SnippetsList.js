@@ -75,6 +75,7 @@ export class SnippetsList extends React.Component {
   static propTypes = {
     snippets:      PropTypes.object,
     selectedLabel: PropTypes.string,
+    filter:        PropTypes.string,
     langId:        PropTypes.number,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
@@ -113,7 +114,7 @@ export class SnippetsList extends React.Component {
 
   renderElements = () => {
     const elements = [];
-    const { snippets, selectedLabel, langId, editSnippet, insertSnippet } = this.props;
+    const { snippets, selectedLabel, filter, langId, editSnippet, insertSnippet } = this.props;
     if (!snippets) {
       return null;
     }
@@ -123,6 +124,16 @@ export class SnippetsList extends React.Component {
           return true;
         }
         return snippet.get('labels').find(label => label === selectedLabel);
+      })
+      .filter((snippet) => {
+        if (!filter) {
+          return true;
+        }
+        const re = new RegExp(filter, 'i');
+        return snippet.get('labels').find(label => label.match(re))
+          || snippet.get('title').match(re)
+          || snippet.get('shortcut_code').match(re)
+          || snippet.get('translations').find(element => element.get('language') === langId).get('content').match(re);
       })
       .sort((a, b) => {
         const titleA = a.get('title').toLowerCase();
