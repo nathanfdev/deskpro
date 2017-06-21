@@ -42,10 +42,13 @@ use DeskPRO\Bundle\AppBundle\Entity\TextSnippetContent;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class TextSnippet.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class TextSnippet extends \Application\DeskPRO\Domain\DomainObject implements ObjectTranslatableInterface
 {

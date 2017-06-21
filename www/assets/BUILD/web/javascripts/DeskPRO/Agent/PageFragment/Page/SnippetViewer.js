@@ -666,8 +666,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 	insertSnippetEl: function(el, event, evData) {
 
-    console.log(insertSnippetEl);
-
 		var snippetId = $(el).data('snippet-id');
 		var snippetCode = [];
 
@@ -684,8 +682,6 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			snippetId: snippetId,
 			snippetCode: snippetCode
 		});
-
-		console.log(evData);
 
 		this.fireEvent('snippetClick', [evData]);
 	},
