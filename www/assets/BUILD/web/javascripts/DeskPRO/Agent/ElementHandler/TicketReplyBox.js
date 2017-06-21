@@ -39,9 +39,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
 
-        var jiraActionSel = this.getElById('jira_app_action'),
-            jiraActionText = this.getElById('jira_app_action_text'),
-            jiraActionCheck = this.getElById('jira_app_action_check');
+		var jiraActionSel = this.getElById('jira_app_action'),
+				jiraActionText = this.getElById('jira_app_action_text'),
+				jiraActionCheck = this.getElById('jira_app_action_check');
 
 		var storedReplyText = '';
 		var storedNoteText = '';
@@ -66,6 +66,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
 				}
 			}
+
+			storedFWDText = textarea.val();
 
 			isWysiwyg = true;
 
