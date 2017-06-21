@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import Input from 'deskpro-styles/lib/Components/Input';
 import List from 'deskpro-styles/lib/Components/List';
 import ListElement from 'deskpro-styles/lib/Components/ListElement';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsLabels extends React.Component {
   static propTypes = {
@@ -122,7 +123,7 @@ class SnippetsLabels extends React.Component {
       <div className="snippets__labels">
         <div className="title">
           <i className="fa fa-tag" />&nbsp;
-          Labels
+          {agentPhrases.get('agent.general.labels')}
         </div>
         <Input
           value={this.state.labelFilter}

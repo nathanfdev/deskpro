@@ -4,6 +4,7 @@ import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Input from 'deskpro-styles/lib/Components/Input';
 import Button from 'deskpro-styles/lib/Components/Button';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
@@ -133,13 +134,13 @@ export class SnippetsMenu extends React.Component {
             </a>
           </div>
           <div className="top">
-            <h1>Snippets</h1> <span className="count">({snippets.size})</span>
+            <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
             {/* <Select />*/}
             <Button
               className="dp-button--secondary add-snippet"
               onClick={this.newSnippet}
             >
-              + Snippet
+              + {agentPhrases.get('agent.general.snippet')}
             </Button>
           </div>
         </div>

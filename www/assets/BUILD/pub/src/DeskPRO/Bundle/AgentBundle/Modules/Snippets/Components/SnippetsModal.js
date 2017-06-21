@@ -9,6 +9,7 @@ import Select from 'deskpro-styles/lib/Components/Select';
 import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
 import LabelInput from 'deskpro-styles/lib/Components/LabelInput';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetBlobsSelector } from '../Selectors/snippets';
@@ -267,35 +268,37 @@ export class SnippetsModal extends React.Component {
     return (
       <div id="snippets__modal">
         <Modal
-          title={snippet.get('id', false) ? 'Edit snippet' : 'New snippet'}
+          title={snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
           closeModal={this.props.closeModal}
           buttons={
             <div>
-              <Button className="dp-button--l" onClick={this.props.saveSnippet}>Save</Button>
-              <Button className="dp-button--l dp-button--secondary" onClick={this.props.closeModal}>Cancel</Button>
+              <Button className="dp-button--l" onClick={this.props.saveSnippet}>
+                {agentPhrases.get('agent.general.save')}
+              </Button>
+              <Button className="dp-button--l dp-button--secondary" onClick={this.props.closeModal}>
+                {agentPhrases.get('agent.general.cancel')}
+              </Button>
             </div>
         }
         >
+          <div className="language-switch field">
+            <Select
+              onChange={setLanguage}
+              optionComponent={LanguageOption}
+              options={languageOptions.toArray()}
+              value={langId}
+              clearable={false}
+              valueComponent={LanguageValue}
+            />
+          </div>
           <form id="snippet_form">
-
             <div className="title-field field">
-              <InputLabel htmlFor="snippet_title" required>Title</InputLabel>
+              <InputLabel htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</InputLabel>
               <Input
                 id="snippet_title"
                 defaultValue={snippet.get('title')}
                 ref={(c) => { this.title = c; }}
                 required
-              />
-            </div>
-            <div className="language-field field">
-              <Select
-                id="snippet_modal_language"
-                onChange={setLanguage}
-                optionComponent={LanguageOption}
-                options={languageOptions.toArray()}
-                value={langId}
-                clearable={false}
-                valueComponent={LanguageValue}
               />
             </div>
             <textarea
@@ -314,7 +317,7 @@ export class SnippetsModal extends React.Component {
               onSuccess={this.props.addAttachment}
               uploadUrl={this.getUploadUrl()}
             />
-            <InputLabel htmlFor="snippet_label_input">Labels</InputLabel>
+            <InputLabel htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</InputLabel>
             <LabelInput
               labels={labels}
               onChange={this.props.changeLabels}
@@ -323,7 +326,7 @@ export class SnippetsModal extends React.Component {
                 id:          'snippet_label_input'
               }}
             />
-            <InputLabel htmlFor="snippet_shortcut_code" required>Shortcode</InputLabel>
+            <InputLabel htmlFor="snippet_shortcut_code" required>{agentPhrases.get('agent.snippets.shortcut_code')}</InputLabel>
             <Input
               id="snippet_shortcut_code"
               className="snippet_shortcut_code"
@@ -333,9 +336,9 @@ export class SnippetsModal extends React.Component {
               required
               ref={(c) => { this.shortcut_code = c; }}
             />
-            <InputLabel htmlFor="snippet_ownership">Ownership</InputLabel>
+            <InputLabel htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</InputLabel>
             <Input id="snippet_ownership" />
-            <InputLabel htmlFor="snippet_visibility">Visibility</InputLabel>
+            <InputLabel htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</InputLabel>
             <Input id="snippet_visibility" />
           </form>
         </Modal>
