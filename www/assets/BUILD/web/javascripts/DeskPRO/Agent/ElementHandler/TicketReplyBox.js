@@ -749,7 +749,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
                 },
                 success:  function (data) {
                   var snippet = data.data;
-                  self.insertSnippet(snippet, data.linked.blob).bind(self);
+                  self.insertSnippet(snippet, data.linked.blob);
 								}
               });
             } else {
