@@ -250,7 +250,7 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.text_snippet:
+  api_serializer.handler.snippet:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\SnippetHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
