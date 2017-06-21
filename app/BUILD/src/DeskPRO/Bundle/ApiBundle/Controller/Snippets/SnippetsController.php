@@ -170,6 +170,7 @@ class SnippetsController extends CrudController
      *              "dataType"="integer"
      *          }
      *      },
+     *      output="DeskPRO\Bundle\AppBundle\Serializer\Model\Snippets\Snippet",
      *      statusCodes={
      *          200="We will return such status in case we found your entity",
      *          404="Not Found error will returned in case we can't find entity with specified ID"
