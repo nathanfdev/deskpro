@@ -160,7 +160,7 @@ class ProxyRequestFactory
      */
     private function getOriginalProxyHeaders(Request $request)
     {
-        $autoHeadersEnabled = (bool) $request->headers->get('X-Proxy-AutoHeaders', true);
+        $autoHeadersEnabled = $request->headers->get('X-Proxy-AutoHeaders', 'true') === 'true';
         $proxyHeaders       = [];
 
         foreach ($request->headers->all() as $name => $value) {

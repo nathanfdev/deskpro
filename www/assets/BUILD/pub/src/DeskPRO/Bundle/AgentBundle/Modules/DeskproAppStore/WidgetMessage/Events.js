@@ -1,6 +1,10 @@
-// STATE EVENTS
+// FETCH EVENTS
+export const EVENT_WEBAPI_REQUEST_FETCH = 'webapi.request.fetch';
 
 export const EVENT_WEBAPI_REQUEST_DESKPRO = 'webapi.request.deskpro';
+
+// STATE EVENTS
+
 
 export const EVENT_STATE_FIND = 'state.find';
 
@@ -45,6 +49,8 @@ export const events =
   // API REQUEST EVENTS
 
   EVENT_WEBAPI_REQUEST_DESKPRO,
+
+  EVENT_WEBAPI_REQUEST_FETCH,
 
   // STATE EVENTS
 

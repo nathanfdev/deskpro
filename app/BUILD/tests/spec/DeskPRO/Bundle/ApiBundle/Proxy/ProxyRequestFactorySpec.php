@@ -59,7 +59,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
 
         $headers->get('X-Proxy-Url')->willReturn('http://deskpro.dev/');
         $headers->get('X-Proxy-Method')->willReturn('POST');
-        $headers->get('X-Proxy-AutoHeaders', true)->willReturn(true);
+        $headers->get('X-Proxy-AutoHeaders', 'true')->willReturn('true');
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(false);
         $headers->all()->willReturn([]);
     }
@@ -242,7 +242,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         ParameterBag $headers
     ) {
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(null);
-        $headers->get('X-Proxy-AutoHeaders', true)->willReturn(false);
+        $headers->get('X-Proxy-AutoHeaders', 'true')->willReturn('false');
         $headers->all()->willReturn([
             'header-1'                     => 'value 1',
             'x-proxy-header-authorization' => 'value 2',
@@ -264,7 +264,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         AppStateRepository $appStateRepository
     ) {
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
-        $headers->get('X-Proxy-AutoHeaders', true)->willReturn(false);
+        $headers->get('X-Proxy-AutoHeaders', 'true')->willReturn('false');
         $headers->all()->willReturn([
             'header-1'                     => 'value 1',
             'x-proxy-header-authorization' => [

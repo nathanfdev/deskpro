@@ -1,5 +1,70 @@
 import { events } from './Events';
 
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ * @constructor
+ */
+export const EVENT_WEBAPI_REQUEST_FETCH = (response, widget, widgetMessage, services) =>
+{
+  const normalizeRequest = request => {
+    const { url, init } = request;
+    const { method, path, body } = request;
+
+    if (method && path) {
+      return body ? {url:path, init: { method, body }} : {url: path, init: { method }};
+    }
+
+    return { url, init };
+  };
+
+  const { body: request } = widgetMessage;
+  const normalizedRequest = normalizeRequest(request);
+  const { url, init } = normalizedRequest;
+
+  let error;
+  const isExternalRequest = url.match(/^(?:[a-z]+:)?\/\//i);
+
+  // check allowed methods
+  const dpAPIAllowedMethods = ['get', 'post', 'put', 'delete'];
+  if (init.mode !== 'cors' && dpAPIAllowedMethods.indexOf(init.method.toString().toLowerCase()) == -1) {
+    error = new Error(`[API]: Method not allowed ${init.method}. Allowed methods are: ${dpAPIAllowedMethods.join(', ')}`);
+  } else if (isExternalRequest && init.mode !== 'cors') {
+    error = new Error(`[API]: External requests must use CORS mode`);
+  }
+
+  if (error) {
+    response(error);
+    return;
+  }
+
+  const fetchPromise = isExternalRequest ? services.getProxyClient({ widget }).fetch(url, init) : services.dpClient.fetch(url, init);
+
+  fetchPromise
+    .then(httpResponse => {
+      const data = { status: httpResponse.status, body: httpResponse.data };
+      response(null, data);
+
+      return httpResponse;
+    })
+    .catch(httpResponse => {
+      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data };
+      const error = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
+      response(error, data);
+
+      return httpResponse;
+    })
+};
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ * @constructor
+ */
 export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, services) =>
 {
   const { body: invocation } = widgetMessage;
@@ -321,6 +386,8 @@ export const handlers = {
   // GENERIC REST API REQUEST EVENT
 
   EVENT_WEBAPI_REQUEST_DESKPRO,
+
+  EVENT_WEBAPI_REQUEST_FETCH,
 
   // STATE EVENT HANDLERS
 

@@ -1,12 +1,12 @@
 import { WidgetDOM } from '../WidgetDOM'
 import { addWidgetEventListener } from '../WidgetMessage'
+import { InstanceProxyClient, DPAPIClient } from '../HttpClients'
 
 export class AppServices
 {
   /**
-   * @param {DpApi} api
+   * @param {Http} api
    * @param {Window} window
-   * @param {EventSubscribersRegistry} widgetEventRegistry
    */
   constructor({ api, window }) {
     this.props = { api, window };
@@ -14,7 +14,23 @@ export class AppServices
   }
 
   /**
-   * @return {DpApi}
+   * @param {Widget} widget
+   * @return {InstanceProxyClient}
+   */
+  getProxyClient({ widget }) {
+    const { api } = this.props;
+    const apiClient = new DPAPIClient({ api });
+
+    return new InstanceProxyClient({ apiClient, instanceId: widget.instanceId });
+  }
+
+  get dpClient() {
+    const { api } = this.props;
+    return new DPAPIClient({ api });
+  }
+
+  /**
+   * @return {Http}
    */
   get api() { return this.props.api; }
 
