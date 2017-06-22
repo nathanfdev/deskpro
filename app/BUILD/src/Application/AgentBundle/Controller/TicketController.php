@@ -3955,8 +3955,31 @@ class TicketController extends AbstractController
 
         $messagesRaw = [];
 
+        $maxEmailSize = App::getSetting('core_email.max_email_size');
+
+        $attachments = $this
+            ->get('doctrine.orm.default_entity_manager')
+            ->getRepository(Blob::class)
+            ->findBy(['id' => $this->in->getCleanValueArray('attachments', 'int', 'int')]);
+        //we're checking if attachment and messages are fit into max email size;
+        $emailSize = 0;
+
+        foreach ($attachments as $blob) {
+            /** @var Blob $blob */
+            if ((int) $blob->getFilesize() + $emailSize > $maxEmailSize) {
+                break; // leave some space for message itself
+            }
+            $emailSize += (int) $blob->getFilesize();
+        }
+
+        // what is the logic if email size is too big? drop attachments untill all messages are fit?
         foreach ($messages as $message) {
-            $messagesRaw[] = $message->getMessageHtml();
+            $msg         = $message->procInlineAttach($message->getMessageHtml());
+            $messageSize = strlen($msg);
+            if ($messageSize + $emailSize > $maxEmailSize) {
+                break;
+            }
+            $messagesRaw[] = $msg;
         }
 
         $messageRaw = implode('<br /><br />', $messagesRaw);
@@ -3973,10 +3996,6 @@ class TicketController extends AbstractController
             }
             $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
             $top .= nl2br(htmlspecialchars($customMessage));
-
-            if ($sig = $this->person->getSignatureHtml()) {
-                $top .= '<br/><br/>'.$sig.'<br/><br/><br/>';
-            }
 
             $top .= '</div>';
         }
@@ -4011,8 +4030,6 @@ class TicketController extends AbstractController
         if (strpos($messageRaw, '<body') === false) {
             $messageRaw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>'.$messageRaw.'</body></html>';
         }
-
-        $messageRaw = $message->procInlineAttach($messageRaw);
 
         $email = $this->container->getMailer()->createMessage();
         foreach ($tos as $k => $x) {
@@ -4056,24 +4073,33 @@ class TicketController extends AbstractController
             }
         }
 
-        $ticketdisplay = new TicketDisplay($ticket, $this->person);
+        $max  = App::getSetting('core.sendemail_attach_maxsize');
+        $size = 0;
 
-        $attach_attachments = [];
-        $max                = App::getSetting('core.sendemail_attach_maxsize');
-        $size               = 0;
-        $attachments        = $ticketdisplay->getMessageAttachments($message, true);
-        if ($attachments) {
-            foreach ($attachments as $attach) {
-                if ($size + $attach->blob->filesize > $max) {
+        // now process inline attachments
+        $ticketdisplay  = new TicketDisplay($ticket, $this->person);
+        $allAttachments = $ticketdisplay->getAttachments();
+        foreach ($allAttachments as $attachment) {
+            if (
+                $attachment->isInline()
+                && in_array($attachment->getMessage()->getId(), $messages)
+            ) {
+                if ((int) $attachment->getBlob()->getFilesize() + $size > $max) {
                     break;
                 }
-
-                $attach_attachments[$attach->blob->getDownloadUrl(true)] = $attach;
+                $email->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), true);
+                $size += (int) $attachment->getBlob()->getFilesize();
             }
+        }
 
-            foreach ($attach_attachments as $src => $attach) {
-                $email->attachBlob($attach->blob, $src, $attach->is_inline);
+        // and now attachments
+        foreach ($attachments as $blob) {
+            /** @var Blob $blob */
+            if ($size + (int) $blob->filesize > $max) {
+                break;
             }
+            $size += (int) $blob->filesize;
+            $email->attachBlob($blob, $blob->getDownloadUrl(true), false);
         }
 
         $this->container->getMailer()->send($email);

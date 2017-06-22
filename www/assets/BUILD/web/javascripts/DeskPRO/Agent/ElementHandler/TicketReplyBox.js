@@ -1060,6 +1060,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				to: {},
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
+        attachments: self.fwdAttachments
       };
 
       $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){
