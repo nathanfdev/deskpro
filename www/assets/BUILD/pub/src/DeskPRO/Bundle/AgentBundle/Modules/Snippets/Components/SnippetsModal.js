@@ -74,18 +74,36 @@ class LanguageValue extends React.Component {
     );
   }
 }
+class VariableValue extends React.Component {
+  render() {
+    return (
+      <div className="Select-value">
+        <span className="Select-value-label">
+          <i className="fa fa-dollar" />&nbsp;
+          Variables
+        </span>
+      </div>
+    );
+  }
+}
 
 @connect(state => ({
-  languages: allSelectorFactory('Language')(state)
+  languages:            allSelectorFactory('Language')(state),
+  userChatCustomFields: allSelectorFactory('UserChatCustomFields')(state),
+  personCustomFields:   allSelectorFactory('PersonCustomFields')(state),
+  ticketCustomFields:   allSelectorFactory('TicketCustomFields')(state),
 }))
 export class SnippetsModalContainer extends React.Component {
   static propTypes = {
-    snippet:    PropTypes.object,
-    languages:  PropTypes.object,
-    langId:     PropTypes.number,
-    closeModal: PropTypes.func,
-    dispatch:   PropTypes.func,
-    type:       PropTypes.string,
+    snippet:              PropTypes.object,
+    languages:            PropTypes.object,
+    userChatCustomFields: PropTypes.object,
+    personCustomFields:   PropTypes.object,
+    ticketCustomFields:   PropTypes.object,
+    langId:               PropTypes.number,
+    closeModal:           PropTypes.func,
+    dispatch:             PropTypes.func,
+    type:                 PropTypes.string,
   };
   static defaultProps = {
     type: 'ticket'
@@ -110,10 +128,18 @@ export class SnippetsModalContainer extends React.Component {
   componentDidMount() {
     if (typeof DeskPRO_Window !== 'undefined') { // eslint-disable-line camelcase
       const self = this;
+      const buttons = [
+        'bold', 'italic', '|',
+        'formatting', 'fontcolor', '|',
+        'alignment', 'unorderedlist', 'outdent', 'indent', '|',
+        'table', 'image', 'link', 'horizontalrule', '|',
+        'html'
+      ];
       DeskPRO_Window.initRteAgentReply(this.modal.textArea, { // eslint-disable-line no-undef
         defaultIsHtml: true,
         autoresize:    false,
         focus:         true,
+        buttons,
         interval:      1,
         callback(obj) {
           self.redactor = obj;
@@ -208,8 +234,26 @@ export class SnippetsModalContainer extends React.Component {
     });
   };
 
+  insertVariable = (variable) => {
+    try {
+      this.redactor.restoreSelection();
+      this.redactor.setBuffer();
+    } catch (e) {
+      console.log('Error retrieving redactor: %o', e);
+    }
+    this.redactor.insertHtml(`{{ ${variable.value} }}`);
+  };
+
   render() {
-    const { snippet, closeModal, languages } = this.props;
+    const {
+      snippet,
+      closeModal,
+      languages,
+      type,
+      userChatCustomFields,
+      personCustomFields,
+      ticketCustomFields
+    } = this.props;
 
     let translation = this.state.translations.find(t => t.get('language') === this.state.langId);
     if (!translation) {
@@ -226,11 +270,16 @@ export class SnippetsModalContainer extends React.Component {
         translation={translation}
         closeModal={closeModal}
         languages={languages}
+        userChatCustomFields={userChatCustomFields}
+        personCustomFields={personCustomFields}
+        ticketCustomFields={ticketCustomFields}
+        type={type}
         langId={this.state.langId}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
         setLanguage={this.setLanguage}
         changeLabels={this.changeLabels}
+        insertVariable={this.insertVariable}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -238,19 +287,107 @@ export class SnippetsModalContainer extends React.Component {
 }
 export class SnippetsModal extends React.Component {
   static propTypes = {
-    snippet:       PropTypes.object,
-    translation:   PropTypes.object,
-    languages:     PropTypes.object,
-    langId:        PropTypes.number,
-    labels:        PropTypes.array,
-    addAttachment: PropTypes.func,
-    saveSnippet:   PropTypes.func,
-    setLanguage:   PropTypes.func,
-    closeModal:    PropTypes.func,
-    changeLabels:  PropTypes.func,
+    snippet:              PropTypes.object,
+    translation:          PropTypes.object,
+    languages:            PropTypes.object,
+    userChatCustomFields: PropTypes.object,
+    personCustomFields:   PropTypes.object,
+    ticketCustomFields:   PropTypes.object,
+    type:                 PropTypes.string,
+    langId:               PropTypes.number,
+    labels:               PropTypes.array,
+    addAttachment:        PropTypes.func,
+    saveSnippet:          PropTypes.func,
+    setLanguage:          PropTypes.func,
+    closeModal:           PropTypes.func,
+    changeLabels:         PropTypes.func,
+    insertVariable:       PropTypes.func,
   };
   static defaultProps = {
     changeLabels() {}
+  };
+
+  getVariables = () => {
+    let variables;
+    if (this.props.type === 'ticket') {
+      variables = [
+        { value: 'ticket', label: agentPhrases.get('agent.general.ticket'), disabled: true },
+        { value: 'ticket.subject', label: agentPhrases.get('agent.general.subject') },
+        { value: 'ticket.department.title', label: agentPhrases.get('agent.general.department') },
+        { value: 'ticket.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
+        { value: 'ticket.brand.name', label: agentPhrases.get('agent.general.brand') },
+        { value: 'ticket.product.title', label: agentPhrases.get('agent.general.product') },
+        { value: 'ticket.category.title', label: agentPhrases.get('agent.general.category') },
+        { value: 'ticket.workflow.title', label: agentPhrases.get('agent.general.workflow') },
+        { value: 'ticket.priority.title', label: agentPhrases.get('agent.general.priority') },
+        { value: 'ticket.agent.display_name', label: agentPhrases.get('agent.general.agent') },
+        { value: 'ticket.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
+        { value: 'ticket.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
+      ];
+      this.props.ticketCustomFields.forEach((field) => {
+        variables.push({
+          value: `ticket.field${field.get('id')}`,
+          label: field.get('title')
+        });
+      });
+
+      variables = variables.concat([
+        { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
+        { value: 'ticket.person.display_name', label: agentPhrases.get('agent.general.name') },
+        { value: 'ticket.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
+        { value: 'ticket.person.organization.name', label: agentPhrases.get('agent.general.organization') },
+        { value: 'ticket.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
+      ]);
+
+      this.props.personCustomFields.forEach((field) => {
+        variables.push({
+          value: `ticket.person.field${field.get('id')}`,
+          label: field.get('title')
+        });
+      });
+    } else {
+      variables = [
+        { value: 'chat', label: agentPhrases.get('agent.general.chat'), disabled: true },
+        { value: 'chat.subject', label: agentPhrases.get('agent.general.subject') },
+        { value: 'chat.department.title', label: agentPhrases.get('agent.general.department') },
+        { value: 'chat.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
+        { value: 'chat.agent.display_name', label: agentPhrases.get('agent.general.agent') },
+        { value: 'chat.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
+        { value: 'chat.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
+      ];
+      this.props.userChatCustomFields.forEach((field) => {
+        variables.push({
+          value: `chat.field${field.get('id')}`,
+          label: field.get('title')
+        });
+      });
+
+      variables = variables.concat([
+        { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
+        { value: 'chat.person.display_name', label: agentPhrases.get('agent.general.name') },
+        { value: 'chat.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
+        { value: 'chat.person.organization.name', label: agentPhrases.get('agent.general.organization') },
+        { value: 'chat.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
+      ]);
+
+      this.props.personCustomFields.forEach((field) => {
+        variables.push({
+          value: `ticket.person.field${field.get('id')}`,
+          label: field.get('title')
+        });
+      });
+    }
+    return (
+      <div className="variable-switch field">
+        <Select
+          options={variables}
+          value={variables[0]}
+          clearable={false}
+          valueComponent={VariableValue}
+          onChange={this.props.insertVariable}
+        />
+      </div>
+    );
   };
 
   getUploadUrl = () => '/api/v2/snippets/attachment';
@@ -291,6 +428,7 @@ export class SnippetsModal extends React.Component {
               valueComponent={LanguageValue}
             />
           </div>
+          {this.getVariables()}
           <form id="snippet_form">
             <div className="title-field field">
               <InputLabel htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</InputLabel>
@@ -326,7 +464,9 @@ export class SnippetsModal extends React.Component {
                 id:          'snippet_label_input'
               }}
             />
-            <InputLabel htmlFor="snippet_shortcut_code" required>{agentPhrases.get('agent.snippets.shortcut_code')}</InputLabel>
+            <InputLabel htmlFor="snippet_shortcut_code" required>
+              {agentPhrases.get('agent.snippets.shortcut_code')}
+            </InputLabel>
             <Input
               id="snippet_shortcut_code"
               className="snippet_shortcut_code"

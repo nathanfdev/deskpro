@@ -658,13 +658,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     useText = useText.content;
 
     try {
+      self.getEl('user_choice');
       var tpl = twig({
         data:             useText,
         strict_variables: false
       });
       if (tpl) {
         result = tpl.render({
-          ticket: self.page.meta.api_data
+          chat: self.meta.api_data
         }, {
           strict_variables: false
         });
@@ -679,20 +680,16 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       result = useText;
     }
 
-    var data = result;
-    data = data.replace(/<\/p>\s*<p>/g, '<br/>');
-    data = data.replace(/^<p>/, '');
-    data = data.replace(/<\/p>$/, '');
-    data = $('<div>' + data + '</div>');
+    var data;
 
     var wrapper = $('<div/>');
-    wrapper.html(useText);
+    wrapper.html(result);
 
-    if (wrapper.find('> div, > p, > span')[0]) {
-      data = wrapper.find('> *');
-    } else {
-      data = wrapper;
-    }
+    // if (wrapper.find('> div, > p, > span')[0]) {
+    //   data = wrapper.find('> *');
+    // } else {
+		data = wrapper;
+    // }
 
     // trailing newlines
     var coll;
