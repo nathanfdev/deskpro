@@ -1956,11 +1956,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 	},
 
-	addAttachToList: function(attachInfo) {
+	addAttachToList: function(attachInfo, fakeUpload) {
 		var $form = this.getEl('replybox_wrap').children('.ticket-reply-form:first'),
 			fileupload = $form.data('fileupload');
 
-		if (!$form.length || !fileupload) return;
+		if ((!$form.length || !fileupload) && !fakeUpload) return;
 		$form.trigger('fileuploaddone');
 		fileupload.options.done.apply($form[0], [null, { result: [attachInfo]}]);
 	},
@@ -2359,8 +2359,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         });
         break;
       default:
-        return;
+        break;
     }
+    this.wrapper.find('.content-message').find('.attachment-list a').map(function(index, element) {
+      self.ticketReplyBox.appendFwdAttach($(element), self);
+    });
   },
 
 	showDeleteOverlay: function(doBan) {

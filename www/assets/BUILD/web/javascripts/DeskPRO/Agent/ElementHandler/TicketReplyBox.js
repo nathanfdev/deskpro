@@ -320,6 +320,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           }
 					break;
 				case 'fwd':
+				  self.clearFwd();
           self.getElById('replybox_fwdtab_btn').removeClass('on');
           self.getElById('fwd_body').html('');
           self.fwdMessages = [];
@@ -378,6 +379,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           }
           break;
         case 'fwd':
+          self.clearFwd();
           self.getElById('replybox_fwdtab_btn').removeClass('on');
           self.getElById('fwd_body').html('');
           self.fwdMessages = [];
@@ -539,11 +541,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		DeskPRO_Window.util.fileupload(this.el, {
 			dropZone: this.getElById('file_drop_zone'),
 			uploadTemplate: $('.template-upload', this.el),
+
+
 			downloadTemplate: $('.template-download', this.el)
 		});
 
-		this.el.bind('fileuploaddone', function() {
+		this.el.bind('fileuploaddone', function(attachInfo) {
 			self.uploading = false;
+			self.fwdAttachments.push(attachInfo.blob_id);
 			self.getElById('reply_as_type').parent().removeAttr('disabled');
 			self.getElById('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
 			self.getElById('attach_row').show().removeClass('is-hidden');
@@ -572,26 +577,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.on('click', '.remove-attach-trigger', function() {
-
-			$(this).trigger('blobremove', [$(this).prev('input').val()]);
-			var row = $(this).closest('li');
-			row.fadeOut('fast', function() {
-				row.remove();
-
-				var rows = $('ul.files li', self.getElById('attach_row'));
-				if (!rows.length) {
-					self.getElById('attach_row').hide().addClass('is-hidden');
-					if (self.page) {
-						self.page.updateUi();
-						if (!self.page.meta.ticket_reverse_order) {
-							if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-								$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
-							}
-						}
-					}
-				}
-			});
-        });
+      var blobId = $(this).prev('input').val();
+      var row = $(this).closest('li');
+      self.removeBlob(blobId, row);
+		});
 
 		//------------------------------
 		// Toggle buttons
@@ -1719,13 +1708,60 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	clearFwd() {
+	  var self = this;
 		this.getElById('fwd_body').html('');
 		this.fwdMessages = [];
+		this.fwdAttachments = [];
+    this.getElById('attach_row').find('li.in').map(function(index, row){
+      var $row = $(row);
+      self.removeBlob($row.find('input').eq(0).val(), $row);
+    });
 	},
 
 	appendFwdText(html, messageId) {
 		this.getElById('fwd_body').append(html);
 		this.getElById('fwd_body').append("<br/><br/>");
 		this.fwdMessages.push(messageId);
+	},
+
+	appendFwdAttach(element, ticket){
+    var blobId = element.data('blob-id');
+    if(-1 === this.fwdAttachments.indexOf(blobId)) {
+      var attachInfo = {
+        "blob_id":           blobId,
+        "blob_auth":         element.data('blob-auth'),
+        "blob_auth_id":      element.data('blob-auth-id'),
+        "download_url":      element.data('downloadurl'),
+        "filename":          element.data('filename'),
+        "filesize_readable": element.data('filesize-readable'),
+        "is_image":          element.data('is-image')
+      };
+      this.fwdAttachments.push(blobId);
+      ticket.addAttachToList(attachInfo, true);
+		}
+	},
+
+	removeBlob(blobId, row) {
+    $(this).trigger('blobremove', [blobId]);
+    var self = this;
+    row.fadeOut('fast', function() {
+			row.remove();
+			var blobIndex = self.fwdAttachments.indexOf(blobId);
+			if(-1 !== blobIndex) {
+			  delete(self.fwdAttachments[index]);
+      }
+			var rows = $('ul.files li', self.getElById('attach_row'));
+      if (!rows.length) {
+        self.getElById('attach_row').hide().addClass('is-hidden');
+        if (self.page) {
+          self.page.updateUi();
+          if (!self.page.meta.ticket_reverse_order) {
+            if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+              $(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+            }
+          }
+        }
+      }
+    });
 	}
 });
