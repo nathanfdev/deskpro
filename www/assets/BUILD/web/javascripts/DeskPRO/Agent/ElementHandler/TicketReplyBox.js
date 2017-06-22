@@ -1073,7 +1073,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
         data: formData,
         type: 'POST',
-        dataType: 'json'
+        dataType: 'json',
+        success: function() {
+          DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
+          self.getElById('replybox_replytab_btn').click();
+        }
       });
 
 		});
