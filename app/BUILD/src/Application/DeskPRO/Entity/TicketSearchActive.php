@@ -147,6 +147,11 @@ class TicketSearchActive extends DomainObject
     protected $organization_id = null;
 
     /**
+     * @var int
+     */
+    protected $email_account_id = null;
+
+    /**
      * @var string
      */
     protected $sent_to_address;
@@ -263,7 +268,7 @@ class TicketSearchActive extends DomainObject
         return [
             'id', 'ref', 'language_id', 'brand_id', 'department_id', 'category_id',
             'workflow_id', 'priority_id', 'product_id', 'person_id', 'person_email_id',
-            'agent_id', 'agent_team_id', 'organization_id', 'creation_system', 'creation_system_option',
+            'agent_id', 'agent_team_id', 'organization_id', 'email_account_id', 'creation_system', 'creation_system_option',
             'status', 'is_hold', 'urgency', 'feedback_rating', 'date_feedback_rating',
             'date_created', 'date_resolved', 'date_first_agent_assign', 'date_first_agent_reply',
             'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status',
@@ -423,6 +428,12 @@ class TicketSearchActive extends DomainObject
         $metadata->mapField([
             'columnName' => 'organization_id',
             'fieldName'  => 'organization_id',
+            'type'       => 'integer',
+            'nullable'   => true,
+        ]);
+        $metadata->mapField([
+            'columnName' => 'email_account_id',
+            'fieldName'  => 'email_account_id',
             'type'       => 'integer',
             'nullable'   => true,
         ]);

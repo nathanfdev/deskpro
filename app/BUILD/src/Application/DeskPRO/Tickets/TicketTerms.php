@@ -1222,6 +1222,8 @@ class TicketTerms
             case PersonSearch::TERM_NAME:
             case PersonSearch::TERM_USERGROUP:
             case PersonSearch::TERM_ORGANIZATION:
+            case PersonSearch::TERM_ORGANIZATION_MANAGER:
+            case PersonSearch::TERM_IS_DISABLED:
                 $search = new PersonSearch();
                 $search->addTerm($term, $op, $choice);
 

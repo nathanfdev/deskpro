@@ -74,7 +74,7 @@ class LegacyTermsTransformer
             $t = $this->_termToLegacyTerms($term);
 
             if (!$t) {
-                throw new \InvalidArgumentException('New term has no mapping to legacy term: '.get_class($terms));
+                throw new \InvalidArgumentException('New term has no mapping to legacy term: '.get_class($term));
             }
 
             if (isset($t['type'])) {
@@ -341,6 +341,13 @@ class LegacyTermsTransformer
                     'options' => $options->all(),
                 ];
 
+            case 'FilterOrgGroups':
+                return [
+                    'type'    => 'org_usergroup',
+                    'op'      => $term->getTermOperator(),
+                    'options' => ['usergroup' => $options['group_ids']],
+                ];
+
             case 'FilterDateCreated':
                 return [
                     'type'    => 'date_created',
@@ -427,6 +434,33 @@ class LegacyTermsTransformer
                     'options' => [
                         'waiting_time'      => $t[0],
                         'waiting_time_unit' => $t[1],
+                    ],
+                ];
+
+            case 'FilterUserName':
+                return [
+                    'type'    => 'person_name',
+                    'op'      => $term->getTermOperator(),
+                    'options' => [
+                        'name' => $options['name'],
+                    ],
+                ];
+
+            case 'FilterUserIsManager':
+                return [
+                    'type'    => 'person_organization_manager',
+                    'op'      => $term->getTermOperator(),
+                    'options' => [
+                        'is_manager' => $options['is_manager'],
+                    ],
+                ];
+
+            case 'FilterUserIsDisabled':
+                return [
+                    'type'    => 'person_is_disabled',
+                    'op'      => $term->getTermOperator(),
+                    'options' => [
+                        'is_disabled' => $options['is_disabled'],
                     ],
                 ];
 
@@ -774,6 +808,12 @@ class LegacyTermsTransformer
             case 'person_contact_im':
                 return new Terms\FilterUserContactIm($op, $options);
 
+            case 'person_is_disabled':
+                return new Terms\FilterUserIsDisabled($op, $options);
+
+            case 'person_organization_manager':
+                return new Terms\FilterUserIsManager($op, $options);
+
             case 'org_name':
                 return new Terms\FilterOrgName($op, $options);
 
@@ -803,6 +843,16 @@ class LegacyTermsTransformer
 
             case 'org_contact_im':
                 return new Terms\FilterOrgContactIm($op, $options);
+
+            case 'org_usergroup':
+                $ids = @$options['usergroup'] ?: [];
+                if (!is_array($ids)) {
+                    $ids = [$ids];
+                }
+
+                return new Terms\FilterOrgGroups($op, [
+                    'group_ids' => $ids,
+                ]);
 
             case 'ticket_field':
                 $new_opts = $this->legacyFieldToFilterOptions($type_id, $options);
