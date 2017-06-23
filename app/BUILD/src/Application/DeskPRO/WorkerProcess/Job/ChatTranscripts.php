@@ -94,7 +94,7 @@ class ChatTranscripts extends AbstractJob
 
                 /** @var ChatMessage $chatMessage */
                 foreach ($chatMessages as $chatMessage) {
-                    if (!$chatMessage->getIsSys()) {
+                    if (!$chatMessage->getIsSys() || ($chatMessage->getAuthor() && $chatMessage->getAuthor()->isAgent())) {
                         $noAgentAnswer = false;
                         break;
                     }
