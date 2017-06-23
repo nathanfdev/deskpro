@@ -83,12 +83,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       if (reason) { DeskPRO_Window.showAlert(reason); }
       handlerTrap(release);
     };
-    this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
-      'context.ticket.reply',
-      onResponse,
-      onActivate,
-      boundHandleReplySave
-    );
+    if(window.DeskPRO_APPSTORE) {
+      this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
+        'context.ticket.reply',
+        onResponse,
+        onActivate,
+        boundHandleReplySave
+      );
+		} else {
+      this.handleReplySaveInterceptor = boundHandleReplySave;
+		}
+
 
 
 		this.wrapper = el;
@@ -241,7 +246,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-change-email.json',
 							data: { email_id : emailId },
 							dataType: 'json',
-							type: 'POST'
+							type: 'POST',
+							headers: {
+                "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+              }
 						});
 					});
 				}
@@ -273,6 +281,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (self.meta.unlockOnClose && self.getEl('locked_message').data('locked-self')) {
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/release-lock.json',
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					type: 'POST'
 				});
 			}
@@ -391,6 +402,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							url: merge._getOverlayUrl(merge.options.metaId, ticketId),
 							type: 'get',
 							dataType: 'html',
+              headers: {
+                "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+              },
 							success: function(html) {
 								merge.resetOverlay(html);
 							}
@@ -480,6 +494,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							person_id: self.meta.person_id
 						},
 						dataType: 'json',
+            headers: {
+              "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+            },
 						success: function(data) {
 							var append = [];
 							Array.each(data, function(t) {
@@ -646,6 +663,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + "agent/tickets/" + self.meta.ticket_id + "/unlink-ticket",
 				type: 'POST',
+        headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
 				data: {
 					ticket_id: self.meta.ticket_id,
 					link_type: linkType,
@@ -808,6 +828,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-attach-list',
 					data: postData,
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					complete: function() {
 						logsNav.removeClass('dp-loading-on');
 					},
@@ -821,6 +844,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
 					data: postData,
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					complete: function() {
 						logsNav.removeClass('dp-loading-on');
 					},
@@ -854,6 +880,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
 				data: postData,
+        headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
 				complete: function() {
 					logsNav.removeClass('dp-loading-on');
 					btn.remove();
@@ -954,6 +983,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'GET',
 			dataType: 'html',
 			context: this,
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			success: function(html) {
 				if (loadDiv) {
 					loadDiv.remove();
@@ -1030,6 +1062,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
 			data: postData,
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			success: function(html) {
 				logsWrap.html(html);
 				DeskPRO_Window.initInterfaceServices(logsWrap);
@@ -1170,6 +1205,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			noErrorOverride: true,
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			complete: function() {
 				this.replySaveAjax = null;
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
@@ -1698,6 +1736,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$.ajax({
 							url: BASE_URL + 'agent/tickets/messages/'+message_id+'/get-full-message.json',
 							type: 'GET',
+              headers: {
+                "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+              },
 							success: function(data) {
 								row.find('.full-message-content').html(data.message_full)
 								self._initTicketMessageClipped(article);
@@ -1824,6 +1865,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			type: 'POST',
 			dataType: 'json',
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			complete: function() {
 				trans.removeClass('dp-loading-on');
 			},
@@ -1992,7 +2036,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json'
+			dataType: 'json',
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      }
 		});
 	},
 
@@ -2013,9 +2060,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/unlock-ticket.json',
 				type: 'POST',
 				dataType: 'json',
-				complete: function() {
-
-				}
+				headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
 			});
 		});
 
@@ -2032,6 +2079,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/lock-ticket.json',
 				type: 'POST',
 				dataType: 'json',
+				headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
 				success: function(data) {
 					if (data.error) {
 						DeskPRO_Window.showAlert('Someone else has already locked the ticket');
@@ -2151,6 +2201,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 									type: 'POST',
 									data: formData,
 									dataType: 'json',
+                  headers: {
+                    "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+                  },
 									complete: function() {
 										el.removeClass('loading');
 									},
@@ -2346,7 +2399,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data.push({
 				name: 'ban',
 				value: 1
-			})
+			});
 		}
 
 		var self = this;
@@ -2356,6 +2409,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			data: data,
 			dataType: 'json',
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			success: function(data) {
 				self.deleteOverlay.closeOverlay();
 				self.getEl('remove_menu_trigger').hide();
@@ -2380,6 +2436,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/close_problem',
       type:     'POST',
       context:  this,
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
       complete: function () {
         self.closeProblemOverlay.closeOverlay();
         DeskPRO_Window.removePage(self);
@@ -2398,6 +2457,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/reopen_problem',
       type:     'POST',
       context:  this,
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
       complete: function () {
         self.reopenProblemOverlay.closeOverlay();
         DeskPRO_Window.removePage(self);
@@ -2418,6 +2480,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: {
 				ban: doBan ? 1 : 0
 			},
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			success: function(data) {
 				self.getEl('actions_loading').hide();
 				self.getEl('remove_menu_trigger').hide();
@@ -2559,6 +2624,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							$.ajax({
 								url: BASE_URL + 'agent/tickets/messages/' + messageId + '/attachments/' + attachmentId + '/delete',
 								type: 'POST',
+                headers: {
+                  "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+                },
 								dataType: 'json'
 							}).always(function() {
 								row.removeClass('loading');
@@ -2591,6 +2659,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					data: {
 						is_note: is_note
 					},
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					complete: function() {
 						row.removeClass('gear-loading');
 					},
@@ -2678,6 +2749,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			url: BASE_URL + 'agent/tickets/messages/' + messageId + '/delete',
 			type: 'POST',
 			dataType: 'json',
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			success: function(data) {
 				self.deleteMessageOverlay.closeOverlay();
 
@@ -2751,6 +2825,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						url: form.attr('action'),
 						type: 'POST',
 						data: postData,
+            headers: {
+              "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+            },
 						dataType: 'json'
 					}).always(function() {
 						form.removeClass('loading');
@@ -2850,6 +2927,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						type: 'POST',
 						data: formData,
 						dataType: 'json',
+            headers: {
+              "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+            },
 						success: function(data) {
 							if (data.error && data.error == 'invalid_to') {
 								DeskPRO_Window.showAlert('Please enter a valid To address');
@@ -2893,6 +2973,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					type: 'POST',
 					data: postData,
 					dataType: 'json',
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					complete: function() {
 						overlayEl.find('.save-text-loading').hide();
 						overlayEl.find('.save-text-trigger').show();
@@ -2931,6 +3014,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/messages/'+self.currentOpenMessageId+'/get-message-text.json',
 						dataType: 'json',
+            headers: {
+              "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+            },
 						success: function(data) {
 							//overlayEl.find('textarea.message_text').html(data.message_html);
 							overlayEl.find('textarea.message_text').setCode(data.message_html);
@@ -3011,6 +3097,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/update-views.json',
 			type: 'POST',
 			dataType: 'json',
+      headers: {
+        "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+      },
 			data: formData,
 			context: this,
 			success: function(result) {
@@ -3067,6 +3156,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
+        headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
 				success: callback || function() {}
 			});
 		};
@@ -3080,6 +3172,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				row.slideUp();
 				$.ajax({
 					url: BASE_URL + 'agent/tasks/' + row.data('task-id') + '/delete',
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					error: function() {
 						row.show();
 					},
@@ -3269,6 +3364,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				data: postData,
 				type: 'POST',
 				dataType: 'json',
+        headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
 				complete: function() {
 					self.getEl('task_save').removeClass('saving').text('Add');
 				},
@@ -3398,6 +3496,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.util.ajaxWithClientMessages({
 					url: $this.attr('href'),
 					type: 'POST',
+          headers: {
+            "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+          },
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.success) {
@@ -3437,6 +3538,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						url: form.data('submit-url'),
 						data: form.find('input, textarea, select').serializeArray(),
 						type: 'POST',
+            headers: {
+              "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+            },
 						dataType: 'json'
 					}).done(function(json) {
 						if (json.inserted) {
@@ -3546,11 +3650,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-save-subject.json',
 				type: 'POST',
 				data: postData,
-                success: function(){
-                    if (DeskPRO_Window.$scope) {
-                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
-                    }
-                }
+        headers: {
+          "X-DeskPRO-Return-ActionAlerts": DeskPRO_Window.LegacyClient.getLastActionAlert()
+        },
+				success: function(){
+					if (DeskPRO_Window.$scope) {
+							DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
+					}
+				}
 			});
 
 			self.meta.title = setName;

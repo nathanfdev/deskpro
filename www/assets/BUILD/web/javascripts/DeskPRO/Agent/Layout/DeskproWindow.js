@@ -25,6 +25,21 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		$(window).on('resize', function() {
 			self.doResize(true);
 		});
+    $.ajaxSetup({
+      dataFilter: function(data){
+        if(data.indexOf('boundary') === 0) {
+          var splitted = data.split("\r\n", 1);
+          var boundary = splitted[0].split('=')[1];
+          splitted = data.replace(splitted + "\r\n", '').split(boundary);
+          var actionAlerts = JSON.parse(splitted[0]);
+          if(DeskPRO_Window.LegacyClient) {
+            DeskPRO_Window.LegacyClient.handleActionAlerts(actionAlerts);
+          }
+          data = splitted[1];
+        }
+        return data;
+      }
+    });
 
 		var listSizer = $('#dp_list_resizer').draggable({
 			axis: 'x'
