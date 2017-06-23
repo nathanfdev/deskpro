@@ -106,9 +106,9 @@ class DeskproAppStore {
     // listen to new pages / tabs being loaded
     DeskproWindowMessageBrokerAdapter.registerListener(messageBroker)(reduxDispatcher);
 
-    // find already loaded contexts in opened tabs
+    // find already loaded contexts in opened tabs, which have been initialized
     const tabs = window.DeskPRO_Window.TabBar.getTabs();
-    const pages = tabs ? Object.keys(tabs).map(key => tabs[key].page) : [];
+    const pages = tabs ? Object.keys(tabs).map(key => tabs[key].page).filter(page => !!page.wrapper) : [];
     if (pages.length) {
       reduxDispatcher.dispatchLoadPageFragmentApps(pages);
     }

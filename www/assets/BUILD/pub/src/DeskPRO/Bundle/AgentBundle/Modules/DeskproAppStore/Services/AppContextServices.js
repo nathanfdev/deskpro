@@ -21,13 +21,6 @@ const extractPropsFromPage = (page, location) => {
 };
 
 /**
- * @param {Object} tab
- * @param {Location} windowLocation
- * @return Array<Context>
- */
-export const createContextsFromTab = (tab, windowLocation) => this.createContextsFromPage(tab.page, windowLocation);
-
-/**
  * @param {DeskPRO.Agent.PageFragment.Basic} page
  * @param {Location} windowLocation
  * @return Array<Context>
@@ -59,6 +52,13 @@ export const createContextsFromPage = (page, windowLocation) => {
     return [];
   }
 };
+
+/**
+ * @param {Object} tab
+ * @param {Location} windowLocation
+ * @return Array<Context>
+ */
+export const createContextsFromTab = (tab, windowLocation) => createContextsFromPage(tab.page, windowLocation);
 
 /**
  * @param {Context} context
