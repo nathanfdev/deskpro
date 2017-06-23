@@ -1,61 +1,12 @@
 import { events } from './Events';
 
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices}  services
- * @constructor
- */
-export const EVENT_WEBAPI_REQUEST_FETCH = (response, widget, widgetMessage, services) =>
-{
-  const normalizeRequest = request => {
-    const { url, init } = request;
-    const { method, path, body } = request;
-
-    if (method && path) {
-      return body ? {url:path, init: { method, body }} : {url: path, init: { method }};
-    }
-
-    return { url, init };
-  };
-
-  const { body: request } = widgetMessage;
-  const normalizedRequest = normalizeRequest(request);
-  const { url, init } = normalizedRequest;
-
-  let error;
-  const isExternalRequest = url.match(/^(?:[a-z]+:)?\/\//i);
-
-  // check allowed methods
-  const dpAPIAllowedMethods = ['get', 'post', 'put', 'delete'];
-  if (init.mode !== 'cors' && dpAPIAllowedMethods.indexOf(init.method.toString().toLowerCase()) == -1) {
-    error = new Error(`[API]: Method not allowed ${init.method}. Allowed methods are: ${dpAPIAllowedMethods.join(', ')}`);
-  } else if (isExternalRequest && init.mode !== 'cors') {
-    error = new Error(`[API]: External requests must use CORS mode`);
+const sendResponse = response => (data) => {
+  if (data instanceof Error) {
+    response(data);
+  } else {
+    response(null, data);
   }
-
-  if (error) {
-    response(error);
-    return;
-  }
-
-  const fetchPromise = isExternalRequest ? services.getProxyClient({ widget }).fetch(url, init) : services.dpClient.fetch(url, init);
-
-  fetchPromise
-    .then(httpResponse => {
-      const data = { status: httpResponse.status, body: httpResponse.data };
-      response(null, data);
-
-      return httpResponse;
-    })
-    .catch(httpResponse => {
-      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data };
-      const error = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
-      response(error, data);
-
-      return httpResponse;
-    })
+  return data;
 };
 
 /**
@@ -65,8 +16,64 @@ export const EVENT_WEBAPI_REQUEST_FETCH = (response, widget, widgetMessage, serv
  * @param {AppServices}  services
  * @constructor
  */
-export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, services) =>
-{
+export const EVENT_WEBAPI_REQUEST_FETCH = (response, widget, widgetMessage, services) => {
+  const normalizeRequest = (request) => {
+    const { url, init } = request;
+    const { method, path, body } = request;
+
+    if (method && path) {
+      return body ? { url: path, init: { method, body } } : { url: path, init: { method } };
+    }
+
+    return { url, init };
+  };
+
+  const { body: request } = widgetMessage;
+  const normalizedRequest = normalizeRequest(request);
+  const { url, init } = normalizedRequest;
+
+  const isExternalRequest = url.match(/^(?:[a-z]+:)?\/\//i);
+
+  // validate request
+  let errorMessage;
+  const dpAPIAllowedMethods = ['get', 'post', 'put', 'delete'];
+  if (init.mode !== 'cors' && dpAPIAllowedMethods.indexOf(init.method.toString().toLowerCase()) === -1) {
+    errorMessage = `[API]: Method not allowed ${init.method}. Allowed methods are: ${dpAPIAllowedMethods.join(', ')}`;
+  } else if (isExternalRequest && init.mode !== 'cors') {
+    errorMessage = '[API]: External requests must use CORS mode';
+  }
+
+  if (errorMessage) {
+    response(new Error(errorMessage));
+    return;
+  }
+
+  const fetchClient = isExternalRequest ? services.getProxyClient({ widget }) : services.dpClient;
+
+  fetchClient.fetch(url, init)
+    .then((httpResponse) => {
+      const data = { status: httpResponse.status, body: httpResponse.data };
+      response(null, data);
+
+      return httpResponse;
+    })
+    .catch((httpResponse) => {
+      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data };
+      const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
+      response(requestError, data);
+
+      return httpResponse;
+    });
+};
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ * @constructor
+ */
+export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, services) => {
   const { body: invocation } = widgetMessage;
 
   let error;
@@ -76,8 +83,7 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
 
   if (path.match(/^(?:[a-z]+:)?\/\//i)) {
     error = new Error(`[API]: Invalid path: ${path}. Absolute paths are not allowed`);
-  }
-  else if ( allowedMethods.indexOf(method.toLowerCase()) == -1 ) {
+  }  else if (allowedMethods.indexOf(method.toLowerCase()) === -1) {
     error = new Error(`[API]: Method not allowed ${method}. Allowed methods are: ${allowedMethods.join(', ')}`);
   }
 
@@ -105,18 +111,19 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
     case 'delete':
       requestPromise = api.sendDelete(apiEndpoint);
       break;
+    default:
+      throw new Error(`failed to execute fetch: unknown method ${method}`);
   }
 
   requestPromise
-    .catch(httpResponse => {
-
+    .catch((httpResponse) => {
       const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data };
-      const error = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
-      response(error, data);
+      const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
+      response(requestError, data);
 
       return httpResponse;
     })
-    .then(httpResponse => {
+    .then((httpResponse) => {
       const data = { status: httpResponse.status, body: httpResponse.data };
       response(null, data);
 
@@ -132,21 +139,20 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
  * @param {AppServices}  services
  * @constructor
  */
-export const EVENT_STATE_FIND = (response, widget, widgetMessage, services) =>
-{
+export const EVENT_STATE_FIND = (response, widget, widgetMessage, services) => {
   const { api } = services;
-  const { body: state } = widgetMessage;
+  const { name, scope } = widgetMessage.body;
 
-  api.sendGet(`DP_API/apps/${widget.instanceId}/state`)
+  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
     .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
+    .catch((httpResponse) => {
       if (httpResponse instanceof Error) { return httpResponse; }
 
-      if (404 === httpResponse.data.status) { return null; }
+      if (httpResponse.data.status === 404) { return null; }
 
       return new Error('failed to get app state');
     })
-    .then(data => data instanceof Error ? response(data) : response(null, data))
+    .then(sendResponse(response))
   ;
 };
 
@@ -157,21 +163,20 @@ export const EVENT_STATE_FIND = (response, widget, widgetMessage, services) =>
  * @param {AppServices}  services
  * @constructor
  */
-export const EVENT_STATE_GET = (response, widget, widgetMessage, services) =>
-{
+export const EVENT_STATE_GET = (response, widget, widgetMessage, services) => {
   const { api } = services;
   const { name, scope } = widgetMessage.body;
 
   api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}?mode=find`)
     .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
+    .catch((httpResponse) => {
       if (httpResponse instanceof Error) { return httpResponse; }
 
-      if (404 === httpResponse.data.status) { return null; }
+      if (httpResponse.data.status === 404) { return null; }
 
       return new Error('failed to get app state');
     })
-    .then(data => data instanceof Error ? response(data) : response(null, data))
+    .then(sendResponse(response))
   ;
 };
 
@@ -182,29 +187,28 @@ export const EVENT_STATE_GET = (response, widget, widgetMessage, services) =>
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
-{
+export const EVENT_STATE_SET = (response, widget, widgetMessage, services) => {
   const { api } = services;
   const { name, scope } = widgetMessage.body;
   const { body: state } = widgetMessage;
 
   api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then(httpResponse => {
-      if (204 === httpResponse.getResponseCode()) {
+    .then((httpResponse) => {
+      if (httpResponse.getResponseCode() === 204) {
         return api.sendPost(`DP_API/apps/${widget.instanceId}/state`, state);
-      } else if (200 === httpResponse.getResponseCode()) {
+      } else if (httpResponse.getResponseCode() === 200) {
         return api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`, state);
       }
 
       throw new Error('could not save state');
     })
     .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
+    .catch((httpResponse) => {
       if (httpResponse instanceof Error) { return httpResponse; }
 
       return new Error('failed to get app state');
     })
-    .then(data => data instanceof Error ? response(data) : response(null, data))
+    .then(sendResponse(response))
   ;
 };
 
@@ -215,21 +219,20 @@ export const EVENT_STATE_SET = (response, widget, widgetMessage, services) =>
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) =>
-{
+export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) => {
   const { name, scope } = widgetMessage.body;
   const { api } = services;
 
   api.sendDelete(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
     .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
+    .catch((httpResponse) => {
       if (httpResponse instanceof Error) { return httpResponse; }
 
-      if (404 === httpResponse.data.status) { return null; }
+      if (httpResponse.data.status === 404) { return null; }
 
       return new Error('failed to delete app state');
     })
-    .then(data => data instanceof Error ? response(data) : response(null, data))
+    .then(sendResponse(response))
   ;
 };
 
@@ -243,12 +246,12 @@ export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) =>
 export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
   const tab = services.tabs.getTab(tabId);
-  if (! tab) {
+  if (!tab) {
     return response(new Error('tab not found'), tabId);
   }
 
   const { api_data, hasBilling, hasTimeLog } = tab.page.meta;
-  response(null, { api_data, hasBilling, hasTimeLog });
+  return response(null, { api_data, hasBilling, hasTimeLog });
 };
 
 /**
@@ -258,7 +261,7 @@ export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_TAB_STATUS = (response, widget, widgetMessage, services) => {
+export const EVENT_TAB_STATUS = (response, widget, widgetMessage, services) => { // eslint-disable-line no-unused-vars
   response(null, { active: true });
 };
 
@@ -295,8 +298,7 @@ export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_ME_GET = (response, widget, widgetMessage, services) =>
-{
+export const EVENT_ME_GET = (response, widget, widgetMessage, services) => {
   response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
 };
 
@@ -309,19 +311,18 @@ export const EVENT_ME_GET = (response, widget, widgetMessage, services) =>
  */
 export const EVENT_RESET_SIZE = (response, widget, message, services) => {
   const { size } = message.body;
-  const height = size.outerHeight + 20 /* i dont know why +20? */;
+  const height = size.outerHeight + 20;
 
   try {
     const { widgetDOM, $ } = services;
     const iframe = widgetDOM.findIframe(widget);
     $(iframe).height(height);
 
-    response(null, { height })
+    response(null, { height });
   } catch (e) {
     console.log('app reset size failed', e);
     response(e);
   }
-
 };
 
 /**
@@ -332,7 +333,7 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
  * @constructor
  */
 export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
-  const { events  } = message.body;
+  const { events  } = message.body; // eslint-disable-line no-shadow
   events.each(eventName => services.addEventListener(eventName, widget));
 };
 
@@ -346,10 +347,9 @@ export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
  * @constructor
  */
 export const EVENT_DESKPROWINDOW_SHOW_NOTIFICATION = (response, widget, message, services) => {
-
   const { body: notification } = message;
   if (typeof notification === 'string') {
-    services.showNotification(notification)
+    services.showNotification(notification);
   }
 };
 
@@ -366,18 +366,17 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
 
   try {
     if (markup instanceof Array) {
-      markup.forEach(markupFragment => {
+      markup.forEach((markupFragment) => {
         $(window.document.body).append(markupFragment);
       });
     } else if (typeof markup === 'string') {
       $(window.document.body).append(markup);
     }
     response(null, markup);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     response(e);
   }
-
 };
 
 
@@ -445,7 +444,12 @@ const registerListener = ({ eventDispatcher, eventName, eventHandler, appService
  */
 export const registerListeners = (eventDispatcher, appServices) => {
   /** @param {String} key */
-  const mapper = key => registerListener({ eventName: events[key], eventHandler: handlers[key], eventDispatcher, appServices });
+  const mapper = key => registerListener({
+    eventName:    events[key],
+    eventHandler: handlers[key],
+    eventDispatcher,
+    appServices
+  });
   // intersect the handlers with events, picking entries which exist in both maps;
-  return Object.keys(handlers).filter(key => events.hasOwnProperty(key)).map(mapper);
+  return Object.keys(handlers).filter(key => Object.prototype.hasOwnProperty.call(events, key)).map(mapper);
 };

@@ -1,7 +1,7 @@
 import Immutable from 'immutable';
 
-export class Context
-{
+export class Context {
+
   constructor({ id, type, entityId, locationId, tabId }) {
     const props = { id, type, entityId, locationId, tabId };
     this.props = Immutable.fromJS(props);

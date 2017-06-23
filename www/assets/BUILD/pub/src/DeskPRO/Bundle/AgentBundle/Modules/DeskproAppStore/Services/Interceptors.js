@@ -1,3 +1,4 @@
+const createBoundFunction = (args, fn) => () => fn(...args);
 
 const INVOCATIONTRAP_CMD_RELEASE = () => ({});
 const INVOCATIONTRAP_CMD_REARM = () => ({});
@@ -11,29 +12,31 @@ const commands = [INVOCATIONTRAP_CMD_REARM, INVOCATIONTRAP_CMD_RELEASE, INVOCATI
  * @param {function} handler
  * @return {function(...[*]=)}
  */
-export const createHandlerTrap = handler => {
+export const createHandlerTrap = (handler) => {
   const initialState = { active: true, boundHandler: null };
   let state = { ...initialState };
   return (...args) => {
-      const cmd = args.length === 1 && commands.indexOf(args[0]) > -1 ? args[0] : null;
-      const { active, boundHandler } = state;
+    const cmd = args.length === 1 && commands.indexOf(args[0]) > -1 ? args[0] : null;
+    const { active, boundHandler } = state;
 
-      if (cmd === INVOCATIONTRAP_CMD_STATE) { return { ...state }; } //should probably clone state
+    if (cmd === INVOCATIONTRAP_CMD_STATE) { return { ...state }; } // should probably clone state
 
-      if (active && cmd === null) {
-        state = { active: false, boundHandler: createBoundFunction(args, handler) };
-        return;
-      }
+    if (active && cmd === null) {
+      state = { active: false, boundHandler: createBoundFunction(args, handler) };
+      return null;
+    }
 
-      if (active === false && boundHandler !== null && cmd === INVOCATIONTRAP_CMD_RELEASE) {
-        state = { ...initialState };
-        return  boundHandler();
-      }
+    if (active === false && boundHandler !== null && cmd === INVOCATIONTRAP_CMD_RELEASE) {
+      state = { ...initialState };
+      return boundHandler();
+    }
 
-      if (active === false && cmd === INVOCATIONTRAP_CMD_REARM) {
-        state = { ...initialState };
-        return ;
-      }
+    if (active === false && cmd === INVOCATIONTRAP_CMD_REARM) {
+      state = { ...initialState };
+      return null;
+    }
+
+    return null;
   };
 };
 
@@ -60,5 +63,3 @@ export const createRearmTrap = trap => () => trap(INVOCATIONTRAP_CMD_REARM);
  * @param trap
  */
 export const createReleaseTrap = trap => () => trap(INVOCATIONTRAP_CMD_RELEASE);
-
-const createBoundFunction = (args, fn) => () => fn.apply(null, args);

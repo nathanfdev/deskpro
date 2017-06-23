@@ -1,10 +1,8 @@
 /**
  * Helper methods to make it easy to access a widget's dom
  */
-export class DOM
-{
-  constructor({ document })
-  {
+export class DOM {
+  constructor({ document })  {
     this.props = { document };
   }
 
@@ -16,10 +14,10 @@ export class DOM
     const { document } = this.props;
 
     const element = document.getElementById(widget.windowId);
-    if (! element) { return null; }
+    if (!element) { return null; }
 
     const iframe = element.querySelector('iframe');
-    if (! iframe ) { return null; }
+    if (!iframe) { return null; }
 
     return iframe;
   };

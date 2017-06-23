@@ -1,37 +1,36 @@
 const configPropertiesToAttributesMap = {
-  type: 'data-deskproapp',
-  renderType: 'data-deskproapp-render',
+  type:                   'data-deskproapp',
+  renderType:             'data-deskproapp-render',
   renderSidebarContainer: 'data-deskproapp-render-sidebar',
-  renderIconsContainer: 'data-deskproapp-render-icons',
+  renderIconsContainer:   'data-deskproapp-render-icons',
 };
 
 const defaultValues = {
   renderType: 'inplace'
 };
 
-class ContainerConfiguration
-{
+class ContainerConfiguration {
   /**
    * @param domNode
    * @return {ContainerConfiguration}
    */
-  static fromDOM(domNode)
-  {
-    const configuration = Object.keys(configPropertiesToAttributesMap).reduce(function (configuration, key) {
+  static fromDOM(domNode)  {
+    const attributesToPropsReducer = (configuration, key) => {
       const attributeName = configPropertiesToAttributesMap[key];
       if (domNode.hasAttribute(attributeName)) {
         configuration[key] = domNode.getAttribute(attributeName);
       }
       return configuration;
-    }, {});
+    };
+    const configProps = Object.keys(configPropertiesToAttributesMap).reduce(attributesToPropsReducer, {});
 
-    Object.keys(configPropertiesToAttributesMap).forEach(propWithDefaultVal => {
-      if (!configuration.hasOwnProperty(propWithDefaultVal)) {
-        configuration[propWithDefaultVal] = defaultValues[propWithDefaultVal];
+    Object.keys(configPropertiesToAttributesMap).forEach((propWithDefaultVal) => {
+      if (!Object.prototype.hasOwnProperty.call(configProps, propWithDefaultVal)) {
+        configProps[propWithDefaultVal] = defaultValues[propWithDefaultVal];
       }
     });
 
-    return ContainerConfiguration.fromJS(configuration);
+    return ContainerConfiguration.fromJS(configProps);
   }
 
   /**
@@ -49,8 +48,7 @@ class ContainerConfiguration
    * @param {String} renderSidebarContainer
    * @param {String} renderIconsContainer
    */
-  constructor({ type, renderType, renderSidebarContainer, renderIconsContainer })
-  {
+  constructor({ type, renderType, renderSidebarContainer, renderIconsContainer })  {
     this.targetType = type;
     this.renderType = renderType;
     this.renderSidebarContainer = renderSidebarContainer;

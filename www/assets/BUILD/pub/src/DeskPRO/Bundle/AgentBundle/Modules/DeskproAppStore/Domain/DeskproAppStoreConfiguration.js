@@ -28,7 +28,7 @@ class DeskproAppStoreConfiguration {
       'org-hierarchy-before', 'org-hierarchy-after', 'org-footer',
       'org-summary-new-tab', 'org-content-box-new-tab', 'org-notes-new-tab',
 
-      //background location
+      // background location
       'background'
     ];
   }

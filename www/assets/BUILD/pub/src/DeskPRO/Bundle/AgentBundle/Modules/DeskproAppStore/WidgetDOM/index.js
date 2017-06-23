@@ -15,6 +15,6 @@ export const container = ContainerDOM.fromAttributeName(widgetContainerAttribute
  * @return {null|Window}
  */
 export const findWidgetWindow = (widget, document) => {
-  const dom = new DOM({document});
+  const dom = new DOM({ document });
   return dom.findWindow(widget);
 };

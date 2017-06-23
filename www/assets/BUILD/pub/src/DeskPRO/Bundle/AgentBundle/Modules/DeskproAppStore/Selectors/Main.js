@@ -1,9 +1,12 @@
 export const filterAppConfig =  ({ DeskproAppStore: { Main:state } }) => state.get('apps').toJS();
-export const filterAppManifestsConfig = ({ DeskproAppStore: { Main:state } }) => state.get('apps').get('manifests').toJS();
+export const filterAppManifestsConfig = ({ DeskproAppStore: { Main:state } }) => {
+  const manifests = state.get('apps').get('manifests');
+  return manifests.toJS();
+};
 
 const filterContexts =  ({ DeskproAppStore: { Main:state } }) => state.get('contexts');
 
-const createContextsStateSelector = function (initialContexts) {
+const createContextsStateSelector = (initialContexts) => {
   let oldContexts = initialContexts;
   return (state) => {
     const contexts = filterContexts(state);

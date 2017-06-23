@@ -1,5 +1,4 @@
-export class DPAPIClient
-{
+export class DPAPIClient {
   /**
    * @param {Http} api
    */
@@ -13,7 +12,7 @@ export class DPAPIClient
     }
 
     const { api } = this.props;
-    const {method, body, headers} = init;
+    const { method, body, headers } = init;
 
     const apiEndpoint = ['DP_API', url].join('/');
     let requestPromise;
@@ -34,6 +33,8 @@ export class DPAPIClient
       case 'delete':
         requestPromise = api.sendDelete(apiEndpoint, { headers, jsonPayload: false });
         break;
+      default:
+        throw new Error(`failed to execute fetch: unknown method ${method}`);
     }
 
     return requestPromise;

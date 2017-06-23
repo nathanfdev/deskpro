@@ -1,15 +1,14 @@
-const mapHeaders = headers => {
+const mapHeaders = (headers) => {
   // let's assume init.headers is an object literal
   const reducer = (mappedHeaders, header) => {
-    mappedHeaders['x-proxy-header-' + header] = headers[header];
+    mappedHeaders[`x-proxy-header-${header}`] = headers[header];
     return mappedHeaders;
   };
 
   return Object.keys(headers).reduce(reducer, {});
 };
 
-export class InstanceProxyClient
-{
+export class InstanceProxyClient {
   /**
    * @param {DPAPIClient} apiClient
    * @param {String} instanceId
@@ -19,8 +18,7 @@ export class InstanceProxyClient
   }
 
   fetch = (url, init) => {
-
-    const { headers: originalHeaders, method, mode, ...passthroughInit } = init;
+    const { headers: originalHeaders, method, ...passthroughInit } = init;
     const headers = mapHeaders(originalHeaders);
 
     headers['x-proxy-replacevars'] = true;

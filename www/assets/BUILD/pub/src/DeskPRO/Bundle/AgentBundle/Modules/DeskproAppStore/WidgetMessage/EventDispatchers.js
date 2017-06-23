@@ -1,14 +1,22 @@
 import { EventEmitter } from 'eventemitter3';
-import {createHandlerTrap, createReleaseTrap } from '../Services/Interceptors';
+import { createHandlerTrap, createReleaseTrap } from '../Services/Interceptors';
 
-export class EventDispatcher extends EventEmitter
-{}
+export class EventDispatcher extends EventEmitter {}
 
 export const IncomingEventDispatcher = new EventDispatcher();
 export const OutgoingEventDispatcher = new EventDispatcher();
 
-
-const createInterceptor = (eventName, onResponse, onActivate, handler) => {
+/**
+ * Creates a function that intercepts invocations of a handler function, dispatches an event to all interested widgets
+ * and invokes the onResponse callback with the widget's response
+ *
+ * @param {String} eventName
+ * @param {function} onResponse
+ * @param {function} onActivate
+ * @param {function} handler
+ * @return {function(...[*])}
+ */
+const createInterceptor = (eventName, onResponse, onActivate, handler) => { // eslint-disable-line no-unused-vars
   const handlerTrap = createHandlerTrap(handler);
   const releaseTrap = createReleaseTrap(handlerTrap);
 
@@ -19,11 +27,11 @@ const createInterceptor = (eventName, onResponse, onActivate, handler) => {
     if (onActivateActive) {
       state.onActivateActive = false;
 
-      const message = typeof onActivate === 'function' ? onActivate.apply(null, args) : onActivate;
-      OutgoingEventDispatcher.emit(eventName, message)
+      const message = typeof onActivate === 'function' ? onActivate(...args) : onActivate;
+      OutgoingEventDispatcher.emit(eventName, message);
     }
 
-    handlerTrap.apply(null, args);
+    handlerTrap(...args);
   };
 
   const incomingListener = (widget, message) => onResponse(message, releaseTrap);

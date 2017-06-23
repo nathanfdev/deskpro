@@ -1,4 +1,4 @@
-import {createHandlerTrap, createReleaseTrap, createRearmTrap, createIsTrapActive } from '../Services/Interceptors';
+import { createHandlerTrap, createReleaseTrap, createRearmTrap, createIsTrapActive } from '../Services/Interceptors';
 
 import { IncomingEventDispatcher, OutgoingEventDispatcher } from './EventDispatchers';
 import { createDispatchResponse } from './MessageDispatcher';
@@ -6,19 +6,22 @@ import { createDispatchResponse } from './MessageDispatcher';
 import { registerListeners as registerIncomingRequestListeners  } from './IncomingRequestHandlers';
 import { createListener as createOutgoingListener, chainHandlers as chainOutgoingRequestHandlers, handlerForEvent as outgoingHandlerForEvent  } from './OutgoingRequestHandlers';
 
-import { parseIncomingMessageJS, WidgetResponse, WidgetRequest } from './Message'
+import { parseIncomingMessageJS, WidgetResponse, WidgetRequest } from './Message';
 
 /**
  * @param {AppServices} appServices
  */
-export const registerIncomingWidgetRequestListeners = appServices => registerIncomingRequestListeners(IncomingEventDispatcher, appServices);
+export const registerIncomingWidgetRequestListeners = (appServices) => {
+  const result = registerIncomingRequestListeners(IncomingEventDispatcher, appServices);
+  return result;
+};
 
 /**
  * @param {String} eventName
  * @param {Widget} widget
  * @param {AppServices} appServices
  */
-export const addWidgetEventListener = (eventName, widget, appServices ) => {
+export const addWidgetEventListener = (eventName, widget, appServices) => {
   const listener = createOutgoingListener({
     eventName,
     widget,
@@ -39,7 +42,7 @@ export const addWidgetEventListener = (eventName, widget, appServices ) => {
  * @param {Widget} widget
  */
 export const dispatchIncomingWidgetMessage = (eventName, widgetMessage, widget) => {
-  //parse message
+  // parse message
   const message = parseIncomingMessageJS(widgetMessage);
 
   if (message instanceof WidgetRequest) {
@@ -81,20 +84,22 @@ export const dispatchOutgoingWidgetRequestOnIntercept = (eventName, onResponse, 
   const rearmTrap = createRearmTrap(trap);
   const isTrapActive = createIsTrapActive(trap);
 
-  const trapHandler = release => release ? releaseTrap() : rearmTrap();
+  const trapHandler = (release) => {
+    if (release) { releaseTrap(); } else { rearmTrap(); }
+    return release;
+  };
   const incomingResponseListener = (widget, message) => onResponse(trapHandler, widget, message);
 
   return (...args) => {
-
     const active = isTrapActive();
     const dispatchOutgoingMessage = active && hasOutgoingListeners(eventName);
 
     if (dispatchOutgoingMessage) {
-      const message = typeof onActivate === 'function' ? onActivate.apply(null, args) : onActivate;
+      const message = typeof onActivate === 'function' ? onActivate(...args) : onActivate;
       dispatchOutgoingWidgetMessage(eventName, message, null, incomingResponseListener);
     }
 
-    trap.apply(null, args);
+    trap(...args);
 
     // if trap was active before applying and we did not dispatch the outgoing message and now the trap is inactive release it
     if (active && !dispatchOutgoingMessage && !isTrapActive()) { releaseTrap(); }

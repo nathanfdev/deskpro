@@ -1,5 +1,4 @@
-export class Widget
-{
+export class Widget {
   /**
    * @param {WidgetConfiguration} configuration
    * @param {String} windowId

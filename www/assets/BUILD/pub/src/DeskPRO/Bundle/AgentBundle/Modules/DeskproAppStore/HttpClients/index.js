@@ -1,3 +1,3 @@
 
-export {DPAPIClient} from './DPAPIClient'
-export {InstanceProxyClient} from './ProxyClients'
+export { DPAPIClient } from './DPAPIClient';
+export { InstanceProxyClient } from './ProxyClients';

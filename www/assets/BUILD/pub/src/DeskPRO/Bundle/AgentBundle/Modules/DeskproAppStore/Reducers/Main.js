@@ -80,7 +80,7 @@ function appMountedHandler(state, payload, action) {
  * @param {Object} action
  * @returns {Object}
  */
-function loadPageFragmentAppsHandler(state, contextList, action) {
+function loadPageFragmentAppsHandler(state, contextList, action) { // eslint-disable-line no-unused-vars
   if (contextList.length === 0) { return state; }
 
   const newContexts = contextList.reduce((acc, context) => { acc[context.id] = context; return acc; }, {});

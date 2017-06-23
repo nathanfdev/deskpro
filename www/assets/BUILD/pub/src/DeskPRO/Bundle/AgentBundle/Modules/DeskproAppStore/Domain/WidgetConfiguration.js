@@ -1,5 +1,4 @@
-class WidgetConfiguration
-{
+class WidgetConfiguration {
   /**
    * @param {String} id
    * @param {String} target
@@ -7,7 +6,6 @@ class WidgetConfiguration
    * @param {Object} xcomponentConfig
    */
   constructor(id, target, appConfig, xcomponentConfig) {
-
     this.props = {
       id,
       target,
