@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Snippets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet as SnippetEntity;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use JMS\Serializer\Annotation as JMS;
@@ -106,15 +108,51 @@ class Snippet
      */
     private $isDraft;
 
+    /**
+     * Is this just a draft?
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $isOwnershipGlobal;
+
+    /**
+     * Is this just a draft?
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $isVisibleGlobal;
+
+    /**
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\AgentTeam>>")
+     *
+     * @var AgentTeam[]
+     */
+    private $ownershipTeams;
+
+    /**
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Department>>")
+     *
+     * @var Department[]
+     */
+    private $visibleDepartments;
+
     public function __construct(SnippetEntity $snippet)
     {
-        $this->id           = $snippet->getId();
-        $this->title        = $snippet->getTitle();
-        $this->person       = $snippet->getPerson();
-        $this->types        = $snippet->getTypes();
-        $this->shortcutCode = $snippet->getShortcutCode();
-        $this->isDraft      = $snippet->isDraft();
-        $this->translations = $snippet->getTranslations();
+        $this->id                 = $snippet->getId();
+        $this->title              = $snippet->getTitle();
+        $this->person             = $snippet->getPerson();
+        $this->types              = $snippet->getTypes();
+        $this->shortcutCode       = $snippet->getShortcutCode();
+        $this->isDraft            = $snippet->isDraft();
+        $this->translations       = $snippet->getTranslations();
+        $this->isOwnershipGlobal  = $snippet->isOwnershipGlobal();
+        $this->isVisibleGlobal    = $snippet->isVisibleGlobal();
+        $this->ownershipTeams     = $snippet->getOwnershipTeams();
+        $this->visibleDepartments = $snippet->getVisibleDepartments();
 
         $labels = [];
         foreach ($snippet->getLabels() as $label) {

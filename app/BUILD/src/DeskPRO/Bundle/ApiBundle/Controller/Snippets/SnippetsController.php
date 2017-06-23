@@ -85,13 +85,15 @@ class SnippetsController extends CrudController
         $agent->loadHelper('AgentTeam');
 
         $qb
-            ->andWhere("($alias.person = :person OR $alias.isOwnershipGlobal = true)")
+            ->where("($alias.person = :person")
+            ->orWhere("$alias.isOwnershipGlobal = true)")
             ->setParameter('person', $agent)
         ;
 
         if ($agent->getAgentTeamIds()) {
             $qb
-                ->andWhere("$alias.ownershipTeams IN (:teams)")
+                ->leftJoin("$alias.ownershipTeams", 't')
+                ->orWhere('t.id IN (:teams)')
                 ->setParameter('teams', implode(',', $agent->getAgentTeamIds()))
             ;
         }

@@ -28,10 +28,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Snippets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -84,6 +87,14 @@ class SnippetType extends AbstractType
             ->add('is_draft', ApiBooleanType::class)
             ->add('is_ownership_global', ApiBooleanType::class)
             ->add('is_visible_global', ApiBooleanType::class)
+            ->add('ownership_teams', EntityType::class, [
+                'class'    => AgentTeam::class,
+                'multiple' => true,
+            ])
+            ->add('visible_departments', EntityType::class, [
+                'class'    => Department::class,
+                'multiple' => true,
+            ])
         ;
     }
 

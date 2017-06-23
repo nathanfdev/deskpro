@@ -3026,9 +3026,9 @@
       "resolved": "https://registry.npmjs.org/derivable/-/derivable-1.0.0-beta11.tgz"
     },
     "deskpro-styles": {
-      "version": "1.0.0",
-      "from": "git+https://github.com/DeskproApps/deskpro-components.git",
-      "resolved": "git+https://github.com/DeskproApps/deskpro-components.git#01e1c1d322fe39826bab870bab06dc572974589d",
+      "version": "0.1.7",
+      "from": "git+https://github.com/DeskproApps/deskpro-components.git#multiple-select",
+      "resolved": "git+https://github.com/DeskproApps/deskpro-components.git#1d5fb83fe289cc59c523dad415f81bdbf33fd679",
       "dependencies": {
         "bourbon": {
           "version": "4.3.4",
@@ -8477,6 +8477,18 @@
       "version": "1.0.6",
       "from": "react-autobind@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/react-autobind/-/react-autobind-1.0.6.tgz"
+    },
+    "react-bootstrap-multiselect": {
+      "version": "2.4.1",
+      "from": "git+https://github.com/jducro/react-bootstrap-multiselect.git#deskpro",
+      "resolved": "git+https://github.com/jducro/react-bootstrap-multiselect.git#eb9d708dd87ef46fc757a10ca95ee00d896a5146",
+      "dependencies": {
+        "jquery": {
+          "version": "3.2.1",
+          "from": "jquery@>=2.2.0",
+          "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.2.1.tgz"
+        }
+      }
     },
     "react-deep-force-update": {
       "version": "1.0.1",

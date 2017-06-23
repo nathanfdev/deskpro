@@ -204,6 +204,7 @@
     display: inline-block;
     vertical-align: top;
     margin-bottom: 5px;
+    margin-right: 10px;
   }
   .language-switch {
     width: 140px;
@@ -218,5 +219,12 @@
     right: 161px;
     top: 107px;
     z-index: 1;
+  }
+  .ownership-field,
+  .visibility-field {
+    min-width: 100px;
+  }
+  .labels-field {
+    display: block;
   }
 }

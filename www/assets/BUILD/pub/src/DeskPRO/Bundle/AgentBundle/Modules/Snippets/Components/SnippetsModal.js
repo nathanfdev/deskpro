@@ -10,7 +10,7 @@ import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
 import LabelInput from 'deskpro-styles/lib/Components/LabelInput';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetBlobsSelector } from '../Selectors/snippets';
 
@@ -89,9 +89,12 @@ class VariableValue extends React.Component {
 
 @connect(state => ({
   languages:            allSelectorFactory('Language')(state),
+  chatDepartments:      collectionSelectorFactory('Department', 'all_chat')(state),
   userChatCustomFields: allSelectorFactory('UserChatCustomFields')(state),
   personCustomFields:   allSelectorFactory('PersonCustomFields')(state),
   ticketCustomFields:   allSelectorFactory('TicketCustomFields')(state),
+  ticketDepartments:    collectionSelectorFactory('Department', 'all_tickets')(state),
+  agentTeams:           allSelectorFactory('AgentTeam')(state),
 }))
 export class SnippetsModalContainer extends React.Component {
   static propTypes = {
@@ -100,6 +103,9 @@ export class SnippetsModalContainer extends React.Component {
     userChatCustomFields: PropTypes.object,
     personCustomFields:   PropTypes.object,
     ticketCustomFields:   PropTypes.object,
+    chatDepartments:      PropTypes.object,
+    ticketDepartments:    PropTypes.object,
+    agentTeams:           PropTypes.object,
     langId:               PropTypes.number,
     closeModal:           PropTypes.func,
     dispatch:             PropTypes.func,
@@ -114,14 +120,37 @@ export class SnippetsModalContainer extends React.Component {
     this.state = {
       labels:       [],
       translations: [],
+      departments:  [],
+      teams:        [],
       langId:       props.langId,
     };
   }
 
   componentWillMount() {
+    const { snippet, ticketDepartments, chatDepartments, agentTeams, type } = this.props;
+    const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
+    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
+    if (snippet.get('is_visible_global')) {
+      if (type === 'ticket') {
+        ticketDepartments.forEach((department) => {
+          departments.push(department.get('id'));
+        });
+      } else {
+        chatDepartments.forEach((department) => {
+          departments.push(department.get('id'));
+        });
+      }
+    }
+    if (snippet.get('is_ownership_global')) {
+      agentTeams.forEach((team) => {
+        teams.push(team.get('id'));
+      });
+    }
     this.setState({
-      translations: this.props.snippet.get('translations', []),
-      labels:       this.props.snippet.get('labels', new Immutable.List()).toArray()
+      translations: snippet.get('translations', []),
+      labels:       snippet.get('labels', new Immutable.List()).toArray(),
+      departments,
+      teams,
     });
   }
 
@@ -183,13 +212,29 @@ export class SnippetsModalContainer extends React.Component {
   saveSnippet = () => {
     const { snippet, dispatch, closeModal, type } = this.props;
     const translations = this.saveTranslation();
+    let isVisibleGlobal   = false;
+    let isOwnershipGlobal = false;
+    if (this.state.teams.length === this.props.agentTeams.size) {
+      isOwnershipGlobal = true;
+    }
+    if (type === 'ticket') {
+      if (this.state.departments.length === this.props.ticketDepartments.size) {
+        isVisibleGlobal = true;
+      }
+    } else if (this.state.departments.length === this.props.chatDepartments.size) {
+      isVisibleGlobal = true;
+    }
     const snippetData = {
-      title:         this.modal.title.input.value,
-      types:         snippet.get('types', [type]),
-      shortcut_code: this.modal.shortcut_code.input.value,
-      labels:        this.state.labels.map(label => ({ label })),
-      translations:  translations.toJS(),
-      is_draft:      '0'
+      title:               this.modal.title.input.value,
+      types:               snippet.get('types', [type]),
+      shortcut_code:       this.modal.shortcut_code.input.value,
+      labels:              this.state.labels.map(label => ({ label })),
+      translations:        translations.toJS(),
+      is_draft:            '0',
+      is_visible_global:   isVisibleGlobal,
+      is_ownership_global: isOwnershipGlobal,
+      ownership_teams:     isOwnershipGlobal ? [] : this.state.teams,
+      visible_departments: isVisibleGlobal ? [] : this.state.departments,
     };
     if (snippet.get('id', false)) {
       snippetData.id = snippet.get('id');
@@ -228,6 +273,18 @@ export class SnippetsModalContainer extends React.Component {
     });
   };
 
+  handleDepartmentsChange = (value) => {
+    this.setState({
+      departments: value
+    });
+  };
+
+  handleTeamsChange = (value) => {
+    this.setState({
+      teams: value
+    });
+  };
+
   changeLabels = (labels) => {
     this.setState({
       labels
@@ -235,6 +292,9 @@ export class SnippetsModalContainer extends React.Component {
   };
 
   insertVariable = (variable) => {
+    if (!variable) {
+      return null;
+    }
     try {
       this.redactor.restoreSelection();
       this.redactor.setBuffer();
@@ -242,6 +302,7 @@ export class SnippetsModalContainer extends React.Component {
       console.log('Error retrieving redactor: %o', e);
     }
     this.redactor.insertHtml(`{{ ${variable.value} }}`);
+    return true;
   };
 
   render() {
@@ -252,7 +313,10 @@ export class SnippetsModalContainer extends React.Component {
       type,
       userChatCustomFields,
       personCustomFields,
-      ticketCustomFields
+      ticketCustomFields,
+      chatDepartments,
+      ticketDepartments,
+      agentTeams,
     } = this.props;
 
     let translation = this.state.translations.find(t => t.get('language') === this.state.langId);
@@ -273,6 +337,11 @@ export class SnippetsModalContainer extends React.Component {
         userChatCustomFields={userChatCustomFields}
         personCustomFields={personCustomFields}
         ticketCustomFields={ticketCustomFields}
+        chatDepartments={chatDepartments}
+        ticketDepartments={ticketDepartments}
+        snippetDepartments={this.state.departments}
+        agentTeams={agentTeams}
+        snippetTeams={this.state.teams}
         type={type}
         langId={this.state.langId}
         addAttachment={this.addAttachment}
@@ -280,6 +349,8 @@ export class SnippetsModalContainer extends React.Component {
         setLanguage={this.setLanguage}
         changeLabels={this.changeLabels}
         insertVariable={this.insertVariable}
+        handleDepartmentsChange={this.handleDepartmentsChange}
+        handleTeamsChange={this.handleTeamsChange}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -287,21 +358,28 @@ export class SnippetsModalContainer extends React.Component {
 }
 export class SnippetsModal extends React.Component {
   static propTypes = {
-    snippet:              PropTypes.object,
-    translation:          PropTypes.object,
-    languages:            PropTypes.object,
-    userChatCustomFields: PropTypes.object,
-    personCustomFields:   PropTypes.object,
-    ticketCustomFields:   PropTypes.object,
-    type:                 PropTypes.string,
-    langId:               PropTypes.number,
-    labels:               PropTypes.array,
-    addAttachment:        PropTypes.func,
-    saveSnippet:          PropTypes.func,
-    setLanguage:          PropTypes.func,
-    closeModal:           PropTypes.func,
-    changeLabels:         PropTypes.func,
-    insertVariable:       PropTypes.func,
+    snippet:                 PropTypes.object,
+    translation:             PropTypes.object,
+    languages:               PropTypes.object,
+    userChatCustomFields:    PropTypes.object,
+    personCustomFields:      PropTypes.object,
+    ticketCustomFields:      PropTypes.object,
+    chatDepartments:         PropTypes.object,
+    ticketDepartments:       PropTypes.object,
+    snippetDepartments:      PropTypes.array,
+    agentTeams:              PropTypes.object,
+    snippetTeams:            PropTypes.array,
+    type:                    PropTypes.string,
+    langId:                  PropTypes.number,
+    labels:                  PropTypes.array,
+    addAttachment:           PropTypes.func,
+    saveSnippet:             PropTypes.func,
+    setLanguage:             PropTypes.func,
+    closeModal:              PropTypes.func,
+    changeLabels:            PropTypes.func,
+    insertVariable:          PropTypes.func,
+    handleDepartmentsChange: PropTypes.func,
+    handleTeamsChange:       PropTypes.func,
   };
   static defaultProps = {
     changeLabels() {}
@@ -390,6 +468,42 @@ export class SnippetsModal extends React.Component {
     );
   };
 
+  getDepartments = () => {
+    const { type, ticketDepartments, chatDepartments } = this.props;
+    const departments = [];
+    if (type === 'ticket') {
+      ticketDepartments.forEach((department) => {
+        departments.push({
+          value:    `${department.get('id')}`,
+          label:    department.get('title'),
+          selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
+        });
+      });
+    } else {
+      chatDepartments.forEach((department) => {
+        departments.push({
+          value:    `${department.get('id')}`,
+          label:    department.get('title'),
+          selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
+        });
+      });
+    }
+    return departments;
+  };
+
+  getTeams = () => {
+    const { agentTeams } = this.props;
+    const teams = [];
+    agentTeams.forEach((team) => {
+      teams.push({
+        value:    `${team.get('id')}`,
+        label:    team.get('name'),
+        selected: this.props.snippetTeams.find(d => parseInt(d, 10) === team.get('id')),
+      });
+    });
+    return teams;
+  };
+
   getUploadUrl = () => '/api/v2/snippets/attachment';
 
   render() {
@@ -455,31 +569,61 @@ export class SnippetsModal extends React.Component {
               onSuccess={this.props.addAttachment}
               uploadUrl={this.getUploadUrl()}
             />
-            <InputLabel htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</InputLabel>
-            <LabelInput
-              labels={labels}
-              onChange={this.props.changeLabels}
-              inputProps={{
-                placeholder: 'Add a label',
-                id:          'snippet_label_input'
-              }}
-            />
-            <InputLabel htmlFor="snippet_shortcut_code" required>
-              {agentPhrases.get('agent.snippets.shortcut_code')}
-            </InputLabel>
-            <Input
-              id="snippet_shortcut_code"
-              className="snippet_shortcut_code"
-              defaultValue={snippet.get('shortcut_code')}
-              prefix="%"
-              suffix="%"
-              required
-              ref={(c) => { this.shortcut_code = c; }}
-            />
-            <InputLabel htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</InputLabel>
-            <Input id="snippet_ownership" />
-            <InputLabel htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</InputLabel>
-            <Input id="snippet_visibility" />
+            <div className="labels-field field">
+              <InputLabel htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</InputLabel>
+              <LabelInput
+                labels={labels}
+                onChange={this.props.changeLabels}
+                inputProps={{
+                  placeholder: 'Add a label',
+                  id:          'snippet_label_input'
+                }}
+              />
+            </div>
+            <div className="shortcut-field field">
+              <InputLabel htmlFor="snippet_shortcut_code" required>
+                {agentPhrases.get('agent.snippets.shortcut_code')}
+              </InputLabel>
+              <Input
+                id="snippet_shortcut_code"
+                className="snippet_shortcut_code"
+                defaultValue={snippet.get('shortcut_code')}
+                prefix="%"
+                suffix="%"
+                required
+                ref={(c) => { this.shortcut_code = c; }}
+              />
+            </div>
+            <div className="ownership-field field">
+              <InputLabel htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</InputLabel>
+              <Select
+                multiple
+                includeSelectAllOption
+                selectAllText="Global"
+                allSelectedText="Global"
+                nonSelectedText="Myself"
+                maxHeight="300"
+                nSelectedText="teams"
+                value={this.props.snippetTeams}
+                onChange={this.props.handleTeamsChange}
+                options={this.getTeams()}
+              />
+            </div>
+            <div className="visibility-field field">
+              <InputLabel htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</InputLabel>
+              <Select
+                multiple
+                includeSelectAllOption
+                selectAllText="Global"
+                allSelectedText="Global"
+                nonSelectedText="None"
+                maxHeight="300"
+                nSelectedText="departments"
+                value={this.props.snippetDepartments}
+                onChange={this.props.handleDepartmentsChange}
+                options={this.getDepartments()}
+              />
+            </div>
           </form>
         </Modal>
       </div>

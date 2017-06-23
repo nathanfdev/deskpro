@@ -15,7 +15,7 @@
     "cors": "2.7.1",
     "countries-list": "^1.2.0",
     "cropper": "1.0.0",
-    "deskpro-styles": "git+https://github.com/DeskproApps/deskpro-components.git",
+    "deskpro-styles": "git+https://github.com/DeskproApps/deskpro-components.git#multiple-select",
     "dropzone": "4.2.0",
     "emojione": "^2.2.6",
     "emojione-picker": "^1.1.0",
