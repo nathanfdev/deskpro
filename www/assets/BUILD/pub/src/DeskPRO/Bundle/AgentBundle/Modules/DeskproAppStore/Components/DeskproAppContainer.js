@@ -99,26 +99,14 @@ class DeskproAppContainer extends React.Component {
       onDpMessage: this.onXComponentMessage.bind(this, widgetConfig),
     };
 
-    // instance properties
-
-    const instanceProps = {
-      appId:          widgetConfig.appConfig.applicationId,
-      appTitle:       widgetConfig.appConfig.applicationTitle,
-      appPackageName: widgetConfig.appConfig.applicationPackageName,
-      instanceId:     widgetConfig.appConfig.instanceId,
-    };
-
-    // context properties
-
     const { context } = this.props;
-    const contextProps = {
-      contextType:       context.type.toString(),
-      contextEntityId:   context.entityId.toString(),
-      contextLocationId: context.locationId.toString(),
-      contextTabId:      context.tabId.toString()
-    };
 
-    const reactProps = { key: widgetConfig.id, ...widgetProps, ...instanceProps, ...contextProps };
+    const reactProps = {
+      key:           widgetConfig.id,
+      ...widgetProps,
+      instanceProps: widgetConfig.widgetProps.toJS(),
+      contextProps:  context.widgetProps.toJS()
+    };
 
     const xcomponentInstance = xcomponent.create(widgetConfig.xcomponentConfig);
     const reactClass = xcomponentInstance.react;

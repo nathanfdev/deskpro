@@ -90,47 +90,13 @@ class DeskproAppRegistry {
           required: true
         },
 
-        // INSTANCE PROPERTIES
-
-        appId: {
-          type:     'string',
+        instanceProps: {
+          type:     'object',
           required: true
         },
 
-        appTitle: {
-          type:     'string',
-          required: true
-        },
-
-        appPackageName: {
-          type:     'string',
-          required: true
-        },
-
-        instanceId: {
-          type:     'string',
-          required: true
-        },
-
-        // CONTEXT PROPERTIES
-
-        contextType: {
-          type:     'string',
-          required: true
-        },
-
-        contextEntityId: {
-          type:     'string',
-          required: true
-        },
-
-        contextLocationId: {
-          type:     'string',
-          required: true
-        },
-
-        contextTabId: {
-          type:     'string',
+        contextProps: {
+          type:     'object',
           required: true
         }
       }

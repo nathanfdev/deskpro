@@ -20,11 +20,13 @@ class ReduxActionDispatcher {
   }
 
   /**
-   * @param {DeskPRO.Agent.PageFragment.Basic} page
+   * @param {DeskPRO.Agent.PageFragment.Basic|Array<DeskPRO.Agent.PageFragment.Basic>} page
    */
   dispatchLoadPageFragmentApps = (page) =>  {
+    const list = page instanceof Array ? page : [page];
+
     const { reduxDispatch } = this;
-    const action = Actions.loadPageFragmentApps(page);
+    const action = Actions.loadPageFragmentApps(list, window.location);
     reduxDispatch(action);
   };
 

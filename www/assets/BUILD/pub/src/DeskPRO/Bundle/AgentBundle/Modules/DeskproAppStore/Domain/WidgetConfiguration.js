@@ -1,3 +1,5 @@
+import { InstanceProps } from './WidgetProps';
+
 class WidgetConfiguration {
   /**
    * @param {String} id
@@ -17,6 +19,20 @@ class WidgetConfiguration {
   get id() { return this.props.id; }
 
   get target() { return this.props.target; }
+
+  /**
+   * @return {InstanceProps}
+   */
+  get widgetProps() {
+    const { applicationId, applicationTitle, applicationPackageName, instanceId } = this.props.appConfig;
+
+    return new InstanceProps({
+      appId:          applicationId.toString(),
+      appTitle:       applicationTitle.toString(),
+      appPackageName: applicationPackageName.toString(),
+      instanceId:     instanceId.toString()
+    });
+  }
 
   /**
    * @return {AppConfiguration}
