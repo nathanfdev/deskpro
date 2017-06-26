@@ -12,9 +12,7 @@
     {% if app.user.getPref('agent.ticket_close_note') %}data-close-note="1"{% endif %}
 	{% if app.user.getPref('agent.ticket_reverse_order') %}data-is-top-order="1"{% endif %}
 	{% if app.getSetting('core_tickets.resolve_auto_close_tab') %}data-resolve-auto-close="1"{% endif %}
-	{% if draft and draft.extras.is_note %}
-		data-draft-is-note="1"
-	{% endif %}
+	{% if draft and draft.extras.is_note %}data-draft-is-note="1"{% endif %}
 	data-dp-lang="{{ {
 		'attach_btn': phrase('agent.general.attach'),
 		'snippets_btn': phrase('agent.general.snippets')
@@ -91,7 +89,7 @@
 		</strong>
 	</div>
 	<div class="ticket-sending-overlay" style="display: none;">
-		<strong><span class="hide-note">{{ phrase('agent.tickets.sending_your_message') }}</span><span class="hide-reply" style="display: none">{{ phrase('agent.tickets.adding_your_note') }}</span></strong>
+		<strong><span class="show-reply">{{ phrase('agent.tickets.sending_your_message') }}</span><span class="show-note" style="display: none">{{ phrase('agent.tickets.adding_your_note') }}</span></strong>
 	</div>
 	<header>
 		{% if app.isAppInstalled('deskpro_ms_translator') %}
@@ -125,15 +123,85 @@
 			<ul>
 				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.general.reply') }}</li>{% endif %}
 				{% if ticket_perms.modify_notes %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.general.note') }}</li>{% endif %}
+                {% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_fwdtab_btn" class="fwd-type">{{ phrase('agent.tickets.forward') }}</li>{% endif %}
 			</ul>
 		</nav>
 	</header>
 	<section class="ticketreply">
 		<article>
 			<section>
+                {# Forward #}
+				<span type="text/x-deskpro-tmpl" id="{{ replyBaseId }}_template" style="display: none">
+							<div class="to-line">
+								<div class="label">
+									To:
+								</div>
+								<div
+										class="email-address-wrap input"
+										style="position: relative; top: 3px; display: inline-block;"
+										data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+										data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
+										data-search-param="term"
+								>
+									<input
+											class="email-address-input term"
+											type="text"
+											value=""
+											placeholder="{{ phrase('agent.general.email_address') }}"
+											style="width: 500px;"
+									/>
+									<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+										<li>
+											<a>
+											<span class="user-name"></span>
+											<address>&lt;<span class="user-email"></span>&gt;</address>
+											<div class="bound-fade"></div>
+										</a></li>
+									</script>
+									<div class="person-search-box" style="display: none">
+										<section>
+											<ul class="results-list">
+
+											</ul>
+										</section>
+									</div>
+								</div>
+							</div>
+              			</span>
+				<div class="forward-wrapper show-fwd fwd-controls" style="display: none;">
+					<div class="header-line" id="{{ replyBaseId }}_fwd_to_container">
+						<div class="fwd-control-panel" style="float: right; display: inline-block;">
+							<div class="label">
+								Add:
+							</div>
+							<span data-add="to" class="fwd-control-add">To</span> |
+							<span data-add="cc" class="fwd-control-add">Cc</span> |
+							<span data-add="bcc" class="fwd-control-add">BCC</span>
+						</div>
+					</div>
+					<div class="header-line">
+						<div class="label">
+							From:
+						</div>
+						<div style="display: inline-block">
+							{% if app.getSetting('core_tickets.fwd_use_agent_address') %}
+							<select name="from" id="{{ replyBaseId }}_fwd_from">
+								<option value="me">{{ app.user.getDisplayContact() }}</option>
+								<option value="system">{{ app.user.getDisplayName() }} {{'<'~system_account.getUseEmailAddress()~">"}}</option>
+							</select>
+							{% elseif app.getSetting('core_tickets.fwd_use_agent_address') %}
+                                {{ app.user.getDisplayName() }} <{{ app.getSetting('core_tickets.fwd_use_agent_address') }}>
+								<input type="hidden" disabled="disabled" value="{{ app.getSetting('core_tickets.fwd_use_agent_address') }}" />
+							{% else %}
+                                {{ app.user.getDisplayName() }} <{{ ticket.getEmailAccountAddress() }}>
+								<input type="hidden" value="{{ app.getSetting('core_tickets.fwd_use_agent_address') }}" />
+							{% endif  %}
+						</div>
+					</div>
+				</div>
 				<div class="option-rows">
 					<ul id="{{replyBaseId}}_option_rows">
-						<li class="to-row hide-note">
+						<li class="to-row show-reply">
 							<label>
 	                            {% if ticket_perms.modify_cc or user_parts|length %}
 								    <span class="expander {% if user_parts|length %}expanded{% endif %}" data-target="#{{replyBaseId}}_cc_row">+/-</span>
@@ -151,7 +219,7 @@
 						</li>
 						{% if not app.user.getPref('agent.ticket_reverse_order') %}
 							{% if ticket_perms.modify_cc or user_parts|length %}
-								<li id="{{replyBaseId}}_cc_row" class="cc-row hide-note {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
+								<li id="{{replyBaseId}}_cc_row" class="cc-row show-reply {% if not user_parts|length %}is-hidden{% endif %}" {% if not user_parts|length %}style="display: none;"{% endif %}>
 									<label>{{ phrase('agent.tickets.cc') }}:</label>
 									<div class="cc-container">
 										<div id="{{replyBaseId}}_newcc" style="display: none;"></div>
@@ -226,6 +294,7 @@
 				</div>
 				<div class="input-wrap unreset editor-row">
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
+					<div id="{{replyBaseId}}_fwd_body" class="fwd-body show-fwd" style="display:none; opacity: 0.5"></div>
 					<textarea id="{{replyBaseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
 					<textarea id="{{replyBaseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
 					{% if draft %}
@@ -251,7 +320,7 @@
 	<footer>
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
-				<div class="hide-note">
+				<div class="show-reply">
 					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 50;">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
@@ -284,10 +353,16 @@
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
 				</div>
-				<div class="hide-reply" style="display: none">
+				<div class="show-note" style="display: none">
 					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
 						<i class="icon-share"></i>&nbsp;
 						{{ phrase('agent.tickets.add_note') }}
+					</a>
+				</div>
+				<div class="show-fwd" style="display: none">
+					<a class="dp-btn dp-btn-primary fwd-trigger" style="position: relative; z-index: 50;">
+						<i class="icon-share"></i>&nbsp;
+                        {{ phrase('agent.tickets.forward_message') }}
 					</a>
 				</div>
 			</td><td valign="middle" style="vertical-align: middle;">
@@ -367,7 +442,7 @@
 					</div>
 				</div>
 
-				<div class="cell hide-note">
+				<div class="cell show-reply">
 					<div class="inner-cell" style="padding-left: 11px;">
 						<input type="checkbox" id="{{ replyBaseId }}_email_user" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
 						<label for="{{ replyBaseId }}_email_user">{{ phrase('agent.general.email_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_tip') }}"></span></label>

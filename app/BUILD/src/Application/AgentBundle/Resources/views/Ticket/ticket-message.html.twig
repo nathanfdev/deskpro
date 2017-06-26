@@ -223,14 +223,35 @@
 								draggable="true"
 								data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}"
 								data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}"
+                                data-blob-auth="{{ blob.getAuthcode() }}"
 								data-deskpro-url="{{ blob.getDownloadUrl(false, false) }}"
-								target="_blank">
+							    data-blob-id="{{ blob.getId() }}"
+							    data-filename="{{ blob.getFilename() }}"
+							    data-filesize-readable="{{ blob.getFilesizeReadable() }}"
+							    data-is-image="{{ blob.isImage() }}"
+								target="_blank"
+                            >
 								<img src="{{ blob.getThumbnailUrl(50, 1, true) }}"
 									 alt=""
 									 class="preview" />
 							</a>
 						{% endif %}
-						<a class="dragout" draggable="true" data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}" data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}" target="_blank">{{blob.filename}}</a>
+						<a
+							class="dragout"
+                            draggable="true"
+                            data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}"
+                            data-blob-authid="{{ blob.getAuthId() }}"
+                            data-blob-auth="{{ blob.getAuthcode() }}"
+                            href="{{ blob.download_url }}"
+                            data-deskpro-url="{{ blob.getDownloadUrl(false, false) }}"
+                            data-blob-id="{{ blob.getId() }}"
+                            data-filename="{{ blob.getFilename() }}"
+                            data-filesize-readable="{{ blob.getFilesizeReadable() }}"
+                            data-is-image="{{ blob.isImage() }}"
+                            target="_blank"
+                        >
+                            {{blob.filename}}
+                        </a>
 						<span class="size">({{ blob.readable_filesize }})</span>
 						{% if blob.isArchive() and blob.hasZipArchiveClass() %}
 							<span class="view-archive-files"/>
