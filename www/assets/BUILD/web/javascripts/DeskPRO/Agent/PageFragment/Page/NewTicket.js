@@ -1773,7 +1773,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		    strict_variables: true
 		  });
 		  result = tpl.render({
-		    ticket: {
+		    entity: {
 		      person: self.meta.person_api_data
 		    }
 		  }, {

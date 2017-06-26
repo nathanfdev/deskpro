@@ -665,7 +665,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       });
       if (tpl) {
         result = tpl.render({
-          chat: self.meta.api_data
+          entity: self.meta.api_data
         }, {
           strict_variables: false
         });

@@ -121,6 +121,17 @@
     padding: 5px 10px;
     width: 505px;
     cursor: pointer;
+    .draft {
+      padding: 2px;
+      border-radius: $rad-size-s;
+      background-color: $dp-greyscale-150;
+      text-transform: uppercase;
+      font-size: $font-size-m;
+      margin-right: 5px;
+      .fa {
+        margin-right: 3px;
+      }
+    }
     .title {
       font-weight: $pf-semi-bold;
     }
@@ -224,7 +235,14 @@
   .visibility-field {
     min-width: 100px;
   }
-  .labels-field {
+  .labels-field,
+  .types-field,
+  .draft-field {
     display: block;
+  }
+  .types-field {
+    .dp-input--checkbox {
+      display: inline-block;
+    }
   }
 }

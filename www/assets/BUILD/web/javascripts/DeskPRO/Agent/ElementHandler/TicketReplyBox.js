@@ -1373,7 +1373,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       });
       if (tpl) {
         result = tpl.render({
-          ticket: self.page.meta.api_data
+          entity: self.page.meta.api_data
         }, {
           strict_variables: false
         });

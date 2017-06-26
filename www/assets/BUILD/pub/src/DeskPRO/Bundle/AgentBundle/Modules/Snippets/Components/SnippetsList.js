@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import Label from 'deskpro-styles/lib/Components/Label';
 
 export class SnippetsListElement extends React.Component {
@@ -14,7 +15,23 @@ export class SnippetsListElement extends React.Component {
     editSnippet() {}
   };
 
-  getLabels = () => {
+  constructor(props) {
+    super(props);
+    this.getContent   = this.getContent.bind(this);
+    this.getDraft     = this.getDraft.bind(this);
+    this.getLabels    = this.getLabels.bind(this);
+    this.getLanguages = this.getLanguages.bind(this);
+  }
+
+  getDraft() {
+    const { snippet } = this.props;
+    if (snippet.get('is_draft')) {
+      return <span className="draft"><i className="fa fa-file-o" />{agentPhrases.get('agent.general.draft')}</span>;
+    }
+    return null;
+  }
+
+  getLabels() {
     const { snippet } = this.props;
     if (snippet.get('labels')) {
       const labels = [];
@@ -26,9 +43,9 @@ export class SnippetsListElement extends React.Component {
       }
     }
     return null;
-  };
+  }
 
-  getLanguages = () => {
+  getLanguages() {
     const { snippet } = this.props;
     if (snippet.get('lang')) {
       const languages = [];
@@ -44,22 +61,23 @@ export class SnippetsListElement extends React.Component {
       }
     }
     return null;
-  };
+  }
 
-  getContent = () => {
+  getContent() {
     const { snippet, langId } = this.props;
     const translation = snippet.get('translations').find(element => element.get('language') === langId);
     if (translation) {
       return translation.get('content');
     }
     return null;
-  };
+  }
 
   render() {
     const { snippet, editSnippet, insertSnippet } = this.props;
     return (
       <div className="snippet_list_element_wrapper">
         <div className="snippets__list__element" onClick={() => insertSnippet(snippet)}>
+          {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
           <span className="shortcode dp-code">{`%${snippet.get('shortcut_code')}%`}</span><br />
           {this.getLanguages()}

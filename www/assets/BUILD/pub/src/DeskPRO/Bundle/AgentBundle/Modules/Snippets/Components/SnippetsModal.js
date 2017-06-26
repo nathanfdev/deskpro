@@ -8,6 +8,7 @@ import Input from 'deskpro-styles/lib/Components/Input';
 import Select from 'deskpro-styles/lib/Components/Select';
 import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
 import LabelInput from 'deskpro-styles/lib/Components/LabelInput';
+import Checkbox from 'deskpro-styles/lib/Components/Checkbox';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -122,6 +123,8 @@ export class SnippetsModalContainer extends React.Component {
       translations: [],
       departments:  [],
       teams:        [],
+      types:        [],
+      isDraft:      false,
       langId:       props.langId,
     };
   }
@@ -130,12 +133,14 @@ export class SnippetsModalContainer extends React.Component {
     const { snippet, ticketDepartments, chatDepartments, agentTeams, type } = this.props;
     const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
     const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
+    const types = snippet.get('types', new Immutable.List([type])).toArray();
     if (snippet.get('is_visible_global')) {
-      if (type === 'ticket') {
+      if (types.find(t => t === 'ticket')) {
         ticketDepartments.forEach((department) => {
           departments.push(department.get('id'));
         });
-      } else {
+      }
+      if (types.find(t => t === 'chat')) {
         chatDepartments.forEach((department) => {
           departments.push(department.get('id'));
         });
@@ -149,7 +154,9 @@ export class SnippetsModalContainer extends React.Component {
     this.setState({
       translations: snippet.get('translations', []),
       labels:       snippet.get('labels', new Immutable.List()).toArray(),
-      departments,
+      types,
+      isDraft:      snippet.get('is_draft', false),
+      departments:  Array.from(new Set(departments)),
       teams,
     });
   }
@@ -226,11 +233,11 @@ export class SnippetsModalContainer extends React.Component {
     }
     const snippetData = {
       title:               this.modal.title.input.value,
-      types:               snippet.get('types', [type]),
+      types:               this.state.types,
       shortcut_code:       this.modal.shortcut_code.input.value,
       labels:              this.state.labels.map(label => ({ label })),
       translations:        translations.toJS(),
-      is_draft:            '0',
+      is_draft:            this.state.isDraft,
       is_visible_global:   isVisibleGlobal,
       is_ownership_global: isOwnershipGlobal,
       ownership_teams:     isOwnershipGlobal ? [] : this.state.teams,
@@ -273,6 +280,30 @@ export class SnippetsModalContainer extends React.Component {
     });
   };
 
+  handleChangeDraft = (checked) => {
+    this.setState({
+      isDraft: checked
+    });
+  };
+
+  handleChangeTypes = (checked, value) => {
+    let types = this.state.types.slice(0);
+    if (checked) {
+      if (types.indexOf(value) === -1) {
+        types.push(value);
+      }
+    } else {
+      types = types.filter(type => type !== value);
+    }
+    if (types.length > 0) {
+      this.setState({
+        types
+      });
+    } else {
+      alert('Snippet needs to have at least one type selected'); // eslint-disable-line no-alert
+    }
+  };
+
   handleDepartmentsChange = (value) => {
     this.setState({
       departments: value
@@ -310,7 +341,6 @@ export class SnippetsModalContainer extends React.Component {
       snippet,
       closeModal,
       languages,
-      type,
       userChatCustomFields,
       personCustomFields,
       ticketCustomFields,
@@ -342,13 +372,16 @@ export class SnippetsModalContainer extends React.Component {
         snippetDepartments={this.state.departments}
         agentTeams={agentTeams}
         snippetTeams={this.state.teams}
-        type={type}
+        isDraft={this.state.isDraft}
+        types={this.state.types}
         langId={this.state.langId}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
         setLanguage={this.setLanguage}
         changeLabels={this.changeLabels}
         insertVariable={this.insertVariable}
+        handleChangeDraft={this.handleChangeDraft}
+        handleChangeTypes={this.handleChangeTypes}
         handleDepartmentsChange={this.handleDepartmentsChange}
         handleTeamsChange={this.handleTeamsChange}
         ref={(c) => { this.modal = c; }}
@@ -369,7 +402,8 @@ export class SnippetsModal extends React.Component {
     snippetDepartments:      PropTypes.array,
     agentTeams:              PropTypes.object,
     snippetTeams:            PropTypes.array,
-    type:                    PropTypes.string,
+    isDraft:                 PropTypes.bool,
+    types:                   PropTypes.array,
     langId:                  PropTypes.number,
     labels:                  PropTypes.array,
     addAttachment:           PropTypes.func,
@@ -378,6 +412,8 @@ export class SnippetsModal extends React.Component {
     closeModal:              PropTypes.func,
     changeLabels:            PropTypes.func,
     insertVariable:          PropTypes.func,
+    handleChangeDraft:       PropTypes.func,
+    handleChangeTypes:       PropTypes.func,
     handleDepartmentsChange: PropTypes.func,
     handleTeamsChange:       PropTypes.func,
   };
@@ -386,75 +422,61 @@ export class SnippetsModal extends React.Component {
   };
 
   getVariables = () => {
-    let variables;
-    if (this.props.type === 'ticket') {
+    let variables = [];
+    const { types, ticketCustomFields, personCustomFields, userChatCustomFields } = this.props;
+    if (types.find(type => type === 'ticket')) {
       variables = [
         { value: 'ticket', label: agentPhrases.get('agent.general.ticket'), disabled: true },
-        { value: 'ticket.subject', label: agentPhrases.get('agent.general.subject') },
-        { value: 'ticket.department.title', label: agentPhrases.get('agent.general.department') },
-        { value: 'ticket.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
-        { value: 'ticket.brand.name', label: agentPhrases.get('agent.general.brand') },
-        { value: 'ticket.product.title', label: agentPhrases.get('agent.general.product') },
-        { value: 'ticket.category.title', label: agentPhrases.get('agent.general.category') },
-        { value: 'ticket.workflow.title', label: agentPhrases.get('agent.general.workflow') },
-        { value: 'ticket.priority.title', label: agentPhrases.get('agent.general.priority') },
-        { value: 'ticket.agent.display_name', label: agentPhrases.get('agent.general.agent') },
-        { value: 'ticket.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
-        { value: 'ticket.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
+        { value: 'entity.subject', label: agentPhrases.get('agent.general.subject') },
+        { value: 'entity.department.title', label: agentPhrases.get('agent.general.department') },
+        { value: 'entity.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
+        { value: 'entity.brand.name', label: agentPhrases.get('agent.general.brand') },
+        { value: 'entity.product.title', label: agentPhrases.get('agent.general.product') },
+        { value: 'entity.category.title', label: agentPhrases.get('agent.general.category') },
+        { value: 'entity.workflow.title', label: agentPhrases.get('agent.general.workflow') },
+        { value: 'entity.priority.title', label: agentPhrases.get('agent.general.priority') },
+        { value: 'entity.agent.display_name', label: agentPhrases.get('agent.general.agent') },
+        { value: 'entity.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
+        { value: 'entity.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
       ];
-      this.props.ticketCustomFields.forEach((field) => {
+      ticketCustomFields.forEach((field) => {
         variables.push({
           value: `ticket.field${field.get('id')}`,
           label: field.get('title')
         });
       });
-
+    }
+    if (types.find(type => type === 'chat')) {
       variables = variables.concat([
-        { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
-        { value: 'ticket.person.display_name', label: agentPhrases.get('agent.general.name') },
-        { value: 'ticket.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
-        { value: 'ticket.person.organization.name', label: agentPhrases.get('agent.general.organization') },
-        { value: 'ticket.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
-      ]);
-
-      this.props.personCustomFields.forEach((field) => {
-        variables.push({
-          value: `ticket.person.field${field.get('id')}`,
-          label: field.get('title')
-        });
-      });
-    } else {
-      variables = [
         { value: 'chat', label: agentPhrases.get('agent.general.chat'), disabled: true },
-        { value: 'chat.subject', label: agentPhrases.get('agent.general.subject') },
-        { value: 'chat.department.title', label: agentPhrases.get('agent.general.department') },
-        { value: 'chat.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
-        { value: 'chat.agent.display_name', label: agentPhrases.get('agent.general.agent') },
-        { value: 'chat.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
-        { value: 'chat.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
-      ];
-      this.props.userChatCustomFields.forEach((field) => {
+        { value: 'entity.subject', label: agentPhrases.get('agent.general.subject') },
+        { value: 'entity.department.title', label: agentPhrases.get('agent.general.department') },
+        { value: 'entity.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
+        { value: 'entity.agent.display_name', label: agentPhrases.get('agent.general.agent') },
+        { value: 'entity.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
+        { value: 'entity.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
+      ]);
+      userChatCustomFields.forEach((field) => {
         variables.push({
           value: `chat.field${field.get('id')}`,
           label: field.get('title')
         });
       });
-
-      variables = variables.concat([
-        { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
-        { value: 'chat.person.display_name', label: agentPhrases.get('agent.general.name') },
-        { value: 'chat.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
-        { value: 'chat.person.organization.name', label: agentPhrases.get('agent.general.organization') },
-        { value: 'chat.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
-      ]);
-
-      this.props.personCustomFields.forEach((field) => {
-        variables.push({
-          value: `ticket.person.field${field.get('id')}`,
-          label: field.get('title')
-        });
-      });
     }
+    variables = variables.concat([
+      { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
+      { value: 'entity.person.display_name', label: agentPhrases.get('agent.general.name') },
+      { value: 'entity.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
+      { value: 'entity.person.organization.name', label: agentPhrases.get('agent.general.organization') },
+      { value: 'entity.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
+    ]);
+
+    personCustomFields.forEach((field) => {
+      variables.push({
+        value: `ticket.person.field${field.get('id')}`,
+        label: field.get('title')
+      });
+    });
     return (
       <div className="variable-switch field">
         <Select
@@ -469,23 +491,31 @@ export class SnippetsModal extends React.Component {
   };
 
   getDepartments = () => {
-    const { type, ticketDepartments, chatDepartments } = this.props;
+    const { types, ticketDepartments, chatDepartments } = this.props;
     const departments = [];
-    if (type === 'ticket') {
+    const ids = [];
+    if (types.find(type => type === 'ticket')) {
       ticketDepartments.forEach((department) => {
-        departments.push({
-          value:    `${department.get('id')}`,
-          label:    department.get('title'),
-          selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
-        });
+        if (ids.indexOf(department.get('id') === -1)) {
+          departments.push({
+            value:    `${department.get('id')}`,
+            label:    department.get('title'),
+            selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
+          });
+          ids.push(department.get('id'));
+        }
       });
-    } else {
+    }
+    if (types.find(type => type === 'chat')) {
       chatDepartments.forEach((department) => {
-        departments.push({
-          value:    `${department.get('id')}`,
-          label:    department.get('title'),
-          selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
-        });
+        if (ids.indexOf(department.get('id') === -1)) {
+          departments.push({
+            value:    `${department.get('id')}`,
+            label:    department.get('title'),
+            selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
+          });
+          ids.push(department.get('id'));
+        }
       });
     }
     return departments;
@@ -507,7 +537,20 @@ export class SnippetsModal extends React.Component {
   getUploadUrl = () => '/api/v2/snippets/attachment';
 
   render() {
-    const { snippet, labels, translation, languages, langId, setLanguage } = this.props;
+    const {
+      snippet,
+      labels,
+      translation,
+      languages,
+      langId,
+      setLanguage,
+      handleChangeDraft,
+      handleChangeTypes,
+      addAttachment,
+      changeLabels,
+      closeModal,
+      saveSnippet,
+    } = this.props;
     if (!snippet) {
       return null;
     }
@@ -520,13 +563,13 @@ export class SnippetsModal extends React.Component {
       <div id="snippets__modal">
         <Modal
           title={snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
-          closeModal={this.props.closeModal}
+          closeModal={closeModal}
           buttons={
             <div>
-              <Button className="dp-button--l" onClick={this.props.saveSnippet}>
+              <Button className="dp-button--l" onClick={saveSnippet}>
                 {agentPhrases.get('agent.general.save')}
               </Button>
-              <Button className="dp-button--l dp-button--secondary" onClick={this.props.closeModal}>
+              <Button className="dp-button--l dp-button--secondary" onClick={closeModal}>
                 {agentPhrases.get('agent.general.cancel')}
               </Button>
             </div>
@@ -566,19 +609,46 @@ export class SnippetsModal extends React.Component {
               id={'upload_attachment'}
               ref={(c) => { this.uploadButton = c; }}
               name="file"
-              onSuccess={this.props.addAttachment}
+              onSuccess={addAttachment}
               uploadUrl={this.getUploadUrl()}
             />
             <div className="labels-field field">
               <InputLabel htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</InputLabel>
               <LabelInput
                 labels={labels}
-                onChange={this.props.changeLabels}
+                onChange={changeLabels}
                 inputProps={{
                   placeholder: 'Add a label',
                   id:          'snippet_label_input'
                 }}
               />
+            </div>
+            <div className="types-field field">
+              <InputLabel htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</InputLabel>
+              <Checkbox
+                checked={this.props.types.find(type => type === 'ticket')}
+                value="ticket"
+                onChange={handleChangeTypes}
+              >
+                {agentPhrases.get('agent.general.ticket')}
+              </Checkbox>
+              <Checkbox
+                checked={this.props.types.find(type => type === 'chat')}
+                value="chat"
+                onChange={handleChangeTypes}
+              >
+                {agentPhrases.get('agent.general.chat')}
+              </Checkbox>
+            </div>
+            <div className="draft-field field">
+              <InputLabel htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</InputLabel>
+              <Checkbox
+                checked={this.props.isDraft}
+                value="is_draft"
+                onChange={handleChangeDraft}
+              >
+                {agentPhrases.get('agent.snippets.snippet_is_draft')}
+              </Checkbox>
             </div>
             <div className="shortcut-field field">
               <InputLabel htmlFor="snippet_shortcut_code" required>

@@ -29,7 +29,7 @@ export class SnippetsMenuContainer extends React.Component {
 
   render() {
     const { closeMenu, type } = this.props;
-    const snippets = this.props.snippets.filter(snippet => snippet.get('types').includes(this.props.type));
+    const snippets = this.props.snippets.filter(snippet => snippet.get('types').indexOf(this.props.type) !== -1);
     return (
       <SnippetsMenu
         closeMenu={closeMenu}
@@ -97,7 +97,8 @@ export class SnippetsMenu extends React.Component {
   newSnippet = () => {
     const snippet = Immutable.fromJS({
       is_visible_global: true,
-      translations:      []
+      translations:      [],
+      type:              [this.props.type],
     });
     this.setState({
       editOpen:    true,
