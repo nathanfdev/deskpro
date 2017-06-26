@@ -32,7 +32,9 @@ use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -56,16 +58,10 @@ class SnippetType extends AbstractType
             ->add('title', TextType::class, [
                 'required' => true,
             ])
-            ->add('labels', CollectionType::class, [
-                'entry_type'     => SnippetLabelType::class,
-                'allow_add'      => true,
-                'allow_delete'   => true,
-                'error_bubbling' => false,
-                'options'        => [
-                    'error_bubbling' => true,
-                'snippet'            => $builder->getData(),
-                ],
-                'by_reference' => false,
+            ->add('labels', LabelsCollectionType::class, [
+                'labels_class'   => SnippetLabel::class,
+                'labels_owner'   => $builder->getData(),
+                'owner_property' => 'snippet',
             ])
             ->add('types', ChoiceType::class, [
                 'multiple'          => true,

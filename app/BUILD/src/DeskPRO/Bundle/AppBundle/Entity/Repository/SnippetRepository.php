@@ -92,7 +92,7 @@ class SnippetRepository extends EntityRepository
         if ($agent->getAgentTeamIds()) {
             $qb
                 ->andWhere('s.ownershipTeams IN (:teams)')
-                ->setParameter('teams', implode(',', $agent->getAgentTeamIds()))
+                ->setParameter('teams', $agent->getAgentTeamIds())
             ;
         }
 

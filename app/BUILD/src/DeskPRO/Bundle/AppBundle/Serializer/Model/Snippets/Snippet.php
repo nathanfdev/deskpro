@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Snippets;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet as SnippetEntity;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use JMS\Serializer\Annotation as JMS;
 
@@ -84,9 +85,9 @@ class Snippet
     /**
      * The labels associated with the snippet.
      *
-     * @JMS\Type("array<string>")
+     * @JMS\Type("array<label<DeskPRO\Bundle\AppBundle\Entity\SnippetLabel>>")
      *
-     * @var string[]
+     * @var SnippetLabel[]
      */
     private $labels;
 
@@ -153,11 +154,6 @@ class Snippet
         $this->isVisibleGlobal    = $snippet->isVisibleGlobal();
         $this->ownershipTeams     = $snippet->getOwnershipTeams();
         $this->visibleDepartments = $snippet->getVisibleDepartments();
-
-        $labels = [];
-        foreach ($snippet->getLabels() as $label) {
-            $labels[] = $label->getLabel();
-        }
-        $this->labels = $labels;
+        $this->labels             = $snippet->getLabels();
     }
 }

@@ -235,7 +235,7 @@ export class SnippetsModalContainer extends React.Component {
       title:               this.modal.title.input.value,
       types:               this.state.types,
       shortcut_code:       this.modal.shortcut_code.input.value,
-      labels:              this.state.labels.map(label => ({ label })),
+      labels:              this.state.labels,
       translations:        translations.toJS(),
       is_draft:            this.state.isDraft,
       is_visible_global:   isVisibleGlobal,
@@ -534,7 +534,7 @@ export class SnippetsModal extends React.Component {
     return teams;
   };
 
-  getUploadUrl = () => '/api/v2/snippets/attachment';
+  getUploadUrl = () => '/api/v2/blobs/temp';
 
   render() {
     const {
@@ -597,7 +597,6 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <textarea
-              name="editor"
               id="snippet__editor"
               cols="30"
               rows="10"

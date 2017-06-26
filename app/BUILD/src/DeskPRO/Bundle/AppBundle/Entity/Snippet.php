@@ -34,13 +34,11 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Snippet.
  *
- * @JMS\ExclusionPolicy("all")
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetRepository")
  * @ORM\Table(name="snippets")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
@@ -58,9 +56,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     protected $id;
@@ -71,19 +66,12 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL")
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     *
      * @var Person
      */
     protected $person;
 
     /**
      * @ORM\Column(type="string", length=255, name="shortcut_code")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     * @JMS\Groups({"list"})
      *
      * @Assert\NotBlank()
      *
@@ -96,10 +84,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\Column(type="text")
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     * @JMS\Groups({"list"})
-     *
      * @Assert\NotBlank()
      *
      * @var string
@@ -108,10 +92,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\Column(type="simple_array", name="types")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     * @JMS\Groups({"list"})
      *
      * @Assert\NotBlank()
      *
@@ -124,10 +104,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *
      * @ORM\Column(type="boolean", nullable=false, name="is_draft")
      *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     * @JMS\Groups({"list"})
-     *
      * @var bool
      */
     protected $isDraft = false;
@@ -135,9 +111,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation", mappedBy="snippet",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation>>")
      *
      * @var SnippetTranslation[]|ArrayCollection
      */
@@ -147,9 +120,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetLabel", mappedBy="snippet",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\SnippetLabel>>")
-     *
      * @var SnippetLabel[]|ArrayCollection
      */
     protected $labels;
@@ -158,10 +128,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * Flag indicates that request is dupe.
      *
      * @ORM\Column(type="boolean", nullable=false, name="ownership_global")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     * @JMS\Groups({"list"})
      *
      * @var bool
      */
@@ -179,9 +145,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *     }
      * )
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\AgentTeam>>")
-     *
      * @var AgentTeam[]|ArrayCollection
      */
     protected $ownershipTeams;
@@ -190,10 +153,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      * Flag indicates that request is dupe.
      *
      * @ORM\Column(type="boolean", nullable=false, name="visible_global")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     * @JMS\Groups({"list"})
      *
      * @var bool
      */
@@ -210,9 +169,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *          @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="CASCADE")
      *     }
      * )
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Department>>")
      *
      * @var Department[]|ArrayCollection
      */

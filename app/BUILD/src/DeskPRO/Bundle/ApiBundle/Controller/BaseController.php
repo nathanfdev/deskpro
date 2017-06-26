@@ -119,8 +119,7 @@ class BaseController extends FOSRestController
     protected function findOr404($class, $id, $message = null)
     {
         if (!$entity = $this->getManager()->getRepository($class)->find($id)) {
-            $message or $message = "#{$id} Not Found";
-            throw $this->createNotFoundException($message);
+            throw $this->createNotFoundException($message ?: "#{$id} Not Found");
         }
 
         return $entity;

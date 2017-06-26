@@ -94,7 +94,7 @@ class SnippetsController extends CrudController
             $qb
                 ->leftJoin("$alias.ownershipTeams", 't')
                 ->orWhere('t.id IN (:teams)')
-                ->setParameter('teams', implode(',', $agent->getAgentTeamIds()))
+                ->setParameter('teams', $agent->getAgentTeamIds())
             ;
         }
         $type = $request->get('type');
@@ -141,8 +141,7 @@ class SnippetsController extends CrudController
         $agent = $this->getUser();
 
         if (!$entity = $this->getManager()->getRepository($class)->findSnippetForAgent($agent, $id, $type)) {
-            $message or $message = "#{$id} Not Found";
-            throw $this->createNotFoundException($message);
+            throw $this->createNotFoundException($message ?: "#{$id} Not Found");
         }
 
         return $entity;

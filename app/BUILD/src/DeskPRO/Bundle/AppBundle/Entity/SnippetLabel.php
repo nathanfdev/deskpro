@@ -28,31 +28,33 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Labels\Label;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SnippetLabel.
  *
- * @JMS\ExclusionPolicy("all")
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetLabelRepository")
  * @ORM\Table(name="snippet_labels", indexes={@ORM\Index(name="label", columns={"label"})})
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
-class SnippetLabel implements EntityInterface, NotifyPropertyChanged
+class SnippetLabel implements EntityInterface, NotifyPropertyChanged, Label
 {
     use NotifyPropertyChangedTrait;
+
+    /**
+     * The 'type' of label this is for, as it could be found in the
+     * LabelDef.
+     */
+    const LABEL_TYPENAME = 'snippet';
 
     /**
      * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Snippet")
      * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="CASCADE")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\Snippet>")
      *
      * @var Snippet
      */
@@ -62,10 +64,6 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="string", length=255, name="label")
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     * @JMS\Groups({"list"})
-     *
      * @Assert\NotBlank()
      *
      * @var string
@@ -74,9 +72,6 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
 
     /**
      * Composite id (person_id + name).
-     *
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("id")
      *
      * return array
      */
@@ -123,5 +118,13 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('label', $label);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return static::LABEL_TYPENAME;
     }
 }

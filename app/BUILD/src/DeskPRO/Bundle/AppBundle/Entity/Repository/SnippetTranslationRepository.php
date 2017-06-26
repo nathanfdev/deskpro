@@ -46,7 +46,7 @@ class SnippetTranslationRepository extends EntityRepository
             ->select('st')
             ->innerJoin('st.blobs', 'b')
             ->where('b.id = :blob')
-            ->setParameter('blob', $blob->getId())
+            ->setParameter('blob', $blob)
         ;
 
         return $qb->getQuery()->getOneOrNullResult();
