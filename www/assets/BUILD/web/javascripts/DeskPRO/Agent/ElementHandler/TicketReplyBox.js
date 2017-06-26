@@ -542,8 +542,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
     if (window.DP_HAS_NEW_SNIPPETS) {
       snippetBtn.on('click', function (e) {
+        var departmentId = 0;
+      	if (self.page.meta.api_data.department) {
+      		departmentId = self.page.meta.api_data.department.id;
+				}
         var event = new CustomEvent('dpLeftDrawer', {detail: {
         	module: 'SnippetsMenu',
+					department: departmentId,
 					width: 745,
 					insertSnippet: self.insertSnippet.bind(self),
           onClose: self.registerCloseSnippetViewer.bind(self)
@@ -679,9 +684,14 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.el.bind('page_activate', function() {
 			if (self.wasSnippetOpen) {
         if (window.DP_HAS_NEW_SNIPPETS) {
+					var departmentId = 0;
+					if (self.page.meta.api_data.department) {
+						departmentId = self.page.meta.api_data.department.id;
+					}
           var event = new CustomEvent('dpLeftDrawer', {detail: {
           	module: 'SnippetsMenu',
-						width: 745,
+            width: 745,
+            department: departmentId,
 						insertSnippet: self.insertSnippet.bind(self),
             onClose: self.registerCloseSnippetViewer.bind(self)
           }});
@@ -1310,7 +1320,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
   },
 
   registerCloseSnippetViewer: function() {
-		console.log('onClose');
     this.isSnippetOpen = false;
   },
 
@@ -1319,6 +1328,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     var ticketLangId = this.page ? this.page.getEl('value_form').find('.language_id').val() : 0;
     var snippetId = snippet.id;
     var snippetCode = snippet.translations;
+    var vars         = self.page.meta.api_data;
 
     this.recordSnippetUse(snippetId);
 
@@ -1327,6 +1337,37 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     var wantText;
     var useText;
     var result;
+
+    var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
+      var agentText, defaultText, wantText, useText;
+
+      Array.each(options, function(info) {
+        if (info[value_prop]) {
+          if (info[lang_id_prop] == ticketLangId) {
+            wantText = info[value_prop];
+          }
+          if (info[lang_id_prop] == DESKPRO_PERSON_LANG_ID) {
+            agentText = info[value_prop];
+          }
+          if (info[lang_id_prop] == DESKPRO_DEFAULT_LANG_ID) {
+            defaultText = info[value_prop];
+          }
+          useText = info[value_prop];
+        }
+      });
+
+      if (wantText) {
+        useText = wantText;
+      } else if (agentText) {
+        useText = agentText;
+      } else if (defaultText) {
+        useText = defaultText;
+      } else if (fallback_text) {
+        useText = fallback_text;
+      }
+
+      return useText;
+    };
 
     Array.each(snippetCode, function (info) {
       if (info.content) {
@@ -1365,6 +1406,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
     useText = useText.content;
 
+    Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
+      if (vars[prop] && vars[prop]['title_translated']) {
+        vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
+      }
+    });
 
     try {
       var tpl = twig({
@@ -1373,7 +1419,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       });
       if (tpl) {
         result = tpl.render({
-          entity: self.page.meta.api_data
+          entity: vars
         }, {
           strict_variables: false
         });

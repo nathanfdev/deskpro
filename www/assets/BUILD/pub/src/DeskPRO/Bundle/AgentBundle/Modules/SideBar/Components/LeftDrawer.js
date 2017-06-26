@@ -23,9 +23,11 @@ export class LeftDrawerContainer extends SeparateComponent {
       switch (e.detail.module) {
         case 'SnippetsMenu': {
           const type = e.detail.type ? e.detail.type : 'ticket';
+          const departmentId = e.detail.department ? e.detail.department : 0;
           module = (<SnippetsMenuContainer
             closeMenu={this.closeDrawer}
             type={type}
+            department={departmentId}
             insertSnippet={e.detail.insertSnippet}
           />);
           if (e.detail.onClose) {

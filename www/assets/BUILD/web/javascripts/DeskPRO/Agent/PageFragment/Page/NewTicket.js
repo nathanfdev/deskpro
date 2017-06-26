@@ -1697,7 +1697,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				{
 					detail: 
 						{ 
-							module: 'SnippetsMenu', 
+							module: 'SnippetsMenu',
 							width: 745, 
 							insertSnippet: this.insertSnippet.bind(this), 
 							onClose: this.registerCloseSnippetViewer.bind(this)

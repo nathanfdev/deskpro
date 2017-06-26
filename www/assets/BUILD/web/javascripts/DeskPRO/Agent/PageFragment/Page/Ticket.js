@@ -3617,7 +3617,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 		this.focusOnReply();
 		if (window.DP_HAS_NEW_SNIPPETS) {
-      var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745}});
+      var departmentId = 0;
+      if (this.ticketReplyBox.page.meta.api_data.department) {
+        departmentId = this.ticketReplyBox.page.meta.api_data.department.id;
+      }
+      var event = new CustomEvent('dpLeftDrawer', {detail: {
+      	module: 'SnippetsMenu',
+				width: 745,
+        department: departmentId,
+        insertSnippet: this.ticketReplyBox.insertSnippet.bind(this.ticketReplyBox),
+        onClose: this.ticketReplyBox.registerCloseSnippetViewer.bind(self)
+      }});
       window.document.dispatchEvent(event);
     } else {
       this.ticketReplyBox.snippetsViewer.open();

@@ -21,6 +21,10 @@ export class SnippetsMenuContainer extends React.Component {
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
     type:          PropTypes.string,
+    department:    PropTypes.number,
+  };
+  static defaultProps = {
+    department: 0
   };
 
   insertSnippet = (snippet) => {
@@ -28,8 +32,19 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   render() {
-    const { closeMenu, type } = this.props;
-    const snippets = this.props.snippets.filter(snippet => snippet.get('types').indexOf(this.props.type) !== -1);
+    const { closeMenu, type, department } = this.props;
+    const snippets = this.props.snippets
+      .filter(snippet => snippet.get('types').indexOf(this.props.type) !== -1)
+      .filter((snippet) => {
+        if (department === 0) {
+          return true;
+        }
+        if (snippet.get('is_visible_global')) {
+          return true;
+        }
+        return snippet.get('visible_departments', []).find(d => d === department);
+      })
+    ;
     return (
       <SnippetsMenu
         closeMenu={closeMenu}
