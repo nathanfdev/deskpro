@@ -9,8 +9,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.baseId = this.el.data('base-id');
 		this.agentNotifyListShown = false;
 		this.uploading = false;
-		this.fwdMessages =[];
-		this.dontDispatch = false;
 	},
 
 	initPage: function() {
@@ -39,13 +37,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
 
-		var jiraActionSel = this.getElById('jira_app_action'),
-				jiraActionText = this.getElById('jira_app_action_text'),
-				jiraActionCheck = this.getElById('jira_app_action_check');
+        var jiraActionSel = this.getElById('jira_app_action'),
+            jiraActionText = this.getElById('jira_app_action_text'),
+            jiraActionCheck = this.getElById('jira_app_action_check');
 
 		var storedReplyText = '';
 		var storedNoteText = '';
-		var storedFWDText = '';
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			var sig = this.el.find('textarea.signature-value-html').val() || "";
@@ -66,8 +63,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
 				}
 			}
-
-			storedFWDText = textarea.val();
 
 			isWysiwyg = true;
 
@@ -303,107 +298,60 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var replyMode = 'reply';
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
-			switch(replyMode) {
-				case 'note':
-					// process elements
-          self.getElById('replybox_notetab_btn').removeClass('on');
-          self.el.removeClass('dp-note-on');
-          self.getElById('is_note').val('0');
-          self.isNote = false;
-          // process stored text
-          if (isWysiwyg && textarea.data('redactor')) {
-            storedNoteText = textarea.getCode();
-            textarea.setCode(storedReplyText || '');
-          } else {
-            storedNoteText = textarea.val();
-            textarea.val(storedReplyText || '');
-          }
-					break;
-				case 'fwd':
-				  self.clearFwd();
-          self.getElById('replybox_fwdtab_btn').removeClass('on');
-          self.getElById('fwd_body').html('');
-          self.fwdMessages = [];
-          if (isWysiwyg && textarea.data('redactor')) {
-            storedFWDText = textarea.getCode();
-            textarea.setCode(storedReplyText || '');
-          } else {
-            storedFWDText = textarea.val();
-            textarea.val(storedReplyText || '');
-          }
-					break;
-        case 'reply':
-				default:
-					//no-op
-					return;
+			if (replyMode == 'reply') {
+				return;
+			}
+			replyMode = 'reply';
+
+			self.el.removeClass('dp-note-on');
+			$(this).addClass('on');
+			self.getElById('replybox_notetab_btn').removeClass('on');
+			$('.hide-note:not(.is-hidden)', self.el).show();
+			$('.hide-reply', self.el).hide();
+			self.getElById('is_note').val('0');
+			self.isNote = false;
+			self.hideAgentNotifyList();
+
+			if (closeReply) {
+				closeTabCheck.prop('checked', true);
+			} else {
+				closeTabCheck.prop('checked', false);
 			}
 
-      $('.show-fwd', self.el).hide();
-      $('.show-reply', self.el).show();
-      $('.show-note', self.el).hide();
+			if (wasAgentChecked) {
+				agentSelCheck.prop('checked', true);
+			}
+			if (wasTeamChecked) {
+				teamSelCheck.prop('checked', true);
+			}
 
-      // process special stuff
-      if (closeReply) {
-        closeTabCheck.prop('checked', true);
-      } else {
-        closeTabCheck.prop('checked', false);
-      }
-      if (wasAgentChecked) {
-        agentSelCheck.prop('checked', true);
-      }
-      if (wasTeamChecked) {
-        teamSelCheck.prop('checked', true);
-      }
+			if (isWysiwyg && textarea.data('redactor')) {
+				storedNoteText = textarea.getCode();
+				textarea.setCode(storedReplyText || '');
+			} else {
+				storedNoteText = textarea.val();
+				textarea.val(storedReplyText || '');
+			}
 
-      var actionsRow = self.getElById('actions_row');
-      if (actionsRow.find('ul').find('li')[0]) {
-        actionsRow.show();
-      }
-
-      $(this).addClass('on');
-			replyMode = 'reply';
-      self.hideAgentNotifyList();
+			var actionsRow = self.getElById('actions_row');
+			if (actionsRow.find('ul').find('li')[0]) {
+				actionsRow.show();
+			}
 		});
 
-    this.getElById('replybox_notetab_btn').on('click', function() {
-
-      switch(replyMode) {
-        case 'reply':
-          self.getElById('replybox_replytab_btn').removeClass('on');
-          if (isWysiwyg && textarea.data('redactor')) {
-            storedReplyText = textarea.getCode();
-            textarea.setCode(storedNoteText || '');
-          } else {
-            storedReplyText = textarea.val();
-            textarea.val(storedNoteText || '');
-          }
-          break;
-        case 'fwd':
-          self.clearFwd();
-          self.getElById('replybox_fwdtab_btn').removeClass('on');
-          self.getElById('fwd_body').html('');
-          self.fwdMessages = [];
-          if (isWysiwyg && textarea.data('redactor')) {
-            storedFWDText = textarea.getCode();
-            textarea.setCode(storedNoteText || '');
-          } else {
-            storedFWDText = textarea.val();
-            textarea.val(storedNoteText || '');
-          }
-          break;
-        case 'note':
-        default:
-          // no-op
-          return;
-      }
-
+		this.getElById('replybox_notetab_btn').on('click', function() {
+			if (replyMode == 'note') {
+				return;
+			}
 			replyMode = 'note';
-      $('.show-fwd', self.el).hide();
-      $('.show-reply', self.el).hide();
-      $('.show-note', self.el).show();
+
 			self.getElById('actions_row').hide();
+
 			self.el.addClass('dp-note-on');
 			$(this).addClass('on');
+			self.getElById('replybox_replytab_btn').removeClass('on');
+			$('.hide-note', self.el).hide();
+			$('.hide-reply', self.el).show();
 			self.getElById('is_note').val('1');
 			self.isNote = true;
 			self.hideAgentNotifyList();
@@ -413,58 +361,21 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			} else {
 				closeTabCheck.prop('checked', false);
 			}
+
+			if (isWysiwyg && textarea.data('redactor')) {
+				storedReplyText = textarea.getCode();
+				textarea.setCode(storedNoteText || '');
+			} else {
+				storedReplyText = textarea.val();
+				textarea.val(storedNoteText || '');
+			}
+
 			wasAgentChecked = agentSelCheck.prop('checked');
 			wasTeamChecked  = teamSelCheck.prop('checked');
+
 			agentSelCheck.prop('checked', false);
 			teamSelCheck.prop('checked', false);
 		});
-
-    this.getElById('replybox_fwdtab_btn').on('click', function() {
-      switch(replyMode) {
-        case 'reply':
-          self.getElById('replybox_replytab_btn').removeClass('on');
-
-          if (isWysiwyg && textarea.data('redactor')) {
-            storedReplyText = textarea.getCode();
-            textarea.setCode(storedFWDText || '');
-          } else {
-            storedReplyText = textarea.val();
-            textarea.val(storedFWDText || '');
-          }
-          break;
-        case 'note':
-          self.getElById('replybox_notetab_btn').removeClass('on');
-
-          self.el.removeClass('dp-note-on');
-          self.getElById('is_note').val('0');
-          self.isNote = false;
-          // process stored text
-          if (isWysiwyg && textarea.data('redactor')) {
-            storedNoteText = textarea.getCode();
-            textarea.setCode(storedFWDText || '');
-          } else {
-            storedNoteText = textarea.val();
-            textarea.val(storedFWDText || '');
-          }
-          break;
-        case 'fwd':
-        default:
-          // no-op
-          return;
-      }
-      $('.show-fwd', self.el).show();
-      $('.show-reply', self.el).hide();
-      $('.show-note', self.el).hide();
-      replyMode = 'fwd';
-      self.getElById('actions_row').hide();
-      self.el.addClass('dp-fwd-on');
-      $(this).addClass('on');
-      self.hideAgentNotifyList();
-      if(!self.dontDispatch) {
-        DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket.fwdtab.open', { mode: 'all' });
-			}
-			self.dontDispatch = false;
-    });
 
 		//------------------------------
 		// Expanding cc row
@@ -541,14 +452,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		DeskPRO_Window.util.fileupload(this.el, {
 			dropZone: this.getElById('file_drop_zone'),
 			uploadTemplate: $('.template-upload', this.el),
-
-
 			downloadTemplate: $('.template-download', this.el)
 		});
 
-		this.el.bind('fileuploaddone', function(attachInfo) {
+		this.el.bind('fileuploaddone', function() {
 			self.uploading = false;
-			self.fwdAttachments.push(attachInfo.blob_id);
 			self.getElById('reply_as_type').parent().removeAttr('disabled');
 			self.getElById('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
 			self.getElById('attach_row').show().removeClass('is-hidden');
@@ -577,10 +485,26 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.on('click', '.remove-attach-trigger', function() {
-      var blobId = $(this).prev('input').val();
-      var row = $(this).closest('li');
-      self.removeBlob(blobId, row);
-		});
+
+			$(this).trigger('blobremove', [$(this).prev('input').val()]);
+			var row = $(this).closest('li');
+			row.fadeOut('fast', function() {
+				row.remove();
+
+				var rows = $('ul.files li', self.getElById('attach_row'));
+				if (!rows.length) {
+					self.getElById('attach_row').hide().addClass('is-hidden');
+					if (self.page) {
+						self.page.updateUi();
+						if (!self.page.meta.ticket_reverse_order) {
+							if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
+								$(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
+							}
+						}
+					}
+				}
+			});
+        });
 
 		//------------------------------
 		// Toggle buttons
@@ -916,7 +840,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (agentSel.data('auto-switch-status')) {
 				if (agentSelCheck.get(0).checked) {
 					if (self.getElById('action').val().indexOf('macro') === -1) {
-						self.setReplyAsOptionName('awaiting_agent');
+						self.setReplyAsOptionName('awaiting_agent')
 					}
 				}
 			}
@@ -986,49 +910,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				hasBillingControl: self.getElById('billing_reply')[0] ? true : false
 			}]);
 		});
-
-		this.el.find('.fwd-trigger').on('click', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-
-      var api = textarea.data('redactor');
-      if (isWysiwyg && api) {
-        api.$editor.linkify();
-        api.syncCode();
-      }
-
-      var formData = {
-      	custom_message: api.getCode(),
-				messages_ids:   self.fwdMessages,
-				to: {},
-				to_type: {},
-			  from: self.getElById('fwd_from').val(),
-        attachments: self.fwdAttachments
-      };
-
-      $.each(self.getElById('fwd_to_container').find('.email-address-input'), (function(index, item){
-      	var $item = $(item);
-				formData.to[$item.attr('id')] = $item.val();
-				formData.to_type[$item.attr('id')] = $item.data('type');
-			}));
-
-      $.ajax({
-        url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
-        data: formData,
-        type: 'POST',
-        dataType: 'json',
-        success: function() {
-          DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
-          self.getElById('replybox_replytab_btn').click();
-        }
-      });
-
-		});
-
-		this.el.find('.fwd-control-add').on('click', function (ev) {
-			self.addTo((ev.target).data('add'));
-    });
-		this.addTo('to');
 
 		this.getElById('keep_open_toggle').on('click', function(ev) {
 			ev.preventDefault();
@@ -1154,40 +1035,6 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			this.getElById('replybox_notetab_btn').click();
 		}
 	},
-
-  addTo: function(type) {
-    var copy = this.getElById('template > .to-line').clone();
-    var container = this.getElById('fwd_to_container');
-    var header = copy.find('.label');
-    var input = copy.find('.email-address-input');
-    var wrap = copy.find('.email-address-wrap').removeClass('with-handler').removeClass('with-display-handler');
-    wrap.on('personsearchboxclick', function (event, personId, name, email, box) {
-      input.val(email);
-      box.close();
-    });
-    var id = Orb.getUniqueId();
-
-    wrap.data('position-bound', '#'+id);
-    input.attr('id', id);
-    switch(type) {
-      case 'to':
-        input.data('type', 'to');
-        header.text('To:');
-        break;
-      case 'cc':
-        input.data('type', 'cc');
-        header.text('CC:');
-        break;
-      case 'bcc':
-        input.data('type', 'bcc');
-        header.text('BCC:');
-        break;
-      default:
-        return;
-    }
-    container.append(copy);
-    DeskPRO.ElementHandler_Exec(this.el);
-  },
 
 	setReplyAsOptionName: function(name) {
 		var item = this.getElById('status_menu').find('li[data-type="' + name + '"]').first();
@@ -1486,63 +1333,5 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 
     this.destroyEl();
-	},
-
-	clearFwd() {
-	  var self = this;
-		this.getElById('fwd_body').html('');
-		this.fwdMessages = [];
-		this.fwdAttachments = [];
-    this.getElById('attach_row').find('li.in').map(function(index, row){
-      var $row = $(row);
-      self.removeBlob($row.find('input').eq(0).val(), $row);
-    });
-	},
-
-	appendFwdText(html, messageId) {
-		this.getElById('fwd_body').append(html);
-		this.getElById('fwd_body').append("<br/><br/>");
-		this.fwdMessages.push(messageId);
-	},
-
-	appendFwdAttach(element, ticket){
-    var blobId = element.data('blob-id');
-    if(-1 === this.fwdAttachments.indexOf(blobId)) {
-      var attachInfo = {
-        "blob_id":           blobId,
-        "blob_auth":         element.data('blob-auth'),
-        "blob_auth_id":      element.data('blob-auth-id'),
-        "download_url":      element.data('downloadurl'),
-        "filename":          element.data('filename'),
-        "filesize_readable": element.data('filesize-readable'),
-        "is_image":          element.data('is-image')
-      };
-      this.fwdAttachments.push(blobId);
-      ticket.addAttachToList(attachInfo, true);
-		}
-	},
-
-	removeBlob(blobId, row) {
-    $(this).trigger('blobremove', [blobId]);
-    var self = this;
-    row.fadeOut('fast', function() {
-			row.remove();
-			var blobIndex = self.fwdAttachments.indexOf(blobId);
-			if(-1 !== blobIndex) {
-			  delete(self.fwdAttachments[index]);
-      }
-			var rows = $('ul.files li', self.getElById('attach_row'));
-      if (!rows.length) {
-        self.getElById('attach_row').hide().addClass('is-hidden');
-        if (self.page) {
-          self.page.updateUi();
-          if (!self.page.meta.ticket_reverse_order) {
-            if (self.page.scrollHandlers && self.page.scrollHandlers[0]) {
-              $(self.page.scrollHandlers[0]).data('scroll_handler').getElement().trigger('goscrollbottom_stick');
-            }
-          }
-        }
-      }
-    });
 	}
 });

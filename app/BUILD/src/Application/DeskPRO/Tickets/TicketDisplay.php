@@ -206,9 +206,6 @@ class TicketDisplay implements PersonContextInterface
         return $this->first_message;
     }
 
-    /**
-     * @return TicketAttachment[]
-     */
     public function getAttachments()
     {
         if ($this->attachments !== null) {

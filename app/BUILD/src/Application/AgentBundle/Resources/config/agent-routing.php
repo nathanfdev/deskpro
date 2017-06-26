@@ -1019,9 +1019,9 @@ $collection->create('agent_ticket_fwd_overlay', [
 ]);
 
 $collection->create('agent_ticket_fwd_send', [
-    'path'         => '/tickets/{ticket_id}/forward/send',
+    'path'         => '/tickets/{ticket_id}/forward/{message_id}/send',
     'controller'   => 'AgentBundle:Ticket:forwardSend',
-    'requirements' => ['ticket_id' => '\\d+'],
+    'requirements' => ['ticket_id' => '\\d+', 'message_id' => '\\d+'],
     'methods'      => ['POST'],
 ]);
 
