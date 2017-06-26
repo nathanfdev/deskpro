@@ -44,7 +44,7 @@ class VerifyAgent implements TicketSaveActionInterface
     {
         $agent = $ticket->getAgent();
 
-        if ($ticket->getStatus() === 'awaiting_agent' && $agent) {
+        if ($agent) {
             $context->getLogger()->info('Checking assigned agent is not deleted');
 
             if (!$agent->isActiveAgent()) {
