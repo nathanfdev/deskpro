@@ -37,6 +37,7 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 			<input type="hidden" class="input-date-due-real" name="newtask[%baseId%][date_due]" value="" />
 			<input type="hidden" class="input-date-time" name="newtask[%baseId%][time_due]" value="" />
 			<input type="hidden" class="input-agent" name="newtask[%baseId%][assigned_agent]" value="" />
+			<input type="hidden" class="input-department" name="newtask[%baseId%][assigned_department]" value="" />
 			<input type="hidden" class="input-vis" name="newtask[%baseId%][visibility]" value="1" />
 			<input type="hidden" class="input-ticket-id" name="newtask[%baseId%][ticket_id]" value="0" />
 		</div>
@@ -45,12 +46,24 @@ pageMeta.dateFormat = '{{ app.getSetting('core.date_day')|to_jqueryui_dateformat
 				<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger time_due" style="display: none;"><label>{{ phrase('agent.tasks.no_due_time') }}</label><span class="drop-icon"></span></li>
 				<li class="noval opt-trigger visibility"><label>{{ phrase('agent.general.public') }}</label><span class="drop-icon"></span></li>
-				<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
+				<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; min-width: 30px; position: relative;">
 					<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>
 					<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
 						<optgroup label="{{ phrase('agent.general.agents') }}">
 							{% for agent in app.agents.getAgents() %}
 								<option {% if agent.id == app.user.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+							{% endfor %}
+						</optgroup>
+						<optgroup label="{{ phrase('agent.general.department') }}">
+							{% for department in app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign') %}
+								{% if department.children %}
+									<option disabled="disabled">{{ department.title }}</option>
+									{% for subDepartment in department.children %}
+										<option value="department:{{ subDepartment.id }}">--{{ subDepartment.title }}</option>
+									{% endfor %}
+								{% else %}
+									<option value="department:{{ department.id }}">{{ department.title }}</option>
+								{% endif %}
 							{% endfor %}
 						</optgroup>
 						{% if app.agent_teams.getTeams()|length %}

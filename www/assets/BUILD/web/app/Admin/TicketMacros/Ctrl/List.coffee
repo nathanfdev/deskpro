@@ -54,6 +54,8 @@ define [
             filterList = @list.filter((x) -> !x.is_global && x.person && x.person.id == agentId)
           else
             filterList = @list.filter((x) -> !x.is_global && x.person)
+        else if display_filter.type == 'department'
+          filterList = @list.filter((x) -> !x.is_global && x.department)
 
       @$scope.filterList = filterList
 

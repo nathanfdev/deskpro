@@ -45,6 +45,8 @@ use Orb\Util\Dates;
 
 /**
  * Task entity definition.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class Task extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -65,6 +67,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -74,6 +77,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Whether this task is completed.
      *
+     * @JMS\Expose()
      * @JMS\Type("boolean")
      *
      * @var bool
@@ -83,6 +87,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The task's title.
      *
+     * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @var string
@@ -92,6 +97,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The task's visibility. On of: self::PRIVATE_VISIBILITY(0) or self::PUBLIC_VISIBILITY(1).
      *
+     * @JMS\Expose()
      * @JMS\Type("integer")
      *
      * @var int
@@ -101,6 +107,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The task's optional due date.
      *
+     * @JMS\Expose()
      * @JMS\Type("DateTime")
      *
      * @var \DateTime
@@ -110,6 +117,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The date the task was inserted into the system.
      *
+     * @JMS\Expose()
      * @JMS\Type("DateTime")
      *
      * @var \DateTime
@@ -119,6 +127,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The date the task was completed.
      *
+     * @JMS\Expose()
      * @JMS\Type("DateTime")
      *
      * @var \DateTime
@@ -128,6 +137,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The person created this task.
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var \Application\DeskPRO\Entity\Person
@@ -137,6 +147,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The person assigned to complete this task.
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      *
      * @var \Application\DeskPRO\Entity\Person
@@ -144,8 +155,19 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     protected $assigned_agent;
 
     /**
+     * The department assigned to complete this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    protected $assigned_department;
+
+    /**
      * The agent team assigned to complete this task.
      *
+     * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
      *
      * @var \Application\DeskPRO\Entity\AgentTeam
@@ -155,28 +177,23 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Labels associated with this task.
      *
+     * @JMS\Expose()
      * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelTask>>")
      */
     protected $labels;
 
     /**
-     * @JMS\Exclude()
-     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $comments;
 
     /**
-     * @JMS\Exclude()
-     *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $task_associations;
 
     /**
      * Label manager for adding/removing labels.
-     *
-     * @JMS\Exclude()
      *
      * @var \Application\DeskPRO\Labels\LabelManager
      */
@@ -437,6 +454,26 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         if ($agent_team) {
             $this->setModelField('assigned_agent', null);
         }
+    }
+
+    /**
+     * @return Department
+     */
+    public function getAssignedDepartment()
+    {
+        return $this->assigned_department;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setAssignedDepartment(Department $department = null)
+    {
+        $this->setModelField('assigned_department', $department);
+
+        return $this;
     }
 
     /**
@@ -872,6 +909,24 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'assigned_agent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'assigned_department',
+                'targetEntity' => Department::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'assigned_department_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
                         'onDelete'             => 'set null',
