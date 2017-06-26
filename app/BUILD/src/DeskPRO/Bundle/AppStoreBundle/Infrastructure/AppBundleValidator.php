@@ -28,38 +28,33 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle;
-use DeskPRO\Bundle\AppStoreBundle\Domain\Application;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use JsonSchema;
-use Doctrine\ORM;
 
 class AppBundleValidator implements Domain\AppBundleValidator
 {
-
-    /** @var JsonSchema\Validator  */
+    /** @var JsonSchema\Validator */
     private $schemaValidator;
 
-    /** @var  \SplFileInfo */
+    /** @var \SplFileInfo */
     private $schema;
 
     /**
      * ApplicationService constructor.
+     *
      * @param JsonSchema\Validator $schemaValidator
-     * @param \SplFileInfo $schema
+     * @param \SplFileInfo         $schema
      */
     public function __construct(JsonSchema\Validator $schemaValidator, \SplFileInfo $schema)
     {
         $this->schemaValidator = $schemaValidator;
-        $this->schema = $schema;
+        $this->schema          = $schema;
     }
 
     public function validateBundle(Domain\AppBundle $bundle)
     {
         $manifestString = $bundle->getManifestAsString();
-        $manifestData = json_decode($manifestString);
+        $manifestData   = json_decode($manifestString);
         if (empty($manifestData) || false == $manifestData instanceof \stdClass) {
             return false;
         }
@@ -70,7 +65,4 @@ class AppBundleValidator implements Domain\AppBundleValidator
         // TODO this is a temporary hack till the conflicts between the two version of json-schema are fixed
         return true;
     }
-
 }
-
-
