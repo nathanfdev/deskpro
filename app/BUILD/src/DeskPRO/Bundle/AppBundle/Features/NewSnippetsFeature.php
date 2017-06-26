@@ -157,7 +157,7 @@ HTML;
                           REPLACE('ticket', 'tickets', tcs.typename) as types,
                           ts.is_draft,
                           tcs.is_global as ownership_global,
-                          0 as visible_global
+                          1 as visible_global
                     FROM text_snippets ts
                     LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = 1
                     LEFT JOIN text_snippet_categories tcs ON ts.category_id = tcs.id;");
