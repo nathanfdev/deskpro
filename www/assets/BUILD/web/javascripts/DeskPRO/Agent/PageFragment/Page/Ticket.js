@@ -2328,11 +2328,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}, this);
 	},
 
-	_initForward() {
+	_initForward: function() {
     DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket.fwdtab.open',  this.handleFwd.bind(this) );
 	},
 
-	handleFwd(info) {
+	handleFwd: function(info) {
 		var self = this;
 		this.ticketReplyBox.clearFwd();
     switch (info.mode) {

@@ -1712,7 +1712,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     this.destroyEl();
 	},
 
-	clearFwd() {
+	clearFwd: function() {
 	  var self = this;
 		this.getElById('fwd_body').html('');
 		this.fwdMessages = [];
@@ -1723,13 +1723,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     });
 	},
 
-	appendFwdText(html, messageId) {
+	appendFwdText: function(html, messageId) {
 		this.getElById('fwd_body').append(html);
 		this.getElById('fwd_body').append("<br/><br/>");
 		this.fwdMessages.push(messageId);
 	},
 
-	appendFwdAttach(element, ticket){
+	appendFwdAttach: function(element, ticket) {
     var blobId = element.data('blob-id');
     if(-1 === this.fwdAttachments.indexOf(blobId)) {
       var attachInfo = {
@@ -1746,7 +1746,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 	},
 
-	removeBlob(blobId, row) {
+	removeBlob: function(blobId, row) {
     $(this).trigger('blobremove', [blobId]);
     var self = this;
     row.fadeOut('fast', function() {
