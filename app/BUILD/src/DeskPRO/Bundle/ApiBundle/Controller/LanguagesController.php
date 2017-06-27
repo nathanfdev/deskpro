@@ -138,6 +138,7 @@ class LanguagesController extends CrudController
             'agent.onboarding.new_im_position_text',
             'agent.onboarding.new_im_start_new_title',
             'agent.onboarding.new_im_start_new_text',
+            'agent.search.no_results_found',
             'agent.snippets.edit_snippet',
             'agent.snippets.new_snippet',
             'agent.snippets.ownership',

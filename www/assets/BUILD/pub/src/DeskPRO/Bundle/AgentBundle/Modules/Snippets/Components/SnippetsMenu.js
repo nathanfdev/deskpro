@@ -73,6 +73,7 @@ export class SnippetsMenu extends React.Component {
       editOpen:      false,
       snippetEdit:   {},
       filter:        '',
+      labelFilter:   '',
     };
   }
 
@@ -94,6 +95,12 @@ export class SnippetsMenu extends React.Component {
 
   handleFilter = (filter) => {
     this.setState({ filter });
+  };
+
+  handleLabelFilter = (value) => {
+    this.setState({
+      labelFilter: value
+    });
   };
 
   selectLabel = (label) => {
@@ -167,12 +174,15 @@ export class SnippetsMenu extends React.Component {
           <SnippetsLabels
             snippets={snippets}
             selectLabel={this.selectLabel}
+            labelFilter={this.state.labelFilter}
+            handleLabelFilter={this.handleLabelFilter}
             selectedLabel={this.state.selectedLabel}
           />
           <SnippetsList
             snippets={snippets}
             langId={langId}
             filter={this.state.filter}
+            labelFilter={this.state.labelFilter}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}

@@ -421,6 +421,11 @@ export class SnippetsModal extends React.Component {
     changeLabels() {}
   };
 
+  constructor(props) {
+    super(props);
+    this.height = window.innerHeight;
+  }
+
   getVariables = () => {
     let variables = [];
     const { types, ticketCustomFields, personCustomFields, userChatCustomFields } = this.props;
@@ -602,8 +607,10 @@ export class SnippetsModal extends React.Component {
               rows="10"
               defaultValue={translation.get('content', '')}
               ref={(c) => { this.textArea = c; }}
-            /><br />
-            {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}<br />
+            />
+            <span className="files">
+              {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}
+            </span>
             <UploadButton
               id={'upload_attachment'}
               ref={(c) => { this.uploadButton = c; }}
@@ -649,6 +656,7 @@ export class SnippetsModal extends React.Component {
                 {agentPhrases.get('agent.snippets.snippet_is_draft')}
               </Checkbox>
             </div>
+            <br />
             <div className="shortcut-field field">
               <InputLabel htmlFor="snippet_shortcut_code" required>
                 {agentPhrases.get('agent.snippets.shortcut_code')}
@@ -671,7 +679,7 @@ export class SnippetsModal extends React.Component {
                 selectAllText="Global"
                 allSelectedText="Global"
                 nonSelectedText="Myself"
-                maxHeight="300"
+                maxHeight={this.height > 850 ? 300 : 150}
                 nSelectedText="teams"
                 value={this.props.snippetTeams}
                 onChange={this.props.handleTeamsChange}
@@ -686,7 +694,7 @@ export class SnippetsModal extends React.Component {
                 selectAllText="Global"
                 allSelectedText="Global"
                 nonSelectedText="None"
-                maxHeight="300"
+                maxHeight={this.height > 850 ? 300 : 150}
                 nSelectedText="departments"
                 value={this.props.snippetDepartments}
                 onChange={this.props.handleDepartmentsChange}

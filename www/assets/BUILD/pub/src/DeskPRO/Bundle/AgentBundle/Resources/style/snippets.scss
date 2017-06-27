@@ -235,10 +235,12 @@
   .visibility-field {
     min-width: 100px;
   }
-  .labels-field,
-  .types-field,
-  .draft-field {
+  .labels-field {
     display: block;
+    .dp-input__label {
+      padding-bottom: 0;
+      margin-bottom: -2px;
+    }
   }
   .types-field {
     .dp-input--checkbox {

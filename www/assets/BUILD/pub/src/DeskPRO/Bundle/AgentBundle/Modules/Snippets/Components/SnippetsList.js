@@ -93,6 +93,7 @@ export class SnippetsList extends React.Component {
   static propTypes = {
     snippets:      PropTypes.object,
     selectedLabel: PropTypes.string,
+    labelFilter:   PropTypes.string,
     filter:        PropTypes.string,
     langId:        PropTypes.number,
     editSnippet:   PropTypes.func,
@@ -132,7 +133,7 @@ export class SnippetsList extends React.Component {
 
   renderElements = () => {
     const elements = [];
-    const { snippets, selectedLabel, filter, langId, editSnippet, insertSnippet } = this.props;
+    const { snippets, selectedLabel, filter, labelFilter, langId, editSnippet, insertSnippet } = this.props;
     if (!snippets) {
       return null;
     }
@@ -142,6 +143,13 @@ export class SnippetsList extends React.Component {
           return true;
         }
         return snippet.get('labels').find(label => label === selectedLabel);
+      })
+      .filter((snippet) => {
+        if (!labelFilter) {
+          return true;
+        }
+        const re = new RegExp(labelFilter, 'i');
+        return snippet.get('labels').find(label => label.match(re));
       })
       .filter((snippet) => {
         if (!filter) {
@@ -174,6 +182,13 @@ export class SnippetsList extends React.Component {
           />
         );
       });
+    if (elements.length === 0) {
+      return (
+        <div className="snippet_list_element_wrapper">
+          {agentPhrases.get('agent.search.no_results_found')}
+        </div>
+      );
+    }
     return elements;
   };
 

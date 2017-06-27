@@ -7,16 +7,20 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsLabels extends React.Component {
   static propTypes = {
-    snippets:      PropTypes.object,
-    selectLabel:   PropTypes.func,
-    selectedLabel: PropTypes.string,
+    snippets:          PropTypes.object,
+    labelFilter:       PropTypes.string,
+    selectLabel:       PropTypes.func,
+    handleLabelFilter: PropTypes.func,
+    selectedLabel:     PropTypes.string,
+  };
+  defaultProps = {
+    labelFilter: ''
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      labels:      [],
-      labelFilter: '',
+      labels: [],
     };
   }
 
@@ -51,7 +55,7 @@ class SnippetsLabels extends React.Component {
     ];
     this.state.labels
       .filter((value) => {
-        const { labelFilter } = this.state;
+        const { labelFilter } = this.props;
         if (this.state.labelFilter === '') {
           return true;
         }
@@ -112,13 +116,8 @@ class SnippetsLabels extends React.Component {
     });
   };
 
-  updateLabelFilter = (value) => {
-    this.setState({
-      labelFilter: value
-    });
-  };
-
   render() {
+    const { labelFilter, handleLabelFilter } = this.props;
     return (
       <div className="snippets__labels">
         <div className="title">
@@ -126,9 +125,9 @@ class SnippetsLabels extends React.Component {
           {agentPhrases.get('agent.general.labels')}
         </div>
         <Input
-          value={this.state.labelFilter}
+          value={labelFilter}
           className="search"
-          onChange={this.updateLabelFilter}
+          onChange={handleLabelFilter}
           icon="search"
         />
         <List>
