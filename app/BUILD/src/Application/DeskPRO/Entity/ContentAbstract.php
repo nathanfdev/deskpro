@@ -1001,7 +1001,7 @@ abstract class ContentAbstract extends DomainObject
 
     public function _preUpdate()
     {
-        foreach ($this->getStateChangeRecorder()->getTouchedFields() as $touchedField) {
+        foreach (array_keys($this->getStateChangeRecorder()->getTouchedFields()) as $touchedField) {
             if (in_array($touchedField, $this->getUpdateFields())) {
                 $this->setDateUpdated(new DateTime());
 

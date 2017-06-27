@@ -1038,6 +1038,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'mappedBy'     => 'feedback',
             ]
         );
+
+        $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }
 
     protected function getUpdateFields()
