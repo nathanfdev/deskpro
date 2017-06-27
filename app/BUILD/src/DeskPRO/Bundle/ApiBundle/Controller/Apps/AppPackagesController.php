@@ -33,9 +33,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
-use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AppPackagesController.
@@ -49,15 +47,4 @@ class AppPackagesController extends CrudController
 {
     public static $exposeOnly = ['get', 'list', 'count'];
     public static $entity     = App::class;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
-    {
-        // todo temp, BC
-        // todo we can have more than one app package with the same name for now
-        // todo remove when it will be refactored
-        $qb->groupBy("$alias.name");
-    }
 }
