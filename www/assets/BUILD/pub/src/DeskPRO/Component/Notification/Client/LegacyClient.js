@@ -5,12 +5,18 @@ import { AbstractClient } from './AbstractClient';
 
 export default class LegacyClient extends AbstractClient {
 
-  getDefaultOptions() { // eslint-disable-line class-methods-use-this
+  constructor(props) {
+    super(props);
+    // ugly hack
+    DeskPRO_Window.LegacyClient = this; // eslint-disable-line no-undef
     this.poller = window.DeskPRO_Window.getPoller();
+  }
+
+  getDefaultOptions() { // eslint-disable-line class-methods-use-this
     return {
       me:          0,
-      last_alert:  Math.floor(Date.now() / 1000),
-      last_notify: Math.floor(Date.now() / 1000)
+      last_alert:  0,
+      last_notify: 0
     };
   }
 
@@ -27,13 +33,17 @@ export default class LegacyClient extends AbstractClient {
   }
 
   handleActionAlertsPoll(response) {
+    this.handleActionAlerts(response.action_alerts);
+  }
+
+  handleActionAlerts(actionAlerts) {
     const that = this;
 
-    if (response.action_alerts) {
-      const last = response.action_alerts[response.action_alerts.length - 1];
+    if (actionAlerts) {
+      const last = actionAlerts[actionAlerts.length - 1];
       if (last && last.id) {
         that.options.last_alert = last.id > that.options.last_alert ? last.id : that.options.last_alert;
-        response.action_alerts.map((datum) => {
+        actionAlerts.map((datum) => {
           if (datum.target_id === that.options.me) {
             datum.data = JSON.parse(datum.data);
             that.options.dispatcher('action_alert', datum);
@@ -71,5 +81,9 @@ export default class LegacyClient extends AbstractClient {
   stopPolling() {
     this.poller.removeEvent('ajaxSuccess', this.handleUserNotifyPoll.bind(this));
     this.poller.removeEvent('ajaxSuccess', this.handleActionAlertsPoll.bind(this));
+  }
+
+  getLastActionAlert() {
+    return this.options.last_alert;
   }
 }
