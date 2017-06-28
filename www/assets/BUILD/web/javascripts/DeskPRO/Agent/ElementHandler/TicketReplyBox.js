@@ -1419,7 +1419,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       });
       if (tpl) {
         result = tpl.render({
-          entity: vars
+          entity: vars,
+          ticket: vars
         }, {
           strict_variables: false
         });
