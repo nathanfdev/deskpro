@@ -388,6 +388,24 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals($priority->getId(), $entity->getPriority()->getId());
     }
 
+    public function test_archived_status()
+    {
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('message');
+        $message1->setPerson(1);
+
+        $model = $this->createBaseModel();
+        $model->setStatus(Entity\Ticket::STATUS_ARCHIVED);
+        $model->addMessage($message1);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isArchived());
+    }
+
     /**
      * @return Model\Ticket
      */

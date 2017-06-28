@@ -88,6 +88,13 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
+  validator.ticket_opened_message:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketOpenedMessageValidator
+    arguments:
+      - "@deskpro.app_env"
+    tags:
+      - { name: validator.constraint_validator }
+
   validator.valid_recaptcha:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha\ValidRecaptcha2Validator
     arguments: ["@brand_stack", "@request_stack"]

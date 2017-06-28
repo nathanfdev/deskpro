@@ -25,6 +25,7 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@deskpro.search.entity_listener"
       - "@serializer"
+      - "@deskpro.app_env"
       - "@dp.importer_logger"
 
   dp.importer:
