@@ -1,6 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { replaceIds } from 'DeskPRO/Component/Util/Api';
 
 export const getSnippet = createAction(
@@ -30,6 +30,22 @@ export const saveSnippet = createAction(
             } else {
               dispatch(addToCollection('Snippets', 'all', [promise.data.data]));
               resolve(promise.data.data);
+            }
+          },
+          response => reject(response)
+        );
+      }
+    )
+);
+export const deleteSnippet = createAction(
+  'SNIPPETS_SAVE_SNIPPET',
+  snippetId => dispatch => new Promise(
+      (resolve, reject) => {
+        repository('Snippets').deleteSnippet(snippetId)
+          .then((promise) => {
+            if (promise.status === 'success') {
+              dispatch(removeFromCollection('Snippets', 'all', [snippetId]));
+              resolve(promise);
             }
           },
           response => reject(response)

@@ -376,6 +376,7 @@ return [
     'agent.general.apply_to_x_selections'                      => 'Apply actions to {{placeholder}} selections',
     'agent.general.approve'                                    => 'Approve',
     'agent.general.archive'                                    => 'Archive',
+    'agent.general.are_you_sure'                               => 'Are you sure?',
     'agent.general.article'                                    => 'Article',
     'agent.general.articles'                                   => 'Articles',
     'agent.general.ask_delete_selected'                        => 'Are you sure you would like to delete the selected items?',

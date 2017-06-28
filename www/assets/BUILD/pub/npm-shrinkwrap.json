@@ -3028,7 +3028,7 @@
     "deskpro-styles": {
       "version": "0.1.7",
       "from": "git+https://github.com/DeskproApps/deskpro-components.git",
-      "resolved": "git+https://github.com/DeskproApps/deskpro-components.git#309b34205866ba202033422816bbae6f6ae11346",
+      "resolved": "git+https://github.com/DeskproApps/deskpro-components.git#b6e69c318dba036f31ccc8a76d67845e98814839",
       "dependencies": {
         "bourbon": {
           "version": "4.3.4",

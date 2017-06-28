@@ -12,5 +12,8 @@ class SnippetsRepository extends ApiRepository {
     }
     return this.api.sendPost(`DP_API/${this.url}?inline_sideloads=true&include=snippet_translation`, data);
   }
+  deleteSnippet(snippetId) {
+    return this.api.sendDelete(`DP_API/${this.url}/${snippetId}`);
+  }
 }
 export default SnippetsRepository;

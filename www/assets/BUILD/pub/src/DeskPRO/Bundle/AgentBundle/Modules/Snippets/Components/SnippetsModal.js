@@ -4,6 +4,7 @@ import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Modal from 'deskpro-styles/lib/Components/Modal';
 import Button from 'deskpro-styles/lib/Components/Button';
+import ConfirmButton from 'deskpro-styles/lib/Components/ConfirmButton';
 import Input from 'deskpro-styles/lib/Components/Input';
 import Select from 'deskpro-styles/lib/Components/Select';
 import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
@@ -256,6 +257,17 @@ export class SnippetsModalContainer extends React.Component {
     ;
   };
 
+  deleteSnippet = () => {
+    const { snippet, dispatch, closeModal } = this.props;
+    dispatch(actions.deleteSnippet(snippet.get('id')))
+      .then(() => {
+        closeModal();
+      }, (error) => {
+        console.log(error);
+      })
+    ;
+  };
+
   addAttachment = (event, data) => {
     const blob = data.result && data.result.data ? data.result.data : {};
     // Push new blob to collection
@@ -378,6 +390,7 @@ export class SnippetsModalContainer extends React.Component {
         langId={this.state.langId}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
+        deleteSnippet={this.deleteSnippet}
         setLanguage={this.setLanguage}
         changeLabels={this.changeLabels}
         insertVariable={this.insertVariable}
@@ -409,6 +422,7 @@ export class SnippetsModal extends React.Component {
     labels:                  PropTypes.array,
     addAttachment:           PropTypes.func,
     saveSnippet:             PropTypes.func,
+    deleteSnippet:           PropTypes.func,
     setLanguage:             PropTypes.func,
     closeModal:              PropTypes.func,
     changeLabels:            PropTypes.func,
@@ -556,6 +570,7 @@ export class SnippetsModal extends React.Component {
       changeLabels,
       closeModal,
       saveSnippet,
+      deleteSnippet,
     } = this.props;
     if (!snippet) {
       return null;
@@ -578,6 +593,13 @@ export class SnippetsModal extends React.Component {
               <Button className="dp-button--l dp-button--secondary" onClick={closeModal}>
                 {agentPhrases.get('agent.general.cancel')}
               </Button>
+              <ConfirmButton
+                className="dp-button--l dp-button--secondary right"
+                onClick={deleteSnippet}
+                message={agentPhrases.get('agent.general.are_you_sure')}
+              >
+                {agentPhrases.get('agent.general.delete')}
+              </ConfirmButton>
             </div>
         }
         >
