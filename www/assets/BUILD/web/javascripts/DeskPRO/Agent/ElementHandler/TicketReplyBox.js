@@ -1323,9 +1323,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     this.isSnippetOpen = false;
   },
 
-	insertSnippet: function(snippet, blobs) {
+	insertSnippet: function(snippet, blobs, langId) {
 		var self = this;
     var ticketLangId = this.page ? this.page.getEl('value_form').find('.language_id').val() : 0;
+    if (langId) {
+    	ticketLangId = langId;
+		}
     var snippetId = snippet.id;
     var snippetCode = snippet.translations;
     var vars         = self.page.meta.api_data;
@@ -1343,13 +1346,13 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
       Array.each(options, function(info) {
         if (info[value_prop]) {
-          if (info[lang_id_prop] == ticketLangId) {
+          if (info[lang_id_prop] == parseInt(ticketLangId, 10)) {
             wantText = info[value_prop];
           }
-          if (info[lang_id_prop] == DESKPRO_PERSON_LANG_ID) {
+          if (info[lang_id_prop] === DESKPRO_PERSON_LANG_ID) {
             agentText = info[value_prop];
           }
-          if (info[lang_id_prop] == DESKPRO_DEFAULT_LANG_ID) {
+          if (info[lang_id_prop] === DESKPRO_DEFAULT_LANG_ID) {
             defaultText = info[value_prop];
           }
           useText = info[value_prop];
@@ -1369,20 +1372,20 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       return useText;
     };
 
-    Array.each(snippetCode, function (info) {
-      if (info.content) {
-        if (info.language_id === ticketLangId) {
-          wantText = info;
+    for (var i = 0; i < snippetCode.length; i++) {
+      if (snippetCode[i].content) {
+        if (snippetCode[i].language === parseInt(ticketLangId, 10)) {
+          wantText = snippetCode[i];
         }
-        if (info.language_id === DESKPRO_PERSON_LANG_ID) {
-          agentText = info;
+        if (snippetCode[i].language === DESKPRO_PERSON_LANG_ID) {
+          agentText = snippetCode[i];
         }
-        if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
-          defaultText = info;
+        if (snippetCode[i].language === DESKPRO_DEFAULT_LANG_ID) {
+          defaultText = snippetCode[i];
         }
-        useText = info;
+        useText = snippetCode[i];
       }
-    });
+		}
 
     if (wantText) {
       useText = wantText;

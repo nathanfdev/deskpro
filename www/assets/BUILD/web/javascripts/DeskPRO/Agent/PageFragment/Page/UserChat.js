@@ -621,7 +621,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     });
 	},
 
-	insertSnippet: function(snippet) {
+	insertSnippet: function(snippet, blobs, langId) {
 		var self = this;
     var snippetId = snippet.id;
     var snippetCode = snippet.translations;
@@ -630,8 +630,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     var useText;
     var result;
 
+    if (!langId) {
+      langId = DESKPRO_DEFAULT_LANG_ID;
+		}
+
     Array.each(snippetCode, function (info) {
-      if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
+      if (info.language === langId) {
         defaultText = info;
       }
       useText = info;

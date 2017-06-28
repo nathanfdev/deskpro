@@ -47,13 +47,19 @@ export class SnippetsListElement extends React.Component {
   }
 
   getLanguages() {
-    const { snippet, languages } = this.props;
+    const { snippet, languages, insertSnippet } = this.props;
     if (snippet.get('translations')) {
       const flags = [];
       snippet.get('translations').forEach((translation, key) => {
         const language = languages.find(l => l.get('id') === translation.get('language'));
         if (language.get('flag_image')) {
-          flags.push(<img key={key} src={language.get('flag_image')} alt={language.get('title')} />);
+          flags.push(
+            <img
+              key={key}
+              src={language.get('flag_image')}
+              alt={language.get('title')}
+              onClick={e => insertSnippet(e, snippet, language.get('id'))}
+            />);
         }
       });
       if (flags.length) {
@@ -76,7 +82,7 @@ export class SnippetsListElement extends React.Component {
     const { snippet, editSnippet, insertSnippet } = this.props;
     return (
       <div className="snippet_list_element_wrapper">
-        <div className="snippets__list__element" onClick={() => insertSnippet(snippet)}>
+        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet)}>
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
           <span className="shortcode dp-code">{`%${snippet.get('shortcut_code')}%`}</span><br />

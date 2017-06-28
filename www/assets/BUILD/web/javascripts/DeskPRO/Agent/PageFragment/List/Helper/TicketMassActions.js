@@ -922,9 +922,12 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     this.updatePositions();
   },
 
-  insertSnippet: function(snippet, blobs) {
+  insertSnippet: function(snippet, blobs, langId) {
     var self = this;
     var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+    if (langId) {
+      ticketLangId = langId;
+    }
     var snippetId = snippet.id;
     var snippetCode = snippet.translations;
 
@@ -935,20 +938,20 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     var wantText;
     var useText;
 
-    Array.each(snippetCode, function (info) {
-      if (info.content) {
-        if (info.language_id == ticketLangId) {
-          wantText = info;
+    for (var i = 0; i < snippetCode.length; i++) {
+      if (snippetCode[i].content) {
+        if (snippetCode[i].language === parseInt(ticketLangId, 10)) {
+          wantText = snippetCode[i];
         }
-        if (info.language_id == DESKPRO_PERSON_LANG_ID) {
-          agentText = info;
+        if (snippetCode[i].language === DESKPRO_PERSON_LANG_ID) {
+          agentText = snippetCode[i];
         }
-        if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-          defaultText = info;
+        if (snippetCode[i].language === DESKPRO_DEFAULT_LANG_ID) {
+          defaultText = snippetCode[i];
         }
-        useText = info;
+        useText = snippetCode[i];
       }
-    });
+    }
 
     if (wantText) {
       useText = wantText;

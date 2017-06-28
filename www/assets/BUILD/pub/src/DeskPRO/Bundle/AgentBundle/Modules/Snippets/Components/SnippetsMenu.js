@@ -30,8 +30,10 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0
   };
 
-  insertSnippet = (snippet) => {
-    this.props.insertSnippet(snippet.toJS(), this.props.blobs.toJS());
+  insertSnippet = (e, snippet, langId) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.insertSnippet(snippet.toJS(), this.props.blobs.toJS(), langId);
   };
 
   render() {
