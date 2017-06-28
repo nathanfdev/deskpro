@@ -83,7 +83,7 @@ class FilterChangeDetector
     /**
      * @var bool
      */
-    private $extended_log_info = true;
+    private $extended_log_info = false;
 
     /**
      * @var bool
