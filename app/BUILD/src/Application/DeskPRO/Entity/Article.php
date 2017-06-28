@@ -887,6 +887,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         );
 
         ObjectTranslatable::loadEntityMetadata($metadata);
+        $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }
 
     /**

@@ -630,5 +630,7 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
+
+        $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }
 }
