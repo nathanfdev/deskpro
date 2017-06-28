@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1498213649 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1498213649 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -36,7 +36,7 @@ class Build1498213649 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE tickets_search_active ADD email_account_id INT DEFAULT NULL');
+        $this->execSlowAlterTable('tickets_search_active', 'ADD email_account_id INT DEFAULT NULL');
     }
 
     public function run()
