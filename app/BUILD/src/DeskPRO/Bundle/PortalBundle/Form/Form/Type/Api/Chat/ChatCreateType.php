@@ -44,7 +44,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -118,8 +117,7 @@ class ChatCreateType extends AbstractType
         }
 
         $emailConstraints = [new Assert\Email(['strict' => true])];
-        if (($this->settingsResolver->isChatEmailValidation()
-            || $brandOptions->getChat()->isRequiredEmail()) && !$this->settingsResolver->isChatRequireLogin()) {
+        if ($brandOptions->getChat()->isRequiredEmail()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceEmail'], 100);
             $emailConstraints[] = new Assert\NotBlank();
         }
@@ -172,9 +170,7 @@ class ChatCreateType extends AbstractType
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonDataFromSession']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckRequireLogin']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetEmailValidationCode']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetVisitorId']);
     }
 
@@ -264,53 +260,6 @@ class ChatCreateType extends AbstractType
                 'email' => $person->getPrimaryEmailAddress(),
                 'name'  => $person->getDisplayName(),
             ]));
-        }
-    }
-
-    /**
-     * If portal chat settings require email validation we need to generate a validation code.
-     *
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onSetEmailValidationCode(FormEvent $event)
-    {
-        // Option is disabled, skipping
-        if (!$this->settingsResolver->isChatEmailValidation()) {
-            return;
-        }
-
-        // Chat requires user to be logged in, skipping
-        if ($this->settingsResolver->isChatRequireLogin()) {
-            return;
-        }
-
-        $form   = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
-
-        // Session has person, already logged in, skipping
-        if ($person) {
-            return;
-        }
-
-        /** @var ChatConversation $conversation */
-        $conversation = $event->getData();
-        $conversation->regenerateEmailValidationCode();
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onCheckRequireLogin(FormEvent $event)
-    {
-        $form   = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
-
-        if ($this->settingsResolver->isChatRequireLogin() && !$person) {
-            $form->addError(new FormError('Login required'));
         }
     }
 

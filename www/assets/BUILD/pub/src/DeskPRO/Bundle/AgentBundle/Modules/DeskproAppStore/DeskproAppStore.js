@@ -1,18 +1,15 @@
-import * as WidgetDOM from './WidgetDOM';
-
 import ContainerMounter from './Services/ContainerMounter';
 import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
 import ReduxActionDispatcher from './Services/ReduxActionDispatcher';
 import { filterAppManifestsConfig, newContextsStateSelector } from './Selectors/Main';
 import DeskproAppRegistry from './Domain/DeskproAppRegistry';
-import { loadApps, loadDevApp } from './Actions/Actions'
+import { loadApps, loadDevApp } from './Actions/Actions';
 
 import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
-import {AppServices} from './Services/AppServices';
-import {registerIncomingWidgetRequestListeners, dispatchOutgoingWidgetRequestOnIntercept} from './WidgetMessage';
+import { AppServices, mountContextInWindow } from './Services';
+import { registerIncomingWidgetRequestListeners, dispatchOutgoingWidgetRequestOnIntercept } from './WidgetMessage';
 
-class DeskproAppStore
-{
+class DeskproAppStore {
   /**
    * @param {Object} locationObject
    * @param {String} locationObject.file
@@ -24,8 +21,7 @@ class DeskproAppStore
    * @param {String} locationObject.origin
    * @return {DeskproAppStoreConfiguration}
    */
-  static configurationFromLocation(locationObject)
-  {
+  static configurationFromLocation(locationObject)  {
     const { search } = locationObject;
     let environment = 'production';
 
@@ -33,17 +29,17 @@ class DeskproAppStore
     for (const param of queryParams) {
       const [name, value] = param;
       // TODO put this together with the rest of the configuration
-      if ( name === 'appstore.environment' && -1 !== DeskproAppStoreConfiguration.validEnvironments.indexOf(value)) {
+      if (name === 'appstore.environment' && DeskproAppStoreConfiguration.validEnvironments.indexOf(value) !== -1) {
         environment = value;
         break;
       }
     }
 
     const location = {
-      origin: locationObject.origin,
-      host: locationObject.host,
+      origin:   locationObject.origin,
+      host:     locationObject.host,
       hostname: locationObject.hostname,
-      port: locationObject.port,
+      port:     locationObject.port,
       protocol: locationObject.protocol
     };
 
@@ -57,22 +53,34 @@ class DeskproAppStore
    * @param {DpApi} api
    * @param {DeskproAppStoreConfiguration} config
    */
-  static dispatchLoadAppManifestsAction(reduxDispatch, api, config)
-  {
-    const action = config.environment === 'development' ? loadDevApp(api, DeskproAppStoreConfiguration.devAppManifestUrl) : loadApps(api);
+  static dispatchLoadAppManifestsAction(reduxDispatch, api, config)  {
+    const shouldLoadDevApp = config.environment === 'development';
+    const action = shouldLoadDevApp ? loadDevApp(api, DeskproAppStoreConfiguration.devAppManifestUrl) : loadApps(api);
     reduxDispatch(action);
   }
 
   /**
-   * Initializes the components of the app store in the deskpro context
+   * Hook called before any other run activity begins
    *
-   * @param {DpApi} api
-   * @param {DeskPRO.MessageBroker} messageBroker
    * @param {Object} reduxStore
    * @param {Window} window
    */
-  static bootstrap(api, messageBroker, reduxStore, window)
-  {
+  static onAgentLegacyAppRun(reduxStore, window) {
+    // register the global object which is referenced by legacy code
+    window.DeskPRO_APPSTORE = {
+      dispatchOutgoingWidgetRequestOnIntercept // TODO this needs a better name
+    };
+  }
+
+  /**
+   * Hook called when the agent legacy app is ready and has loaded all the assets
+   *
+   * @param {Object} reduxStore
+   * @param {Window} window
+   * @param {DpApi} api
+   * @param {DeskPRO.MessageBroker} messageBroker
+   */
+  static onAgentLegacyAppReady(reduxStore, window, api, messageBroker)  {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
     const appServices = new AppServices({ api, window });
     registerIncomingWidgetRequestListeners(appServices);
@@ -83,40 +91,27 @@ class DeskproAppStore
 
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
 
-    /**
-     * @param {Context} context
-     * @param {ContainerMounter} containerMounter
-     */
-    const mountContext = (context, containerMounter) => {
-      // find the dom node to mount at
-      const mountAtNode = WidgetDOM.container.findContainerById(context.id, window.document);
-
-      // TODO have the context initiate any post-mounting activities. This is quick hack-fix
-      const nrOfWidgets = containerMounter.mountAt(context, mountAtNode);
-      if ( nrOfWidgets && ['ticket-sidebar', 'person-sidebar', 'org-sidebar'].indexOf(context.locationId) > -1 ) {
-        const tab = DeskPRO_Window.TabBar.getTab(context.tabId);
-        tab.page.updateAppsSidebar();
-      }
-    };
-
     // subscribe to redux store changes
-    reduxStore.subscribe( () => {
+    reduxStore.subscribe(() => {
       const contexts = newContextsStateSelector(reduxStore.getState());
       if (!contexts) { return; }
 
       const containerMounter = new ContainerMounter(reduxStore, reduxDispatcher, appRegistry);
       /** @var {Context} context **/
       for (const context of contexts.values()) {
-        mountContext(context, containerMounter);
+        mountContextInWindow(context, containerMounter, window);
       }
     });
 
-    // const validTargets = DeskproAppStoreConfiguration.validTargets;
-    // const domScanner = list => ContainerDOMScanner.fromAttributeName('data-deskproapp').filterAllByTargetTypeList(list, validTargets);
+    // listen to new pages / tabs being loaded
     DeskproWindowMessageBrokerAdapter.registerListener(messageBroker)(reduxDispatcher);
 
-    // TODO this will have to be re-thinked properly
-    window.DeskPRO_APPSTORE = { dispatchOutgoingWidgetRequestOnIntercept };
+    // find already loaded contexts in opened tabs, which have been initialized
+    const tabs = window.DeskPRO_Window.TabBar.getTabs();
+    const pages = tabs ? Object.keys(tabs).map(key => tabs[key].page).filter(page => !!page.wrapper) : [];
+    if (pages.length) {
+      reduxDispatcher.dispatchLoadPageFragmentApps(pages);
+    }
   }
 }
 

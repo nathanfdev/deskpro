@@ -1610,7 +1610,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	},
 
-	showRefreshAlert: function(admin_name) {
+	showRefreshAlert: function(admin_name, message, allowIgnore) {
 
 		var self = this;
 
@@ -1624,7 +1624,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				contentElement: $('#refresh_alert_overlay'),
 				zIndex: '50000',
 				escapeClose: false,
-				modalClickClose: false
+        addClose: false,
+				modalClickClose: false,
+        customClassname: 'refresh-alert'
 			});
 
 			$('#refresh_alert_overlay').find('button.okay-trigger').on('click', function(ev) {
@@ -1656,6 +1658,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var overlay = $('#refresh_alert_overlay');
 			overlay.find('.by_admin').hide();
 			overlay.find('.self').show();
+		}
+
+		if (message) {
+      $('#refresh_alert_overlay').find('.refresh_message').text(message).show();
+		} else {
+      $('#refresh_alert_overlay').find('.refresh_message').text(message).hide();
+		}
+
+		if (allowIgnore) {
+			$('#refresh_alert_overlay').find('.cancel-trigger').show();
+		} else {
+      $('#refresh_alert_overlay').find('.cancel-trigger').hide();
 		}
 
 		var time = 30;

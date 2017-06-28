@@ -1,15 +1,13 @@
 import { default as URL } from 'url-parse';
 
-export class AppUrlBuilder
-{
-  constructor({ baseUrl })
-  {
+export class AppUrlBuilder {
+  constructor({ baseUrl })  {
     this.props = { baseUrl };
 
     this.state = {
-      bundlePath: '',
+      bundlePath:     '',
       'dp.xconf.tag': '',
-    }
+    };
   }
 
   setBundlePath(path) {
@@ -27,7 +25,7 @@ export class AppUrlBuilder
     return this;
   }
 
-  build () {
+  build() {
     const path = [
       this.props.baseUrl,
       this.state.appVersion ? this.state.appVersion : null,
@@ -41,7 +39,7 @@ export class AppUrlBuilder
       const query = url.query;
       query['dp.xconf.tag'] = this.state['dp.xconf.tag'];
       url.set('query', query);
-    };
+    }
 
     return url.toString();
   }

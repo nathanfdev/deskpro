@@ -23,12 +23,16 @@ import {
   lastAgentIdSelector
 } from '../Selectors/chat';
 
+const visitorTrack = window.DP_SEND_VISITOR_TRACK;
+const visitorId    = visitorTrack && visitorTrack.visitorId ? visitorTrack.visitorId : '';
+
 // Chat setup actions
 export const setChatId = createAction('WIDGET_CHAT_SET_ID');
 export const unsetChatId = createAction(
   'WIDGET_CHAT_UNSET_ID',
   () => {
     if (storageAvailable('localStorage')) {
+      localStorage.removeItem('dpWidget.chat.id');
       localStorage.removeItem('dpWidget.chat.partial');
       localStorage.removeItem('dpWidget.chat.lastAgentId');
     }
@@ -113,41 +117,20 @@ export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FOR
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
   params => dispatch => widgetApi
-    .sendPost('DP_API/chats/create', params, { ...ajaxOptions })
+    .sendPost(`DP_API/chats/create?dp__v=${visitorId}`, params, { ...ajaxOptions })
     .success((response) => {
       const data = response.data || {};
-      const chatId = data.id;
+      const chatId = data.auth_id;
 
       if (chatId) {
-        if (storageAvailable('localStorage')) {
-          localStorage.removeItem('dpWidget.chat.lastAgentId');
+        if (storageAvailable('sessionStorage')) {
+          sessionStorage['dpWidget.chat.id'] = chatId;
+          sessionStorage.removeItem('dpWidget.chat.lastAgentId');
         }
 
         dispatch(setChatId(chatId));
       }
     })
-);
-
-export const validateEmail = createAction(
-  'WIDGET_CHAT_VALIDATE_EMAIL',
-  (chatId, params) => {
-    if (!chatId) {
-      return null;
-    }
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/validate/email`, params, { ...ajaxOptions });
-  }
-);
-
-export const regenerateEmailValidationCode = createAction(
-  'WIDGET_CHAT_REGENERATE_EMAIL_CODE',
-  (chatId) => {
-    if (!chatId) {
-      return null;
-    }
-
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/validate/email/regenerate?`, null, { ...ajaxOptions });
-  }
 );
 
 export const ackChatMessages = createAction(

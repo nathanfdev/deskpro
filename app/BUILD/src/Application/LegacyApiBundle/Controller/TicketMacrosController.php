@@ -36,6 +36,8 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMacroType;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Simple ticket macros CRUD.
@@ -66,7 +68,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      * @return JsonResponse;
      *
      * SWG\Api(
-     * 	path="/ticket_triggers",
+     * 	path="/ticket_macros",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get list of ticket macroses",
@@ -77,18 +79,19 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      */
     public function listAction()
     {
-        $macros = $this->em->getRepository('DeskPRO:TicketMacro')->getMacros();
+        $macros = $this->em->getRepository(TicketMacro::class)->getMacros();
+        $data   = [];
 
-        $data = [];
-
+        /** @var TicketMacro $macro */
         foreach ($macros as $macro) {
             $row = [
-                'id'         => $macro->id,
-                'title'      => $macro->title,
-                'is_enabled' => $macro->is_enabled,
-                'is_global'  => $macro->is_global,
-                'person_id'  => $macro->person ? $macro->person->id : null,
-                'person'     => $macro->person ? $macro->person->toApiData(true) : null,
+                'id'         => $macro->getId(),
+                'title'      => $macro->getTitle(),
+                'is_enabled' => $macro->isEnabled(),
+                'is_global'  => $macro->getIsGlobal(),
+                'person_id'  => $macro->getPerson() ? $macro->getPerson()->getId() : null,
+                'person'     => $macro->getPerson() ? $macro->getPerson()->toApiData(true) : null,
+                'department' => $macro->getDepartment() ? $macro->getDepartment()->toApiData(true) : null,
             ];
 
             $data[] = $row;
@@ -131,7 +134,8 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     //###################################################################################################################
 
     /**
-     * @param $id
+     * @param TicketMacro $macro
+     * @param Request     $request
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -173,40 +177,16 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
      *  )
      * )
      */
-    public function saveAction($id)
+    public function saveAction(TicketMacro $macro, Request $request)
     {
-        if ($id) {
-            $macro = $this->em->find('DeskPRO:TicketMacro', $id);
-            if (!$macro) {
-                throw $this->createNotFoundException();
-            }
-        } else {
-            $macro = new TicketMacro();
-        }
-
-        $macro->title = $this->in->getString('title');
-
-        if ($this->in->getBool('is_global')) {
-            $macro->is_global = true;
-        } else {
-            $macro->is_global = false;
-            $macro->person    = $this->container->getAgentData()->get($this->in->getUint('person_id'));
-        }
-
-        if (!$macro->person) {
-            $macro->is_global = true;
-        }
-
-        //TODO
-        //$actions = new MacroActions();
-        //$actions->importFromArray(array('actions' => $this->in->getArrayValue('actions')));
-        //$macro->actions = $actions;
+        $form = $this->createForm(TicketMacroType::class, $macro);
+        $form->submit($request->request->all());
 
         $this->em->persist($macro);
         $this->em->flush();
 
         return $this->createSuccessResponse([
-            'macro_id' => $macro->id,
+            'macro_id' => $macro->getId(),
         ]);
     }
 

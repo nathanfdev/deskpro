@@ -769,7 +769,7 @@ define [
       return def
 
     getFilterOrgEmailDomain: (options = {}) ->
-      options.propName = 'name'
+      options.propName = 'domain'
       options.operators = ['is', 'not', 'contains', 'notcontains']
       def = @getStandardInput(options)
       return def

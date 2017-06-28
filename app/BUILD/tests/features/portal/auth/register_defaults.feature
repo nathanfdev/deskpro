@@ -2,7 +2,8 @@
 Feature: Registration defaults from query params
 
   Background:
-    Given the following languages are enabled:
+    Given I have only default brand
+    And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
 

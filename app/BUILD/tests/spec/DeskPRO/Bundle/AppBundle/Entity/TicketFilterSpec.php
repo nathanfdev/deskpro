@@ -56,11 +56,13 @@ class TicketFilterSpec extends ObjectBehavior
 
     public function it_lets_you_change_updated_datetime()
     {
-        $new_date = new \DateTime();
+        $newDate = new \DateTime();
+        $time    = $newDate->getTimestamp();
 
-        $this->setDateUpdated($new_date);
+        $this->setDateUpdated($newDate);
 
-        $this->getDateUpdated()->shouldBeLike($new_date);
+        $this->getDateUpdated()->shouldHaveType(\DateTime::class);
+        $this->getDateUpdated()->getTimestamp()->shouldBeLike($time);
     }
 
     public function it_belongs_to_only_one_filter_set(TicketFilterSet $set)

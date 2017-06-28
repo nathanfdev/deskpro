@@ -44,15 +44,7 @@ class WidgetGlobalChatSettingsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('email_validation', ApiBooleanType::class, [
-                'property_path' => 'emailValidation',
-            ])
-            ->add('require_login', ApiBooleanType::class, [
-                'property_path' => 'requireLogin',
-            ])
-            ->add('enabled', ApiBooleanType::class)
-        ;
+        $builder->add('enabled', ApiBooleanType::class);
     }
 
     /**

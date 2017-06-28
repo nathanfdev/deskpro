@@ -40,61 +40,7 @@ class WidgetGlobalChatSettings
      *
      * @JMS\Type("boolean")
      */
-    private $requireLogin = false;
-
-    /**
-     * @var bool
-     *
-     * @JMS\Type("boolean")
-     */
-    private $emailValidation = false;
-
-    /**
-     * @var bool
-     *
-     * @JMS\Type("boolean")
-     */
     private $enabled = true;
-
-    /**
-     * @return bool
-     */
-    public function isRequireLogin()
-    {
-        return $this->requireLogin;
-    }
-
-    /**
-     * @param bool $requireLogin
-     *
-     * @return $this
-     */
-    public function setRequireLogin($requireLogin)
-    {
-        $this->requireLogin = $requireLogin;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEmailValidation()
-    {
-        return $this->emailValidation;
-    }
-
-    /**
-     * @param bool $emailValidation
-     *
-     * @return $this
-     */
-    public function setEmailValidation($emailValidation)
-    {
-        $this->emailValidation = $emailValidation;
-
-        return $this;
-    }
 
     /**
      * @return bool

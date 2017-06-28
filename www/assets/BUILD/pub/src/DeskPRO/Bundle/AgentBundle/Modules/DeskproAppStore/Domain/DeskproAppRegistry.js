@@ -1,21 +1,28 @@
-import AppConfiguration from './AppConfiguration'
-import WidgetConfiguration from './WidgetConfiguration'
 import uuid from 'node-uuid';
+import AppConfiguration from './AppConfiguration';
+import WidgetConfiguration from './WidgetConfiguration';
 
-class DeskproAppRegistry
-{
+class DeskproAppRegistry {
   /**
    * @param {Array<Object>} rawManifests
    * @param {DeskproAppStoreConfiguration} config
    * @return { DeskproAppRegistry }
    */
   static fromJS(rawManifests, config) {
-    let manifests;
-    if (config.environment == 'development') {
-      manifests = rawManifests.map(manifest => ({ id: 1, application_id: 1, baseUrl: config.endpoint, ...manifest, version: manifest.appVersion }));
+    // we need to process a bit the manifest before we can use it
+    let mapper;
+    if (config.environment === 'development') {
+      mapper = manifest => ({
+        id:             1,
+        application_id: 1,
+        baseUrl:        config.endpoint,
+        ...manifest,
+        version:        manifest.appVersion
+      });
     } else {
-      manifests = rawManifests.map(manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest}))
+      mapper = manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest });
     }
+    const manifests = rawManifests.map(mapper);
 
     const appList = manifests.map(manifest => AppConfiguration.fromJS(manifest));
     return new DeskproAppRegistry(appList);
@@ -32,16 +39,15 @@ class DeskproAppRegistry
    * @param {String} targetType
    * @return {Array<AppConfiguration>}
    */
-  getAppsConfigByTargetType = (targetType) => {
-    return this.appList.filter(app => app.hasTarget(targetType));
-  };
+  getAppsConfigByTargetType = targetType => this.appList.filter(app => app.hasTarget(targetType));
 
   /**
    * @param {String} targetType
    * @return {Array<WidgetConfiguration>}
    */
   getWidgetConfigByTargetType = (targetType) => {
-      return this.getAppsConfigByTargetType(targetType).map(app => DeskproAppRegistry.createWidget(targetType, app));
+    const mapper = app => DeskproAppRegistry.createWidget(targetType, app);
+    return this.getAppsConfigByTargetType(targetType).map(mapper);
   };
 
   /**
@@ -49,9 +55,8 @@ class DeskproAppRegistry
    * @param {AppConfiguration} app
    * @return {WidgetConfiguration}
    */
-  static createWidget(target, app)
-  {
-    //TODO the tag set here needs to match the tag set in the iframe by the SDK otherwise communication will not happen
+  static createWidget(target, app)  {
+    // TODO the tag set here needs to match the tag set in the iframe by the SDK otherwise communication will not happen
 
     const id = uuid.v4();
     const tag = [target, app.instanceId, id].join('-');
@@ -63,7 +68,7 @@ class DeskproAppRegistry
       parentTemplate: '<div class="{CLASS.ELEMENT}" />',
 
       autoResize: true,
-      scrolling: false,
+      scrolling:  false,
       tag,
       url,
 
@@ -71,61 +76,27 @@ class DeskproAppRegistry
 
       timeout: 3000, // millis
       // The properties they can (or must) pass down to my component
-      props: {
+      props:   {
 
         // WIDGET PROPERTIES
 
         widgetId: {
-          type: 'string',
+          type:     'string',
           required: true
         },
 
         onDpMessage: {
-          type: 'function',
+          type:     'function',
           required: true
         },
 
-        // INSTANCE PROPERTIES
-
-        appId: {
-          type: 'string',
+        instanceProps: {
+          type:     'object',
           required: true
         },
 
-        appTitle: {
-          type: 'string',
-          required: true
-        },
-
-        appPackageName: {
-          type: 'string',
-          required: true
-        },
-
-        instanceId: {
-          type: 'string',
-          required: true
-        },
-
-        // CONTEXT PROPERTIES
-
-        contextType: {
-          type: 'string',
-          required: true
-        },
-
-        contextEntityId: {
-          type: 'string',
-          required: true
-        },
-
-        contextLocationId: {
-          type: 'string',
-          required: true
-        },
-
-        contextTabId: {
-          type: 'string',
+        contextProps: {
+          type:     'object',
           required: true
         }
       }

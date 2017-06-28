@@ -161,6 +161,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.feedback:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType
+    arguments: ["@custom_field_manager"]
+    tags:
+      - { name: form.type }
+
   form.organization_member:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationMemberType
     arguments: ["@doctrine.orm.default_entity_manager"]

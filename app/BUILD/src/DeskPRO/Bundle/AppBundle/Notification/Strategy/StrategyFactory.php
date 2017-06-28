@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeskproDeliveryService;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
@@ -168,17 +170,28 @@ class StrategyFactory
      */
     private function buildDeliveryService($config)
     {
-        $delivery_service       = new DeliveryService($this->cliProcess);
+        $delivery_service       = new DeskproDeliveryService($this->cliProcess);
         $handler_alias_template = 'deskpro.notification.delivery.handler.%s';
+        $hasDbHandler           = false;
+
         foreach ($config as $handler_alias) {
             $handler_id = sprintf($handler_alias_template, $handler_alias);
             if ($this->container->has($handler_id)) {
                 /** @var DeliveryHandlerInterface $delivery_handler */
                 $delivery_handler = $this->container->get($handler_id);
                 $delivery_service->attachHandler($delivery_handler);
+
+                if ($delivery_handler->getType() === DbDeliveryHandler::TYPE) {
+                    $hasDbHandler = true;
+                }
             } else {
                 throw new \RuntimeException(sprintf('Delivery handler with alias [ %s ] wasn\'t found!', $handler_alias));
             }
+        }
+
+        if (!$hasDbHandler) {
+            $dbHandler = $this->container->get('deskpro.notification.delivery.handler.db');
+            $delivery_service->attachTargettedHandler($dbHandler);
         }
 
         return $delivery_service;

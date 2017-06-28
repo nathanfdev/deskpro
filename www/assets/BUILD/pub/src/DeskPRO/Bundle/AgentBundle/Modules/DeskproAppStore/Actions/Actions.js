@@ -1,59 +1,27 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import * as WidgetDOM from '../WidgetDOM'
-import { Context } from '../Domain/Context'
+import { createContextsFromPage } from '../Services';
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
 export const DESKPRO_APPSTORE_LOAD_DEV_APPS = 'DESKPRO_APPSTORE_LOAD_DEV_APPS';
 export const DESKPRO_APPSTORE_APP_MOUNTED = 'DESKPRO_APPSTORE_APP_MOUNTED';
 
-export const DESKPRO_APPSTORE_STATE_FIND = 'DESKPRO_APPSTORE__STATE_FIND';
-export const DESKPRO_APPSTORE_STATE_GET = 'DESKPRO_APPSTORE_STATE_GET';
-export const DESKPRO_APPSTORE_STATE_DELETE = 'DESKPRO_APPSTORE_STATE_DELETE';
-
-export const DESKPRO_APPSTORE_USER_GET = 'DESKPRO_APPSTORE_USER_GET';
-
-
 /**
-* @param {DeskPRO.Agent.PageFragment.Basic} page
-* @return Array<Context>
-*/
-function pageToContext(page)
-{
-  try {
-    const foundNodes = WidgetDOM.container.findAllFromList( page.wrapper.get() );
-    if (foundNodes.length === 0) { return []; }
-
-    // make sure all dom nodes have an id
-    WidgetDOM.container.ensureContainerIds(foundNodes);
-
-    // extract tab props
-    const { TYPENAME: type } = page;
-    const metadata = page.getMetaData(type);
-    const routeUrl = page.getMetaData('routeUrl');
-    const tab = DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl);
-    const tabProps = { type, entityId: metadata.id, tabId: tab.id };
-
-    // extract container props
-    const attributeToProp = ({ id, 'data-deskproapp': locationId }) => ({id, locationId});
-    const containerPropList = WidgetDOM.container.extractConfigurationFromList(foundNodes, attributeToProp);
-
-    // create context list
-    return containerPropList.map(containerProps => new Context(Object.assign({}, tabProps, containerProps)));
-  } catch (e) {
-    console.log('failed to extract app context from page fragment', e);
-    return [];
-  }
-}
-
-export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, pageToContext);
+ * @param {Array<DeskPRO.Agent.PageFragment.Basic>} pageList
+ * @param {Location} location
+ */
+const loadPageFragmentAppsHandler = (pageList, location) => pageList
+  .map(page => createContextsFromPage(page, location))
+  .reduce((acc, contextList) => acc.concat(contextList), [])
+;
+export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, loadPageFragmentAppsHandler);
 
 /**
  * creates an action that will load the app configuration for the current security principal
  */
 export const loadDevApp = createAction(
   DESKPRO_APPSTORE_LOAD_DEV_APPS,
-  //TODO put this together with the other constants
+  // TODO put this together with the other constants
   (api, manifestUrl) =>  api.sendGet(manifestUrl).then(httpResponse => httpResponse.data)
 );
 
@@ -71,112 +39,13 @@ export const loadApps = createAction(
  */
 export const appMounted = createAction(
   DESKPRO_APPSTORE_APP_MOUNTED,
-  (target) => new Promise((resolve, reject) => {
+  // TODO: handle reject case as well, new Promise((resolve, reject) => {
+  target => new Promise((resolve) => {
     setTimeout(() => {
-      const payload = {target};
+      const payload = { target };
       resolve(payload);
       // TODO do we need the event bus for deskpro
-    }, 2000)
+    }, 2000);
   })
 );
 
-/**
- * creates an action that will load the app configuration for the current security principal
- */
-export const findAppState = createAction(
-  DESKPRO_APPSTORE_STATE_FIND,
-  (appId, callback, api) =>  api.sendGet(`DP_API/apps/${appId}/state`)
-    .then(httpResponse => httpResponse.data)
-    .then(state => { callback(appId, state); return state; } )
-);
-
-/**
- * creates an action that will load the app configuration for the current security principal
- */
-export const getAppState = createAction(
-  DESKPRO_APPSTORE_STATE_GET,
-  (appId, name, scope, callback, api) =>  api.sendGet(`DP_API/apps/${appId}/state/${name}/${scope}`)
-    .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
-      if (httpResponse instanceof Error) {
-        return httpResponse;
-      }
-
-      if (404 === httpResponse.data.status) {
-        return null;
-      }
-
-      return new Error('failed to get app state');
-    })
-    .then(data => {
-      if (data instanceof Error) {
-        callback(appId, null);
-        throw data;
-      }
-      callback(appId, data);
-      return data;
-    })
-);
-
-/**
- * creates an action that will delete a state variable by name
- */
-export const deleteAppState = createAction(
-  DESKPRO_APPSTORE_STATE_DELETE,
-  (appId, name, callback, api) =>  api.sendDelete(`DP_API/apps/${appId}/state/${name}`)
-    .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
-      if (httpResponse instanceof Error) {
-        return httpResponse;
-      }
-
-      if (404 === httpResponse.data.status) {
-        return null;
-      }
-
-      return new Error('failed to delete app state');
-    })
-    .then(data => {
-      if (data instanceof Error) {
-        callback(appId, null);
-        throw data;
-      }
-      callback(appId, data);
-      return data;
-    })
-);
-
-/**
- * creates an action that will try to update a state variable if it exists, otherwise will attempt to create it
- */
-export const setAppState = createAction(
-  DESKPRO_APPSTORE_LOAD_APPS,
-  (appId, stateName, state, callback, api) =>  api.sendPut(`DP_API/apps/${appId}/state/${stateName}`, state)
-    .then(httpResponse => httpResponse.data)
-    .catch(httpResponse => {
-      if (httpResponse instanceof Error) {
-        return httpResponse;
-      }
-
-      // no previous state at that key, let's try and create it
-      if (404 === httpResponse.data.status) {
-          return api.sendPost(`DP_API/apps/${appId}/state`, state).then(httpResponse => httpResponse.data);
-      }
-
-      return new Error('failed to set app state');
-    })
-    .then(response => { callback(appId, state); return state; } )
-    .then(data => {
-      if (data instanceof Error) {
-        callback(appId, null);
-        throw data;
-      }
-      callback(appId, data);
-      return data;
-    })
-);
-
-export const getUser = createAction(
-  DESKPRO_APPSTORE_USER_GET,
-  (appId, callback, api) => callback(appId, { id: window.DP_PERSON_ID, email: window.DP_PERSON_EMAIL })
-);

@@ -82,7 +82,6 @@ export default class PortalSimpleSelectBox extends React.Component {
         filterText:     '',
         selectedOption: null,
         value:          nextProps.multiple ? (nextProps.value || []) : nextProps.value,
-        expanded:       nextProps.expanded || false,
         level:          nextProps.level || 1
       });
     } else if (nextProps.value && this.state.value !== nextProps.value) {
@@ -113,7 +112,7 @@ export default class PortalSimpleSelectBox extends React.Component {
 
   onClickOption = (option) => {
     this.changeToOption(option);
-    if (this.state.expanded) {
+    if (this.state.expanded && !this.props.multiple) {
       this.toggleExpanded();
     }
   };

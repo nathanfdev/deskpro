@@ -236,7 +236,7 @@ class NotificationController extends BaseController
         $secret   = $pusherModel->getSecret();
         $app_id   = $pusherModel->getId();
 
-        $p = new \Pusher($auth_key, $secret, $app_id);
+        $p = new \Pusher($auth_key, $secret, $app_id, ['cluster' => $pusherModel->getCluster()]);
 
         $handler = new ArrayHandler();
         $handler->setFormatter(new LineFormatter('[%datetime%] %message%'));

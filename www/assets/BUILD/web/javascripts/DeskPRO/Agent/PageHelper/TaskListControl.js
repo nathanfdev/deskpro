@@ -115,7 +115,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 				if (!val) {
 					val = '';
-					label = 'Me';
+					label = 'Unassigned';
 				}
 
 				row.find('.assigned_agent').find('label').text(label);
@@ -124,6 +124,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				});
 			});
 		});
+
 		el.on('click', '.opt-trigger.visibility', function(ev) {
 			openForEl = $(this).closest('article.task');
 			statusMenu.open(ev);

@@ -178,15 +178,17 @@ class AppEnv implements AppEnvInterface
     /**
      * {@inheritdoc}
      */
-    public function getConsolePhpCommand($params)
+    public function getConsolePhpCommand($params, $useAppDir = true)
     {
         if (is_array($params)) {
             $params = array_map('escapeshellarg', $params);
             $params = implode(' ', $params);
         }
 
+        $binRootDir = $useAppDir ? $this->getAppDir() : $this->getDpRoot();
+
         $cmd = escapeshellarg($this->getConfig('paths.php_path')).' '
-            .escapeshellarg($this->getAppDir().DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console').' '
+            .escapeshellarg($binRootDir.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console').' '
             .(defined('DP_PHP_BIN_ARGS') ? DP_PHP_BIN_ARGS.' ' : '')
             .$params;
 

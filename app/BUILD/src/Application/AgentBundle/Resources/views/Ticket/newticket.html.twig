@@ -385,7 +385,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
 									{% endif %}
 									<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" /><span class="billing-seconds-input">:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" /></span>
+						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="minutes" size="2" placeholder="M" maxlength="2" /><span class="billing-seconds-input">:<input type="text" id="{{ baseId }}_billing_seconds" name="seconds" size="2" placeholder="S" maxlength="2" /></span>
 					</span>
 					<span class="billing-form-buttons">
 						<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>

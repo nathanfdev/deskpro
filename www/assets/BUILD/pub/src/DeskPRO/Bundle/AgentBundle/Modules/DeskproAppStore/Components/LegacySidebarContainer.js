@@ -3,19 +3,18 @@ import DeskproAppContainer from './DeskproAppContainer';
 import LegacyAppSidebar from './LegacyAppSidebar';
 import LegacyAppIcons from './LegacyAppIcons';
 
-class LegacySidebarContainer extends React.Component
-{
+class LegacySidebarContainer extends React.Component {
   static propTypes = {
-    widgetsConfigList: PropTypes.array.isRequired
-    , dispatchIncomingWidgetMessage: PropTypes.func.isRequired
+    widgetsConfigList:             PropTypes.array.isRequired,
+    dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
 
-    , context: PropTypes.object.isRequired
-    , configuration: PropTypes.object.isRequired
+    context:       PropTypes.object.isRequired,
+    configuration: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.iconsDOMListeners = { mouseout: [], mouseover: [], click: [] }
+    this.iconsDOMListeners = { mouseout: [], mouseover: [], click: [] };
   }
 
   componentDidMount() {
@@ -24,7 +23,7 @@ class LegacySidebarContainer extends React.Component
 
     // TODO: refactor obviously
     let onMouseOverToggle = true;
-    const onMouseOverListener = e => {
+    const onMouseOverListener = (e) => {
       if (onMouseOverToggle) {
         onMouseOverToggle = false;
         this.onMouseOver(e);
@@ -33,7 +32,7 @@ class LegacySidebarContainer extends React.Component
     iconsContainer.addEventListener('mouseover', onMouseOverListener);
     this.iconsDOMListeners.mouseover.push(onMouseOverListener);
 
-    const onMouseOutListener = e => onMouseOverToggle = true;
+    const onMouseOutListener = () => { onMouseOverToggle = true; };
     iconsContainer.addEventListener('mouseout', onMouseOutListener);
     this.iconsDOMListeners.mouseout.push(onMouseOverListener);
 
@@ -43,19 +42,19 @@ class LegacySidebarContainer extends React.Component
     // add app icons
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
     const { widgetsConfigList } = this.props;
-    widgetsConfigList.forEach(widgetConfiguration => {
+    widgetsConfigList.forEach((widgetConfiguration) => {
       const { baseUrl, assets } = widgetConfiguration.appConfig;
       appIcons.addAppIcon(assets.getIconUrl(baseUrl));
     });
 
-    //show legacy content if it is available
+    // show legacy content if it is available
     if (appIcons.hasLegacyAppIcons()) {
       const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
       sidebar.showLegacyContent();
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     const { configuration } = this.props;
     const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
 
@@ -67,13 +66,12 @@ class LegacySidebarContainer extends React.Component
   }
 
   onMouseOver = (e) => {
-
     const { target } = e;
     const { configuration } = this.props;
 
     const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
     if (sidebar.isLocked()) {
-      return ;
+      return;
     }
 
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
@@ -84,14 +82,13 @@ class LegacySidebarContainer extends React.Component
     }
   };
 
-  onMouseClick = (e) =>
-  {
+  onMouseClick = (e) =>  {
     const { target } = e;
     const { configuration } = this.props;
 
     const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
-    if (! sidebar.isLocked()) {
-      return ;
+    if (!sidebar.isLocked()) {
+      return;
     }
 
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
@@ -109,17 +106,13 @@ class LegacySidebarContainer extends React.Component
    */
   render() {
     return (<DeskproAppContainer
-      widgetsConfigList = {this.props.widgetsConfigList}
-      dispatchIncomingWidgetMessage = {this.props.dispatchIncomingWidgetMessage}
-      context = {this.props.context}
-      configuration = {this.props.configuration}
+      widgetsConfigList={this.props.widgetsConfigList}
+      dispatchIncomingWidgetMessage={this.props.dispatchIncomingWidgetMessage}
+      context={this.props.context}
+      configuration={this.props.configuration}
     />);
   }
 }
 
 export default LegacySidebarContainer;
-
-
-
-
 

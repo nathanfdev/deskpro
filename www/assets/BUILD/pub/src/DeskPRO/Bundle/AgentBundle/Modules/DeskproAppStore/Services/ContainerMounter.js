@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 
 import DeskproAppContainer from '../Components/DeskproAppContainer';
 import LegacySidebarContainer from '../Components/LegacySidebarContainer';
@@ -8,20 +9,16 @@ import LegacyAppSidebar from '../Components/LegacyAppSidebar';
 import ContainerConfiguration from './ContainerConfiguration';
 import { dispatchIncomingWidgetMessage } from '../WidgetMessage';
 
-import { Provider } from 'react-redux';
-
 /**
  * This class mounts the react container components
  */
-class ContainerMounter
-{
+class ContainerMounter {
   /**
    * @param reduxStore
    * @param {ReduxActionDispatcher} appstoreDispatcher
    * @param {DeskproAppRegistry} appRegistry
    */
-  constructor(reduxStore, appstoreDispatcher, appRegistry)
-  {
+  constructor(reduxStore, appstoreDispatcher, appRegistry)  {
     this.reduxStore = reduxStore;
     this.appstoreDispatcher = appstoreDispatcher;
     this.appRegistry = appRegistry;
@@ -32,17 +29,18 @@ class ContainerMounter
    * @param {Context} context
    * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchIncomingWidgetMessage, context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *}}
    */
-  createProps = (configuration, context) =>
-  {
-      const { appstoreDispatcher, appRegistry } = this;
+  createProps = (configuration, context) =>  {
+    const { appstoreDispatcher, appRegistry } = this;
 
-      const targetType = configuration.targetType;
-      const widgetsConfigList = appRegistry.getWidgetConfigByTargetType(targetType);
+    const targetType = configuration.targetType;
+    const widgetsConfigList = appRegistry.getWidgetConfigByTargetType(targetType);
 
-      return {
-        widgetsConfigList, dispatchIncomingWidgetMessage
-        , context, appstoreDispatcher, configuration
-      };
+    return {
+      widgetsConfigList,
+      dispatchIncomingWidgetMessage,
+      context,
+      appstoreDispatcher
+    };
   };
 
   /**
@@ -50,8 +48,7 @@ class ContainerMounter
    * @param {Object} domNode
    * @return {integer}
    */
-  mountAt = (context, domNode) =>
-  {
+  mountAt = (context, domNode) =>  {
     const configuration = ContainerConfiguration.fromDOM(domNode);
     const props = this.createProps(configuration, context);
 
@@ -82,7 +79,7 @@ class ContainerMounter
     const appContainer = React.createElement(DeskproAppContainer, props);
     const { reduxStore } = this;
 
-    const reactElement = <Provider store={ reduxStore }>{ appContainer }</Provider>;
+    const reactElement = <Provider store={reduxStore}>{ appContainer }</Provider>;
     ReactDOM.render(reactElement, reactContainer);
 
     return reactElement;
@@ -90,16 +87,16 @@ class ContainerMounter
 
   /**
    * @param dom
-   * @param {ContainerConfiguration} config
+   * @param {ContainerConfiguration} configuration
    * @param {Object} props
    * @return {XML}
    */
-  renderLegacySidebar = (dom, config, props) => {
+  renderLegacySidebar = (dom, configuration, props) => {
     const { reduxStore } = this;
-    const reactContainer = LegacyAppSidebar.fromSelector(config.renderSidebarContainer).getContentRoot();
+    const reactContainer = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).getContentRoot();
 
-    const container = React.createElement(LegacySidebarContainer, props);
-    const reactElement = <Provider store={ reduxStore }>{ container }</Provider>;
+    const container = React.createElement(LegacySidebarContainer, { ...props, configuration });
+    const reactElement = <Provider store={reduxStore}>{ container }</Provider>;
 
     ReactDOM.render(reactElement, reactContainer);
     return reactElement;

@@ -32,7 +32,6 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -40,8 +39,6 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 /**
  * Class AbstractApiController.
@@ -80,42 +77,6 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @return null|\Symfony\Component\Security\Core\Authentication\Token\TokenInterface
-     */
-    protected function getToken()
-    {
-        $token = $this->get('security.token_storage')->getToken();
-        if (!$token instanceof UsernamePasswordToken || $token->getProviderKey() !== 'portal_api') {
-            throw new AccessDeniedHttpException('Invalid token');
-        }
-
-        return $token;
-    }
-
-    /**
-     * @return Session|null
-     */
-    protected function getApiSession()
-    {
-        $session = $this->getDoctrine()->getRepository(Session::class)->find($this->getToken()->getCredentials());
-        if (!$session) {
-            throw new AccessDeniedHttpException('Invalid token');
-        }
-        $ss = $this->getContainer()->getSession();
-        if ($ss->has('impersonate')) {
-            $person = $this->getContainer()->get('doctrine.orm.default_entity_manager')->find(
-                Person::class,
-                $ss->get('impersonate')
-            );
-            if ($person) {
-                $session->setPerson($person);
-            }
-        }
-
-        return $session;
-    }
-
-    /**
      * @return DeskproContainer|\Symfony\Component\DependencyInjection\ContainerInterface
      */
     protected function getContainer()
@@ -146,8 +107,12 @@ abstract class AbstractApiController extends FOSRestController
      */
     protected function getWidgetOption($key)
     {
+        if (!$this->getUser() instanceof Person || !$this->getUser()->getId()) {
+            return;
+        }
+
         $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
-            'name' => $this->getWidgetOptionDataStoreName(),
+            'name' => 'dpWidgetOptions.'.$this->getUser()->getId(),
         ]);
 
         return $dataStore ? $dataStore->getData($key) : null;
@@ -159,26 +124,22 @@ abstract class AbstractApiController extends FOSRestController
      */
     protected function setWidgetOption($key, $value)
     {
+        if (!$this->getUser() instanceof Person || !$this->getUser()->getId()) {
+            return;
+        }
+
         $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
-            'name' => $this->getWidgetOptionDataStoreName(),
+            'name' => 'dpWidgetOptions.'.$this->getUser()->getId(),
         ]);
 
         if (!$dataStore) {
             $dataStore = new DataStore();
-            $dataStore->setName($this->getWidgetOptionDataStoreName());
+            $dataStore->setName('dpWidgetOptions.'.$this->getUser()->getId());
         }
 
         $dataStore->setData($key, $value);
         $this->getManager()->persist($dataStore);
         $this->getManager()->flush($dataStore);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getWidgetOptionDataStoreName()
-    {
-        return 'dpWidgetOptions.'.$this->getToken()->getCredentials();
     }
 
     /**
@@ -188,25 +149,11 @@ abstract class AbstractApiController extends FOSRestController
     {
         $storedChatId = $this->getWidgetOption('chat_id');
         if ($storedChatId) {
+            list($storedChatId) = explode(':', $storedChatId);
+
             $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($storedChatId);
             if ($conversation && !$conversation->getDateEnded()) {
                 return $conversation;
-            }
-        }
-
-        return;
-    }
-
-    /**
-     * @return int|null
-     */
-    protected function getLastChatId()
-    {
-        $storedChatId = $this->getWidgetOption('chat_id');
-        if ($storedChatId) {
-            $conversation = $this->getManager()->getRepository(ChatConversation::class)->find($storedChatId);
-            if ($conversation && !$conversation->getDateEnded()) {
-                return $conversation->getId();
             }
         }
 

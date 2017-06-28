@@ -7,7 +7,6 @@ Feature: Widget Chat
     And I have only default brand
     # This is needed because it will enforce usergroups creation
     And a user with "user@deskpro.dev" email exists
-    And I have guest portal api session with code "AAAAAAAAAAAAAAA"
     And only the following "Department" records exist:
       | #   | title   | is_chat_enabled | parent | brands           |
       | d1  | Dep1    | 1               |        | [{defaultBrand}] |
@@ -25,7 +24,7 @@ Feature: Widget Chat
     # This need to be done because otherwise there wouldn't be request in request stack
     Given I send a GET request to "/"
     And "requestUserInfo" widget brand chat setting is set to 1 for "defaultBrand"
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/create" with parameters:
       | key             | value |
       | chat_department | {d1}  |
     Then the response status code should be 400
@@ -36,7 +35,7 @@ Feature: Widget Chat
      # This need to be done because otherwise there wouldn't be request in request stack
     Given I send a GET request to "/"
     And "requestUserInfo" widget brand chat setting is set to 1 for "defaultBrand"
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/create" with parameters:
       | key             | value |
       | chat_department | 404404  |
     Then the response status code should be 400
@@ -47,7 +46,7 @@ Feature: Widget Chat
      # This need to be done because otherwise there wouldn't be request in request stack
     Given I send a GET request to "/"
     And "requestUserInfo" widget brand chat setting is set to 1 for "defaultBrand"
-    When I send a POST request to "/portal/api/chats/create?dpsid={sid_AAAAAAAAAAAAAAA}" with parameters:
+    When I send a POST request to "/portal/api/chats/create" with parameters:
       | key             | value |
       | chat_department | {cd1}  |
     Then the response status code should be 200

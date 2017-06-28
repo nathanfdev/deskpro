@@ -84,7 +84,7 @@ class ProxyRequestValidator
 
         foreach ($request->getWhiteList() as $urlPattern) {
             if (preg_match('#^/(.+)/$#', $urlPattern, $m)) {
-                $urlPattern = preg_quote($m[1]);
+                $urlPattern = $m[1];
 
                 if (RegexUtils::safePregMatch("#$urlPattern#", $baseProxyUrl)) {
                     return;

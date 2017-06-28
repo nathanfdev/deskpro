@@ -30,6 +30,7 @@ namespace Application\DeskPRO\Form\Type;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelTask;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
@@ -37,10 +38,8 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -50,8 +49,14 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class TaskType extends AbstractType implements EventSubscriberInterface
+/**
+ * Class TaskType.
+ */
+class TaskType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -97,15 +102,20 @@ class TaskType extends AbstractType implements EventSubscriberInterface
                 'required' => false,
                 'property' => 'name',
             ])
+            ->add('assigned_department', EntityType::class, [
+                'class'         => Department::class,
+                'required'      => false,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')->where('p.is_tickets_enabled = true');
+                },
+            ])
             ->add('ticket', NumberType::class, [
                 'required' => false,
                 'mapped'   => false,
             ])
-            ->add('tickets', CollectionType::class, [
-                'entry_type'    => EntityType::class,
-                'entry_options' => ['class' => Ticket::class],
-                'allow_add'     => true,
-                'allow_delete'  => true,
+            ->add('tickets', EntityType::class, [
+                'class'    => Ticket::class,
+                'multiple' => true,
             ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelTask::class,
@@ -114,36 +124,45 @@ class TaskType extends AbstractType implements EventSubscriberInterface
             ])
         ;
 
-        $builder->addEventSubscriber($this);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
-     * just moved some code from controller.
+     * Parse assigned target type.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
     public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (empty($data['assigned_agent'])) {
+        if (empty($data['assigned_agent']) || false === strpos($data['assigned_agent'], ':')) {
             return;
         }
 
-        if (false === strpos($data['assigned_agent'], ':')) {
-            return;
-        }
+        list($type, $id) = explode(':', $data['assigned_agent']);
 
-        list($type, $id)        = explode(':', $data['assigned_agent']);
-        $data['assigned_agent'] = null;
-        'agent' === $type
-            ? $data['assigned_agent']      = $id
-            : $data['assigned_agent_team'] = $id;
+        $data['assigned_agent']      = null;
+        $data['assigned_agent_team'] = null;
+        $data['assigned_department'] = null;
+
+        if ($type === 'agent') {
+            $data['assigned_agent'] = $id;
+        } elseif ($type === 'agent_team') {
+            $data['assigned_agent_team'] = $id;
+        } elseif ($type === 'department') {
+            $data['assigned_department'] = $id;
+        }
 
         $event->setData($data);
     }
 
     /**
-     * additional associations.
+     * Additional associations.
+     *
+     * @internal
      *
      * @param FormEvent $event
      */
@@ -187,11 +206,21 @@ class TaskType extends AbstractType implements EventSubscriberInterface
 
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();
+
+        // set task creator
         if ($data instanceof Task && !$data->getId()) {
             $data->setPerson($config->getOption('person'));
         }
+
+        // assign to myself by default
+        if (!$data->getAssignedAgent() && !$data->getAssignedDepartment() && !$data->getAssignedAgentTeam()) {
+            $data->setAssignedAgent($config->getOption('person'));
+        }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -206,16 +235,11 @@ class TaskType extends AbstractType implements EventSubscriberInterface
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'task';
-    }
-
-    public static function getSubscribedEvents()
-    {
-        return [
-            FormEvents::PRE_SUBMIT  => 'onPreSubmit',
-            FormEvents::POST_SUBMIT => 'onPostSubmit',
-        ];
     }
 }

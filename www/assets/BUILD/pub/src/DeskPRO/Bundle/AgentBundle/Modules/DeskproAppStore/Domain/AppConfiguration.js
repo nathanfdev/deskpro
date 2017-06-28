@@ -1,8 +1,7 @@
-import { AppUrlBuilder } from './AppUrlBuilder'
-import { AppAssets } from './AppAssets'
+import { AppUrlBuilder } from './AppUrlBuilder';
+import { AppAssets } from './AppAssets';
 
-class AppConfiguration
-{
+class AppConfiguration {
   /**
    * @param {object} config
    * @return {AppConfiguration}
@@ -10,13 +9,13 @@ class AppConfiguration
   static fromJS(config) {
     const { id, application_id, settings, targets, baseUrl, title, name, version } = config;
     return new AppConfiguration({
-      instanceId: id.toString(),
+      instanceId:    id.toString(),
       applicationId: application_id.toString(),
       settings,
       targets,
       baseUrl,
       title,
-      packageName: name,
+      packageName:   name,
       version
     });
   }
@@ -31,7 +30,7 @@ class AppConfiguration
    * @param {String} packageName
    * @param version
    */
-  constructor({instanceId, applicationId, settings, targets, baseUrl, title, packageName, version}) {
+  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version }) {
     this.props = {
       instanceId,
       applicationId,
@@ -87,14 +86,14 @@ class AppConfiguration
   /**
    * @return {AppAssets}
    */
-  get assets() { return new AppAssets({ appVersion: 'v' + this.props.version }); }
+  get assets() { return new AppAssets({ appVersion: `v${this.props.version}` }); }
 
   /**
    * @param {String} target
    * @return {boolean}
    */
   hasTarget = (target) => {
-    const targetDefs = this.targets.filter( targetDef => targetDef.target === target );
+    const targetDefs = this.targets.filter(targetDef => targetDef.target === target);
     return targetDefs.length > 0;
   };
 
@@ -103,7 +102,7 @@ class AppConfiguration
    * @return {AppUrlBuilder|null}
    */
   getUrlBuilder = (target) => {
-    const targetDefs = this.targets.filter( targetDef => targetDef.target === target );
+    const targetDefs = this.targets.filter(targetDef => targetDef.target === target);
     if (targetDefs.length === 0) {
       return null;
     }
@@ -111,13 +110,14 @@ class AppConfiguration
     const { baseUrl } = this.props;
     const builder = new AppUrlBuilder({ baseUrl });
     builder.setBundlePath(targetDefs[0].url);
-    builder.setAppVersion('v' + this.props.version);
+    builder.setAppVersion(`v${this.props.version}`);
 
     return builder;
   };
 
   toJS = () => {
-    const js = { id: this.instanceId, applicationId: this.applicationId, settings: this.settings, targets: this.targets };
+    const { instanceId:id, applicationId, settings, targets } = this;
+    const js = { id, applicationId, settings, targets };
     return JSON.parse(JSON.stringify(js));
   }
 }

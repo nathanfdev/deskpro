@@ -3,6 +3,8 @@ import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
 import { addToCollection, updateCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 
+/* eslint no-undef: "warn" */
+
 class ActionAlertsHandler {
   constructor(props) {
     this.options = {};
@@ -48,6 +50,23 @@ class ActionAlertsHandler {
         break;
       case 'organization.added':
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        break;
+      case 'helpdesk.agent.refresh_interface': {
+        const { who, message, isIgnoreAllowed, reasonCode } = payload.data;
+        if (reasonCode === 'upgrade_complete') {
+          if (!DeskPRO_Window.update_running) {
+            // the upgrading message was never disaplyed,
+            // show a fake one now and then refresh
+            $('#reload_overlay').show();
+            $('#reload_overlay_updates').show();
+          }
+
+          // on a slight delay to let any offline trigger files to be unset
+          window.setTimeout(() => window.location.reload(false), 5000);
+        } else {
+          DeskPRO_Window.showRefreshAlert(who, message, isIgnoreAllowed);
+        }
+      }
         break;
       default:
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);

@@ -16,6 +16,7 @@
 						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Macros <i class="fa fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
 						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Macros <i class="fa fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
 						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Macros <i class="fa fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'department';">Department Macros <i class="fa fa-check" ng-show="display_filter.type == 'department'"></i></a></li>
 
 						<li class="divider" ng-show="display_filter.type == 'agent'"></li>
 						<li class="dropdown-header" ng-show="display_filter.type == 'agent'">Filter</li>
@@ -45,7 +46,8 @@
 						<div class="pull-right">
 							<em class="tag"style="margin-left: 6px;">
 								<span ng-if="macro.is_global">Global</span>
-								<span ng-if="!macro.is_global && macro.person_id">{{ ng_var('macro.person.display_name') }}</span>
+								<span ng-if="!macro.is_global && macro.person">{{ ng_var('macro.person.display_name') }}</span>
+								<span ng-if="!macro.is_global && macro.department">{{ ng_var('macro.department.title') }}</span>
 							</em>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>

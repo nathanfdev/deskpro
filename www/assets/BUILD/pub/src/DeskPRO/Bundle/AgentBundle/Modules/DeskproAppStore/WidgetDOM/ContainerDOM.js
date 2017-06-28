@@ -6,14 +6,12 @@ const hasAttributeWithValue = (dom, attributeName, valueList) => {
 };
 
 
-export class ContainerDOM
-{
+export class ContainerDOM {
   /**
    * @param attributeName
    * @return {ContainerDOM}
    */
-  static fromAttributeName(attributeName)
-  {
+  static fromAttributeName(attributeName)  {
     return new ContainerDOM(attributeName);
   }
 
@@ -22,7 +20,7 @@ export class ContainerDOM
    */
   constructor(attributeName) {
     this.attributeName = attributeName;
-    this.selector =  [ '[', attributeName, ']' ].join('');
+    this.selector =  ['[', attributeName, ']'].join('');
   }
 
   /**
@@ -33,10 +31,10 @@ export class ContainerDOM
    * @param attributeNameToPropName
    */
   extractContainerConfiguration = (dom, attributeNameToPropName) => {
-    if (! this.isContainerElement(dom)) { return null; } // TODO is it better to throw error ?
+    if (!this.isContainerElement(dom)) { return null; } // TODO is it better to throw error ?
 
     const attributes = {};
-    for(let i = dom.attributes.length - 1; i >= 0; i--) {
+    for (let i = dom.attributes.length - 1; i >= 0; i--) {
       const attr = dom.attributes[i];
       if (this.isContainerAttribute(attr)) {
         attributes[attr.name] = attr.value;
@@ -71,9 +69,9 @@ export class ContainerDOM
    * @param domAttr
    * @return {boolean}
    */
-  isContainerAttribute = domAttr => {
+  isContainerAttribute = (domAttr) => {
     const { attributeName } = this;
-    const attributePrefix = attributeName + '-';
+    const attributePrefix = `${attributeName}-`;
     const { name } = domAttr;
 
     return name === attributeName || name === 'id' || name.substr(0, attributePrefix.length) === attributePrefix;
@@ -85,7 +83,7 @@ export class ContainerDOM
    * @param dom
    * @return {string|null}
    */
-  ensureContainerId = dom => {
+  ensureContainerId = (dom) => {
     if (!this.isContainerElement(dom) || dom.id) {
       return null;
     }
@@ -108,7 +106,7 @@ export class ContainerDOM
    */
   findContainerById = (id, document) => {
     const element = document.getElementById(id);
-    if (! this.isContainerElement(element)) { return null; }
+    if (!this.isContainerElement(element)) { return null; }
 
     return element;
   };
@@ -128,17 +126,16 @@ export class ContainerDOM
    * @param {Array} list - A list of DOM Nodes who might contain container nodes
    * @return {Array}
    */
-  findAllFromList = list =>
-  {
+  findAllFromList = (list) =>  {
     /**
      * @param {Array} containerList
      * @param {Array} found
      * @return {*}
      */
     const reducer = (containerList, found) => {
-      if (! found.length) { return containerList; }
+      if (!found.length) { return containerList; }
 
-      containerList.push.apply(containerList, found);
+      containerList.push(...found);
       return containerList;
     };
 

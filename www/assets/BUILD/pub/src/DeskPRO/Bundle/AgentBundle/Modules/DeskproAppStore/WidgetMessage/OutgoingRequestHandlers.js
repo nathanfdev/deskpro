@@ -10,7 +10,7 @@ import { createDispatchRequestResponse, createDispatchFireAndForget } from './Me
  * @param {AppServices} services
  * @constructor
  */
-export const DEFAULT_HANDLER = (send, widget, message, services) => send(message);
+export const DEFAULT_HANDLER = (send, widget, message, services) => send(message); // eslint-disable-line no-unused-vars
 
 /**
  * @param {function} send
@@ -19,8 +19,8 @@ export const DEFAULT_HANDLER = (send, widget, message, services) => send(message
  * @param {AppServices} services
  * @constructor
  */
-export const EVENT_TICKET_REPLY = (send, widget, message, services) => {
-  const { ticket_id, meta } = message;
+export const EVENT_TICKET_REPLY = (send, widget, message, services) => { // eslint-disable-line no-unused-vars
+  const { ticket_id, meta } = message; // eslint-disable-line no-unused-vars
   const { api_data, hasBilling, hasTimeLog } = meta;
   send({ api_data, hasBilling, hasTimeLog });
 };
@@ -33,7 +33,7 @@ export const handlers = {
 
 };
 
-export const handlerForEvent = eventName => {
+export const handlerForEvent = (eventName) => {
   if (eventName === events.EVENT_TICKET_REPLY) {
     return EVENT_TICKET_REPLY;
   }
@@ -42,8 +42,7 @@ export const handlerForEvent = eventName => {
 };
 
 export const chainHandlers = (firstHandler, secondHandler) => {
-
-  if (typeof firstHandler !== 'function' && typeof secondHandler !== 'function' ) {
+  if (typeof firstHandler !== 'function' && typeof secondHandler !== 'function') {
     throw new Error('at least one handler must be a function');
   }
 
@@ -59,7 +58,6 @@ export const chainHandlers = (firstHandler, secondHandler) => {
     const chain = messageHandledByFirst => secondHandler(send, widget, messageHandledByFirst, services);
     firstHandler(chain, widget, message, services);
   };
-
 };
 
 /**
@@ -68,8 +66,8 @@ export const chainHandlers = (firstHandler, secondHandler) => {
  * @param {Widget} widget
  * @param {AppServices} appServices
  */
-export const createListener = ({ eventName, incomingEventDispatcher, widget,  appServices }) => {
-  return (message, outgoingRequestHandler, incomingResponseHandler) => {
+export const createListener = ({ eventName, incomingEventDispatcher, widget,  appServices }) =>
+  (message, outgoingRequestHandler, incomingResponseHandler) => {
     let send;
     if (incomingResponseHandler) {
       send = createDispatchRequestResponse(eventName, widget, incomingResponseHandler, incomingEventDispatcher);
@@ -78,4 +76,3 @@ export const createListener = ({ eventName, incomingEventDispatcher, widget,  ap
     }
     outgoingRequestHandler(send, widget, message, appServices);
   };
-};

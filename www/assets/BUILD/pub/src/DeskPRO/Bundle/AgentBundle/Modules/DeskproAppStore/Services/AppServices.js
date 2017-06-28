@@ -1,12 +1,17 @@
-import { WidgetDOM } from '../WidgetDOM'
-import { addWidgetEventListener } from '../WidgetMessage'
+import { WidgetDOM } from '../WidgetDOM';
+import { addWidgetEventListener } from '../WidgetMessage';
+import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
 
-export class AppServices
-{
+export class AppServices {
+
   /**
-   * @param {DpApi} api
+   * @return {Orb.Class|DeskPRO.Agent.WindowElement.TabBar}
+   */
+  static get tabs() { return window.DeskPRO_Window.TabBar; }
+
+  /**
+   * @param {Http} api
    * @param {Window} window
-   * @param {EventSubscribersRegistry} widgetEventRegistry
    */
   constructor({ api, window }) {
     this.props = { api, window };
@@ -14,14 +19,25 @@ export class AppServices
   }
 
   /**
-   * @return {DpApi}
+   * @param {Widget} widget
+   * @return {InstanceProxyClient}
    */
-  get api() { return this.props.api; }
+  getProxyClient({ widget }) {
+    const { api } = this.props;
+    const apiClient = new DPAPIClient({ api });
+
+    return new InstanceProxyClient({ apiClient, instanceId: widget.instanceId });
+  }
+
+  get dpClient() {
+    const { api } = this.props;
+    return new DPAPIClient({ api });
+  }
 
   /**
-   * @return {Orb.Class|DeskPRO.Agent.WindowElement.TabBar}
+   * @return {Http}
    */
-  get tabs() { return DeskPRO_Window.TabBar; }
+  get api() { return this.props.api; }
 
   /**
    * @return {Window}
@@ -40,9 +56,9 @@ export class AppServices
 
   addEventListener = (eventName, widget) => addWidgetEventListener(eventName, widget, this);
 
-  showNotification = notification => {
+  showNotification = (notification) => {
     if (typeof notification === 'string') {
-      //console.log('will show notification', notification);
+      // console.log('will show notification', notification);
       this.props.window.alert(notification);
       return;
     }

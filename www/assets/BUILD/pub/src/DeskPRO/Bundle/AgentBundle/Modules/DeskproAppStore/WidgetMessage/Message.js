@@ -1,34 +1,43 @@
 import { default as serializeError } from 'serialize-error';
 
 let nextMessageId = 0;
-let nextCorrelationId = 0;
+// this function is necessary because eslint rules complain about using unary operators :(
+const incrementMessageId = () => {
+  nextMessageId += 1;
+  return nextMessageId;
+};
 
-export class WidgetRequest
-{
+// this function is necessary because eslint rules complain about using unary operators :(
+let nextCorrelationId = 0;
+const incrementCorrelationId = () => {
+  nextCorrelationId += 1;
+  return nextCorrelationId;
+};
+
+
+export class WidgetRequest {
   /**
    * @param body
    * @param id
    * @param correlationId
    * @param widgetId
    */
-  constructor({ body, id, correlationId, widgetId })
-  {
+  constructor({ body, id, correlationId, widgetId })  {
     this.props = { body, id, correlationId, widgetId };
   }
 
-  get id() { return this.props.id };
+  get id() { return this.props.id; }
 
-  get widgetId() { return this.props.widgetId; };
+  get widgetId() { return this.props.widgetId; }
 
-  get correlationId() { return this.props.correlationId };
+  get correlationId() { return this.props.correlationId; }
 
-  get body() { return this.props.body };
+  get body() { return this.props.body; }
 
   toJS = () => ({ ...this.props })
 }
 
-export class WidgetResponse
-{
+export class WidgetResponse {
   /**
    * @param id
    * @param widgetId
@@ -36,20 +45,19 @@ export class WidgetResponse
    * @param {*} body
    * @param status
    */
-  constructor({ id, widgetId, correlationId, body, status })
-  {
+  constructor({ id, widgetId, correlationId, body, status })  {
     this.props = { id, widgetId, correlationId, body, status };
   }
 
-  get id() { return this.props.id };
+  get id() { return this.props.id; }
 
-  get widgetId() { return this.props.widgetId };
+  get widgetId() { return this.props.widgetId; }
 
-  get correlationId() { return this.props.correlationId };
+  get correlationId() { return this.props.correlationId; }
 
-  get status() { return this.props.status };
+  get status() { return this.props.status; }
 
-  get body() { return this.props.body };
+  get body() { return this.props.body; }
 
   toJS = () => ({ ...this.props })
 }
@@ -60,9 +68,8 @@ export class WidgetResponse
  *
  * @return WidgetResponse
  */
-export const createErrorResponse = (widgetRequest, error) =>
-{
-  const id = ++nextMessageId;
+export const createErrorResponse = (widgetRequest, error) => {
+  const id = incrementMessageId();
   const { widgetId, correlationId } = widgetRequest;
   const body = error instanceof Error ? JSON.stringify(serializeError(error)) : JSON.stringify(error);
 
@@ -75,9 +82,8 @@ export const createErrorResponse = (widgetRequest, error) =>
  *
  * @return WidgetResponse
  */
-export const createSuccessResponse = (widgetRequest, data) =>
-{
-  const id = ++nextMessageId;
+export const createSuccessResponse = (widgetRequest, data) => {
+  const id = incrementMessageId();
   const { widgetId, correlationId } = widgetRequest;
   const body = JSON.stringify(data);
 
@@ -90,22 +96,22 @@ export const createSuccessResponse = (widgetRequest, data) =>
  * @return {WidgetRequest}
  */
 export const createRequest = (widget, body) => {
-  const id = ++nextMessageId;
-  const correlationId = ++nextCorrelationId;
+  const id = incrementMessageId();
+  const correlationId = incrementCorrelationId();
   const { instanceId: widgetId } = widget;
 
-  return new WidgetRequest({id, correlationId, widgetId, body});
+  return new WidgetRequest({ id, correlationId, widgetId, body });
 };
 
 /**
  * @param widgetMessage
  * @return {WidgetRequest|WidgetResponse}
  */
-export const parseIncomingMessageJS = widgetMessage => {
+export const parseIncomingMessageJS = (widgetMessage) => {
   const { args, messageId, status, body, correlationId, id, widgetId } = widgetMessage;
   if (status) {
     const parsedBody = status === 'error' && typeof  body === 'string' ? JSON.parse(body) : body;
-    return new WidgetResponse({ id, widgetId, correlationId, body: parsedBody, status});
+    return new WidgetResponse({ id, widgetId, correlationId, body: parsedBody, status });
   }
 
   if (args) {
@@ -113,7 +119,8 @@ export const parseIncomingMessageJS = widgetMessage => {
   }
 
   if (correlationId) {
-    return new WidgetRequest({id, correlationId, widgetId, body});
+    return new WidgetRequest({ id, correlationId, widgetId, body });
   }
 
+  return null;
 };

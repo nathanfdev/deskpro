@@ -11,9 +11,6 @@ import {
   ChatBeginSimple,
   ChatBeginConversation,
   ChatBeginForm,
-  ChatValidation,
-  ChatEmailValidationContainer,
-  ChatLoginContainer,
   ChatPollingContainer,
   ChatActive
 } from '../../../Chat/Components/index';
@@ -29,10 +26,6 @@ const routes = [
       <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
     </Route>
     <Route component={ChatPollingContainer}>
-      <Route path="validation" component={ChatValidation} >
-        <Route name="chat_validation_email" path="email" component={ChatEmailValidationContainer} />
-        <Route name="chat_validation_login" path="login" component={ChatLoginContainer} />
-      </Route>
       <Route name="chat_active" path="active" component={ChatActive} />
     </Route>
   </Route>,

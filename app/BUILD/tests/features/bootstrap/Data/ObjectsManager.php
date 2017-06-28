@@ -363,6 +363,7 @@ class ObjectsManager
             'ActionAlert'              => [Factory\SimpleFactory::class, 'create', ActionAlert::class],
             'Notification'             => [Factory\SimpleFactory::class, 'create', Notification::class],
             'EmailAccount'             => [Factory\SimpleFactory::class, 'create', EmailAccount::class],
+            'Session'                  => [Factory\SimpleFactory::class, 'create', Session::class],
         ];
     }
 

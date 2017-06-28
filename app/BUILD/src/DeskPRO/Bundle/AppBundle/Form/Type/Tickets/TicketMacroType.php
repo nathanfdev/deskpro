@@ -26,33 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketMacro;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ChatValidateEmailType.
+ * Class TicketMacroType.
  */
-class ChatValidateEmailType extends AbstractType
+class TicketMacroType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('code', TextType::class, [
-            'property_path' => 'email_validation_code',
-        ]);
+        $builder
+            ->add('title', TextType::class)
+            ->add('is_global', ApiBooleanType::class)
+            ->add('person', EntityType::class, [
+                'class'       => Person::class,
+                'required'    => false,
+                'constraints' => [
+                    new AppAssert\Person\PersonType([
+                        'type' => 'agent',
+                    ]),
+                ],
+            ])
+            ->add('department', EntityType::class, [
+                'class'         => Department::class,
+                'required'      => false,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('p')->where('p.is_tickets_enabled = true');
+                },
+            ])
+        ;
 
-        $builder->get('code')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckCode']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -61,38 +82,25 @@ class ChatValidateEmailType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'csrf_protection'               => false,
-            'csrf_double_submit_protection' => false,
+            'data_class' => TicketMacro::class,
         ]);
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function onCheckCode(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        $form = $event->getForm();
-
-        /** @var ChatConversation $conversation */
-        $conversation = $form->getParent()->getData();
-
-        // No validation code in chat entity, no need to validate
-        if (!$conversation->getPersonEmail()) {
-            $form->addError(new FormError('Email should not be validated.'));
-
+        if (!$data instanceof TicketMacro) {
             return;
         }
 
-        if ($conversation->getEmailValidated()) {
-            $form->addError(new FormError(ErrorsCodes::EMAIL_ALREADY_VALIDATED));
-        } elseif (!$data) {
-            $form->addError(new FormError(ErrorsCodes::NOT_BLANK));
-        } elseif ($data !== $form->getData()) {
-            $form->addError(new FormError(ErrorsCodes::EMAIL_WRONG_VALIDATION_CODE));
-        } else {
-            // Mark conversation email validated
-            $conversation->setEmailValidated(true);
+        // force set global if no assignment
+        if (!$data->getPerson() && !$data->getDepartment()) {
+            $data->setIsGlobal(true);
         }
     }
 }

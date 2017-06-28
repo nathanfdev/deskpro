@@ -1,6 +1,10 @@
-// STATE EVENTS
+// FETCH EVENTS
+export const EVENT_WEBAPI_REQUEST_FETCH = 'webapi.request.fetch';
 
 export const EVENT_WEBAPI_REQUEST_DESKPRO = 'webapi.request.deskpro';
+
+// STATE EVENTS
+
 
 export const EVENT_STATE_FIND = 'state.find';
 
@@ -28,58 +32,67 @@ export const EVENT_TICKET_REPLY = 'context.ticket.reply';
 
 export const EVENT_RESET_SIZE = 'app.reset_size';
 
-export const EVENT_SHOW_NOTIFICATION = 'app.show_notification';
-
 export const EVENT_SUBSCRIBE = 'app.subscribe_to_event';
+
+// DESKPRO WINDOW EVENTS
+
+export const EVENT_DESKPROWINDOW_SHOW_NOTIFICATION = 'deskpro_window.show_notification';
+
+export const EVENT_DESKPROWINDOW_INSERT_MARKUP = 'deskpro_window.insert_markup';
 
 // USER EVENTS
 
 export const EVENT_ME_GET = 'context.me_get';
 
 export const events =
-{
+  {
   // API REQUEST EVENTS
 
-  EVENT_WEBAPI_REQUEST_DESKPRO,
+    EVENT_WEBAPI_REQUEST_DESKPRO,
+
+    EVENT_WEBAPI_REQUEST_FETCH,
 
   // STATE EVENTS
 
-  EVENT_STATE_FIND,
+    EVENT_STATE_FIND,
 
-  EVENT_STATE_GET,
+    EVENT_STATE_GET,
 
-  EVENT_STATE_SET,
+    EVENT_STATE_SET,
 
-  EVENT_STATE_DELETE,
+    EVENT_STATE_DELETE,
 
   // TAB EVENTS
 
-  EVENT_TAB_DATA,
+    EVENT_TAB_DATA,
 
-  EVENT_TAB_STATUS,
+    EVENT_TAB_STATUS,
 
-  EVENT_TAB_ACTIVATE,
+    EVENT_TAB_ACTIVATE,
 
-  EVENT_TAB_CLOSE,
+    EVENT_TAB_CLOSE,
 
   // TICKET EVENTS
 
-  EVENT_TICKET_REPLY,
+    EVENT_TICKET_REPLY,
 
   // APP EVENTS
 
-  EVENT_RESET_SIZE,
+    EVENT_RESET_SIZE,
 
-  EVENT_SHOW_NOTIFICATION,
+    EVENT_ME_GET,
 
-  EVENT_ME_GET,
+    EVENT_SUBSCRIBE,
 
-  EVENT_SUBSCRIBE
+  // DESKPRO WINDOW EVENTS
 
-};
+    EVENT_DESKPROWINDOW_SHOW_NOTIFICATION,
+
+    EVENT_DESKPROWINDOW_INSERT_MARKUP
+
+  };
 
 export const eventNames = Object.keys(events).map(key => events[key]);
 
 export const isEventName = name => eventNames.indexOf(name) !== -1;
-
 
