@@ -60,11 +60,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
-    const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
-    const CHAT_ENABLED          = 'core.apps_chat';
-    const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
-    const ENABLED               = 'widget.enabled';
+    const CHAT_ENABLED      = 'core.apps_chat';
+    const ENABLED_ON_PORTAL = 'portal.widget.enabled';
+    const ENABLED           = 'widget.enabled';
 
     /**
      * @var EntityManager
@@ -155,26 +153,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function isChatEnabled(Brand $brand = null)
     {
         return (bool) $this->getSetting(self::CHAT_ENABLED, $brand);
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return bool
-     */
-    public function isChatEmailValidation(Brand $brand = null)
-    {
-        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION, $brand);
-    }
-
-    /**
-     * @param Brand $brand
-     *
-     * @return bool
-     */
-    public function isChatRequireLogin(Brand $brand = null)
-    {
-        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN, $brand);
     }
 
     /**
@@ -276,11 +254,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $model = new WidgetGlobalSettings();
         $chat  = $model->getChat();
-        $chat
-            ->setEnabled($this->isChatEnabled($brand))
-            ->setEmailValidation($this->isChatEmailValidation($brand))
-            ->setRequireLogin($this->isChatRequireLogin($brand))
-        ;
+        $chat->setEnabled($this->isChatEnabled($brand));
 
         $company = $model->getCompany();
         $company->setName($this->getSetting('core.site_name'));

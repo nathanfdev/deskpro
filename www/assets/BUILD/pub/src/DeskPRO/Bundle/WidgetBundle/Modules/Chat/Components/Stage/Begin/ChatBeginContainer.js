@@ -16,7 +16,7 @@ import {
   chatRequiredEmailSelector,
   primaryColorSelector
 } from '../../../../Application/Selectors/dpWindow';
-import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
+import { widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
 import { ChatBeginLoadingSpinner } from './ChatBeginLoadingSpinner';
@@ -24,8 +24,6 @@ import { ChatBeginSimple } from './ChatBeginSimple';
 
 @connect(state => ({
   liveDemo:                 liveDemoSelector(state),
-  requireEmailValidation:   requireChatEmailValidationSelector(state),
-  requireLogin:             requireChatLoginSelector(state),
   customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
   customFields:             customChatFieldsOrderedSelector(state),
   allChatDepartments:       collectionSelectorFactory('ChatDepartment', 'all')(state),
@@ -44,8 +42,6 @@ import { ChatBeginSimple } from './ChatBeginSimple';
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
-    requireEmailValidation:   PropTypes.bool,
-    requireLogin:             PropTypes.bool,
     dispatch:                 PropTypes.func.isRequired,
     children:                 PropTypes.node,
     liveDemo:                 PropTypes.bool,
@@ -168,7 +164,7 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    const { liveDemo, requireEmailValidation, requireLogin, dispatch } = this.props;
+    const { liveDemo, dispatch } = this.props;
 
     // Disabled in live demo mode
     if (liveDemo) {
@@ -182,11 +178,7 @@ export class ChatBeginContainer extends React.Component {
     const promise = dispatch(createChat(this.state.formData.value));
     promise.then(
       () => {
-        if (requireEmailValidation && !requireLogin) {
-          history.replace('/chat/validation/email');
-        } else {
-          history.replace('/chat/active');
-        }
+        history.replace('/chat/active');
 
         if (this.mounted) {
           this.setState({

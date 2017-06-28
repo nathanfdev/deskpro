@@ -187,8 +187,6 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         }
 
         $settingRepo = $this->getSettingRepository();
-        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, false, $brand);
-        $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, false, $brand);
         $settingRepo->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, true, $brand);
 
         return new View(null, Response::HTTP_NO_CONTENT);
@@ -319,8 +317,6 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
         $chat  = $model->getSettings()->getGlobal()->getChat();
         $this
             ->getSettingRepository()
-            ->updateSetting(WidgetSettingsResolver::CHAT_EMAIL_VALIDATION, $chat->isEmailValidation(), $brand)
-            ->updateSetting(WidgetSettingsResolver::CHAT_REQUIRE_LOGIN, $chat->isRequireLogin(), $brand)
             ->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, $chat->isEnabled(), $brand)
             ->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, $model->isEnabledOnPortal(), $brand)
         ;

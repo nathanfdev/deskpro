@@ -135,7 +135,6 @@ portal:
                 - DpBehat\Http\HttpContext
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
-                - DpBehat\Portal\Api\AuthContext
                 - DpBehat\Portal\Api\ChatContext
                 - DpBehat\Portal\Api\SettingsContext
                 - DpBehat\Portal\PortalDesigner\AssetsContext

@@ -41,20 +41,18 @@ use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
-use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatFeedbackType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatMessageType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptInfoType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatTranscriptToggleType;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatUserTypingType;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatValidateEmailType;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ChatController.
@@ -83,7 +81,6 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/create")
-     * @Dpsid()
      *
      * @param Request $request
      *
@@ -91,8 +88,29 @@ class ChatController extends AbstractApiController
      */
     public function createNewChatAction(Request $request)
     {
-        $session = $this->getApiSession();
-        $this->checkIfSessionIsBlocked($session);
+        $em = $this->getDoctrine()->getManager();
+
+        // create legacy session
+        $session = new Session();
+        $session->setIpAddress($request->getClientIp());
+        $session->setVisitorId($request->query->get('dp__v'));
+
+        if ($this->getUser()) {
+            $session->setPerson($this->getUser());
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\ChatBlock $repo */
+        $repo  = $this->getDoctrine()->getRepository(ChatBlock::class);
+        $block = $repo->getBlockForVisitor($session->getVisitorId(), $request->getClientIp());
+
+        if ($block) {
+            throw new AccessDeniedHttpException('banned');
+        }
+
+        $em->persist($session);
+        $em->flush();
+
+        // create a new chat conversation
         $conversation = ChatConversation::newForUserSession($session);
 
         /** @var DepartmentRepository $departmentRepository */
@@ -123,7 +141,7 @@ class ChatController extends AbstractApiController
             $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
         }
 
-        $this->setWidgetOption('chat_id', $conversation->getId());
+        $this->setWidgetOption('chat_id', $conversation->getAuthId());
 
         if ($session->getVisitorId()) {
             $hit = $this->getDoctrine()->getRepository(HitRecord::class)->findLastForVisitorId($session->getVisitorId());
@@ -131,7 +149,6 @@ class ChatController extends AbstractApiController
                 $trackMsg = UserChatMessages::createUserTrackMessage($conversation, $hit->getUrl());
                 $conversation->addMessage($trackMsg);
 
-                $em = $this->getDoctrine()->getManager();
                 $em->persist($trackMsg);
                 $em->persist($conversation);
                 $em->flush();
@@ -144,52 +161,8 @@ class ChatController extends AbstractApiController
     }
 
     /**
-     * @Rest\Post("/{id}/validate/email/regenerate")
-     * @Dpsid()
-     *
-     * @param ChatConversation $conversation
-     *
-     * @return View
-     */
-    public function regenerateEmailValidationCodeAction(ChatConversation $conversation)
-    {
-        $this->checkSession($conversation);
-        $conversation->regenerateEmailValidationCode();
-
-        $this->saveConversation($conversation);
-        $this->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($conversation));
-
-        return View::create();
-    }
-
-    /**
-     * @Rest\Post("/{id}/validate/email")
-     * @Dpsid()
-     *
-     * @param ChatConversation $conversation
-     * @param Request          $request
-     *
-     * @return View
-     */
-    public function validateEmailAction(ChatConversation $conversation, Request $request)
-    {
-        $this->checkSession($conversation);
-
-        $form = $this->createForm(ChatValidateEmailType::class, $conversation);
-        $form->submit($request->request->all());
-        if (!$form->isValid()) {
-            return $this->generateFormErrorsResponse($form);
-        }
-
-        $this->saveConversation($conversation);
-        $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
-
-        return View::create();
-    }
-
-    /**
      * @Rest\Get("/{id}/polling")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -198,8 +171,6 @@ class ChatController extends AbstractApiController
      */
     public function pollingChatAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
@@ -227,7 +198,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/messages")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -236,8 +207,6 @@ class ChatController extends AbstractApiController
      */
     public function sendMessageAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         $form = $this->createForm(ChatMessageType::class);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -297,7 +266,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/ack_messages")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -306,8 +275,6 @@ class ChatController extends AbstractApiController
      */
     public function ackMessagesAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         $messageIds  = $request->request->get('message_ids');
         $currentDate = new \DateTime();
 
@@ -338,7 +305,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/user_typing")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -347,8 +314,6 @@ class ChatController extends AbstractApiController
      */
     public function userTypingAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         $form = $this->createForm(ChatUserTypingType::class);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -363,7 +328,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/transcript/info")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -372,8 +337,6 @@ class ChatController extends AbstractApiController
      */
     public function sendTranscriptInfoAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         $form = $this->createForm(ChatTranscriptInfoType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -387,7 +350,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/transcript/toggle")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -396,8 +359,6 @@ class ChatController extends AbstractApiController
      */
     public function toggleShouldSendTranscriptAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         $form = $this->createForm(ChatTranscriptToggleType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -411,7 +372,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/end")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      *
@@ -419,8 +380,6 @@ class ChatController extends AbstractApiController
      */
     public function endChatAction(ChatConversation $conversation)
     {
-        $this->checkSession($conversation);
-
         $conversation
             ->setStatus(ChatConversation::STATUS_ENDED)
             ->setEndedBy('user')
@@ -435,7 +394,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/reopen")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      *
@@ -443,8 +402,6 @@ class ChatController extends AbstractApiController
      */
     public function reopenChatAction(ChatConversation $conversation)
     {
-        $this->checkSession($conversation);
-
         $conversation
             ->setStatus(ChatConversation::STATUS_OPEN)
             ->setEndedBy(null)
@@ -462,7 +419,7 @@ class ChatController extends AbstractApiController
 
     /**
      * @Rest\Post("/{id}/feedback")
-     * @Dpsid()
+     * @ParamConverter(converter="portal_api_chat")
      *
      * @param ChatConversation $conversation
      * @param Request          $request
@@ -471,8 +428,6 @@ class ChatController extends AbstractApiController
      */
     public function feedbackAction(ChatConversation $conversation, Request $request)
     {
-        $this->checkSession($conversation);
-
         $form = $this->createForm(ChatFeedbackType::class, $conversation);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
@@ -486,40 +441,11 @@ class ChatController extends AbstractApiController
 
     /**
      * @param ChatConversation $conversation
-     *
-     * @throws BadRequestHttpException
-     */
-    protected function checkSession(ChatConversation $conversation)
-    {
-        $requestSession      = $this->getApiSession();
-        $conversationSession = $conversation->getSession();
-
-        if (!$conversationSession || $requestSession->getId() !== $conversationSession->getId()) {
-            throw new BadRequestHttpException('wrong_session_code');
-        }
-
-        $this->checkIfSessionIsBlocked($conversationSession);
-    }
-
-    /**
-     * @param ChatConversation $conversation
      */
     protected function saveConversation(ChatConversation $conversation)
     {
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
-    }
-
-    /**
-     * @param Session $session
-     */
-    public function checkIfSessionIsBlocked(Session $session)
-    {
-        /** @var \Application\DeskPRO\EntityRepository\ChatBlock $rep */
-        $rep = $this->getDoctrine()->getRepository(ChatBlock::class);
-        if ($block = $rep->getBlockForVisitor($session->getVisitorId(), $session->getIpAddress())) {
-            throw new AccessDeniedHttpException('Banned');
-        }
     }
 }

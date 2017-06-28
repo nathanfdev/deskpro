@@ -2,7 +2,7 @@ import $ from 'jquery';
 import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
-import { requireChatLoginSelector, widgetHasChatSelector } from '../Selectors/bootstrap';
+import { widgetHasChatSelector } from '../Selectors/bootstrap';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 import {
   chatBeginModeSelector,
@@ -14,7 +14,7 @@ import {
   ticketDefaultDepartmentSelector,
   ticketSelectDepartmentTypeSelector
 } from '../Selectors/dpWindow';
-import { chatIdSelector, needValidateEmailSelector } from '../../Chat/Selectors/chat';
+import { chatIdSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
 import { history, getLocation } from '../../../Services/history';
 import { dispatchWidgetStatus } from '../../../Services/WindowApi';
@@ -89,21 +89,13 @@ export const openWidget = createAction(
   () => (dispatch, getState) => {
     const state = getState();
     const widgetHasChat = widgetHasChatSelector(state);
-    const requireChatLogin = requireChatLoginSelector(state);
     const agentsCounts = onlineAgentsCountSelector(state);
     const liveDemo = liveDemoSelector(state);
     const chatId = chatIdSelector(state);
-    const needValidateEmail = needValidateEmailSelector(state);
 
     if (widgetHasChat && (liveDemo || agentsCounts > 0)) {
       if (chatId && !liveDemo) {
-        if (needValidateEmail) {
-          history.replace('/chat/validation/email');
-        } else {
-          history.replace('/chat/active');
-        }
-      } else if (requireChatLogin) {
-        history.replace('/chat/validation/login');
+        history.replace('/chat/active');
       } else {
         dispatch(openChatBeginStage());
       }
