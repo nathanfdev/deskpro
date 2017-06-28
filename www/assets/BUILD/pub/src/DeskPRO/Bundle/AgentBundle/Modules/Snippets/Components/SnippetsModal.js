@@ -249,7 +249,13 @@ export class SnippetsModalContainer extends React.Component {
       snippetData.id = snippet.get('id');
     }
     dispatch(actions.saveSnippet(snippetData))
-      .then(() => {
+      .then((newSnippet) => {
+        const shortcodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
+        if (shortcodes[newSnippet.shortcut_code]) {
+          shortcodes[newSnippet.shortcut_code] = shortcodes[newSnippet.shortcut_code].concat([newSnippet.id]);
+        } else {
+          shortcodes[newSnippet.shortcut_code] = [newSnippet.id];
+        }
         closeModal();
       }, (error) => {
         console.log(error);
