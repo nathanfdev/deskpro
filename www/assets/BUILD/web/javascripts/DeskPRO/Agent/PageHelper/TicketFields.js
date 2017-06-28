@@ -9,6 +9,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.page = page;
     this.page.addEvent('destroy', this.destroy, this);
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
+		this.fieldsWithDefaultSet = {};
+
+    this.updateDisplay = _.throttle(this.updateDisplayNow.bind(this), 300);
 
 		this.mode = 'view';
 
@@ -18,49 +21,44 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return parseInt(catId) || 0;
 			},
 			getCategoryId: function() {
-				var catId = self.display.find('select.prop-input-category_id:first').val();
+				var catId = self.display.find('.prop-input-category_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getPriorityId: function() {
-				var catId = self.display.find('select.prop-input-priority_id:first').val();
+				var catId = self.display.find('.prop-input-priority_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
-				var catId = self.display.find('select.prop-input-product:first').val();
+				var catId = self.display.find('.prop-input-product').first().val();
 				return parseInt(catId) || 0;
 			},
 			getOrganizationId: function() {
 				return 0;
 			},
 			getWorkflowId: function() {
-				var catId = self.display.find('select.prop-input-workflow_id:first').val();
+				var catId = self.display.find('.prop-input-workflow_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getFieldValue: function(name) {
 				var $holders = self.page.getEl('field_holders');
 
 				// check single fields
-				var $field = $('[name="' + name + '"]', $holders);
-				if ($field.length) {
-					if ($field.is(':checkbox')) {
-						return $field.is(':checked');
-					}
-					if ($field.attr('type') === 'hidden') {
-						return $.trim($field.parent().text());
-					}
-					if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
-						return $field.val();
-					}
+				var $field = $holders.find('[name="' + name + '"], [name="' + name + '[]"]').first();
+				if (!$field[0]) {
+          // field is not present on the form
+          // e.g. org field if user doesn't belong to a org
+          return;
 				}
 
-				// check multiple fields
-				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $holders);
-				if (!$field.length) {
-					// field is not present on the form
-					// e.g. org field if user doesn't belong to a org
-					return;
-				}
-
+        if ($field.is(':checkbox')) {
+          return $field.is(':checked');
+        }
+        if ($field.attr('type') === 'hidden') {
+          return $.trim($field.parent().text());
+        }
+        if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
+          return $field.val();
+        }
 				if ($field.hasClass('with-select2')) {
 					var val = $.trim($field.select2('val'));
 					return val || null;
@@ -130,11 +128,13 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		}]);
 
 		$scope.edit_fields = [];
+		this.edit_fields_map = {};
 		$scope.fields = {};
 		$scope.editables = {
 			language: 1,
 			problem: 1
 		};
+		$scope.hidden = [];
 		$scope.savedValues = {};
 
 		$scope.show_hidden = 0;
@@ -209,6 +209,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         $scope.savedValues[field] = value;
       }
 			$scope.edit_fields.push(field);
+			self.edit_fields_map[field] = true;
 
 			// focus input field on open edit mode
 			var $editContainer = $($event.currentTarget).parent().find('.mode-edit');
@@ -222,7 +223,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.isEditMode = function(field) {
-			return $scope.edit_fields.indexOf(field) !== -1;
+			return !!self.edit_fields_map[field];
 		};
 
 		$scope.cancelEdit = function() {
@@ -233,8 +234,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       	delete $scope.savedValues[id];
 			});
       $scope.edit_fields.length = 0;
+      self.edit_fields_map = {};
       $scope.show_hidden = 0;
-      self.updateDisplay();
+      self.throttled_updateDisplay();
 		};
 
 		$scope.saveFields = function() {
@@ -246,23 +248,24 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			for (var i = 0; i < self.no_value_fields.length; i++) {
 				$scope.editField(self.no_value_fields[i]);
 			}
-			self.updateDisplay();
+			self.throttled_updateDisplay();
 		};
 
     if (window.DESKPRO_TICKET_DISPLAY) {
       var reader = self.ticketReader;
 			var fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
 			for (var i = 0; i < fields.length; i++) {
-				var $row = self.display.find('tbody.item.' + fields[i].id + ':first');
+				var $row = self.display.find('tbody.item.' + fields[i].id).first();
 				self.initFieldWidgets($row);
 			}
     }
 	},
 
-	updateDisplay: function() {
+	updateDisplayNow: function() {
 		var self = this;
 		var fields = [], reader = this.ticketReader;
 		var $scope = this.$scope;
+		var depId = reader.getDepartmentId();
 		if (window.DESKPRO_TICKET_DISPLAY) {
 			fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
 		}
@@ -271,7 +274,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       return f.checkFn ? f.checkFn(reader) && f.isVisibleOnView : f.isVisibleOnView;
 		};
 
-		$scope.hidden = 0;
 		$scope.editables = {
 			language: 1,
 			problem: 1
@@ -333,28 +335,55 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		// recursive update fields if they were changed
 		if (changed) {
-			this.updateDisplay();
+			this.updateDisplayNow();
 			return;
 		}
 
-		$scope.fields = scopeFields;
+    $scope.fields = scopeFields;
+
+		var changedFieldSet = false;
+		if (!this.lastDepId || this.lastDepId != depId) {
+      changedFieldSet = true;
+		}
 
 		for (i = 0; i < fields.length; i++) {
 			f = fields[i];
 			var row = this.display.find('.item.' + f.id);
 			if (undefined === $scope.fields[f.id] || scopeFields[f.id]) {
-				row.detach().removeClass('off').insertBefore($ctrls);
+				if (changedFieldSet) {
+          // detach/insert is expensive, but required if
+          // the order changes which it can if the dep changes
+          row.detach().removeClass('off').insertBefore($ctrls);
+        } else {
+          row.removeClass('off');
+				}
 			} else {
-				row.addClass('off');
+				if (changedFieldSet) {
+          row.detach().addClass('off').insertBefore($ctrls);
+				} else {
+          row.addClass('off');
+				}
 			}
 		}
 
 		var unsetField = function(name, allowDefaultValue) {
-			$scope.edit_fields.push(name);
-			$scope.setFieldValue(name, '', allowDefaultValue);
+			if (!self.edit_fields_map[name]) {
+        $scope.edit_fields.push(name);
+        self.edit_fields_map[name] = true;
+        if (!this.fieldsWithDefaultSet[name]) {
+          this.fieldsWithDefaultSet[name] = true;
+          $scope.setFieldValue(name, '', allowDefaultValue);
+        }
+      }
 		};
 
-		$scope.hidden = this.no_value_fields.length;
+		if (this.no_value_fields.length === $scope.hidden.length) {
+			if (_.difference($scope.hidden, this.no_value_fields).length || _.difference(this.no_value_fields, $scope.hidden)) {
+        $scope.hidden = this.no_value_fields.length;
+			}
+		} else if (this.no_value_fields.length !== $scope.hidden.length) {
+      $scope.hidden = this.no_value_fields.length;
+		}
 
 		if (this.oldFields) {
 			this.oldFields.forEach(function(name) {
@@ -369,6 +398,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				unsetField(name, true);
 			}
 		});
+
+    this.lastDepId = depId;
 	},
 
 	initFieldWidgets: function($tbody) {
@@ -487,7 +518,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		this.initScope(this.page.getEl('field_holders'));
 
-		this.updateDisplay();
+    this.lastDepId = null;
+		this.updateDisplayNow();
 		this.$scope.$apply();
 	},
 
