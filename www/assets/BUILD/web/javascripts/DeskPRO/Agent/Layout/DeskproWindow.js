@@ -25,20 +25,41 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		$(window).on('resize', function() {
 			self.doResize(true);
 		});
-    $.ajaxSetup({
-      dataFilter: function(data){
-        if(data.indexOf('boundary') === 0) {
-          var splitted = data.split("\r\n", 1);
-          var boundary = splitted[0].split('=')[1];
-          splitted = data.replace(splitted + "\r\n", '').split(boundary);
-          var actionAlerts = JSON.parse(splitted[0]);
-          if(DeskPRO_Window.LegacyClient) {
-            DeskPRO_Window.LegacyClient.handleActionAlerts(actionAlerts);
-          }
-          data = splitted[1];
+
+    $.ajaxPrefilter(function(options, originalOptions, jqXHR) {
+			if (options.withActionAlerts) {
+				if (!options.headers) {
+          options.headers = {};
+				}
+				if (DeskPRO_Window && DeskPRO_Window.LegacyClient) {
+          options.headers["X-DeskPRO-Return-ActionAlerts"] = DeskPRO_Window.LegacyClient.getLastActionAlert();
         }
-        return data;
-      }
+
+        DeskPRO_Window.getPoller().pause();
+        jqXHR.always(function() {
+          DeskPRO_Window.getPoller().unpause();
+        });
+
+        // always add our custom data type to make sure the handler is always called
+        options.dataTypes.unshift("deskpro-actionalerts");
+
+        options.converters['* deskpro-actionalerts'] = function (data) {
+          var splitPoint = jqXHR.getResponseHeader('X-DeskPRO-With-ActionAlerts-SplitPoint');
+
+          // no split point, we have nothing to do
+          if (!splitPoint) {
+            return data;
+          }
+
+          var parts = data.split(splitPoint);
+
+          // handle alerts
+          DeskPRO_Window.LegacyClient.handleActionAlerts(JSON.parse(parts[0]));
+
+          // pass to other converters
+          return parts[1];
+        };
+			}
     });
 
 		var listSizer = $('#dp_list_resizer').draggable({

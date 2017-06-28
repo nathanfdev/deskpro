@@ -22,7 +22,6 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		this.filterdData = [];
 		this.messageBroker = null;
 
-		this.maxDelayTimers = [];
 		this.isPaused = false;
 
 		this.autoSendTimeout = null;
@@ -60,6 +59,10 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 	unpause: function() {
 		this.isPaused = false;
+
+		// reset timer
+    this._clearDelays();
+    this.autoSendTimeout = this.send.delay(this.options.interval, this);
 	},
 
 	setInterval: function(interval) {
@@ -298,13 +301,9 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 * Clear all delay timeouts
 	 */
 	_clearDelays: function() {
-
-		this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
-		this.autoSendTimeout = null;
-
-		var t = null;
-		while (t = this.maxDelayTimers.pop()) {
-			window.clearTimeout(t);
-		}
+		if (this.autoSendTimeout) {
+      this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
+      this.autoSendTimeout = null;
+    }
 	}
 });

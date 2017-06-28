@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
+use Application\DeskPRO\HttpFoundation\Session;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -79,17 +80,27 @@ class ActionAlertsListener implements EventSubscriberInterface
             $this->container->get('deskpro.notification.event_manager')->deliver();
             $alerts = $this->getActionAlerts($lastId);
             if ($alerts) {
-                $boundary = 'action-alerts_'.Strings::random(12, Strings::CHARS_ALPHANUM);
-                $response->headers->add(['X-DeskPRO-With-ActionAlerts' => $boundary]);
+                $splitPoint          = '--action-alerts-'.Strings::random(30, Strings::CHARS_ALPHANUM);
                 $originalContent     = $response->getContent();
                 $actionAlertsContent = json_encode($alerts);
-                $response->setContent('boundary='.$boundary."\r\n".$actionAlertsContent."\r\n".$boundary."\r\n".$originalContent);
+
+                $response->setContent($actionAlertsContent."\r\n".$splitPoint."\r\n".$originalContent);
+                $response->headers->set('X-DeskPRO-With-ActionAlerts-SplitPoint', $splitPoint);
             }
         }
     }
 
     private function getActionAlerts($lastId)
     {
+        if (!$this->container->has('session')) {
+            return null;
+        }
+
+        $session = $this->container->get('session');
+        if (!$session instanceof Session || !$session->getPerson() || !$session->getPerson()->getId()) {
+            return null;
+        }
+
         $sql = <<<'SQL'
 SELECT * FROM `notify_action_alerts`
 WHERE `target_id` = :target_id 
@@ -98,7 +109,7 @@ ORDER BY `id` ASC
 SQL;
         $stmnt = $this->container->get('doctrine.orm.default_entity_manager')->getConnection()->prepare($sql);
         $stmnt->execute([
-            'target_id' => $this->container->get('session')->getPerson()->getId(),
+            'target_id' => $session->getPerson()->getId(),
             'last'      => $lastId,
         ]);
 
