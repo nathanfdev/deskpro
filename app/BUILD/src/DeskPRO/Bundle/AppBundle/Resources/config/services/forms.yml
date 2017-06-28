@@ -137,9 +137,15 @@ services:
     tags:
       - { name: form.type }
 
+  form.base_person:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\People\BasePersonType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
   form.person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
-    arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager"]
+    arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type }
 

@@ -26,20 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
+use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
+use DeskPRO\Bundle\AppBundle\Form\Type\PhoneNumberType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
-use Orb\Util\Arrays;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints;
 
@@ -54,28 +52,12 @@ class PersonProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class)
             ->add('display_name', TextType::class, [
                 'property_path' => 'override_display_name',
             ])
-            ->add('avatar_blob_auth_id', BlobAuthType::class, [
+            ->add('avatar_blob_auth', BlobAuthType::class, [
                 'required'      => false,
                 'property_path' => 'picture_blob',
-            ])
-            ->add('emails', CollectionType::class, [
-                'type'            => EmailType::class,
-                'allow_add'       => true,
-                'allow_delete'    => true,
-                'invalid_message' => 'Invalid Email.',
-                'by_reference'    => true,
-                'property_path'   => 'emailAddresses',
-                'error_bubbling'  => false,
-                'options'         => [
-                    'error_bubbling' => true,
-                ],
-            ])
-            ->add('primary_email', EmailType::class, [
-                'property_path' => 'email',
             ])
             ->add('phone', PhoneNumberType::class, [
                 'property_path'  => 'primaryPhoneNumber',
@@ -87,7 +69,7 @@ class PersonProfileType extends AbstractType
                 ],
             ])
             ->add('language_id', EntityType::class, [
-                'class'         => 'DeskPRO:Language',
+                'class'         => Language::class,
                 'property_path' => 'language',
             ])
             ->add('timezone', TextType::class)
@@ -100,14 +82,6 @@ class PersonProfileType extends AbstractType
                     'error_bubbling' => true,
                 ],
             ])
-            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-                $data = $event->getData();
-                if (!empty($data['emails'])) {
-                    $data['emails'] = Arrays::removeFalsey($data['emails']);
-                }
-
-                $event->setData($data);
-            })
         ;
     }
 
@@ -118,14 +92,14 @@ class PersonProfileType extends AbstractType
     {
         $resolver->setDefaults([
             'csrf_protection' => false,
-            'error_mapping'   => [
-                'emails' => 'emails',
-            ],
-            'constraints' => [
-                new AppConstraints\Person\Email\FreeEmail([
-                    'property' => 'emailAddresses',
-                ]),
-            ],
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return BasePersonType::class;
     }
 }
