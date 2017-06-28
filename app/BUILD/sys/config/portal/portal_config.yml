@@ -110,7 +110,7 @@ security:
                 remember_me: true
                 default_target_path: /
                 target_path_parameter: _destination
-                use_referer: true
+                use_referer: false
             anonymous:
                 key:    "irrelevant - compiler pass will override this"
             logout:

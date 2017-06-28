@@ -24,9 +24,12 @@ if (!function_exists('twig_template_get_attributes')) {
     {
         static $refl = [];
 
-        // getAttribute declared public on our override class, so we can skip reflection
-        if ($tpl instanceof \Application\DeskPRO\Twig\Template || $tpl instanceof DeskPRO\Bundle\PortalBundle\Twig\Template) {
-            return $tpl->getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
+        // From this build onwards, Template have public getAttribute so we
+        // don't need to use slow reflection
+        if (defined('DP_ACTIVE_BUILD') && DP_ACTIVE_BUILD >= 27928) {
+            if ($tpl instanceof \Application\DeskPRO\Twig\Template || $tpl instanceof DeskPRO\Bundle\PortalBundle\Twig\Template) {
+                return $tpl->getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
+            }
         }
 
         $className = get_class($tpl);
@@ -34,7 +37,6 @@ if (!function_exists('twig_template_get_attributes')) {
             $refl[$className] = new \ReflectionMethod($className, 'getAttribute');
             $refl[$className]->setAccessible(true);
         }
-
         return $refl[$className]->invoke($tpl, $object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
     }
 }

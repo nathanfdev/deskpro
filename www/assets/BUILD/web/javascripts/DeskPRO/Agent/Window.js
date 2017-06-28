@@ -182,62 +182,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			},
 
 			ajaxWithClientMessages: function(options) {
-
-				if (!options.data) {
-					options.data = [];
-				}
-
-				// Assume a k:v object, convert it to an array
-				if (!options.data.push) {
-					var newData = [];
-					Object.each(options.data, function(v, k) {
-						newData.push({ name: k, value: v});
-					});
-
-					options.data = newData;
-				}
-
-				options.data.push({
-					name: 'client_messages_since',
-					value: DeskPRO_Window.getLastClientMessageId()
-				});
-
-				var old_success = function() {};
-				if (options.success) {
-					if (options.context) old_success = options.success.bind(options.context);
-					else old_success = options.success;
-				}
-
-				var old_complete = function() {};
-				if (options.complete) {
-					if (options.context) old_complete = options.complete.bind(options.context);
-					else old_complete = options.complete;
-				}
-
-				options.complete = function() {
-					DeskPRO_Window.getMessageChanneler().poller.unpause();
-					old_complete();
-				}
-
-				options.success = function(data) {
-					DeskPRO_Window.getMessageChanneler().poller.unpause();
-					if (options.execSuccessBefore) {
-						old_success(data);
-					}
-					if (data.client_messages) {
-						DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
-					}
-					if (!options.execSuccessBefore) {
-						old_success(data);
-					}
-				}
-
 				options.dataType = 'json';
-
-        // passing true to cancel the current poll if it is active
-        // or else we might end up with a weird case where the current
-        // request comes back before the poll request, and order might matter (eg count refreshes)
-				DeskPRO_Window.getMessageChanneler().poller.pause(true);
+				options.withActionAlerts = true;
 				return $.ajax(options);
 			},
 
@@ -1611,6 +1557,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	showRefreshAlert: function(admin_name, message, allowIgnore) {
+
+		if (typeof allowIgnore == 'undefined') {
+      allowIgnore = true;
+		}
 
 		var self = this;
 

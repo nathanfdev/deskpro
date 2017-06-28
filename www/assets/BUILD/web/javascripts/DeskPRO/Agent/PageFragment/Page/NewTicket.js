@@ -444,7 +444,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			statusMenuMenu.close();
 		};
 
-		var openStatusMenu = function() {
+		this.openStatusMenu = function() {
 			statusMenuMenu.open();
 		};
 
