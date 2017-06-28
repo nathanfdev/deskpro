@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security\Handler;
 
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
@@ -83,30 +79,30 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
 
         // if we should be auto submitting, send to auto submit controller (this was a login intercept)
         if ($this->container->get('form_saver')->getAutoSubmitSavedForm()) {
-            $saved_form_url = $this->container->get('router')->generate('saved_form_auto_submit');
+            $savedFormUrl = $this->container->get('router')->generate('saved_form_auto_submit');
 
             if ($request->isXmlHttpRequest()) {
-                return $this->getResponseForAjax($saved_form_url);
+                return $this->getResponseForAjax($savedFormUrl);
             }
 
             return $this->httpUtils->createRedirectResponse(
                 $request,
-                $saved_form_url
+                $savedFormUrl
             );
         }
 
-        $redirect_url = $this->determineTargetUrl($request);
+        $redirectUrl = $this->determineTargetUrl($request);
 
         // Never redirect back to login controller, can cause loops
-        if (strpos($redirect_url, 'login') !== false) {
-            $redirect_url = $this->options['default_target_path'];
+        if (strpos($redirectUrl, 'login') !== false) {
+            $redirectUrl = $this->options['default_target_path'];
         }
 
         if ($request->isXmlHttpRequest()) {
-            return $this->getResponseForAjax($redirect_url);
+            return $this->getResponseForAjax($redirectUrl);
         }
 
-        return $this->httpUtils->createRedirectResponse($request, $redirect_url);
+        return $this->httpUtils->createRedirectResponse($request, $redirectUrl);
     }
 
     protected function getResponseForAjax($redirect)
