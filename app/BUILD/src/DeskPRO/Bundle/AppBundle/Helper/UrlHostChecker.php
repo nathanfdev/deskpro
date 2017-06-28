@@ -113,10 +113,11 @@ class UrlHostChecker
     /**
      * @param string $url
      * @param bool   $withScheme
+     * @param bool   $stripWww
      *
      * @return string
      */
-    public function simplifyUrl($url, $withScheme = false)
+    public function simplifyUrl($url, $withScheme = false, $stripWww = true)
     {
         // fix schemaless urls
         if (substr($url, 0, 2) != '//' && !preg_match('#^\w+://#', $url)) {
@@ -130,7 +131,10 @@ class UrlHostChecker
         }
 
         $host = @$parsed['host'];
-        $host = preg_replace('/^www\./', '', $host);
+        if ($stripWww) {
+            $host = preg_replace('/^www\./', '', $host);
+        }
+
         $port = @$parsed['port'];
 
         if (!$host) {
