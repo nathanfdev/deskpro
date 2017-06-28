@@ -34,7 +34,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 				@$scope.email_accounts = @$scope.email_accounts.filter( (x) -> x.outgoing_account_type != null)
 
 				if @$scope.email_accounts.length
-					if not @$scope.settings.default_from_email or not @$scope.email_accounts.filter((x) => x.address == @$scope.settings.default_from_email).length
+					if not @$scope.settings.default_from_email or not @$scope.email_accounts.filter((x) => x.address == @$scope.settings.default_from_email[1]).length
 						@$scope.settings.default_from_email[1] = @$scope.email_accounts[0].address
 				
 				if @settings.attach_user_must_exts.length
