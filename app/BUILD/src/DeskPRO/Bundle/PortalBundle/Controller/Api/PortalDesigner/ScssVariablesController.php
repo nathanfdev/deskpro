@@ -77,12 +77,20 @@ class ScssVariablesController extends AbstractApiController
             $variables = [];
         }
 
+        $this->getManager()->beginTransaction();
+
         try {
             if ($this->getPortalStylesCompiler()->hasChangedVars($variables, $editThemeSet)) {
                 $this->getPortalStylesCompiler()->recompile($variables, $editThemeSet);
             }
+
+            $this->getManager()->commit();
         } catch (ParserException $e) {
+            $this->getManager()->rollback();
             throw new BadRequestHttpException(PortalStylesCompiler::parseExceptionMessage($e));
+        } catch (\Exception $e) {
+            $this->getManager()->rollback();
+            throw new BadRequestHttpException($e->getMessage());
         }
 
         return new Response(null, Response::HTTP_NO_CONTENT);

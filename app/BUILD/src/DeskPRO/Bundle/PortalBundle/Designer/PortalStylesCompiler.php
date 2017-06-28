@@ -134,7 +134,7 @@ class PortalStylesCompiler
      *
      * @return bool
      */
-    public function hasChangedVars(array $variables, $themeSet)
+    public function hasChangedVars(array $variables, ThemeSet $themeSet)
     {
         return $variables != $themeSet->getOption(self::$customVarsThemeSetOption, []);
     }
@@ -145,7 +145,7 @@ class PortalStylesCompiler
      * @param array    $variables
      * @param ThemeSet $themeSet
      */
-    public function recompile(array $variables, $themeSet)
+    public function recompile(array $variables, ThemeSet $themeSet)
     {
         $themeSet->setOption(self::$customVarsThemeSetOption, $variables);
 
