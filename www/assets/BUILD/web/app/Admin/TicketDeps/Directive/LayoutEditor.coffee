@@ -72,8 +72,10 @@ define [
         return modelValue
       )
 
-      @_initTab('user', @els.user_tab)
-      @_initTab('agent', @els.agent_tab)
+      $timeout(=>
+        @_initTab('user', @els.user_tab)
+        @_initTab('agent', @els.agent_tab)
+      , 1)
 
       @ngModel.$parsers.push( (viewModel) =>
         return viewModel
