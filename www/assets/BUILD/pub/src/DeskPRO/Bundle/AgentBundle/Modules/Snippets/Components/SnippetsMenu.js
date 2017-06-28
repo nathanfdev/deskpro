@@ -4,6 +4,7 @@ import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Input from 'deskpro-styles/lib/Components/Input';
 import Button from 'deskpro-styles/lib/Components/Button';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
@@ -11,13 +12,15 @@ import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Compon
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
 
 @connect(state => ({
-  snippets: allSnippetsSelector(state),
-  blobs:    allSnippetBlobsSelector(state)
+  languages: allSelectorFactory('Language')(state),
+  snippets:  allSnippetsSelector(state),
+  blobs:     allSnippetBlobsSelector(state)
 }))
 export class SnippetsMenuContainer extends React.Component {
   static propTypes = {
     snippets:      PropTypes.object,
     blobs:         PropTypes.object,
+    languages:     PropTypes.object,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
     type:          PropTypes.string,
@@ -32,9 +35,9 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   render() {
-    const { closeMenu, type, department } = this.props;
+    const { closeMenu, type, department, languages } = this.props;
     const snippets = this.props.snippets
-      .filter(snippet => snippet.get('types').indexOf(this.props.type) !== -1)
+      .filter(snippet => snippet.get('types').indexOf(type) !== -1)
       .filter((snippet) => {
         if (department === 0) {
           return true;
@@ -50,6 +53,7 @@ export class SnippetsMenuContainer extends React.Component {
         closeMenu={closeMenu}
         insertSnippet={this.insertSnippet}
         snippets={snippets}
+        languages={languages}
         type={type}
         langId={window.DP_PERSON_LANG_ID}
       />
@@ -60,6 +64,7 @@ export class SnippetsMenuContainer extends React.Component {
 export class SnippetsMenu extends React.Component {
   static propTypes = {
     snippets:      PropTypes.object,
+    languages:     PropTypes.object,
     langId:        PropTypes.number,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
@@ -136,7 +141,7 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { snippets, closeMenu, langId, insertSnippet } = this.props;
+    const { snippets, languages, closeMenu, langId, insertSnippet } = this.props;
     return (
       <div id="snippets__menu">
         <div className="header">
@@ -180,6 +185,7 @@ export class SnippetsMenu extends React.Component {
           />
           <SnippetsList
             snippets={snippets}
+            languages={languages}
             langId={langId}
             filter={this.state.filter}
             labelFilter={this.state.labelFilter}

@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
-import classNames from 'classnames';
+import striptags from 'striptags';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import Label from 'deskpro-styles/lib/Components/Label';
 
 export class SnippetsListElement extends React.Component {
   static propTypes = {
     snippet:       PropTypes.object,
+    languages:     PropTypes.object,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langId:        PropTypes.number,
@@ -46,18 +47,17 @@ export class SnippetsListElement extends React.Component {
   }
 
   getLanguages() {
-    const { snippet } = this.props;
-    if (snippet.get('lang')) {
-      const languages = [];
-      snippet.get('lang').forEach((lang, key) => {
-        let flag = lang;
-        if (flag === 'en') {
-          flag = 'gb';
+    const { snippet, languages } = this.props;
+    if (snippet.get('translations')) {
+      const flags = [];
+      snippet.get('translations').forEach((translation, key) => {
+        const language = languages.find(l => l.get('id') === translation.get('language'));
+        if (language.get('flag_image')) {
+          flags.push(<img key={key} src={language.get('flag_image')} alt={language.get('title')} />);
         }
-        languages.push(<i key={key} className={classNames('flag-icon', `flag-icon-${flag}`)} />);
       });
-      if (languages.length) {
-        return <div className="languages">{languages}</div>;
+      if (flags.length) {
+        return <div className="languages">{flags}</div>;
       }
     }
     return null;
@@ -67,7 +67,7 @@ export class SnippetsListElement extends React.Component {
     const { snippet, langId } = this.props;
     const translation = snippet.get('translations').find(element => element.get('language') === langId);
     if (translation) {
-      return translation.get('content');
+      return striptags(translation.get('content'));
     }
     return null;
   }
@@ -92,6 +92,7 @@ export class SnippetsListElement extends React.Component {
 export class SnippetsList extends React.Component {
   static propTypes = {
     snippets:      PropTypes.object,
+    languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
     labelFilter:   PropTypes.string,
     filter:        PropTypes.string,
@@ -133,7 +134,7 @@ export class SnippetsList extends React.Component {
 
   renderElements = () => {
     const elements = [];
-    const { snippets, selectedLabel, filter, labelFilter, langId, editSnippet, insertSnippet } = this.props;
+    const { snippets, languages, selectedLabel, filter, labelFilter, langId, editSnippet, insertSnippet } = this.props;
     if (!snippets) {
       return null;
     }
@@ -176,6 +177,7 @@ export class SnippetsList extends React.Component {
           <SnippetsListElement
             key={element.get('id')}
             snippet={element}
+            languages={languages}
             langId={langId}
             editSnippet={editSnippet}
             insertSnippet={insertSnippet}

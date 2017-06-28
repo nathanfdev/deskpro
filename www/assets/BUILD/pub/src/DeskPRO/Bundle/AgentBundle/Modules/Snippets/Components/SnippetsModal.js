@@ -175,6 +175,7 @@ export class SnippetsModalContainer extends React.Component {
         defaultIsHtml: true,
         autoresize:    false,
         focus:         true,
+        cleanup:       true,
         buttons,
         interval:      1,
         callback(obj) {
@@ -202,7 +203,7 @@ export class SnippetsModalContainer extends React.Component {
     let translations = {};
     if (index !== -1) {
       translations = this.state.translations.update(index, translation =>
-        translation.set('content', this.redactor.getCode()));
+        translation.set('content', this.redactor.getCode().replace(/^<p>/, '').replace(/(<p>)?<\/p>\s*$/, '')));
     } else {
       translations = this.state.translations.push(Immutable.fromJS({
         language: this.state.langId,
