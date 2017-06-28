@@ -253,6 +253,10 @@ class DpEnv
         } else {
             $config_dir  = $this->dp_root.DIRECTORY_SEPARATOR.'config';
 
+            if ($config && isset($config['use_config_dir'])) {
+                $config_dir = $config['use_config_dir'];
+            }
+
             // A special file named dir.alias means to use a different config directory
             if (file_exists($config_dir.DIRECTORY_SEPARATOR.'dir.alias')) {
                 $config_dir = trim(file_get_contents($config_dir.DIRECTORY_SEPARATOR.'dir.alias'));
