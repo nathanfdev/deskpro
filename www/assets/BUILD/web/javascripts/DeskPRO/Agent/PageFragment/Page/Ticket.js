@@ -2277,6 +2277,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   },
 
 	_initVoice: function() {
+		if (!window.DP_HAS_VOICE) {
+			return;
+		}
+
     var onEndCall = (function() {
       console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
       DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
@@ -3355,7 +3359,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.taskListControl.addEvent('updateUi', function() {
 			self.updateUi();
-			updateTaskPane();
 		});
 		this.taskListControl.addEvent('updateCount', function() {
 			updateTaskPane();
