@@ -202,7 +202,11 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-            $result = $adapter->authenticate();
+            try {
+                $result = $adapter->authenticate();
+            } catch (\Exception $e) {
+                throw new BadCredentialsException('portal.account.login-not-configured');
+            }
 
             // The user is already logged in
             if ($result->isValid()) {
@@ -226,7 +230,11 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
             throw new BadCredentialsException('portal.account.login-invalid');
         } else {
-            $result = $adapter->authenticate();
+            try {
+                $result = $adapter->authenticate();
+            } catch (\Exception $e) {
+                throw new BadCredentialsException('portal.account.login-not-configured');
+            }
 
             if ($result->isValid()) {
                 return $this->createTokenFromUsersourceResult($usersource, $result);

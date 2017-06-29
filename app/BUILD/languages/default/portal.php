@@ -46,6 +46,7 @@ return [
     'portal.account.login-btn-usersource'                   => 'Login with {{ usersource }}',
     'portal.account.login-captcha-failed'                   => 'You have entered an invalid CAPTCHA code. Please try again.',
     'portal.account.login-email'                            => 'Your email',
+    'portal.account.login-not-configured'                   => 'External service is not configured.',
     'portal.account.login-external'                         => 'Login with an external service',
     'portal.account.login-invalid'                          => 'You have entered the wrong email or password. Please try again.',
     'portal.account.login-disabled'                         => 'Your email address has been banned.',
