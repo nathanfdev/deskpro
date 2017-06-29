@@ -41,7 +41,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Class EmailTemplatesFeature.
  */
-class EmailTemplatesFeature extends AbstractFeature
+class EmailTemplatesFeature extends AbstractBetaFeature
 {
     protected static $legacyBlocks = [
         'DeskPRO:emails_common:email-header.html.twig'    => 'SendmailBundle:blocks:header.html.twig',

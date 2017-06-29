@@ -11,7 +11,7 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
     <container>
-        {{ phrase('agent.emails.agent_completed_task_you_created', {agent: performer.getDisplayContact(), title: task.title}) }}
+        {{ phrase('agent.emails.agent_completed_task_you_created', {agent: performer.display_contact, title: task.title}) }}
         <br /><br />
         <a href="{{ url_full('agent') }}#app.tasks,tasks:delegate:total">{{ phrase('agent.emails.view_delegated_tasks') }}</a>
     </container>

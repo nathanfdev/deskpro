@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Task;
 use JMS\Serializer\Annotation as JMS;
 
 class AgentTaskAssigned extends EmailBaseType
@@ -37,7 +37,7 @@ class AgentTaskAssigned extends EmailBaseType
     /**
      * Email recipient.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Tasks\Task")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Task")
      *
      * @var Task
      */

@@ -28,28 +28,26 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use DeskPRO\Bundle\AppBundle\Entity\Snippet;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Snippets\Snippet as SnippetModel;
+use Application\DeskPRO\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Task as TaskModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-class SnippetHandler extends AbstractEntityHandler
+class TaskHandler extends AbstractEntityHandler
 {
     public static function getClassNames()
     {
-        return Snippet::class;
+        return Task::class;
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @param Snippet                      $entity
+     * @param Task                         $entity
      * @param SideloadSerializationContext $context
      *
-     * @return SnippetModel
+     * @return TaskModel
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        $model = new SnippetModel($entity);
+        $model = new TaskModel($entity);
 
         return $model;
     }

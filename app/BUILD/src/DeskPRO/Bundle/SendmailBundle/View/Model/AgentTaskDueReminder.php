@@ -28,18 +28,16 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Task;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Task;
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\RouterInterface;
 
 class AgentTaskDueReminder extends EmailBaseType
 {
     /**
      * Email recipient.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Task")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Task")
      *
      * @var Task
      */
@@ -48,7 +46,7 @@ class AgentTaskDueReminder extends EmailBaseType
     /**
      * Person that perform the password reset.
      *
-     * @JMS\Type("Application\DeskPRO\Entity\Person")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
      * @var Person
      */
@@ -68,14 +66,14 @@ class AgentTaskDueReminder extends EmailBaseType
     /**
      * AgentTaskDueReminder constructor.
      *
-     * @param RouterInterface $router
-     * @param Task            $task
-     * @param Person          $performer
+     * @param Task   $task
+     * @param Person $performer
+     * @param $loginLink
      */
-    public function __construct(RouterInterface $router, Task $task, Person $performer)
+    public function __construct(Task $task, Person $performer, $loginLink)
     {
         $this->task      = $task;
         $this->performer = $performer;
-        $this->loginLink = $router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        $this->loginLink = $loginLink;
     }
 }

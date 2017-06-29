@@ -273,6 +273,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.task:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.text_snippet:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TextSnippets\TextSnippetHandler
     arguments:

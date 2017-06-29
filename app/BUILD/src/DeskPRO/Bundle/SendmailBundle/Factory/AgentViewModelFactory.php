@@ -47,6 +47,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewFeedback;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentNewRegistration;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskCompleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskDueReminder;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketReply;
@@ -185,11 +186,26 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      * @param Person|Task $task
      * @param Person      $performer
      *
+     * @return AgentTaskAssigned
+     */
+    public function createAgentTaskCompletedModel(Task $task, Person $performer)
+    {
+        $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentTaskCompleted::class, [$task, $performer, $loginLink]);
+    }
+
+    /**
+     * @param Person|Task $task
+     * @param Person      $performer
+     *
      * @return AgentTaskDueReminder
      */
     public function createAgentTaskDueReminderModel(Task $task, Person $performer)
     {
-        return $this->convertParameters(AgentTaskDueReminder::class, [$this->router, $task, $performer]);
+        $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->convertParameters(AgentTaskDueReminder::class, [$task, $performer, $loginLink]);
     }
 
     /**

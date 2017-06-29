@@ -138,6 +138,9 @@ class EmailTemplatesEditorContainer extends React.Component {
   };
 
   findTemplate = (info, name) => {
+    if (!name) {
+      return false;
+    }
     let found = false;
     info.forEach((type) => {
       if (!found) {
@@ -173,6 +176,7 @@ class EmailTemplatesEditorContainer extends React.Component {
         this.addTemplate(newName, base);
       }
     }
+    return true;
   };
 
   openTemplate = (template) => {

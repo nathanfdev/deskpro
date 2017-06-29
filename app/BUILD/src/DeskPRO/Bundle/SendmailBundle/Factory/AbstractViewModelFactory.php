@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\Topic;
@@ -110,6 +111,9 @@ abstract class AbstractViewModelFactory
                 break;
             case Person::class:
                 $handler = $this->container->get('api_serializer.handler.person');
+                break;
+            case Task::class:
+                $handler = $this->container->get('api_serializer.handler.task');
                 break;
             case Ticket::class:
                 $handler = $this->container->get('api_serializer.handler.ticket');
