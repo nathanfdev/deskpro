@@ -31,6 +31,9 @@ namespace DeskPRO\Component\Pdf;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class mPdfRenderer.
+ */
 class mPdfRenderer implements PdfRendererInterface
 {
     /**
@@ -43,11 +46,16 @@ class mPdfRenderer implements PdfRendererInterface
      */
     private $brandStack;
 
+    /**
+     * Constructor.
+     *
+     * @param BrandStack $brandStack
+     */
     public function __construct($brandStack)
     {
         $this->brandStack = $brandStack;
 
-        $this->object = new \mPDF(
+        $this->object = new mPDF(
             'utf-8', // Language/Character set
             'A4', // Size
             '8', // Default Font Size
@@ -65,11 +73,17 @@ class mPdfRenderer implements PdfRendererInterface
         $this->object->shrink_tables_to_fit = 0;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setPageSize($size = 'A4', $orientation = 'P')
     {
         $this->object->_setPageSize($size, $orientation);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function render($contentHtml)
     {
         $this->object->WriteHTML($contentHtml);
@@ -77,6 +91,9 @@ class mPdfRenderer implements PdfRendererInterface
         return $this->object->Output('', 'S');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function generateFile($contentHtml, $fileName)
     {
         $this->object->WriteHTML($contentHtml);
