@@ -64,9 +64,11 @@ abstract class AbstractEmailValidator extends ConstraintValidator
     protected function validatePerson(Person $value, AbstractEmail $constraint)
     {
         foreach ($value->getEmails() as $personEmail) {
-            $this->validatePersonEmail($personEmail, $constraint);
+            if ($personEmail) {
+                $this->validatePersonEmail($personEmail, $constraint);
+            }
         }
-        if (!$value->getEmails()->contains($value->getPrimaryEmail())) {
+        if ($value->getPrimaryEmail() && !$value->getEmails()->contains($value->getPrimaryEmail())) {
             $this->validatePersonEmail($value->getPrimaryEmail(), $constraint);
         }
     }

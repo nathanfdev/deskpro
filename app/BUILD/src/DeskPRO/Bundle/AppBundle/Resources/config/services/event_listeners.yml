@@ -83,6 +83,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.person_email:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonEmailListener
+    arguments: ["@email.email_account_manager", "@validator"]
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.custom_data_ticket:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
     tags:

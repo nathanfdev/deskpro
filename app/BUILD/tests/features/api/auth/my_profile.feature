@@ -2,7 +2,14 @@
 Feature: Person profile
 
   Background:
-    Given I'm authenticated as admin
+    Given no Person records exist
+    And no PersonEmail records exist
+    And I'm authenticated as admin
+    And only the following Language records exist:
+      | #  | Sys Name |
+      | l1 | Lang 1   |
+      | l2 | Lang 2   |
+      | l3 | Lang 3   |
 
   Scenario: I get profile
     When I send a GET request to "/api/v2/me/profile"
@@ -13,7 +20,7 @@ Feature: Person profile
     And the JSON node "data.primary_email" should be equal to "admin@deskpro.dev"
     And the JSON node "data.emails[0]" should be equal to "admin@deskpro.dev"
     And the JSON node "data.phone" should be equal to 0
-    And the JSON node "data.language_id" should be equal to 1
+    And the JSON node "data.language_id" should be equal to 0
     And the JSON node "data.timezone" should be equal to "UTC"
     And the JSON node "data.avatar" should be equal to 0
 
@@ -37,7 +44,7 @@ Feature: Person profile
 {
   "name": "New Name",
   "display_name": "Display Name",
-  "language_id": 2,
+  "language_id": ~l2~,
   "primary_email": "my_new_email@deskpro.com",
   "emails": [
     "email1@deskpro.com",
@@ -54,11 +61,11 @@ Feature: Person profile
     And the JSON node "data.display_name" should be equal to "Display Name"
     And the JSON node "data.primary_email" should be equal to "my_new_email@deskpro.com"
     And the JSON node "data.emails" should have 3 elements
-    And the JSON node "data.emails[0]" should be equal to "email1@deskpro.com"
-    And the JSON node "data.emails[1]" should be equal to "email2@deskpro.com"
-    And the JSON node "data.emails[2]" should be equal to "my_new_email@deskpro.com"
+    And the JSON node "data.emails[0]" should be equal to "my_new_email@deskpro.com"
+    And the JSON node "data.emails[1]" should be equal to "email1@deskpro.com"
+    And the JSON node "data.emails[2]" should be equal to "email2@deskpro.com"
     And the JSON node "data.phone" should be equal to 0
-    And the JSON node "data.language_id" should be equal to 2
+    And the JSON node "data.language_id" should be equal to "~l2~"
     And the JSON node "data.timezone" should be equal to "UTC"
     And the JSON node "data.avatar" should be equal to 0
 
@@ -68,7 +75,7 @@ Feature: Person profile
 {
   "name": "New Name",
   "display_name": "Display Name",
-  "language_id": 2,
+  "language_id": ~l2~,
   "primary_email": "my_new_email@deskpro.com",
   "emails": [
     "invalid",
