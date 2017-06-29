@@ -102,18 +102,6 @@ class ProjectFileSet
         $sets = [];
 
         //------------------------------
-        // DpRun type files
-        //------------------------------
-
-        $finder = Finder::create()
-            ->files()
-            ->in($this->env->getDpRoot().DIRECTORY_SEPARATOR.'/app/run')
-            ->in($this->env->getDpRoot().DIRECTORY_SEPARATOR.'bin');
-
-        $sets[] = $this->readIterator($finder, $this->env->getDpRoot(), '%DP_DIR%');
-        unset($finder);
-
-        //------------------------------
         // Current build files
         //------------------------------
 
