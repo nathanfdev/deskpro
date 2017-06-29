@@ -231,7 +231,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
         ]);
         $metadata->mapField([
             'fieldName'  => 'note',
-            'type'       => 'string',
+            'type'       => 'text',
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => false,
