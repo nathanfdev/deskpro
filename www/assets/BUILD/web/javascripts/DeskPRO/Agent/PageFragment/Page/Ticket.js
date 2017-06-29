@@ -91,6 +91,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				onActivate,
 				boundHandleReplySave
 			);
+		} else {
+			this.handleReplySaveInterceptor = boundHandleReplySave;
 		}
 
 		this.wrapper = el;
