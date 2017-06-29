@@ -282,10 +282,7 @@
     >
         <tr class="mode-display" ng-show="!isEditMode('ticket_field_{{ f.id }}')"
             ng-click="editField($event, 'ticket_field_{{ f.id }}')">
-            <th width="80">
-                <span class="custom-field edit-trigger ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">
-                    {{ f.title }} :
-                </span>
+            <th width="80"><span class="custom-field edit-trigger ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">{{ f.title }}:</span>
             </th>
             <td>
                 <div class="custom-field content ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">
@@ -315,11 +312,7 @@
     >
         <tr class="mode-display" ng-show="!isEditMode('user_field_{{ f.id }}')"
             ng-click="editField($event, 'user_field_{{ f.id }}')">
-            <th width="80">
-                <span class="custom-field edit-trigger user_field_{{ f.id }}" data-item-id="{{ f.id }}">
-                    {{ f.title }} :
-                </span>
-            </th>
+            <th width="80"><span class="custom-field edit-trigger user_field_{{ f.id }}" data-item-id="{{ f.id }}">{{ f.title }}:</span></th>
             <td>
                 <div class="custom-field content user_field_{{ f.id }}" data-item-id="{{ f.id }}">
                     {{ render_custom_field(f) }}
@@ -348,11 +341,7 @@
     >
         <tr class="mode-display" ng-show="!isEditMode('org_field_{{ f.id }}')"
             ng-click="editField($event, 'org_field_{{ f.id }}')">
-            <th width="80">
-                <span class="custom-field edit-trigger org_field_{{ f.id }}" data-item-id="{{ f.id }}">
-                    {{ f.title }} :
-                </span>
-            </th>
+            <th width="80"><span class="custom-field edit-trigger org_field_{{ f.id }}" data-item-id="{{ f.id }}">{{ f.title }}:</span></th>
             <td>
                 <div class="custom-field content org_field_{{ f.id }}" data-item-id="{{ f.id }}">
                     {{ render_custom_field(f) }}
@@ -379,11 +368,7 @@
     >
         <tr class="mode-display" ng-show="!isEditMode('custom_field_{{ id }}')"
             ng-click="editField($event, 'custom_field_{{ id }}')">
-            <th width="80">
-                <span class="custom-field edit-trigger custom_field_{{ id }}" data-item-id="{{ id }}">
-                    {{ f.vars.label }} :
-                </span>
-            </th>
+            <th width="80"><span class="custom-field edit-trigger custom_field_{{ id }}" data-item-id="{{ id }}">{{ f.vars.label }}:</span></th>
             <td>
                 <div class="custom-field content ticket_field_{{ id }}" data-item-id="{{ id }}">
                     {{ render_custom_field(f) }}
