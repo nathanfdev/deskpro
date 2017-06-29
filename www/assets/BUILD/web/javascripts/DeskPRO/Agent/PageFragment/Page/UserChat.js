@@ -135,6 +135,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       , isWysiwyg = false
       , inline = this.getEl('is_html_reply')
       ;
+		this.textarea = textarea;
 
 		if (DeskPRO_Window.canUseAgentReplyRte()) {
 			isWysiwyg = true;
@@ -275,111 +276,125 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 							self.page.pauseSend = true;
 
-							$.ajax({
-								url: BASE_URL + 'agent/text-snippets/chat/' + snippetId + '.json',
-								dataType: 'json',
-								complete: function () {
-									if (self.page) self.page.pauseSend = false;
-								},
-								success: function (data) {
-
-									var snippet = data.snippet;
-									var snippetId = snippet.id;
-									var snippetCode = snippet.snippet;
-
-									var agentText;
-									var defaultText;
-									var wantText;
-									var useText;
-									var result;
-
-									Array.each(snippetCode, function (info) {
-										if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-											defaultText = info.value;
-										}
-										useText = info.value;
-									});
-
-									if (wantText) {
-										useText = wantText;
-									} else if (agentText) {
-										useText = agentText;
-									} else if (defaultText) {
-										useText = defaultText;
+              if (window.DP_HAS_NEW_SNIPPETS) {
+              	$.ajax({
+                  url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/chat/0?inline_sideloads=true&include=snippet_translation,blob',
+									dataType: 'json',
+									complete: function () {
+										if (self.page) self.page.pauseSend = false;
+									},
+									success:  function (data) {
+										var snippet = data.data;
+										self.insertSnippet(snippet);
 									}
+								});
+              } else {
+                $.ajax({
+                  url:      BASE_URL + 'agent/text-snippets/chat/' + snippetId + '.json',
+                  dataType: 'json',
+                  complete: function () {
+                    if (self.page) self.page.pauseSend = false;
+                  },
+                  success:  function (data) {
 
-									try {
-										var tpl = twig({
-											data: useText,
-											strict_variables: false
-										});
-										if (tpl) {
-											result = tpl.render({
-												ticket: self.page.meta.api_data
-											}, {
-												strict_variables: false
-											});
-											if (!result) {
-												result = useText;
-											}
-										} else {
-											result = useText;
-										}
-									} catch (e) {
-										console.log("Snippet render failed: %o", e);
-										result = useText;
-									}
+                    var snippet = data.snippet;
+                    var snippetId = snippet.id;
+                    var snippetCode = snippet.snippet;
 
-									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+                    var agentText;
+                    var defaultText;
+                    var wantText;
+                    var useText;
+                    var result;
 
-									data = result;
-									data = data.replace(/<\/p>\s*<p>/g, '<br/>');
-									data = data.replace(/^<p>/, '');
-									data = data.replace(/<\/p>$/, '');
-									data = $('<div>' + data + '</div>');
+                    Array.each(snippetCode, function (info) {
+                      if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+                        defaultText = info.value;
+                      }
+                      useText = info.value;
+                    });
 
-									var wrapper = $('<div/>');
-									wrapper.html(useText);
+                    if (wantText) {
+                      useText = wantText;
+                    } else if (agentText) {
+                      useText = agentText;
+                    } else if (defaultText) {
+                      useText = defaultText;
+                    }
 
-									if (wrapper.find('> div, > p, > span')[0]) {
-										data = wrapper.find('> *');
-									} else {
-										data = wrapper;
-									}
+                    try {
+                      var tpl = twig({
+                        data:             useText,
+                        strict_variables: false
+                      });
+                      if (tpl) {
+                        result = tpl.render({
+                          ticket: self.page.meta.api_data
+                        }, {
+                          strict_variables: false
+                        });
+                        if (!result) {
+                          result = useText;
+                        }
+                      } else {
+                        result = useText;
+                      }
+                    } catch (e) {
+                      console.log("Snippet render failed: %o", e);
+                      result = useText;
+                    }
 
-									// trailing newlines
-									var coll;
-									if (data.length == 1) {
-										coll = data;
-									} else {
-										coll = data.find('> p');
-									}
-									coll.each(function () {
-										var l = $(this).find('> *').last();
-										if (l.is('br')) {
-											l.remove();
-										}
-									});
+                    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 
-									if (data.find('> div, > span, > p').length == 1) {
-										var span = $('<span></span>');
-										span.append(data.find('> *'));
-										data = span;
-									} else if (data.find('> *').length == 0) {
-										var span = $('<span></span>');
-										span.html(data.html());
-										data = span;
-									}
+                    data = result;
+                    data = data.replace(/<\/p>\s*<p>/g, '<br/>');
+                    data = data.replace(/^<p>/, '');
+                    data = data.replace(/<\/p>$/, '');
+                    data = $('<div>' + data + '</div>');
 
-									data.append('<span class="_cursor"></span>');
-									var cursor = data.find('._cursor');
+                    var wrapper = $('<div/>');
+                    wrapper.html(useText);
 
-									el.after(data);
-									el.remove();
-									api.setSelection(cursor[0], 0, cursor[0], 0);
-									api.syncCode();
-								}
-							});
+                    if (wrapper.find('> div, > p, > span')[0]) {
+                      data = wrapper.find('> *');
+                    } else {
+                      data = wrapper;
+                    }
+
+                    // trailing newlines
+                    var coll;
+                    if (data.length == 1) {
+                      coll = data;
+                    } else {
+                      coll = data.find('> p');
+                    }
+                    coll.each(function () {
+                      var l = $(this).find('> *').last();
+                      if (l.is('br')) {
+                        l.remove();
+                      }
+                    });
+
+                    if (data.find('> div, > span, > p').length == 1) {
+                      var span = $('<span></span>');
+                      span.append(data.find('> *'));
+                      data = span;
+                    } else if (data.find('> *').length == 0) {
+                      var span = $('<span></span>');
+                      span.html(data.html());
+                      data = span;
+                    }
+
+                    data.append('<span class="_cursor"></span>');
+                    var cursor = data.find('._cursor');
+
+                    el.after(data);
+                    el.remove();
+                    api.setSelection(cursor[0], 0, cursor[0], 0);
+                    api.syncCode();
+                  }
+                });
+              }
 						}
 					}
 				}
@@ -390,84 +405,93 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		// Snippets Viewer
 		//------------------------------
 
-		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-			triggerElement: snippetBtn,
-			snippetType: 'chat',
-			onSnippetClick: function(info) {
-				var snippetId    = info.snippetId;
-				var snippetCode  = info.snippetCode;
+    if (window.DP_HAS_NEW_SNIPPETS) {
+      snippetBtn.on('click', function (e) {
+        var event = new CustomEvent('dpLeftDrawer', {detail: { module: 'SnippetsMenu', width: 745, type: 'chat', insertSnippet: self.insertSnippet.bind(self)}});
+        window.document.dispatchEvent(event);
+        self.isSnippetOpen = true;
+      });
+    } else {
+      this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+        triggerElement: snippetBtn,
+        snippetType:    'chat',
+        onSnippetClick: function (info) {
+          var snippetId = info.snippetId;
+          var snippetCode = info.snippetCode;
 
-				var agentText;
-				var defaultText;
-				var wantText;
-				var useText;
-				var result;
+          var agentText;
+          var defaultText;
+          var wantText;
+          var useText;
+          var result;
 
-				Array.each(snippetCode, function(info) {
-					if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-						defaultText = info.value;
-					}
-					useText = info.value;
-				});
+          Array.each(snippetCode, function (info) {
+            if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+              defaultText = info.value;
+            }
+            useText = info.value;
+          });
 
-				if (wantText) {
-					useText = wantText;
-				} else if (agentText) {
-					useText = agentText;
-				} else if (defaultText) {
-					useText = defaultText;
-				}
+          if (wantText) {
+            useText = wantText;
+          } else if (agentText) {
+            useText = agentText;
+          } else if (defaultText) {
+            useText = defaultText;
+          }
 
-				var val = useText;
+          var val = useText;
 
-				var messageTextarea = self.getEl('replybox_txt');
+          var messageTextarea = self.getEl('replybox_txt');
 
-				var data = $('<div></div>').html(val);
-				if (data.find('> span, > div, > p').length == 1) {
-					var span = $('<span></span>');
-					span.append(data.find('> *'));
-					data = span;
-				} else if (data.find('> span, > div, > p').length == 0) {
-					var span = $('<span></span>');
-					span.html(data.html());
-					data = span;
-				}
+          var data = $('<div></div>').html(val);
+          if (data.find('> span, > div, > p').length == 1) {
+            var span = $('<span></span>');
+            span.append(data.find('> *'));
+            data = span;
+          } else if (data.find('> span, > div, > p').length == 0) {
+            var span = $('<span></span>');
+            span.html(data.html());
+            data = span;
+          }
 
-				val = data.html();
+          val = data.html();
 
-				if (messageTextarea.data('redactor')) {
+          if (messageTextarea.data('redactor')) {
 
-					try {
-						messageTextarea.data('redactor').restoreSelection();
-						messageTextarea.data('redactor').setBuffer();
-					} catch (e) {}
+            try {
+              messageTextarea.data('redactor').restoreSelection();
+              messageTextarea.data('redactor').setBuffer();
+            } catch (e) {
+            }
 
-					var html = val;
-					html = html.replace(/<\/p>\s*<p>/g, '<br/>');
-					html = html.replace(/^<p>/, '');
-					html = html.replace(/<\/p>$/, '');
-					messageTextarea.data('redactor').insertHtml(html);
-					messageTextarea.change();
-					window.setTimeout(function() {
-						var tmp = ed.height();
-						if (lastH != tmp) {
-							lastH = tmp;
-							self.getEl('replybox').css('height', lastH+69);
-							self.getEl('messages_box').css('bottom', lastH+69);
-						}
-					}, 100);
-				} else {
-					var pos = messageTextarea.getCaretPosition();
-					if (!pos) {
-						messageTextarea.setCaretPosition(0);
-					}
+            var html = val;
+            html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+            html = html.replace(/^<p>/, '');
+            html = html.replace(/<\/p>$/, '');
+            messageTextarea.data('redactor').insertHtml(html);
+            messageTextarea.change();
+            window.setTimeout(function () {
+              var tmp = ed.height();
+              if (lastH != tmp) {
+                lastH = tmp;
+                self.getEl('replybox').css('height', lastH + 69);
+                self.getEl('messages_box').css('bottom', lastH + 69);
+              }
+            }, 100);
+          } else {
+            var pos = messageTextarea.getCaretPosition();
+            if (!pos) {
+              messageTextarea.setCaretPosition(0);
+            }
 
-					messageTextarea.insertAtCaret(val);
-				}
+            messageTextarea.insertAtCaret(val);
+          }
 
-				self.snippetsViewer.close();
-			}
-		});
+          self.snippetsViewer.close();
+        }
+      });
+    }
 
 		//------------------------------
 		// Intercept close events and cancel, so we
@@ -597,10 +621,132 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     });
 	},
 
+	insertSnippet: function(snippet, blobs, langId) {
+		var self = this;
+    var snippetId = snippet.id;
+    var snippetCode = snippet.translations;
+
+    var defaultText;
+    var useText;
+    var result;
+
+    if (!langId) {
+      langId = DESKPRO_DEFAULT_LANG_ID;
+		}
+
+    Array.each(snippetCode, function (info) {
+      if (info.language === langId) {
+        defaultText = info;
+      }
+      useText = info;
+    });
+
+    if (defaultText) {
+      useText = defaultText;
+    }
+
+    // At the moment attachment as sent straight away we need to be able to edit them or review the message
+    // before sending them
+    // if (useText.blobs.length) {
+    //   var $attachRow = self.getEl('attach_row');
+    //   Array.each(useText.blobs, function (info) {
+    //     var blob = data.linked.blob[info];
+    //     if (blob) {
+    //       var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+    //       $attachRow.find('ul.files:first').append(html);
+    //     }
+    //   });
+    //   $attachRow.slideDown().removeClass('is-hidden');
+    // }
+
+    useText = useText.content;
+
+    try {
+      self.getEl('user_choice');
+      var tpl = twig({
+        data:             useText,
+        strict_variables: false
+      });
+      if (tpl) {
+        result = tpl.render({
+          entity: self.meta.api_data
+        }, {
+          strict_variables: false
+        });
+        if (!result) {
+          result = useText;
+        }
+      } else {
+        result = useText;
+      }
+    } catch (e) {
+      console.log("Snippet render failed: %o", e);
+      result = useText;
+    }
+
+    var data;
+
+    var wrapper = $('<div/>');
+    wrapper.html(result);
+
+    // if (wrapper.find('> div, > p, > span')[0]) {
+    //   data = wrapper.find('> *');
+    // } else {
+		data = wrapper;
+    // }
+
+    // trailing newlines
+    var coll;
+    if (data.length === 1) {
+      coll = data;
+    } else {
+      coll = data.find('> p');
+    }
+    coll.each(function () {
+      var l = $(this).find('> *').last();
+      if (l.is('br')) {
+        l.remove();
+      }
+    });
+
+    if (data.find('> div, > span, > p').length === 1) {
+      var span = $('<span></span>');
+      span.append(data.find('> *'));
+      data = span;
+    } else if (data.find('> *').length === 0) {
+      var span = $('<span></span>');
+      span.html(data.html());
+      data = span;
+    }
+
+    var api = this.textarea.data('redactor');
+    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+    if (el.length) {
+      data.append('<span class="_cursor"></span>');
+      var cursor = data.find('._cursor');
+
+      el.after(data);
+      el.remove();
+      api.setSelection(cursor[0], 0, cursor[0], 0);
+    } else {
+
+      try {
+        api.restoreSelection();
+        api.setBuffer();
+      } catch (e) {}
+      api.insertHtml(data.html());
+
+      var event = new CustomEvent('dpLeftDrawerClose');
+      window.document.dispatchEvent(event);
+      self.isSnippetOpen = false;
+		}
+    api.syncCode();
+	},
+
 	handleNewMessageCm: function(data, name) {
 
 		// Ignore our own messages, unless its a file then we have a rendered version from the server
-		if (data.author_type && data.author_type == 'agent' && data.author_id && data.author_id == DESKPRO_PERSON_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
+		if (data.author_type && data.author_type === 'agent' && data.author_id && data.author_id === DESKPRO_PERSON_ID && !(data.metadata && data.metadata.type && data.metadata.type == 'file')) {
 			return;
 		}
 

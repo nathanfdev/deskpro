@@ -1,25 +1,26 @@
 <script type="text/javascript">
 	// New Style vars
-    window.DP_SPA_PAGE_ID    = 'agent';
-	window.DP_ASSET_URL      = '{{ asset('') }}';
-	window.DP_BASE_URL       = '/{{ path('user')|ltrim('/') }}';
-	window.DP_BASE_API_URL   = '/{{ path('user')|ltrim('/') }}api';
-	window.DP_BASE_ADMIN_URL = '/{{ path('admin')|trim('/') }}';
-	window.DP_SESSION_ID     = '{{ app.session.getEntity().getSessionCode() }}';
-	window.DP_PERSON_ID      = {{ app.user.id }};
-	window.DP_PERSON_EMAIL   = '{{ app.user.getPrimaryEmailAddress() }}';
-	window.DP_PERSON_LANG_ID = {{ app.user.language.id }};
-	window.DP_PERSON_TZ      = '{{ app.user.timezone|default('UTC') }}';
-	window.DP_IS_DEBUG       = {% if app.isDebug() %}true{% else %}false{% endif %};
-	window.DP_IS_TESTING     = {% if app.isTesting() %}true{% else %}false{% endif %};
-	window.DP_IS_CLOUD       = {% if app.isCloud() %}true{% else %}false{% endif %};
+    window.DP_SPA_PAGE_ID      = 'agent';
+	window.DP_ASSET_URL        = '{{ asset('') }}';
+	window.DP_BASE_URL         = '/{{ path('user')|ltrim('/') }}';
+	window.DP_BASE_API_URL     = '/{{ path('user')|ltrim('/') }}api';
+	window.DP_BASE_ADMIN_URL   = '/{{ path('admin')|trim('/') }}';
+	window.DP_SESSION_ID       = '{{ app.session.getEntity().getSessionCode() }}';
+	window.DP_PERSON_ID        = {{ app.user.id }};
+	window.DP_PERSON_EMAIL     = '{{ app.user.getPrimaryEmailAddress() }}';
+	window.DP_PERSON_LANG_ID   = {{ app.user.language.id }};
+	window.DP_PERSON_TZ        = '{{ app.user.timezone|default('UTC') }}';
+	window.DP_IS_DEBUG         = {% if app.isDebug() %}true{% else %}false{% endif %};
+	window.DP_IS_TESTING       = {% if app.isTesting() %}true{% else %}false{% endif %};
+	window.DP_IS_CLOUD         = {% if app.isCloud() %}true{% else %}false{% endif %};
 	{% if app.isCloud() %}
-	window.DPC_SITE_DOMAIN   = '{{ constant('DPC_SITE_DOMAIN') }}';
+	window.DPC_SITE_DOMAIN     = '{{ constant('DPC_SITE_DOMAIN') }}';
 	{% endif %}
-	window.DP_USE_RJS_BUILD  = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
-	window.DP_BUILD_TIME     = {{ app.getBuildTime() }};
-	window.DP_HAS_VOICE      = {% if app.hasVoice() %}true{% else %}false{% endif %};
-	window.DP_HAS_NEW_IM     = {% if app.hasBeta('agent_chat') %}true{% else %}false{% endif %};
+	window.DP_USE_RJS_BUILD    = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+	window.DP_BUILD_TIME       = {{ app.getBuildTime() }};
+	window.DP_HAS_VOICE        = {% if app.hasVoice() %}true{% else %}false{% endif %};
+	window.DP_HAS_NEW_IM       = {% if app.hasBeta('agent_chat') %}true{% else %}false{% endif %};
+	window.DP_HAS_NEW_SNIPPETS = {% if app.hasBeta('new_snippets') %}true{% else %}false{% endif %};
 
     // Temporary hack to fix images not served
     window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') | replace({'http://localhost:9666/': '/' ~ path('user')|ltrim('/') ~ 'assets/BUILD/'}) }}';

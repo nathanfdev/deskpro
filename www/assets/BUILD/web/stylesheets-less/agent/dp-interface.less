@@ -4881,6 +4881,21 @@ ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
 	width: 52px;
 	position: absolute;
 }
+#react_dp_left_drawer_container .left-drawer {
+	position: absolute;
+	top: 0;
+	left: 52px;
+	bottom: 0;
+	width: 0;
+	z-index: 101;
+	visibility: hidden;
+	overflow: hidden;
+	transition: visibility 0s, width 0.2s ease-out;
+	&.active {
+		width: 600px;
+		visibility: visible;
+	}
+}
 
 //https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/
 .dont-break-out {

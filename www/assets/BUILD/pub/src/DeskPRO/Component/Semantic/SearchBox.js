@@ -8,7 +8,8 @@ class SearchBox extends React.Component {
     onFocus:      PropTypes.func,
     onBlur:       PropTypes.func,
     onClearInput: PropTypes.func,
-    focusOnMount: PropTypes.bool
+    focusOnMount: PropTypes.bool,
+    icon:         PropTypes.node
   };
   static defaultProps = {
     onUserInput() {},
@@ -23,6 +24,13 @@ class SearchBox extends React.Component {
       this.textInput.focus();
     }
   }
+
+  getIcon = () => {
+    if (this.props.icon) {
+      return this.props.icon;
+    }
+    return <i className="search icon" />;
+  };
 
   handleChange = () => {
     this.props.onUserInput(
@@ -44,7 +52,7 @@ class SearchBox extends React.Component {
     const { placeholder, text, onFocus, onBlur } = this.props;
     return (
       <div className="ui input left icon search">
-        <i className="search icon" />
+        {this.getIcon()}
         <input
           type="search"
           placeholder={placeholder}

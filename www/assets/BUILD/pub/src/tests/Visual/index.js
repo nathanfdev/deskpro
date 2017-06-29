@@ -6,6 +6,7 @@ import './AgentBundle/Modules/Application/notifications';
 import './AgentBundle/Modules/Application/sidebar';
 import './AgentBundle/Modules/Application/topbar';
 import './AgentBundle/Modules/Application/onboarding';
+import './AgentBundle/Modules/Snippets/snippets';
 import './AgentBundle/Modules/Common/NavFrame/Section';
 import './AgentBundle/Modules/Common/NavFrame/grouping-control';
 import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
