@@ -3881,7 +3881,7 @@ class TicketController extends AbstractController
         );
     }
 
-    public function forwardSendAction($ticket_id)
+    public function forwardSendAction($ticket_id, $message_id)
     {
         $ticket = $this->getTicketOr404($ticket_id);
 
@@ -4136,6 +4136,225 @@ class TicketController extends AbstractController
                 ]
             );
         }
+
+        return $this->createJsonResponse(['success' => true]);
+    }
+
+    public function forwardSendLegacyAction($ticket_id, $message_id)
+    {
+        $ticket  = $this->getTicketOr404($ticket_id);
+        $message = $this->em->find(TicketMessage::class, $message_id);
+        if (!$message || $message->ticket->getId() != $ticket->getId()) {
+            throw $this->createNotFoundException();
+        }
+        $custom_message     = $this->in->getString('custom_message');
+        $all_raw_to         = $this->in->getCleanValueArray('to', 'str', 'str');
+        $all_to_types       = $this->in->getCleanValueArray('to_type', 'str', 'str');
+        $tos                = [];
+        $ccs                = [];
+        $bccs               = [];
+        $helpdesk_addresses = [];
+        foreach ($all_raw_to as $rowid => $to) {
+            $to = trim($to);
+            if (!$to) {
+                continue;
+            }
+            $raw_to = \ezcMailTools::parseEmailAddresses($to);
+            if (!$raw_to) {
+                continue;
+            }
+            $type = isset($all_to_types[$rowid]) ? $all_to_types[$rowid] : 'to';
+            switch ($type) {
+                case 'to':
+                    $var = &$tos;
+                    break;
+                case 'cc':
+                    $var = &$ccs;
+                    break;
+                case 'bcc':
+                    $var = &$bccs;
+                    break;
+                default:
+                    $var = &$tos;
+                    break;
+            }
+            foreach ($raw_to as $addr) {
+                if ($addr->email && StringEmail::isValueValid($addr->email)) {
+                    if ($this->container->getEmailAccountManager()->findAccountForEmailAddress($addr->email)) {
+                        $helpdesk_addresses[] = $addr->email;
+                    } else {
+                        $var[$addr->email] = $addr->name;
+                    }
+                }
+            }
+            unset($var);
+        }
+        if ($helpdesk_addresses) {
+            return $this->createJsonResponse(
+                [
+                    'error'     => 'to_helpdesk_address',
+                    'addresses' => $helpdesk_addresses,
+                ]
+            );
+        }
+        if (!$tos) {
+            return $this->createJsonResponse(['error' => 'invalid_to']);
+        }
+        $subject     = $this->in->getString('subject');
+        $message_raw = $message->getMessageFull();
+        if (!$message_raw) {
+            $message_raw = $message->getMessageHtml();
+        }
+        $date_created = clone $message->date_created;
+        $date_created->setTimezone($this->person->getDateTimezone());
+        $date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
+        $top          = trim(
+            $this->container->get('templating.email.twig')->render(
+                'DeskPRO:emails_common:ticket-fwd-out-header.html.twig',
+                [
+                    'agent'   => $this->person,
+                    'ticket'  => $ticket,
+                    'message' => $message,
+                ]
+            )
+        );
+        if ($custom_message) {
+            if ($top) {
+                $top .= '<br/><br/>';
+            }
+            $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
+            $top .= nl2br(htmlspecialchars($custom_message));
+            if ($sig = $this->person->getSignatureHtml()) {
+                $top .= '<br/><br/>'.$sig.'<br/><br/><br/>';
+            }
+            $top .= '</div>';
+        }
+        if ($top) {
+            $top .= '<br/><br/>';
+        }
+        $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
+        $top .= '--- Forwarded Message ---<br/>';
+        $top .= 'From: '.$message->getPerson()->getDisplayNameUser().' &lt;<a href="mailto:'.$message->getPerson()
+                ->getPrimaryEmailAddress().'">'.$message->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
+        if ($message->getPerson()->isAgent()) {
+            $to = $ticket->getPerson();
+            $top .= 'To: '.$to->getDisplayName().' &lt;<a href="mailto:'.$to->getPrimaryEmailAddress(
+                ).'">'.$to->getPrimaryEmailAddress().'</a>&gt;<br/>';
+        } else {
+            if ($ticket->getEmailAccount()) {
+                $to = $ticket->getEmailAccount();
+                $top .= 'To: &lt;<a href="mailto:'.$to['address'].'">'.$to['address'].'</a>&gt;<br/>';
+            }
+        }
+        $top .= 'Subject: '.htmlspecialchars($ticket->getSubject()).'<br/>';
+        $top .= 'Date: '.$date_created.'<br/>';
+        $top .= '</div>';
+        $message_raw = $top.'<br/><br/>'.$message_raw;
+        if (strpos($message_raw, '<body') === false) {
+            $message_raw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>'.$message_raw.'</body></html>';
+        }
+        $message_raw = $message->procInlineAttach($message_raw);
+        $email       = $this->container->getMailer()->createMessage();
+        foreach ($tos as $k => $x) {
+            $email->addTo($k, $x);
+        }
+        foreach ($ccs as $k => $x) {
+            $email->addCc($k, $x);
+        }
+        foreach ($bccs as $k => $x) {
+            $email->addBcc($k, $x);
+        }
+        $email->setBody($message_raw, 'text/html');
+        $email->setSubject($subject);
+        $account = null;
+        if ($this->container->getSetting('core_tickets.fwd_use_account')) {
+            try {
+                $account = $this->container->getEmailAccountManager()->getAccount(
+                    $this->container->getSetting('core_tickets.fwd_use_account')
+                );
+                if (!($account && $account->is_enabled && $account->outgoing_account)) {
+                    $account = null;
+                }
+            } catch (\OutOfBoundsException $e) {
+                $account = null;
+            }
+        }
+        if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+            $account = $ticket->email_account;
+        }
+        if (!$account || !$account->is_enabled || !$account->outgoing_account) {
+            $account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
+        }
+        if ($this->container->getSetting('core_tickets.fwd_use_agent_address')) {
+            $use_from   = true;
+            $from_email = $this->person->getEmailAddress();
+        } else {
+            $use_from   = false;
+            $from_email = $account->getUseEmailAddress();
+        }
+        $from_name = $this->person->getDisplayNameUser();
+        try {
+            $email->setFrom($from_email, $from_name);
+        } catch (\Swift_RfcComplianceException $e) {
+            SystemErrorHandler::logException($e, false);
+            throw $this->createNotFoundException();
+        }
+        $tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
+        if ($email instanceof MessageOptionsInterface) {
+            if ($tr) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
+            }
+            if ($use_from) {
+                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $from_email);
+            }
+        }
+        $ticketdisplay      = new TicketDisplay($ticket, $this->person);
+        $attach_attachments = [];
+        $max                = App::getSetting('core.sendemail_attach_maxsize');
+        $size               = 0;
+        $attachments        = $ticketdisplay->getMessageAttachments($message, true);
+        if ($attachments) {
+            foreach ($attachments as $attach) {
+                if ($size + $attach->blob->filesize > $max) {
+                    break;
+                }
+                $attach_attachments[$attach->blob->getDownloadUrl(true)] = $attach;
+            }
+            foreach ($attach_attachments as $src => $attach) {
+                $email->attachBlob($attach->blob, $src, $attach->is_inline);
+            }
+        }
+        $this->container->getMailer()->send($email);
+        // Log the action
+        $this->db->insert(
+            'tickets_logs',
+            [
+                'ticket_id'   => $ticket->id,
+                'person_id'   => $this->person->id,
+                'action_type' => 'message_forwarded',
+                'details'     => serialize(
+                    [
+                        'message_id'     => $message_id,
+                        'agent_id'       => $this->person->id,
+                        'agent_name'     => $this->person->getDisplayName(),
+                        'to'             => array_keys($tos),
+                        'cc'             => array_keys($ccs),
+                        'bcc'            => array_keys($bccs),
+                        'all_rec_string' => implode(
+                            ', ',
+                            array_merge(array_keys($tos), array_keys($ccs), array_keys($bccs))
+                        ),
+                        'to_string'      => implode(', ', array_keys($tos)),
+                        'cc_string'      => implode(', ', array_keys($ccs)),
+                        'bcc_string'     => implode(', ', array_keys($bccs)),
+                        'from_email'     => $from_email,
+                        'from_name'      => $from_name,
+                        'custom_message' => $custom_message ?: null,
+                    ]
+                ),
+                'date_created' => date('Y-m-d H:i:s'),
+            ]
+        );
 
         return $this->createJsonResponse(['success' => true]);
     }
