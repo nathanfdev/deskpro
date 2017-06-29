@@ -174,6 +174,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		};
 
 		$scope.editField = function($event, field) {
+      var $row = self.display.find('tbody.item.' + field).first();
+      self.initFieldWidgets($row);
+
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
 			if ($event.target.tagName === 'A') return;
@@ -236,7 +239,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       $scope.edit_fields.length = 0;
       self.edit_fields_map = {};
       $scope.show_hidden = 0;
-      self.throttled_updateDisplay();
+      self.updateDisplay();
 		};
 
 		$scope.saveFields = function() {
@@ -248,17 +251,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			for (var i = 0; i < self.no_value_fields.length; i++) {
 				$scope.editField(self.no_value_fields[i]);
 			}
-			self.throttled_updateDisplay();
+			self.updateDisplay();
 		};
-
-    if (window.DESKPRO_TICKET_DISPLAY) {
-      var reader = self.ticketReader;
-			var fields = window.DESKPRO_TICKET_DISPLAY.getLayout(reader.getDepartmentId()).getFields();
-			for (var i = 0; i < fields.length; i++) {
-				var $row = self.display.find('tbody.item.' + fields[i].id).first();
-				self.initFieldWidgets($row);
-			}
-    }
 	},
 
 	updateDisplayNow: function() {
@@ -404,6 +398,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 	initFieldWidgets: function($tbody) {
 		if (!$tbody || $tbody.data('widget-init')) return;
+    $tbody.data('widget-init', 1);
 
 		$('select', $tbody).not('.no-dp-select').dpMultiLevelSelect();
 		// is it the same as one above?
@@ -446,8 +441,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		});
 
     $('.hijri input', $tbody).calendarsPicker({calendar: $.calendars.instance('islamic', 'ar')});
-
-    $tbody.data('widget-init', 1);
 	},
 
 	saveChanges: function() {
