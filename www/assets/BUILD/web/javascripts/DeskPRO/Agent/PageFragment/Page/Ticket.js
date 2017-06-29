@@ -2334,6 +2334,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleFwd: function(info) {
 		var self = this;
+		if (!this.ticketReplyBox) return;
 		this.ticketReplyBox.clearFwd();
     switch (info.mode) {
       case 'all':

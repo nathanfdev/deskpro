@@ -1083,7 +1083,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.find('.fwd-control-add').on('click', function (ev) {
-			self.addTo((ev.target).data('add'));
+			self.addTo($(ev.target).data('add'));
     });
 		this.addTo('to');
 
@@ -1215,7 +1215,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
   addTo: function(type) {
     var copy = this.getElById('template > .to-line').clone();
     var container = this.getElById('fwd_to_container');
-    var header = copy.find('.label');
+    var header = copy.find('.label > span');
     var input = copy.find('.email-address-input');
     var wrap = copy.find('.email-address-wrap').removeClass('with-handler').removeClass('with-display-handler');
     wrap.on('personsearchboxclick', function (event, personId, name, email, box) {
@@ -1242,8 +1242,25 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       default:
         return;
     }
+
+    copy.find('.fwd_removerow').on('click', (function() {
+    	this.removeTo(copy);
+		}).bind(this));
+
     container.append(copy);
     DeskPRO.ElementHandler_Exec(this.el);
+
+    var xbtns = container.find('.fwd_removerow');
+    if (xbtns.length === 1) xbtns.hide();
+    else xbtns.show();
+  },
+
+	removeTo: function (row) {
+		row.remove();
+    var container = this.getElById('fwd_to_container');
+    var xbtns = container.find('.fwd_removerow');
+    if (xbtns.length === 1) xbtns.hide();
+    else xbtns.show();
   },
 
 	setReplyAsOptionName: function(name) {

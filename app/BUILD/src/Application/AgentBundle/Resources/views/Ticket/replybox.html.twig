@@ -134,7 +134,8 @@
 				<span type="text/x-deskpro-tmpl" id="{{ replyBaseId }}_template" style="display: none">
 							<div class="to-line">
 								<div class="label">
-									To:
+									<i class="fa fa-close fwd_removerow" style="cursor: pointer"></i>
+									<span>To:</span>
 								</div>
 								<div
 										class="email-address-wrap input"
@@ -185,16 +186,13 @@
 						</div>
 						<div style="display: inline-block">
 							{% if app.getSetting('core_tickets.fwd_use_agent_address') %}
-							<select name="from" id="{{ replyBaseId }}_fwd_from">
-								<option value="me">{{ app.user.getDisplayContact() }}</option>
-								<option value="system">{{ app.user.getDisplayName() }} {{'<'~system_account.getUseEmailAddress()~">"}}</option>
-							</select>
-							{% elseif app.getSetting('core_tickets.fwd_use_agent_address') %}
-                                {{ app.user.getDisplayName() }} <{{ app.getSetting('core_tickets.fwd_use_agent_address') }}>
-								<input type="hidden" disabled="disabled" value="{{ app.getSetting('core_tickets.fwd_use_agent_address') }}" />
+								<select name="from" id="{{ replyBaseId }}_fwd_from">
+									<option value="me">{{ app.user.getDisplayContact() }}</option>
+									<option value="system">{{ app.user.getDisplayName() }} {{'&lt;'~system_account.getUseEmailAddress()~"&gt;"}}</option>
+								</select>
 							{% else %}
-                                {{ app.user.getDisplayName() }} <{{ ticket.getEmailAccountAddress() }}>
-								<input type="hidden" value="{{ app.getSetting('core_tickets.fwd_use_agent_address') }}" />
+                                {{ app.user.getDisplayName() }} &lt;{{ system_account.getUseEmailAddress() }}&gt;
+								<input type="hidden" name="from" value="system" id="{{ replyBaseId }}_fwd_from" />
 							{% endif  %}
 						</div>
 					</div>
