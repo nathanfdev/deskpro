@@ -21,6 +21,8 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 				this.refreshPage();
 			}
 		}, this);
+
+		this.markUnloadPage = _.throttle(this.markUnloadPageNow.bind(this), 15000);
 	},
 
 	refreshPage: function() {
@@ -78,7 +80,7 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 		this.modBadgeCount('=', total);
 	},
 
-	markUnloadPage: function() {
+	markUnloadPageNow: function() {
 		this.doRelaodPage = true;
 		if ($('#task_outline').is('.on')) {
 			this.refreshPage();

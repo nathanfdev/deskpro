@@ -57,8 +57,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			times: []
 		};
 
-		this.resizerInterval = window.setInterval(function doUpdateUI() {
-			self.updateUi();
+		this.resizerInterval = window.setInterval(function() {
+			if (self.IS_ACTIVE) self.updateUi();
 		}, 1100);
 
 		this.initializeProperties();
