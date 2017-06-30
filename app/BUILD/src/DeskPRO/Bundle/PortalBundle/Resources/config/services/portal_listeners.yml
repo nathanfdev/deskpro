@@ -141,8 +141,8 @@ services:
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }
 
-  start_agent_session.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\StartAgentSessionListener
+  start_session.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\StartSessionListener
     arguments: ["@session"]
     tags:
       - { name: kernel.event_subscriber }
