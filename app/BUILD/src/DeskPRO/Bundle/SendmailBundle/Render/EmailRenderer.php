@@ -143,11 +143,29 @@ class EmailRenderer
             $code
         );
 
+        $blobSysNames = [];
+
+        // We look for <attachement sys='{id}'> and remove it from the template
+        $code = preg_replace_callback('#<attachment[^>]*sys=("([^"]+)"|\'([^\']+)\')[^>]*>#',
+            function ($matches) use (&$blobSysNames) {
+                $blobSysNames[] = $matches[2] ? $matches[2] : $matches[3];
+
+                return '';
+            },
+            $code
+        );
+
         $templateCode = new EmailTemplateCode($code);
 
         foreach ($blobAuthIds as $authId) {
             /** @var Blob $blob */
             $blob = $this->serviceContainer->getEm()->getRepository(Blob::class)->getByAuthId($authId);
+            $templateCode->addAttachment($blob);
+        }
+
+        foreach ($blobSysNames as $sysName) {
+            /** @var Blob $blob */
+            $blob = $this->serviceContainer->getEm()->getRepository(Blob::class)->getSystemBlob($sysName);
             $templateCode->addAttachment($blob);
         }
 

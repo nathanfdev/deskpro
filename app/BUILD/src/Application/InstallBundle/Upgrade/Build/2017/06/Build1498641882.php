@@ -37,5 +37,11 @@ class Build1498641882 extends AbstractBuild
         $this->execDbQuery('default', 'INSERT INTO theme_sets 
           (`id`, `theme_id`, `options`)
           VALUES (NULL, \'email_templates\', \'[]\')');
+
+        // createBlobRecordFromFile
+        $data      = file_get_contents(DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf');
+        $pdfBlobId = $this->saveBlob($data, 'Getting Started with DeskPRO.pdf', 'application/pdf');
+
+        $this->container->getDb()->executeUpdate('UPDATE blobs SET sys_name = ? WHERE id = ?', ['agent-quickstart', $pdfBlobId]);
     }
 }
