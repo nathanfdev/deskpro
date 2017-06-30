@@ -196,6 +196,14 @@ class ObjectLang extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
+
+    /**
      * @param string $prop_name
      *
      * @return $this
