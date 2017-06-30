@@ -1,12 +1,6 @@
 import React, { PropTypes } from 'react';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 import $ from 'jquery';
-import { extension } from 'mime-types';
-import moment from 'moment';
-
-function createFile(blob, contentType) {
-  return new File([blob], `clipboard_${moment().format()}.${extension(contentType)}`);
-}
 
 export const clipboardHasImages = (clipboardData) => {
   if (!clipboardData || !clipboardData.items) {
@@ -37,7 +31,7 @@ export const getBlobsFromItems = (items, onPasteImage) => {
       const urlObj = window.URL || window.webkitURL;
       const imgUrl = urlObj.createObjectURL(blob);
 
-      onPasteImage(createFile(blob, item.type), imgUrl, item.type);
+      onPasteImage(blob, imgUrl, item.type);
     }
   }
 };
@@ -46,13 +40,18 @@ export const getBlobsFromHtml = (html, onPasteImage) => {
   const regex = /<img.*?src=['"](.*?)['"].*?>/;
   const callback = (dataUrl) => {
     const blob = dataUrlToBlob(dataUrl);
-    onPasteImage(createFile(blob, 'image/png'), dataUrl, 'image/png');
+    onPasteImage(blob, dataUrl, 'image/png');
   };
 
   const match = regex.exec(html);
   if (match) {
     getImageDataUrl(match[1], callback);
   }
+};
+
+export const getBlobFromUrl = (dataUrl, onPasteImage) => {
+  const blob = dataUrlToBlob(dataUrl);
+  onPasteImage(blob, dataUrl, 'image/jpeg');
 };
 
 export class PasteCatcher extends React.Component {
