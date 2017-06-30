@@ -2369,9 +2369,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
     self.ticketReplyBox.appendFwdCollection(messageData);
-    // messages.first().find('.attachment-list a').map(function(element) {
-    //   self.ticketReplyBox.appendFwdAttach($(element), self);
-    // });
+
+    // attachments from last message
+    this.wrapper.find('.content-message.message-'+messageData[0].messageId).map(function (element) {
+      self.ticketReplyBox.appendFwdAttach($(element), self);
+    });
+
+    // focus reply box
+		this.focusOnReply();
   },
 
 	_getFwdMsgData: function(messageRow) {
