@@ -1037,7 +1037,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.find('.fwd-control-add').on('click', function (ev) {
-			self.addTo($(ev.target).data('add'));
+			self.addTo($(ev.target).data('add'), $(ev.target).data('set-email') || null);
     });
 		this.addTo('to');
 
@@ -1166,7 +1166,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 	},
 
-  addTo: function(type) {
+  addTo: function(type, setEmail) {
     var copy = this.getElById('template > .to-line').clone();
     var container = this.getElById('fwd_to_container');
     var header = copy.find('.label > span');
@@ -1200,6 +1200,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     copy.find('.fwd_removerow').on('click', (function() {
     	this.removeTo(copy);
 		}).bind(this));
+
+    if (setEmail) {
+      input.val(setEmail);
+    }
 
     container.append(copy);
     DeskPRO.ElementHandler_Exec(this.el);

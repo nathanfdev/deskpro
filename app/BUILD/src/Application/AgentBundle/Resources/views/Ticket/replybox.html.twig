@@ -176,9 +176,10 @@
 							<div class="label">
 								Add:
 							</div>
-							<span data-add="to" class="fwd-control-add">To</span> |
-							<span data-add="cc" class="fwd-control-add">Cc</span> |
-							<span data-add="bcc" class="fwd-control-add">BCC</span>
+							<span data-add="to" class="fwd-control-add" style="cursor: pointer">To</span> |
+							<span data-add="cc" class="fwd-control-add" style="cursor: pointer">CC</span> |
+							<span data-add="cc" data-set-email="{{ ticket.person.getEmailAddress() }}" class="fwd-control-add" title="CC the ticket owner: {{ ticket.person.getDisplayContact() }}" style="cursor: pointer">CC Sender</span> |
+							<span data-add="bcc" class="fwd-control-add" style="cursor: pointer">BCC</span>
 						</div>
 					</div>
 					<div class="header-line">
