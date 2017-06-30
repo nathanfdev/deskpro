@@ -41,6 +41,9 @@ use Application\DeskPRO\People\ActivityLogger\ActionType\ActionTypeAbstract;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
+/**
+ * Class ActivityLogger.
+ */
 class ActivityLogger
 {
     /**
@@ -79,8 +82,8 @@ class ActivityLogger
      */
     private function createActionDetails(Person $person, $action_type, array $details)
     {
-        $activity                = new PersonActivity();
-        $activity->person        = $person;
+        $activity = new PersonActivity();
+        $activity->setPerson($person);
         $activity['action_type'] = $action_type;
         $activity['details']     = $details;
 
@@ -113,14 +116,38 @@ class ActivityLogger
             return;
         }
 
+        // get all affected people to check if they still exist in the db
+        // and we don't get a FK error
+
+        $ids = [];
+        foreach ($pending as $activity) {
+            $ids[$activity->getPersonId()] = true;
+        }
+
+        $ids = $this->db->fetchAllCol(
+            'SELECT id FROM people WHERE id IN (:ids)',
+            [
+                'ids' => array_keys($ids),
+            ],
+            [
+                'ids' => Connection::PARAM_INT_ARRAY,
+            ]
+        );
+
         // using plain sql here instead of doctrine
         // to avoid any need for EM to have any related entities
 
         $batch = [];
         foreach ($pending as $a) {
+            if (!in_array($a->getPersonId(), $ids)) {
+                continue;
+            }
+
             $batch[] = $a->toDbArray();
         }
 
-        $this->db->batchInsert('person_activity', $batch, true);
+        if ($batch) {
+            $this->db->batchInsert('person_activity', $batch, true);
+        }
     }
 }
