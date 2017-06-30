@@ -1701,10 +1701,39 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     });
 	},
 
-	appendFwdText: function(html, messageId) {
-		this.getElById('fwd_body').append(html);
-		this.getElById('fwd_body').append("<br/><br/>");
-		this.fwdMessages.push(messageId);
+	appendFwdCollection: function(messages) {
+		var self = this;
+		var tpl = [];
+    tpl.push('<div><strong>From:</strong> <span class="name-part"></span> &lt;<span class="email-part"></span>&gt;</div>');
+    tpl.push('<div><strong>Date:</strong> <span class="datetime-part"></span></div>');
+    tpl.push('<div><strong>Subject:</strong> <span class="subject-part"></span></div>');
+    tpl.push('<br/>');
+    tpl.push('<table border="0" cellspacing="0" cellpadding="3">');
+    tpl.push('	<tr><td>');
+    tpl.push('		<table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>');
+    tpl.push('			<div data-dp-type="blockquote" class="dp-quoted-message"></div>');
+    tpl.push('		</td></tr></table>');
+    tpl.push('	</td></tr>');
+    tpl.push('</table>');
+    tpl.push('<br/><br/>');
+    tpl = $(tpl.join("\n"));
+
+    var rows = [];
+
+		messages.forEach(function(m) {
+			var row = tpl.clone();
+      row.find('.datetime-part').text(moment(m.date).format('dddd, MMMM Do YYYY, h:mm:ss a'));
+      row.find('.name-part').text(m.author.name);
+      row.find('.email-part').text(m.author.email);
+      row.find('.subject-part').text(self.page.meta.title);
+			row.find('.dp-quoted-message').html(m.bodyHtml);
+
+      self.fwdMessages.push(m.messageId);
+      rows.push(row);
+		});
+
+    this.getElById('fwd_body').append('<div>---------- Forwarded Message ----------</div>');
+    this.getElById('fwd_body').append(rows);
 	},
 
 	appendFwdAttach: function(element, ticket) {

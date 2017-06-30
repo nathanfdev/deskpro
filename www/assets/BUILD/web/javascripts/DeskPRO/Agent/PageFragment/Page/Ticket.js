@@ -2333,43 +2333,58 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleFwd: function(info) {
-		var self = this, messages;
+		var self = this, messages, messageData = [];
 		if (!this.ticketReplyBox) return;
 		this.ticketReplyBox.clearFwd();
 		this.ticketReplyBox.setFwdMode(info.mode);
     switch (info.mode) {
       case 'all':
 				messages = this.wrapper.find('.content-message').not('.note-message');
-				messages.get().reverse().map(function(element) {
-					self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
+        (this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
+          messageData.push(self._getFwdMsgData($(element)));
         });
         break;
 			case 'single':
 				this.ticketReplyBox.dontDispatch = true;
 				this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
         messages = this.wrapper.find('.content-message.message-'+info.messageId).first();
-      	this.ticketReplyBox.appendFwdText(
-          messages.find('.body-text-message').eq(0).html(),
-					info.messageId
-				);
+        messageData.push(self._getFwdMsgData(messages.first()));
         break;
 			case 'from':
         this.ticketReplyBox.dontDispatch = true;
         this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
         messages = this.wrapper.find('.content-message').not('.note-message');
-        messages.get().reverse().map(function(element) {
+				(this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
         	if ($(element).data('message-id') >= info.messageId) {
-            self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
+        		messageData.push(self._getFwdMsgData($(element)));
 					}
         });
         break;
       default:
         break;
     }
-    messages.first().find('.attachment-list a').map(function(index, element) {
-      self.ticketReplyBox.appendFwdAttach($(element), self);
-    });
+
+    if (this.meta.ticket_reverse_order) {
+    	messageData.reverse();
+		}
+
+    self.ticketReplyBox.appendFwdCollection(messageData);
+    // messages.first().find('.attachment-list a').map(function(element) {
+    //   self.ticketReplyBox.appendFwdAttach($(element), self);
+    // });
   },
+
+	_getFwdMsgData: function(messageRow) {
+		return {
+			messageId: messageRow.data('message-id'),
+			author: {
+				name: messageRow.data('message-author-name'),
+				email: messageRow.data('message-author-email')
+			},
+			date: new Date(parseInt(messageRow.data('message-ts'))),
+			bodyHtml: messageRow.find('.body-text-message').first().html()
+		}
+	},
 
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();

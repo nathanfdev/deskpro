@@ -3881,13 +3881,13 @@ class TicketController extends AbstractController
         );
     }
 
-    public function forwardSendAction($ticket_id, $message_id)
+    public function forwardSendAction($ticket_id)
     {
         $ticket = $this->getTicketOr404($ticket_id);
 
         $messagesIds   = $this->in->getCleanValueArray('messages_ids', 'int', 'int');
-        $messages      = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds]);
-        $customMessage = $this->in->getString('custom_message');
+        $messages      = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds], ['id' => 'DESC']);
+        $customMessage = Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtml('custom_message')));
         $useMyAddress  = $this->in->getString('from') === 'me';
         $mode          = $this->in->getString('mode');
 
@@ -3952,10 +3952,6 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(['error' => 'invalid_to']);
         }
 
-        $subject = $this->in->getString('subject');
-
-        $messagesRaw = [];
-
         $maxEmailSize = App::getSetting('core_email.max_email_size');
 
         $attachments = $this
@@ -3973,70 +3969,15 @@ class TicketController extends AbstractController
             $emailSize += (int) $blob->getFilesize();
         }
 
-        // what is the logic if email size is too big? drop attachments untill all messages are fit?
-        foreach ($messages as $message) {
-            // if we're not specifically sending a note, then dont send notes
-            if ($message->isAgentNote() && $mode !== 'single') {
-                continue;
-            }
-            $msg         = $message->procInlineAttach($message->getMessageHtml());
-            $messageSize = strlen($msg);
-            if ($messageSize + $emailSize > $maxEmailSize) {
-                break;
-            }
-            $messagesRaw[] = $msg;
-        }
-
-        $messageRaw = implode('<br /><br />', $messagesRaw);
-
-        $date_created = clone $message->date_created;
-        $date_created->setTimezone($this->person->getDateTimezone());
-        $date_created = $date_created->format($this->container->getSetting('core.date_fulltime'));
-
-        $top = '';
-
-        if ($customMessage) {
-            if ($top) {
-                $top .= '<br/><br/>';
-            }
-            $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
-            $top .= nl2br(htmlspecialchars($customMessage));
-
-            $top .= '</div>';
-        }
-
-        if ($top) {
-            $top .= '<br/><br/>';
-        }
-
-        // we gonna use latest message we're forwading
-        $top .= '<div style="font-family: \'Helvetica Neue\',​Helvetica,​Arial,​sans-serif; font-size: 13px; color: #404040; padding: 0; margin: 0;">';
-        $top .= '--- Forwarded Message ---<br/>';
-        $top .= 'From: '.$messages[0]->getPerson()->getDisplayNameUser().' &lt;<a href="mailto:'.$messages[0]->getPerson()
-                ->getPrimaryEmailAddress().'">'.$messages[0]->getPerson()->getPrimaryEmailAddress().'</a>&gt;<br/>';
-
-        if ($messages[0]->getPerson()->isAgent()) {
-            $to = $ticket->getPerson();
-            $top .= 'To: '.$to->getDisplayName().' &lt;<a href="mailto:'.$to->getPrimaryEmailAddress(
-                ).'">'.$to->getPrimaryEmailAddress().'</a>&gt;<br/>';
-        } else {
-            if ($ticket->getEmailAccount()) {
-                $to = $ticket->getEmailAccount();
-                $top .= 'To: &lt;<a href="mailto:'.$to['address'].'">'.$to['address'].'</a>&gt;<br/>';
-            }
-        }
-
-        $top .= 'Subject: '.htmlspecialchars($ticket->getSubject()).'<br/>';
-        $top .= 'Date: '.$date_created.'<br/>';
-        $top .= '</div>';
-
-        $messageRaw = $top.'<br/><br/>'.$messageRaw;
-
-        if (strpos($messageRaw, '<body') === false) {
-            $messageRaw = '<html><head><style>body { font-size: 13px; color: #404040; font-family: "Helvetica Neue",​Helvetica,​Arial,​sans-serif; }</style></head><body>'.$messageRaw.'</body></html>';
-        }
-
         $email = $this->container->getMailer()->createMessage();
+        $email->setTemplate('DeskPRO:emails_user:ticket-fwd.html.twig', [
+            'ticket'        => $ticket,
+            'subject'       => null,
+            'messages'      => $messages,
+            'person'        => $this->getPerson(),
+            'agent_message' => $customMessage,
+        ]);
+
         foreach ($tos as $k => $x) {
             $email->addTo($k, $x);
         }
@@ -4046,8 +3987,6 @@ class TicketController extends AbstractController
         foreach ($bccs as $k => $x) {
             $email->addBcc($k, $x);
         }
-        $email->setBody($messageRaw, 'text/html');
-        $email->setSubject($subject);
 
         $account = $this->getAccount($ticket);
 

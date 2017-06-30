@@ -295,7 +295,7 @@
 				</div>
 				<div class="input-wrap unreset editor-row">
 					<textarea placeholder="" id="{{replyBaseId}}_replybox_txt" name="message" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}></textarea>
-					<div id="{{replyBaseId}}_fwd_body" class="fwd-body show-fwd" style="display:none; opacity: 0.5"></div>
+					<div id="{{replyBaseId}}_fwd_body" class="fwd-body show-fwd email-history" style="padding: 6px;"></div>
 					<textarea id="{{replyBaseId}}_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
 					<textarea id="{{replyBaseId}}_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
 					{% if draft %}
