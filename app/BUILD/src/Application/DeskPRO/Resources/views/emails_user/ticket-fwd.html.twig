@@ -1,0 +1,22 @@
+{{ set_tplvar('agent_reply_above_line', false) }}
+<dp:subject>{{ subject | default('FWD: ' ~ ticket.subject) }}</dp:subject>
+
+<div>{{ agent_message | raw }}</div>
+
+<br><br/>
+
+---------- {{ phrase('agent.tickets.forwarded_message') }} ----------<br/>
+{% for message in messages %}
+<strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email_address }}&gt;<br/>
+<strong>{{ phrase('agent.general.date') }}:</strong> {{ message.date_created|date('full') }}<br/>
+<strong>{{ phrase('agent.general.subject') }}:</strong> {{ ticket.subject }}<br/>
+
+<table border="0" cellspacing="0" cellpadding="3">
+    <tr><td>
+        <table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>
+            <div data-dp-type="blockquote" class="dp-quoted-message">{{ message.getMessageHtml(false)|raw }}</div>
+        </td></tr></table>
+    </td></tr>
+</table>
+<div class="dp-spacer">&nbsp;</div>
+{% endfor %}

@@ -65,7 +65,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
-		
+
     var boundHandleReplySave = this.handleReplySave.bind(this);
 
     var onActivateScope = this;
@@ -202,6 +202,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initSlas();
     this._initProblems();
 		this._initVoice();
+		this._initForward();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -1955,11 +1956,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 	},
 
-	addAttachToList: function(attachInfo) {
+	addAttachToList: function(attachInfo, fakeUpload) {
 		var $form = this.getEl('replybox_wrap').children('.ticket-reply-form:first'),
 			fileupload = $form.data('fileupload');
 
-		if (!$form.length || !fileupload) return;
+		if ((!$form.length || !fileupload) && !fakeUpload) return;
 		$form.trigger('fileuploaddone');
 		fileupload.options.done.apply($form[0], [null, { result: [attachInfo]}]);
 	},
@@ -2327,6 +2328,69 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}, this);
 	},
 
+	_initForward: function() {
+    DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket.fwdtab.open',  this.handleFwd.bind(this) );
+	},
+
+	handleFwd: function(info) {
+		var self = this, messages, messageData = [];
+		if (!this.ticketReplyBox) return;
+		this.ticketReplyBox.clearFwd();
+		this.ticketReplyBox.setFwdMode(info);
+    switch (info.mode) {
+      case 'all':
+				messages = this.wrapper.find('.content-message').not('.note-message');
+        (this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
+          messageData.push(self._getFwdMsgData($(element)));
+        });
+        break;
+			case 'single':
+				this.ticketReplyBox.dontDispatch = true;
+				this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+        messages = this.wrapper.find('.content-message.message-'+info.messageId).first();
+        messageData.push(self._getFwdMsgData(messages.first()));
+        break;
+			case 'from':
+        this.ticketReplyBox.dontDispatch = true;
+        this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+        messages = this.wrapper.find('.content-message').not('.note-message');
+				(this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
+        	if ($(element).data('message-id') <= info.messageId) {
+        		messageData.push(self._getFwdMsgData($(element)));
+					}
+        });
+        break;
+      default:
+        break;
+    }
+
+    if (this.meta.ticket_reverse_order) {
+    	messageData.reverse();
+		}
+
+    self.ticketReplyBox.appendFwdCollection(messageData);
+
+    // attachments from last message
+    this.wrapper.find('.content-message.message-'+messageData[0].messageId).find('.attachment-list a').map(function (element) {
+      self.ticketReplyBox.appendFwdAttach($(element), self);
+    });
+
+    // focus reply box
+		this.focusOnReply();
+  },
+
+	_getFwdMsgData: function(messageRow) {
+		return {
+			messageId: messageRow.data('message-id'),
+			author: {
+				name: messageRow.data('message-author-name'),
+				email: messageRow.data('message-author-email')
+			},
+			date: new Date(parseInt(messageRow.data('message-ts'))),
+			bodyHtml: messageRow.find('.body-text-message').first().html()
+		}
+	},
+
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
@@ -2638,9 +2702,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
 				break;
 
-			case 'fwd':
+			case 'fwd_legacy':
 				this.showFwdOverlay(messageId);
 				break;
+
+			case 'fwd':
+				this.handleFwd({ mode: 'single', messageId: messageId });
+				break;
+
+      case 'fwd-from-here':
+        this.handleFwd({ mode: 'from', messageId: messageId });
+        break;
 
 			case 'edit':
 				this.showMessageEditor(messageId);

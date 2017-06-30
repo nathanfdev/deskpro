@@ -1119,7 +1119,12 @@
                 <li data-option-id="window"
                     data-url="{{ path('agent_ticket_message_window', {ticket_id: '00000', message_id: '11111', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.view_message_in_window') }}</li>
                 <li data-option-id="quote">{{ phrase('agent.general.quote') }}</li>
-                <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
+                {% if app.hasBeta('new_fwd') %}
+                    <li class="forward-message" data-option-id="fwd">{{ phrase('agent.tickets.forward_message') }}</li>
+                    <li class="forward-ticket-from-here" data-option-id="fwd-from-here">{{ phrase('agent.tickets.forward_ticket_from_here') }}</li>
+                {% else %}
+                    <li class="forward-message" data-option-id="fwd_legacy">{{ phrase('agent.tickets.forward_message') }}</li>
+                {% endif %}
                 {% if ticket_perms.modify_messages %}
                     <li class="delete-link"
                         data-option-id="delete">{{ phrase('agent.tickets.delete_message') }}</li>{% endif %}

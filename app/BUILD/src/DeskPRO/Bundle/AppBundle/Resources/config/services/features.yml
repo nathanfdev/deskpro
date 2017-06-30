@@ -36,3 +36,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.new_forward:
+      class: DeskPRO\Bundle\AppBundle\Features\NewForwardFeature
+      arguments:
+        - "@settings_resolver"
+      tags:
+        - { name: deskpro.feature }
