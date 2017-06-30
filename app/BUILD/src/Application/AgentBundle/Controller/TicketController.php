@@ -3889,6 +3889,7 @@ class TicketController extends AbstractController
         $messages      = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds]);
         $customMessage = $this->in->getString('custom_message');
         $useMyAddress  = $this->in->getString('from') === 'me';
+        $mode          = $this->in->getString('mode');
 
         $all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
         $all_to_types = $this->in->getCleanValueArray('to_type', 'str', 'str');
@@ -3974,6 +3975,10 @@ class TicketController extends AbstractController
 
         // what is the logic if email size is too big? drop attachments untill all messages are fit?
         foreach ($messages as $message) {
+            // if we're not specifically sending a note, then dont send notes
+            if ($message->isAgentNote() && $mode !== 'single') {
+                continue;
+            }
             $msg         = $message->procInlineAttach($message->getMessageHtml());
             $messageSize = strlen($msg);
             if ($messageSize + $emailSize > $maxEmailSize) {

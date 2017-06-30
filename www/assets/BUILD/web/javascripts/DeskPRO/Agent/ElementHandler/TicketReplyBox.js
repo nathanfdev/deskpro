@@ -10,6 +10,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.agentNotifyListShown = false;
 		this.uploading = false;
 		this.fwdMessages =[];
+		this.fwdMode = null;
 		this.dontDispatch = false;
 	},
 
@@ -1011,6 +1012,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       var formData = {
       	custom_message: api.getCode(),
 				messages_ids:   self.fwdMessages,
+				mode: this.fwdMode,
 				to: {},
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
@@ -1692,6 +1694,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.getElById('fwd_body').html('');
 		this.fwdMessages = [];
 		this.fwdAttachments = [];
+    this.fwdMode = null;
     this.getElById('attach_row').find('li.in').map(function(index, row){
       var $row = $(row);
       self.removeBlob($row.find('input').eq(0).val(), $row);
@@ -1719,6 +1722,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       this.fwdAttachments.push(blobId);
       ticket.addAttachToList(attachInfo, true);
 		}
+	},
+
+	setFwdMode: function(mode) {
+		this.fwdMode = mode;
 	},
 
 	removeBlob: function(blobId, row) {

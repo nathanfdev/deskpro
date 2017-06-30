@@ -2333,27 +2333,31 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	handleFwd: function(info) {
-		var self = this;
+		var self = this, messages;
 		if (!this.ticketReplyBox) return;
 		this.ticketReplyBox.clearFwd();
+		this.ticketReplyBox.setFwdMode(info.mode);
     switch (info.mode) {
       case 'all':
-				this.wrapper.find('.content-message').map(function(index, element) {
+				messages = this.wrapper.find('.content-message').not('.note-message');
+				messages.map(function(index, element) {
 					self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
         });
         break;
 			case 'single':
 				this.ticketReplyBox.dontDispatch = true;
 				this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+        messages = this.wrapper.find('.content-message.message-'+info.messageId).first();
       	this.ticketReplyBox.appendFwdText(
-          this.wrapper.find('.content-message.message-'+info.messageId).eq(0).find('.body-text-message').eq(0).html(),
+          messages.find('.body-text-message').eq(0).html(),
 					info.messageId
 				);
         break;
-      case 'from':
+			case 'from':
         this.ticketReplyBox.dontDispatch = true;
         this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
-        this.wrapper.find('.content-message').map(function(index, element) {
+        messages = this.wrapper.find('.content-message').not('.note-message');
+        messages.map(function(index, element) {
         	if (info.messageId <= $(element).data('message-id')) {
             self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
 					}
@@ -2362,7 +2366,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       default:
         break;
     }
-    this.wrapper.find('.content-message').eq(0).find('.attachment-list a').map(function(index, element) {
+    messages.first().find('.attachment-list a').map(function(index, element) {
       self.ticketReplyBox.appendFwdAttach($(element), self);
     });
   },
