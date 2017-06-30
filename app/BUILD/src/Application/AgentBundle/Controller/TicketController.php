@@ -3942,7 +3942,7 @@ class TicketController extends AbstractController
 
             $raw_to = \ezcMailTools::parseEmailAddresses($to);
             if (!$raw_to) {
-                return $this->createJsonResponse(['error' => 'invalid_address', 'addresses' => [$raw_to]]);
+                return $this->createJsonResponse(['error' => 'invalid_address', 'addresses' => [$to]]);
             }
 
             $type = isset($all_to_types[$rowid]) ? $all_to_types[$rowid] : 'to';

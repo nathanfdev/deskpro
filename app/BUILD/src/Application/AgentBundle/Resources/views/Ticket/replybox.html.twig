@@ -189,7 +189,7 @@
 							{% if app.getSetting('core_tickets.fwd_use_agent_address') %}
 								<select name="from" id="{{ replyBaseId }}_fwd_from">
 									<option value="me">{{ app.user.getDisplayContact() }}</option>
-									<option value="system">{{ app.user.getDisplayName() }} {{'&lt;'~system_account.getUseEmailAddress()~"&gt;"}}</option>
+									<option value="system">{{ app.user.getDisplayName() }} &lt;{{system_account.getUseEmailAddress()}}&gt;</option>
 								</select>
 							{% else %}
                                 {{ app.user.getDisplayName() }} &lt;{{ system_account.getUseEmailAddress() }}&gt;

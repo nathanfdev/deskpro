@@ -1037,10 +1037,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         	if (data && data.error) {
 						switch (data.error) {
 							case 'to_helpdesk_address':
-								DeskPRO_Window.showAlert('The following addresses are helpdesk email accounts and cannot be used: ' . data.addresses.join(', '), 'error');
+								DeskPRO_Window.showAlert('The following addresses are helpdesk email accounts and cannot be used: ' + data.addresses.join(', '), 'error');
 								break;
               case 'invalid_address':
-                DeskPRO_Window.showAlert('The following email addresses are invalid: ' . data.addresses.join(', '), 'error');
+                DeskPRO_Window.showAlert('The following email addresses are invalid: ' + data.addresses.join(', '), 'error');
                 break;
 							case 'missing_to':
                 DeskPRO_Window.showAlert('At least one recipient is required', 'error');
