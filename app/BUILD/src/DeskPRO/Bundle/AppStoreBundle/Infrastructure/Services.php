@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
 use Doctrine\ORM;
-use JsonSchema\Validator;
 
 class Services
 {
@@ -54,7 +53,7 @@ class Services
         $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
         $schemaInfo = new \SplFileInfo($schemaPath);
 
-        $service = new AppBundleValidator(new Validator(), $schemaInfo);
+        $service = new AppBundleValidator($schemaInfo);
 
         return $service;
     }
