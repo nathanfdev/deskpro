@@ -196,7 +196,7 @@ class PersonNote extends DomainObject
         ]);
         $metadata->mapField([
             'fieldName'  => 'note',
-            'type'       => 'string',
+            'type'       => 'text',
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => false,
