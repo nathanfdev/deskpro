@@ -465,6 +465,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
                 $old_log_blob = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$source['log_blob_id']]);
                 if ($old_log_blob) {
                     $exist_log = $this->bs->copyBlobRowToString($old_log_blob);
+
+                    if ($old_log_blob['content_type'] === 'application/gzip') {
+                        $exist_log = @gzdecode($exist_log) ?: '';
+                    }
                 } else {
                     $exist_log = null;
                 }

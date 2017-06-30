@@ -498,7 +498,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             if ($sendmail->getLogBlob()) {
                 $info['sendmail_log'] = $bs->copyBlobRecordToString($sendmail->getLogBlob());
                 if ($sendmail->getLogBlob()->content_type === 'application/gzip') {
-                    $info['sendmail_log'] = gzuncompress($info['sendmail_log']);
+                    $info['sendmail_log'] = gzdecode($info['sendmail_log']);
                 }
             } else {
                 $info['sendmail_log'] = null;

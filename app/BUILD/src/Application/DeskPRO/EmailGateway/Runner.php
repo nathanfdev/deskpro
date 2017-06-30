@@ -430,6 +430,10 @@ class Runner
         if ($source->log_blob) {
             try {
                 $previousLogText = App::$container->getBlobStorage()->copyBlobRecordToString($source->log_blob);
+
+                if ($source->log_blob->content_type === 'application/gzip') {
+                    $previousLogText = @gzdecode($previousLogText) ?: '';
+                }
             } catch (\Exception $e) {
             }
         }
