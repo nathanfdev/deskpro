@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -43,7 +39,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  * we need to force-start a session so the system automatically runs the code to transfer the agent session
  * into a portal sesion/.
  */
-class StartAgentSessionListener implements EventSubscriberInterface
+class StartSessionListener implements EventSubscriberInterface
 {
     /**
      * @var Session
@@ -51,7 +47,7 @@ class StartAgentSessionListener implements EventSubscriberInterface
     private $session;
 
     /**
-     * StartAgentSessionListener constructor.
+     * Constructor.
      *
      * @param Session $session
      */
@@ -70,6 +66,9 @@ class StartAgentSessionListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
@@ -87,6 +86,9 @@ class StartAgentSessionListener implements EventSubscriberInterface
             if (!$this->session->isStarted()) {
                 $this->session->start();
             }
+        } elseif (!$request->cookies->get('dpsid-portal')) {
+            // if empty session id then remove the cookie to prevent session start w/ empty id
+            $request->cookies->remove('dpsid-portal');
         }
     }
 }
