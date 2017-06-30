@@ -140,7 +140,6 @@
 								</div>
 								<div
 										class="email-address-wrap input"
-										style="position: relative; top: 3px; display: inline-block;"
 										data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
 										data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 250, 'start_with': 'a', 'with_agents': 1, 'ignore_banned': 1}) }}"
 										data-search-param="term"
@@ -150,7 +149,7 @@
 											type="text"
 											value=""
 											placeholder="{{ phrase('agent.general.email_address') }}"
-											style="width: 500px;"
+											style="width: 44%; position: relative; top: 1px;"
 									/>
 									<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 										<li>

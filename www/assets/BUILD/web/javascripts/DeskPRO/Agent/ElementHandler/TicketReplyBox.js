@@ -1025,15 +1025,37 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				formData.to_type[$item.attr('id')] = $item.data('type');
 			}));
 
+      var loadingEl = self.el.find('.ticket-sending-overlay');
+      loadingEl.fadeIn();
+
       $.ajax({
         url: '/agent/tickets/' + self.page.meta.ticket_id + '/forward/send',
         data: formData,
         type: 'POST',
         dataType: 'json',
-        success: function() {
+        success: function(data) {
+        	if (data && data.error) {
+						switch (data.error) {
+							case 'to_helpdesk_address':
+								DeskPRO_Window.showAlert('The following addresses are helpdesk email accounts and cannot be used: ' . data.addresses.join(', '), 'error');
+								break;
+              case 'invalid_address':
+                DeskPRO_Window.showAlert('The following email addresses are invalid: ' . data.addresses.join(', '), 'error');
+                break;
+							case 'missing_to':
+                DeskPRO_Window.showAlert('At least one recipient is required', 'error');
+								break;
+							default:
+                DeskPRO_Window.showAlert('There was a problem trying to send your message.', 'error');
+						}
+						return;
+					}
           DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
           self.getElById('replybox_replytab_btn').click();
-        }
+        },
+				complete: function() {
+          loadingEl.hide();
+				}
       });
 
 		});

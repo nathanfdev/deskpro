@@ -3908,7 +3908,7 @@ class TicketController extends AbstractController
 
             $raw_to = \ezcMailTools::parseEmailAddresses($to);
             if (!$raw_to) {
-                continue;
+                return $this->createJsonResponse(['error' => 'invalid_address', 'addresses' => [$raw_to]]);
             }
 
             $type = isset($all_to_types[$rowid]) ? $all_to_types[$rowid] : 'to';
@@ -3928,12 +3928,16 @@ class TicketController extends AbstractController
             }
 
             foreach ($raw_to as $addr) {
-                if ($addr->email && StringEmail::isValueValid($addr->email)) {
-                    if ($this->container->getEmailAccountManager()->findAccountForEmailAddress($addr->email)) {
-                        $helpdesk_addresses[] = $addr->email;
-                    } else {
-                        $var[$addr->email] = $addr->name;
-                    }
+                if (!$addr->email) {
+                    continue;
+                }
+                if (!StringEmail::isValueValid($addr->email)) {
+                    return $this->createJsonResponse(['error' => 'invalid_address', 'addresses' => [$addr->email]]);
+                }
+                if ($this->container->getEmailAccountManager()->findAccountForEmailAddress($addr->email)) {
+                    $helpdesk_addresses[] = $addr->email;
+                } else {
+                    $var[$addr->email] = $addr->name;
                 }
             }
             unset($var);
@@ -3949,7 +3953,7 @@ class TicketController extends AbstractController
         }
 
         if (!$tos) {
-            return $this->createJsonResponse(['error' => 'invalid_to']);
+            return $this->createJsonResponse(['error' => 'missing_to']);
         }
 
         $maxEmailSize = App::getSetting('core_email.max_email_size');
