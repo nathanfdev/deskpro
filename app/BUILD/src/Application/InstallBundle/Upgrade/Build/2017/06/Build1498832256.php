@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1498758693 extends AbstractBuild implements BlockingBuildInterface
+class Build1498832256 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -36,8 +36,7 @@ class Build1498758693 extends AbstractBuild implements BlockingBuildInterface
 
     public function runAlters()
     {
-        $this->execSlowAlterTable('organization_notes', 'CHANGE note note LONGTEXT NOT NULL');
-        $this->execSlowAlterTable('people_notes', 'CHANGE note note LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('tickets_search_active', 'ADD email_account_id INT DEFAULT NULL');
     }
 
     public function run()

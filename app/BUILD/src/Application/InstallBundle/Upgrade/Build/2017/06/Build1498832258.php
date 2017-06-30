@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1498031275 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1498832258 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -36,12 +36,8 @@ class Build1498031275 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE tasks ADD assigned_department_id INT DEFAULT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE tasks ADD CONSTRAINT FK_5058659714B25C9A FOREIGN KEY (assigned_department_id) REFERENCES departments (id) ON DELETE SET NULL');
-        $this->execDbQuery('default', 'CREATE INDEX IDX_5058659714B25C9A ON tasks (assigned_department_id)');
-        $this->execDbQuery('default', 'ALTER TABLE ticket_macros ADD department_id INT DEFAULT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE ticket_macros ADD CONSTRAINT FK_8E373A2CAE80F5DF FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL');
-        $this->execDbQuery('default', 'CREATE INDEX IDX_8E373A2CAE80F5DF ON ticket_macros (department_id)');
+        $this->execSlowAlterTable('organization_notes', 'CHANGE note note LONGTEXT NOT NULL');
+        $this->execSlowAlterTable('people_notes', 'CHANGE note note LONGTEXT NOT NULL');
     }
 
     public function run()
