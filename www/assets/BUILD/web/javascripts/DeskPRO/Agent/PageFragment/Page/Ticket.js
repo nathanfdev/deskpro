@@ -2340,7 +2340,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     switch (info.mode) {
       case 'all':
 				messages = this.wrapper.find('.content-message').not('.note-message');
-				messages.map(function(index, element) {
+				messages.get().reverse().map(function(element) {
 					self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
         });
         break;
@@ -2357,8 +2357,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         this.ticketReplyBox.dontDispatch = true;
         this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
         messages = this.wrapper.find('.content-message').not('.note-message');
-        messages.map(function(index, element) {
-        	if (info.messageId <= $(element).data('message-id')) {
+        messages.get().reverse().map(function(element) {
+        	if ($(element).data('message-id') >= info.messageId) {
             self.ticketReplyBox.appendFwdText($(element).find('.body-text-message').html(), $(element).data('message-id'));
 					}
         });
