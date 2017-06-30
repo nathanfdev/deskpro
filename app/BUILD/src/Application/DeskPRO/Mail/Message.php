@@ -154,7 +154,7 @@ class Message extends \Orb\Mail\Message
                 }
             }
 
-            if (!$this->set_to_person && $this->template_vars['to_email']) {
+            if (!$this->set_to_person && !empty($this->template_vars['to_email'])) {
                 $this->set_to_person = App::getOrm()->getRepository(Person::class)->findOneByEmail(
                     $this->template_vars['to_email']
                 )

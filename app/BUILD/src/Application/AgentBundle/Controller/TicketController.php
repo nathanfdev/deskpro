@@ -3886,10 +3886,44 @@ class TicketController extends AbstractController
         $ticket = $this->getTicketOr404($ticket_id);
 
         $messagesIds   = $this->in->getCleanValueArray('messages_ids', 'int', 'int');
-        $messages      = $this->em->getRepository(TicketMessage::class)->findBy(['id' => $messagesIds], ['id' => 'DESC']);
         $customMessage = Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtml('custom_message')));
         $useMyAddress  = $this->in->getString('from') === 'me';
-        $mode          = $this->in->getString('mode');
+        $modeInfo      = $this->in->getArrayValue('info');
+
+        switch ($modeInfo['mode']) {
+            case 'all':
+                $messages = $this->em->getRepository(TicketMessage::class)
+                    ->createQueryBuilder('m')
+                    ->where('m.ticket = :tid')->setParameter('tid', $ticket->getId())
+                    ->andWhere('m.is_agent_note = false')
+                    ->orderBy('m.id', 'DESC')
+                    ->setMaxResults(60)
+                    ->getQuery()
+                    ->execute();
+                break;
+            case 'single':
+                $messages = $this->em->getRepository(TicketMessage::class)
+                    ->createQueryBuilder('m')
+                    ->where('m.ticket = :tid')->setParameter('tid', $ticket->getId())
+                    ->andWhere('m.id = :mid')->setParameter('mid', $modeInfo['messageId'])
+                    ->setMaxResults(1)
+                    ->getQuery()
+                    ->execute();
+                break;
+            case 'from':
+                $messages = $this->em->getRepository(TicketMessage::class)
+                    ->createQueryBuilder('m')
+                    ->where('m.ticket = :tid')->setParameter('tid', $ticket->getId())
+                    ->andWhere('m.is_agent_note = false')
+                    ->andWhere('m.id <= :mid')->setParameter('mid', $modeInfo['messageId'])
+                    ->orderBy('m.id', 'DESC')
+                    ->setMaxResults(60)
+                    ->getQuery()
+                    ->execute();
+                break;
+            default:
+                throw $this->createNotFoundException();
+        }
 
         $all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
         $all_to_types = $this->in->getCleanValueArray('to_type', 'str', 'str');
@@ -3952,7 +3986,7 @@ class TicketController extends AbstractController
             );
         }
 
-        if (!$tos) {
+        if (!$tos && !$ccs && !$bccs) {
             return $this->createJsonResponse(['error' => 'missing_to']);
         }
 

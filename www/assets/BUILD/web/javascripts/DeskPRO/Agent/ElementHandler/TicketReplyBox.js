@@ -10,7 +10,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.agentNotifyListShown = false;
 		this.uploading = false;
 		this.fwdMessages =[];
-		this.fwdMode = null;
+		this.fwdInfo = null;
 		this.dontDispatch = false;
 	},
 
@@ -1012,7 +1012,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       var formData = {
       	custom_message: api.getCode(),
 				messages_ids:   self.fwdMessages,
-				mode: this.fwdMode,
+				info: self.fwdInfo,
 				to: {},
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
@@ -1775,8 +1775,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		}
 	},
 
-	setFwdMode: function(mode) {
-		this.fwdMode = mode;
+  setFwdMode: function(info) {
+		this.fwdInfo = info;
 	},
 
 	removeBlob: function(blobId, row) {

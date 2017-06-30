@@ -2336,7 +2336,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var self = this, messages, messageData = [];
 		if (!this.ticketReplyBox) return;
 		this.ticketReplyBox.clearFwd();
-		this.ticketReplyBox.setFwdMode(info.mode);
+		this.ticketReplyBox.setFwdMode(info);
     switch (info.mode) {
       case 'all':
 				messages = this.wrapper.find('.content-message').not('.note-message');
@@ -2355,7 +2355,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
         messages = this.wrapper.find('.content-message').not('.note-message');
 				(this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
-        	if ($(element).data('message-id') >= info.messageId) {
+        	if ($(element).data('message-id') <= info.messageId) {
         		messageData.push(self._getFwdMsgData($(element)));
 					}
         });
