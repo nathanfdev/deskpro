@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -130,8 +132,14 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $data    = $form->getData();
         $context = TicketWithLayoutsContext::createOnPreSubmit($event);
 
+        // fake person/org to process the full form
+        $person = new Person();
+        $person->setOrganization(new Organization());
+
+        // fake ticket to process the full form
         $ticket = new Ticket();
         $ticket->disableAutoTicketProcess();
+        $ticket->setPerson($person);
         if ($data) {
             $ticket->setDepartment($data->getDepartment());
         }

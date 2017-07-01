@@ -78,6 +78,7 @@ class TicketWithLayoutsFullType extends AbstractType
     {
         $context = new TicketWithLayoutsContext($event->getForm(), $event->getData(), new TicketLayout());
         $context->setNewLayout($event->getForm()->getConfig()->getOption('full_layout'));
+        $context->setFullLayout(true);
 
         TicketLayoutHelper::renderFormFields($context, function () {
             // just stub, no need form field validation for the 'full' form

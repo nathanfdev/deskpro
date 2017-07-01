@@ -220,13 +220,15 @@ abstract class AbstractFieldResolver
     {
         $def = $this->fieldManager->getCustomPersonFieldById($field->getFieldId());
 
-        $person = $this->getSubmittedPerson($context);
-        if (!$person instanceof Person) {
-            return false;
-        }
+        if (!$context->isFullLayout()) {
+            $person = $this->getSubmittedPerson($context);
+            if (!$person instanceof Person) {
+                return false;
+            }
 
-        // ensure that proper person is set when we are creating user field
-        $context->getTicket()->setPerson($person);
+            // ensure that proper person is set when we are creating user field
+            $context->getTicket()->setPerson($person);
+        }
 
         return $this->createCustomField($context, 'person.custom_data', $def);
     }
@@ -240,7 +242,7 @@ abstract class AbstractFieldResolver
     protected function createCustomOrgField(TicketWithLayoutsContext $context, LayoutField $field)
     {
         $organization = $this->getSubmittedOrganization($context);
-        if (!$organization) {
+        if (!$organization && !$context->isFullLayout()) {
             return false;
         }
 
