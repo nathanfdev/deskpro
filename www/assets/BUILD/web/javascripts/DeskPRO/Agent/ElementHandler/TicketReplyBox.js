@@ -9,7 +9,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.baseId = this.el.data('base-id');
 		this.agentNotifyListShown = false;
 		this.uploading = false;
-		this.fwdMessages =[];
+		this.fwdMessages = [];
+		this.fwdAttachments = [];
 		this.fwdInfo = null;
 		this.dontDispatch = false;
 	},
