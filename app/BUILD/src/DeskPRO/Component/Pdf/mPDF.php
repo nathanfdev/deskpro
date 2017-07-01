@@ -48,4 +48,28 @@ class mPDF extends \mPDF
 
         return $size;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function _lightenColor($c)
+    {
+        if (!$c) {
+            return '';
+        }
+
+        return parent::_lightenColor($c);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function _darkenColor($c)
+    {
+        if (!$c) {
+            return '';
+        }
+
+        return parent::_darkenColor($c);
+    }
 }
