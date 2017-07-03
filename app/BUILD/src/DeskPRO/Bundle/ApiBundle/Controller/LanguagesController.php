@@ -82,6 +82,7 @@ class LanguagesController extends CrudController
             'agent.general.agent',
             'agent.general.agent_email_address',
             'agent.general.agent_team',
+            'agent.general.all',
             'agent.general.article',
             'agent.general.are_you_sure',
             'agent.general.brand',
