@@ -29,19 +29,24 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use JsonSchema;
 
 class AppBundleValidator implements Domain\AppBundleValidator
 {
     /** @var  \SplFileInfo */
     private $schema;
 
+    /** @var JsonSchema\Validator */
+    private $schemaValidator;
+
     /**
      * ApplicationService constructor.
      * @param \SplFileInfo $schema
      */
-    public function __construct(\SplFileInfo $schema)
+    public function __construct(JsonSchema\Validator $schemaValidator, \SplFileInfo $schema)
     {
         $this->schema = $schema;
+        $this->schemaValidator = $schemaValidator;
     }
 
     public function validateBundle(Domain\AppBundle $bundle)
@@ -58,11 +63,8 @@ class AppBundleValidator implements Domain\AppBundleValidator
             return false;
         }
 
-        $dereferencer  = \League\JsonReference\Dereferencer::draft4();
-        $schema = $dereferencer->dereference($schema);
-
-        $validator     = new \League\JsonGuard\Validator($manifestData, $schema);
-        return $validator->passes();
+        $this->schemaValidator->validate($manifestData, (object)$schema);
+        return $this->schemaValidator->isValid();
     }
 
     /**

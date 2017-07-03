@@ -6,8 +6,8 @@ class AppConfiguration {
    * @param {object} config
    * @return {AppConfiguration}
    */
-  static fromJS(config) {
-    const { id, application_id, settings, targets, baseUrl, title, name, version } = config;
+  static fromAppManifestJS(config) {
+    const { id, application_id, settings, targets, baseUrl, title, name, appVersion } = config;
     return new AppConfiguration({
       instanceId:    id.toString(),
       applicationId: application_id.toString(),
@@ -16,7 +16,7 @@ class AppConfiguration {
       baseUrl,
       title,
       packageName:   name,
-      version
+      version:       appVersion
     });
   }
 

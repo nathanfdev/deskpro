@@ -22,9 +22,9 @@
     {
       "name": "my_setting",
       "type": "text/textarea/select/hidden",
-      "default_value": "foo",
+      "defaultValue": "foo",
 
-      "is_private": false,
+      "isPrivate": false,
 
       "options": [
         {"name": "example_option", "value": "foo"}

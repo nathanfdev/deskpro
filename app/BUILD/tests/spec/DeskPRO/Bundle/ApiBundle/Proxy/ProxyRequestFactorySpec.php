@@ -195,7 +195,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         ];
 
         $instance->getApp()->willReturn($app);
-        $app->getParsedManifest()->willReturn($manifest);
+        $app->getManifest()->willReturn($manifest);
         $manifest->getExternalApis()->willReturn($whiteList);
         $instance->getSettings()->willReturn([
             'site_url' => 'http://deskpro-dev',
@@ -222,7 +222,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
 
         $appStateRepository->findByName($instance, $person, 'private', [])->willReturn([]);
 
-        $app->getParsedManifest()->willReturn($manifest);
+        $app->getManifest()->willReturn($manifest);
         $manifest->getExternalApis()->willReturn([
             'http://my_url/api/*',
             'http://{{settings.site_url}}/api/*',

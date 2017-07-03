@@ -16,15 +16,14 @@ class DeskproAppRegistry {
         id:             1,
         application_id: 1,
         baseUrl:        config.endpoint,
-        ...manifest,
-        version:        manifest.appVersion
+        ...manifest
       });
     } else {
       mapper = manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest });
     }
     const manifests = rawManifests.map(mapper);
 
-    const appList = manifests.map(manifest => AppConfiguration.fromJS(manifest));
+    const appList = manifests.map(manifest => AppConfiguration.fromAppManifestJS(manifest));
     return new DeskproAppRegistry(appList);
   }
 

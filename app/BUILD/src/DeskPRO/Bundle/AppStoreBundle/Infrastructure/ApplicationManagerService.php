@@ -91,7 +91,7 @@ class ApplicationManagerService
      */
     public function createOrUpdateAppEntity(Domain\AppBundle $bundle)
     {
-        $manifestReader = new Infrastructure\AppManifestJsonReader();
+        $manifestReader = new Infrastructure\AppManifestReader();
         $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
 
         $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
@@ -141,9 +141,9 @@ class ApplicationManagerService
         $instance = new AppInstance();
         $instance
             ->setApp($app)
-            ->setName($app->getParsedManifest()->getTitle())
+            ->setName($app->getManifest()->getTitle())
             ->setSettings($settings)
-            ->setScope($app->getParsedManifest()->getScope())
+            ->setScope($app->getManifest()->getScope())
         ;
 
         $this->em->persist($instance);

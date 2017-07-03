@@ -28,31 +28,55 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-/**
- * Representation of a Deskpro app store application.
- *
- * @deprecated Use entity class instead
- */
-interface Application
+use JMS\Serializer\Annotation as JMS;
+
+class AppManifestTarget
 {
     /**
-     * Returns the system identifier assigned to the application.
+     * @JMS\Type("string")
+     * @JMS\SerializedName("target")
      *
-     * @return string
+     * @var string
      */
-    public function getId();
+    private $type;
 
     /**
-     * Returns the name given by the owner.
+     * @JMS\Type("string")
      *
-     * @return string
+     * @var string
      */
-    public function getName();
+    private $url;
 
     /**
-     * Returns the manifest.
-     *
-     * @return AppManifest
+     * @return string
      */
-    public function getManifest();
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+
 }

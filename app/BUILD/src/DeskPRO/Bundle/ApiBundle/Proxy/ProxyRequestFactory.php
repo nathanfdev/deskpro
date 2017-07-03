@@ -145,7 +145,7 @@ class ProxyRequestFactory
             return [];
         }
 
-        $manifest = $app->getParsedManifest();
+        $manifest = $app->getManifest();
         if (!$manifest) {
             return [];
         }

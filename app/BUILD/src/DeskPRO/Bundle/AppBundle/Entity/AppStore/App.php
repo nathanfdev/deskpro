@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestJsonReader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -69,6 +69,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\Column(name="`manifest`", type="json_array", nullable=false)
+     * @JMS\Expose()
      *
      * @return array
      */
@@ -115,29 +116,27 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
 
     /**
      * Returns the manifest.
-     *
-     * @return array
-     */
-    public function getManifest()
-    {
-        return $this->manifest;
-    }
-
-    /**
-     * @JMS\VirtualProperty()
-     * @JMS\SerializedName("manifest")
      * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest")
      *
      * @return Domain\AppManifest
      */
-    public function getParsedManifest()
+    public function getManifest()
     {
-        if (null === $this->parsedManifest) {
-            $manifestReader       = new AppManifestJsonReader();
-            $this->parsedManifest = $manifestReader->readManifestFromArray($this->manifest);
+        if ($this->manifest) {
+            $manifestReader = new AppManifestReader();
+            return $manifestReader->readManifestFromArray($this->manifest);
         }
 
-        return $this->parsedManifest;
+        return null;
+    }
+
+    /**
+     * @return Domain\AppManifest
+     * @deprecated
+     */
+    public function getParsedManifest()
+    {
+        return $this->getManifest();
     }
 
     /**

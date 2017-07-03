@@ -78,7 +78,14 @@ class AppManifest
     private $settings = [];
 
     /**
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestTarget>")
+     * @var AppManifestTarget[]
+     */
+    private $targets = [];
+
+    /**
      * @JMS\Type("array")
+     * @JMS\SerializedName("defaultSettings")
      *
      * @var array
      */
@@ -93,10 +100,19 @@ class AppManifest
 
     /**
      * @JMS\Type("array<string>")
+     * @JMS\SerializedName("externalApis")
      *
      * @var string[]
      */
     private $externalApis = [];
+
+    /**
+     * @JMS\Type("array<string>")
+     * @JMS\SerializedName("$deskproApiTags")
+     *
+     * @var string[]
+     */
+    private $deskproApiTags = [];
 
     /**
      * @JMS\Type("boolean")
@@ -303,5 +319,41 @@ class AppManifest
         $this->isSingle = $isSingle;
 
         return $this;
+    }
+
+    /**
+     * @return AppManifestTarget[]
+     */
+    public function getTargets()
+    {
+        return $this->targets;
+    }
+
+    /**
+     * @param AppManifestTarget[] $targets
+     *
+     * @return $this
+     */
+    public function setTargets(array $targets)
+    {
+        $this->targets = $targets;
+
+        return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getDeskproApiTags(): array
+    {
+        return $this->deskproApiTags;
+    }
+
+    /**
+     * @param \string[] $deskproApiTags
+     */
+    public function setDeskproApiTags(array $deskproApiTags)
+    {
+        $this->deskproApiTags = $deskproApiTags;
     }
 }

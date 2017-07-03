@@ -51,6 +51,7 @@ class AppManifestSetting
 
     /**
      * @JMS\Type("string")
+     * @JMS\SerializedName("defaultValue")
      *
      * @var string
      */
@@ -58,6 +59,7 @@ class AppManifestSetting
 
     /**
      * @JMS\Type("boolean")
+     * @JMS\SerializedName("isPrivate")
      *
      * @var bool
      */

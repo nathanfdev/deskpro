@@ -44,7 +44,7 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
 
         $schemaLocation = $this->locateFile('@AppStoreBundle/Resources/manifest/schema.default.json');
         $schemaFileInfo = new \SplFileInfo($schemaLocation);
-        $validator = new AppBundleValidator($schemaFileInfo);
+        $validator = new AppBundleValidator(new \JsonSchema\Validator(), $schemaFileInfo);
         $isValid = $validator->validateBundle($zipBundle);
 
         $this->assertTrue($isValid, 'a bundle with a manifest conforming with the default manifest schema should pass validation');
@@ -60,7 +60,7 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
 
         $schemaLocation = $this->locateFile('@AppStoreBundle/Resources/manifest/schema.default.json');
         $schemaFileInfo = new \SplFileInfo($schemaLocation);
-        $validator = new AppBundleValidator($schemaFileInfo);
+        $validator = new AppBundleValidator(new \JsonSchema\Validator(), $schemaFileInfo);
         $isValid = $validator->validateBundle($zipBundle);
 
         $this->assertFalse($isValid, 'a bundle with an empty manifest should not pass validation');
