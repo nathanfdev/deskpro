@@ -97,17 +97,18 @@
 						<div class="col-lg-12">
 							<label>
 								<input type="checkbox" ng-model="settings.use_agent_address" />
-								<h4>Use the agent "From" email address</h4>
+								<h4>Allow agents to send from their own email address</h4>
 							</label>
 							<div class="inner-group">
 								<p>
-									When enabled, DeskPRO will attempt to send the email "From" the same email address as the logged-in agent.
-									For example, if you forwarded a message out, it would appear to be from <code>{{ app.user.primary_email_address }}</code> instead of the email account address.
+									When enabled, the agent will have a choice of sending "From" their own email address.
+									For example, you could set the "From" address to <code>{{ app.user.primary_email_address }}</code> instead of the email account selected above.
+									This would allow the recipients to reply back to you directly (i.e. thereby moving the conversation <em>out</em> of the helpdesk).
 								</p>
-								<div class="alert alert-info ng-hide" ng-show="settings.use_agent_address">
+								<div class="alert alert-info ng-hide" ng-show="settings.use_agent_address" style="margin-top: 5px;">
 									<p>
 										Important: To use this feature, the outgoing email account you selected above must be able to send from arbitrary email addresses.
-										This may require special configuration on your email server.
+										This usually requires special configuration on the email server to allow arbitrary "From" lines.
 									</p>
 								</div>
 							</div>

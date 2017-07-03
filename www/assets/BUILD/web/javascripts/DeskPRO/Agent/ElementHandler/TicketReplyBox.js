@@ -420,8 +420,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       self.el.addClass('dp-fwd-on');
       $(this).addClass('on');
       self.hideAgentNotifyList();
-      if(!self.dontDispatch) {
-        DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket.fwdtab.open', { mode: 'all' });
+      if(!self.dontDispatch && self.page) {
+				self.page.handleFwd({mode: 'all'});
 			}
 			self.dontDispatch = false;
     });
@@ -1017,6 +1017,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				to: {},
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
+				subject: self.getElById('fwd_subject').val(),
         attachments: self.fwdAttachments
       };
 
@@ -1766,7 +1767,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         "blob_id":           blobId,
         "blob_auth":         element.data('blob-auth'),
         "blob_auth_id":      element.data('blob-auth-id'),
-        "download_url":      element.data('downloadurl'),
+        "download_url":      element.data('deskpro-url'),
         "filename":          element.data('filename'),
         "filesize_readable": element.data('filesize-readable'),
         "is_image":          element.data('is-image')
@@ -1802,5 +1803,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         }
       }
     });
+	},
+
+	focusReplyBox: function() {
+    var api = this.textarea.data('redactor');
+    if (!api || !api.$editor) return;
+
+    api.$editor.focus();
 	}
 });

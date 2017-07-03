@@ -1715,6 +1715,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							url: BASE_URL + 'agent/tickets/messages/'+message_id+'/get-full-message.json',
 							type: 'GET',
               withActionAlerts: true,
+							dataType: 'json',
 							success: function(data) {
 								row.find('.full-message-content').html(data.message_full)
 								self._initTicketMessageClipped(article);
@@ -2332,7 +2333,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initForward: function() {
-    DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket.fwdtab.open',  this.handleFwd.bind(this) );
+
 	},
 
 	handleFwd: function(info) {
@@ -2374,12 +2375,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     self.ticketReplyBox.appendFwdCollection(messageData);
 
     // attachments from last message
-    this.wrapper.find('.content-message.message-'+messageData[0].messageId).find('.attachment-list a').map(function (element) {
-      self.ticketReplyBox.appendFwdAttach($(element), self);
+    this.wrapper.find('.content-message.message-'+messageData[0].messageId).find('.attachment-list a').map(function () {
+      self.ticketReplyBox.appendFwdAttach($(this), self);
     });
 
     // focus reply box
-		this.focusOnReply();
+    self.ticketReplyBox.focusReplyBox();
   },
 
 	_getFwdMsgData: function(messageRow) {
@@ -2683,6 +2684,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						is_note: is_note
 					},
           withActionAlerts: true,
+					dataType: 'json',
 					complete: function() {
 						row.removeClass('gear-loading');
 					},

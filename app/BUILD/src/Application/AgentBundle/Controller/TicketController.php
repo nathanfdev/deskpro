@@ -4010,11 +4010,26 @@ class TicketController extends AbstractController
         $email = $this->container->getMailer()->createMessage();
         $email->setTemplate('DeskPRO:emails_user:ticket-fwd.html.twig', [
             'ticket'        => $ticket,
-            'subject'       => null,
+            'subject'       => $this->in->getString('subject'),
             'messages'      => $messages,
             'person'        => $this->getPerson(),
             'agent_message' => $customMessage,
         ]);
+
+        $accessCodes = ListUtils::map(
+            $ticket->getAccessCodes(),
+            function (Entity\TicketAccessCode $tac) {
+                return $tac->getAccessCode();
+            }
+        );
+        $accessCodes[] = $ticket->getAccessCode();
+
+        // There shouldnt be any access codes in the body usually,
+        // but it's possible they might be in there because of a badly
+        // cut reply back to the helpdesk. So this filter removes them.
+        $email->setBodyFilter(function ($body) use ($accessCodes) {
+            return str_replace($accessCodes, '', $body);
+        });
 
         foreach ($tos as $k => $x) {
             $email->addTo($k, $x);
@@ -4064,7 +4079,7 @@ class TicketController extends AbstractController
         foreach ($allAttachments as $attachment) {
             if (
                 $attachment->isInline()
-                && in_array($attachment->getMessage()->getId(), $messages)
+                && in_array($attachment->getMessage(), $messages, true)
             ) {
                 if ((int) $attachment->getBlob()->getFilesize() + $size > $max) {
                     break;
