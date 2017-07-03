@@ -36,6 +36,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TaskQueue;
 use Application\DeskPRO\TaskQueueJob\CsvImport;
+use Application\DeskPRO\Util;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -72,6 +73,11 @@ class CsvUpload
 
         if (!is_uploaded_file($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename())) {
             return ['error' => 'no_move'];
+        }
+
+        $encoded = Util::jsonEncode(file_get_contents($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename()));
+        if (!$encoded) {
+            return ['error' => 'mailformed_data'];
         }
 
         $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(

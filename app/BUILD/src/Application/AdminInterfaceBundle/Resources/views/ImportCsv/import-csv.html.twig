@@ -319,6 +319,12 @@
 				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
 
 			</div>
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'mailformed_data'">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				The uploaded file has mailformed data. Check the file's encoding.
+
+			</div>
 
             <br />
             <span ng-show="!importStarted && !disabledOnDemo">Last import state: </span>
