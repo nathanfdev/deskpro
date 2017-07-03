@@ -156,7 +156,7 @@ Feature: Edit ticket form custom fields
     When I go to "/tickets/ref/edit"
     Then the "ticket[ticket_field_{t}][data][]" multiple field should contain "{c1},{c3}"
 
-  Scenario: I check saving date field
+  Scenario Outline: I check saving date field
     Given only the following custom ticket fields exist:
       | # | Type | Title      |
       | t | date | Date field |
@@ -165,18 +165,23 @@ Feature: Edit ticket form custom fields
       | ticket_field_{t} |
     And I go to "/tickets/ref/edit"
 
-    When I select "2016" from "ticket[ticket_field_{t}][data][year]"
+    When I select "<year>" from "ticket[ticket_field_{t}][data][year]"
     And I select "6" from "ticket[ticket_field_{t}][data][month]"
     And I select "15" from "ticket[ticket_field_{t}][data][day]"
     And I press "Save"
     Then I should be on "/tickets/ref"
 
     When I go to "/tickets/ref/edit"
-    Then the "ticket[ticket_field_{t}][data][year]" field should contain "2016"
+    Then the "ticket[ticket_field_{t}][data][year]" field should contain "<year>"
     And the "ticket[ticket_field_{t}][data][month]" field should contain "6"
     And the "ticket[ticket_field_{t}][data][day]" field should contain "15"
 
-  Scenario: I check saving datetime field
+    Examples:
+      | year |
+      | 2016 |
+      | 1951 |
+
+  Scenario Outline: I check saving datetime field
     Given only the following custom ticket fields exist:
       | # | Type     | Title      |
       | t | datetime | Date field |
@@ -185,7 +190,7 @@ Feature: Edit ticket form custom fields
       | ticket_field_{t} |
     And I go to "/tickets/ref/edit"
 
-    When I select "2016" from "ticket[ticket_field_{t}][data][date][year]"
+    When I select "<year>" from "ticket[ticket_field_{t}][data][date][year]"
     And I select "6" from "ticket[ticket_field_{t}][data][date][month]"
     And I select "15" from "ticket[ticket_field_{t}][data][date][day]"
     And I select "20" from "ticket[ticket_field_{t}][data][time][hour]"
@@ -194,8 +199,13 @@ Feature: Edit ticket form custom fields
     Then I should be on "/tickets/ref"
 
     When I go to "/tickets/ref/edit"
-    Then the "ticket[ticket_field_{t}][data][date][year]" field should contain "2016"
+    Then the "ticket[ticket_field_{t}][data][date][year]" field should contain "<year>"
     And the "ticket[ticket_field_{t}][data][date][month]" field should contain "6"
     And the "ticket[ticket_field_{t}][data][date][day]" field should contain "15"
     And the "ticket[ticket_field_{t}][data][time][hour]" field should contain "20"
     And the "ticket[ticket_field_{t}][data][time][minute]" field should contain "30"
+
+    Examples:
+      | year |
+      | 2016 |
+      | 1951 |
