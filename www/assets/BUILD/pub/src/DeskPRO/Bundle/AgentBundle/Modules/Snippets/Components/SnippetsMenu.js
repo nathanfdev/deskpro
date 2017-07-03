@@ -44,7 +44,6 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   handleFilter = (filter) => {
-    console.log(filter);
     this.setState({ filter });
   };
 
@@ -72,6 +71,16 @@ export class SnippetsMenuContainer extends React.Component {
           || snippet.get('shortcut_code').match(re)
           || snippet.get('translations').find(element => element.get('language') === langId).get('content').match(re);
       })
+      .sort((a, b) => {
+        const titleA = a.get('title').toLowerCase();
+        const titleB = b.get('title').toLowerCase();
+        if (titleA > titleB) {
+          return 1;
+        } else if (titleA < titleB) {
+          return -1;
+        }
+        return 0;
+      })
     ;
     return (
       <SnippetsMenu
@@ -83,6 +92,7 @@ export class SnippetsMenuContainer extends React.Component {
         type={type}
         filter={this.state.filter}
         langId={window.DP_PERSON_LANG_ID}
+        ref={(c) => { this.menu = c; }}
       />
     );
   }
@@ -110,11 +120,28 @@ export class SnippetsMenu extends React.Component {
       editOpen:      false,
       snippetEdit:   {},
       labelFilter:   '',
+      focusedId:     0,
     };
   }
 
+  componentWillMount = () => {
+    window.document.addEventListener('dpLeftDrawer', () => {
+      this.searchInput.focus();
+    });
+  };
+
   componentDidMount = () => {
-    this.searchInput.focus();
+    setTimeout(() => this.searchInput.focus(), 500);
+  };
+
+  onSearchFocus = () => {
+    this.focusFirst();
+  };
+
+  onSearchBlur = () => {
+    this.setState({
+      focusedId: 0
+    });
   };
 
   getEditSnippet = () => {
@@ -168,6 +195,63 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
+  handleSearchKeyDown = (event) => {
+    switch (event.keyCode) {
+      case 13: // enter
+        this.selectFocused(event);
+        break;
+      case 27: // escape
+        this.props.closeMenu();
+        break;
+      case 38: // up
+        this.focusPrevious();
+        break;
+      case 40: // down
+        this.focusNext();
+        break;
+      default:
+        setTimeout(() => this.focusFirst(), 300);
+        return;
+    }
+    event.preventDefault();
+  };
+
+  focusFirst = () => {
+    if (this.props.snippets.size) {
+      this.setState({
+        focusedId: this.props.snippets.first().get('id')
+      });
+      this.focusedIndex = 0;
+    } else {
+      this.setState({
+        focusedId: 0
+      });
+    }
+  };
+
+  focusPrevious = () => {
+    if (this.focusedIndex > 0) {
+      this.focusedIndex -= 1;
+    }
+    this.setState({
+      focusedId: this.props.snippets.toSeq().slice(this.focusedIndex).first().get('id')
+    });
+  };
+
+  focusNext = () => {
+    if (this.focusedIndex < this.props.snippets.size - 1) {
+      this.focusedIndex += 1;
+    }
+    this.setState({
+      focusedId: this.props.snippets.slice(this.focusedIndex).first().get('id')
+    });
+  };
+
+  selectFocused = (e) => {
+    const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
+    this.props.insertSnippet(e, snippet, this.props.langId);
+  };
+
   render() {
     const { snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter } = this.props;
     return (
@@ -183,6 +267,9 @@ export class SnippetsMenu extends React.Component {
               ref={(c) => { this.searchInput = c; }}
               value={filter}
               onChange={handleFilter}
+              onFocus={this.onSearchFocus}
+              onBlur={this.onSearchBlur}
+              onKeyDown={this.handleSearchKeyDown}
             />
             <a className="close-icon" onClick={closeMenu}>
               <Isvg
@@ -215,6 +302,7 @@ export class SnippetsMenu extends React.Component {
             languages={languages}
             langId={langId}
             labelFilter={this.state.labelFilter}
+            focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}

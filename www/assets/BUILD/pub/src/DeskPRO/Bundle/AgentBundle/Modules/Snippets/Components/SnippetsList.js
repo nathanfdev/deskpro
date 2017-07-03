@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import striptags from 'striptags';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import Label from 'deskpro-styles/lib/Components/Label';
@@ -10,10 +11,11 @@ export class SnippetsListElement extends React.Component {
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langId:        PropTypes.number,
+    focused:       PropTypes.bool,
   };
-
   static defaultProps = {
-    editSnippet() {}
+    focused: false,
+    editSnippet() {},
   };
 
   constructor(props) {
@@ -87,10 +89,10 @@ export class SnippetsListElement extends React.Component {
   }
 
   render() {
-    const { snippet, editSnippet, insertSnippet } = this.props;
+    const { snippet, editSnippet, insertSnippet, focused } = this.props;
     return (
-      <div className="snippet_list_element_wrapper">
-        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet)}>
+      <div className={classNames('snippet_list_element_wrapper', { 'snippet_list_element_wrapper--focused': focused })}>
+        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet)} >
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
           {this.getShortcutCode()}<br />
@@ -109,6 +111,7 @@ export class SnippetsList extends React.Component {
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
     labelFilter:   PropTypes.string,
+    focusedId:     PropTypes.number,
     langId:        PropTypes.number,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
@@ -147,7 +150,16 @@ export class SnippetsList extends React.Component {
 
   renderElements = () => {
     const elements = [];
-    const { snippets, languages, selectedLabel, labelFilter, langId, editSnippet, insertSnippet } = this.props;
+    const {
+      snippets,
+      languages,
+      selectedLabel,
+      labelFilter,
+      langId,
+      editSnippet,
+      insertSnippet,
+      focusedId,
+    } = this.props;
     if (!snippets) {
       return null;
     }
@@ -165,16 +177,6 @@ export class SnippetsList extends React.Component {
         const re = new RegExp(labelFilter, 'i');
         return snippet.get('labels').find(label => label.match(re));
       })
-      .sort((a, b) => {
-        const titleA = a.get('title').toLowerCase();
-        const titleB = b.get('title').toLowerCase();
-        if (titleA > titleB) {
-          return 1;
-        } else if (titleA < titleB) {
-          return -1;
-        }
-        return 0;
-      })
       .forEach((element) => {
         elements.push(
           <SnippetsListElement
@@ -184,6 +186,7 @@ export class SnippetsList extends React.Component {
             langId={langId}
             editSnippet={editSnippet}
             insertSnippet={insertSnippet}
+            focused={focusedId === element.get('id')}
           />
         );
       });

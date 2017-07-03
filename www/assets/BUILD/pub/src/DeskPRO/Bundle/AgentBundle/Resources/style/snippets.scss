@@ -173,6 +173,7 @@
     right: 0;
     display: none;
   }
+  &.snippet_list_element_wrapper--focused,
   &:hover {
     .snippets__list__element {
       background-color: $dp-morning-sky;
