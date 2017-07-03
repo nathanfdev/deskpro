@@ -1,4 +1,4 @@
-{{ set_tplvar('agent_reply_above_line', false) }}
+{{ set_tplvar('plain_email', true) }}
 <dp:subject>{{ subject | default('FWD: ' ~ ticket.subject) }}</dp:subject>
 
 <div>{{ agent_message | raw }}</div>
