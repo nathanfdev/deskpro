@@ -125,9 +125,10 @@ export class SnippetsMenu extends React.Component {
 
   newSnippet = () => {
     const snippet = Immutable.fromJS({
-      is_visible_global: true,
-      translations:      [],
-      type:              [this.props.type],
+      is_visible_global:   true,
+      is_ownership_global: true,
+      translations:        [],
+      type:                [this.props.type],
     });
     this.setState({
       editOpen:    true,
