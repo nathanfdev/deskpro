@@ -1716,6 +1716,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							url: BASE_URL + 'agent/tickets/messages/'+message_id+'/get-full-message.json',
 							type: 'GET',
               withActionAlerts: true,
+							dataType: 'json',
 							success: function(data) {
 								row.find('.full-message-content').html(data.message_full)
 								self._initTicketMessageClipped(article);
@@ -2684,6 +2685,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						is_note: is_note
 					},
           withActionAlerts: true,
+					dataType: 'json',
 					complete: function() {
 						row.removeClass('gear-loading');
 					},
