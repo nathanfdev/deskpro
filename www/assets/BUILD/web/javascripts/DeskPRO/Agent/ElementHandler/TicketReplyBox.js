@@ -1016,6 +1016,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				to: {},
 				to_type: {},
 			  from: self.getElById('fwd_from').val(),
+				subject: self.getElById('fwd_subject').val(),
         attachments: self.fwdAttachments
       };
 

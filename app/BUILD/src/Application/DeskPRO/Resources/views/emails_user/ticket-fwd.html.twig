@@ -1,5 +1,5 @@
 {{ set_tplvar('plain_email', true) }}
-<dp:subject>{{ subject | default('FWD: ' ~ ticket.subject) }}</dp:subject>
+<dp:subject>{{ subject | default('FW: ' ~ ticket.subject) }}</dp:subject>
 
 <div>{{ agent_message | raw }}</div>
 

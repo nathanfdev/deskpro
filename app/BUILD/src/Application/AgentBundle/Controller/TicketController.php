@@ -4010,7 +4010,7 @@ class TicketController extends AbstractController
         $email = $this->container->getMailer()->createMessage();
         $email->setTemplate('DeskPRO:emails_user:ticket-fwd.html.twig', [
             'ticket'        => $ticket,
-            'subject'       => null,
+            'subject'       => $this->in->getString('subject'),
             'messages'      => $messages,
             'person'        => $this->getPerson(),
             'agent_message' => $customMessage,
