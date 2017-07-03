@@ -73,8 +73,6 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(type="string", length=255, name="shortcut_code")
      *
-     * @Assert\NotBlank()
-     *
      * @var string
      */
     protected $shortcutCode = '';

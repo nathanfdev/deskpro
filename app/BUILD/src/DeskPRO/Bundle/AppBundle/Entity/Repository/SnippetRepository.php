@@ -79,20 +79,21 @@ class SnippetRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('s');
         $qb
-            ->select('s')
-            ->where('(s.person = :person OR s.isOwnershipGlobal = true)')
+            ->where('(s.person = :person')
+            ->orWhere('s.isOwnershipGlobal = true)')
             ->setParameter('person', $agent)
         ;
+        if ($agent->getAgentTeamIds()) {
+            $qb
+                ->leftJoin('s.ownershipTeams', 't')
+                ->orWhere('t.id IN (:teams)')
+                ->setParameter('teams', $agent->getAgentTeamIds())
+            ;
+        }
         if ($type) {
             $qb
                 ->andWhere('s.types LIKE :type')
                 ->setParameter('type', '%'.$type.'%')
-            ;
-        }
-        if ($agent->getAgentTeamIds()) {
-            $qb
-                ->andWhere(':teams MEMBER OF s.ownershipTeams')
-                ->setParameter('teams', array_values($agent->getAgentTeamIds()))
             ;
         }
 

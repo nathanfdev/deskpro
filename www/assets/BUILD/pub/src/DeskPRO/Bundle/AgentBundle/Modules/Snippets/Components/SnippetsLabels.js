@@ -49,8 +49,9 @@ class SnippetsLabels extends React.Component {
       <ListElement
         key="all"
         onClick={() => this.props.selectLabel('')}
+        className={classNames({ selected: this.props.selectedLabel === '' })}
       >
-        All ({this.props.snippets.size})
+        {agentPhrases.get('agent.general.all')} ({this.props.snippets.size})
       </ListElement>
     ];
     this.state.labels

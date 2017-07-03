@@ -30,10 +30,22 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      filter: '',
+    };
+  }
+
   insertSnippet = (e, snippet, langId) => {
     e.preventDefault();
     e.stopPropagation();
     this.props.insertSnippet(snippet.toJS(), this.props.blobs.toJS(), langId);
+  };
+
+  handleFilter = (filter) => {
+    console.log(filter);
+    this.setState({ filter });
   };
 
   render() {
@@ -49,14 +61,27 @@ export class SnippetsMenuContainer extends React.Component {
         }
         return snippet.get('visible_departments', []).find(d => d === department);
       })
+      .filter((snippet) => {
+        if (!this.state.filter) {
+          return true;
+        }
+        const langId = window.DP_PERSON_LANG_ID;
+        const re = new RegExp(this.state.filter, 'i');
+        return snippet.get('labels').find(label => label.match(re))
+          || snippet.get('title').match(re)
+          || snippet.get('shortcut_code').match(re)
+          || snippet.get('translations').find(element => element.get('language') === langId).get('content').match(re);
+      })
     ;
     return (
       <SnippetsMenu
         closeMenu={closeMenu}
         insertSnippet={this.insertSnippet}
+        handleFilter={this.handleFilter}
         snippets={snippets}
         languages={languages}
         type={type}
+        filter={this.state.filter}
         langId={window.DP_PERSON_LANG_ID}
       />
     );
@@ -70,7 +95,12 @@ export class SnippetsMenu extends React.Component {
     langId:        PropTypes.number,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
+    handleFilter:  PropTypes.func,
     type:          PropTypes.string,
+    filter:        PropTypes.string,
+  };
+  static defaultProps = {
+    handleFilter() {}
   };
 
   constructor(props) {
@@ -79,7 +109,6 @@ export class SnippetsMenu extends React.Component {
       selectedLabel: '',
       editOpen:      false,
       snippetEdit:   {},
-      filter:        '',
       labelFilter:   '',
     };
   }
@@ -98,10 +127,6 @@ export class SnippetsMenu extends React.Component {
       type={this.props.type}
       closeModal={this.closeEditSnippet}
     />);
-  };
-
-  handleFilter = (filter) => {
-    this.setState({ filter });
   };
 
   handleLabelFilter = (value) => {
@@ -125,9 +150,10 @@ export class SnippetsMenu extends React.Component {
 
   newSnippet = () => {
     const snippet = Immutable.fromJS({
-      is_visible_global: true,
-      translations:      [],
-      type:              [this.props.type],
+      is_visible_global:   true,
+      is_ownership_global: true,
+      translations:        [],
+      type:                [this.props.type],
     });
     this.setState({
       editOpen:    true,
@@ -143,7 +169,7 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { snippets, languages, closeMenu, langId, insertSnippet } = this.props;
+    const { snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter } = this.props;
     return (
       <div id="snippets__menu">
         <div className="header">
@@ -155,10 +181,9 @@ export class SnippetsMenu extends React.Component {
             <Input
               className="input--large"
               ref={(c) => { this.searchInput = c; }}
-              value={this.state.filter}
-              onChange={this.handleFilter}
+              value={filter}
+              onChange={handleFilter}
             />
-            <i className="fa fa-star-o favorite" />
             <a className="close-icon" onClick={closeMenu}>
               <Isvg
                 className="close-icon"
@@ -189,7 +214,6 @@ export class SnippetsMenu extends React.Component {
             snippets={snippets}
             languages={languages}
             langId={langId}
-            filter={this.state.filter}
             labelFilter={this.state.labelFilter}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}

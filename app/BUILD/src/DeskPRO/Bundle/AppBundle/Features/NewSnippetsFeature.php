@@ -121,12 +121,12 @@ HTML;
         $em->beginTransaction();
         try {
             $queries[] = 'SET FOREIGN_KEY_CHECKS = 0;';
-            $queries[] = 'TRUNCATE TABLE deskpro.snippet_visible_departments;';
-            $queries[] = 'TRUNCATE TABLE deskpro.snippet_translation_blob;';
-            $queries[] = 'TRUNCATE TABLE deskpro.snippet_ownership_teams;';
-            $queries[] = 'TRUNCATE TABLE deskpro.snippet_labels;';
-            $queries[] = 'TRUNCATE TABLE deskpro.snippet_translations;';
-            $queries[] = 'TRUNCATE TABLE deskpro.snippets;';
+            $queries[] = 'TRUNCATE TABLE snippet_visible_departments;';
+            $queries[] = 'TRUNCATE TABLE snippet_translation_blob;';
+            $queries[] = 'TRUNCATE TABLE snippet_ownership_teams;';
+            $queries[] = 'TRUNCATE TABLE snippet_labels;';
+            $queries[] = 'TRUNCATE TABLE snippet_translations;';
+            $queries[] = 'TRUNCATE TABLE snippets;';
             $queries[] = 'SET FOREIGN_KEY_CHECKS = 1;';
 
             foreach ($queries as $query) {
@@ -135,11 +135,14 @@ HTML;
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+            throw $e;
         }
     }
 
     /**
      * @param EntityManager $em
+     *
+     * @throws \Exception
      */
     private function copySnippets(EntityManager $em)
     {
@@ -185,6 +188,7 @@ HTML;
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
+            throw $e;
         }
     }
 }
