@@ -100,7 +100,9 @@ export class SnippetsListElement extends React.Component {
           {this.getLabels()}
           <span className="content">{this.getContent()}</span>
         </div>
-        <i className="fa fa-pencil edit-snippet" onClick={() => editSnippet(snippet)} />
+        <div onClick={() => editSnippet(snippet)} className="edit-snippet">
+          <i className="fa fa-pencil" />
+        </div>
       </div>
     );
   }

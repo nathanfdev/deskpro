@@ -169,9 +169,22 @@
   .edit-snippet {
     cursor: pointer;
     position: absolute;
-    top: 25px;
+    top: 0;
     right: 0;
+    height: 100%;
+    width: 12px;
     display: none;
+    &:before {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+    .fa {
+      display: inline-block;
+      vertical-align: middle;
+      color: $dp-greyscale-500;
+    }
   }
   &.snippet_list_element_wrapper--focused,
   &:hover {
@@ -189,11 +202,16 @@
       background-color: $dp-morning-sky;
       color: $dp-sonic-primary;
     }
-    .edit-snippet {
-      display: inline;
-    }
     & + .snippet_list_element_wrapper .snippets__list__element {
       border-top-color: $dp-sonic-primary;
+    }
+  }
+  &:hover {
+    .edit-snippet {
+      display: inline;
+      &:hover .fa {
+        color: $dp-greyscale-850;
+      }
     }
   }
 }

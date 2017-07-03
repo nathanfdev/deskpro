@@ -233,8 +233,16 @@ export class SnippetsMenu extends React.Component {
     if (this.focusedIndex > 0) {
       this.focusedIndex -= 1;
     }
-    this.setState({
-      focusedId: this.props.snippets.toSeq().slice(this.focusedIndex).first().get('id')
+    let i = 0;
+    this.props.snippets.forEach((snippet) => {
+      if (i === this.focusedIndex) {
+        this.setState({
+          focusedId: snippet.get('id')
+        });
+        return false;
+      }
+      i += 1;
+      return true;
     });
   };
 
@@ -242,8 +250,16 @@ export class SnippetsMenu extends React.Component {
     if (this.focusedIndex < this.props.snippets.size - 1) {
       this.focusedIndex += 1;
     }
-    this.setState({
-      focusedId: this.props.snippets.slice(this.focusedIndex).first().get('id')
+    let i = 0;
+    this.props.snippets.forEach((snippet) => {
+      if (i === this.focusedIndex) {
+        this.setState({
+          focusedId: snippet.get('id')
+        });
+        return false;
+      }
+      i += 1;
+      return true;
     });
   };
 
