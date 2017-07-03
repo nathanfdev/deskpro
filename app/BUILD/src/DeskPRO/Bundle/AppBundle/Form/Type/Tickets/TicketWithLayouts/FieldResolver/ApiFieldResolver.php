@@ -92,11 +92,17 @@ class ApiFieldResolver extends AbstractFieldResolver
      */
     protected function createPerson(TicketWithLayoutsContext $context)
     {
-        return new FormField(PersonAssignType::class, [
+        $options = [
             'property_path' => 'person',
             'person'        => $context->getPerson(),
             'allow_create'  => true,
-        ]);
+        ];
+
+        if ($context->isFullLayout()) {
+            $options['disabled'] = true;
+        }
+
+        return new FormField(PersonAssignType::class, $options);
     }
 
     /**

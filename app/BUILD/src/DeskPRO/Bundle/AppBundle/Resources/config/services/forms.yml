@@ -224,7 +224,6 @@ services:
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
     arguments:
-      - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
       - "@brand_form_helper"
     tags:

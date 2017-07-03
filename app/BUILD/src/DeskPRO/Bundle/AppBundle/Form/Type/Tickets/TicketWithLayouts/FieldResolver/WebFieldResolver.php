@@ -234,19 +234,25 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     private function createUserNameOptions(TicketWithLayoutsContext $context)
     {
+        $options = [
+            'property_path' => 'person.name',
+            'label'         => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_name')
+                : $this->phrase('portal.forms.label_name'),
+            'empty_data'  => $context->getPerson()->getDisplayName(false),
+            'constraints' => [
+                new Assert\NotBlank(),
+            ],
+        ];
+
+        if ($context->isFullLayout()) {
+            $options['disabled'] = true;
+        }
+
         return [
             'name'    => FormFields::USER_NAME,
             'type'    => TextType::class,
-            'options' => [
-                'property_path' => 'person.name',
-                'label'         => $context->isWidgetType()
-                    ? $this->phrase('portal.widget.label_name')
-                    : $this->phrase('portal.forms.label_name'),
-                'empty_data'  => $context->getPerson()->getDisplayName(false),
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ],
+            'options' => $options,
         ];
     }
 
@@ -259,21 +265,23 @@ class WebFieldResolver extends AbstractFieldResolver
     {
         $person = $context->getPerson();
         if ($person->isUser()) {
+            $options = [
+                'property_path' => 'ticket_person_email',
+                'label'         => $this->phrase('portal.forms.label_email'),
+                'person'        => $person,
+            ];
+
+            if ($context->isFullLayout()) {
+                $options['disabled'] = true;
+            }
+
             return [
                 'name'    => FormFields::USER_EMAIL,
                 'type'    => PersonEmailChoiceType::class,
-                'options' => [
-                    'property_path' => 'ticket_person_email',
-                    'label'         => $this->phrase('portal.forms.label_email'),
-                    'person'        => $person,
-                ],
+                'options' => $options,
             ];
-        }
-
-        return [
-            'name'    => FormFields::USER_EMAIL,
-            'type'    => PersonEmailType::class,
-            'options' => [
+        } else {
+            $options = [
                 'property_path' => 'person.primary_email',
                 'label'         => $context->isWidgetType()
                     ? $this->phrase('portal.widget.label_email')
@@ -283,8 +291,18 @@ class WebFieldResolver extends AbstractFieldResolver
                 'constraints' => [
                     new AppAssert\Person\Email\NotSystemEmail(),
                 ],
-            ],
-        ];
+            ];
+
+            if ($context->isFullLayout()) {
+                $options['disabled'] = true;
+            }
+
+            return [
+                'name'    => FormFields::USER_EMAIL,
+                'type'    => PersonEmailType::class,
+                'options' => $options,
+            ];
+        }
     }
 
     /**
