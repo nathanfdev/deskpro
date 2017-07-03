@@ -687,7 +687,7 @@ export class SnippetsModal extends React.Component {
             </div>
             <br />
             <div className="shortcut-field field">
-              <InputLabel htmlFor="snippet_shortcut_code" required>
+              <InputLabel htmlFor="snippet_shortcut_code">
                 {agentPhrases.get('agent.snippets.shortcut_code')}
               </InputLabel>
               <Input

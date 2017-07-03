@@ -78,6 +78,14 @@ export class SnippetsListElement extends React.Component {
     return null;
   }
 
+  getShortcutCode() {
+    const { snippet } = this.props;
+    if (snippet.get('shortcut_code')) {
+      return <span className="shortcode dp-code">{`%${snippet.get('shortcut_code')}%`}</span>;
+    }
+    return null;
+  }
+
   render() {
     const { snippet, editSnippet, insertSnippet } = this.props;
     return (
@@ -85,7 +93,7 @@ export class SnippetsListElement extends React.Component {
         <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet)}>
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
-          <span className="shortcode dp-code">{`%${snippet.get('shortcut_code')}%`}</span><br />
+          {this.getShortcutCode()}<br />
           {this.getLanguages()}
           {this.getLabels()}
           <span className="content">{this.getContent()}</span>
