@@ -1766,7 +1766,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         "blob_id":           blobId,
         "blob_auth":         element.data('blob-auth'),
         "blob_auth_id":      element.data('blob-auth-id'),
-        "download_url":      element.data('downloadurl'),
+        "download_url":      element.data('deskpro-url'),
         "filename":          element.data('filename'),
         "filesize_readable": element.data('filesize-readable'),
         "is_image":          element.data('is-image')

@@ -2376,8 +2376,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     self.ticketReplyBox.appendFwdCollection(messageData);
 
     // attachments from last message
-    this.wrapper.find('.content-message.message-'+messageData[0].messageId).find('.attachment-list a').map(function (element) {
-      self.ticketReplyBox.appendFwdAttach($(element), self);
+    this.wrapper.find('.content-message.message-'+messageData[0].messageId).find('.attachment-list a').map(function () {
+      self.ticketReplyBox.appendFwdAttach($(this), self);
     });
 
     // focus reply box

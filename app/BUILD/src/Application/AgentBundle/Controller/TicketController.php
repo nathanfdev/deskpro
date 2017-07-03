@@ -4079,7 +4079,7 @@ class TicketController extends AbstractController
         foreach ($allAttachments as $attachment) {
             if (
                 $attachment->isInline()
-                && in_array($attachment->getMessage()->getId(), $messages)
+                && in_array($attachment->getMessage(), $messages, true)
             ) {
                 if ((int) $attachment->getBlob()->getFilesize() + $size > $max) {
                     break;
