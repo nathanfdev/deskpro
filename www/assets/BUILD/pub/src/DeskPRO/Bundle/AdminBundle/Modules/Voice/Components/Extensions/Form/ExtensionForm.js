@@ -1,53 +1,20 @@
 import React, { PropTypes } from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset } from 'react-forms';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import classNames from 'classnames';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 
-class ExtensionForm extends React.Component {
+class ExtensionForm extends BaseForm {
 
   static propTypes = {
     agent:        PropTypes.object,
-    saving:       PropTypes.bool,
     deleting:     PropTypes.bool,
     onSubmit:     PropTypes.func,
     onDelete:     PropTypes.func,
-    onReturnBack: PropTypes.func.isRequired,
-    errors:       PropTypes.object // eslint-disable-line react/no-unused-prop-types
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = this.getDefaultState();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      formData: createValue({
-        value:     this.state.formData.value,
-        errorList: nextProps.errors,
-        onChange:  this.onChange
-      })
-    });
-  }
-
-  onChange = (formData) => {
-    this.setState({ formData });
-  };
-
-  onSubmit = (event) => {
-    event.preventDefault();
-
-    const { onSubmit, saving, deleting } = this.props;
-    const { formData } = this.state;
-
-    if (saving || deleting) {
-      return;
-    }
-
-    onSubmit(formData.value);
+    onReturnBack: PropTypes.func.isRequired
   };
 
   onCancel = (event) => {
@@ -60,23 +27,17 @@ class ExtensionForm extends React.Component {
     const voicemailAsset = agent && agent.getIn(['agent_data', 'voicemail_asset']);
 
     return {
-      formData: createValue({
-        value: {
-          name:       agent.get('name'),
-          agent_data: {
-            extension_number: agent ? agent.getIn(['agent_data', 'extension_number']) : '',
-            voicemail_asset:  voicemailAsset ? voicemailAsset.toJS() : null
-          }
-        },
-        errorList: {},
-        onChange:  this.onChange
-      })
+      name:       agent.get('name'),
+      agent_data: {
+        extension_number: agent ? agent.getIn(['agent_data', 'extension_number']) : '',
+        voicemail_asset:  voicemailAsset ? voicemailAsset.toJS() : null
+      }
     };
   }
 
   render() {
-    const { saving, deleting, onDelete, onReturnBack } = this.props;
-    const { formData } = this.state;
+    const { deleting, onDelete, onReturnBack } = this.props;
+    const { formData, saving } = this.state;
 
     return (
       <div className="page">

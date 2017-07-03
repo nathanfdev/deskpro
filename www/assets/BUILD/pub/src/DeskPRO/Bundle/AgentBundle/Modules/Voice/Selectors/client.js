@@ -10,6 +10,11 @@ export const tokensSelector = createSelector(
   state => state.get('tokens')
 );
 
+export const isVoiceMicEnabled = createSelector(
+  stateSelector,
+  state => state.get('micEnabled')
+);
+
 export const voiceSettingsSelector = createSelector(
   stateSelector,
   state => state.get('settings')
@@ -94,9 +99,9 @@ export const isVoiceAvailableSelector = createSelector(
   workerTokenSelector,
   (me, idleSid, phoneToken, workerToken) =>
       me.getIn(['agent_data', 'is_voice_enabled'])
-      && idleSid
-      && phoneToken
-      && workerToken
+      && !!idleSid
+      && !!phoneToken
+      && !!workerToken
 );
 
 export const isVoiceEnabledSelector = createSelector(

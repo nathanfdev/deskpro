@@ -22,9 +22,7 @@ class EditExtensionContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving:   false,
-      deleting: false,
-      errors:   {}
+      deleting: false
     };
   }
 
@@ -37,41 +35,21 @@ class EditExtensionContainer extends React.Component {
   onSubmit = (data) => {
     const agent = this.getAgent();
     const { dispatch } = this.props;
-    if (this.state.deleting) {
-      return;
-    }
-
-    this.setState({
-      saving:   true,
-      deleting: false,
-      errors:   {}
-    });
 
     const promise = dispatch(editAgent(agent.get('id'), data));
     promise.success(() => {
-      this.setState({
-        saving: false
-      }, () => replaceRoute('/voice_channel/extensions'));
+      replaceRoute('/voice_channel/extensions');
     });
-    promise.error((result) => {
-      this.setState({
-        errors: result.errors,
-        saving: false
-      });
-    });
+
+    return promise;
   };
 
   onDelete = () => {
     const agent = this.getAgent();
     const { dispatch } = this.props;
-    if (this.state.saving) {
-      return;
-    }
 
     this.setState({
-      saving:   false,
-      deleting: true,
-      errors:   {}
+      deleting: true
     });
 
     const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
@@ -86,12 +64,6 @@ class EditExtensionContainer extends React.Component {
       this.setState({
         deleting: false
       }, () => replaceRoute('/voice_channel/extensions'));
-    });
-    promise.error((result) => {
-      this.setState({
-        errors:   result.errors,
-        deleting: false
-      });
     });
   };
 

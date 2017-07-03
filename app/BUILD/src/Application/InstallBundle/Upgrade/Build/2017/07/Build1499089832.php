@@ -26,45 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-
-/**
- * Class TwilioSync.
- */
-class TwilioSync extends AbstractJob
+class Build1499089832 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
-    const DEFAULT_INTERVAL = 60;
+    public function addNewTables()
+    {
+    }
 
-    /**
-     * {@inheritdoc}
-     */
+    public function runAlters()
+    {
+        $fk = $this->getSchemaHelper()->findForeignKey('voice_numbers', 'target_id', 'voice_targets', 'id');
+        if ($fk) {
+            $this->out("-- Drop existing FK {$fk->getName()}");
+            $this->execDbQuery('default', "ALTER TABLE voice_numbers DROP FOREIGN KEY {$fk->getName()}");
+        }
+
+        $this->execDbQuery('default', 'ALTER TABLE voice_numbers ADD CONSTRAINT FK_2EEA316A158E0B66 FOREIGN KEY (target_id) REFERENCES voice_targets (id) ON DELETE SET NULL');
+    }
+
     public function run()
     {
-        $em      = $this->getContainer()->getEm();
-        $account = $em->getRepository(VoiceAccount::class)->getVoiceAccount();
-
-        // no account
-        if (!$account) {
-            return;
-        }
-
-        // no sync required
-        if (!$account->getDateSync()) {
-            return;
-        }
-
-        // already synced
-        if ($account->getDateLastSync() && $account->getDateSync() == $account->getDateLastSync()) {
-            return;
-        }
-
-        // sync twilio account
-        $this->getContainer()->get('twilio_sync_manager')->syncAccount($account);
-
-        $account->setDateLastSync($account->getDateSync());
-        $em->persist($account);
-        $em->flush();
     }
 }

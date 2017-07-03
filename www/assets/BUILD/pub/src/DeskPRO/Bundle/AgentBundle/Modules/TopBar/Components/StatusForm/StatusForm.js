@@ -90,13 +90,14 @@ class StatusForm extends React.Component {
           {formData.value.status === 'offline'
             ? <div className="voice-profile-status-empty-checkboxes" />
             : <div className="voice-profile-status-checkboxes">
-              <div className="voice-profile-status-checkbox">
-                <Field select="chats">
-                  <Checkbox />
-                </Field>
-                <Isvg src={`${assetPath}/topbar/chat.svg`} />
-                <span className="voice-profile-status-checkbox-title">Chats</span>
-              </div>
+              {window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use'] &&
+                <div className="voice-profile-status-checkbox">
+                  <Field select="chats">
+                    <Checkbox />
+                  </Field>
+                  <Isvg src={`${assetPath}/topbar/chat.svg`} />
+                  <span className="voice-profile-status-checkbox-title">Chats</span>
+                </div>}
               {voiceAvailable &&
                 <div className="voice-profile-status-checkbox">
                   <Field select="calls">

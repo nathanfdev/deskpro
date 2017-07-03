@@ -152,6 +152,8 @@ class LanguagesController extends CrudController
             'agent.voice.incoming_call_title',
             'agent.voice.call_new_incoming',
             'agent.voice.call_new_outgoing',
+            'agent.voice.call_auto_attendant_press_key',
+            'agent.voice.call_auto_attendant_extension',
             'agent.voice.call_answered',
             'agent.voice.call_participant_muted',
             'agent.voice.call_participant_unmuted',
@@ -196,6 +198,8 @@ class LanguagesController extends CrudController
         $phrases = [
             'agent.voice.call_new_incoming',
             'agent.voice.call_new_outgoing',
+            'agent.voice.call_auto_attendant_press_key',
+            'agent.voice.call_auto_attendant_extension',
             'agent.voice.call_answered',
             'agent.voice.call_participant_muted',
             'agent.voice.call_participant_unmuted',

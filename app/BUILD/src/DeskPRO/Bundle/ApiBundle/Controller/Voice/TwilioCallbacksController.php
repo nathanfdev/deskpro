@@ -143,9 +143,13 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        if ($request->request->get('CallSid')) {
+        $callSid    = $request->request->get('CallSid');
+        $callStatus = $request->request->get('CallStatus');
+
+        if ($callSid && $callStatus === 'completed') {
+            // log call participants
             $participant = $this->getRepository(AbstractVoicePhoneCallParticipant::class)->findOneBy([
-                'callSid' => $request->request->get('CallSid'),
+                'callSid' => $callSid,
             ]);
 
             if ($participant) {
@@ -165,6 +169,19 @@ class TwilioCallbacksController extends BaseController
                 $em = $this->getManager();
                 $em->persist($log);
                 $em->flush();
+            }
+
+            // check voicemail worker status
+            // in case if voicemail callback wasn't called for some reason
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+                'callSid' => $callSid,
+            ]);
+
+            if ($phoneCall && $phoneCall->getStatus() === VoicePhoneCall::STATUS_VOICEMAIL) {
+                $voicemailWorker = $this->get('twilio_adapter')->getVoicemailWorker($account);
+                if ($voicemailWorker->activityName === 'Busy') {
+                    $this->get('twilio_adapter')->updateVoicemailWorkerActivity($account, 'Idle');
+                }
             }
         }
     }
@@ -406,7 +423,9 @@ class TwilioCallbacksController extends BaseController
         $adapter = $this->get('twilio_adapter');
         $em      = $this->getManager();
 
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy(['conferenceSid' => $conferenceSid]);
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'conferenceSid' => $conferenceSid,
+        ]);
 
         // we set conference sid on first user participant join
         // otherwise we should have the phone call tied to voice model
@@ -552,11 +571,8 @@ class TwilioCallbacksController extends BaseController
         // for real time ui updates
         $statusParams = $request->request->all();
         if ($phoneCall) {
-            $serializer        = $this->get('serializer');
-            $serializerContext = new SideloadSerializationContext();
-
             // phone call
-            $statusParams['phone_call'] = $serializer->toArray($phoneCall, $serializerContext);
+            $statusParams['phone_call'] = $this->get('serializer')->toArray($phoneCall, new SideloadSerializationContext());
             unset($statusParams['phone_call']['ticket']);
 
             // current participant
@@ -576,10 +592,10 @@ class TwilioCallbacksController extends BaseController
             $statusParams['hold'] = $adapter->isConferenceOnHold($phoneCall);
         }
 
-        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.voice.conference.status',
-            $statusParams
-        ));
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('agent.voice.conference.status', $statusParams)
+        );
     }
 
     /**
@@ -647,6 +663,16 @@ class TwilioCallbacksController extends BaseController
             ;
         }
 
+        // log auto-attendant press key event
+        $log = new VoicePhoneCallLog();
+        $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_KEY);
+        $log->setDetails($request->request->all());
+        $log->setPhoneCall($phoneCall);
+
+        $em = $this->getManager();
+        $em->persist($log);
+        $em->flush();
+
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
 
@@ -707,6 +733,16 @@ class TwilioCallbacksController extends BaseController
                 ])
             ;
         }
+
+        // log agent extension event
+        $log = new VoicePhoneCallLog();
+        $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_EXTENSION);
+        $log->setDetails($request->request->all());
+        $log->setPhoneCall($phoneCall);
+
+        $em = $this->getManager();
+        $em->persist($log);
+        $em->flush();
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -819,9 +855,43 @@ class TwilioCallbacksController extends BaseController
         }
 
         $twiml->record([
+            'action'                        => $this->getVoicemailEndUrl($account),
+            'method'                        => 'POST',
             'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
             'recordingStatusCallbackMethod' => 'POST',
         ]);
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Voicemail end callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/voicemail_end", name="twilio_voicemail_end")
+     *
+     * @param VoiceAccount $account
+     * @param string       $accountAuth
+     *
+     * @return Response
+     */
+    public function voicemailEndAction(VoiceAccount $account, $accountAuth)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $twiml = new Twiml();
+        $twiml->hangup();
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1365,7 +1435,19 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'asset'       => $asset ? $asset->getId() : null,
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
 
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getVoicemailEndUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_voicemail_end', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1381,7 +1463,6 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'asset'       => $asset ? $asset->getId() : null,
-
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1397,7 +1478,6 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'callId'      => $phoneCall->getId(),
-
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 

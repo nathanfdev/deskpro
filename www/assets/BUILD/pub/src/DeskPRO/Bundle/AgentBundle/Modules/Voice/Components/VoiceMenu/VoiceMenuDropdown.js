@@ -7,10 +7,12 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
+    micEnabled:     PropTypes.bool,
     incomingCall:   PropTypes.object,
     outgoingCall:   PropTypes.object,
     onlineAgents:   PropTypes.object,
     voiceEnabled:   PropTypes.bool,
+    callsEnabled:   PropTypes.bool,
     outboundNumber: PropTypes.string
   };
 
@@ -31,8 +33,24 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getStatus() {
-    const { onlineAgents, voiceEnabled } = this.props;
-    const status = voiceEnabled ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
+    const { onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
+    const status = callsEnabled ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
+
+    if (!voiceEnabled) {
+      return (
+        <div className="status">
+          Insecure
+        </div>
+      );
+    }
+
+    if (!micEnabled) {
+      return (
+        <div className="status">
+          Mic disabled
+        </div>
+      );
+    }
 
     return (
       <div className="status">
@@ -42,12 +60,14 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getIcon() {
-    const { onlineAgents, voiceEnabled } = this.props;
+    const { onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
 
-    if (voiceEnabled) {
-      return <i className="ui call icon green voice-menu-icon" />;
-    } else if (onlineAgents.size > 0) {
-      return <i className="ui call icon yellow voice-menu-icon" />;
+    if (voiceEnabled && micEnabled) {
+      if (callsEnabled) {
+        return <i className="ui call icon green voice-menu-icon" />;
+      } else if (onlineAgents.size > 0) {
+        return <i className="ui call icon yellow voice-menu-icon" />;
+      }
     }
 
     return <i className="ui call icon red voice-menu-icon" />;

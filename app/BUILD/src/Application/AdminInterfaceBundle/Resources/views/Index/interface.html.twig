@@ -196,7 +196,7 @@
                     {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
                 {{ nav.list_item_group_end() }}
                 {% if app.hasVoice() %}
-                    {{ nav.list_item_group(phrase('adm.general.voice_channel'), 'fa-comments-o', '', 'voice-channel') }}
+                    {{ nav.list_item_group(phrase('adm.general.voice_channel'), 'fa-phone', '', 'voice-channel') }}
                         {{ nav.list_subitem('General Settings', ng_href('voice-channel.accounts'), 'voice-channel.accounts', 'fa-cog') }}
                         {{ nav.list_subitem('Numbers', ng_href('voice-channel.numbers'), 'voice-channel.numbers', 'fa-th') }}
                         {{ nav.list_subitem('Extensions', ng_href('voice-channel.extensions'), 'voice-channel.extensions', 'fa-bullseye') }}

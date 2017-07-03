@@ -83,18 +83,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       if (reason) { DeskPRO_Window.showAlert(reason); }
       handlerTrap(release);
     };
-    if(window.DeskPRO_APPSTORE) {
-      this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
-        'context.ticket.reply',
-        onResponse,
-        onActivate,
-        boundHandleReplySave
-      );
+
+		if (window.DeskPRO_APPSTORE) {
+			this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
+				'context.ticket.reply',
+				onResponse,
+				onActivate,
+				boundHandleReplySave
+			);
 		} else {
-      this.handleReplySaveInterceptor = boundHandleReplySave;
+			this.handleReplySaveInterceptor = boundHandleReplySave;
 		}
-
-
 
 		this.wrapper = el;
 
