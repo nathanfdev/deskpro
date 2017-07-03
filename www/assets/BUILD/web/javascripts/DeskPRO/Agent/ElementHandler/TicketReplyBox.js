@@ -419,8 +419,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       self.el.addClass('dp-fwd-on');
       $(this).addClass('on');
       self.hideAgentNotifyList();
-      if(!self.dontDispatch) {
-        DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.ticket.fwdtab.open', { mode: 'all' });
+      if(!self.dontDispatch && self.page) {
+				self.page.handleFwd({mode: 'all'});
 			}
 			self.dontDispatch = false;
     });
@@ -1801,5 +1801,12 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
         }
       }
     });
+	},
+
+	focusReplyBox: function() {
+    var api = this.textarea.data('redactor');
+    if (!api || !api.$editor) return;
+
+    api.$editor.focus();
 	}
 });

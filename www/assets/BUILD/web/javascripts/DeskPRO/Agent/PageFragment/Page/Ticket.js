@@ -2333,7 +2333,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initForward: function() {
-    DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.ticket.fwdtab.open',  this.handleFwd.bind(this) );
+
 	},
 
 	handleFwd: function(info) {
@@ -2380,7 +2380,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     });
 
     // focus reply box
-		this.focusOnReply();
+    self.ticketReplyBox.focusReplyBox();
   },
 
 	_getFwdMsgData: function(messageRow) {
