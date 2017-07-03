@@ -158,7 +158,6 @@ export class SnippetsMenu extends React.Component {
               value={this.state.filter}
               onChange={this.handleFilter}
             />
-            <i className="fa fa-star-o favorite" />
             <a className="close-icon" onClick={closeMenu}>
               <Isvg
                 className="close-icon"
