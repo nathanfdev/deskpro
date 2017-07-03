@@ -573,9 +573,7 @@ export class SnippetsModal extends React.Component {
 
   getUploadUrl = () => '/api/v2/blobs/temp';
 
-  isValid = () => {
-    return this.props.title !== '';
-  };
+  isValid = () => this.props.title !== '';
 
   render() {
     const {
