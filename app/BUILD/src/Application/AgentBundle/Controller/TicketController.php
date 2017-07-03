@@ -4016,6 +4016,21 @@ class TicketController extends AbstractController
             'agent_message' => $customMessage,
         ]);
 
+        $accessCodes = ListUtils::map(
+            $ticket->getAccessCodes(),
+            function (Entity\TicketAccessCode $tac) {
+                return $tac->getAccessCode();
+            }
+        );
+        $accessCodes[] = $ticket->getAccessCode();
+
+        // There shouldnt be any access codes in the body usually,
+        // but it's possible they might be in there because of a badly
+        // cut reply back to the helpdesk. So this filter removes them.
+        $email->setBodyFilter(function ($body) use ($accessCodes) {
+            return str_replace($accessCodes, '', $body);
+        });
+
         foreach ($tos as $k => $x) {
             $email->addTo($k, $x);
         }
