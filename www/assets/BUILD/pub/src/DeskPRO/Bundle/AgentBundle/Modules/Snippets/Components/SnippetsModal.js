@@ -125,6 +125,7 @@ export class SnippetsModalContainer extends React.Component {
       departments:  [],
       teams:        [],
       types:        [],
+      title:        this.props.snippet.get('title', ''),
       isDraft:      false,
       langId:       props.langId,
     };
@@ -234,7 +235,7 @@ export class SnippetsModalContainer extends React.Component {
       isVisibleGlobal = true;
     }
     const snippetData = {
-      title:               this.modal.title.input.value,
+      title:               this.state.title,
       types:               this.state.types,
       shortcut_code:       this.modal.shortcut_code.input.value,
       labels:              this.state.labels,
@@ -323,15 +324,21 @@ export class SnippetsModalContainer extends React.Component {
     }
   };
 
-  handleDepartmentsChange = (value) => {
+  handleDepartmentsChange = (departments) => {
     this.setState({
-      departments: value
+      departments
     });
   };
 
-  handleTeamsChange = (value) => {
+  handleTeamsChange = (teams) => {
     this.setState({
-      teams: value
+      teams
+    });
+  };
+
+  handleTitle = (title) => {
+    this.setState({
+      title
     });
   };
 
@@ -394,6 +401,7 @@ export class SnippetsModalContainer extends React.Component {
         isDraft={this.state.isDraft}
         types={this.state.types}
         langId={this.state.langId}
+        title={this.state.title}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
         deleteSnippet={this.deleteSnippet}
@@ -404,6 +412,7 @@ export class SnippetsModalContainer extends React.Component {
         handleChangeTypes={this.handleChangeTypes}
         handleDepartmentsChange={this.handleDepartmentsChange}
         handleTeamsChange={this.handleTeamsChange}
+        handleTitle={this.handleTitle}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -425,6 +434,7 @@ export class SnippetsModal extends React.Component {
     isDraft:                 PropTypes.bool,
     types:                   PropTypes.array,
     langId:                  PropTypes.number,
+    title:                   PropTypes.string,
     labels:                  PropTypes.array,
     addAttachment:           PropTypes.func,
     saveSnippet:             PropTypes.func,
@@ -437,6 +447,7 @@ export class SnippetsModal extends React.Component {
     handleChangeTypes:       PropTypes.func,
     handleDepartmentsChange: PropTypes.func,
     handleTeamsChange:       PropTypes.func,
+    handleTitle:             PropTypes.func,
   };
   static defaultProps = {
     changeLabels() {}
@@ -562,6 +573,10 @@ export class SnippetsModal extends React.Component {
 
   getUploadUrl = () => '/api/v2/blobs/temp';
 
+  isValid = () => {
+    return this.props.title !== '';
+  };
+
   render() {
     const {
       snippet,
@@ -569,9 +584,11 @@ export class SnippetsModal extends React.Component {
       translation,
       languages,
       langId,
+      title,
       setLanguage,
       handleChangeDraft,
       handleChangeTypes,
+      handleTitle,
       addAttachment,
       changeLabels,
       closeModal,
@@ -593,7 +610,7 @@ export class SnippetsModal extends React.Component {
           closeModal={closeModal}
           buttons={
             <div>
-              <Button className="dp-button--l" onClick={saveSnippet}>
+              <Button className="dp-button--l" onClick={saveSnippet} disabled={!this.isValid()}>
                 {agentPhrases.get('agent.general.save')}
               </Button>
               <Button className="dp-button--l dp-button--secondary" onClick={closeModal}>
@@ -602,6 +619,7 @@ export class SnippetsModal extends React.Component {
               <ConfirmButton
                 className="dp-button--l dp-button--secondary right"
                 onClick={deleteSnippet}
+                disabled={!snippet.get('id')}
                 message={agentPhrases.get('agent.general.are_you_sure')}
               >
                 {agentPhrases.get('agent.general.delete')}
@@ -625,8 +643,8 @@ export class SnippetsModal extends React.Component {
               <InputLabel htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</InputLabel>
               <Input
                 id="snippet_title"
-                defaultValue={snippet.get('title')}
-                ref={(c) => { this.title = c; }}
+                value={title}
+                onChange={handleTitle}
                 required
               />
             </div>
