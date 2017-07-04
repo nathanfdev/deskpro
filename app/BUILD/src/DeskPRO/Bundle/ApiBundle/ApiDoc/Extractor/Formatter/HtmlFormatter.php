@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\Formatter;
 
 use Nelmio\ApiDocBundle\DataTypes;
@@ -40,6 +36,9 @@ use Nelmio\ApiDocBundle\Formatter\HtmlFormatter as BaseHtmlFormatter;
  */
 class HtmlFormatter extends BaseHtmlFormatter
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function getNewName($name, $data, $parentName = null)
     {
         $array   = '';
@@ -55,9 +54,7 @@ class HtmlFormatter extends BaseHtmlFormatter
     }
 
     /**
-     * @param array $annotation
-     *
-     * @return array
+     * {@inheritdoc}
      */
     protected function processAnnotation($annotation)
     {
@@ -80,6 +77,14 @@ class HtmlFormatter extends BaseHtmlFormatter
         return $annotation;
     }
 
+    /**
+     * @param array $data
+     * @param bool  $firstTime
+     * @param null  $parentName
+     * @param bool  $ignoreNestedReadOnly
+     *
+     * @return array
+     */
     protected function compressResponse($data, $firstTime, $parentName = null, $ignoreNestedReadOnly = false)
     {
         $newParams = [];
@@ -110,6 +115,38 @@ class HtmlFormatter extends BaseHtmlFormatter
                 foreach ($this->compressResponse($info['children'], false, $newName, $ignoreNestedReadOnly) as $nestedItemName => $nestedItemData) {
                     $newParams[$prefix.$nestedItemName] = $nestedItemData;
                 }
+            }
+        }
+
+        return $newParams;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function compressNestedParameters(array $data, $parentName = null, $ignoreNestedReadOnly = false, $root = true)
+    {
+        $newParams = [];
+        foreach ($data as $name => $info) {
+            $newName = $root ? '' : $this->getNewName($name, $info, $parentName);
+
+            if (isset($info['children']) && (!$info['readonly'] || !$ignoreNestedReadOnly)) {
+                foreach ($this->compressNestedParameters($info['children'], $newName, $ignoreNestedReadOnly, false) as $nestedItemName => $nestedItemData) {
+                    $newParams[$nestedItemName] = $nestedItemData;
+                }
+            } else {
+                $newParams[$newName] = [
+                    'dataType'     => $info['dataType'],
+                    'readonly'     => array_key_exists('readonly', $info) ? $info['readonly'] : null,
+                    'required'     => $info['required'],
+                    'default'      => array_key_exists('default', $info) ? $info['default'] : null,
+                    'description'  => array_key_exists('description', $info) ? $info['description'] : null,
+                    'format'       => array_key_exists('format', $info) ? $info['format'] : null,
+                    'sinceVersion' => array_key_exists('sinceVersion', $info) ? $info['sinceVersion'] : null,
+                    'untilVersion' => array_key_exists('untilVersion', $info) ? $info['untilVersion'] : null,
+                    'actualType'   => array_key_exists('actualType', $info) ? $info['actualType'] : null,
+                    'subType'      => array_key_exists('subType', $info) ? $info['subType'] : null,
+                ];
             }
         }
 
