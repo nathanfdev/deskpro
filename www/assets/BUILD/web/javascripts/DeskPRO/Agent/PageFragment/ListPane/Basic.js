@@ -8,6 +8,14 @@ DeskPRO.Agent.PageFragment.ListPane.Basic = new Orb.Class({
 		this.addEvent('activate', function() {
 			DeskPRO_Window.updateWindowUrlFragment();
 			DeskPRO_Window.getMessageBroker().sendMessage('list-page-fragment.activated', { page: this });
+
+			if (this.wrapper.hasClass('.with-scroll-handler')) {
+        this.wrapper.data('scroll_handler').updateSize();
+      }
+      this.wrapper.find('.with-scroll-handler').each(function() {
+      	var sh = $(this).data('scroll_handler');
+				sh && sh.updateSize();
+			});
 		}, this);
 	},
 

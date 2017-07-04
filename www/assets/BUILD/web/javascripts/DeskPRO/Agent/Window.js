@@ -2013,7 +2013,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setListPage(page, routeData.isBackgroundLoad || false);
 
 			if (callback) callback(page);
-			$(document).trigger('textareaexpander_expanded');
 		}).bind(this));
 
 		if (routeData && !routeData.isBackgroundLoad) {
@@ -2728,15 +2727,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initWindowInterface: function() {
 		var self = this;
-
-		// Update sizes when textareas resize
-		$(document).on('textareaexpander_expanded', function() {
-			$('.with-scroll-handler').each(function() {
-				if ($(this).data('scroll_handler')) {
-					$(this).data('scroll_handler').updateSize();
-				}
-			});
-		});
 
 		this.notifications = new DeskPRO.Agent.Notifications();
 
