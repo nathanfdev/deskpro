@@ -10511,9 +10511,10 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     color: $text-color-lighter;
     font-weight: normal;
     font-size: inherit;
-    position: absolute;
-    @include left(0);
+    @include float('left');
     display: block;
+    width: 110px;
+    overflow: hidden;
   }
 
   a {
@@ -10642,9 +10643,15 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     }
 
     ul.major {
-      position: relative;
       > li {
-        @include padding-left(115px);
+        clear: both;
+
+        > ul {
+          @include padding-left(115px);
+        }
+        .item-clear {
+          clear: both;
+        }
       }
     }
   }
