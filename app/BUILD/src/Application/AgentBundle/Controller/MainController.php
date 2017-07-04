@@ -731,7 +731,7 @@ class MainController extends AbstractController
         /** @var TicketRepository $rep */
         $rep     = $this->em->getRepository(Ticket::class);
         $limit   = $request->get('all') ? null : 15;
-        $tickets = $rep->getPersonTickets($person, $limit, $sort);
+        $tickets = $rep->getPersonTickets($person, $this->getPerson(), $limit, $sort);
 
         return $this->createJsonResponse([
             'results' => $this->renderSearchResults('ticket', $tickets),

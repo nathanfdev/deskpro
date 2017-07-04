@@ -358,14 +358,27 @@ class ChatConversation extends AbstractEntityRepository
      */
     public function getPastChatsForPerson(
         PersonEntity $person,
+        PersonEntity $agent,
         $orderBy = 'date_created',
         $orderDir = 'DESC',
         $departmentsIds = []
     ) {
-        $where = '';
-        if ($departmentsIds) {
-            $where = 'AND c.department IN (?3)';
+        $agentPermissionsWhere = 'c.agent = ?3';
+        $wheres                = [];
+
+        if (!$agent->hasPerm('agent_chat.view_others')) {
+            $wheres[] = 'chat_conversations.agent_id IS NULL';
         }
+
+        if (!$agent->hasPerm('agent_chat.view_unassigned')) {
+            $wheres[] = 'chat_conversations.agent_id IS NOT NULL';
+        }
+
+        if ($departmentsIds) {
+            $wheres[] = 'c.department IN (?4)';
+        }
+
+        $where = sprintf('AND (%s OR (%s))', $agentPermissionsWhere, implode(' AND ', $wheres));
 
         $query = $this->getEntityManager()->createQuery("
             SELECT c
@@ -373,9 +386,11 @@ class ChatConversation extends AbstractEntityRepository
             WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended' $where
             ORDER BY c.{$orderBy} {$orderDir}
         ")->setParameter(1, $person)
-          ->setParameter(2, $person->getPrimaryEmailAddress());
+          ->setParameter(2, $person->getPrimaryEmailAddress())
+          ->setParameter(3, $agent->getId());
+
         if ($departmentsIds) {
-            $query->setParameter(3, $departmentsIds, Connection::PARAM_INT_ARRAY);
+            $query->setParameter(4, $departmentsIds, Connection::PARAM_INT_ARRAY);
         }
 
         return $query->execute();

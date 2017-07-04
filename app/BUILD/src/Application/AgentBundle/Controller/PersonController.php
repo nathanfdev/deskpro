@@ -120,7 +120,7 @@ class PersonController extends AbstractController
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
         $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
 
-        $person_tickets       = $rep->getPersonTickets($person, 251, 'status', 'DESC', $allowedTicketDepartmentIds);
+        $person_tickets       = $rep->getPersonTickets($person, $this->getPerson(), 251, 'status', 'DESC', $allowedTicketDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
             $person,
             ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden']
@@ -213,7 +213,7 @@ class PersonController extends AbstractController
 
         /** @var ChatConversationRepository $chatConversationRepository */
         $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
-        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person, 'date_created', 'DESC', $allowedChatDepartmentsIds);
+        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person, $this->getPerson(), 'date_created', 'DESC', $allowedChatDepartmentsIds);
         $person_chats_count         = count($person_chats);
 
         $is_editable = $this->isPersonEditable($person);
@@ -1638,7 +1638,7 @@ class PersonController extends AbstractController
 
         $orderBy  = $this->in->getString('order_by');
         $orderDir = $this->in->getString('order_dir');
-        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $orderBy, $orderDir);
+        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $this->getPerson(), $orderBy, $orderDir);
 
         return $this->render('AgentBundle:Person:view-chats.html.twig', [
             'chats' => $chats,

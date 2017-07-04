@@ -327,6 +327,7 @@ class Ticket extends AbstractEntityRepository
      * This is usually used to fetch a list of tickets for an end-user.
      *
      * @param PersonEntity $person
+     * @param PersonEntity $agent
      * @param null         $limit
      * @param null         $sort_by
      * @param string       $sort_order
@@ -335,37 +336,72 @@ class Ticket extends AbstractEntityRepository
      */
     public function getPersonTickets(
         Entity\Person $person,
+        Entity\Person $agent,
         $limit = null,
         $sort_by = null,
         $sort_order = 'DESC',
         $departmentIds = []
     ) {
-        $where = $where2 = '';
-        if (!$person->is_agent) {
-            $params      = [$person->id, $person->id];
-            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT];
+        $agentWherePermissions = 'tickets.agent_id = ?';
+        $wheres                = [];
+        $join                  = '';
+
+        if (!$agent->hasPerm('agent_tickets.view_unassigned')) {
+            $wheres[] = '(tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)';
+        }
+        if (!$agent->hasPerm('agent_tickets.view_others')) {
+            $wheres[] = 'tickets.agent_id IS NULL';
+            $wheres[] = 'tickets.agent_team_id IS NULL';
+        }
+
+        if (!$person->isAgent()) {
+            $params      = [$person->getId(), $person->getId(), $agent->getId()];
+            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT];
+
             if ($departmentIds) {
-                $where       = 'AND department_id IN (?)';
-                $where2      = 'inner join tickets on tickets.id = tickets_participants.ticket_id AND tickets.department_id IN (?)';
-                $params      = [$person->getId(), $departmentIds, $departmentIds, $person->getId()];
-                $paramsTypes = [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT];
+                $wheres[] = 'tickets.department_id IN (?)';
+                $join     = 'INNER JOIN tickets ON tickets.id = tickets_participants.ticket_id';
+
+                $params = [
+                    $person->getId(),
+                    $agent->getId(),
+                    $departmentIds,
+                ];
+                $paramsTypes = [
+                    \PDO::PARAM_INT,
+                    \PDO::PARAM_INT,
+                    Connection::PARAM_INT_ARRAY,
+                ];
             }
+
+            if ($wheres) {
+                $where = sprintf(' AND (%s OR (%s))', $agentWherePermissions, implode(' AND ', $wheres));
+            } else {
+                $where = sprintf(' AND %s', $agentWherePermissions);
+            }
+
             $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT DISTINCT id FROM (
                     SELECT tickets.id FROM tickets WHERE tickets.person_id = ? $where
                     UNION
-                    SELECT tickets_participants.ticket_id FROM tickets_participants $where2 WHERE tickets_participants.person_id = ?
+                    SELECT tickets_participants.ticket_id FROM tickets_participants $join WHERE tickets_participants.person_id = ? $where
                     LIMIT 2000
                 ) AS t
-            ", $params, $paramsTypes);
+            ", array_merge($params, $params), array_merge($paramsTypes, $paramsTypes)); // double params, cause there are two parts of query
         } else {
-            $params      = [$person->getId()];
-            $paramsTypes = [\PDO::PARAM_INT];
+            $params      = [$person->getId(), $agent->getId()];
+            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT];
             if ($departmentIds) {
-                $where         = 'AND department_id IN (?)';
-                $params[]      = [$departmentIds];
-                $paramsTypes[] = [Connection::PARAM_INT_ARRAY];
+                $wheres[]    = 'tickets.department_id IN (?)';
+                $params      = [$person->getId(), $departmentIds, $agent->getId()];
+                $paramsTypes = [\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT];
             }
+            if ($wheres) {
+                $where = sprintf('AND (%s OR (%s))', $agentWherePermissions, implode(' AND ', $wheres));
+            } else {
+                $where = sprintf('AND %s', $agentWherePermissions);
+            }
+
             $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
                 SELECT id FROM tickets WHERE person_id = ? $where
                 LIMIT 2000
