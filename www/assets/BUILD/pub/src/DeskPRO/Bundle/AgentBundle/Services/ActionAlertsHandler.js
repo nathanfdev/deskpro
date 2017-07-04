@@ -72,7 +72,7 @@ class ActionAlertsHandler {
         this.options.dispatch(newActionAlerts(payload));
         break;
       default:
-        if (payload.eventType) {
+        if (payload.data && payload.data.eventType) {
           ActionAlertsHandler.handleLegacyClientMessage(payload.data);
         } else {
           this.options.dispatch(newActionAlerts(payload));

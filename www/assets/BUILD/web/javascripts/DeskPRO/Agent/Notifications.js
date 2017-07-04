@@ -194,7 +194,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		rows.forEach((function(r) {
 			var html_or_el = r[0],
 				alert_id = r[1],
-				avatar = r[2];
+				avatar = r[2],
+				sendBrowserNotif = r[3];
 
       if (alert_id && this.isDismissedAlready(alert_id)) {
         this.dismissAlertId(alert_id);
@@ -205,6 +206,10 @@ DeskPRO.Agent.Notifications = new Orb.Class({
       row.addClass('msg-row');
       row.data('route-notabreload', 1).attr('data-route-notabreload', 1);
       row.data('avatar', avatar);
+
+      if (!sendBrowserNotif) {
+      	row.data('no-browser-notif', true);
+			}
 
       if (alert_id) {
         row.data('alert-id', alert_id);
@@ -242,6 +247,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
       if (DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
         appendRows.each(function() {
         	var row = $(this);
+
+        	if (row.data('no-browser-notif')) {
+        		return;
+					}
+
           var icon = row.data('icon') || '';
           if (icon) {
             icon = ASSETS_BASE_URL + '/' + icon;
@@ -280,7 +290,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	addRow: function(html_or_el, alert_id, avatar) {
-		this.waitingRows.push([html_or_el, alert_id, avatar]);
+		this.waitingRows.push([html_or_el, alert_id, avatar, DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad]);
     this.flushAddRows();
 	},
 
