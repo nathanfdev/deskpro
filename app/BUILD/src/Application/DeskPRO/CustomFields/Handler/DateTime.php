@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -41,6 +37,9 @@ use Orb\Util\Dates;
  */
 class DateTime extends Date
 {
+    /**
+     * {@inheritdoc}
+     */
     public function getDataFromForm(array $form_data)
     {
         $name = $this->getFormFieldName();
@@ -67,22 +66,23 @@ class DateTime extends Date
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getFormat()
     {
         return 'Y-m-d H:i';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if ($data && !is_scalar($data)) {
             return $this->makeErrorArray(['date_invalid']);
-        }
-
-        // Timestamp value
-        if (strlen($data) == 10 && ctype_digit($data)) {
-            $data = date($this->getFormat(), $data);
         }
 
         //------------------------------
@@ -106,8 +106,25 @@ class DateTime extends Date
         }
 
         if ($data) {
-            $date = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
-            if (!$date) {
+            try {
+                $date = new \DateTime('@'.$data);
+            } catch (\Exception $e) {
+                try {
+                    $date = new \DateTime($data);
+                } catch (\Exception $e) {
+                    $date = null;
+                }
+            }
+
+            if ($date) {
+                try {
+                    $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+                } catch (\Exception $e) {
+                    $adminTz = App::getCurrentPerson()->getDateTimezone();
+                }
+
+                $date->setTimezone($adminTz);
+            } else {
                 return $this->makeErrorArray(['date_invalid']);
             }
         } else {
@@ -118,16 +135,7 @@ class DateTime extends Date
         // Validate ranges
         //------------------------------
 
-        try {
-            $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
-        } catch (\Exception $e) {
-            $adminTz = App::getCurrentPerson()->getDateTimezone();
-        }
-
-        $dateAdmin = clone $date;
-        $dateAdmin->setTimezone($adminTz);
-
-        $dow = intval($dateAdmin->format('N')) - 1;
+        $dow = intval($date->format('N')) - 1;
 
         // Days of week
         if ($validDow = $this->field_def->getOption('date_valid_dow')) {
@@ -145,7 +153,7 @@ class DateTime extends Date
                 $d1 = \DateTime::createFromFormat('Y-m-d', $d1, $adminTz);
                 $d1->setTime(0, 0, 0);
 
-                if ($dateAdmin < $d1) {
+                if ($date < $d1) {
                     return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
@@ -153,7 +161,7 @@ class DateTime extends Date
                 $d2 = \DateTime::createFromFormat('Y-m-d', $d2, $adminTz);
                 $d2->setTime(23, 59, 59);
 
-                if ($dateAdmin > $d2) {
+                if ($date > $d2) {
                     return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
@@ -179,7 +187,7 @@ class DateTime extends Date
             $d2->modify("+{$days2} days");
             $d2->setTime(23, 59, 59);
 
-            if ($dateAdmin < $d1 || $dateAdmin > $d2) {
+            if ($date < $d1 || $date > $d2) {
                 return $this->makeErrorArray(['date_invalid_range']);
             }
         }
@@ -187,12 +195,15 @@ class DateTime extends Date
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchCriteriaForm($data = null)
     {
         $setData = null;
         if ($data and !empty($data['value'])) {
             try {
-                if (ctype_digit($data['value'])) {
+                if (is_numeric($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
