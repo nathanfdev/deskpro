@@ -825,11 +825,15 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Assignments
 		//------------------------------
 
-		window.setTimeout(function() {
-			DP.select(agentSel);
-			DP.select(teamSel);
-            DP.select(jiraActionSel);
-		}, 150);
+		var setupSelects = function() {
+      DP.select(agentSel);
+      DP.select(teamSel);
+      DP.select(jiraActionSel);
+		};
+
+    window.requestIdleCallback ?
+      window.requestIdleCallback(setupSelects, {timeout: 1000}) :
+      window.setTimeout(setupSelects, 500);;
 
 		agentSel.on('change', function() {
 			var option = agentSel.find(':selected');

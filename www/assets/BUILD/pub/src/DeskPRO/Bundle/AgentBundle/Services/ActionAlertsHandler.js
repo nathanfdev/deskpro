@@ -15,22 +15,6 @@ class ActionAlertsHandler {
     const { data, linked } = payload.data;
     const records = [];
     switch (payload.type) {
-      case 'notification.agent_chat.new_message':
-        if (linked.agent_chat[data.chat].chat_type === 'department') {
-          this.options.dispatch(addToCollection('Department', 'my', linked.department));
-        }
-        if (linked.agent_chat[data.chat].chat_type === 'team') {
-          this.options.dispatch(addToCollection('AgentTeam', 'my', linked.agent_team));
-        }
-        if (linked.agent_chat[data.chat].chat_type === 'group') {
-          this.options.dispatch(addToCollection('AgentChat', 'group', linked.agent_chat[data.chat]));
-        }
-        this.options.dispatch(addToCollection('AgentChat', 'recent', [linked.agent_chat[data.chat]]));
-        this.options.dispatch(markMessages([data.id], [data.uuid], data.chat, 1));
-        if (!(data.metadata.mention && data.person === this.options.me)) {
-          this.options.dispatch(startChat(null, data.chat, true));
-        }
-        break;
       case 'agents.update_online':
         if (payload.data.online) {
           payload.data.online.forEach((item) => {
@@ -43,10 +27,6 @@ class ActionAlertsHandler {
           });
         }
         this.options.dispatch(updateCollection('Person', records, 'merge'));
-        break;
-      case 'read.notifications.alert':
-      case 'notification.agent_chat.mark_message':
-        // no-op
         break;
       case 'organization.added':
         ActionAlertsHandler.handleLegacyClientMessage(payload.data);
@@ -68,10 +48,36 @@ class ActionAlertsHandler {
         }
       }
         break;
+      // from DeskPRO/Bundle/AgentBundle/Services/Helpers/MessagesHelper.js
+      case 'notification.agent_chat.new_message':
+        if (linked.agent_chat[data.chat].chat_type === 'department') {
+          this.options.dispatch(addToCollection('Department', 'my', linked.department));
+        }
+        if (linked.agent_chat[data.chat].chat_type === 'team') {
+          this.options.dispatch(addToCollection('AgentTeam', 'my', linked.agent_team));
+        }
+        if (linked.agent_chat[data.chat].chat_type === 'group') {
+          this.options.dispatch(addToCollection('AgentChat', 'group', linked.agent_chat[data.chat]));
+        }
+        this.options.dispatch(addToCollection('AgentChat', 'recent', [linked.agent_chat[data.chat]]));
+        this.options.dispatch(markMessages([data.id], [data.uuid], data.chat, 1));
+        if (!(data.metadata.mention && data.person === this.options.me)) {
+          this.options.dispatch(startChat(null, data.chat, true));
+        }
+        this.options.dispatch(newActionAlerts(payload));
+        break;
+      case 'notification.agent_chat.mark_message':
+      case 'notification.agent_chat.mark_all_messages':
+      case 'read.notifications.alert':
+        this.options.dispatch(newActionAlerts(payload));
+        break;
       default:
-        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        if (payload.data && payload.data.eventType) {
+          ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        } else {
+          this.options.dispatch(newActionAlerts(payload));
+        }
     }
-    this.options.dispatch(newActionAlerts(payload));
   }
 
   static handleLegacyClientMessage(payload) {

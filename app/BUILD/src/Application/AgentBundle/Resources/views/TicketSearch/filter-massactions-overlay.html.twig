@@ -271,10 +271,13 @@
 						{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'actions[reply][attach_ids][]'} %}
 					</ul>
 					<div class="input-wrap">
-						<textarea id="mass_actions_overlay_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
-						<textarea id="mass_actions_overlay_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
-						<textarea id="mass_actions_overlay_replybox_txt" name="actions[reply][reply_text]"></textarea>
-						<input type="hidden" id="{{localBaseId}}_is_html_reply" name="actions[reply][is_html]" value="0" />
+						<div id="mass_actions_overlay_reply_fake" style="cursor: text; height: 100px; color: #ccc; padding: 4px; font-size: 13px;">Type a mass reply here...</div>
+						<div id="mass_actions_overlay_reply_real" style="display: none">
+							<textarea id="mass_actions_overlay_signature_value" class="signature-value" style="display: none;">{{ agent_signature }}</textarea>
+							<textarea id="mass_actions_overlay_signature_value_html" class="signature-value-html" style="display: none;">{{ agent_signature_html }}</textarea>
+							<textarea id="mass_actions_overlay_replybox_txt" name="actions[reply][reply_text]"></textarea>
+							<input type="hidden" id="{{localBaseId}}_is_html_reply" name="actions[reply][is_html]" value="0" />
+						</div>
 					</div>
 				</section>
 			</article>
