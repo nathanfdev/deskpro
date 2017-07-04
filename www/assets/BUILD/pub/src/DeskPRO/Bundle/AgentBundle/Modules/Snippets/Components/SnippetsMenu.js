@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import { Input } from 'deskpro-components/lib/Components/Forms';
+import { Input, Select } from 'deskpro-components/lib/Components/Forms';
 import Button from 'deskpro-components/lib/Components/Button';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
@@ -12,12 +13,14 @@ import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Compon
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
 
 @connect(state => ({
+  me:        meSelector(state),
   languages: allSelectorFactory('Language')(state),
   snippets:  allSnippetsSelector(state),
   blobs:     allSnippetBlobsSelector(state)
 }))
 export class SnippetsMenuContainer extends React.Component {
   static propTypes = {
+    me:            PropTypes.object,
     snippets:      PropTypes.object,
     blobs:         PropTypes.object,
     languages:     PropTypes.object,
@@ -33,7 +36,8 @@ export class SnippetsMenuContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filter: '',
+      filter:   '',
+      showMode: 'all',
     };
   }
 
@@ -47,8 +51,12 @@ export class SnippetsMenuContainer extends React.Component {
     this.setState({ filter });
   };
 
+  handleShowMode = (showMode) => {
+    this.setState({ showMode });
+  };
+
   render() {
-    const { closeMenu, type, department, languages } = this.props;
+    const { me, closeMenu, type, department, languages } = this.props;
     const snippets = this.props.snippets
       .filter(snippet => snippet.get('types').indexOf(type) !== -1)
       .filter((snippet) => {
@@ -71,6 +79,25 @@ export class SnippetsMenuContainer extends React.Component {
           || snippet.get('shortcut_code').match(re)
           || snippet.get('translations').find(element => element.get('language') === langId).get('content').match(re);
       })
+      .filter((snippet) => {
+        switch (this.state.showMode) {
+          case 'all':
+            return true;
+          case 'my_snippets':
+            return snippet.get('person') === me.get('id');
+          case 'my_team': {
+            const myTeams = me.get('teams', new Immutable.List());
+            return snippet.get('ownership_teams', new Immutable.List())
+                .filter(team => myTeams.find(t => t === team)).size > 0;
+          }
+          case 'my_drafts':
+            return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
+          case 'all_drafts':
+            return snippet.get('is_draft', false);
+          default:
+            return true;
+        }
+      })
       .sort((a, b) => {
         const titleA = a.get('title').toLowerCase();
         const titleB = b.get('title').toLowerCase();
@@ -84,13 +111,16 @@ export class SnippetsMenuContainer extends React.Component {
     ;
     return (
       <SnippetsMenu
+        me={me}
         closeMenu={closeMenu}
         insertSnippet={this.insertSnippet}
         handleFilter={this.handleFilter}
+        handleShowMode={this.handleShowMode}
         snippets={snippets}
         languages={languages}
         type={type}
         filter={this.state.filter}
+        showMode={this.state.showMode}
         langId={window.DP_PERSON_LANG_ID}
         ref={(c) => { this.menu = c; }}
       />
@@ -100,17 +130,21 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    snippets:      PropTypes.object,
-    languages:     PropTypes.object,
-    langId:        PropTypes.number,
-    closeMenu:     PropTypes.func,
-    insertSnippet: PropTypes.func,
-    handleFilter:  PropTypes.func,
-    type:          PropTypes.string,
-    filter:        PropTypes.string,
+    me:             PropTypes.object,
+    snippets:       PropTypes.object,
+    languages:      PropTypes.object,
+    langId:         PropTypes.number,
+    closeMenu:      PropTypes.func,
+    insertSnippet:  PropTypes.func,
+    handleFilter:   PropTypes.func,
+    handleShowMode: PropTypes.func,
+    type:           PropTypes.string,
+    filter:         PropTypes.string,
+    showMode:       PropTypes.string,
   };
   static defaultProps = {
-    handleFilter() {}
+    handleFilter() {},
+    handleShowMode() {},
   };
 
   constructor(props) {
@@ -269,7 +303,21 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter } = this.props;
+    const { me, snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter } = this.props;
+    let showOptions = [
+      { value: 'all', label: agentPhrases.get('agent.snippets.all_snippets') },
+      { value: 'my_snippets', label: agentPhrases.get('agent.snippets.my_snippets') },
+    ];
+    if (me.get('teams').size > 1) {
+      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_teams_snippets') });
+    } else if (me.get('teams').size > 0) {
+      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_team_snippets') });
+    }
+    showOptions = showOptions.concat([
+      { value: 'my_drafts', label: agentPhrases.get('agent.snippets.my_drafts') },
+      { value: 'all_drafts', label: agentPhrases.get('agent.snippets.all_drafts') },
+    ]);
+    console.log(showOptions);
     return (
       <div id="snippets__menu">
         <div className="header">
@@ -296,13 +344,22 @@ export class SnippetsMenu extends React.Component {
           </div>
           <div className="top">
             <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
-            {/* <Select />*/}
             <Button
               className="dp-button--secondary add-snippet"
               onClick={this.newSnippet}
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
+            <Select
+              placeholder={agentPhrases.get('agent.general.show')}
+              searchable={false}
+              clearable={false}
+              simpleValue
+              value={this.props.showMode}
+              onChange={this.props.handleShowMode}
+              className="show-mode"
+              options={showOptions}
+            />
           </div>
         </div>
         <div className="body">
