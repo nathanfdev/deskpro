@@ -64,6 +64,7 @@ class ActionAlertsHandler {
         if (!(data.metadata.mention && data.person === this.options.me)) {
           this.options.dispatch(startChat(null, data.chat, true));
         }
+        this.options.dispatch(newActionAlerts(payload));
         break;
       case 'notification.agent_chat.mark_message':
       case 'notification.agent_chat.mark_all_messages':
@@ -71,7 +72,11 @@ class ActionAlertsHandler {
         this.options.dispatch(newActionAlerts(payload));
         break;
       default:
-        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        if (payload.eventType) {
+          ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        } else {
+          this.options.dispatch(newActionAlerts(payload));
+        }
     }
   }
 
