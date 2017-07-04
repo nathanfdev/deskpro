@@ -28,6 +28,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
     }]);
 
     this.addEvent('destroy', function() {
+      if (self.massActions) {
+        self.massActions.destroy();
+      }
       if (self.queuedChangeEvents_timeout) {
         self.$timeout.cancel(self.queuedChangeEvents_timeout);
         self.queuedChangeEvents_timeout = null;

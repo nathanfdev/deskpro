@@ -22,30 +22,30 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
   },
 
   updateUi: function() {
-    if (this.scrollerHandler) {
-      this.scrollerHandler.updateSize();
-    }
+
   },
 
   _resetWrapper: function(callback) {
     if (this.wrapper) {
+      this.wrapper.hide();
+
+      if (this.textarea && this.textarea.data('redactor')) {
+        this.textarea.destroyEditor();
+      }
+
+      if (this.snippetsViewer) {
+        this.snippetsViewer.destroy();
+        this.snippetsViewer = null;
+      }
+
       this.wrapper.find('.inner-mount-point').empty();
       this.wrapper.hide();
     } else {
       this.wrapper = this.options.frameEl;
-      this.wrapper.detach().appendTo('body');
-      this.wrapper.find('.with-scroll-handler, .scroll-setup, .scroll-draw').removeClass('with-scroll-handler scroll-setup scroll-draw');
+      this.wrapper.detach().hide().appendTo('body');
       this.countEl = $('.selected-tickets-count', this.wrapper);
 
       DeskPRO_Window.initInterfaceLayerEvents(this.wrapper);
-
-      var scrollEl = $('.with-scrollbar', this.wrapper).first();
-      if (scrollEl.length) {
-        this.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(null, scrollEl, {
-          showEvent: 'show',
-          hideEvent: 'hide'
-        });
-      }
     }
 
     callback();
@@ -253,260 +253,28 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     // Reply Box
     //------------------------------
 
-    var recordSnippetUse = function(snippetId) {
+    this.recordSnippetUse = function(snippetId) {
       var el = $("#" + self.baseId + "_snippet_ids");
       var current = el.val() || '';
       var newval = current.length ? current + ',' + snippetId : snippetId + '';
       el.val(newval);
     };
 
-    var textarea = this.getElById('replybox_txt'), isWysiwyg = false;
+    var textarea = this.getElById('replybox_txt');
     this.textarea = textarea;
 
-    if (DeskPRO_Window.canUseAgentReplyRte()) {
-
-      var sig = this.wrapper.find('textarea.signature-value-html').val() || "";
-      sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
-
-      if (sig) {
-        textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
-      }
-
-      isWysiwyg = true;
-      self.getElById('is_html_reply').val('1');
-
-      DeskPRO_Window.initRteAgentReply(textarea, {
-        defaultIsHtml:        true,
-        inlineHiddenPosition: this.getElById('is_html_reply'),
-        minHeight:            120,
-
-        callback: function(obj) {
-          obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function() {
-          });
-          obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function() {
-          });
-          obj.addBtnSeparatorAfter('dp_attach');
-
-          var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
-          snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
-          snippetBtn.on('click', function(ev) {
-            Orb.cancelEvent(ev);
-            self.snippetsViewer.open();
-          });
-
-          var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
-          attachBtn.addClass('attach');
-          attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
-
-          obj.addBtnSeparatorAfter('dp_snippets');
-        }
-      });
-      this.getElById('is_html_reply').val(1);
-    }
-
-    //------------------------------
-    // Snippets Viewer
-    //------------------------------
-
-    this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
-      driver:         DeskPRO_Window.ticketSnippetDriver,
-      onBeforeOpen:   function() {
-        var pos = $('#dp_content').offset();
-        var contentStart = pos.left;
-
-        self.backdropEls.eq(0).css({ width: '61px' });
-        self.backdropEls.eq(1).css({ width: contentStart - 61, left: 61 });
-
-        if (isWysiwyg && textarea.data('redactor')) {
-          try {
-            textarea.data('redactor').saveSelection();
-          } catch (e) {
-          }
-        }
-      },
-      onBeforeClose:   function() {
-        var pos = $('#dp_content').offset();
-        var contentStart = pos.left;
-        self.backdropEls.eq(0).css({ width: '269px' });
-        self.backdropEls.eq(1).css({ width: contentStart - 269, left: 269 });
-      },
-
-      onSnippetClick: function(info) {
-        self.backdropEls.eq(0).css({ width: '269px' });
-        var snippetId = info.snippetId;
-        var snippetCode = info.snippetCode;
-
-        var agentText;
-        var defaultText;
-        var useText;
-        var result;
-
-        Array.each(snippetCode, function(info) {
-          if (info.value) {
-            if (info.language_id === DESKPRO_PERSON_LANG_ID) {
-              agentText = info.value;
-            }
-            if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
-              defaultText = info.value;
-            }
-            useText = info.value;
-          }
-        });
-
-        if (agentText) {
-          useText = agentText;
-        } else if (defaultText) {
-          useText = defaultText;
-        }
-
-        recordSnippetUse(snippetId);
-
-        result = useText || '';
-
-        if (isWysiwyg && textarea.data('redactor')) {
-          try {
-            textarea.data('redactor').restoreSelection();
-            textarea.data('redactor').setBuffer();
-          } catch (e) {
-          }
-
-          var html = result;
-          html = html.replace(/<\/p>\s*<p>/g, '<br/>');
-          html = html.replace(/^<p>/, '');
-          html = html.replace(/<\/p>$/, '');
-          textarea.data('redactor').insertHtml(html);
-        } else {
-          self.page.insertTextInReply(result);
-        }
-
-        self.snippetsViewer.close();
-      }
-    });
-
-    //------------------------------
-    // Insert snippet by %-% combo
-    //------------------------------
-
-    if (textarea.data('redactor')) {
-      var ed = textarea.getEditor();
-      var api = textarea.data('redactor');
-
-      var te = new DeskPRO.TextExpander({
-        textarea: ed,
-        onCombo: function(combo, ev) {
-          combo = combo.replace(/%/g, '');
-          if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES || !window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
-            return;
-          }
-
-          ev.preventDefault();
-
-          for (var i = 0; i < window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo].length; i++) {
-            var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo][i];
-
-            var focus = api.getFocus(),
-              focusNode = $(focus[0]),
-              testText;
-
-            if (focus[0].nodeType == 3) {
-              testText = focusNode.text().substring(0, focus[1]);
-            } else {
-              focus[0] = focusNode.contents().get(focus[1] - 1);
-              focusNode = $(focus[0]);
-              testText = focusNode.text();
-              focus[1] = testText.length;
-            }
-
-            var lastAt = testText.lastIndexOf('%'), matches = [];
-
-            if (lastAt != -1) {
-              api.setSelection(focus[0], lastAt, focus[0], focus[1]);
-            }
-
-            // web kit handles content editable without an issue. this prevents the span
-            // from being extended unnecessarily
-            var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-            api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet</span>');
-
-            $.ajax({
-              url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
-              dataType: 'json',
-              success: function (data) {
-                var snippet = data.snippet;
-                var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
-                var snippetId = snippet.id;
-                var snippetCode = snippet.snippet;
-
-                recordSnippetUse(snippetId);
-
-                var agentText;
-                var defaultText;
-                var wantText;
-                var useText;
-
-                Array.each(snippetCode, function (info) {
-                  if (info.language_id == ticketLangId) {
-                    wantText = info.value;
-                  }
-                  if (info.language_id == DESKPRO_PERSON_LANG_ID) {
-                    agentText = info.value;
-                  }
-                  if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
-                    defaultText = info.value;
-                  }
-                  useText = info.value;
-                });
-
-                if (wantText) {
-                  useText = wantText;
-                } else if (agentText) {
-                  useText = agentText;
-                } else if (defaultText) {
-                  useText = defaultText;
-                }
-
-                useText = useText.replace(/<\/p>\s*<p>/g, '<br/>');
-                useText = useText.replace(/^<p>/, '');
-                useText = useText.replace(/<\/p>$/, '');
-                var result = $('<div>' + useText + '</div>');
-
-                var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-                var cursor = $('<span class="_cursor"></span>');
-                var cursorPos = result.find('> p');
-                if (!cursorPos[0]) {
-                  cursorPos = result;
-                }
-
-                el.after(result);
-                cursorPos.append(cursor);
-                el.remove();
-
-                api.setSelection(cursor[0], 0, cursor[0], 0);
-                api.syncCode();
-              }
-            });
-          }
-        }
-      });
-    }
-
-    //------------------------------
-    // Upload handling
-    //------------------------------
-
-    DeskPRO_Window.util.fileupload(this.wrapper, {
-      url:              this.wrapper.data('upload-url'),
-      uploadTemplate:   $('.template-upload', this.replyBox),
-      downloadTemplate: $('.template-download', this.replyBox)
-    });
+    this.getElById('reply_fake').on('click', (function() {
+      this.getElById('reply_fake').hide();
+      this.getElById('reply_real').show();
+      this._initEditor(textarea);
+      textarea.setFocus();
+    }).bind(this));
 
     var sels = this.wrapper.find('select.dpe_select');
 
-    window.setTimeout(function() {
-      sels.each(function() {
-        DP.select($(this));
-      });
-    }, 150);
+    sels.each(function() {
+      DP.select($(this));
+    });
 
     this.wrapper.bind('fileuploaddone', function() {
       self.getElById('attach_row').fadeIn();
@@ -570,17 +338,19 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
   _renderInside: function(html) {
     var self = this;
     var $inside = this.wrapper.find('.inner-mount-point');
+    var $loading = this.wrapper.find('.loading-point');
     $inside.html(html);
     DeskPRO_Window.initInterfaceLayerEvents($inside);
     DP.select($('select.macro', $inside));
     this._initInside();
+
+    $loading.hide();
+    $inside.show();
+
     this.updatePositions();
     window.setTimeout(function() {
-      self.updatePositions();
-    }, 200);
-    window.setTimeout(function() {
-      self.updatePositions();
-    }, 500);
+      if (this._hasInit) self.updatePositions();
+    }, 400);
   },
 
   _loadInside: function() {
@@ -755,7 +525,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     var bottom = 10;
     var height = '';
 
-    var scrollContent = $('.dp-page-content', this.wrapper).first();
+    var scrollContent = $('.inner-mount-point', this.wrapper).first();
     var contentH = false;
     var hasHeader = !!($('> section > header', this.wrapper).length);
     var hasFooter = !!($('> section > footer', this.wrapper).length);
@@ -899,6 +669,92 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     this.updatePositions();
   },
 
+  insertSnippet: function(snippet, blobs, langId) {
+    var self = this;
+    var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+    if (langId) {
+      ticketLangId = langId;
+    }
+    var snippetId = snippet.id;
+    var snippetCode = snippet.translations;
+
+    self.recordSnippetUse(snippetId);
+
+    var agentText;
+    var defaultText;
+    var wantText;
+    var useText;
+
+    for (var i = 0; i < snippetCode.length; i++) {
+      if (snippetCode[i].content) {
+        if (snippetCode[i].language === parseInt(ticketLangId, 10)) {
+          wantText = snippetCode[i];
+        }
+        if (snippetCode[i].language === DESKPRO_PERSON_LANG_ID) {
+          agentText = snippetCode[i];
+        }
+        if (snippetCode[i].language === DESKPRO_DEFAULT_LANG_ID) {
+          defaultText = snippetCode[i];
+        }
+        useText = snippetCode[i];
+      }
+    }
+
+    if (wantText) {
+      useText = wantText;
+    } else if (agentText) {
+      useText = agentText;
+    } else if (defaultText) {
+      useText = defaultText;
+    }
+
+    if (useText.blobs.length) {
+      var $attachRow = this.getElById('attach_row');
+      Array.each(useText.blobs, function (info) {
+        var blob = blobs[info];
+        if (blob) {
+          var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+          $attachRow.find('ul.files:first').append(html);
+        }
+      });
+      $attachRow.slideDown().removeClass('is-hidden');
+    }
+
+    useText = useText.content;
+
+    useText = useText.replace(/<\/p>\s*<p>/g, '<br/>');
+    useText = useText.replace(/^<p>/, '');
+    useText = useText.replace(/<\/p>$/, '');
+    var result = $('<div>' + useText + '</div>');
+
+    var api = this.textarea.data('redactor');
+    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+    if (el.length) {
+      var cursor = $('<span class="_cursor"></span>');
+      var cursorPos = result.find('> p');
+      if (!cursorPos[0]) {
+        cursorPos = result;
+      }
+
+      el.after(result);
+      cursorPos.append(cursor);
+      el.remove();
+
+      api.setSelection(cursor[0], 0, cursor[0], 0);
+    } else {
+      try {
+        api.restoreSelection();
+        api.setBuffer();
+      } catch (e) {}
+      api.insertHtml(result.html());
+
+      var event = new CustomEvent('dpLeftDrawerClose');
+      window.document.dispatchEvent(event);
+      self.isSnippetOpen = false;
+    }
+    api.syncCode();
+  },
+
 
   /**
    * Is the overlay currently open?
@@ -960,17 +816,291 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     this.$scope.$safeApply();
   },
 
+  _initEditor: function(textarea) {
+    var self = this;
+
+    if (this.textarea && this.textarea.data('redactor')) {
+      return;
+    }
+
+    var sig = this.wrapper.find('textarea.signature-value-html').val() || "";
+    sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
+
+    if (sig) {
+      textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+    }
+
+    self.getElById('is_html_reply').val('1');
+
+    DeskPRO_Window.initRteAgentReply(textarea, {
+      defaultIsHtml:        true,
+      inlineHiddenPosition: this.getElById('is_html_reply'),
+      minHeight:            120,
+
+      callback: function(obj) {
+        obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function() {
+        });
+        obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function() {
+        });
+        obj.addBtnSeparatorAfter('dp_attach');
+
+        var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+        snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+        snippetBtn.on('click', function(ev) {
+          Orb.cancelEvent(ev);
+          if (window.DP_HAS_NEW_SNIPPETS) {
+            var event = new CustomEvent('dpLeftDrawer', {detail: {
+              module: 'SnippetsMenu',
+              width: 745,
+              insertSnippet: self.insertSnippet.bind(self)
+            }});
+            window.document.dispatchEvent(event);
+          } else {
+            self.snippetsViewer.open();
+          }
+        });
+
+        var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+        attachBtn.addClass('attach');
+        attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+
+        obj.addBtnSeparatorAfter('dp_snippets');
+      }
+    });
+    this.getElById('is_html_reply').val(1);
+
+    //------------------------------
+    // Snippets Viewer
+    //------------------------------
+
+    this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+      driver:         DeskPRO_Window.ticketSnippetDriver,
+      onBeforeOpen:   function() {
+        var pos = $('#dp_content').offset();
+        var contentStart = pos.left;
+
+        self.backdropEls.eq(0).css({ width: '61px' });
+        self.backdropEls.eq(1).css({ width: contentStart - 61, left: 61 });
+
+        if (textarea.data('redactor')) {
+          try {
+            textarea.data('redactor').saveSelection();
+          } catch (e) {
+          }
+        }
+      },
+      onBeforeClose:   function() {
+        var pos = $('#dp_content').offset();
+        var contentStart = pos.left;
+        self.backdropEls.eq(0).css({ width: '269px' });
+        self.backdropEls.eq(1).css({ width: contentStart - 269, left: 269 });
+      },
+
+      onSnippetClick: function(info) {
+        self.backdropEls.eq(0).css({ width: '269px' });
+        var snippetId = info.snippetId;
+        var snippetCode = info.snippetCode;
+
+        var agentText;
+        var defaultText;
+        var useText;
+        var result;
+
+        Array.each(snippetCode, function(info) {
+          if (info.value) {
+            if (info.language_id === DESKPRO_PERSON_LANG_ID) {
+              agentText = info.value;
+            }
+            if (info.language_id === DESKPRO_DEFAULT_LANG_ID) {
+              defaultText = info.value;
+            }
+            useText = info.value;
+          }
+        });
+
+        if (agentText) {
+          useText = agentText;
+        } else if (defaultText) {
+          useText = defaultText;
+        }
+
+        self.recordSnippetUse(snippetId);
+
+        result = useText || '';
+
+        if (textarea.data('redactor')) {
+          try {
+            textarea.data('redactor').restoreSelection();
+            textarea.data('redactor').setBuffer();
+          } catch (e) {
+          }
+
+          var html = result;
+          html = html.replace(/<\/p>\s*<p>/g, '<br/>');
+          html = html.replace(/^<p>/, '');
+          html = html.replace(/<\/p>$/, '');
+          textarea.data('redactor').insertHtml(html);
+        } else {
+          self.page.insertTextInReply(result);
+        }
+
+        self.snippetsViewer.close();
+      }
+    });
+
+    //------------------------------
+    // Insert snippet by %-% combo
+    //------------------------------
+
+    if (textarea.data('redactor')) {
+      var ed = textarea.getEditor();
+      var api = textarea.data('redactor');
+
+      var te = new DeskPRO.TextExpander({
+        textarea: ed,
+        onCombo: function(combo, ev) {
+          combo = combo.replace(/%/g, '');
+          if (!window.DESKPRO_TICKET_SNIPPET_SHORTCODES || !window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo]) {
+            return;
+          }
+
+          ev.preventDefault();
+
+          for (var i = 0; i < window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo].length; i++) {
+            var snippetId = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[combo][i];
+
+            var focus = api.getFocus(),
+              focusNode = $(focus[0]),
+              testText;
+
+            if (focus[0].nodeType == 3) {
+              testText = focusNode.text().substring(0, focus[1]);
+            } else {
+              focus[0] = focusNode.contents().get(focus[1] - 1);
+              focusNode = $(focus[0]);
+              testText = focusNode.text();
+              focus[1] = testText.length;
+            }
+
+            var lastAt = testText.lastIndexOf('%'), matches = [];
+
+            if (lastAt != -1) {
+              api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+            }
+
+            // web kit handles content editable without an issue. this prevents the span
+            // from being extended unnecessarily
+            var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+            api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet</span>');
+
+            if (window.DP_HAS_NEW_SNIPPETS) {
+              $.ajax({
+                url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/ticket/0?inline_sideloads=true&include=snippet_translation,blob',
+                dataType: 'json',
+                complete: function () {
+                  self.pauseSend = false;
+                },
+                success:  function (data) {
+                  var snippet = data.data;
+                  self.insertSnippet(snippet, data.linked.blob);
+                }
+              });
+            } else {
+              $.ajax({
+                url:      BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
+                dataType: 'json',
+                success:  function (data) {
+                  var snippet = data.snippet;
+                  var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
+                  var snippetId = snippet.id;
+                  var snippetCode = snippet.snippet;
+
+                  self.recordSnippetUse(snippetId);
+
+                  var agentText;
+                  var defaultText;
+                  var wantText;
+                  var useText;
+
+                  Array.each(snippetCode, function (info) {
+                    if (info.language_id == ticketLangId) {
+                      wantText = info.value;
+                    }
+                    if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+                      agentText = info.value;
+                    }
+                    if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+                      defaultText = info.value;
+                    }
+                    useText = info.value;
+                  });
+
+                  if (wantText) {
+                    useText = wantText;
+                  } else if (agentText) {
+                    useText = agentText;
+                  } else if (defaultText) {
+                    useText = defaultText;
+                  }
+
+                  useText = useText.replace(/<\/p>\s*<p>/g, '<br/>');
+                  useText = useText.replace(/^<p>/, '');
+                  useText = useText.replace(/<\/p>$/, '');
+                  var result = $('<div>' + useText + '</div>');
+
+                  var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
+                  var cursor = $('<span class="_cursor"></span>');
+                  var cursorPos = result.find('> p');
+                  if (!cursorPos[0]) {
+                    cursorPos = result;
+                  }
+
+                  el.after(result);
+                  cursorPos.append(cursor);
+                  el.remove();
+
+                  api.setSelection(cursor[0], 0, cursor[0], 0);
+                  api.syncCode();
+                }
+              });
+            }
+          }
+        }
+      });
+
+      this.updatePositions();
+    }
+
+    //------------------------------
+    // Upload handling
+    //------------------------------
+
+    DeskPRO_Window.util.fileupload(this.wrapper, {
+      url:              this.wrapper.data('upload-url'),
+      uploadTemplate:   $('.template-upload', this.replyBox),
+      downloadTemplate: $('.template-download', this.replyBox)
+    });
+  },
 
   destroy: function() {
-    this.$scope && this.$scope.$destroy();
+    if (this.textarea && this.textarea.data('redactor')) {
+      this.textarea.destroyEditor();
+    }
+
+    if (this.snippetsViewer) {
+      this.snippetsViewer.destroy();
+      this.snippetsViewer = null;
+    }
 
     if (this._hasInit) {
       this.wrapper.remove();
       this.backdropEls.remove();
     }
 
-    if (this.textarea && this.textarea.data('redactor')) {
-      this.textarea.redactor('destroy');
+    if (this.$scope) {
+      this.$scope.massActionsOpen = null;
     }
+
+    this._hasInit = false;
   }
 });
