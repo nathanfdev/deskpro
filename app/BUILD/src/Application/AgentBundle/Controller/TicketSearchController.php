@@ -1522,7 +1522,6 @@ class TicketSearchController extends AbstractController
                     $row[] = $display_field;
                     $row[] = preg_replace('/id$/', 'title', $display_field);
                     break;
-                case 'person_email_id':
                 case 'person_id':
                 case 'agent_id':
                 case 'agent_team_id':
