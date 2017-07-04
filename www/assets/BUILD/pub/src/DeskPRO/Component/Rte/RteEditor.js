@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
-import { clipboardHasImages, getBlobsFromItems, getBlobsFromHtml } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import { clipboardHasImages, getBlobsFromItems, getBlobsFromHtml, getBlobFromUrl } from 'DeskPRO/Component/Uploader/PasteCatcher';
 
 export default class RteEditor extends React.Component {
 
@@ -102,20 +102,31 @@ export default class RteEditor extends React.Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const clipboardData = event.originalEvent.clipboardData;
-    const pastedText = clipboardData.getData('text/plain');
-    const pastedHtml = clipboardData.getData('text/html');
-
-    if (!clipboardHasImages(clipboardData)) {
-      this.medium.cleanPaste(pastedText);
-    }
-
     const { onPasteImage } = this.props;
-    if (onPasteImage) {
-      if (clipboardData.items) {
-        getBlobsFromItems(clipboardData.items, onPasteImage);
-      } else if (pastedHtml) {
-        getBlobsFromHtml(pastedHtml, onPasteImage);
+    const clipboardData = event.originalEvent.clipboardData;
+    if (clipboardData) {
+      // Non-IE browsers
+      const pastedText = clipboardData.getData('text/plain');
+      const pastedHtml = clipboardData.getData('text/html');
+
+      if (!clipboardHasImages(clipboardData)) {
+        this.medium.cleanPaste(pastedText);
+      }
+
+      if (onPasteImage) {
+        if (clipboardData.items) {
+          getBlobsFromItems(clipboardData.items, onPasteImage);
+        } else if (pastedHtml) {
+          getBlobsFromHtml(pastedHtml, onPasteImage);
+        }
+      }
+    } else if (window.clipboardData) {
+      // IE browser
+      const content = window.clipboardData.getData('Text');
+      try {
+        getBlobFromUrl(content, onPasteImage);
+      } catch (e) {
+        this.medium.cleanPaste(content);
       }
     }
   };
