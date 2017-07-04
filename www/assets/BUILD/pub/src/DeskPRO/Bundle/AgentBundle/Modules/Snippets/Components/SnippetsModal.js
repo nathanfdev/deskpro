@@ -321,24 +321,25 @@ export class SnippetsModalContainer extends React.Component {
   };
 
   handleDepartmentsChange = (departments) => {
+    let next = departments;
     const previous = this.state.departments;
-    const added = departments.filter(function(i) {return previous.indexOf(i) < 0;});
-    const removed = previous.filter(function(i) {return departments.indexOf(i) < 0;});
+    const added = next.filter(i => previous.indexOf(i) < 0);
+    const removed = previous.filter(i => next.indexOf(i) < 0);
     if (added.length === 1) {
       if (this.state.types.find(type => type === 'ticket')) {
         this.props.ticketDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(added[0])) {
-            if (departments.indexOf(department.get('id')) === -1) {
-              departments.push(`${department.get('id')}`);
+          if (department.get('parent') === parseInt(added[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next.push(`${department.get('id')}`);
             }
           }
         });
       }
       if (this.state.types.find(type => type === 'chat')) {
         this.props.chatDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(added[0])) {
-            if (departments.indexOf(department.get('id')) === -1) {
-              departments.push(`${department.get('id')}`);
+          if (department.get('parent') === parseInt(added[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next.push(`${department.get('id')}`);
             }
           }
         });
@@ -347,25 +348,25 @@ export class SnippetsModalContainer extends React.Component {
     if (removed.length === 1) {
       if (this.state.types.find(type => type === 'ticket')) {
         this.props.ticketDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(removed[0])) {
-            if (departments.indexOf(department.get('id')) === -1) {
-              departments = departments.filter(item => parseInt(item) !== department.get('id'));
+          if (department.get('parent') === parseInt(removed[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next = next.filter(item => parseInt(item, 10) !== department.get('id'));
             }
           }
         });
       }
       if (this.state.types.find(type => type === 'chat')) {
         this.props.chatDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(removed[0])) {
-            if (departments.indexOf(department.get('id')) === -1) {
-              departments = departments.filter(item => parseInt(item) !== department.get('id'));
+          if (department.get('parent') === parseInt(removed[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next = next.filter(item => parseInt(item, 10) !== department.get('id'));
             }
           }
         });
       }
     }
     this.setState({
-      departments
+      next
     });
   };
 

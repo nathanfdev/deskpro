@@ -48,11 +48,15 @@ export class LeftDrawerContainer extends SeparateComponent {
           module = false;
       }
       if (module) {
-        this.setState({
-          module,
-          width
-        });
-        this.openDrawer();
+        if (this.state.active) {
+          this.closeDrawer();
+        } else {
+          this.setState({
+            module,
+            width
+          });
+          this.openDrawer();
+        }
       } else {
         this.setState({
           module: null,

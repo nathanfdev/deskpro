@@ -79,8 +79,8 @@ class SnippetsLabels extends React.Component {
             className={classNames({ selected: label.tag === this.props.selectedLabel })}
             onClick={() => this.props.selectLabel(label.tag)}
           >
-            {label.tag} ({label.count})
-        </ListElement>
+            <span className="tag">{label.tag}</span>&nbsp;<span className="count">({label.count})</span>
+          </ListElement>
       );
       });
     return labels;

@@ -99,12 +99,27 @@
   }
   .search {
     margin-bottom: 5px;
+    input {
+      width: 154px;
+    }
   }
   .dp-list__element {
     font-family: $primary-font;
     font-size: $font-size-m-l;
     font-weight: $pf-regular;
     color: $dp-greyscale-850;
+
+    white-space: nowrap;
+    .tag {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      max-width: calc(100% - 25px);
+    }
+    .count {
+      display: inline-block;
+      vertical-align: top;
+    }
 
     cursor: pointer;
     user-select: none;
@@ -118,6 +133,7 @@
   padding-left: 10px;
   overflow-y: auto;
   padding-bottom: 2px;
+  width: 100%;
 }
 .snippet_list_element_wrapper {
   .snippets__list__element {
@@ -261,6 +277,7 @@
   .ownership-field,
   .visibility-field {
     min-width: 100px;
+    max-width: 250px;
   }
   .labels-field {
     display: block;
