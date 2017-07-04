@@ -127,6 +127,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 				window.clearInterval(self.resizerInterval);
 			}
 
+			if (this.scrollerHandler) {
+        this.scrollerHandler.destroy();
+        this.scrollerHandler = null;
+			}
+
 			if (self.wrapper) {
 				self.wrapper.find('.with-scroll-handler').each(function() {
 					var sh = $(this).data('scroll_handler');

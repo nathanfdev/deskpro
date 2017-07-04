@@ -26,7 +26,8 @@ import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 
 class AgentLegacyApp {
 
-  rendered = [];
+  rendered = {};
+  renderWaits = {};
   store;
 
   run() {
@@ -91,6 +92,7 @@ class AgentLegacyApp {
 
     if (node) {
       this.rendered[piecePlace] = true;
+      clearTimeout(this.renderWaits[piecePlace]);
       if (piecePlace === 'AgentTopBar') {
         ReactDOM.render(
           <Provider store={this.store}>
@@ -108,7 +110,7 @@ class AgentLegacyApp {
     // maybe we could use something like angular directive or so.
     // it's not good when there are elements for different pages.
     // Or, we may just call this method when it's needed.
-    setTimeout(() => this.renderPiece(piece, piecePlace), 1000);
+    this.renderWaits[piecePlace] = setTimeout(() => this.renderPiece(piece, piecePlace), 1000);
   }
 
   renderVoiceControls(node, ticketId, onEndCall) {
