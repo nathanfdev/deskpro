@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import striptags from 'striptags';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import Label from 'deskpro-styles/lib/Components/Label';
+import { Label } from 'deskpro-components/lib/Components/Forms';
 
 export class SnippetsListElement extends React.Component {
   static propTypes = {

@@ -2,14 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import Modal from 'deskpro-styles/lib/Components/Modal';
-import Button from 'deskpro-styles/lib/Components/Button';
-import ConfirmButton from 'deskpro-styles/lib/Components/ConfirmButton';
-import Input from 'deskpro-styles/lib/Components/Input';
-import Select from 'deskpro-styles/lib/Components/Select';
-import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
-import LabelInput from 'deskpro-styles/lib/Components/LabelInput';
-import Checkbox from 'deskpro-styles/lib/Components/Checkbox';
+import Modal from 'deskpro-components/lib/Components/Modal';
+import Button from 'deskpro-components/lib/Components/Button';
+import ConfirmButton from 'deskpro-components/lib/Components/ConfirmButton';
+import { Checkbox, Input, InputLabel, LabelInput, Select } from 'deskpro-components/lib/Components/Forms';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -721,11 +717,11 @@ export class SnippetsModal extends React.Component {
               <Select
                 multiple
                 includeSelectAllOption
-                selectAllText="Global"
-                allSelectedText="Global"
-                nonSelectedText="Myself"
+                selectAllText={agentPhrases.get('agent.general.global')}
+                allSelectedText={agentPhrases.get('agent.general.global')}
+                nonSelectedText={agentPhrases.get('agent.general.myself')}
                 maxHeight={this.height > 850 ? 300 : 150}
-                nSelectedText="teams"
+                nSelectedText={agentPhrases.get('agent.general.teams').toLowerCase()}
                 value={this.props.snippetTeams}
                 onChange={this.props.handleTeamsChange}
                 options={this.getTeams()}
@@ -736,11 +732,11 @@ export class SnippetsModal extends React.Component {
               <Select
                 multiple
                 includeSelectAllOption
-                selectAllText="Global"
-                allSelectedText="Global"
-                nonSelectedText="None"
+                selectAllText={agentPhrases.get('agent.general.global')}
+                allSelectedText={agentPhrases.get('agent.general.global')}
+                nonSelectedText={agentPhrases.get('agent.general.none')}
                 maxHeight={this.height > 850 ? 300 : 150}
-                nSelectedText="departments"
+                nSelectedText={agentPhrases.get('agent.general.departments').toLowerCase()}
                 value={this.props.snippetDepartments}
                 onChange={this.props.handleDepartmentsChange}
                 options={this.getDepartments()}
