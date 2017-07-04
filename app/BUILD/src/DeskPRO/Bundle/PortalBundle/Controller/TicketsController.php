@@ -359,7 +359,7 @@ class TicketsController extends AbstractController
 
         if (!RegexUtils::safePregMatch('/.+\@.+\..+/', $email)) {
             // return error with email
-            $this->addFlash('error', 'Please enter a valid email for your participant and try again.');
+            $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_email_error'));
 
             return $redirect_response;
         }
@@ -371,12 +371,12 @@ class TicketsController extends AbstractController
         if ($person) {
             // only set the name if this email doesn't have a name (a new person)
             // otherwise anyone can CC a person and change their name in the system...
-            if ($name && !$person->first_name) {
+            if ($name && !$person->getFirstName()) {
                 $person->name = $name;
             }
 
             if ($ticket->hasParticipantPerson($person)) {
-                $this->addFlash('success', 'The person you tried to add as a participant is already a participant on this ticket.');
+                $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_already_error'));
 
                 return $redirect_response;
             }
@@ -391,13 +391,16 @@ class TicketsController extends AbstractController
             $this->getEm()->flush($ticket);
 
             // return success
-            $this->addFlash('success', sprintf('We have added %s (%s) as a participant to this ticket.', $person->getDisplayNameUser(), $person->getPrimaryEmailAddress()));
+            $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_add', [
+                'name'  => $person->getDisplayNameUser(),
+                'email' => $person->getPrimaryEmailAddress(),
+            ]));
 
             return $redirect_response;
         }
 
         // return general error
-        $this->addFlash('error', 'There was a problem when trying to add your participant. Please try again.');
+        $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_add_unknown_error'));
 
         return $redirect_response;
     }
@@ -417,29 +420,31 @@ class TicketsController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        $redirect_response = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
+        $redirectResponse = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
 
         $participant = $this->getEm()->getRepository('DeskPRO:TicketParticipant')->find($cc_id);
-
-        if (!$participant) {
-            return $redirect_response;
+        if (!$participant instanceof TicketParticipant) {
+            return $redirectResponse;
         }
-
-        $cc_person = $participant->getPerson();
 
         // the passed participant must be a participant on the passed ticket ref
         if ($participant->getTicket() === $ticket) {
-            $ticket->removeParticipantPerson($cc_person);
-            $this->getEm()->flush();
-            $this->addFlash('success', sprintf('We have removed %s (%s) as a participant to this ticket.', $cc_person->getDisplayNameUser(), $cc_person->getPrimaryEmailAddress()));
+            $ccPerson = $participant->getPerson();
 
-            return $redirect_response;
+            $ticket->removeParticipantPerson($ccPerson);
+            $this->getEm()->flush();
+            $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_remove', [
+                'name'  => $ccPerson->getDisplayNameUser(),
+                'email' => $ccPerson->getPrimaryEmailAddress(),
+            ]));
+
+            return $redirectResponse;
         }
 
         // return general error, likely the participant id and ticket id are not the same, which would be bad!
-        $this->addFlash('error', 'There was a problem when trying to remove your participant. Please try again.');
+        $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_remove_unknown_error'));
 
-        return $redirect_response;
+        return $redirectResponse;
     }
 
     /**
