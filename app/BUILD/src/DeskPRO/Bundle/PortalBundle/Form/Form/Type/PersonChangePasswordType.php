@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
-use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\DpPassword;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
@@ -54,20 +54,20 @@ class PersonChangePasswordType extends AbstractType
     private $captchaDecider;
 
     /**
-     * @var Translate
+     * @var LanguageManager
      */
-    private $translate;
+    private $languageManager;
 
     /**
      * Constructor.
      *
-     * @param CaptchaDecider $captchaDecider
-     * @param Translate      $translate
+     * @param CaptchaDecider  $captchaDecider
+     * @param LanguageManager $languageManager
      */
-    public function __construct(CaptchaDecider $captchaDecider, Translate $translate)
+    public function __construct(CaptchaDecider $captchaDecider, LanguageManager $languageManager)
     {
-        $this->captchaDecider = $captchaDecider;
-        $this->translate      = $translate;
+        $this->captchaDecider  = $captchaDecider;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -134,7 +134,7 @@ class PersonChangePasswordType extends AbstractType
      */
     public function phrase($phrase, $vars = [])
     {
-        return $this->translate->phrase($phrase, $vars);
+        return $this->languageManager->phrase($phrase, $vars);
     }
 
     /**
