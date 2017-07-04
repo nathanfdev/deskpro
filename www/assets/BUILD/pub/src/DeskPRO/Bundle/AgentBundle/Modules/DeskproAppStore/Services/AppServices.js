@@ -1,5 +1,5 @@
 import { WidgetDOM } from '../WidgetDOM';
-import { addWidgetEventListener } from '../WidgetMessage';
+import { subscribeWidgetToEvent } from '../WidgetMessage';
 import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
 
 export class AppServices {
@@ -54,11 +54,10 @@ export class AppServices {
     return new WidgetDOM({ document });
   }
 
-  addEventListener = (eventName, widget) => addWidgetEventListener(eventName, widget, this);
+  addEventListener = (eventName, widget) => subscribeWidgetToEvent(eventName, widget);
 
   showNotification = (notification) => {
     if (typeof notification === 'string') {
-      // console.log('will show notification', notification);
       this.props.window.alert(notification);
       return;
     }

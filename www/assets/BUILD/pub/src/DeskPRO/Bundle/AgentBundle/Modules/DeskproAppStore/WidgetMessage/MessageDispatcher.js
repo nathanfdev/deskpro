@@ -1,55 +1,60 @@
-import postRobot from 'post-robot/dist/post-robot';
-
-import * as WidgetDOM from '../WidgetDOM';
 import { createErrorResponse, createSuccessResponse, createRequest } from './Message';
 
 /**
+ * Creates a function that dispatches a response to the ${widgetRequest} widget request
+ *
  * @param {String} eventName
  * @param {Widget} widget
- * @param {WidgetRequest} widgetRequest
+ * @param {EventEmitter} outgoingEventDispatcher
+ * @param {WidgetRequest} widgetMessage
  */
-export const createDispatchResponse = (eventName, widget, widgetRequest) => (err, data) => {
-  const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
-  if (!widgetWindow) {
-    throw new Error('can not find widget window');
-  }
-  const widgetResponse = err ? createErrorResponse(widgetRequest, err) : createSuccessResponse(widgetRequest, data);
-  postRobot.send(widgetWindow, eventName, widgetResponse.toJS());
+export const createDispatchResponse = ({
+  eventName,
+  widget,
+  widgetMessage,
+  outgoingEventDispatcher
+}) => (err, data) => {
+  const widgetResponse = err ? createErrorResponse(widgetMessage, err) : createSuccessResponse(widgetMessage, data);
+  // send a notification to dispatch the message to the widget
+  outgoingEventDispatcher.emit(widget.id, widget.configuration, eventName, widgetResponse);
 };
 
 /**
+ * Creates a function that dispatches a widget request which must be followed by a response
+ *
  * @param {String} eventName
  * @param {Widget} widget
+ * @param {EventEmitter} outgoingEventDispatcher
  * @param {function} incomingResponseHandler
- * @param {EventEmitter} eventDispatcher
+ * @param {EventEmitter} incomingEventDispatcher
  */
-export const createDispatchRequestResponse = (eventName, widget, incomingResponseHandler, eventDispatcher) =>
-  (message) => {
-    const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
-    if (!widgetWindow) { // TODO handle widget unloading and remove event listeners
-      const error = new Error('can not find widget window');
-      console.log(error);
-      return;
-    }
-
-    const request = createRequest(widget, message);
+export const createDispatchRequestResponse = ({
+  eventName,
+  widget,
+  outgoingEventDispatcher,
+  incomingResponseHandler,
+  incomingEventDispatcher
+}) => (message) => {
+  const request = createRequest(widget, message);
     // register a response listener
-    eventDispatcher.once(`${eventName}.${request.correlationId}`, incomingResponseHandler);
-    postRobot.send(widgetWindow, eventName, request.toJS());
-  };
+  incomingEventDispatcher.once(`${eventName}.${request.correlationId}`, incomingResponseHandler);
+    // send a notification to dispatch the message to the widget
+  outgoingEventDispatcher.emit(widget.id, widget.configuration, eventName, request);
+};
 
 /**
+ * Creates a function that dispatches a widget request which must not be followed by a response
+ *
  * @param {String} eventName
  * @param {Widget} widget
+ * @param {EventEmitter} outgoingEventDispatcher
  */
-export const createDispatchFireAndForget = (eventName, widget) => (message) => {
-  const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
-  if (!widgetWindow) { // TODO handle widget unloading and remove event listeners
-    const error = new Error('can not find widget window');
-    console.log(error);
-    return;
-  }
-
+export const createDispatchFireAndForget = ({
+  eventName,
+  widget,
+  outgoingEventDispatcher
+}) => (message) => {
   const request = createRequest(widget, message);
-  postRobot.send(widgetWindow, eventName, request.toJS());
+  // send a notification to dispatch the message to the widget
+  outgoingEventDispatcher.emit(widget.id, widget.configuration, eventName, request);
 };

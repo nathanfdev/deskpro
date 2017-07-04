@@ -7,7 +7,7 @@ import LegacySidebarContainer from '../Components/LegacySidebarContainer';
 import LegacyAppSidebar from '../Components/LegacyAppSidebar';
 
 import ContainerConfiguration from './ContainerConfiguration';
-import { dispatchIncomingWidgetMessage } from '../WidgetMessage';
+import { dispatchIncomingWidgetMessage, parseIncomingWidgetMessageJS, addWidgetEventListener } from '../WidgetMessage';
 
 /**
  * This class mounts the react container components
@@ -27,19 +27,20 @@ class ContainerMounter {
   /**
    * @param {ContainerConfiguration} configuration
    * @param {Context} context
-   * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchIncomingWidgetMessage, context: *, appstoreDispatcher: ContainerMounter.appstoreDispatcher, configuration: *}}
+   * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchIncomingWidgetMessage, context: *}}
    */
   createProps = (configuration, context) =>  {
-    const { appstoreDispatcher, appRegistry } = this;
+    const { appRegistry } = this;
 
     const targetType = configuration.targetType;
     const widgetsConfigList = appRegistry.getWidgetConfigByTargetType(targetType);
 
     return {
       widgetsConfigList,
-      dispatchIncomingWidgetMessage,
       context,
-      appstoreDispatcher
+      dispatchIncomingWidgetMessage,
+      parseIncomingWidgetMessageJS,
+      addWidgetEventListener
     };
   };
 

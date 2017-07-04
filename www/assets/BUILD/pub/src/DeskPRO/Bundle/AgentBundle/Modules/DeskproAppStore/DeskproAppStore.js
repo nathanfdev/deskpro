@@ -7,7 +7,11 @@ import { loadApps, loadDevApp } from './Actions/Actions';
 
 import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
 import { AppServices, mountContextInWindow } from './Services';
-import { registerIncomingWidgetRequestListeners, dispatchOutgoingWidgetRequestOnIntercept } from './WidgetMessage';
+import {
+  registerIncomingWidgetRequestListeners,
+  registerOutgoingWidgetRequestListeners,
+  dispatchOutgoingWidgetRequestOnIntercept
+} from './WidgetMessage';
 
 class DeskproAppStore {
   /**
@@ -83,8 +87,9 @@ class DeskproAppStore {
   static onAgentLegacyAppReady(reduxStore, window, api, messageBroker)  {
     const reduxDispatcher = ReduxActionDispatcher.fromReduxStore(reduxStore, api);
     const appServices = new AppServices({ api, window });
+
     registerIncomingWidgetRequestListeners(appServices);
-    // registerOutgoingWidgetRequestListeners(appServices);
+    registerOutgoingWidgetRequestListeners(appServices);
 
     const manifests = filterAppManifestsConfig(reduxStore.getState());
     const config = DeskproAppStore.configurationFromLocation(window.location);
