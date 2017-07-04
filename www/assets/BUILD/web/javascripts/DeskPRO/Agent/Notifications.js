@@ -7,6 +7,9 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		var self = this;
 
 		this.fireEvent('init');
+		this.waitingRows = [];
+
+		this.flushAddRows = _.throttle(this.flushAddRowsNow.bind(this), 750, {leading: false});
 
 		this.dismissedIds = [];
 		if (Modernizr.localstorage && window.localStorage['dpa_dissmissalerts']) {
@@ -44,7 +47,6 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
 			if (row.data('alert-id')) {
 				self.dismissAlertId(row.data('alert-id'));
-				DeskPRO_Window.getMessageChanneler().poller.send();
 			}
 
 		}).on('click', 'li.inside', function(ev) {
@@ -181,78 +183,105 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 		return this.dismissedIds.indexOf(alertId) !== -1;
 	},
 
-	getListTypeByType: function(type) {
-		return 'main';
+	flushAddRowsNow: function() {
+    var self = this;
+		var rows = this.waitingRows;
+		this.waitingRows = [];
+
+		var modTypes = [];
+		var appendRows = [];
+
+		rows.forEach((function(r) {
+			var html_or_el = r[0],
+				alert_id = r[1],
+				avatar = r[2];
+
+      if (alert_id && this.isDismissedAlready(alert_id)) {
+        this.dismissAlertId(alert_id);
+        return;
+      }
+
+      var row = $(html_or_el);
+      row.addClass('msg-row');
+      row.data('route-notabreload', 1).attr('data-route-notabreload', 1);
+      row.data('avatar', avatar);
+
+      if (alert_id) {
+        row.data('alert-id', alert_id);
+        row.attr('data-alert-id', alert_id);
+      }
+
+      var type = row.data('type');
+
+      if (type == 'chat') {
+        return;
+      }
+
+      appendRows.push(row.get(0));
+      modTypes.push(type);
+		}).bind(this));
+
+		var runNotifs = function() {
+      var list = $('#dp_notify_list_main');
+      appendRows.reverse();
+      appendRows = $(appendRows);
+
+      var nowString = (new Date()).toISOString();
+      appendRows.each(function() {
+        var time = $(this).find('time');
+        if (time[0]) {
+          if (!time.attr('datetime')) {
+            time.attr('datetime', nowString);
+          }
+          Orb.Util.TimeAgo.refreshElements([time.get(0)]);
+        }
+			});
+
+      list.prepend(appendRows);
+
+      if (DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
+        appendRows.each(function() {
+        	var row = $(this);
+          var icon = row.data('icon') || '';
+          if (icon) {
+            icon = ASSETS_BASE_URL + '/' + icon;
+          }
+          icon = icon || row.data('avatar');
+
+          var title = $.trim(row.find('big').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' ')).replace(/^#\d+\s*/, '');
+          var body = $.trim(row.find('small').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' '));
+
+          var notification = new Notify(title || 'DeskPRO', {
+            body: body,
+            icon: icon,
+            notifyClick: function () {
+              window.focus();
+              DeskPRO_Window.runPageRouteFromElement(row);
+              self.removeRow(row);
+            },
+            timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
+          });
+
+          if (Notify.isSupported && !Notify.needsPermission) {
+            notification.show();
+            row.data('notification', notification);
+          }
+        });
+      }
+
+      modTypes.map(function(type) {
+        self.modCount(type, '+');
+      });
+		};
+
+    window.requestIdleCallback ?
+      window.requestIdleCallback(runNotifs, {timeout: 2000}) :
+      window.setTimeout(runNotifs, 250);
 	},
 
 	addRow: function(html_or_el, alert_id, avatar) {
-
-		if (alert_id && this.isDismissedAlready(alert_id)) {
-			this.dismissAlertId(alert_id);
-			return;
-		}
-
-		var row = $(html_or_el);
-		row.addClass('msg-row');
-		row.data('route-notabreload', 1).attr('data-route-notabreload', 1);
-
-		if (alert_id) {
-			row.data('alert-id', alert_id);
-			row.attr('data-alert-id', alert_id);
-		}
-
-		var type = row.data('type');
-
-		if (type == 'chat') {
-			return;
-		}
-
-		var listType = this.getListTypeByType(type);
-		var list = $('#dp_notify_list_' + listType);
-
-		var self = this;
-
-		var time = row.find('time');
-		if (time[0]) {
-			if (!time.attr('datetime')) {
-				time.attr('datetime', (new Date()).toISOString());
-			}
-			Orb.Util.TimeAgo.refreshElements([time.get(0)]);
-		}
-
-		var ev = { row: row, type: type };
-		this.fireEvent('addRow');
-
-		list.prepend(row);
-
-		this.modCount(type, '+');
-
-		if (DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
-			var icon = row.data('icon') || '';
-			if (icon) {
-				icon = ASSETS_BASE_URL + '/' + icon;
-			}
-			icon = icon || avatar;
-
-			var title = $.trim(row.find('big').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' ')).replace(/^#\d+\s*/, '');
-			var body = $.trim(row.find('small').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' '));
-
-			var notification = new Notify(title || 'DeskPRO', {
-				body: body,
-				icon: icon,
-				notifyClick: function() {
-					window.focus();
-					DeskPRO_Window.runPageRouteFromElement(row);
-					self.removeRow(row);
-				},
-				timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
-			});
-
-			if (Notify.isSupported && !Notify.needsPermission) {
-				notification.show();
-				row.data('notification', notification);
-			}
-		}
+		this.waitingRows.push([html_or_el, alert_id, avatar]);
+    this.flushAddRows();
 	},
 
 	addMessage: function(type, message, route, id) {
@@ -369,10 +398,8 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	},
 
 	modCount: function(type, op, count) {
-		var listType = this.getListTypeByType(type);
-		if (!listType) return;
-
-		var newcount = $('#dp_notify_list_' + listType).find('li').length;
+		var list = $('#dp_notify_list_main');
+		var newcount = list.find('li').length;
 
 		var ev = { notif: this, type: type, op: op, count: newcount };
 		this.fireEvent('beforeModCount', [ev]);
@@ -386,7 +413,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			$('#dp_header_notify_wrap').trigger('dpClose');
 
 			this.notifBtn.removeClass('with-activity');
-			$('#dp_notify_list_' + listType).hide();
+      list.hide();
 			this.notifyBox.find('.no-notifications.for-current').show();
 
 			if (!this.notifyBox.find('.dp-notifications-on')[0]) {
@@ -400,7 +427,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			this.fireEvent('typeShow', [type]);
 			this.notifyBox.find('li.none').hide();
 			this.notifyBox.find('.no-notifications').hide();
-			$('#dp_notify_list_' + listType).show();
+      list.show();
 		}
 
 		$('#dp_header_notify_wrap').find('.notify-count').text(newcount);
