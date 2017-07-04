@@ -344,7 +344,7 @@ class AppManifest
     /**
      * @return \string[]
      */
-    public function getDeskproApiTags(): array
+    public function getDeskproApiTags()
     {
         return $this->deskproApiTags;
     }
