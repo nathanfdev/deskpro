@@ -16,6 +16,10 @@ DeskPRO.Agent.PageFragment.ListPane.Basic = new Orb.Class({
       	var sh = $(this).data('scroll_handler');
 				sh && sh.updateSize();
 			});
+
+			if (this.scrollerHandler) {
+				this.scrollerHandler.updateSize();
+			}
 		}, this);
 	},
 

@@ -296,6 +296,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			});
 		}
 
+		page.addEvent('activate', function() {
+      DeskPRO.Agent.ScrollerHandler.updateListPane();
+		});
+
 		$('#dp_list_loading').removeClass('on');
 
 		if (!noswitch || this.isVisible()) {
