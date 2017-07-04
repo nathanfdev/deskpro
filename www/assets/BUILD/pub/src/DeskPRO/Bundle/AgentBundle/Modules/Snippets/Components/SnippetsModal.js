@@ -664,6 +664,8 @@ export class SnippetsModal extends React.Component {
               <LabelInput
                 labels={labels}
                 onChange={changeLabels}
+                addOnBlur
+                editable
                 inputProps={{
                   placeholder: 'Add a label',
                   id:          'snippet_label_input'
