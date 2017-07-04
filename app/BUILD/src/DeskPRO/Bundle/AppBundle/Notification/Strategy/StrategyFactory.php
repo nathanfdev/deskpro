@@ -65,14 +65,14 @@ class StrategyFactory
     {
         $this->container  = $container;
         $this->cliProcess = php_sapi_name() === 'cli';
-        $global_settings  = $this->container->get('settings_resolver')->getGlobalSettings();
-        $this->config     = $global_settings->get(
+        $globalSettings   = $this->container->get('settings_resolver')->getGlobalSettings();
+        $this->config     = $globalSettings->get(
             'notification.settings.strategies',
             $this->container->getParameter('notification.settings')
         );
         $this->createDefaultStrategy(
             'notification.settings.default_strategy',
-            $global_settings->get('notification.settings.default_strategy')
+            $globalSettings->get('notification.settings.default_strategy')
         );
     }
 
@@ -129,13 +129,13 @@ class StrategyFactory
     }
 
     /**
-     * @param string $strategy_name
+     * @param string $strategyName
      *
      * @return NotificationStrategyInterface
      */
-    private function getStrategy($strategy_name)
+    private function getStrategy($strategyName)
     {
-        switch ($strategy_name) {
+        switch ($strategyName) {
             case 'immediate':
                 $immediateStrategy = new ImmediateStrategy();
                 $this->container->get('deskpro.notification.immediate_listener')->pushStrategy($immediateStrategy);
@@ -148,7 +148,7 @@ class StrategyFactory
 
                 return $deferredStrategy;
             default:
-                throw new \RuntimeException(sprintf('Strategy with alias [ %s ] wasn\'t found!', $strategy_name));
+                throw new \RuntimeException(sprintf('Strategy with alias [ %s ] wasn\'t found!', $strategyName));
         }
     }
 
@@ -170,31 +170,31 @@ class StrategyFactory
      */
     private function buildDeliveryService($config)
     {
-        $delivery_service       = new DeskproDeliveryService($this->cliProcess);
-        $handler_alias_template = 'deskpro.notification.delivery.handler.%s';
-        $hasDbHandler           = false;
+        $deliveryService      = new DeskproDeliveryService($this->cliProcess);
+        $handlerAliasTemplate = 'deskpro.notification.delivery.handler.%s';
+        $hasDbHandler         = false;
 
-        foreach ($config as $handler_alias) {
-            $handler_id = sprintf($handler_alias_template, $handler_alias);
-            if ($this->container->has($handler_id)) {
-                /** @var DeliveryHandlerInterface $delivery_handler */
-                $delivery_handler = $this->container->get($handler_id);
-                $delivery_service->attachHandler($delivery_handler);
+        foreach ($config as $handlerAlias) {
+            $handlerId = sprintf($handlerAliasTemplate, $handlerAlias);
+            if ($this->container->has($handlerId)) {
+                /** @var DeliveryHandlerInterface $deliveryHandler */
+                $deliveryHandler = $this->container->get($handlerId);
+                $deliveryService->attachHandler($deliveryHandler);
 
-                if ($delivery_handler->getType() === DbDeliveryHandler::TYPE) {
+                if ($deliveryHandler->getType() === DbDeliveryHandler::TYPE) {
                     $hasDbHandler = true;
                 }
             } else {
-                throw new \RuntimeException(sprintf('Delivery handler with alias [ %s ] wasn\'t found!', $handler_alias));
+                throw new \RuntimeException(sprintf('Delivery handler with alias [ %s ] wasn\'t found!', $handlerAlias));
             }
         }
 
         if (!$hasDbHandler) {
             $dbHandler = $this->container->get('deskpro.notification.delivery.handler.db');
-            $delivery_service->attachTargettedHandler($dbHandler);
+            $deliveryService->attachTargettedHandler($dbHandler);
         }
 
-        return $delivery_service;
+        return $deliveryService;
     }
 
     private function setNotifyHandlers(NotificationStrategyInterface $strategy, array $config)
@@ -221,10 +221,10 @@ class StrategyFactory
     private function setPersistanceAdapter(NotificationStrategyInterface $strategy, $config)
     {
         if (array_key_exists('persistance', $config)) {
-            $adapter_id = sprintf('deskpro.notification.peristance.adapter.%s', $config['persistance']);
-            if ($this->container->has($adapter_id)) {
+            $adapterId = sprintf('deskpro.notification.peristance.adapter.%s', $config['persistance']);
+            if ($this->container->has($adapterId)) {
                 /** @var PersistenceAdapterInterface $adapter */
-                $adapter = $this->container->get($adapter_id);
+                $adapter = $this->container->get($adapterId);
                 $strategy->setPersistenceAdapter($adapter);
             } else {
                 throw new \RuntimeException(sprintf('Persistence adapter with alias [ %s ] wasn\'t found!', $config['persistance']));
