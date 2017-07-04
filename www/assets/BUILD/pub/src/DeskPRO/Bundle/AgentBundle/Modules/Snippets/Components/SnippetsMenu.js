@@ -28,6 +28,7 @@ export class SnippetsMenuContainer extends React.Component {
     insertSnippet: PropTypes.func,
     type:          PropTypes.string,
     department:    PropTypes.number,
+    width:         PropTypes.number,
   };
   static defaultProps = {
     department: 0
@@ -56,7 +57,7 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   render() {
-    const { me, closeMenu, type, department, languages } = this.props;
+    const { me, closeMenu, type, department, languages, width } = this.props;
     const snippets = this.props.snippets
       .filter(snippet => snippet.get('types').indexOf(type) !== -1)
       .filter((snippet) => {
@@ -122,6 +123,7 @@ export class SnippetsMenuContainer extends React.Component {
         filter={this.state.filter}
         showMode={this.state.showMode}
         langId={window.DP_PERSON_LANG_ID}
+        width={width}
         ref={(c) => { this.menu = c; }}
       />
     );
@@ -134,6 +136,7 @@ export class SnippetsMenu extends React.Component {
     snippets:       PropTypes.object,
     languages:      PropTypes.object,
     langId:         PropTypes.number,
+    width:          PropTypes.number,
     closeMenu:      PropTypes.func,
     insertSnippet:  PropTypes.func,
     handleFilter:   PropTypes.func,
@@ -303,7 +306,7 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { me, snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter } = this.props;
+    const { me, snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter, width } = this.props;
     let showOptions = [
       { value: 'all', label: agentPhrases.get('agent.snippets.all_snippets') },
       { value: 'my_snippets', label: agentPhrases.get('agent.snippets.my_snippets') },
@@ -317,9 +320,12 @@ export class SnippetsMenu extends React.Component {
       { value: 'my_drafts', label: agentPhrases.get('agent.snippets.my_drafts') },
       { value: 'all_drafts', label: agentPhrases.get('agent.snippets.all_drafts') },
     ]);
-    console.log(showOptions);
+    const style = {};
+    if (width) {
+      style.width = width - 5;
+    }
     return (
-      <div id="snippets__menu">
+      <div id="snippets__menu" style={style}>
         <div className="header">
           <div className="search">
             <Isvg
