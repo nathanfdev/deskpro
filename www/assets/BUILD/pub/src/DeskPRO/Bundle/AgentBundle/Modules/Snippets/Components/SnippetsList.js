@@ -10,8 +10,8 @@ export class SnippetsListElement extends React.Component {
     languages:     PropTypes.object,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
-    langId:        PropTypes.number,
     focused:       PropTypes.bool,
+    langPref:      PropTypes.array,
   };
   static defaultProps = {
     focused: false,
@@ -24,6 +24,7 @@ export class SnippetsListElement extends React.Component {
     this.getDraft     = this.getDraft.bind(this);
     this.getLabels    = this.getLabels.bind(this);
     this.getLanguages = this.getLanguages.bind(this);
+    this.findLanguage = this.findLanguage.bind(this);
   }
 
   getDraft() {
@@ -72,10 +73,10 @@ export class SnippetsListElement extends React.Component {
     return null;
   }
 
-  getContent() {
-    const { snippet, langId } = this.props;
+  getContent(langId) {
+    const { snippet } = this.props;
     const translation = snippet.get('translations').find(element => element.get('language') === langId);
-    if (translation) {
+    if (translation && translation.get('content')) {
       return striptags(translation.get('content'));
     }
     return null;
@@ -89,19 +90,31 @@ export class SnippetsListElement extends React.Component {
     return null;
   }
 
+  findLanguage() {
+    const { snippet, langPref } = this.props;
+    for (let i = 0; i < langPref.length; i++) {
+      const translation = snippet.get('translations').find(element => element.get('language') === langPref[i]);
+      if (translation && translation.get('content')) {
+        return langPref[i];
+      }
+    }
+    return null;
+  }
+
   render() {
     const { snippet, editSnippet, insertSnippet, focused } = this.props;
+    const langId = this.findLanguage();
     return (
       <div className={classNames('snippet_list_element_wrapper', { 'snippet_list_element_wrapper--focused': focused })}>
-        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet)} >
+        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet, langId)} >
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
           {this.getShortcutCode()}<br />
           {this.getLanguages()}
           {this.getLabels()}
-          <span className="content">{this.getContent()}</span>
+          <span className="content">{this.getContent(langId)}</span>
         </div>
-        <div onClick={() => editSnippet(snippet)} className="edit-snippet">
+        <div onClick={() => editSnippet(snippet, langId)} className="edit-snippet">
           <i className="fa fa-pencil" />
         </div>
       </div>
@@ -115,9 +128,9 @@ export class SnippetsList extends React.Component {
     selectedLabel: PropTypes.string,
     labelFilter:   PropTypes.string,
     focusedId:     PropTypes.number,
-    langId:        PropTypes.number,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
+    langPref:      PropTypes.array,
   };
 
   constructor(props) {
@@ -158,10 +171,10 @@ export class SnippetsList extends React.Component {
       languages,
       selectedLabel,
       labelFilter,
-      langId,
       editSnippet,
       insertSnippet,
       focusedId,
+      langPref,
     } = this.props;
     if (!snippets) {
       return null;
@@ -186,7 +199,7 @@ export class SnippetsList extends React.Component {
             key={element.get('id')}
             snippet={element}
             languages={languages}
-            langId={langId}
+            langPref={langPref}
             editSnippet={editSnippet}
             insertSnippet={insertSnippet}
             focused={focusedId === element.get('id')}
