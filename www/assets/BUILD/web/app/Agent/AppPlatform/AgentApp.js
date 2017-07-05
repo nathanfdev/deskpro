@@ -59,6 +59,11 @@ define([
 		$.datepicker.setDefaults(regional);
 	}
 
+	// set default locale for moment.js
+	if (window.DESKPRO_DEFAULT_LANG) {
+		moment.locale(window.DESKPRO_DEFAULT_LANG.toLowerCase().replace('_', '-'));
+	}
+
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
