@@ -508,6 +508,8 @@ class TicketResultsDisplay implements PersonContextInterface
             }
         }
 
+        $languageManager = App::$container->get('language_manager');
+
         $this->all_previews = [];
         foreach ($message_data as $m) {
             if (!isset($this->all_previews[$m['ticket_id']])) {
@@ -515,10 +517,10 @@ class TicketResultsDisplay implements PersonContextInterface
             }
 
             $m['status'] = $m['is_agent_note']
-                ? 'wrote a note'
+                ? $languageManager->phrase('agent.tickets.preview_wrote_note')
                 : ($this->tickets[$m['ticket_id']]->date_created->format('Y-m-d H:i:s') === $m['date_created']
-                    ? 'created ticket'
-                    : 'replied'
+                    ? $languageManager->phrase('agent.tickets.preview_created_ticket')
+                    : $languageManager->phrase('agent.tickets.preview_replied')
                 );
 
             $m['date_created'] = \DateTime::createFromFormat('Y-m-d H:i:s', $m['date_created']);
