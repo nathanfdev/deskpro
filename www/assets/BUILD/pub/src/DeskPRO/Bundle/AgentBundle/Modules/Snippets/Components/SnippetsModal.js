@@ -2,14 +2,10 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import Modal from 'deskpro-styles/lib/Components/Modal';
-import Button from 'deskpro-styles/lib/Components/Button';
-import ConfirmButton from 'deskpro-styles/lib/Components/ConfirmButton';
-import Input from 'deskpro-styles/lib/Components/Input';
-import Select from 'deskpro-styles/lib/Components/Select';
-import InputLabel from 'deskpro-styles/lib/Components/InputLabel';
-import LabelInput from 'deskpro-styles/lib/Components/LabelInput';
-import Checkbox from 'deskpro-styles/lib/Components/Checkbox';
+import Modal from 'deskpro-components/lib/Components/Modal';
+import Button from 'deskpro-components/lib/Components/Button';
+import ConfirmButton from 'deskpro-components/lib/Components/ConfirmButton';
+import { Checkbox, Input, InputLabel, LabelInput, Select } from 'deskpro-components/lib/Components/Forms';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -125,6 +121,7 @@ export class SnippetsModalContainer extends React.Component {
       departments:  [],
       teams:        [],
       types:        [],
+      title:        this.props.snippet.get('title', ''),
       isDraft:      false,
       langId:       props.langId,
     };
@@ -234,7 +231,7 @@ export class SnippetsModalContainer extends React.Component {
       isVisibleGlobal = true;
     }
     const snippetData = {
-      title:               this.modal.title.input.value,
+      title:               this.state.title,
       types:               this.state.types,
       shortcut_code:       this.modal.shortcut_code.input.value,
       labels:              this.state.labels,
@@ -323,15 +320,65 @@ export class SnippetsModalContainer extends React.Component {
     }
   };
 
-  handleDepartmentsChange = (value) => {
+  handleDepartmentsChange = (departments) => {
+    let next = departments;
+    const previous = this.state.departments;
+    const added = next.filter(i => previous.indexOf(i) < 0);
+    const removed = previous.filter(i => next.indexOf(i) < 0);
+    if (added.length === 1) {
+      if (this.state.types.find(type => type === 'ticket')) {
+        this.props.ticketDepartments.forEach((department) => {
+          if (department.get('parent') === parseInt(added[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next.push(`${department.get('id')}`);
+            }
+          }
+        });
+      }
+      if (this.state.types.find(type => type === 'chat')) {
+        this.props.chatDepartments.forEach((department) => {
+          if (department.get('parent') === parseInt(added[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next.push(`${department.get('id')}`);
+            }
+          }
+        });
+      }
+    }
+    if (removed.length === 1) {
+      if (this.state.types.find(type => type === 'ticket')) {
+        this.props.ticketDepartments.forEach((department) => {
+          if (department.get('parent') === parseInt(removed[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next = next.filter(item => parseInt(item, 10) !== department.get('id'));
+            }
+          }
+        });
+      }
+      if (this.state.types.find(type => type === 'chat')) {
+        this.props.chatDepartments.forEach((department) => {
+          if (department.get('parent') === parseInt(removed[0], 10)) {
+            if (next.indexOf(department.get('id')) === -1) {
+              next = next.filter(item => parseInt(item, 10) !== department.get('id'));
+            }
+          }
+        });
+      }
+    }
     this.setState({
-      departments: value
+      next
     });
   };
 
-  handleTeamsChange = (value) => {
+  handleTeamsChange = (teams) => {
     this.setState({
-      teams: value
+      teams
+    });
+  };
+
+  handleTitle = (title) => {
+    this.setState({
+      title
     });
   };
 
@@ -394,6 +441,7 @@ export class SnippetsModalContainer extends React.Component {
         isDraft={this.state.isDraft}
         types={this.state.types}
         langId={this.state.langId}
+        title={this.state.title}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
         deleteSnippet={this.deleteSnippet}
@@ -404,6 +452,7 @@ export class SnippetsModalContainer extends React.Component {
         handleChangeTypes={this.handleChangeTypes}
         handleDepartmentsChange={this.handleDepartmentsChange}
         handleTeamsChange={this.handleTeamsChange}
+        handleTitle={this.handleTitle}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -425,6 +474,7 @@ export class SnippetsModal extends React.Component {
     isDraft:                 PropTypes.bool,
     types:                   PropTypes.array,
     langId:                  PropTypes.number,
+    title:                   PropTypes.string,
     labels:                  PropTypes.array,
     addAttachment:           PropTypes.func,
     saveSnippet:             PropTypes.func,
@@ -437,6 +487,7 @@ export class SnippetsModal extends React.Component {
     handleChangeTypes:       PropTypes.func,
     handleDepartmentsChange: PropTypes.func,
     handleTeamsChange:       PropTypes.func,
+    handleTitle:             PropTypes.func,
   };
   static defaultProps = {
     changeLabels() {}
@@ -523,10 +574,14 @@ export class SnippetsModal extends React.Component {
     if (types.find(type => type === 'ticket')) {
       ticketDepartments.forEach((department) => {
         if (ids.indexOf(department.get('id') === -1)) {
+          let label = department.get('title');
+          if (department.get('parent')) {
+            label = `-- ${label}`;
+          }
           departments.push({
             value:    `${department.get('id')}`,
-            label:    department.get('title'),
-            selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
+            label,
+            selected: !!this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
           });
           ids.push(department.get('id'));
         }
@@ -538,12 +593,13 @@ export class SnippetsModal extends React.Component {
           departments.push({
             value:    `${department.get('id')}`,
             label:    department.get('title'),
-            selected: this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
+            selected: !!this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
           });
           ids.push(department.get('id'));
         }
       });
     }
+    console.log(departments);
     return departments;
   };
 
@@ -562,6 +618,8 @@ export class SnippetsModal extends React.Component {
 
   getUploadUrl = () => '/api/v2/blobs/temp';
 
+  isValid = () => this.props.title !== '';
+
   render() {
     const {
       snippet,
@@ -569,9 +627,11 @@ export class SnippetsModal extends React.Component {
       translation,
       languages,
       langId,
+      title,
       setLanguage,
       handleChangeDraft,
       handleChangeTypes,
+      handleTitle,
       addAttachment,
       changeLabels,
       closeModal,
@@ -593,7 +653,7 @@ export class SnippetsModal extends React.Component {
           closeModal={closeModal}
           buttons={
             <div>
-              <Button className="dp-button--l" onClick={saveSnippet}>
+              <Button className="dp-button--l" onClick={saveSnippet} disabled={!this.isValid()}>
                 {agentPhrases.get('agent.general.save')}
               </Button>
               <Button className="dp-button--l dp-button--secondary" onClick={closeModal}>
@@ -602,6 +662,7 @@ export class SnippetsModal extends React.Component {
               <ConfirmButton
                 className="dp-button--l dp-button--secondary right"
                 onClick={deleteSnippet}
+                disabled={!snippet.get('id')}
                 message={agentPhrases.get('agent.general.are_you_sure')}
               >
                 {agentPhrases.get('agent.general.delete')}
@@ -625,8 +686,8 @@ export class SnippetsModal extends React.Component {
               <InputLabel htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</InputLabel>
               <Input
                 id="snippet_title"
-                defaultValue={snippet.get('title')}
-                ref={(c) => { this.title = c; }}
+                value={title}
+                onChange={handleTitle}
                 required
               />
             </div>
@@ -652,6 +713,8 @@ export class SnippetsModal extends React.Component {
               <LabelInput
                 labels={labels}
                 onChange={changeLabels}
+                addOnBlur
+                editable
                 inputProps={{
                   placeholder: 'Add a label',
                   id:          'snippet_label_input'
@@ -705,11 +768,11 @@ export class SnippetsModal extends React.Component {
               <Select
                 multiple
                 includeSelectAllOption
-                selectAllText="Global"
-                allSelectedText="Global"
-                nonSelectedText="Myself"
+                selectAllText={agentPhrases.get('agent.general.global')}
+                allSelectedText={agentPhrases.get('agent.general.global')}
+                nonSelectedText={agentPhrases.get('agent.general.myself')}
                 maxHeight={this.height > 850 ? 300 : 150}
-                nSelectedText="teams"
+                nSelectedText={agentPhrases.get('agent.general.teams').toLowerCase()}
                 value={this.props.snippetTeams}
                 onChange={this.props.handleTeamsChange}
                 options={this.getTeams()}
@@ -720,11 +783,11 @@ export class SnippetsModal extends React.Component {
               <Select
                 multiple
                 includeSelectAllOption
-                selectAllText="Global"
-                allSelectedText="Global"
-                nonSelectedText="None"
+                selectAllText={agentPhrases.get('agent.general.global')}
+                allSelectedText={agentPhrases.get('agent.general.global')}
+                nonSelectedText={agentPhrases.get('agent.general.none')}
                 maxHeight={this.height > 850 ? 300 : 150}
-                nSelectedText="departments"
+                nSelectedText={agentPhrases.get('agent.general.departments').toLowerCase()}
                 value={this.props.snippetDepartments}
                 onChange={this.props.handleDepartmentsChange}
                 options={this.getDepartments()}

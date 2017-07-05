@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import Input from 'deskpro-styles/lib/Components/Input';
-import Button from 'deskpro-styles/lib/Components/Button';
+import { Input, Select } from 'deskpro-components/lib/Components/Forms';
+import Button from 'deskpro-components/lib/Components/Button';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
@@ -12,12 +13,14 @@ import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Compon
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
 
 @connect(state => ({
+  me:        meSelector(state),
   languages: allSelectorFactory('Language')(state),
   snippets:  allSnippetsSelector(state),
   blobs:     allSnippetBlobsSelector(state)
 }))
 export class SnippetsMenuContainer extends React.Component {
   static propTypes = {
+    me:            PropTypes.object,
     snippets:      PropTypes.object,
     blobs:         PropTypes.object,
     languages:     PropTypes.object,
@@ -25,6 +28,7 @@ export class SnippetsMenuContainer extends React.Component {
     insertSnippet: PropTypes.func,
     type:          PropTypes.string,
     department:    PropTypes.number,
+    width:         PropTypes.number,
   };
   static defaultProps = {
     department: 0
@@ -33,7 +37,8 @@ export class SnippetsMenuContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filter: '',
+      filter:   '',
+      showMode: 'all',
     };
   }
 
@@ -44,12 +49,15 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   handleFilter = (filter) => {
-    console.log(filter);
     this.setState({ filter });
   };
 
+  handleShowMode = (showMode) => {
+    this.setState({ showMode });
+  };
+
   render() {
-    const { closeMenu, type, department, languages } = this.props;
+    const { me, closeMenu, type, department, languages, width } = this.props;
     const snippets = this.props.snippets
       .filter(snippet => snippet.get('types').indexOf(type) !== -1)
       .filter((snippet) => {
@@ -72,17 +80,51 @@ export class SnippetsMenuContainer extends React.Component {
           || snippet.get('shortcut_code').match(re)
           || snippet.get('translations').find(element => element.get('language') === langId).get('content').match(re);
       })
+      .filter((snippet) => {
+        switch (this.state.showMode) {
+          case 'all':
+            return true;
+          case 'my_snippets':
+            return snippet.get('person') === me.get('id');
+          case 'my_team': {
+            const myTeams = me.get('teams', new Immutable.List());
+            return snippet.get('ownership_teams', new Immutable.List())
+                .filter(team => myTeams.find(t => t === team)).size > 0;
+          }
+          case 'my_drafts':
+            return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
+          case 'all_drafts':
+            return snippet.get('is_draft', false);
+          default:
+            return true;
+        }
+      })
+      .sort((a, b) => {
+        const titleA = a.get('title').toLowerCase();
+        const titleB = b.get('title').toLowerCase();
+        if (titleA > titleB) {
+          return 1;
+        } else if (titleA < titleB) {
+          return -1;
+        }
+        return 0;
+      })
     ;
     return (
       <SnippetsMenu
+        me={me}
         closeMenu={closeMenu}
         insertSnippet={this.insertSnippet}
         handleFilter={this.handleFilter}
+        handleShowMode={this.handleShowMode}
         snippets={snippets}
         languages={languages}
         type={type}
         filter={this.state.filter}
+        showMode={this.state.showMode}
         langId={window.DP_PERSON_LANG_ID}
+        width={width}
+        ref={(c) => { this.menu = c; }}
       />
     );
   }
@@ -90,17 +132,22 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    snippets:      PropTypes.object,
-    languages:     PropTypes.object,
-    langId:        PropTypes.number,
-    closeMenu:     PropTypes.func,
-    insertSnippet: PropTypes.func,
-    handleFilter:  PropTypes.func,
-    type:          PropTypes.string,
-    filter:        PropTypes.string,
+    me:             PropTypes.object,
+    snippets:       PropTypes.object,
+    languages:      PropTypes.object,
+    langId:         PropTypes.number,
+    width:          PropTypes.number,
+    closeMenu:      PropTypes.func,
+    insertSnippet:  PropTypes.func,
+    handleFilter:   PropTypes.func,
+    handleShowMode: PropTypes.func,
+    type:           PropTypes.string,
+    filter:         PropTypes.string,
+    showMode:       PropTypes.string,
   };
   static defaultProps = {
-    handleFilter() {}
+    handleFilter() {},
+    handleShowMode() {},
   };
 
   constructor(props) {
@@ -110,11 +157,28 @@ export class SnippetsMenu extends React.Component {
       editOpen:      false,
       snippetEdit:   {},
       labelFilter:   '',
+      focusedId:     0,
     };
   }
 
+  componentWillMount = () => {
+    window.document.addEventListener('dpLeftDrawer', () => {
+      this.searchInput.focus();
+    });
+  };
+
   componentDidMount = () => {
-    this.searchInput.focus();
+    setTimeout(() => this.searchInput.focus(), 500);
+  };
+
+  onSearchFocus = () => {
+    this.focusFirst();
+  };
+
+  onSearchBlur = () => {
+    this.setState({
+      focusedId: 0
+    });
   };
 
   getEditSnippet = () => {
@@ -168,10 +232,100 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
+  handleSearchKeyDown = (event) => {
+    switch (event.keyCode) {
+      case 13: // enter
+        this.selectFocused(event);
+        break;
+      case 27: // escape
+        this.props.closeMenu();
+        break;
+      case 38: // up
+        this.focusPrevious();
+        break;
+      case 40: // down
+        this.focusNext();
+        break;
+      default:
+        setTimeout(() => this.focusFirst(), 300);
+        return;
+    }
+    event.preventDefault();
+  };
+
+  focusFirst = () => {
+    if (this.props.snippets.size) {
+      this.setState({
+        focusedId: this.props.snippets.first().get('id')
+      });
+      this.focusedIndex = 0;
+    } else {
+      this.setState({
+        focusedId: 0
+      });
+    }
+  };
+
+  focusPrevious = () => {
+    if (this.focusedIndex > 0) {
+      this.focusedIndex -= 1;
+    }
+    let i = 0;
+    this.props.snippets.forEach((snippet) => {
+      if (i === this.focusedIndex) {
+        this.setState({
+          focusedId: snippet.get('id')
+        });
+        return false;
+      }
+      i += 1;
+      return true;
+    });
+  };
+
+  focusNext = () => {
+    if (this.focusedIndex < this.props.snippets.size - 1) {
+      this.focusedIndex += 1;
+    }
+    let i = 0;
+    this.props.snippets.forEach((snippet) => {
+      if (i === this.focusedIndex) {
+        this.setState({
+          focusedId: snippet.get('id')
+        });
+        return false;
+      }
+      i += 1;
+      return true;
+    });
+  };
+
+  selectFocused = (e) => {
+    const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
+    this.props.insertSnippet(e, snippet, this.props.langId);
+  };
+
   render() {
-    const { snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter } = this.props;
+    const { me, snippets, languages, closeMenu, langId, insertSnippet, filter, handleFilter, width } = this.props;
+    let showOptions = [
+      { value: 'all', label: agentPhrases.get('agent.snippets.all_snippets') },
+      { value: 'my_snippets', label: agentPhrases.get('agent.snippets.my_snippets') },
+    ];
+    if (me.get('teams').size > 1) {
+      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_teams_snippets') });
+    } else if (me.get('teams').size > 0) {
+      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_team_snippets') });
+    }
+    showOptions = showOptions.concat([
+      { value: 'my_drafts', label: agentPhrases.get('agent.snippets.my_drafts') },
+      { value: 'all_drafts', label: agentPhrases.get('agent.snippets.all_drafts') },
+    ]);
+    const style = {};
+    if (width) {
+      style.width = width - 5;
+    }
     return (
-      <div id="snippets__menu">
+      <div id="snippets__menu" style={style}>
         <div className="header">
           <div className="search">
             <Isvg
@@ -183,6 +337,9 @@ export class SnippetsMenu extends React.Component {
               ref={(c) => { this.searchInput = c; }}
               value={filter}
               onChange={handleFilter}
+              onFocus={this.onSearchFocus}
+              onBlur={this.onSearchBlur}
+              onKeyDown={this.handleSearchKeyDown}
             />
             <a className="close-icon" onClick={closeMenu}>
               <Isvg
@@ -193,13 +350,22 @@ export class SnippetsMenu extends React.Component {
           </div>
           <div className="top">
             <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
-            {/* <Select />*/}
             <Button
               className="dp-button--secondary add-snippet"
               onClick={this.newSnippet}
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
+            <Select
+              placeholder={agentPhrases.get('agent.general.show')}
+              searchable={false}
+              clearable={false}
+              simpleValue
+              value={this.props.showMode}
+              onChange={this.props.handleShowMode}
+              className="show-mode"
+              options={showOptions}
+            />
           </div>
         </div>
         <div className="body">
@@ -215,6 +381,7 @@ export class SnippetsMenu extends React.Component {
             languages={languages}
             langId={langId}
             labelFilter={this.state.labelFilter}
+            focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}

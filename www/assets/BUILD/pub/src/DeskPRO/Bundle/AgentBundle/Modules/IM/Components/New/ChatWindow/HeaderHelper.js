@@ -107,7 +107,7 @@ export default class HeaderHelper {
 
 function GroupAdd(props) {
   return (
-    <span className="dp-button group add" onClick={props.onClick}>
+    <span className="button group add" onClick={props.onClick}>
       <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/group-icon.svg`} />
     </span>
   );

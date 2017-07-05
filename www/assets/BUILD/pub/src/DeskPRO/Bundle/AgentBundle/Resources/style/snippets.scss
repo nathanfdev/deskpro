@@ -62,6 +62,12 @@
         text-transform: uppercase;
         display: inline-block;
       }
+      .show-mode {
+        float: right;
+        width: 150px;
+        margin-right: 5px;
+        display: inline-block;
+      }
       .add-snippet {
         float: right;
       }
@@ -74,6 +80,7 @@
   .body {
     padding: 20px 0 20px 20px;
     display: flex;
+    clear: both;
   }
 }
 .snippets__labels {
@@ -92,12 +99,27 @@
   }
   .search {
     margin-bottom: 5px;
+    input {
+      width: 154px;
+    }
   }
   .dp-list__element {
     font-family: $primary-font;
     font-size: $font-size-m-l;
     font-weight: $pf-regular;
     color: $dp-greyscale-850;
+
+    white-space: nowrap;
+    .tag {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+      max-width: calc(100% - 25px);
+    }
+    .count {
+      display: inline-block;
+      vertical-align: top;
+    }
 
     cursor: pointer;
     user-select: none;
@@ -109,9 +131,9 @@
 }
 .snippets__list {
   padding-left: 10px;
-  max-width: 600px;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding-bottom: 2px;
+  width: 100%;
 }
 .snippet_list_element_wrapper {
   .snippets__list__element {
@@ -119,7 +141,6 @@
     border-width: 1px 0 0;
     position: relative;
     padding: 5px 10px;
-    width: 505px;
     cursor: pointer;
     .draft {
       padding: 2px;
@@ -153,7 +174,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
       display: block;
-      max-width: 485px;
 
       font-family: $primary-font;
       font-size: $font-size-m;
@@ -169,10 +189,24 @@
   .edit-snippet {
     cursor: pointer;
     position: absolute;
-    top: 25px;
+    top: 0;
     right: 0;
+    height: 100%;
+    width: 12px;
     display: none;
+    &:before {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+    .fa {
+      display: inline-block;
+      vertical-align: middle;
+      color: $dp-greyscale-500;
+    }
   }
+  &.snippet_list_element_wrapper--focused,
   &:hover {
     .snippets__list__element {
       background-color: $dp-morning-sky;
@@ -188,11 +222,16 @@
       background-color: $dp-morning-sky;
       color: $dp-sonic-primary;
     }
-    .edit-snippet {
-      display: inline;
-    }
     & + .snippet_list_element_wrapper .snippets__list__element {
       border-top-color: $dp-sonic-primary;
+    }
+  }
+  &:hover {
+    .edit-snippet {
+      display: inline;
+      &:hover .fa {
+        color: $dp-greyscale-850;
+      }
     }
   }
 }
@@ -238,6 +277,7 @@
   .ownership-field,
   .visibility-field {
     min-width: 100px;
+    max-width: 250px;
   }
   .labels-field {
     display: block;

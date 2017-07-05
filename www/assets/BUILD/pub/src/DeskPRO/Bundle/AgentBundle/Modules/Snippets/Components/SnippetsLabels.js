@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import Input from 'deskpro-styles/lib/Components/Input';
-import List from 'deskpro-styles/lib/Components/List';
-import ListElement from 'deskpro-styles/lib/Components/ListElement';
+import { Input } from 'deskpro-components/lib/Components/Forms';
+import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsLabels extends React.Component {
@@ -80,8 +79,8 @@ class SnippetsLabels extends React.Component {
             className={classNames({ selected: label.tag === this.props.selectedLabel })}
             onClick={() => this.props.selectLabel(label.tag)}
           >
-            {label.tag} ({label.count})
-        </ListElement>
+            <span className="tag">{label.tag}</span>&nbsp;<span className="count">({label.count})</span>
+          </ListElement>
       );
       });
     return labels;

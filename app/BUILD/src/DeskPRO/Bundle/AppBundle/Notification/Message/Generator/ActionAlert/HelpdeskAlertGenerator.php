@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Helpdesk\RefreshAgentInterfaceEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
@@ -48,7 +49,8 @@ class HelpdeskAlertGenerator extends AbstractGenerator
         switch (get_class($event)) {
             case RefreshAgentInterfaceEvent::class:
                 return $this->createRefreshAgentInterfaceAlerts($event);
-
+            case SnippetsUpdatedEvent::class:
+                return $this->createReloadSnippetsAlert($event);
             default:
                 return [];
         }
@@ -87,12 +89,45 @@ class HelpdeskAlertGenerator extends AbstractGenerator
     }
 
     /**
+     * @param SnippetsUpdatedEvent $event
+     *
+     * @return ActionAlert[]
+     */
+    private function createReloadSnippetsAlert(SnippetsUpdatedEvent $event)
+    {
+        $snippet = $event->getSnippet();
+        $agents  = [];
+        /* @var Person[] $agents */
+        if ($snippet->isOwnershipGlobal()) {
+            $agents = $this->em->getRepository(Person::class)->getAgents();
+        } elseif ($snippet->getOwnershipTeams()) {
+            $agents = $this->em->getRepository(Person::class)->getAgentsInTeams($snippet->getOwnershipTeams());
+        }
+
+        // we always send through Db delivery because its possible
+        // the client doesnt have an open connection to any other
+        // service (e.g. imagine i just enabled pusher, i need this refresh
+        // signal to go to already connected clients still using db)
+        $meta = ['targettedHandlers' => [DbDeliveryHandler::TYPE]];
+
+        $alerts = [];
+        foreach ($agents as $agent) {
+            $alerts[] = new ActionAlert($agent->getId(), [
+                'snippet_id' => $snippet->getId(),
+                'action'     => $event->getAction(),
+            ], $event->getName(), $meta);
+        }
+
+        return $alerts;
+    }
+
+    /**
      * @param SystemEventInterface $event
      *
      * @return bool
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof RefreshAgentInterfaceEvent;
+        return $event instanceof RefreshAgentInterfaceEvent || $event instanceof SnippetsUpdatedEvent;
     }
 }

@@ -1,7 +1,8 @@
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
-import { addToCollection, updateCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
+import { addToCollection, updateCollection, removeFromCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
+import * as snippetActions from '../Modules/Snippets/Actions/snippetsActions';
 
 /* eslint no-undef: "warn" */
 
@@ -70,6 +71,18 @@ class ActionAlertsHandler {
       case 'notification.agent_chat.mark_all_messages':
       case 'read.notifications.alert':
         this.options.dispatch(newActionAlerts(payload));
+        break;
+      case 'snippet.snippets_updated':
+        switch (payload.data.action) {
+          case 'update':
+            this.options.dispatch(snippetActions.getSnippet([payload.data.snippet_id]));
+            break;
+          case 'remove':
+            this.options.dispatch(removeFromCollection('Snippets', 'all', [payload.data.snippet_id]));
+            break;
+          default:
+            break;
+        }
         break;
       default:
         if (payload.data && payload.data.eventType) {

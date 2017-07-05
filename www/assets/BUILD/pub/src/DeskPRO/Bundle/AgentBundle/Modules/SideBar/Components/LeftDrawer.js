@@ -20,13 +20,22 @@ export class LeftDrawerContainer extends SeparateComponent {
   componentWillMount = () => {
     window.document.addEventListener('dpLeftDrawer', (e) => {
       let module;
+      let width = e.detail.width;
       switch (e.detail.module) {
         case 'SnippetsMenu': {
           const type = e.detail.type ? e.detail.type : 'ticket';
           const departmentId = e.detail.department ? e.detail.department : 0;
+          const splitter = document.getElementById('dp_list_resizer');
+          if (splitter.className.match(/\bng-hide\b/)) {
+            width = 725;
+          } else {
+            const rect = splitter.getBoundingClientRect();
+            width = Math.max(rect.left - 46, 725);
+          }
           module = (<SnippetsMenuContainer
             closeMenu={this.closeDrawer}
             type={type}
+            width={width}
             department={departmentId}
             insertSnippet={e.detail.insertSnippet}
           />);
@@ -39,11 +48,15 @@ export class LeftDrawerContainer extends SeparateComponent {
           module = false;
       }
       if (module) {
-        this.setState({
-          module,
-          width: e.detail.width
-        });
-        this.openDrawer();
+        if (this.state.active) {
+          this.closeDrawer();
+        } else {
+          this.setState({
+            module,
+            width
+          });
+          this.openDrawer();
+        }
       } else {
         this.setState({
           module: null,
