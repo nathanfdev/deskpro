@@ -163,9 +163,10 @@ final class LicenseCheckListener implements EventSubscriberInterface
 
         // Check expiry
         // Agent: Lic error immediately
-        // User: Lic error after 14 days
+        // User: Lic error after 14 days (unless demo, then immediately)
         if ($lic->isPastExpireDate() && (
-            $this->interfaceInfo->isAgentInterface()
+            $lic->isDemo()
+            || $this->interfaceInfo->isAgentInterface()
             || ($this->interfaceInfo->isUserInterface() && $lic->isPastExpireDate() >= 14)
         )) {
             $date    = $lic->getExpireDate()->format('F jS');
