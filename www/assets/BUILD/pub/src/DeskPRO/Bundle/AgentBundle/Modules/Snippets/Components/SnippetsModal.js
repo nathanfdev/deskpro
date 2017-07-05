@@ -366,7 +366,7 @@ export class SnippetsModalContainer extends React.Component {
       }
     }
     this.setState({
-      next
+      departments: next
     });
   };
 
@@ -590,16 +590,19 @@ export class SnippetsModal extends React.Component {
     if (types.find(type => type === 'chat')) {
       chatDepartments.forEach((department) => {
         if (ids.indexOf(department.get('id') === -1)) {
+          let label = department.get('title');
+          if (department.get('parent')) {
+            label = `-- ${label}`;
+          }
           departments.push({
             value:    `${department.get('id')}`,
-            label:    department.get('title'),
+            label,
             selected: !!this.props.snippetDepartments.find(d => parseInt(d, 10) === department.get('id')),
           });
           ids.push(department.get('id'));
         }
       });
     }
-    console.log(departments);
     return departments;
   };
 
