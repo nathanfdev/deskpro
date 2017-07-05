@@ -28,6 +28,9 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		};
 
 		this.setOptions(options);
+		this.preInitWait = 0;
+		this.preInitTabs = _.debounce(this.preInitTabsNow.bind(this), 750);
+		this._checkOpenedItemsDebounce = _.debounce(this._checkOpenedItems.bind(this), 750);
 
 		this.tabPane = $(this.options.tabPane);
 		this.tabList = this.tabPane.find('ul.dp-tab-list').first();
@@ -52,7 +55,71 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.currentTabId = null;
 		this.initScope();
 
+    this._closeGoNextTabOldIdx = null;
+		this._closeGoNextTab = _.debounce((function() {
+			if (this._closeGoNextTabOldIdx === null) return;
+			var oldTabIdx = this._closeGoNextTabOldIdx;
+      this._closeGoNextTabOldIdx = null;
+
+      this.activateNextTab(oldTabIdx);
+		}).bind(this), 30);
+
 		this.tabBarOverflow = new DeskPRO.Agent.WindowElement.TabBarOverflow();
+	},
+
+	activateNextTab: function(oldTabIdx) {
+		if (!oldTabIdx) {
+      oldTabIdx = this._tabs.indexOf(this.getActiveTab());
+		}
+
+    // Go to the next tab
+    if (oldTabIdx != -1 && this._tabs[oldTabIdx]) {
+      this.activateTab(this._tabs[oldTabIdx]);
+
+      // Was last, so go to the previous
+    } else if (oldTabIdx != -1 && this._tabs[oldTabIdx-1]) {
+      this.activateTab(this._tabs[oldTabIdx-1]);
+
+      // Otherwise go to the last
+    } else {
+      var last_tab_id = Object.keys(this.tabs).getLast();
+      if (last_tab_id) {
+        this.activateTabById(last_tab_id);
+      } else {
+        // If list view isnt active, then after a small timeout
+        // make it visiable.
+        // The timeout is in case we have other routines that auto-open
+        // a new tab (e.g., after ticket reply)
+        this.showListIfNoTabs();
+      }
+    }
+
+    this.$scope.$safeApply();
+	},
+
+	preInitTabsNow: function() {
+    Object.each(this.tabs, (function(data) {
+      var preInit = (function() {
+        this.preInitWait--;
+        if (this.preInitWait < 0) {
+          this.preInitWait = 0;
+        }
+
+        if (data.isInited) {
+          return;
+        }
+        data.isInited = true;
+
+        if (data.callback_render !== undefined) {
+          data.callback_render(data.wrapper);
+        }
+      }).bind(this);
+      this.preInitWait++;
+
+      window.requestIdleCallback ?
+        window.requestIdleCallback(preInit, {timeout: 5000}) :
+        window.setTimeout(cleanup, this.preInitWait * 100);
+    }).bind(this));
 	},
 
 	enableInitOnRender: function() {
@@ -394,11 +461,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		//----------
 
     if (!data.isInited && data.initOnRender && (!otherTab || otherTab.initOnRender)) {
-      data.isInited = true;
-
-      if (data.callback_render !== undefined) {
-        data.callback_render(data.wrapper);
-      }
+    	this.preInitTabs();
     }
 
 		this.fireEvent('addTab', [data, this]);
@@ -537,18 +600,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		var data = this.tabs[this.currentTabId];
 		data.isActive = false;
 
-		// Chance to hook in before the nodes are actually removed
-		this.fireEvent('deactivateTabBefore', [data, this.containerEl, this.isActivating, this]);
+    DP.console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
+    $('#' + data.wrapperId).hide();
 
 		if (data.callback_deactivate !== undefined) {
 			data.callback_deactivate(data, $('#' + data.wrapperId), this);
-		}
-
-		DP.console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
-		$('#' + data.wrapperId).hide();
-
-		if (data.callback_hide_content !== undefined) {
-			data.callback_hide_content(data, $('#' + data.wrapperId), this);
 		}
 
 		this.fireEvent('deactivateTab', [data]);
@@ -591,7 +647,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		if (this.currentTabId == id) {
 			wasActive = true;
 			if (!silent) {
-				this.deactivateCurrentTab();
+				this.deactivateCurrentTab()
 			}
 
 			this.currentTabId = null;
@@ -616,8 +672,6 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       if (data.tabBtn2) data.tabBtn2.remove();
 		}
 
-		this._checkOpenedItems();
-
 		if (data.page) {
 			if (data.page.meta.routeData && data.page.meta.routeData.xhr) {
 				data.page.meta.routeData.xhr.abort();
@@ -629,31 +683,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		if (!silent) {
-
 			this.fireEvent('removeTab', [data, this]);
 
 			if (wasActive) {
-				// Go to the next tab
-				if (oldTabIdx != -1 && this._tabs[oldTabIdx]) {
-					this.activateTab(this._tabs[oldTabIdx]);
-
-				// Was last, so go to the previous
-				} else if (oldTabIdx != -1 && this._tabs[oldTabIdx-1]) {
-					this.activateTab(this._tabs[oldTabIdx-1]);
-
-				// Otherwise go to the last
-				} else {
-					var last_tab_id = Object.keys(this.tabs).getLast();
-					if (last_tab_id) {
-						this.activateTabById(last_tab_id);
-					} else {
-						// If list view isnt active, then after a small timeout
-						// make it visiable.
-						// The timeout is in case we have other routines that auto-open
-						// a new tab (e.g., after ticket reply)
-						this.showListIfNoTabs();
-					}
-				}
+        this._closeGoNextTabOldIdx = oldTabIdx;
+        this._closeGoNextTab();
 			}
 		}
 
@@ -674,10 +708,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     }
 
     this.$timeout(function() {
-			self.tabBarOverflow.update();
+			self.tabBarOverflow.debouncedUpdate();
 		});
 
-    window.setTimeout(function() {
+		var doRemove = function() {
       if (typeof data.callback_remove_content !== 'undefined') {
         data.callback_remove_content(data, $('#' + data.wrapperId), this);
       }
@@ -696,7 +730,13 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       data.callback_activate = null;
       data.callback_deactivate = null;
       data.page = null;
-    }, 100);
+
+      self._checkOpenedItemsDebounce();
+		};
+
+    window.requestIdleCallback ?
+      window.requestIdleCallback(doRemove, {timeout: 10000}) :
+      window.setTimeout(doRemove, 1000);
 	},
 
 

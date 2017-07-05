@@ -168,12 +168,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       }
 		});
 
-		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
-			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
-			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
-		});
-		this.ownObject(this.changePic);
-
 		this.ticketFields = new DeskPRO.Agent.PageHelper.TicketFields(this);
 
 		this._initMessage(this.wrapper.find('.messages-wrap'));
@@ -1331,10 +1325,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.changeManager) {
 			this.changeManager.destroy();
 			this.changeManager = null;
-		}
-		if (this.changePic) {
-      this.changePic.destroy();
-      this.changePic = null;
 		}
 		if (this.linkExistingTicket) {
       this.linkExistingTicket.destroy();
