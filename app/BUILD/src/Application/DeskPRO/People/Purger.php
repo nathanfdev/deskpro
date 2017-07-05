@@ -117,7 +117,6 @@ class Purger implements PersonContextInterface
 
         foreach ($ticket_ids as $ticket_id) {
             TicketUtil::deleteTicketAttachments($ticket_id, $this->db);
-            $this->db->executeUpdate('delete from task_links where ticket_id = :ticket_id', ['ticket_id' => $ticket_id]);
         }
 
         //------------------------------
