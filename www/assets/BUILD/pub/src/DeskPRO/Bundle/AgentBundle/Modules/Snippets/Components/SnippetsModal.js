@@ -129,24 +129,24 @@ export class SnippetsModalContainer extends React.Component {
 
   componentWillMount() {
     const { snippet, ticketDepartments, chatDepartments, agentTeams, type } = this.props;
-    const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
-    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
+    const departments = snippet.get('visible_departments', new Immutable.List()).toArray().map(id => `${id}`);
+    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray().map(id => `${id}`);
     const types = snippet.get('types', new Immutable.List([type])).toArray();
     if (snippet.get('is_visible_global')) {
       if (types.find(t => t === 'ticket')) {
         ticketDepartments.forEach((department) => {
-          departments.push(department.get('id'));
+          departments.push(`${department.get('id')}`);
         });
       }
       if (types.find(t => t === 'chat')) {
         chatDepartments.forEach((department) => {
-          departments.push(department.get('id'));
+          departments.push(`${department.get('id')}`);
         });
       }
     }
     if (snippet.get('is_ownership_global')) {
       agentTeams.forEach((team) => {
-        teams.push(team.get('id'));
+        teams.push(`${team.get('id')}`);
       });
     }
     this.setState({
@@ -326,43 +326,45 @@ export class SnippetsModalContainer extends React.Component {
     const added = next.filter(i => previous.indexOf(i) < 0);
     const removed = previous.filter(i => next.indexOf(i) < 0);
     if (added.length === 1) {
-      if (this.state.types.find(type => type === 'ticket')) {
-        this.props.ticketDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(added[0], 10)) {
-            if (next.indexOf(department.get('id')) === -1) {
-              next.push(`${department.get('id')}`);
-            }
+      const addedId = parseInt(added[0], 10);
+      let department = this.props.ticketDepartments.get(addedId);
+      if (!department) {
+        department = this.props.chatDepartments.get(addedId);
+      }
+      if (department && department.get('children')) {
+        department.get('children').forEach((child) => {
+          if (next.indexOf(`${child}`) === -1) {
+            next.push(`${child}`);
           }
         });
       }
-      if (this.state.types.find(type => type === 'chat')) {
-        this.props.chatDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(added[0], 10)) {
-            if (next.indexOf(department.get('id')) === -1) {
-              next.push(`${department.get('id')}`);
-            }
-          }
-        });
+      if (department && department.get('parent')) {
+        let parent = this.props.ticketDepartments.get(department.get('parent'));
+        if (!parent) {
+          parent = this.props.chatDepartments.get(department.get('parent'));
+        }
+        if (parent.get('children').filter(e => next.indexOf(`${e}`) < 0).size === 0) {
+          next.push(`${parent.get('id')}`);
+        }
       }
     }
     if (removed.length === 1) {
-      if (this.state.types.find(type => type === 'ticket')) {
-        this.props.ticketDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(removed[0], 10)) {
-            if (next.indexOf(department.get('id')) === -1) {
-              next = next.filter(item => parseInt(item, 10) !== department.get('id'));
-            }
-          }
+      const removedId = parseInt(removed[0], 10);
+      let department = this.props.ticketDepartments.get(removedId);
+      if (!department) {
+        department = this.props.chatDepartments.get(removedId);
+      }
+      if (department && department.get('children')) {
+        department.get('children').forEach((child) => {
+          next = next.filter(item => parseInt(item, 10) !== child);
         });
       }
-      if (this.state.types.find(type => type === 'chat')) {
-        this.props.chatDepartments.forEach((department) => {
-          if (department.get('parent') === parseInt(removed[0], 10)) {
-            if (next.indexOf(department.get('id')) === -1) {
-              next = next.filter(item => parseInt(item, 10) !== department.get('id'));
-            }
-          }
-        });
+      if (department && department.get('parent')) {
+        let parent = this.props.ticketDepartments.get(department.get('parent'));
+        if (!parent) {
+          parent = this.props.chatDepartments.get(department.get('parent'));
+        }
+        next = next.filter(item => parseInt(item, 10) !== parent.get('id'));
       }
     }
     this.setState({

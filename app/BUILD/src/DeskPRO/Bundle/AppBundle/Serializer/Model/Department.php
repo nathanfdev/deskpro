@@ -57,6 +57,15 @@ class Department
     protected $parent = null;
 
     /**
+     * Children Department entity.
+     *
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Department>>")
+     *
+     * @var DepartmentEntity
+     */
+    protected $children = null;
+
+    /**
      * Department`s title.
      *
      * @JMS\Type("string")
@@ -130,6 +139,7 @@ class Department
     {
         $this->id                 = $department->getId();
         $this->parent             = $department->getParent();
+        $this->children           = $department->getChildrenOrdered();
         $this->title              = $department->getTitle();
         $this->user_title         = $department->getUserTitle();
         $this->is_chat_enabled    = $department->isChatEnabled();

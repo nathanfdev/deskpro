@@ -42,7 +42,7 @@ export const preloadData    = createAction(
     (resolve) => {
       const batchComponents = {
         agents:                  { endpoint: 'agents' },
-        languages:               { endpoint: 'languages' },
+        languages:               { endpoint: 'languages', query: 'count=100' },
         user_groups:             { endpoint: 'user_groups' },
         settings:                { endpoint: 'helpdesk/agent-client/settings' },
         me:                      { endpoint: 'me' },
