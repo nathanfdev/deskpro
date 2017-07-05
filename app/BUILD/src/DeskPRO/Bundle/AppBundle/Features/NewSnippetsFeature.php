@@ -148,6 +148,8 @@ HTML;
     {
         $connection = $em->getConnection();
 
+        $langId = $connection->fetchColumn('SELECT value FROM settings WHERE name= \'core.default_language_id\'') ?: 1;
+
         $em->beginTransaction();
         try {
             $connection->query(
@@ -162,16 +164,17 @@ HTML;
                           tcs.is_global as ownership_global,
                           1 as visible_global
                     FROM text_snippets ts
-                    LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = 1
+                    LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = $langId
                     LEFT JOIN text_snippet_categories tcs ON ts.category_id = tcs.id;");
             $connection->query(
-                'INSERT INTO snippet_labels
+                "INSERT INTO snippet_labels
                       SELECT 
                         ts.id, 
                         ol_category.value
                     FROM text_snippet_categories tsc
                     LEFT JOIN text_snippets ts ON tsc.id = ts.category_id
-                    LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT(\'text_snippet_categories.\', tsc.id)');
+                    LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT('text_snippet_categories.', tsc.id) AND ol_category.language_id = $langId
+                    WHERE ts.id IS NOT NULL");
             $connection->query(
                 'INSERT INTO snippet_translations
                     SELECT
@@ -182,7 +185,8 @@ HTML;
                       ol_title.value as title
                     FROM text_snippets ts
                       LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_title.prop_name = \'title\'
-                      LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_content.prop_name = \'snippet\'');
+                      LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_content.prop_name = \'snippet\' AND ol_content.language_id = ol_title.language_id
+                    WHERE ol_content.value <> \'\'');
             // Set the auto_increment to the minimum value it needs
             $connection->query('ALTER TABLE snippets AUTO_INCREMENT = 1');
             $em->commit();

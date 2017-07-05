@@ -129,24 +129,24 @@ export class SnippetsModalContainer extends React.Component {
 
   componentWillMount() {
     const { snippet, ticketDepartments, chatDepartments, agentTeams, type } = this.props;
-    const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
-    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
+    const departments = snippet.get('visible_departments', new Immutable.List()).toArray().map(id => `${id}`);
+    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray().map(id => `${id}`);
     const types = snippet.get('types', new Immutable.List([type])).toArray();
     if (snippet.get('is_visible_global')) {
       if (types.find(t => t === 'ticket')) {
         ticketDepartments.forEach((department) => {
-          departments.push(department.get('id'));
+          departments.push(`${department.get('id')}`);
         });
       }
       if (types.find(t => t === 'chat')) {
         chatDepartments.forEach((department) => {
-          departments.push(department.get('id'));
+          departments.push(`${department.get('id')}`);
         });
       }
     }
     if (snippet.get('is_ownership_global')) {
       agentTeams.forEach((team) => {
-        teams.push(team.get('id'));
+        teams.push(`${team.get('id')}`);
       });
     }
     this.setState({

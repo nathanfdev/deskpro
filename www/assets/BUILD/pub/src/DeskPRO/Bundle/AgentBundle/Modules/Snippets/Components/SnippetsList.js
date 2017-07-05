@@ -54,12 +54,13 @@ export class SnippetsListElement extends React.Component {
       const flags = [];
       snippet.get('translations').forEach((translation, key) => {
         const language = languages.find(l => l.get('id') === translation.get('language'));
-        if (language.get('flag_image')) {
+        if (language && language.get('flag_image')) {
           flags.push(
             <img
               key={key}
               src={language.get('flag_image')}
               alt={language.get('title')}
+              title={language.get('title')}
               onClick={e => insertSnippet(e, snippet, language.get('id'))}
             />);
         }
