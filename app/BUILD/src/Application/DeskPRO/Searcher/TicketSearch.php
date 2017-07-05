@@ -1349,6 +1349,7 @@ class TicketSearch extends SearcherAbstract
                 switch ($term) {
                     case self::TERM_ID:
                         $this->enableArchiveSearch();
+                        $set_status = true;
 
                         $choice = is_array($choice) && isset($choice['ticket_id']) ? $choice['ticket_id'] : $choice;
                         if (!is_array($choice)) {
@@ -1368,6 +1369,8 @@ class TicketSearch extends SearcherAbstract
 
                     case self::TERM_REF:
                         $this->enableArchiveSearch();
+                        $set_status = true;
+
                         $wheres[] = $this->_stringMatch("$tickets_table.ref", $op, $choice, true);
                         break;
 
