@@ -155,6 +155,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 			return;
 		}
 
+		ev.stopPropagation();
 		page.fireEvent(this.boundShortkuts[key][page.TYPENAME], [ev, key]);
 	},
 
