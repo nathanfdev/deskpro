@@ -92,6 +92,12 @@ class Mailer extends \Swift_Mailer implements StorageTransportInterface
         $ref = Numbers::roundToMultiple(time(), 5).'-'.Strings::random(40, Strings::CHARS_ALPHANUM_IU);
         $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
 
+        try {
+            $pubref = \DpSys\License::getLicense()->getPublicLicenseRef();
+            $message->getHeaders()->addTextHeader('X-DP-LREF', $pubref);
+        } catch (\Exception $e) {
+        }
+
         $this->logger->debug(sprintf('Preprocessing: %s', $message->getId()));
 
         if ($message instanceof \Orb\Mail\Message) {

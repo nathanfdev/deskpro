@@ -335,6 +335,15 @@ final class License
         return $this->license_id;
     }
 
+    public function getPublicLicenseRef()
+    {
+        if (!$this->license_id) {
+            return 'NOLIC';
+        }
+
+        return md5($this->license_id.'deskpro');
+    }
+
     public function isDemo()
     {
         return isset($this->data['demo']) && $this->data['demo'];
