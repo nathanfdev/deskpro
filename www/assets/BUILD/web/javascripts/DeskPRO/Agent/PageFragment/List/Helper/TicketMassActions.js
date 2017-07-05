@@ -817,55 +817,47 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
   },
 
   _initEditor: function(textarea) {
-    if (DeskPRO_Window.canUseAgentReplyRte()) {
-
-      var sig = this.wrapper.find('textarea.signature-value-html').val() || "";
-      sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
-
-      if (sig) {
-        textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
-      }
-
-      isWysiwyg = true;
-      self.getElById('is_html_reply').val('1');
-
-      DeskPRO_Window.initRteAgentReply(textarea, {
-        defaultIsHtml:        true,
-        inlineHiddenPosition: this.getElById('is_html_reply'),
-        minHeight:            120,
-
-        callback: function(obj) {
-          obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function() {
-          });
-          obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function() {
-          });
-          obj.addBtnSeparatorAfter('dp_attach');
-
-          var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
-          snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
-          snippetBtn.on('click', function(ev) {
-            Orb.cancelEvent(ev);
-            if (window.DP_HAS_NEW_SNIPPETS) {
-              var event = new CustomEvent('dpLeftDrawer', {detail: {
+    var self = this;
+    var sig = this.wrapper.find('textarea.signature-value-html').val() || "";
+    sig = sig.replace(/<div class="dp-signature-start">([\w\W]*)<\/div>/, '<p class="dp-signature-start">$1</p>');
+    if (sig) {
+      textarea.val(($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>') + '\n\n' + sig);
+    }
+    self.getElById('is_html_reply').val('1');
+    DeskPRO_Window.initRteAgentReply(textarea, {
+      defaultIsHtml: true,
+      inlineHiddenPosition: this.getElById('is_html_reply'),
+      minHeight: 120,
+      callback: function (obj) {
+        obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function () {
+        });
+        obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function () {
+        });
+        obj.addBtnSeparatorAfter('dp_attach');
+        var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
+        snippetBtn.addClass('snippets').find('a').html('<span class="show-key-shortcut">S</span>nippets');
+        snippetBtn.on('click', function (ev) {
+          Orb.cancelEvent(ev);
+          if (window.DP_HAS_NEW_SNIPPETS) {
+            var event = new CustomEvent('dpLeftDrawer', {
+              detail: {
                 module: 'SnippetsMenu',
                 width: 745,
                 insertSnippet: self.insertSnippet.bind(self)
-              }});
-              window.document.dispatchEvent(event);
-            } else {
-              self.snippetsViewer.open();
-            }
-          });
-
-          var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
-          attachBtn.addClass('attach');
-          attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
-
-          obj.addBtnSeparatorAfter('dp_snippets');
-        }
-      });
-      this.getElById('is_html_reply').val(1);
-    }
+              }
+            });
+            window.document.dispatchEvent(event);
+          } else {
+            self.snippetsViewer.open();
+          }
+        });
+        var attachBtn = obj.$toolbar.find('.redactor_btn_dp_attach').closest('li');
+        attachBtn.addClass('attach');
+        attachBtn.find('a').text('Attach').append('<input type="file" class="file" name="file-upload" />');
+        obj.addBtnSeparatorAfter('dp_snippets');
+      }
+    });
+    this.getElById('is_html_reply').val(1);
 
     //------------------------------
     // Snippets Viewer
@@ -880,7 +872,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         self.backdropEls.eq(0).css({ width: '61px' });
         self.backdropEls.eq(1).css({ width: contentStart - 61, left: 61 });
 
-        if (isWysiwyg && textarea.data('redactor')) {
+        if (textarea.data('redactor')) {
           try {
             textarea.data('redactor').saveSelection();
           } catch (e) {
@@ -926,7 +918,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
         result = useText || '';
 
-        if (isWysiwyg && textarea.data('redactor')) {
+        if (textarea.data('redactor')) {
           try {
             textarea.data('redactor').restoreSelection();
             textarea.data('redactor').setBuffer();
