@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import striptags from 'striptags';
+import htmlToText from 'html-to-text';
+import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Label } from 'deskpro-components/lib/Components/Forms';
 
@@ -12,6 +13,7 @@ export class SnippetsListElement extends React.Component {
     insertSnippet: PropTypes.func,
     focused:       PropTypes.bool,
     langPref:      PropTypes.array,
+    filter:        PropTypes.string,
   };
   static defaultProps = {
     focused: false,
@@ -74,10 +76,38 @@ export class SnippetsListElement extends React.Component {
   }
 
   getContent(langId) {
-    const { snippet } = this.props;
+    const { snippet, filter } = this.props;
     const translation = snippet.get('translations').find(element => element.get('language') === langId);
     if (translation && translation.get('content')) {
-      return striptags(translation.get('content'));
+      let content = htmlToText.fromString(translation.get('content'));
+      const lines = [];
+      if (filter && filter.length > 2) {
+        const re = new RegExp(`([\\S\\s\\R\\n]{0,33})(${filter}([\\S\\s\\R\\n]*))$`, 'i');
+        const matches = content.match(re);
+        if (matches) {
+          if (matches[1] && matches[1].length > 30) {
+            matches[1] = `...${matches[1].slice(3)}`;
+          }
+          content = `${matches[1]}${matches[2]}`;
+        }
+        content.split(/\n/).forEach((line, key) => {
+          lines.push(
+            <span className="line" key={key}>
+              <Highlighter
+                highlightClassName="filter-highlight"
+                searchWords={[filter]}
+                textToHighlight={line}
+              />
+              <span className="line-break">&#8617; </span>
+            </span>
+          );
+        });
+      } else {
+        content.split(/\n/).forEach((line, key) => {
+          lines.push(<span className="line" key={key}>{line}<span className="line-break">&#8617; </span></span>);
+        });
+      }
+      return lines;
     }
     return null;
   }
@@ -127,6 +157,7 @@ export class SnippetsList extends React.Component {
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
     focusedId:     PropTypes.number,
+    filter:        PropTypes.string,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langPref:      PropTypes.array,
@@ -173,6 +204,7 @@ export class SnippetsList extends React.Component {
       insertSnippet,
       focusedId,
       langPref,
+      filter,
     } = this.props;
     if (!snippets) {
       return null;
@@ -191,6 +223,7 @@ export class SnippetsList extends React.Component {
             snippet={element}
             languages={languages}
             langPref={langPref}
+            filter={filter}
             editSnippet={editSnippet}
             insertSnippet={insertSnippet}
             focused={focusedId === element.get('id')}
