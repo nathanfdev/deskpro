@@ -72,6 +72,9 @@ export class LeftDrawerContainer extends SeparateComponent {
     window.document.addEventListener('dpLeftDrawerClose', () => {
       this.closeDrawer();
     });
+    window.document.addEventListener('dpChangeSection', () => {
+      this.closeDrawer();
+    });
   };
 
   openDrawer = () => {
