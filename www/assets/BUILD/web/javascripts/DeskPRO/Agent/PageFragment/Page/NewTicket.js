@@ -63,17 +63,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         }
 			}, 60);
 			if (self.wasSnippetOpen) {
-				if (window.DP_HAS_NEW_SNIPPETS) {
-					var event = new CustomEvent('dpLeftDrawer', {detail: {
-						module: 'SnippetsMenu',
-						width: 745,
-						insertSnippet: self.insertSnippet.bind(self),
-            onClose: self.registerCloseSnippetViewer.bind(self)
-					}});
-					window.document.dispatchEvent(event);
-					self.isSnippetOpen = true;
-			    self.wasSnippetOpen = false;
-				}
+				self.openSnippetsViewer();
 			}
 		});
 
@@ -1383,7 +1373,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				if (isCtrl && (ev.which === 83)) {
 					ev.preventDefault();
 					window.setTimeout(function() {
-						self.shortcutOpenSnippets().bind(self);
+						self.shortcutOpenSnippets();
 					}, 10);
 					return;
 				}
@@ -1674,12 +1664,23 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 	openSnippetsViewer: function() {
 		if (window.DP_HAS_NEW_SNIPPETS) {
-			var event = new CustomEvent('dpLeftDrawer', 
+      var departmentId = this.getEl('newticket').find('select.department_id').val();
+      var langId = null;
+      var apiData = this.getEl('newticket').find('input.api_data').val();
+      if (apiData) {
+      	var data = JSON.parse(apiData);
+      	if (data.language) {
+      		langId = data.language.id;
+				}
+			}
+			var event = new CustomEvent('dpLeftDrawer',
 				{
 					detail: 
 						{ 
 							module: 'SnippetsMenu',
-							width: 745, 
+							width: 745,
+							langId,
+              department: parseInt(departmentId, 10),
 							insertSnippet: this.insertSnippet.bind(this), 
 							onClose: this.registerCloseSnippetViewer.bind(this)
 						}
@@ -1926,8 +1927,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	shortcutOpenSnippets: function() {
-    var openSnippetsViewer = this.openSnippetsViewer.bind(this);
-		openSnippetsViewer();
+    this.openSnippetsViewer()
 	},
 
 	shortcutSendReply: function() {

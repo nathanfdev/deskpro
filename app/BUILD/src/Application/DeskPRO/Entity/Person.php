@@ -3623,6 +3623,10 @@ class Person extends DomainObject implements
             }
         }
 
+        if ($this->language) {
+            $data['language'] = $this->language->toApiData();
+        }
+
         foreach ([
                      'id',
                      'first_name',

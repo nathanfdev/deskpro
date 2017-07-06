@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import striptags from 'striptags';
+import htmlToText from 'html-to-text';
+import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Label } from 'deskpro-components/lib/Components/Forms';
 
@@ -10,8 +11,9 @@ export class SnippetsListElement extends React.Component {
     languages:     PropTypes.object,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
-    langId:        PropTypes.number,
     focused:       PropTypes.bool,
+    langPref:      PropTypes.array,
+    filter:        PropTypes.string,
   };
   static defaultProps = {
     focused: false,
@@ -24,6 +26,7 @@ export class SnippetsListElement extends React.Component {
     this.getDraft     = this.getDraft.bind(this);
     this.getLabels    = this.getLabels.bind(this);
     this.getLanguages = this.getLanguages.bind(this);
+    this.findLanguage = this.findLanguage.bind(this);
   }
 
   getDraft() {
@@ -42,7 +45,7 @@ export class SnippetsListElement extends React.Component {
         labels.push(<Label key={key}>{label} </Label>);
       });
       if (labels.length) {
-        return <div className="labels">Labels: {labels}</div>;
+        return <div className="labels"><i className="fa fa-tag" /> {labels}</div>;
       }
     }
     return null;
@@ -72,11 +75,39 @@ export class SnippetsListElement extends React.Component {
     return null;
   }
 
-  getContent() {
-    const { snippet, langId } = this.props;
+  getContent(langId) {
+    const { snippet, filter } = this.props;
     const translation = snippet.get('translations').find(element => element.get('language') === langId);
-    if (translation) {
-      return striptags(translation.get('content'));
+    if (translation && translation.get('content')) {
+      let content = htmlToText.fromString(translation.get('content'));
+      const lines = [];
+      if (filter && filter.length > 2) {
+        const re = new RegExp(`([\\S\\s\\R\\n]{0,33})(${filter}([\\S\\s\\R\\n]*))$`, 'i');
+        const matches = content.match(re);
+        if (matches) {
+          if (matches[1] && matches[1].length > 30) {
+            matches[1] = `...${matches[1].slice(3)}`;
+          }
+          content = `${matches[1]}${matches[2]}`;
+        }
+        content.split(/\n/).forEach((line, key) => {
+          lines.push(
+            <span className="line" key={key}>
+              <Highlighter
+                highlightClassName="filter-highlight"
+                searchWords={[filter]}
+                textToHighlight={line}
+              />
+              <span className="line-break">&#8617; </span>
+            </span>
+          );
+        });
+      } else {
+        content.split(/\n/).forEach((line, key) => {
+          lines.push(<span className="line" key={key}>{line}<span className="line-break">&#8617; </span></span>);
+        });
+      }
+      return lines;
     }
     return null;
   }
@@ -89,19 +120,31 @@ export class SnippetsListElement extends React.Component {
     return null;
   }
 
+  findLanguage() {
+    const { snippet, langPref } = this.props;
+    for (let i = 0; i < langPref.length; i++) {
+      const translation = snippet.get('translations').find(element => element.get('language') === langPref[i]);
+      if (translation && translation.get('content')) {
+        return langPref[i];
+      }
+    }
+    return null;
+  }
+
   render() {
     const { snippet, editSnippet, insertSnippet, focused } = this.props;
+    const langId = this.findLanguage();
     return (
       <div className={classNames('snippet_list_element_wrapper', { 'snippet_list_element_wrapper--focused': focused })}>
-        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet)} >
+        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet, langId)} >
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
           {this.getShortcutCode()}<br />
           {this.getLanguages()}
           {this.getLabels()}
-          <span className="content">{this.getContent()}</span>
+          <span className="content">{this.getContent(langId)}</span>
         </div>
-        <div onClick={() => editSnippet(snippet)} className="edit-snippet">
+        <div onClick={() => editSnippet(snippet, langId)} className="edit-snippet">
           <i className="fa fa-pencil" />
         </div>
       </div>
@@ -113,11 +156,11 @@ export class SnippetsList extends React.Component {
     snippets:      PropTypes.object,
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
-    labelFilter:   PropTypes.string,
     focusedId:     PropTypes.number,
-    langId:        PropTypes.number,
+    filter:        PropTypes.string,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
+    langPref:      PropTypes.array,
   };
 
   constructor(props) {
@@ -157,11 +200,11 @@ export class SnippetsList extends React.Component {
       snippets,
       languages,
       selectedLabel,
-      labelFilter,
-      langId,
       editSnippet,
       insertSnippet,
       focusedId,
+      langPref,
+      filter,
     } = this.props;
     if (!snippets) {
       return null;
@@ -173,20 +216,14 @@ export class SnippetsList extends React.Component {
         }
         return snippet.get('labels').find(label => label === selectedLabel);
       })
-      .filter((snippet) => {
-        if (!labelFilter) {
-          return true;
-        }
-        const re = new RegExp(labelFilter, 'i');
-        return snippet.get('labels').find(label => label.match(re));
-      })
       .forEach((element) => {
         elements.push(
           <SnippetsListElement
             key={element.get('id')}
             snippet={element}
             languages={languages}
-            langId={langId}
+            langPref={langPref}
+            filter={filter}
             editSnippet={editSnippet}
             insertSnippet={insertSnippet}
             focused={focusedId === element.get('id')}

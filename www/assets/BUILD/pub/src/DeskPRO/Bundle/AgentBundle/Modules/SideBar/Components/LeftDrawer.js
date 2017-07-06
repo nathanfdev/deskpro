@@ -13,6 +13,7 @@ export class LeftDrawerContainer extends SeparateComponent {
     this.state = {
       active: false,
       module: null,
+      props:  {},
       width:  600
     };
   }
@@ -20,6 +21,7 @@ export class LeftDrawerContainer extends SeparateComponent {
   componentWillMount = () => {
     window.document.addEventListener('dpLeftDrawer', (e) => {
       let module;
+      let props;
       let width = e.detail.width;
       switch (e.detail.module) {
         case 'SnippetsMenu': {
@@ -32,13 +34,15 @@ export class LeftDrawerContainer extends SeparateComponent {
             const rect = splitter.getBoundingClientRect();
             width = Math.max(rect.left - 46, 725);
           }
-          module = (<SnippetsMenuContainer
-            closeMenu={this.closeDrawer}
-            type={type}
-            width={width}
-            department={departmentId}
-            insertSnippet={e.detail.insertSnippet}
-          />);
+          module = SnippetsMenuContainer;
+          props = {
+            closeMenu:     this.closeDrawer,
+            type,
+            width,
+            langId:        parseInt(e.detail.langId, 10),
+            department:    departmentId,
+            insertSnippet: e.detail.insertSnippet,
+          };
           if (e.detail.onClose) {
             this.onClose = e.detail.onClose;
           }
@@ -53,6 +57,7 @@ export class LeftDrawerContainer extends SeparateComponent {
         } else {
           this.setState({
             module,
+            props,
             width
           });
           this.openDrawer();
@@ -67,6 +72,9 @@ export class LeftDrawerContainer extends SeparateComponent {
     window.document.addEventListener('dpLeftDrawerClose', () => {
       this.closeDrawer();
     });
+    window.document.addEventListener('dpChangeSection', () => {
+      this.closeDrawer();
+    });
   };
 
   openDrawer = () => {
@@ -79,6 +87,9 @@ export class LeftDrawerContainer extends SeparateComponent {
     if (this.onClose) {
       this.onClose();
     }
+    if (this.module && this.module.getWrappedInstance().onClose) {
+      this.module.getWrappedInstance().onClose();
+    }
     this.setState({
       active: false
     });
@@ -87,7 +98,14 @@ export class LeftDrawerContainer extends SeparateComponent {
   render() {
     const { active, width } = this.state;
     const style = { width: active ? width : 0 };
-    return <LeftDrawer active={active} style={style}>{this.state.module}</LeftDrawer>;
+    const props = this.state.props;
+    const Module = this.state.module;
+    if (Module) {
+      return (<LeftDrawer active={active} style={style}>
+        <Module open={active} {...props} ref={(c) => { this.module = c; }} />
+      </LeftDrawer>);
+    }
+    return <LeftDrawer active={active} style={style} />;
   }
 }
 

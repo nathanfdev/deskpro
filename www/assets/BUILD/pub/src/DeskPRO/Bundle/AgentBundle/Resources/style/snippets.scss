@@ -21,9 +21,10 @@
         padding-top: 11px;
         display: inline-block;
         vertical-align: top;
+        width: calc(100% - 85px);
         input {
           border: 0;
-          width: 400px;
+          width: 100%;
           caret-color: $dp-sonic-primary;
         }
       }
@@ -153,10 +154,14 @@
         margin-right: 3px;
       }
     }
+    .fa-tag {
+      color: $dp-sonic-primary;
+    }
     .title {
       font-weight: $pf-semi-bold;
     }
     .shortcode {
+      margin-left: 5px;
       color: $dp-greyscale-450;
     }
     .languages {
@@ -179,6 +184,15 @@
       font-size: $font-size-m;
       font-weight: $pf-regular;
       color: $dp-greyscale-600;
+      .line-break {
+        color: $dp-greyscale-400;
+      }
+      .filter-highlight {
+        background-color: $dp-sun-shine;
+      }
+      span.line:last-child .line-break {
+        display: none;
+      }
     }
   }
   &:last-child .snippets__list__element {

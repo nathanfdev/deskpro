@@ -265,7 +265,9 @@ function getWebpackConfig(mode, isProd) {
       new CopyWebpackPlugin([
         { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
       ])
-    ]
+    ],
+
+    node: { fs: 'empty' }
   };
 
   if (mode === 'all' || mode === 'portal') {

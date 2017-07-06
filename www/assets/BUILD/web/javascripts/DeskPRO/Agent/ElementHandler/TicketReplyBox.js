@@ -174,6 +174,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 							window.setTimeout(function() {
 								self.page.shortcutOpenSnippets();
 							}, 10);
+							ev.stopPropagation();
 							return;
 						}
 						if (isCtrl && (ev.which == 79)) {
@@ -577,20 +578,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		};
 
     if (window.DP_HAS_NEW_SNIPPETS) {
-      snippetBtn.on('click', function (e) {
-        var departmentId = 0;
-      	if (self.page.meta.api_data.department) {
-      		departmentId = self.page.meta.api_data.department.id;
-				}
-        var event = new CustomEvent('dpLeftDrawer', {detail: {
-        	module: 'SnippetsMenu',
-					department: departmentId,
-					width: 745,
-					insertSnippet: self.insertSnippet.bind(self),
-          onClose: self.registerCloseSnippetViewer.bind(self)
-        }});
-        window.document.dispatchEvent(event);
-        self.isSnippetOpen = true;
+      snippetBtn.on('click', function () {
+        self.openNewSnippets();
 			});
     } else {
 			this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
@@ -718,19 +707,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		this.el.bind('page_activate', function() {
 			if (self.wasSnippetOpen) {
         if (window.DP_HAS_NEW_SNIPPETS) {
-					var departmentId = 0;
-					if (self.page.meta.api_data.department) {
-						departmentId = self.page.meta.api_data.department.id;
-					}
-          var event = new CustomEvent('dpLeftDrawer', {detail: {
-          	module: 'SnippetsMenu',
-            width: 745,
-            department: departmentId,
-						insertSnippet: self.insertSnippet.bind(self),
-            onClose: self.registerCloseSnippetViewer.bind(self)
-          }});
-          window.document.dispatchEvent(event);
-          self.isSnippetOpen = true;
+					self.openNewSnippets();
         } else {
           self.snippetsViewer.open();
         }
@@ -1480,6 +1457,29 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
   registerCloseSnippetViewer: function() {
     this.isSnippetOpen = false;
   },
+
+	openNewSnippets: function() {
+		var self = this;
+    var departmentId = 0;
+    if (self.page.meta.api_data.department) {
+      departmentId = self.page.meta.api_data.department.id;
+    }
+    var helpDeskLang = window.DP_DEFAULT_LANG_ID;
+    var ticketLang = self.page.meta.ticket.language ? self.page.meta.ticket.language.id : null;
+    var personLang = self.page.meta.ticket.person.language ? self.page.meta.ticket.person.language.id : null;
+    ticketLang = ticketLang || personLang || helpDeskLang;
+
+    var event = new CustomEvent('dpLeftDrawer', {detail: {
+      module: 'SnippetsMenu',
+      department: departmentId,
+      width: 745,
+      langId: ticketLang,
+      insertSnippet: self.insertSnippet.bind(self),
+      onClose: self.registerCloseSnippetViewer.bind(self)
+    }});
+    window.document.dispatchEvent(event);
+    self.isSnippetOpen = true;
+	},
 
 	insertSnippet: function(snippet, blobs, langId) {
 		var self = this;
