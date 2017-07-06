@@ -51,7 +51,7 @@ class NewForwardFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Improved ticket forwarding from the agnet interface';
+        return 'Improved ticket forwarding from the agent interface';
     }
 
     /**
