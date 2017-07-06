@@ -43,7 +43,7 @@ export class SnippetsListElement extends React.Component {
         labels.push(<Label key={key}>{label} </Label>);
       });
       if (labels.length) {
-        return <div className="labels">Labels: {labels}</div>;
+        return <div className="labels"><i className="fa fa-tag" /> {labels}</div>;
       }
     }
     return null;

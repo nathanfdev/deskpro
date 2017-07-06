@@ -87,7 +87,7 @@ export class LeftDrawerContainer extends SeparateComponent {
     if (this.onClose) {
       this.onClose();
     }
-    if (this.module.getWrappedInstance().onClose) {
+    if (this.module && this.module.getWrappedInstance().onClose) {
       this.module.getWrappedInstance().onClose();
     }
     this.setState({
