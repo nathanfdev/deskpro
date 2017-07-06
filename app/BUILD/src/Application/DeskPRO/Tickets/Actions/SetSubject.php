@@ -85,8 +85,8 @@ class SetSubject extends AbstractContainerAwareAction implements ActionInterface
             }
         }
 
-        if ($subject != $ticket->subject) {
-            $ticket->subject = $subject;
+        if ($subject !== $ticket->getSubject()) {
+            $ticket->setSubject($subject);
         }
     }
 
