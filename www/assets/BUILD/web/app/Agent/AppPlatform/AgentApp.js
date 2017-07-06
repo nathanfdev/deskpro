@@ -177,27 +177,12 @@ define([
 	});
 
 	AgentApp.filter('formatSeconds', function() {
-		return function(seconds, plusDate) {
+		return function(seconds) {
 			if (!seconds) seconds = 0;
 
-			var start = moment().subtract('seconds', seconds);
-			var end = moment();
-			var plus;
-
-			if (plusDate) {
-				plusDate = plusDate+"";
-				if (plusDate.length == 10 && plusDate.match(/^\d+$/)) {
-					plus = moment.unix(plusDate);
-				} else {
-					plus = moment(plusDate);
-				}
-
-				if (plus && plus.isValid()) {
-					start.subtract('seconds', moment().unix() - plus.unix());
-				}
-			}
-
-			return start.from(end, true);
+			var nowTs = Date.now() / 1000;
+			var dt = new Date((nowTs - seconds) * 1000);
+      return Orb.Util.TimeAgo.get(dt);
 		}
 	});
 
@@ -257,16 +242,12 @@ define([
 					}
         }
 
-        if(window.DP_DISABLE_RELATIVE_TIMES) {
+        if(!window.DP_DISABLE_RELATIVE_TIMES) {
           element.on('$destroy', function() {
             if (timeoutId) {
               $interval.cancel(timeoutId);
               timeoutId = null;
             }
-          });
-
-          element.on('dp_update', function() {
-            update();
           });
 
           if (attrs['autoUpdate'] || attrs['updateInterval']) {
