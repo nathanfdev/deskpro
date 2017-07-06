@@ -429,7 +429,6 @@ export class SnippetsMenu extends React.Component {
             snippets={snippets}
             languages={languages}
             langPref={langPref}
-            labelFilter={this.state.labelFilter}
             focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
             editSnippet={this.editSnippet}

@@ -126,7 +126,6 @@ export class SnippetsList extends React.Component {
     snippets:      PropTypes.object,
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
-    labelFilter:   PropTypes.string,
     focusedId:     PropTypes.number,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
@@ -170,7 +169,6 @@ export class SnippetsList extends React.Component {
       snippets,
       languages,
       selectedLabel,
-      labelFilter,
       editSnippet,
       insertSnippet,
       focusedId,
@@ -185,13 +183,6 @@ export class SnippetsList extends React.Component {
           return true;
         }
         return snippet.get('labels').find(label => label === selectedLabel);
-      })
-      .filter((snippet) => {
-        if (!labelFilter) {
-          return true;
-        }
-        const re = new RegExp(labelFilter, 'i');
-        return snippet.get('labels').find(label => label.match(re));
       })
       .forEach((element) => {
         elements.push(
