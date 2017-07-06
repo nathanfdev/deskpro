@@ -7,7 +7,7 @@ export class AppServices {
   /**
    * @return {Orb.Class|DeskPRO.Agent.WindowElement.TabBar}
    */
-  static get tabs() { return window.DeskPRO_Window.TabBar; }
+  get tabs() { return window.DeskPRO_Window.TabBar; } // eslint-disable-line class-methods-use-this
 
   /**
    * @param {Http} api
