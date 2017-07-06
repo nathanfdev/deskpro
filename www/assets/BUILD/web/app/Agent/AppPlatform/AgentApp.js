@@ -193,31 +193,48 @@ define([
 			template: '<time class="dp-timeago"></time>',
 			replace: true,
 			scope: {
-				timestamp: '@timestamp'
+				timestamp: '@timestamp',
+				seconds: '@seconds'
 			},
 			link: function(scope, element, attrs) {
 				var timeoutId,
+					lastAnswer,
 					noSuffix = attrs['noSuffix'];
 
-				if (typeof noSuffix !== 'undefined') {
+				if (typeof noSuffix != 'undefined') {
 					noSuffix = true;
 				} else {
 					noSuffix = false;
 				}
 
-				function update() {
-					var time, ts, now;
-					if (!scope.timestamp) {
-						return;
+				if (scope.seconds) {
+					noSuffix = true;
+				}
+
+				var getTimestamp = function() {
+          var ts;
+          if (!scope.timestamp && !scope.seconds) {
+            return;
+          }
+
+          if (scope.timestamp) {
+            ts = parseInt(scope.timestamp, 10) * 1000;
+          } else {
+            ts = ((Date.now() / 1000) - Math.abs(parseInt(scope.seconds, 10))) * 1000;
+          }
+
+          return ts;
+				};
+
+				var update = function() {
+          var time, ts, now, timeago;
+
+          ts = getTimestamp();
+          if (!ts) {
+          	return;
 					}
 
-					ts = scope.timestamp + "";
-
-					if (ts.length == 10 && ts.match(/^\d+$/)) {
-						time = moment.unix(ts);
-					} else {
-						time = moment(ts);
-					}
+          time = moment.unix(ts / 1000);
 
 					if (!time || !time.isValid()) {
 						return;
@@ -228,21 +245,18 @@ define([
 						time = now;
 					}
 
-					var fulltime = $filter('formatTimestamp')(time, 'fulltime');
-          if(window.DP_DISABLE_RELATIVE_TIMES) {
-            element.text(fulltime);
+          if (window.DP_DISABLE_RELATIVE_TIMES) {
+            element.text($filter('formatTimestamp')(time, 'fulltime'));
 					} else {
-            // Cancel interval if its an old date that is unlikely to change in realtime
-            // Saves some cycles when many timeago's are visible
-            if (timeoutId && Math.abs(moment().unix() - time.unix()) < 86400) {
-              $interval.cancel(timeoutId);
-              timeoutId = null;
-            }
-            element.text(TimeAgo.get(time.toDate(), !noSuffix)).attr('title', fulltime);
+            timeago = TimeAgo.get(time.toDate(), !noSuffix);
+            if (!lastAnswer || lastAnswer !== timeago) {
+              element.text(timeago).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
+						}
+            lastAnswer = timeago;
 					}
         }
 
-        if(!window.DP_DISABLE_RELATIVE_TIMES) {
+        if (!window.DP_DISABLE_RELATIVE_TIMES) {
           element.on('$destroy', function() {
             if (timeoutId) {
               $interval.cancel(timeoutId);
@@ -250,10 +264,25 @@ define([
             }
           });
 
-          if (attrs['autoUpdate'] || attrs['updateInterval']) {
-            timeoutId = $interval(function() {
-              update();
-            }, parseInt(attrs['updateInterval'], 10) || 15000);
+          if (typeof attrs['autoUpdate'] != 'undefined') {
+          	var interval = null;
+          	var ts = getTimestamp() / 1000;
+          	var tsNow = Date.now() / 1000;
+          	var diff = Math.abs(tsNow - ts);
+
+          	if (diff < 7200) {
+          		interval = 20000;
+						} else if (diff < 28800) {
+          		interval = 90000;
+						} else {
+          		// unlikely to change in realtime
+						}
+
+						if (interval) {
+              timeoutId = $interval(function () {
+                update();
+              }, interval);
+            }
 
             scope.$watch('timestamp', function() {
               update();

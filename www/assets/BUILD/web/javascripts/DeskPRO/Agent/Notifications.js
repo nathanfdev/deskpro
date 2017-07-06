@@ -108,7 +108,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 					ul.html(rows.rendered_list);
 					ul.find('.dismiss').remove();
 					ul.find('li').addClass('is-dismissed');
-					ul.find('time').addClass('timeago').timeago();
+					ul.find('time').addClass('timeago');
 					ul.show();
 				}
 			});
@@ -233,12 +233,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 
       var nowString = (new Date()).toISOString();
       appendRows.each(function() {
-        var time = $(this).find('time');
+        var time = $(this).find('time').text('now');
         if (time[0]) {
           if (!time.attr('datetime')) {
             time.attr('datetime', nowString);
           }
-          Orb.Util.TimeAgo.refreshElements([time.get(0)]);
         }
 			});
 
