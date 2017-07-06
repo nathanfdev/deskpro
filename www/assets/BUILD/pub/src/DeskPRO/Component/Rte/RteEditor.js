@@ -106,14 +106,17 @@ export default class RteEditor extends React.Component {
     const clipboardData = event.originalEvent.clipboardData;
     if (clipboardData) {
       // Non-IE browsers
-      const pastedText = clipboardData.getData('text/plain');
-      const pastedHtml = clipboardData.getData('text/html');
-
       if (!clipboardHasImages(clipboardData)) {
-        this.medium.cleanPaste(pastedText);
+        let pastedText = clipboardData.getData('text/plain');
+        if (pastedText) {
+          pastedText = pastedText.replace(/\n/g, '<br />');
+
+          this.medium.cleanPaste(pastedText);
+        }
       }
 
       if (onPasteImage) {
+        const pastedHtml = clipboardData.getData('text/html');
         if (clipboardData.items) {
           getBlobsFromItems(clipboardData.items, onPasteImage);
         } else if (pastedHtml) {
@@ -122,11 +125,14 @@ export default class RteEditor extends React.Component {
       }
     } else if (window.clipboardData) {
       // IE browser
-      const content = window.clipboardData.getData('Text');
-      try {
-        getBlobFromUrl(content, onPasteImage);
-      } catch (e) {
-        this.medium.cleanPaste(content);
+      let content = window.clipboardData.getData('Text');
+      if (content) {
+        try {
+          getBlobFromUrl(content, onPasteImage);
+        } catch (e) {
+          content = content.replace(/\n/g, '<br />');
+          this.medium.cleanPaste(content);
+        }
       }
     }
   };
