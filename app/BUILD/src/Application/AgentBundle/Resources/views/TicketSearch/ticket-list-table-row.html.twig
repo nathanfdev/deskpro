@@ -1,8 +1,4 @@
-<% if (ticket.preview_changes) {
-	ticket_display = ticket.preview_changes;
-} else {
-	ticket_display = ticket;
-} %>
+<% ticket_display = ticket; %>
 <% var fields = getDisplayableFields(); %>
 <td width="20">
 	<input type="checkbox" class="item-select" ng-model="checkedTickets[<%= ticket.id %>]" ng-change="onToggleTicket(<%= ticket_display.id %>)" />
@@ -114,13 +110,13 @@
 		<% } %>
 		<% if (field == 'total_user_waiting') { %>
 			<span class="prop-val">
-				<span ng-bind="<%= parseInt(
+				<span dp-timeago auto-update seconds="<%= parseInt(
 					(ticket_display.total_user_waiting || 0)
 					+ (
 						(ticket_display.date_user_waiting_ts || ticket_display.date_created_ts)
 						- ((new Date()).getTime()/1000)
 					)
-				) %>|formatSeconds"></span>
+				) %>" no-suffix />
 			</span>
 		<% } %>
 		<% if (field == 'slas') { %>
