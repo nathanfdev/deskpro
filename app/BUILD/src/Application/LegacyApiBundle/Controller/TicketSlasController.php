@@ -138,7 +138,12 @@ class TicketSlasController extends AbstractController implements ProtectedContro
                         continue;
                     }
                 }
-                $warn_actions->addActionFromArray($act);
+
+                try {
+                    $warn_actions->addActionFromArray($act);
+                } catch (\Exception $e) {
+                    return $this->createApiErrorResponse('validation_error', $e->getMessage());
+                }
             }
         }
         $sla->warn_actions = $warn_actions;
@@ -154,7 +159,12 @@ class TicketSlasController extends AbstractController implements ProtectedContro
                         continue;
                     }
                 }
-                $fail_actions->addActionFromArray($act);
+
+                try {
+                    $fail_actions->addActionFromArray($act);
+                } catch (\Exception $e) {
+                    return $this->createApiErrorResponse('validation_error', $e->getMessage());
+                }
             }
         }
         $sla->fail_actions = $fail_actions;
