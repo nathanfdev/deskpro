@@ -63,7 +63,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         }
 			}, 60);
 			if (self.wasSnippetOpen) {
-				self.openSnippetsViewer();
+				if (window.DP_HAS_NEW_SNIPPETS) {
+					var event = new CustomEvent('dpLeftDrawer', {detail: {
+						module: 'SnippetsMenu',
+						width: 745,
+						insertSnippet: self.insertSnippet.bind(self),
+            onClose: self.registerCloseSnippetViewer.bind(self)
+					}});
+					window.document.dispatchEvent(event);
+					self.isSnippetOpen = true;
+			    self.wasSnippetOpen = false;
+				}
 			}
 		});
 
@@ -1360,10 +1370,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					self.shortcutReplySetAwaitingAgent();
 					return;
 				}
-					if (isCtrl && (ev.which === 68)) {
-						ev.preventDefault();
-						self.shortcutReplySetResolved();
-						return;
+				if (isCtrl && (ev.which === 68)) {
+					ev.preventDefault();
+					self.shortcutReplySetResolved();
+					return;
 				}
 				if (isCtrl && (ev.which === 82)) {
 					ev.preventDefault();
@@ -1679,7 +1689,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						{ 
 							module: 'SnippetsMenu',
 							width: 745,
-							langId,
+							langId: langId,
               department: parseInt(departmentId, 10),
 							insertSnippet: this.insertSnippet.bind(this), 
 							onClose: this.registerCloseSnippetViewer.bind(this)
@@ -1927,7 +1937,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	shortcutOpenSnippets: function() {
-    this.openSnippetsViewer()
+    	this.openSnippetsViewer();
 	},
 
 	shortcutSendReply: function() {
