@@ -80,7 +80,18 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
 
         $this->logger->debug('Verify: File does exist');
 
-        $size = BigFile::getFileSize($filename);
+        try {
+            $size = BigFile::getFileSize($filename);
+        } catch (DbBackupException $e) {
+            $this->logger->critical($e->getMessage());
+            throw $e;
+        }
+
+        if (false === $size) {
+            $this->logger->critical(sprintf('Can\'t read dump file located in %s, please check the file manually', $filename));
+            throw new DbBackupException('Database dump too small to be successful', DbBackupException::DUMP_ERROR_READ_FAILED);
+        }
+
         if ($size < self::MIN_SIZE) {
             $this->logger->critical(sprintf('Database dump filesize is too small, path: %s. Got: %d, expected at least: %d.', $filename, $size, self::MIN_SIZE));
             throw new DbBackupException('Database dump too small to be successful', DbBackupException::DUMP_ERROR_TOOSMALL);
