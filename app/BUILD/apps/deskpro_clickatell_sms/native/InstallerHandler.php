@@ -80,7 +80,7 @@ class InstallerHandler extends AbstractInstallerHandler
         $action_name = $this->getActionName($context);
 
         $rec = [
-            'app_id'      => $context->getApp()->id,
+            'app_id'      => $context->getApp()->getId(),
             'action_name' => $action_name,
             'def_class'   => 'deskpro_clickatell_sms\\Ticket\\Actions\\ActionDef\\SmsClickatellActionDef',
             'settings'    => null,
@@ -104,6 +104,6 @@ class InstallerHandler extends AbstractInstallerHandler
      */
     private function getActionName(InstallerContext $context)
     {
-        return 'SmsClickatellAction'.$context->getApp()->id;
+        return 'SmsClickatellAction'.$context->getApp()->getId();
     }
 }

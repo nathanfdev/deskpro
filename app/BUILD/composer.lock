@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "19bb32e4d1f69988b978e648018c0d2a",
-    "content-hash": "4e420b80bceb215147e84cf2c65b8850",
+    "hash": "b775fd42e8002f54cdbd9072ef14c4bf",
+    "content-hash": "ac5ed38a33f31107e0bd13264dddb49d",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -70,6 +70,48 @@
                 "zip"
             ],
             "time": "2017-01-30 10:52:58"
+        },
+        {
+            "name": "arcturial/clickatell",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/arcturial/clickatell.git",
+                "reference": "541ab55c3a807374fe727aad57004c09887080cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/arcturial/clickatell/zipball/541ab55c3a807374fe727aad57004c09887080cf",
+                "reference": "541ab55c3a807374fe727aad57004c09887080cf",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Clickatell\\": [
+                        "src",
+                        "test"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GNU General Public License"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Brand"
+                }
+            ],
+            "description": "Standalone PHP library to integrate with the Clickatell SMS gateway",
+            "homepage": "https://arcturial.github.com",
+            "time": "2017-03-10 09:48:13"
         },
         {
             "name": "aws/aws-sdk-php",

@@ -26,17 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Twilio
- */
-
 namespace deskpro_clickatell_sms\Ticket\Actions;
 
 use Application\DeskPRO\Tickets\Actions\AbstractSmsAction;
 use Orb\Sms\Provider\ClickatellSmsProvider;
 
+/**
+ * Class SmsClickatellAction.
+ */
 class SmsClickatellAction extends AbstractSmsAction
 {
     /**
@@ -49,15 +46,9 @@ class SmsClickatellAction extends AbstractSmsAction
      */
     public function getSmsProvider()
     {
-        if ($this->clickatell_provider) {
-            return $this->clickatell_provider;
+        if (!$this->clickatell_provider) {
+            $this->clickatell_provider = new ClickatellSmsProvider($this->getApp()->getSetting('auth_token'));
         }
-
-        $username = $this->getApp()->getSetting('username');
-        $password = $this->getApp()->getSetting('password');
-        $api_id   = $this->getApp()->getSetting('api_id');
-
-        $this->clickatell_provider = new ClickatellSmsProvider($username, $password, $api_id);
 
         return $this->clickatell_provider;
     }
