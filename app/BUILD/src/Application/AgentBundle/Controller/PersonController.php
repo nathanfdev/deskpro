@@ -123,7 +123,10 @@ class PersonController extends AbstractController
         $person_tickets       = $rep->getPersonTickets($person, $this->getPerson(), 251, 'status', 'DESC', $allowedTicketDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
             $person,
-            ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden']
+            $this->getPerson(),
+            ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden'],
+            $allowedTicketDepartmentIds
+
         );
 
         $person_files       = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
