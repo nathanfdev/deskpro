@@ -56,3 +56,9 @@ Feature: New ticket form
     When I go to "/portal/api/tickets/new?ticket[ticket_field_{tf1}][data]=val1&ticket[ticket_field_{tf2}][data]=val2"
     Then the response should contain "<input type=\\"text\\" id=\\"ticket_ticket_field_{tf1}_data\\" name=\\"ticket[ticket_field_{tf1}][data]\\" value=\\"val1\\""
     And the response should contain "<textarea id=\\"ticket_ticket_field_{tf2}_data\\" name=\\"ticket[ticket_field_{tf2}][data]\\">val2"
+
+  Scenario: I check custom fields xss
+    When I go to "/portal/api/tickets/new?ticket[ticket_field_{tf1}][data]=Default%20value<script>alert(%27foo%27);</script>&ticket[ticket_field_{tf2}][data]=Default%20value<script>alert(%27foo%27);</script>&ticket[message][message]=Default%20value<script>alert(%27foo%27);</script>"
+    Then the response should contain "<input type=\\"text\\" id=\\"ticket_ticket_field_{tf1}_data\\" name=\\"ticket[ticket_field_{tf1}][data]\\" value=\\"Default value[script]alert"
+    And the response should contain "<textarea id=\\"ticket_ticket_field_{tf2}_data\\" name=\\"ticket[ticket_field_{tf2}][data]\\">Default value[script]alert"
+    And the response should contain "<textarea id=\\"ticket_message_message\\" name=\\"ticket[message][message]\\" required=\\"required\\">Default value<"
