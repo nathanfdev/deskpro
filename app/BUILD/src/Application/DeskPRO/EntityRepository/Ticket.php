@@ -570,13 +570,13 @@ class Ticket extends AbstractEntityRepository
             $where2 = str_replace('%alias%', 't2', $status.$constructedWhere.$excludeNotesCondition);
 
             $count = App::getDb()->fetchColumn('
-                SELECT SUM(count)
+                SELECT COUNT(DISTINCT(a.id))
                 FROM (
-                    SELECT COUNT(*) AS count FROM tickets AS t1 WHERE t1.person_id = ? '
+                    SELECT t1.id FROM tickets AS t1 WHERE t1.person_id = ? '
                 .$where
                 .'
                     UNION
-                    SELECT COUNT(*) AS count FROM tickets_participants AS tp
+                    SELECT tp.ticket_id as id FROM tickets_participants AS tp
                     '.$join.' 
                     WHERE tp.person_id = ? '
                 .$where2
