@@ -762,17 +762,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
             self.page.pauseSend = true;
 
             if (window.DP_HAS_NEW_SNIPPETS) {
-              $.ajax({
-                url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/ticket/0?inline_sideloads=true&include=snippet_translation,blob',
-                dataType: 'json',
-                complete: function () {
-                  self.pauseSend = false;
-                },
-                success:  function (data) {
-                  var snippet = data.data;
-                  self.insertSnippet(snippet, data.linked.blob);
-								}
-              });
+              var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
+              var blobs = window.LegacyStoreProvider.getSnippetBlobs();
+              self.insertSnippet(snippet.toJS(), blobs.toJS());
             } else {
 							$.ajax({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
@@ -1482,22 +1474,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 	},
 
 	insertSnippet: function(snippet, blobs, langId) {
-		var self = this;
     var ticketLangId = this.page ? this.page.getEl('value_form').find('.language_id').val() : 0;
     if (langId) {
-    	ticketLangId = langId;
-		}
-    var snippetId = snippet.id;
-    var snippetCode = snippet.translations;
-    var vars         = self.page.meta.api_data;
-
-    this.recordSnippetUse(snippetId);
-
-    var agentText;
-    var defaultText;
-    var wantText;
-    var useText;
-    var result;
+      ticketLangId = langId;
+    }
+    var vars         = this.page.meta.api_data;
 
     var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
       var agentText, defaultText, wantText, useText;
@@ -1530,106 +1511,35 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       return useText;
     };
 
-    for (var i = 0; i < snippetCode.length; i++) {
-      if (snippetCode[i].content) {
-        if (snippetCode[i].language === parseInt(ticketLangId, 10)) {
-          wantText = snippetCode[i];
-        }
-        if (snippetCode[i].language === DESKPRO_PERSON_LANG_ID) {
-          agentText = snippetCode[i];
-        }
-        if (snippetCode[i].language === DESKPRO_DEFAULT_LANG_ID) {
-          defaultText = snippetCode[i];
-        }
-        useText = snippetCode[i];
-      }
-		}
-
-    if (wantText) {
-      useText = wantText;
-    } else if (agentText) {
-      useText = agentText;
-    } else if (defaultText) {
-      useText = defaultText;
-    }
-
-    if (useText.blobs.length) {
-      var $attachRow = this.getElById('attach_row');
-      Array.each(useText.blobs, function (info) {
-        var blob = blobs[info];
-        if (blob) {
-          var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});
-          $attachRow.find('ul.files:first').append(html);
-        }
-      });
-      $attachRow.slideDown().removeClass('is-hidden');
-    }
-
-    useText = useText.content;
-
     Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
       if (vars[prop] && vars[prop]['title_translated']) {
         vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
       }
     });
-
-    try {
-      var tpl = twig({
-        data: useText,
-        strict_variables: false
-      });
-      if (tpl) {
-        result = tpl.render({
-          entity: vars,
-          ticket: vars
-        }, {
-          strict_variables: false
-        });
-        if (!result) {
-          result = useText;
-        }
-      } else {
-        result = useText;
-      }
-    } catch (e) {
-      console.log("Snippet render failed: %o", e);
-      result = useText;
-    }
-
-
-    var data = result;
-    data = data.replace(/<\/p>\s*<p>/g, '<br/>');
-    data = data.replace(/^<p>/, '');
-    data = data.replace(/<\/p>$/, '');
-    data = $('<div>' + data + '</div>');
-
-    var api = this.textarea.data('redactor');
-    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-    if (el.length) {
-			var cursor = $('<span class="_cursor"></span>');
-			var cursorPos = data.find('> p');
-			if (!cursorPos[0]) {
-				cursorPos = data;
-			}
-
-			el.after(data);
-			cursorPos.append(cursor);
-			el.remove();
-
-			api.setSelection(cursor[0], 0, cursor[0], 0);
-		} else {
-      try {
-        api.restoreSelection();
-        api.setBuffer();
-      } catch (e) {}
-    	api.insertHtml(data.html());
-
-			var event = new CustomEvent('dpLeftDrawerClose');
-			window.document.dispatchEvent(event);
-			self.isSnippetOpen = false;
-		}
-		api.syncCode();
+    window.LegacySnippetInserter.insertSnippet(
+      snippet,
+      blobs,
+      ticketLangId,
+      vars,
+      this.textarea,
+      this.attachBlobs.bind(this),
+      this.recordSnippetUse.bind(this)
+    );
+    this.isSnippetOpen = false;
 	},
+
+  attachBlobs: function(blobs, source) {
+    var self = this;
+    var $attachRow = this.getElById('attach_row');
+    Array.each(blobs, function (info) {
+      var blob = source[info];
+      if (blob) {
+        var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});
+        $attachRow.find('ul.files:first').append(html);
+      }
+    });
+    $attachRow.slideDown().removeClass('is-hidden');
+  },
 
 	refreshMessageTranslation: function(to) {
 		var self       = this;

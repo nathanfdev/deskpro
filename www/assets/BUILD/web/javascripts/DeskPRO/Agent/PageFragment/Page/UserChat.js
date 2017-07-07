@@ -277,17 +277,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 							self.page.pauseSend = true;
 
               if (window.DP_HAS_NEW_SNIPPETS) {
-              	$.ajax({
-                  url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/chat/0?inline_sideloads=true&include=snippet_translation,blob',
-									dataType: 'json',
-									complete: function () {
-										if (self.page) self.page.pauseSend = false;
-									},
-									success:  function (data) {
-										var snippet = data.data;
-										self.insertSnippet(snippet);
-									}
-								});
+                var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
+                var blobs = window.LegacyStoreProvider.getSnippetBlobs();
+                self.insertSnippet(snippet.toJS(), blobs.toJS());
               } else {
                 $.ajax({
                   url:      BASE_URL + 'agent/text-snippets/chat/' + snippetId + '.json',
@@ -622,126 +614,26 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	insertSnippet: function(snippet, blobs, langId) {
-		var self = this;
-    var snippetId = snippet.id;
-    var snippetCode = snippet.translations;
+    window.LegacySnippetInserter.insertSnippet(
+      snippet,
+      blobs,
+      langId,
+      this.meta.api_data,
+      this.textarea,
+      this.attachBlobs.bind(this),
+      this.recordSnippetUse.bind(this)
+    );
+    this.isSnippetOpen = false;
+	},
 
-    var defaultText;
-    var useText;
-    var result;
-
-    if (!langId) {
-      langId = DESKPRO_DEFAULT_LANG_ID;
-		}
-
-    Array.each(snippetCode, function (info) {
-      if (info.language === langId) {
-        defaultText = info;
-      }
-      useText = info;
-    });
-
-    if (defaultText) {
-      useText = defaultText;
-    }
-
+  attachBlobs: function(blobs, source) {
     // At the moment attachment as sent straight away we need to be able to edit them or review the message
     // before sending them
-    // if (useText.blobs.length) {
-    //   var $attachRow = self.getEl('attach_row');
-    //   Array.each(useText.blobs, function (info) {
-    //     var blob = data.linked.blob[info];
-    //     if (blob) {
-    //       var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
-    //       $attachRow.find('ul.files:first').append(html);
-    //     }
-    //   });
-    //   $attachRow.slideDown().removeClass('is-hidden');
-    // }
-
-    useText = useText.content;
-
-    try {
-      self.getEl('user_choice');
-      var tpl = twig({
-        data:             useText,
-        strict_variables: false
-      });
-      if (tpl) {
-        result = tpl.render({
-          entity: self.meta.api_data
-        }, {
-          strict_variables: false
-        });
-        if (!result) {
-          result = useText;
-        }
-      } else {
-        result = useText;
-      }
-    } catch (e) {
-      console.log("Snippet render failed: %o", e);
-      result = useText;
-    }
-
-    var data;
-
-    var wrapper = $('<div/>');
-    wrapper.html(result);
-
-    // if (wrapper.find('> div, > p, > span')[0]) {
-    //   data = wrapper.find('> *');
-    // } else {
-		data = wrapper;
-    // }
-
-    // trailing newlines
-    var coll;
-    if (data.length === 1) {
-      coll = data;
-    } else {
-      coll = data.find('> p');
-    }
-    coll.each(function () {
-      var l = $(this).find('> *').last();
-      if (l.is('br')) {
-        l.remove();
-      }
-    });
-
-    if (data.find('> div, > span, > p').length === 1) {
-      var span = $('<span></span>');
-      span.append(data.find('> *'));
-      data = span;
-    } else if (data.find('> *').length === 0) {
-      var span = $('<span></span>');
-      span.html(data.html());
-      data = span;
-    }
-
-    var api = this.textarea.data('redactor');
-    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-    if (el.length) {
-      data.append('<span class="_cursor"></span>');
-      var cursor = data.find('._cursor');
-
-      el.after(data);
-      el.remove();
-      api.setSelection(cursor[0], 0, cursor[0], 0);
-    } else {
-
-      try {
-        api.restoreSelection();
-        api.setBuffer();
-      } catch (e) {}
-      api.insertHtml(data.html());
-
-      var event = new CustomEvent('dpLeftDrawerClose');
-      window.document.dispatchEvent(event);
-      self.isSnippetOpen = false;
-		}
-    api.syncCode();
 	},
+
+  recordSnippetUse: function(snippetId) {
+    // Add Snippet usage record mechanism
+  },
 
 	handleNewMessageCm: function(data, name) {
 

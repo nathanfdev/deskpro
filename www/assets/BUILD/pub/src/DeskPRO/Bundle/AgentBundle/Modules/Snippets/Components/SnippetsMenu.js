@@ -35,7 +35,7 @@ export class SnippetsMenuContainer extends React.Component {
   static defaultProps = {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
-  };;
+  };
 
   static getSnippetTranslationToUse(snippetTranslations, langPref) {
     for (let i = 0; i < langPref.length; i++) {
@@ -62,6 +62,7 @@ export class SnippetsMenuContainer extends React.Component {
   insertSnippet = (e, snippet, langId) => {
     e.preventDefault();
     e.stopPropagation();
+
     this.props.insertSnippet(snippet.toJS(), this.props.blobs.toJS(), langId);
   };
 
@@ -220,12 +221,14 @@ export class SnippetsMenu extends React.Component {
     if (!this.state.editOpen) {
       return null;
     }
-    return (<SnippetsModalContainer
-      snippet={this.state.snippetEdit}
-      langId={this.state.editLang}
-      type={this.props.type}
-      closeModal={this.closeEditSnippet}
-    />);
+    return (
+      <SnippetsModalContainer
+        snippet={this.state.snippetEdit}
+        langId={this.state.editLang}
+        type={this.props.type}
+        closeModal={this.closeEditSnippet}
+      />
+    );
   };
 
   closeShortCut = (ev) => {

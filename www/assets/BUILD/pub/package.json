@@ -104,6 +104,7 @@
     "striptags": "2.1.1",
     "to-markdown": "^3.0.3",
     "toastr": "^2.1.2",
+    "twig": "^1.10.5",
     "xcomponent": "1.0.125"
   },
   "devDependencies": {

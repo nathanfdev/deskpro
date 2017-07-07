@@ -14,7 +14,8 @@ export class LeftDrawerContainer extends SeparateComponent {
       active: false,
       module: null,
       props:  {},
-      width:  600
+      width:  600,
+      zIndex: null,
     };
     this.ticking  = false;
     this.splitter = document.getElementById('dp_list_resizer');
@@ -51,7 +52,8 @@ export class LeftDrawerContainer extends SeparateComponent {
         } else {
           this.setState({
             module,
-            props
+            props,
+            zIndex: e.detail.zIndex ? e.detail.zIndex : null,
           });
           this.openDrawer();
         }
@@ -103,8 +105,11 @@ export class LeftDrawerContainer extends SeparateComponent {
   };
 
   render() {
-    const { active, width } = this.state;
+    const { active, width, zIndex } = this.state;
     const style = { width: active ? width : 0 };
+    if (zIndex) {
+      style.zIndex = zIndex;
+    }
     const props = this.state.props;
     const Module = this.state.module;
     if (Module) {

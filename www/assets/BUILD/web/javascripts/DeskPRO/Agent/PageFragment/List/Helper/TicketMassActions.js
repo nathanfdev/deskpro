@@ -670,89 +670,33 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
   },
 
   insertSnippet: function(snippet, blobs, langId) {
-    var self = this;
     var ticketLangId = self.page ? self.page.getEl('value_form').find('.language_id').val() : 0;
     if (langId) {
       ticketLangId = langId;
     }
-    var snippetId = snippet.id;
-    var snippetCode = snippet.translations;
+    window.LegacySnippetInserter.insertSnippet(
+      snippet,
+      blobs,
+      ticketLangId,
+      null,
+      this.textarea,
+      this.attachBlobs.bind(this),
+      this.recordSnippetUse.bind(this)
+    );
+    this.isSnippetOpen = false;
+  },
 
-    self.recordSnippetUse(snippetId);
-
-    var agentText;
-    var defaultText;
-    var wantText;
-    var useText;
-
-    for (var i = 0; i < snippetCode.length; i++) {
-      if (snippetCode[i].content) {
-        if (snippetCode[i].language === parseInt(ticketLangId, 10)) {
-          wantText = snippetCode[i];
-        }
-        if (snippetCode[i].language === DESKPRO_PERSON_LANG_ID) {
-          agentText = snippetCode[i];
-        }
-        if (snippetCode[i].language === DESKPRO_DEFAULT_LANG_ID) {
-          defaultText = snippetCode[i];
-        }
-        useText = snippetCode[i];
+  attachBlobs: function(blobs, source) {
+    var self = this;
+    var $attachRow = this.getElById('attach_row');
+    Array.each(blobs, function (info) {
+      var blob = source[info];
+      if (blob) {
+        var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+        $attachRow.find('ul.files:first').append(html);
       }
-    }
-
-    if (wantText) {
-      useText = wantText;
-    } else if (agentText) {
-      useText = agentText;
-    } else if (defaultText) {
-      useText = defaultText;
-    }
-
-    if (useText.blobs.length) {
-      var $attachRow = this.getElById('attach_row');
-      Array.each(useText.blobs, function (info) {
-        var blob = blobs[info];
-        if (blob) {
-          var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
-          $attachRow.find('ul.files:first').append(html);
-        }
-      });
-      $attachRow.slideDown().removeClass('is-hidden');
-    }
-
-    useText = useText.content;
-
-    useText = useText.replace(/<\/p>\s*<p>/g, '<br/>');
-    useText = useText.replace(/^<p>/, '');
-    useText = useText.replace(/<\/p>$/, '');
-    var result = $('<div>' + useText + '</div>');
-
-    var api = this.textarea.data('redactor');
-    var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
-    if (el.length) {
-      var cursor = $('<span class="_cursor"></span>');
-      var cursorPos = result.find('> p');
-      if (!cursorPos[0]) {
-        cursorPos = result;
-      }
-
-      el.after(result);
-      cursorPos.append(cursor);
-      el.remove();
-
-      api.setSelection(cursor[0], 0, cursor[0], 0);
-    } else {
-      try {
-        api.restoreSelection();
-        api.setBuffer();
-      } catch (e) {}
-      api.insertHtml(result.html());
-
-      var event = new CustomEvent('dpLeftDrawerClose');
-      window.document.dispatchEvent(event);
-      self.isSnippetOpen = false;
-    }
-    api.syncCode();
+    });
+    $attachRow.slideDown().removeClass('is-hidden');
   },
 
 
@@ -849,11 +793,14 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         snippetBtn.on('click', function(ev) {
           Orb.cancelEvent(ev);
           if (window.DP_HAS_NEW_SNIPPETS) {
-            var event = new CustomEvent('dpLeftDrawer', {detail: {
-              module: 'SnippetsMenu',
-              width: 745,
-              insertSnippet: self.insertSnippet.bind(self)
-            }});
+            var event = new CustomEvent('dpLeftDrawer', {
+              detail: {
+                module: 'SnippetsMenu',
+                width: 745,
+                zIndex: 22000,
+                insertSnippet: self.insertSnippet.bind(self)
+              }
+            });
             window.document.dispatchEvent(event);
           } else {
             self.snippetsViewer.open();
@@ -994,17 +941,9 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
             api.insertHtml('<span class="editor-inserting-var snippet-' + snippetId + '" ' + editable + ' data-snippet-id="' + snippetId + '">Inserting snippet</span>');
 
             if (window.DP_HAS_NEW_SNIPPETS) {
-              $.ajax({
-                url:      BASE_URL + 'api/v2/snippets/render/' + snippetId + '/ticket/0?inline_sideloads=true&include=snippet_translation,blob',
-                dataType: 'json',
-                complete: function () {
-                  self.pauseSend = false;
-                },
-                success:  function (data) {
-                  var snippet = data.data;
-                  self.insertSnippet(snippet, data.linked.blob);
-                }
-              });
+              var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
+              var blobs = window.LegacyStoreProvider.getSnippetBlobs();
+              self.insertSnippet(snippet.toJS(), blobs.toJS());
             } else {
               $.ajax({
                 url:      BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
