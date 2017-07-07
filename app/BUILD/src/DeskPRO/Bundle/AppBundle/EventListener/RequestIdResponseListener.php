@@ -53,10 +53,17 @@ class RequestIdResponseListener implements EventSubscriberInterface
      */
     public function onResponse(FilterResponseEvent $event)
     {
-        $request = $event->getRequest();
+        $request  = $event->getRequest();
+        $response = $event->getResponse();
+
         if ($request->attributes->has('request_id')) {
-            $response = $event->getResponse();
             $response->headers->add(['X-Request-ID' => $request->attributes->get('request_id')]);
+        }
+
+        try {
+            $pubref = \DpSys\License::getLicense()->getPublicLicenseRef();
+            $response->headers->add(['X-DP-LREF' => $pubref]);
+        } catch (\Exception $e) {
         }
     }
 }
