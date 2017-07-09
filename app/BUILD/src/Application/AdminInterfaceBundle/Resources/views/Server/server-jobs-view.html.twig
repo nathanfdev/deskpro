@@ -1,0 +1,114 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('server.jobs') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>{{ phrase('admin.server_jobs.list') }}</h3>
+		</a>
+	</section>
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('admin.server_jobs.view', {id: 'ng_var(JobsViewCtrl.job.id)' }) }}</h3>
+		</header>
+
+        {##################################################################################################}
+
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.type') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.type') }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.status') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.status') }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.status_code') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.status_code') }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.date_created') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.date_created | date : "yyyy-MM-d H:mm:ss"') }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.date_last_try') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.date_last_try | date : "yyyy-MM-d H:mm:ss"') }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.date_next_try') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.date_next_try | date : "yyyy-MM-d H:mm:ss"') }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.log_summary') }}</strong>
+						</div>
+						<div class="col-sm-10">
+                            {{ ng_var('JobsViewCtrl.job.log_summary') }}
+						</div>
+					</div>
+				</div>
+				<div ng-if="JobsViewCtrl.job.log" class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.log') }}</strong>
+						</div>
+						<div class="col-sm-10">
+							<pre>{{ ng_var('JobsViewCtrl.job.log') }}</pre>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<div class="col-sm-2">
+							<strong>{{ phrase('admin.server_jobs.data') }}</strong>
+						</div>
+						<div class="col-sm-10">
+							<pre style="max-width: 700px;">{{ ng_var('JobsViewCtrl.getData()') }}</pre>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+{% endblock %}

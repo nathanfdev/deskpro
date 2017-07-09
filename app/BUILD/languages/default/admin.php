@@ -2343,4 +2343,19 @@ return [
     'admin.setup.view_brand'    => 'View brand portal',
     'admin.setup.new_brand'     => 'New Brand...',
     'admin.portal.create_brand' => 'Create Brand',
+
+    'admin.server_jobs.list'          => 'Queued jobs',
+    'admin.server_jobs.view'          => 'Details for job #{{id}}',
+    'admin.server_jobs.id'            => 'Job id',
+    'admin.server_jobs.type'          => 'Job Type',
+    'admin.server_jobs.status'        => 'Status',
+    'admin.server_jobs.status_code'   => 'Status code',
+    'admin.server_jobs.date_created'  => 'Created',
+    'admin.server_jobs.date_last_try' => 'Last try',
+    'admin.server_jobs.date_next_try' => 'Next try',
+    'admin.server_jobs.num_tries'     => 'Number of Tries',
+    'admin.server_jobs.data'          => 'Associated data',
+    'admin.server_jobs.log_summary'   => 'Log summary',
+    'admin.server_jobs.log'           => 'Log',
+
 ];
