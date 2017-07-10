@@ -31,62 +31,37 @@ namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\Settings\Model\EnabledOptionTrait;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
- * Class RateLimitGroup.
- *
- * @Assert\GroupSequenceProvider
+ * Class AbstractRateLimitGroup.
  */
-class RateLimitGroup implements GroupSequenceProviderInterface
+abstract class AbstractRateLimitGroup
 {
     use EnabledOptionTrait;
-
-    const RESPONSE_LOCKOUT = 'lockout';
-    const RESPONSE_CAPTCHA = 'captcha';
 
     /**
      * The limit itself.
      *
      * @var int
      *
-     * @Assert\NotBlank(groups={"Common"})
-     * @Assert\GreaterThan(value=0, groups={"Common"})
+     * @Assert\NotBlank()
+     * @Assert\GreaterThan(value=0)
      *
      * @JMS\Type("integer")
      */
-    private $limit = 0;
+    protected $limit = 0;
 
     /**
      * Time period for limit.
      *
      * @var int
      *
-     * @Assert\NotBlank(groups={"Common"})
-     * @Assert\GreaterThan(value=0, groups={"Common"})
+     * @Assert\NotBlank()
+     * @Assert\GreaterThan(value=0)
      *
      * @JMS\Type("integer")
      */
-    private $time = 0;
-
-    /**
-     * How to respond when limit was hit.
-     *
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    private $response = self::RESPONSE_LOCKOUT;
-
-    /**
-     * @var int
-     *
-     * @Assert\NotBlank(groups={"Lockout"})
-     * @Assert\GreaterThan(value=0, groups={"Lockout"})
-     *
-     * @JMS\Type("integer")
-     */
-    private $lockoutTime = 0;
+    protected $time = 0;
 
     /**
      * @return int
@@ -126,58 +101,5 @@ class RateLimitGroup implements GroupSequenceProviderInterface
         $this->time = $time;
 
         return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLockoutTime()
-    {
-        return $this->lockoutTime;
-    }
-
-    /**
-     * @param int $lockoutTime
-     *
-     * @return $this
-     */
-    public function setLockoutTime($lockoutTime)
-    {
-        $this->lockoutTime = $lockoutTime;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
-     * @param string $response
-     *
-     * @return $this
-     */
-    public function setResponse($response)
-    {
-        $this->response = $response;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getGroupSequence()
-    {
-        $groups = ['Common', 'Default'];
-        if ($this->response === self::RESPONSE_LOCKOUT) {
-            $groups[] = 'Lockout';
-        }
-
-        return $groups;
     }
 }

@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -42,9 +42,9 @@ class PortalAgentRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $loginSettings;
 
@@ -53,11 +53,11 @@ class PortalAgentRateLimit
      */
     public function __construct()
     {
-        $this->loginSettings = new RateLimitGroup();
+        $this->loginSettings = new RateLimitOptionsGroup();
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getLoginSettings()
     {

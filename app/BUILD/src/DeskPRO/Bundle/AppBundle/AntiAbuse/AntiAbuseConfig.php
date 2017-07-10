@@ -206,7 +206,7 @@ class AntiAbuseConfig
      */
     public function isValid()
     {
-        return $this->time && $this->limit && $this->response;
+        return $this->time && $this->limit;
     }
 
     public function accountOnlySettings()

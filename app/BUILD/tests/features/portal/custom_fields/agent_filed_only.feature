@@ -20,7 +20,7 @@ Feature: Agent field only
 
     Scenario: I check registration agent only field is hidden
       When I go to "/register"
-      Then the ".form-ticket" form should have 6 elements
+      Then the ".form-ticket" form should have 7 elements
       And I should see ".form-ticket" form fields in following order:
         | name                                      |
         | person_registration[name]                 |
@@ -29,6 +29,7 @@ Feature: Agent field only
         | person_registration[password][confirm]    |
         | person_registration[timezone]             |
         | person_registration[{user_field_2}][data] |
+        | person_registration[captcha][captcha]     |
 
     Scenario: I check profile agent only field is hidden
       Given I'm authenticated as user

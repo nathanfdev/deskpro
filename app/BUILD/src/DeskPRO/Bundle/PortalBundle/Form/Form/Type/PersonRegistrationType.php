@@ -122,29 +122,22 @@ class PersonRegistrationType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
-
-            foreach ($this->fieldManager->getAvailablePersonDefs() as $def) {
-                if (!$def->isEnabled()) {
-                    continue;
-                }
-                if ($def->isAgentField()) {
-                    continue;
-                }
-
-                $form->add($def->getId(), CustomDataType::class, [
-                    'custom_def'      => $def,
-                    'property_path'   => 'custom_data',
-                    'agent_interface' => false,
-                ]);
+        foreach ($this->fieldManager->getAvailablePersonDefs() as $def) {
+            if (!$def->isEnabled()) {
+                continue;
+            }
+            if ($def->isAgentField()) {
+                continue;
             }
 
-            if ($this->captchaDecider->shouldRequireRegistrationCaptchaForCurrentPerson()) {
-                $event->getForm()->add('captcha', DpCaptchaType::class);
-            }
-        });
+            $builder->add($def->getId(), CustomDataType::class, [
+                'custom_def'      => $def,
+                'property_path'   => 'custom_data',
+                'agent_interface' => false,
+            ]);
+        }
 
+        $builder->add('captcha', DpCaptchaType::class);
         $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
             $event->getData()->setPassword($event->getForm()->get('password')->getData());
         });

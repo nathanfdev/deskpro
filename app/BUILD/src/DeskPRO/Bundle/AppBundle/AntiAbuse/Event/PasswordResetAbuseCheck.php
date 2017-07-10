@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\AntiAbuse\Event;
 
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
@@ -37,7 +33,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 /**
  * Check vs "forgot password" feature abuse.
  */
-class PasswordResetAbuseCheck extends AntiAbuseEvent
+class PasswordResetAbuseCheck extends AntiAbuseLockoutEvent
 {
     /**
      * @return string

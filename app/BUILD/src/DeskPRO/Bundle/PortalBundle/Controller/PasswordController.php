@@ -74,20 +74,27 @@ class PasswordController extends AbstractController
             $data  = $form->getData();
             $email = $data['email'];
 
-            if ($person = $this->getPersonDataService()->getPersonForEmail($email)) {
+            $personData = $this->getPersonDataService();
+            $person     = $personData->getPersonForEmail($email);
+
+            if ($person) {
                 if ($person->isAgent() || $person->isAdmin()) {
                     // redirect to the /agent forgot password functionality
                     return $this->redirectToRoute('agent_login', ['forgot' => $email]);
                 }
 
-                // set the reset code
-                $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
-                $reset         = $this->getPersonDataService()->createPasswordReset($person, $valid_seconds);
+                // check if the reset code is not exist or was created more than 1 hour ago
+                // if so, then create a new code and send a new message
+                if ($personData->isPasswordResetReSendExpired($person)) {
+                    // set the reset code
+                    $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
+                    $reset         = $personData->createPasswordReset($person, $valid_seconds);
 
-                if ($isResetting) {
-                    $this->get('portal_email_sender')->sendPasswordResetLink($person, $reset);
-                } else {
-                    $this->get('portal_email_sender')->sendPasswordSetLink($person, $reset);
+                    if ($isResetting) {
+                        $this->get('portal_email_sender')->sendPasswordResetLink($person, $reset);
+                    } else {
+                        $this->get('portal_email_sender')->sendPasswordSetLink($person, $reset);
+                    }
                 }
             }
 

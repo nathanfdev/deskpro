@@ -1848,7 +1848,7 @@ return [
     'admin.settings.portal_rate_limit_ip_whitelist'                                        => 'Whitelist IP addresses',
     'admin.settings.portal_rate_limit_logged_in'                                           => 'Rate Limiting for Logged-In Users',
     'admin.settings.portal_rate_limit_login_attempted'                                     => 'After a user has attempted to login',
-    'admin.settings.portal_rate_limit_minutes'                                             => 'minutes,',
+    'admin.settings.portal_rate_limit_minutes'                                             => 'minutes',
     'admin.settings.portal_rate_limit_registration_attempted'                              => 'After a user has attempted to register',
     'admin.settings.portal_rate_limit_registration_rate_limit'                             => 'Registration Rate Limiting',
     'admin.settings.portal_rate_limit_reject_form'                                         => 'disable the form',

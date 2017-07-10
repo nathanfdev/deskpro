@@ -28,8 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -37,9 +36,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class RateLimitGroupType.
+ * Class RateLimitOptionsGroupType.
  */
-class RateLimitGroupType extends AbstractType
+class RateLimitOptionsGroupType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -47,18 +46,15 @@ class RateLimitGroupType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enabled', ApiBooleanType::class)
-            ->add('limit', NumberType::class)
-            ->add('time', NumberType::class)
-            ->add('lockout_time', NumberType::class, [
-                'property_path' => 'lockoutTime',
-            ])
             ->add('response', ChoiceType::class, [
                 'choices_as_values' => true,
                 'choices'           => [
-                    RateLimitGroup::RESPONSE_CAPTCHA,
-                    RateLimitGroup::RESPONSE_LOCKOUT,
+                    RateLimitOptionsGroup::RESPONSE_CAPTCHA,
+                    RateLimitOptionsGroup::RESPONSE_LOCKOUT,
                 ],
+            ])
+            ->add('lockout_time', NumberType::class, [
+                'property_path' => 'lockoutTime',
             ])
         ;
     }
@@ -69,7 +65,15 @@ class RateLimitGroupType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => RateLimitGroup::class,
+            'data_class' => RateLimitOptionsGroup::class,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return BaseRateLimitGroupType::class;
     }
 }

@@ -26,36 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitOptionsGroupType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAgentRateLimit;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class PortalUserRateLimitType.
+ * Class RateLimitLockoutGroup.
  */
-class PortalAgentRateLimitType extends AbstractType
+class RateLimitLockoutGroup extends AbstractRateLimitGroup
 {
     /**
-     * {@inheritdoc}
+     * @var int
+     *
+     * @Assert\NotBlank()
+     * @Assert\GreaterThan(value=0)
+     *
+     * @JMS\Type("integer")
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected $lockoutTime = 0;
+
+    /**
+     * @return int
+     */
+    public function getLockoutTime()
     {
-        $builder->add('login_settings', RateLimitOptionsGroupType::class, [
-            'property_path' => 'loginSettings',
-        ]);
+        return $this->lockoutTime;
     }
 
     /**
-     * {@inheritdoc}
+     * @param int $lockoutTime
+     *
+     * @return $this
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function setLockoutTime($lockoutTime)
     {
-        $resolver->setDefaults([
-            'data_class' => PortalAgentRateLimit::class,
-        ]);
+        $this->lockoutTime = $lockoutTime;
+
+        return $this;
     }
 }

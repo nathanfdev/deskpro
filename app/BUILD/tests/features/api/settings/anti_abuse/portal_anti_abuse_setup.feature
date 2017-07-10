@@ -19,12 +19,10 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.account_rate_limit.registration_settings.enabled" should be equal to 1
     And the JSON node "data.account_rate_limit.registration_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.registration_settings.time" should be equal to 15
-    And the JSON node "data.account_rate_limit.registration_settings.response" should be equal to "captcha"
 
     And the JSON node "data.account_rate_limit.reset_password_settings.enabled" should be equal to 1
     And the JSON node "data.account_rate_limit.reset_password_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.reset_password_settings.time" should be equal to 15
-    And the JSON node "data.account_rate_limit.reset_password_settings.response" should be equal to "captcha"
 
     And the JSON node "data.user_rate_limit.submit_ticket.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.submit_ticket.limit" should be equal to 3
@@ -97,14 +95,13 @@ Feature: Portal Anti-Abuse Setup
         "enabled": 0,
         "limit": 5,
         "time": 17,
-        "lockout_time": 10,
-        "response": "lockout"
+        "lockout_time": 10
     },
     "reset_password_settings": {
         "enabled": 1,
         "limit": 6,
         "time": 18,
-        "response": "captcha"
+        "lockout_time": 10
     }
   },
   "agent_rate_limit": {
@@ -213,13 +210,11 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.account_rate_limit.registration_settings.enabled" should be equal to 0
     And the JSON node "data.account_rate_limit.registration_settings.limit" should be equal to 5
     And the JSON node "data.account_rate_limit.registration_settings.time" should be equal to 17
-    And the JSON node "data.account_rate_limit.registration_settings.response" should be equal to "lockout"
     And the JSON node "data.account_rate_limit.registration_settings.lockout_time" should be equal to 10
 
     And the JSON node "data.account_rate_limit.reset_password_settings.enabled" should be equal to 1
     And the JSON node "data.account_rate_limit.reset_password_settings.limit" should be equal to 6
     And the JSON node "data.account_rate_limit.reset_password_settings.time" should be equal to 18
-    And the JSON node "data.account_rate_limit.reset_password_settings.response" should be equal to "captcha"
 
     And the JSON node "data.user_rate_limit.login_settings.enabled" should be equal to 1
     And the JSON node "data.user_rate_limit.login_settings.limit" should be equal to 4
@@ -293,14 +288,12 @@ Feature: Portal Anti-Abuse Setup
     "registration_settings": {
         "enabled": 0,
         "limit": 5,
-        "time": 17,
-        "response": "lockout"
+        "time": 17
     },
     "reset_password_settings": {
         "enabled": 1,
         "limit": 6,
-        "time": 18,
-        "response": "captcha"
+        "time": 18
     }
   },
   "user_rate_limit": {

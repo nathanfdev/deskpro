@@ -26,36 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitOptionsGroupType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAgentRateLimit;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-/**
- * Class PortalUserRateLimitType.
- */
-class PortalAgentRateLimitType extends AbstractType
+class Build1499687955 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function addNewTables()
     {
-        $builder->add('login_settings', RateLimitOptionsGroupType::class, [
-            'property_path' => 'loginSettings',
-        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function runAlters()
     {
-        $resolver->setDefaults([
-            'data_class' => PortalAgentRateLimit::class,
-        ]);
+    }
+
+    public function run()
+    {
+        if ($this->readSetting('rate_limit.registration.response') === 'captcha') {
+            $this->saveSetting('rate_limit.registration.enabled', false);
+        }
+        if ($this->readSetting('rate_limit.reset_password.response') === 'captcha') {
+            $this->saveSetting('rate_limit.reset_password.enabled', false);
+        }
+
+        $this->execDbQuery('default', 'DELETE FROM `settings` WHERE `name` = "rate_limit.registration.response"');
+        $this->execDbQuery('default', 'DELETE FROM `settings` WHERE `name` = "rate_limit.reset_password.response"');
     }
 }

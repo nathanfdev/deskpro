@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitOptionsGroupType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,12 +45,24 @@ class PortalUserRateLimitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('login_settings', RateLimitGroupType::class)
-            ->add('submit_ticket', RateLimitGroupType::class)
-            ->add('submit_feedback', RateLimitGroupType::class)
-            ->add('submit_comment', RateLimitGroupType::class)
-            ->add('upload_attachment', RateLimitGroupType::class)
-            ->add('share_content', RateLimitGroupType::class)
+            ->add('login_settings', RateLimitOptionsGroupType::class, [
+                'property_path' => 'loginSettings',
+            ])
+            ->add('submit_ticket', RateLimitOptionsGroupType::class, [
+                'property_path' => 'submitTicket',
+            ])
+            ->add('submit_feedback', RateLimitOptionsGroupType::class, [
+                'property_path' => 'submitFeedback',
+            ])
+            ->add('submit_comment', RateLimitOptionsGroupType::class, [
+                'property_path' => 'submitComment',
+            ])
+            ->add('upload_attachment', RateLimitOptionsGroupType::class, [
+                'property_path' => 'uploadAttachment',
+            ])
+            ->add('share_content', RateLimitOptionsGroupType::class, [
+                'property_path' => 'shareContent',
+            ])
         ;
     }
 

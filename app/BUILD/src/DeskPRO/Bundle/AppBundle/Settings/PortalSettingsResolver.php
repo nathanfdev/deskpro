@@ -29,9 +29,11 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\AbstractRateLimitGroup;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAntiAbuseSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalUserRateLimit;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitLockoutGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\DownloadsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\FeedbackSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
@@ -85,9 +87,9 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
 
         $accountRateLimit = $model->getAccountRateLimit();
         $agentRateLimit   = $model->getAgentRateLimit();
-        $this->setRateLimitGroup($accountRateLimit->getRegistrationSettings(), 'rate_limit.registration');
-        $this->setRateLimitGroup($accountRateLimit->getResetPasswordSettings(), 'rate_limit.reset_password');
-        $this->setRateLimitGroup($agentRateLimit->getLoginSettings(), 'rate_limit.login.agent');
+        $this->setRateLimitLockoutGroup($accountRateLimit->getRegistrationSettings(), 'rate_limit.registration');
+        $this->setRateLimitLockoutGroup($accountRateLimit->getResetPasswordSettings(), 'rate_limit.reset_password');
+        $this->setRateLimitOptionsGroup($agentRateLimit->getLoginSettings(), 'rate_limit.login.agent');
 
         $this->setUserRateLimit($model->getUserRateLimit());
         $this->setUserRateLimit($model->getGuestRateLimit(), 'guest');
@@ -96,15 +98,36 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     }
 
     /**
-     * @param RateLimitGroup $group
-     * @param string         $settingPrefix
+     * @param AbstractRateLimitGroup $group
+     * @param string                 $settingPrefix
      */
-    private function setRateLimitGroup(RateLimitGroup $group, $settingPrefix)
+    private function setRateLimitBaseGroup(AbstractRateLimitGroup $group, $settingPrefix)
     {
         $group
             ->setEnabled($this->getSetting($settingPrefix.'.enabled'))
             ->setLimit($this->getSetting($settingPrefix.'.limit'))
             ->setTime($this->getSetting($settingPrefix.'.time') / 60)
+        ;
+    }
+
+    /**
+     * @param RateLimitLockoutGroup $group
+     * @param string                $settingPrefix
+     */
+    private function setRateLimitLockoutGroup(RateLimitLockoutGroup $group, $settingPrefix)
+    {
+        $this->setRateLimitBaseGroup($group, $settingPrefix);
+        $group->setLockoutTime($this->getSetting($settingPrefix.'.lockout_time') / 60);
+    }
+
+    /**
+     * @param RateLimitOptionsGroup $group
+     * @param string                $settingPrefix
+     */
+    private function setRateLimitOptionsGroup(RateLimitOptionsGroup $group, $settingPrefix)
+    {
+        $this->setRateLimitBaseGroup($group, $settingPrefix);
+        $group
             ->setLockoutTime($this->getSetting($settingPrefix.'.lockout_time') / 60)
             ->setResponse($this->getSetting($settingPrefix.'.response'))
         ;
@@ -120,12 +143,12 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             $userType = '.'.$userType;
         }
 
-        $this->setRateLimitGroup($userRateLimit->getLoginSettings(), 'rate_limit.login'.$userType);
-        $this->setRateLimitGroup($userRateLimit->getSubmitTicket(), 'rate_limit.submit_ticket'.$userType);
-        $this->setRateLimitGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
-        $this->setRateLimitGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);
-        $this->setRateLimitGroup($userRateLimit->getUploadAttachment(), 'rate_limit.upload_attachment'.$userType);
-        $this->setRateLimitGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getLoginSettings(), 'rate_limit.login'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getSubmitTicket(), 'rate_limit.submit_ticket'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getSubmitFeedback(), 'rate_limit.submit_feedback'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getSubmitComment(), 'rate_limit.submit_comment'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getUploadAttachment(), 'rate_limit.upload_attachment'.$userType);
+        $this->setRateLimitOptionsGroup($userRateLimit->getShareContent(), 'rate_limit.share_content'.$userType);
     }
 
     /**

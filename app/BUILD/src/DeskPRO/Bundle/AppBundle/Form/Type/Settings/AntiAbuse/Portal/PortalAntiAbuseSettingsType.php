@@ -44,10 +44,18 @@ class PortalAntiAbuseSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('account_rate_limit', PortalAccountRateLimitType::class)
-            ->add('agent_rate_limit', PortalAgentRateLimitType::class)
-            ->add('user_rate_limit', PortalUserRateLimitType::class)
-            ->add('guest_rate_limit', PortalUserRateLimitType::class)
+            ->add('account_rate_limit', PortalAccountRateLimitType::class, [
+                'property_path' => 'accountRateLimit',
+            ])
+            ->add('agent_rate_limit', PortalAgentRateLimitType::class, [
+                'property_path' => 'agentRateLimit',
+            ])
+            ->add('user_rate_limit', PortalUserRateLimitType::class, [
+                'property_path' => 'userRateLimit',
+            ])
+            ->add('guest_rate_limit', PortalUserRateLimitType::class, [
+                'property_path' => 'guestRateLimit',
+            ])
         ;
     }
 
