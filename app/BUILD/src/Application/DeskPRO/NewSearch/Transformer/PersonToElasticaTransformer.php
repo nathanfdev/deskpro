@@ -80,7 +80,7 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
             $labels = Arrays::map(function ($l) {
                 return $l->label;
             }, $object->labels);
-            $document->set('labels', $labels);
+            $document->set('labels', array_values($labels));
         }
 
         $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));

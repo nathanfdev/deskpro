@@ -61,7 +61,7 @@ class FeedbackToElasticaTransformer implements ModelToElasticaTransformerInterfa
             $labels = Arrays::map(function ($l) {
                 return $l->label;
             }, $object->labels);
-            $document->set('labels', $labels);
+            $document->set('labels', array_values($labels));
         }
 
         $sticky_words = App::$container->getDb()->fetchAllCol('

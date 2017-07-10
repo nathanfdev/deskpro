@@ -59,7 +59,7 @@ class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
             $labels = Arrays::map(function ($l) {
                 return $l->label;
             }, $object->getLabels());
-            $document->set('labels', $labels);
+            $document->set('labels', array_values($labels));
         }
 
         $messages = [];
