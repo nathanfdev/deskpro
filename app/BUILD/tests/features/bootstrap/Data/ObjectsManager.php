@@ -104,6 +104,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
+use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -364,6 +365,7 @@ class ObjectsManager
             'Notification'             => [Factory\SimpleFactory::class, 'create', Notification::class],
             'EmailAccount'             => [Factory\SimpleFactory::class, 'create', EmailAccount::class],
             'Session'                  => [Factory\SimpleFactory::class, 'create', Session::class],
+            'OAuthClient'              => [Factory\SimpleFactory::class, 'create', OAuthClient::class],
         ];
     }
 
@@ -468,6 +470,7 @@ class ObjectsManager
             'Phrase'                   => [$this, 'find', Phrase::class],
             'ActionAlert'              => [$this, 'find', ActionAlert::class],
             'Notification'             => [$this, 'find', Notification::class],
+            'OAuthClient'              => [$this, 'find', OAuthClient::class],
         ];
     }
 }

@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
@@ -40,8 +41,10 @@ use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\LegacyRememberMeSecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Web;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -76,7 +79,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
             // check that session still exists
             $session = $sessionRepo->getSessionFromCode($sessionId);
-            if (!$session) {
+            if (!$session || !$session->getPersonId()) {
                 continue;
             }
 
@@ -150,9 +153,12 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function supportsToken(TokenInterface $token, $providerKey)
     {
-        if ($token->getProviderKey() !== $providerKey) {
+        if (!$token instanceof PreAuthenticatedToken || $token->getProviderKey() !== $providerKey) {
             return false;
         }
 
@@ -232,16 +238,17 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized($unauthorized_msg);
         }
 
-        if (!$data = $this->extractDataFromSessionEntity($session)) {
+        $data = Web::unserializeSesisonData($session->getData());
+        if (!$data) {
             // we cant find the session, or data from the session, or the person id from tht data
             $this->throwUnauthorized($unauthorized_msg);
         }
 
-        if (!isset($data['auth_person_id'])) {
+        if (!isset($data['_sf2_attributes']['auth_person_id'])) {
             $this->throwUnauthorized($unauthorized_msg);
         }
 
-        if (!$person_id = $data['auth_person_id']) {
+        if (!$person_id = $data['_sf2_attributes']['auth_person_id']) {
             $this->throwUnauthorized($unauthorized_msg);
         }
 
@@ -299,36 +306,6 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
     private function throwUnauthorized($msg)
     {
         throw new UnauthorizedHttpException(self::HTTP_REALM, $msg);
-    }
-
-    private function extractDataFromSessionEntity(Session $session)
-    {
-
-        // due to the way sessions are stored in PHP, this looks rather ugly...
-        // we dont use sessions in the API so this should always be ok
-
-        $data = $session->getData();
-
-        // ensure that session is not started yet
-        // otherwise start it to decode data
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-        session_decode($data); // this populates $_SESSION
-        $data = null;
-        if (isset($_SESSION) && isset($_SESSION['_sf2_attributes'])) {
-            $data = $_SESSION['_sf2_attributes'];
-        }
-        foreach ($_SESSION as $k => $v) {
-            unset($_SESSION[$k]);
-        }
-
-        // may *sometimes* get an error because session isn't committed,
-        // but we can ignore it
-        @session_destroy();
-
-        return $data;
     }
 
     /**

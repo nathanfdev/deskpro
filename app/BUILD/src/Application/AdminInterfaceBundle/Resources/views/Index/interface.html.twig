@@ -210,6 +210,7 @@
                 {{ nav.list_item_group(phrase('adm.general.apps'), 'fa-cubes', '', 'apps') }}
                     {{ nav.list_subitem(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
                     {{ nav.list_subitem(phrase('adm.general.api_keys'), ng_href('apps.api_keys'), 'apps.api_keys', 'fa-key') }}
+                    {{ nav.list_subitem(phrase('adm.general.oauth'), ng_href('apps.oauth_clients'), 'apps.oauth_clients', 'fa-openid') }}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.tasks'), 'fa-check-circle-o', '', 'tasks') }}
                     {{ nav.list_subitem(phrase('adm.tasks.settings'), ng_href('tasks.settings'), 'tasks.settings', 'fa-cog') }}

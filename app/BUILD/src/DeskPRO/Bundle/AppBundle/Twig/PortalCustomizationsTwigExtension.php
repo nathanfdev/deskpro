@@ -26,13 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\PortalBundle\Designer;
+namespace DeskPRO\Bundle\AppBundle\Twig;
 
 use Application\DeskPRO\Entity\Language;
+use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Bundle\TwigBundle\Extension\AssetsExtension;

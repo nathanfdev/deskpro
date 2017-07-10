@@ -9,6 +9,8 @@ import LanguageSelect from './LanguageSelect';
 import Checkbox from './Checkbox';
 import RecordsChoiceWrapper from './RecordsChoiceWrapper';
 import Toggle from './Toggle';
+import Radio from './Radio';
+import ClipboardInput from './ClipboardInput';
 
 export { Field, SemanticError } from './Field';
 export {
@@ -22,5 +24,7 @@ export {
   LanguageSelect,
   Checkbox,
   RecordsChoiceWrapper,
-  Toggle
+  Toggle,
+  Radio,
+  ClipboardInput
 };

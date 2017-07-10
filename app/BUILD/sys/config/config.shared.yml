@@ -7,6 +7,7 @@ parameters:
   templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
   jms_serializer.twig_extension.class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
   portal.session.name: sess_data
+  security.encoder_factory.generic.class: DeskPRO\Bundle\AppBundle\Security\Encoder\EncoderFactory
 
 services:
   dp.url_request_context_factory:

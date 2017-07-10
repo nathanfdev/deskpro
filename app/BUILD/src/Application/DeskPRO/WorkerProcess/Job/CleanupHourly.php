@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -60,6 +56,7 @@ class CleanupHourly extends AbstractJob
         $this->_cleanupTicketManagerLogs();
         $this->_cleanupSavedForms();
         $this->_cleanHttpCacheDirs();
+        $this->_cleanOauthTokens();
     }
 
     //###################################################################################################################
@@ -420,6 +417,23 @@ class CleanupHourly extends AbstractJob
     }
 
     //###################################################################################################################
+
+    private function _cleanOauthTokens()
+    {
+        $db = App::getDb();
+
+        // remove expired auth codes
+        $result = $db->executeUpdate('DELETE FROM oauth_codes WHERE expires_at < ?', [time()]);
+        $this->logStatus("Removed $result items from OAuthCode storage.");
+
+        // remove expired refresh tokens
+        $result = $db->executeUpdate('DELETE FROM oauth_refresh_tokens WHERE expires_at < ?', [time()]);
+        $this->logStatus("Removed $result items from OAuthRefreshToken storage.");
+
+        // remove expired access tokens
+        $result = $db->executeUpdate('DELETE o FROM oauth_access_tokens o JOIN api_token a ON o.api_token_id = a.id WHERE a.date_expires < ?', [date('c')]);
+        $this->logStatus("Removed $result items from OAuthAccessToken storage.");
+    }
 
     /**
      * @param array $blob_ids

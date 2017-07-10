@@ -11,3 +11,9 @@ services:
      arguments: ["@deskpro.features_collection"]
      tags:
        - { name: request.param_converter, priority: -1, converter: feature }
+
+   api_param_converter.oauth_client:
+     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\OAuthClientConverter
+     arguments: ["@doctrine.orm.default_entity_manager"]
+     tags:
+       - { name: request.param_converter, priority: -1, converter: oauth_client }

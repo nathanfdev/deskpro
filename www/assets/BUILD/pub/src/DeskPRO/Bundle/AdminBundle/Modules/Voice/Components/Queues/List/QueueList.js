@@ -139,7 +139,7 @@ class QueueList extends React.Component {
 
         <QueueHeader />
 
-        <div className="twilio-list-table">
+        <div className="admin-list-table">
           <div className="row header">
             <div className="column queue-name">Name</div>
             <div className="column agents">Agents</div>

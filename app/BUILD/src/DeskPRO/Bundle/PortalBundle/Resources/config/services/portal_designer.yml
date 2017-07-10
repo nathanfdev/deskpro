@@ -1,10 +1,4 @@
 services:
-  dp.portal.designer.portal_customizations_twig_extension:
-    class: DeskPRO\Bundle\PortalBundle\Designer\PortalCustomizationsTwigExtension
-    arguments: ["@service_container"]
-    tags:
-        - { name: twig.extension }
-
   dp.portal.designer.admin_preview_iframe_listener:
     class: DeskPRO\Bundle\PortalBundle\Designer\AdminPreviewIframeListener
     arguments: ["@portal_mode_storage"]

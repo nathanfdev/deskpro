@@ -42,6 +42,7 @@ return [
     'portal.account.email-primary-description'               => 'This is your primary email. It will be used by default unless you have specified otherwise.',
     'portal.account.feedback-lockout'                        => 'You have submitted feedback too many times so you have been locked out. Please try again later.',
     'portal.account.lockout_time'                            => 'You can try again in {{ time }} minutes.',
+    'portal.account.login-form-disabled'                     => 'Login form is disabled',
     'portal.account.login-btn'                               => 'Login',
     'portal.account.login-btn-usersource'                    => 'Login with {{ usersource }}',
     'portal.account.login-captcha-failed'                    => 'You have entered an invalid CAPTCHA code. Please try again.',

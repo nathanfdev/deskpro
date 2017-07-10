@@ -1,7 +1,3 @@
-parameters:
-  json_body_listener.ignore_content_type_names:
-    - zip
-
 services:
 
   deskpro.api.request_auth:
@@ -25,7 +21,6 @@ services:
 
   content_type_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ContentTypeListener
-    arguments: ["%json_body_listener.ignore_content_type_names%"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -53,7 +48,7 @@ services:
   api_error_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ApiExceptionListener
     tags:
-    - { name: kernel.event_subscriber }
+    - { name: 'kernel.event_subscriber' }
 
   job.scheduler:
     class: Application\DeskPRO\JobQueue\JobScheduler
@@ -80,3 +75,8 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestValidator
     arguments:
       - "@validator"
+
+  api_portal_session_reader:
+    class: DeskPRO\Bundle\ApiBundle\Request\PortalSessionReader
+    arguments:
+      - "@doctrine.orm.entity_manager"

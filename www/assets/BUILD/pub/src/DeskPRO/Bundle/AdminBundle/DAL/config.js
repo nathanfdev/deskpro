@@ -7,7 +7,8 @@ export const repositoriesConfig = {
   VoiceNumber:        { type: 'api', url: '/voice_numbers', allowAll: true },
   VoiceQueue:         { type: 'api', url: '/voice_queues', allowAll: true },
   VoiceAutoAttendant: { type: 'api', url: '/voice_auto_attendants', allowAll: true },
-  VoicePhoneCall:     { type: 'api', url: '/voice_phone_calls', allowAll: false }
+  VoicePhoneCall:     { type: 'api', url: '/voice_phone_calls', allowAll: false },
+  OAuthClient:        { type: 'api', url: '/oauth_clients', allowAll: true }
 };
 
 export default repositoriesConfig;

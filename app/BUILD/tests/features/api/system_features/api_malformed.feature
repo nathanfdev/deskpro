@@ -11,12 +11,10 @@ Feature: Api malformed request
     """
     Then the response status code should be 400
     And the JSON node "status" should be equal to 400
-    And the JSON node "code" should be equal to "invalid_json_body"
+    And the JSON node "code" should be equal to "invalid_input"
 
-  Examples:
-    | method | url       | data        |
-    | POST   | tickets   | some string |
-    | POST   | tickets   | {a: 1}      |
-    | POST   | tickets   | {"a": 1,}   |
-    | PUT    | tickets/1 | some string |
-    | DELETE | tickets/1 | some string |
+    Examples:
+      | method | url    | data        |
+      | POST   | people | some string |
+      | POST   | people | {a: 1}      |
+      | POST   | people | {"a": 1,}   |

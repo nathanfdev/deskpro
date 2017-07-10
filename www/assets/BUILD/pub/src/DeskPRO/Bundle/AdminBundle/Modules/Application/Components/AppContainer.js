@@ -8,6 +8,7 @@ import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
+import * as Apps from '../../Apps/Components/index';
 import { loadAdmintPhraseTranslations } from '../Actions/bootstrapActions';
 
 class AppContainer extends React.Component {
@@ -70,6 +71,11 @@ class AppContainer extends React.Component {
             <Route path="dev">
               <Route path="notifications" component={Dev.Notifications} />
             </Route> : null}
+          <Route path="apps">
+            <Route path="oauth_clients" component={Apps.OAuthClientList} />
+            <Route path="oauth_clients/new" component={Apps.NewOAuthClientForm} />
+            <Route path="oauth_clients/:clientId" component={Apps.EditOAuthClientForm} />
+          </Route>
         </Router>
       </Provider>
     );

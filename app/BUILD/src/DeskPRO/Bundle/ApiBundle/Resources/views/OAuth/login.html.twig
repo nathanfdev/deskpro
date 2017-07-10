@@ -1,0 +1,86 @@
+{% extends "FOSOAuthServerBundle::layout.html.twig" %}
+
+{% macro user_notice(title) %}
+    <div class="inline-form-wrapper">
+        <div class="inline-form-alert">
+            <div class="form-alert-icon">
+                <i class="fa fa-lock"></i>
+            </div>
+            <div class="content-wrapper">
+                <h1>{{ title }}</h1>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro lockout_notice(title, lockout, lockout_time) %}
+    {% import _self as this %}
+    {% if lockout %}
+        {{ this.user_notice(title, lockout_time ? phrase('portal.account.lockout_time', {time: lockout_time})) }}
+    {% endif %}
+{% endmacro %}
+
+{% block fos_oauth_server_content %}
+    <div class="login-page">
+        <header class="large-title">
+            <h1>{{ phrase('api.oauth.login_title', { name: brand_setting('core.deskpro_name') }) }}</h1>
+        </header>
+
+        {% if login_error %}
+            {{ _self.user_notice(phrase(login_error)) }}
+        {% endif %}
+
+        {{ _self.lockout_notice(phrase('portal.account.login-lockout'), lockout_error, lockout_time) }}
+
+        {% if login_captcha_failed %}
+            {{ _self.user_notice(phrase('portal.account.login-captcha-failed')) }}
+        {% endif %}
+
+        <form method="post" action="{{ path('portal_login_submit') }}" class="form-ticket" novalidate>
+            <input type="hidden" name="_failure_path" value="{{ path(login_route, { context: login_context, authClient: auth_client.id, retry: 'auth', redirect_uri: redirect_uri }) }}" />
+            <input type="hidden" name="_destination" value="{{ path(login_route, { context: login_context, authClient: auth_client.id, redirect_uri: redirect_uri }) }}" />
+
+            <div class="column-half">
+                <div class="bucket">
+                    {{- form_label(form.username, null, {'label_attr': {'class': 'title'}}) -}}
+                    {{- form_widget(form.username) -}}
+                </div>
+            </div>
+            <div class="column-half omega">
+                <div class="bucket">
+                    {{- form_label(form.password, null, {'label_attr': {'class': 'title'}}) -}}
+                    {{- form_widget(form.password) -}}
+                    {% if auth_manager.isForgotPasswordVisible %}
+                        <div class="form-meta form-meta-grey form-meta-top">
+                            <a href="{{ path('portal_reset_password', {'email': last_username}) }}" tabindex="5" target="_blank">
+                                {{ phrase('portal.account.login-password-reminder') }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if captcha_form is not null %}
+                <div class="column-full">
+                    <div class="bucket">
+                        {{ form_widget(captcha_form) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="column-full">
+                <div class="bucket">
+                    <button class="button" tabindex="4">{{ phrase('portal.account.login-btn') }}</button>
+
+                    {% if auth_manager.isRememberMeEnabled %}
+                        <div class="remember-me"><label for="remember_me">
+                                <input tabindex="3" type="checkbox" name="remember_me">
+                                <span>{{ phrase('portal.account.login-remember') }}</span>
+                            </label>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock fos_oauth_server_content %}
