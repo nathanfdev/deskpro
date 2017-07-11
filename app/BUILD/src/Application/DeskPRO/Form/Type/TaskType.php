@@ -81,10 +81,11 @@ class TaskType extends AbstractType
                 'required' => false,
             ])
             ->add('visibility', ChoiceType::class, [
-                'required' => false,
-                'choices'  => [
-                    Task::PRIVATE_VISIBILITY => 'private',
-                    Task::PUBLIC_VISIBILITY  => 'public',
+                'required'          => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    Task::PRIVATE_VISIBILITY,
+                    Task::PUBLIC_VISIBILITY,
                 ],
                 'empty_data'  => null,
                 'empty_value' => Task::PUBLIC_VISIBILITY,
@@ -137,23 +138,33 @@ class TaskType extends AbstractType
      */
     public function onPreSubmit(FormEvent $event)
     {
-        $data = $event->getData();
-        if (empty($data['assigned_agent']) || false === strpos($data['assigned_agent'], ':')) {
-            return;
+        $options = $event->getForm()->getConfig()->getOptions();
+        $data    = $event->getData();
+
+        if (isset($data['assigned_agent']) && strpos($data['assigned_agent'], ':') !== false) {
+            list($type, $id) = explode(':', $data['assigned_agent']);
+
+            $data['assigned_agent']      = null;
+            $data['assigned_agent_team'] = null;
+
+            if ($type === 'agent') {
+                $data['assigned_agent'] = $id;
+            } elseif ($type === 'agent_team') {
+                $data['assigned_agent_team'] = $id;
+            }
+        } elseif ($options['person']) {
+            $data['assigned_agent'] = $options['person']->getId();
         }
 
-        list($type, $id) = explode(':', $data['assigned_agent']);
+        if (isset($data['visibility']) && strpos($data['visibility'], ':') !== false) {
+            list($type, $id) = explode(':', $data['visibility']);
 
-        $data['assigned_agent']      = null;
-        $data['assigned_agent_team'] = null;
-        $data['assigned_department'] = null;
+            $data['assigned_department'] = null;
+            $data['visibility']          = Task::PRIVATE_VISIBILITY;
 
-        if ($type === 'agent') {
-            $data['assigned_agent'] = $id;
-        } elseif ($type === 'agent_team') {
-            $data['assigned_agent_team'] = $id;
-        } elseif ($type === 'department') {
-            $data['assigned_department'] = $id;
+            if ($type === 'department') {
+                $data['assigned_department'] = $id;
+            }
         }
 
         $event->setData($data);

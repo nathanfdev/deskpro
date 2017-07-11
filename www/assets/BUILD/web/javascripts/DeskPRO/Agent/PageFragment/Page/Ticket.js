@@ -1402,10 +1402,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.merge.destroy();
       this.merge = null;
 		}
-		if (this.statusMenu) {
-			this.statusMenu.destroy();
-			this.statusMenu = null;
-		}
 		if (this.removeMenu) {
 			this.removeMenu.destroy();
 			this.removeMenu = null;
@@ -3236,15 +3232,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
 
-		this.statusMenu = new DeskPRO.UI.Menu({
-			menuElement: this.getEl('task_menu_vis'),
-			onItemClicked: function(info) {
-				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
-				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
-				sendUpdate(openForEl, 'visibility', $(info.itemEl).data('vis'));
-			}
-		});
-
 		var sendUpdate = function(rowEl, prop, val, callback) {
 			var taskId = rowEl.data('task-id');
 
@@ -3296,10 +3283,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			}
 		});
-		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
-			openForEl = $(this).closest('.row-item');
-			statusMenu.open(ev);
-		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');
 			var row = $(this).closest('.row-item');
@@ -3311,7 +3294,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				if (!val) {
 					val = '';
-					label = 'Me';
+					label = '';
 				}
 
 				row.find('.assigned_agent').find('label').text(label);
@@ -3322,6 +3305,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			});
 		});
+		rowContainer.find('li.visibility select.visibility_sel').each(function() {
+			$(this).addClass('has-init');
+			var row = $(this).closest('.row-item');
+			DP.select($(this));
+
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = '';
+				}
+
+				row.find('.visibility').find('label').text(label);
+				$('input.input-vis', row).val(val);
+
+				sendUpdate(row, 'visibility', val, function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+				});
+			});
+		});
+
 		rowContainer.on('click', '.opt-trigger.time_due', function(ev) {
 
 			var row = $(this).closest('.task-row');
@@ -3505,6 +3511,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 							row.find('.assigned_agent').find('label').text(label);
 							$('input.input-agent', row).val(val);
+
+							sendUpdate(row, 'assigned', val, function() {
+								DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+							});
+						});
+					});
+					row.find('li.visibility select.visibility_sel').each(function() {
+						$(this).addClass('has-init');
+						var row = $(this).closest('.row-item');
+						DP.select($(this));
+
+						$(this).on('change', function() {
+							var val = $(this).val();
+							var label = $(this).find(':selected').text().trim();
+
+							if (!val) {
+								val = '';
+								label = '';
+							}
+
+							row.find('.visibility').find('label').text(label);
+							$('input.input-vis', row).val(val);
+
+							sendUpdate(row, 'visibility', val, function() {
+								DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+							});
 						});
 					});
 

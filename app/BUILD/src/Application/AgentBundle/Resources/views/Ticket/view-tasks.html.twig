@@ -15,7 +15,29 @@
 				<ul>
 					<li class="noval opt-trigger date_due"><label>{{ phrase('agent.tasks.no_due_date') }}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger time_due" style="display: none;"><label>{{ phrase('agent.tasks.no_due_time') }}</label><span class="drop-icon"></span></li>
-					<li class="noval opt-trigger visibility"><label>{{ phrase('agent.general.public') }}</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger visibility" style="overflow:hidden; height: 18px; position: relative;">
+						<label>
+							{% if task.assigned_department %}{{ task.assigned_department.title }}
+							{% elseif task.visibility and task.assigned_agent.id == app.user.id %}{{ phrase('agent.general.public') }}
+							{% else %} {{ phrase('agent.general.private') }} {% endif %}
+						</label><span class="drop-icon"></span>
+						<select class="visibility_sel dpe_select" style="width: 100px;" data-invisible-trigger="1">
+							<option value="0">{{ phrase('agent.general.private') }}</option>
+							<option value="1">{{ phrase('agent.general.public') }}</option>
+							<optgroup label="{{ phrase('agent.general.department') }}">
+								{% for department in app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign') %}
+									{% if department.children %}
+										<option disabled="disabled">{{ department.title }}</option>
+										{% for subDepartment in department.children %}
+											<option value="department:{{ subDepartment.id }}" {% if task.assigned_department and task.assigned_department.id == subDepartment.id %}selected="selected"{% endif %}>--{{ subDepartment.title }}</option>
+										{% endfor %}
+									{% else %}
+										<option value="department:{{ department.id }}" {% if task.assigned_department and task.assigned_department.id == department.id %}selected="selected"{% endif %}>{{ department.title }}</option>
+									{% endif %}
+								{% endfor %}
+							</optgroup>
+						</select>
+					</li>
 					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; width: 120px; position: relative;">
 						<label>{{ phrase('agent.general.me') }}</label><span class="drop-icon"></span>
 						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
