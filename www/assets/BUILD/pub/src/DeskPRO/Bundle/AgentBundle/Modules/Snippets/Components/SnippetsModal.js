@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Modal from 'deskpro-components/lib/Components/Modal';
@@ -122,6 +123,7 @@ export class SnippetsModalContainer extends React.Component {
       teams:        [],
       types:        [],
       title:        this.props.snippet.get('title', ''),
+      shortcutCode: this.props.snippet.get('shortcut_code', ''),
       isDraft:      false,
       langId:       props.langId,
     };
@@ -233,7 +235,7 @@ export class SnippetsModalContainer extends React.Component {
     const snippetData = {
       title:               this.state.title,
       types:               this.state.types,
-      shortcut_code:       this.modal.shortcut_code.input.value,
+      shortcut_code:       this.state.shortcutCode,
       labels:              this.state.labels,
       translations:        translations.toJS(),
       is_draft:            this.state.isDraft,
@@ -384,6 +386,12 @@ export class SnippetsModalContainer extends React.Component {
     });
   };
 
+  handleShortcutCode = (shortcutCode) => {
+    this.setState({
+      shortcutCode
+    });
+  };
+
   changeLabels = (labels) => {
     this.setState({
       labels
@@ -443,6 +451,7 @@ export class SnippetsModalContainer extends React.Component {
         isDraft={this.state.isDraft}
         types={this.state.types}
         langId={this.state.langId}
+        shortcutCode={this.state.shortcutCode}
         title={this.state.title}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
@@ -454,6 +463,7 @@ export class SnippetsModalContainer extends React.Component {
         handleChangeTypes={this.handleChangeTypes}
         handleDepartmentsChange={this.handleDepartmentsChange}
         handleTeamsChange={this.handleTeamsChange}
+        handleShortcutCode={this.handleShortcutCode}
         handleTitle={this.handleTitle}
         ref={(c) => { this.modal = c; }}
       />
@@ -476,6 +486,7 @@ export class SnippetsModal extends React.Component {
     isDraft:                 PropTypes.bool,
     types:                   PropTypes.array,
     langId:                  PropTypes.number,
+    shortcutCode:            PropTypes.string,
     title:                   PropTypes.string,
     labels:                  PropTypes.array,
     addAttachment:           PropTypes.func,
@@ -488,6 +499,7 @@ export class SnippetsModal extends React.Component {
     handleChangeDraft:       PropTypes.func,
     handleChangeTypes:       PropTypes.func,
     handleDepartmentsChange: PropTypes.func,
+    handleShortcutCode:      PropTypes.func,
     handleTeamsChange:       PropTypes.func,
     handleTitle:             PropTypes.func,
   };
@@ -623,7 +635,11 @@ export class SnippetsModal extends React.Component {
 
   getUploadUrl = () => '/api/v2/blobs/temp';
 
-  isValid = () => this.props.title !== '';
+  isValid = () => this.isTitleValid() && this.isShortcutCodeValid();
+
+  isTitleValid = () => this.props.title !== '';
+
+  isShortcutCodeValid = () => this.props.shortcutCode.match(/^[-_a-z0-9]*$/i);
 
   render() {
     const {
@@ -632,10 +648,12 @@ export class SnippetsModal extends React.Component {
       translation,
       languages,
       langId,
+      shortcutCode,
       title,
       setLanguage,
       handleChangeDraft,
       handleChangeTypes,
+      handleShortcutCode,
       handleTitle,
       addAttachment,
       changeLabels,
@@ -760,12 +778,12 @@ export class SnippetsModal extends React.Component {
               </InputLabel>
               <Input
                 id="snippet_shortcut_code"
-                className="snippet_shortcut_code"
-                defaultValue={snippet.get('shortcut_code')}
+                className={classNames('snippet_shortcut_code', { 'dp-input--error': !this.isShortcutCodeValid() })}
+                value={shortcutCode}
                 prefix="%"
                 suffix="%"
                 required
-                ref={(c) => { this.shortcut_code = c; }}
+                onChange={handleShortcutCode}
               />
             </div>
             <div className="ownership-field field">

@@ -1700,7 +1700,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	insertSnippet: function(snippet, blobs, langId) {
-    var ticketLangId = self.getEl('value_form').find('.language_id').val();
+    var ticketLangId = this.getEl('value_form').find('.language_id').val();
     if (langId) {
       ticketLangId = langId;
     }

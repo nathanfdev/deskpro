@@ -2,17 +2,11 @@
 import Twig from 'twig';
 
 class LegacySnippetInserter {
-  insertSnippet(snippet, blobs, langId, metadata, textArea, attachBlobs, recordSnippetUse) {
-    const snippetId = snippet.id;
-    const snippetCode = snippet.translations;
-
-    recordSnippetUse(snippetId);
-
+  getTranslation(snippetCode, langId) {
     let agentText;
     let defaultText;
     let wantText;
     let useText;
-    let result;
 
     for (let i = 0; i < snippetCode.length; i++) {
       if (snippetCode[i].content) {
@@ -37,11 +31,24 @@ class LegacySnippetInserter {
       useText = defaultText;
     }
 
+    return useText;
+  }
+  insertSnippet(snippet, blobs, langId, metadata, textArea, attachBlobs, recordSnippetUse) {
+    const snippetId = snippet.id;
+    const snippetCode = snippet.translations;
+
+    recordSnippetUse(snippetId);
+
+    let result;
+    let useText = this.getTranslation(snippetCode, langId);
+
     if (useText.blobs.length) {
       attachBlobs(useText.blobs, blobs);
     }
 
     useText = useText.content;
+
+    useText = this.insertSubSnippets(useText, langId, attachBlobs, blobs);
 
     if (metadata) {
       try {
@@ -112,6 +119,31 @@ class LegacySnippetInserter {
       window.document.dispatchEvent(event);
     }
     api.syncCode();
+  }
+
+  insertSubSnippets(text, langId, attachBlobs, blobs) {
+    const re = new RegExp(/%([-_a-z0-9]+)%/gi);
+    let snippetId;
+    let snippetIds;
+    let snippet;
+    let useText;
+    let result = text;
+    let shortcut = re.exec(text);
+    while (shortcut) {
+      if (window.DESKPRO_TICKET_SNIPPET_SHORTCODES && window.DESKPRO_TICKET_SNIPPET_SHORTCODES[shortcut[1]]) {
+        snippetIds = window.DESKPRO_TICKET_SNIPPET_SHORTCODES[shortcut[1]];
+        snippetId = snippetIds[0];
+        snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
+        if (snippet) {
+          useText = this.getTranslation(snippet.get('translations').toJS(), langId);
+          result = result.replace(`%${snippet.get('shortcut_code')}%`, useText.content);
+          attachBlobs(useText.blobs, blobs);
+        }
+      }
+      shortcut = re.exec(text);
+    }
+
+    return result;
   }
 }
 export default LegacySnippetInserter;
