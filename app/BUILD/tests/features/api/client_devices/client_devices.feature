@@ -71,8 +71,8 @@ Feature: Client devices
   "device_agent": "my OTHER NEW device agent string"
 }
     """
-    Then the response should be empty
-    And the response status code should be 204
+    Then the response status code should be 200
+    And the JSON node "data.device_agent" should be equal to "my OTHER NEW device agent string"
 
     When I send a GET request to "/api/v2/client_devices/mobile/my_device"
     Then the JSON node "data.device_agent" should be equal to "my OTHER NEW device agent string"
@@ -138,7 +138,7 @@ Feature: Client devices
   "notification_token": "FOOBARBAZ"
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/client_devices/mobile/1FE0BD4C-EED3-4BDC-8C17-A2C1025D51C3"
     Then the response should be in JSON

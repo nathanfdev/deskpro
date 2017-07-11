@@ -38,7 +38,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ClientDeviceType.
@@ -52,10 +51,7 @@ class ClientDeviceType extends AbstractType
     {
         if (empty($options['device_id'])) {
             $builder->add('device_id', TextType::class, [
-                'required'    => true,
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
+                'required' => true,
             ]);
         }
 
@@ -71,9 +67,6 @@ class ClientDeviceType extends AbstractType
                     ClientDevice::TYPE_ANDROID,
                     ClientDevice::TYPE_ANDROID_PHONE,
                     ClientDevice::TYPE_ANDROID_TABLET,
-                ],
-                'constraints' => [
-                    new Assert\NotNull(),
                 ],
             ])
             ->add('device_agent', TextType::class, [
