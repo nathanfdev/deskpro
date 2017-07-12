@@ -145,19 +145,12 @@ class AppsController extends AbstractController
 
         if (!$manager->hasPackage($name)) {
             // app v2 package info
-            $app = $this->em->getRepository(App::class)->findOneBy([
+            $appArchive = $this->getAppV2ArchiveBundle($name);
+            $app        = $this->em->getRepository(App::class)->findOneBy([
                 'name' => $name,
             ]);
 
-            if ($app) {
-                $manifest = $app->getParsedManifest();
-                $iconBlob = $app->getIconAsset()->getBlob();
-            } else {
-                $appArchive = $this->getAppV2ArchiveBundle($name);
-                if (!$appArchive) {
-                    throw $this->createNotFoundException();
-                }
-
+            if ($appArchive) {
                 $manifestReader = new AppManifestJsonReader();
                 $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
                 $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
@@ -169,6 +162,11 @@ class AppsController extends AbstractController
                 $iconBlob->setIsTemp(true);
                 $this->em->persist($iconBlob);
                 $this->em->flush();
+            } elseif ($app) {
+                $manifest = $app->getParsedManifest();
+                $iconBlob = $app->getIconAsset()->getBlob();
+            } else {
+                throw $this->createNotFoundException();
             }
 
             $data = [
@@ -1020,20 +1018,17 @@ class AppsController extends AbstractController
     {
         $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
         $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
+        $blob     = $this->em->getRepository(Blob::class)->findOneBy([
+            'sys_name' => 'apps_v2_zip_'.$name,
+        ]);
 
-        if (!file_exists($blobPath)) {
-            $blob = $this->em->getRepository(Blob::class)->findOneBy([
-                'sys_name' => 'apps_v2_zip_'.$name,
-            ]);
-
-            if (!$blob) {
-                return;
-            }
-
+        if ($blob) {
             $appEnv   = $this->container->get('deskpro.app_env');
             $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
 
             $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
+        } elseif (!file_exists($blobPath)) {
+            return;
         }
 
         return new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($blobPath));
