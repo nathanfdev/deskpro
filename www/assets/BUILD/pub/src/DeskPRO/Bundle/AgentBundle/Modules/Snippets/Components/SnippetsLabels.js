@@ -101,7 +101,7 @@ class SnippetsLabels extends React.Component {
             className={classNames({ selected: label.get('tag') === this.props.selectedLabel })}
             onClick={e => this.props.selectLabel(e, label.get('tag'))}
           >
-            <span className="tag">{label.get('label')}</span>&nbsp;<span className="count">({label.get('count')})</span>
+            <span className="tag">{label.get('label')}</span>&nbsp;<span className="count">({label.get('snippets').size})</span>
             {this.getChildren(label)}
           </ListElement>
       );
@@ -120,7 +120,7 @@ class SnippetsLabels extends React.Component {
       if (snippet.get('labels')) {
         snippet.get('labels').forEach((label) => {
           const parts = label.split('/');
-          this.insertOccurrence(parts[0].trim(), parts[0].trim(), occurrences, parts.slice(1));
+          this.insertOccurrence(parts[0].trim(), parts[0].trim(), occurrences, parts.slice(1), snippet.get('id'));
         });
       }
     });
@@ -129,15 +129,17 @@ class SnippetsLabels extends React.Component {
     });
   };
 
-  insertOccurrence(tag, label, occurrences, parts) {
+  insertOccurrence(tag, label, occurrences, parts, snippetId) {
     if (occurrences[label]) {
-      occurrences[label].count += 1;
+      if (occurrences[label].snippets.indexOf(snippetId) === -1) {
+        occurrences[label].snippets.push(snippetId);
+      }
     } else {
       occurrences[label] = {
-        count:    1,
         label,
         tag,
-        children: {}
+        children: {},
+        snippets: [snippetId]
       };
     }
     if (parts.length > 0) {
