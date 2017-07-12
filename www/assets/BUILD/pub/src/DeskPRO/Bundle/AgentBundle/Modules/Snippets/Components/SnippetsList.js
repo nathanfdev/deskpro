@@ -214,7 +214,10 @@ export class SnippetsList extends React.Component {
         if (!selectedLabel) {
           return true;
         }
-        return snippet.get('labels').find(label => label === selectedLabel);
+        return snippet.get('labels').find(label =>
+          label.replace(/\s*\/\s*/, '/') === selectedLabel ||
+          label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
+        );
       })
       .forEach((element) => {
         elements.push(

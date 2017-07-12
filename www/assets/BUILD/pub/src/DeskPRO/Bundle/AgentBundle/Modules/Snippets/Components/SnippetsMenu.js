@@ -249,7 +249,8 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
-  selectLabel = (label) => {
+  selectLabel = (e, label) => {
+    e.stopPropagation();
     this.setState({
       selectedLabel: label
     });
