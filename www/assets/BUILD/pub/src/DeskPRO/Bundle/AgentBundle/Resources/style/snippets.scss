@@ -301,6 +301,9 @@
   }
 }
 #snippets__modal {
+  .dp-modal {
+    min-height: 525px;
+  }
   .snippet-attachment {
     border: 1px solid $dp-sonic-primary;
     border-radius: $rad-size-m-l;

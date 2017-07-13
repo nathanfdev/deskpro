@@ -5,7 +5,7 @@ import { Input, Checkbox, Radio } from 'deskpro-components/lib/Components/Forms'
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
-class SnippetsLabels extends React.Component {
+class SnippetsFiltering extends React.Component {
   static propTypes = {
     snippets:            PropTypes.object,
     labelFilter:         PropTypes.string,
@@ -201,4 +201,4 @@ class SnippetsLabels extends React.Component {
     );
   }
 }
-export default SnippetsLabels;
+export default SnippetsFiltering;

@@ -7,7 +7,7 @@ import Button from 'deskpro-components/lib/Components/Button';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
+import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
@@ -450,7 +450,7 @@ export class SnippetsMenu extends React.Component {
           </div>
         </div>
         <div className="body">
-          <SnippetsLabels
+          <SnippetsFiltering
             snippets={snippets}
             selectLabel={this.selectLabel}
             selectMultiMode={this.selectMultiMode}
