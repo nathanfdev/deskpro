@@ -82,7 +82,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         return
 
       is_new = !@group.id
-      promise = @ugData.saveFormModel(@group, @form)
+      promise = @ugData.saveFormModel(@group, @form, @perm_form)
 
       @startSpinner('saving')
       promise.then( =>
