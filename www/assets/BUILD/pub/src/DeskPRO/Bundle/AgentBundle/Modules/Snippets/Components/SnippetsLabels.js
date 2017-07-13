@@ -1,20 +1,25 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import Immutable from 'immutable';
-import { Input } from 'deskpro-components/lib/Components/Forms';
+import { Input, Checkbox, Radio } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsLabels extends React.Component {
   static propTypes = {
-    snippets:          PropTypes.object,
-    labelFilter:       PropTypes.string,
-    selectLabel:       PropTypes.func,
-    handleLabelFilter: PropTypes.func,
-    selectedLabel:     PropTypes.string,
+    snippets:            PropTypes.object,
+    labelFilter:         PropTypes.string,
+    selectLabel:         PropTypes.func,
+    selectMultiMode:     PropTypes.func,
+    handleLabelFilter:   PropTypes.func,
+    onMultiLabelsChange: PropTypes.func,
+    selectedLabel:       PropTypes.string,
+    multiMode:           PropTypes.string,
+    multiLabels:         PropTypes.array,
   };
-  defaultProps = {
-    labelFilter: ''
+  static defaultProps = {
+    labelFilter: '',
+    multiLabels: [],
   };
 
   constructor(props) {
@@ -38,25 +43,14 @@ class SnippetsLabels extends React.Component {
 
   getChildren = (label) => {
     const labels = label.get('children');
-    if (!labels) {
+    if (!labels.size) {
       return null;
     }
-    return <List>{this.getLabels(labels, 1)}</List>;
+    return <List>{this.getLabels(labels)}</List>;
   };
 
-  getLabels = (labels, level) => {
+  getLabels = (labels) => {
     const result = [];
-    if (level === 0) {
-      result.push(
-        <ListElement
-          key="all"
-          onClick={() => this.props.selectLabel('')}
-          className={classNames({ selected: this.props.selectedLabel === '' })}
-        >
-          {agentPhrases.get('agent.general.all')} ({this.props.snippets.size})
-        </ListElement>
-      );
-    }
 
     function findInChildren(value, re) {
       if (value.get('children').find(e => e.get('tag').match(re))) {
@@ -99,9 +93,22 @@ class SnippetsLabels extends React.Component {
           <ListElement
             key={key}
             className={classNames({ selected: label.get('tag') === this.props.selectedLabel })}
-            onClick={e => this.props.selectLabel(e, label.get('tag'))}
           >
-            <span className="tag">{label.get('label')}</span>&nbsp;<span className="count">({label.get('snippets').size})</span>
+            <div className="element">
+              <Checkbox
+                value={label.get('tag')}
+                checked={this.props.multiLabels.indexOf(label.get('tag')) !== -1}
+                onChange={this.props.onMultiLabelsChange}
+                stopPropagation
+              />
+              <span className="tag" onClick={e => this.props.selectLabel(e, label.get('tag'))}>
+                {label.get('label')}
+              </span>
+              &nbsp;
+              <span className="count" onClick={e => this.props.selectLabel(e, label.get('tag'))}>
+                ({label.get('snippets').size})
+              </span>
+            </div>
             {this.getChildren(label)}
           </ListElement>
       );
@@ -143,14 +150,20 @@ class SnippetsLabels extends React.Component {
       };
     }
     if (parts.length > 0) {
-      this.insertOccurrence(`${tag}/${parts[0].trim()}`, parts[0].trim(), occurrences[label].children, parts.slice(1));
+      this.insertOccurrence(
+        `${tag}/${parts[0].trim()}`,
+        parts[0].trim(),
+        occurrences[label].children,
+        parts.slice(1),
+        snippetId
+      );
     }
   }
 
   render() {
-    const { labelFilter, handleLabelFilter } = this.props;
+    const { labelFilter, handleLabelFilter, multiLabels } = this.props;
     return (
-      <div className="snippets__labels">
+      <div className={classNames('snippets__labels', { 'multi-labels': multiLabels.length })}>
         <div className="title">
           <i className="fa fa-tag" />&nbsp;
           {agentPhrases.get('agent.general.labels')}
@@ -161,8 +174,28 @@ class SnippetsLabels extends React.Component {
           onChange={handleLabelFilter}
           icon="search"
         />
+        { multiLabels.length ?
+          <div className="multi-mode">
+            <Radio
+              checked={this.props.multiMode === 'any'}
+              onChange={this.props.selectMultiMode}
+              value="any"
+              name="label-mode"
+            >
+              Match any
+            </Radio>
+            <Radio
+              checked={this.props.multiMode === 'all'}
+              onChange={this.props.selectMultiMode}
+              value="all"
+              name="label-mode"
+            >
+              Match all
+            </Radio>
+          </div>
+          : null}
         <List>
-          {this.getLabels(this.state.labels, 0)}
+          {this.getLabels(this.state.labels)}
         </List>
       </div>
     );

@@ -179,6 +179,8 @@ export class SnippetsMenu extends React.Component {
     super(props);
     this.state = {
       selectedLabel: '',
+      multiLabels:   [],
+      multiMode:     'any',
       editOpen:      false,
       snippetEdit:   {},
       labelFilter:   '',
@@ -249,10 +251,36 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
+  handleMultiLabels = (checked, value) => {
+    let multiLabels = this.state.multiLabels;
+    if (checked) {
+      multiLabels.push(value);
+    } else {
+      multiLabels = multiLabels.filter(e => e !== value);
+    }
+    this.setState(
+      {
+        multiLabels,
+        selectedLabel: ''
+      }
+    );
+  };
+
   selectLabel = (e, label) => {
     e.stopPropagation();
+    if (this.state.multiLabels.length === 0) {
+      this.setState({
+        selectedLabel: label
+      });
+    } else {
+      const checked = this.state.multiLabels.indexOf(label) === -1;
+      this.handleMultiLabels(checked, label);
+    }
+  };
+
+  selectMultiMode = (checked, multiMode) => {
     this.setState({
-      selectedLabel: label
+      multiMode
     });
   };
 
@@ -425,9 +453,13 @@ export class SnippetsMenu extends React.Component {
           <SnippetsLabels
             snippets={snippets}
             selectLabel={this.selectLabel}
+            selectMultiMode={this.selectMultiMode}
             labelFilter={this.state.labelFilter}
             handleLabelFilter={this.handleLabelFilter}
+            onMultiLabelsChange={this.handleMultiLabels}
             selectedLabel={this.state.selectedLabel}
+            multiLabels={this.state.multiLabels}
+            multiMode={this.state.multiMode}
           />
           <SnippetsList
             snippets={snippets}
@@ -436,6 +468,8 @@ export class SnippetsMenu extends React.Component {
             filter={filter}
             focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
+            multiLabels={this.state.multiLabels}
+            multiMode={this.state.multiMode}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}
           />

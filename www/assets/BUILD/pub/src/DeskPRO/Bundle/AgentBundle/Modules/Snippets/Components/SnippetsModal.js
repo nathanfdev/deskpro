@@ -6,7 +6,7 @@ import Isvg from 'react-inlinesvg';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import Button from 'deskpro-components/lib/Components/Button';
 import ConfirmButton from 'deskpro-components/lib/Components/ConfirmButton';
-import { Checkbox, Input, InputLabel, LabelInput, Select } from 'deskpro-components/lib/Components/Forms';
+import { Checkbox, Input, Label, TagInput, Select } from 'deskpro-components/lib/Components/Forms';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -706,7 +706,7 @@ export class SnippetsModal extends React.Component {
           {this.getVariables()}
           <form id="snippet_form">
             <div className="title-field field">
-              <InputLabel htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</InputLabel>
+              <Label htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</Label>
               <Input
                 id="snippet_title"
                 value={title}
@@ -732,9 +732,9 @@ export class SnippetsModal extends React.Component {
               uploadUrl={this.getUploadUrl()}
             />
             <div className="labels-field field">
-              <InputLabel htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</InputLabel>
-              <LabelInput
-                labels={labels}
+              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
+              <TagInput
+                tags={labels}
                 onChange={changeLabels}
                 addOnBlur
                 editable
@@ -745,7 +745,7 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="types-field field">
-              <InputLabel htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</InputLabel>
+              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
               <Checkbox
                 checked={this.props.types.find(type => type === 'ticket')}
                 value="ticket"
@@ -762,7 +762,7 @@ export class SnippetsModal extends React.Component {
               </Checkbox>
             </div>
             <div className="draft-field field">
-              <InputLabel htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</InputLabel>
+              <Label htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</Label>
               <Checkbox
                 checked={this.props.isDraft}
                 value="is_draft"
@@ -773,9 +773,9 @@ export class SnippetsModal extends React.Component {
             </div>
             <br />
             <div className="shortcut-field field">
-              <InputLabel htmlFor="snippet_shortcut_code">
+              <Label htmlFor="snippet_shortcut_code">
                 {agentPhrases.get('agent.snippets.shortcut_code')}
-              </InputLabel>
+              </Label>
               <Input
                 id="snippet_shortcut_code"
                 className={classNames('snippet_shortcut_code', { 'dp-input--error': !this.isShortcutCodeValid() })}
@@ -787,7 +787,7 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="ownership-field field">
-              <InputLabel htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</InputLabel>
+              <Label htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</Label>
               <Select
                 multiple
                 includeSelectAllOption
@@ -802,7 +802,7 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="visibility-field field">
-              <InputLabel htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</InputLabel>
+              <Label htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</Label>
               <Select
                 multiple
                 includeSelectAllOption

@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { Label } from 'deskpro-components/lib/Components/Forms';
+import { Tag } from 'deskpro-components/lib/Components/Forms';
 
 export class SnippetsListElement extends React.Component {
   static propTypes = {
@@ -42,7 +42,7 @@ export class SnippetsListElement extends React.Component {
     if (snippet.get('labels')) {
       const labels = [];
       snippet.get('labels').forEach((label, key) => {
-        labels.push(<Label key={key}>{label} </Label>);
+        labels.push(<Tag key={key}>{label} </Tag>);
       });
       if (labels.length) {
         return <div className="labels"><i className="fa fa-tag" /> {labels}</div>;
@@ -156,6 +156,8 @@ export class SnippetsList extends React.Component {
     snippets:      PropTypes.object,
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
+    multiMode:     PropTypes.string,
+    multiLabels:   PropTypes.array,
     focusedId:     PropTypes.number,
     filter:        PropTypes.string,
     editSnippet:   PropTypes.func,
@@ -200,6 +202,8 @@ export class SnippetsList extends React.Component {
       snippets,
       languages,
       selectedLabel,
+      multiLabels,
+      multiMode,
       editSnippet,
       insertSnippet,
       focusedId,
@@ -211,13 +215,25 @@ export class SnippetsList extends React.Component {
     }
     snippets
       .filter((snippet) => {
+        if (multiLabels.length) {
+          if (multiMode === 'any') {
+            return multiLabels.filter(checkedLabel => snippet.get('labels').find(label =>
+                label.replace(/\s*\/\s*/, '/') === checkedLabel ||
+                label.replace(/\s*\/\s*/, '/').match(`${checkedLabel}/`)
+              )).length > 0;
+          }
+          return multiLabels.filter(checkedLabel => snippet.get('labels').find(label =>
+                  label.replace(/\s*\/\s*/, '/') === checkedLabel ||
+                  label.replace(/\s*\/\s*/, '/').match(`${checkedLabel}/`)
+                )).length === multiLabels.length;
+        }
         if (!selectedLabel) {
           return true;
         }
         return snippet.get('labels').find(label =>
-          label.replace(/\s*\/\s*/, '/') === selectedLabel ||
-          label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
-        );
+            label.replace(/\s*\/\s*/, '/') === selectedLabel ||
+            label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
+          );
       })
       .forEach((element) => {
         elements.push(
