@@ -84,7 +84,7 @@
     clear: both;
   }
 }
-.snippets__labels {
+.snippets__filtering {
   padding-right: 10px;
   min-width: 165px;
   width: 30%;
@@ -96,9 +96,13 @@
     font-size: $font-size-l;
     font-weight: $pf-semi-bold;
     color: $dp-greyscale-850;
+    text-transform: uppercase;
     .fa-tag {
       color: $dp-sonic-primary;
     }
+  }
+  > .dp-input--radio {
+    margin-right: 0;
   }
   .search {
     margin-bottom: 5px;

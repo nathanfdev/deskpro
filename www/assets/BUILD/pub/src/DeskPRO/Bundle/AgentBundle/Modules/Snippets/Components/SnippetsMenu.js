@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import { Input, Select } from 'deskpro-components/lib/Components/Forms';
+import { Input } from 'deskpro-components/lib/Components/Forms';
 import Button from 'deskpro-components/lib/Components/Button';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -70,14 +70,14 @@ export class SnippetsMenuContainer extends React.Component {
     this.setState({ filter });
   };
 
-  handleShowMode = (showMode) => {
+  handleShowMode = (checked, showMode) => {
     this.setState({ showMode });
   };
 
   render() {
     const { me, closeMenu, type, department, languages, width, langId, open } = this.props;
     const langPref = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
-    const snippets = this.props.snippets
+    const filteredSnippets = this.props.snippets
       .filter(snippet => snippet.get('types').indexOf(type) !== -1)
       .filter(snippet => snippet.get('translations').find(translation =>
         langPref.indexOf(translation.get('language')) !== -1
@@ -100,26 +100,27 @@ export class SnippetsMenuContainer extends React.Component {
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
           || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langPref).get('content').match(re);
-      })
-      .filter((snippet) => {
-        switch (this.state.showMode) {
-          case 'all':
-            return true;
-          case 'my_snippets':
-            return snippet.get('person') === me.get('id');
-          case 'my_team': {
-            const myTeams = me.get('teams', new Immutable.List());
-            return snippet.get('ownership_teams', new Immutable.List())
+      });
+
+    const snippets = filteredSnippets.filter((snippet) => {
+      switch (this.state.showMode) {
+        case 'all':
+          return true;
+        case 'my_snippets':
+          return snippet.get('person') === me.get('id');
+        case 'my_team': {
+          const myTeams = me.get('teams', new Immutable.List());
+          return snippet.get('ownership_teams', new Immutable.List())
                 .filter(team => myTeams.find(t => t === team)).size > 0;
-          }
-          case 'my_drafts':
-            return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
-          case 'all_drafts':
-            return snippet.get('is_draft', false);
-          default:
-            return true;
         }
-      })
+        case 'my_drafts':
+          return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
+        case 'all_drafts':
+          return snippet.get('is_draft', false);
+        default:
+          return true;
+      }
+    })
       .sort((a, b) => {
         const titleA = a.get('title').toLowerCase();
         const titleB = b.get('title').toLowerCase();
@@ -139,6 +140,7 @@ export class SnippetsMenuContainer extends React.Component {
         handleFilter={this.handleFilter}
         handleShowMode={this.handleShowMode}
         snippets={snippets}
+        filteredSnippets={filteredSnippets}
         languages={languages}
         type={type}
         filter={this.state.filter}
@@ -155,20 +157,21 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    me:             PropTypes.object,
-    snippets:       PropTypes.object,
-    languages:      PropTypes.object,
-    langId:         PropTypes.number,
-    width:          PropTypes.number,
-    closeMenu:      PropTypes.func,
-    insertSnippet:  PropTypes.func,
-    handleFilter:   PropTypes.func,
-    handleShowMode: PropTypes.func,
-    open:           PropTypes.bool,
-    type:           PropTypes.string,
-    filter:         PropTypes.string,
-    showMode:       PropTypes.string,
-    langPref:       PropTypes.array,
+    me:               PropTypes.object,
+    snippets:         PropTypes.object,
+    filteredSnippets: PropTypes.filteredSnippets,
+    languages:        PropTypes.object,
+    langId:           PropTypes.number,
+    width:            PropTypes.number,
+    closeMenu:        PropTypes.func,
+    insertSnippet:    PropTypes.func,
+    handleFilter:     PropTypes.func,
+    handleShowMode:   PropTypes.func,
+    open:             PropTypes.bool,
+    type:             PropTypes.string,
+    filter:           PropTypes.string,
+    showMode:         PropTypes.string,
+    langPref:         PropTypes.array,
   };
   static defaultProps = {
     handleFilter() {},
@@ -387,20 +390,20 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { me, snippets, languages, closeMenu, insertSnippet, filter, handleFilter, width, langPref } = this.props;
-    let showOptions = [
-      { value: 'all', label: agentPhrases.get('agent.snippets.all_snippets') },
-      { value: 'my_snippets', label: agentPhrases.get('agent.snippets.my_snippets') },
-    ];
-    if (me.get('teams').size > 1) {
-      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_teams_snippets') });
-    } else if (me.get('teams').size > 0) {
-      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_team_snippets') });
-    }
-    showOptions = showOptions.concat([
-      { value: 'my_drafts', label: agentPhrases.get('agent.snippets.my_drafts') },
-      { value: 'all_drafts', label: agentPhrases.get('agent.snippets.all_drafts') },
-    ]);
+    const {
+      me,
+      snippets,
+      filteredSnippets,
+      languages,
+      closeMenu,
+      insertSnippet,
+      filter,
+      handleFilter,
+      width,
+      langPref,
+      showMode,
+      handleShowMode,
+    } = this.props;
     const style = {};
     if (width) {
       style.width = width - 5;
@@ -432,26 +435,18 @@ export class SnippetsMenu extends React.Component {
           <div className="top">
             <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
             <Button
-              className="dp-button--secondary add-snippet"
+              className="dp-button--primary add-snippet"
               onClick={this.newSnippet}
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
-            <Select
-              placeholder={agentPhrases.get('agent.general.show')}
-              searchable={false}
-              clearable={false}
-              simpleValue
-              value={this.props.showMode}
-              onChange={this.props.handleShowMode}
-              className="show-mode"
-              options={showOptions}
-            />
           </div>
         </div>
         <div className="body">
           <SnippetsFiltering
+            me={me}
             snippets={snippets}
+            filteredSnippets={filteredSnippets}
             selectLabel={this.selectLabel}
             selectMultiMode={this.selectMultiMode}
             labelFilter={this.state.labelFilter}
@@ -460,6 +455,8 @@ export class SnippetsMenu extends React.Component {
             selectedLabel={this.state.selectedLabel}
             multiLabels={this.state.multiLabels}
             multiMode={this.state.multiMode}
+            showMode={showMode}
+            handleShowMode={handleShowMode}
           />
           <SnippetsList
             snippets={snippets}

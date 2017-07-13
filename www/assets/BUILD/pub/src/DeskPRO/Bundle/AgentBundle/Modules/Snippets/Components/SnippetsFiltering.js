@@ -7,12 +7,16 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsFiltering extends React.Component {
   static propTypes = {
+    me:                  PropTypes.object,
     snippets:            PropTypes.object,
+    filteredSnippets:    PropTypes.filteredSnippets,
     labelFilter:         PropTypes.string,
     selectLabel:         PropTypes.func,
     selectMultiMode:     PropTypes.func,
     handleLabelFilter:   PropTypes.func,
     onMultiLabelsChange: PropTypes.func,
+    handleShowMode:      PropTypes.func,
+    showMode:            PropTypes.string,
     selectedLabel:       PropTypes.string,
     multiMode:           PropTypes.string,
     multiLabels:         PropTypes.array,
@@ -25,7 +29,8 @@ class SnippetsFiltering extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels: [],
+      labels:      [],
+      showOptions: [],
     };
   }
 
@@ -33,11 +38,17 @@ class SnippetsFiltering extends React.Component {
     if (this.props.snippets) {
       this.extractLabels(this.props.snippets);
     }
+    if (this.props.filteredSnippets) {
+      this.countShowOptions(this.props.filteredSnippets);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.snippets) {
+    if (nextProps.snippets !== this.props.snippets) {
       this.extractLabels(nextProps.snippets);
+    }
+    if (nextProps.filteredSnippets !== this.props.filteredSnippets) {
+      this.countShowOptions(nextProps.filteredSnippets);
     }
   }
 
@@ -136,6 +147,50 @@ class SnippetsFiltering extends React.Component {
     });
   };
 
+  countShowOptions = (snippets) => {
+    const { me } = this.props;
+    const showOptions = [
+      {
+        value: 'all',
+        label: agentPhrases.get('agent.snippets.all_snippets'),
+        count: snippets.size,
+      },
+    ];
+    const mySnippets = snippets.count(snippet => snippet.get('person') === me.get('id'));
+    showOptions.push({
+      value: 'my_snippets',
+      label: agentPhrases.get('agent.snippets.my_snippets'),
+      count: mySnippets,
+    });
+    const myTeams = me.get('teams', new Immutable.List());
+    if (myTeams.size > 0) {
+      const teamSnippets = snippets.count(snippet =>
+        snippet.get('ownership_teams', new Immutable.List())
+          .filter(team => myTeams.find(t => t === team)).size > 0
+      );
+      showOptions.push({
+        value: 'my_team',
+        label: me.get('teams').size > 1 ? agentPhrases.get('agent.snippets.my_teams_snippets') : agentPhrases.get('agent.snippets.my_team_snippets'),
+        count: teamSnippets,
+      });
+    }
+    const myDrafts = snippets.count(snippet => snippet.get('is_draft', false) && snippet.get('person') === me.get('id'));
+    showOptions.push({
+      value: 'my_drafts',
+      label: agentPhrases.get('agent.snippets.my_drafts'),
+      count: myDrafts,
+    });
+    const allDrafts = snippets.count(snippet => snippet.get('is_draft', false));
+    showOptions.push({
+      value: 'all_drafts',
+      label: agentPhrases.get('agent.snippets.all_drafts'),
+      count: allDrafts,
+    });
+    this.setState({
+      showOptions
+    });
+  };
+
   insertOccurrence(tag, label, occurrences, parts, snippetId) {
     if (occurrences[label]) {
       if (occurrences[label].snippets.indexOf(snippetId) === -1) {
@@ -163,7 +218,19 @@ class SnippetsFiltering extends React.Component {
   render() {
     const { labelFilter, handleLabelFilter, multiLabels } = this.props;
     return (
-      <div className={classNames('snippets__labels', { 'multi-labels': multiLabels.length })}>
+      <div className={classNames('snippets__filtering', { 'multi-labels': multiLabels.length })}>
+        <div className="title">
+          {agentPhrases.get('agent.general.show')}
+        </div>
+        {this.state.showOptions.map(option =>
+          <Radio
+            onChange={this.props.handleShowMode}
+            checked={option.value === this.props.showMode}
+            value={option.value}
+          >
+            {option.label} ({option.count})
+          </Radio>
+        )}
         <div className="title">
           <i className="fa fa-tag" />&nbsp;
           {agentPhrases.get('agent.general.labels')}
