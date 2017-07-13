@@ -15,13 +15,14 @@ export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
   () => () => new Promise((resolve) => {
     const language = window.DESKPRO_PERSON_LANG_ID;
+    const buildNum = window.DP_VERSION_NUMBER;
 
     const setPhrases = (data) => {
       agentPhrases.setPhrases(data);
       resolve();
     };
 
-    const cacheKey = `dpAgent.phrases.${language}`;
+    const cacheKey = `dpAgent.phrases.${language}.${buildNum}`;
     const cachedData = lscache.get(cacheKey);
     if (cachedData) {
       setPhrases(cachedData);
