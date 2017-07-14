@@ -85,6 +85,13 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     private $assets;
 
     /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance", mappedBy="app", cascade={"persist", "remove"}, orphanRemoval=true)
+     *
+     * @var AppInstance[]
+     */
+    private $instances;
+
+    /**
      * @var Domain\AppManifest
      */
     private $parsedManifest;
@@ -94,7 +101,8 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
      */
     public function __construct()
     {
-        $this->assets = new ArrayCollection();
+        $this->assets    = new ArrayCollection();
+        $this->instances = new ArrayCollection();
     }
 
     /**
@@ -205,5 +213,13 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
         $asset = $this->getIconAsset();
 
         return $asset ? $asset->getBlob()->getThumbnailUrl('{{size}}') : null;
+    }
+
+    /**
+     * @return ArrayCollection|AppInstance[]
+     */
+    public function getInstances()
+    {
+        return $this->instances;
     }
 }

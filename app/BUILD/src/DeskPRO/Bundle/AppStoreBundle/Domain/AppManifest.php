@@ -99,6 +99,13 @@ class AppManifest
     private $externalApis = [];
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $isSingle = false;
+
+    /**
      * @return string
      */
     public function getName()
@@ -134,6 +141,7 @@ class AppManifest
     public function setVersion($version)
     {
         $this->version = $version;
+
         return $this;
     }
 
@@ -273,6 +281,26 @@ class AppManifest
     public function setExternalApis(array $externalApis)
     {
         $this->externalApis = $externalApis;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSingle()
+    {
+        return $this->isSingle;
+    }
+
+    /**
+     * @param bool $isSingle
+     *
+     * @return $this
+     */
+    public function setIsSingle($isSingle)
+    {
+        $this->isSingle = $isSingle;
 
         return $this;
     }

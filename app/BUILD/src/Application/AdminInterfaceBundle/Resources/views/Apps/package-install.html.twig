@@ -15,6 +15,15 @@
 				</div>
 			</div>
 		</article>
+		<article ng-if="Ctrl.pack.version_name" class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<p>
+						Version {{ ng_var('Ctrl.pack.version_name') }}
+					</p>
+				</div>
+			</div>
+		</article>
 		<article ng-if="default_form" class="form-horizontal dp-form">
 			<div class="panel panel-fill indent">
 				<div class="panel-body" ng-show="!has_display_settings">

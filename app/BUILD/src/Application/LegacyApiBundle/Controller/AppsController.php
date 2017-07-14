@@ -169,12 +169,20 @@ class AppsController extends AbstractController
                 throw $this->createNotFoundException();
             }
 
+            if ($app) {
+                $apps = $this->container->get('serializer')->toArray(new ApiWrapper($app->getInstances()), new SideloadSerializationContext());
+                $apps = $apps['data'];
+            } else {
+                $apps = [];
+            }
+
             $data = [
                 'name'         => $manifest->getName(),
                 'native_name'  => $manifest->getName(),
                 'title'        => $manifest->getTitle(),
                 'scope'        => $manifest->getScope(),
-                'is_installed' => false,
+                'is_installed' => $app ? $app->getInstances()->count() > 0 : false,
+                'is_single'    => $manifest->isSingle(),
                 'readme'       => $manifest->getDescription(),
                 'readme_html'  => $manifest->getDescription(),
                 'settings_def' => [],
@@ -185,6 +193,9 @@ class AppsController extends AbstractController
                 'author_name'  => $manifest->getAuthor()->getName(),
                 'author_email' => $manifest->getAuthor()->getEmail(),
                 'author_link'  => $manifest->getAuthor()->getUrl(),
+                'version_name' => $manifest->getVersion(),
+                'apps'         => $apps,
+                'app_version'  => 2,
             ];
 
             return $this->createApiResponse(['package' => $data]);
@@ -213,6 +224,7 @@ class AppsController extends AbstractController
         $data['is_installed'] = false;
         $data['readme']       = $readme;
         $data['readme_html']  = $readme_html;
+        $data['app_version']  = 1;
 
         //------------------------------
         // Get assets
@@ -938,7 +950,7 @@ class AppsController extends AbstractController
             $file   = $request->files->get('file');
             $accept = $this->getContainer()->getAttachmentAccepter();
             $blob   = $accept->accept($file);
-            $blob->setIsTemp(true);
+            $blob->setIsTemp(false);
             $blob->setSysName($sysName);
 
             $this->em->persist($blob);

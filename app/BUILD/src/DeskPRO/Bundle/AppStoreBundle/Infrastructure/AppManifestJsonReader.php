@@ -68,6 +68,7 @@ class AppManifestJsonReader
             ->setAuthor($serializer->fromArray($manifestMap['author'], Domain\AppManifestAuthor::class))
             ->setSettings($serializer->fromArray($manifestMap['settings'], 'array<'.Domain\AppManifestSetting::class.'>'))
             ->setExternalApis($manifestMap['external_apis'])
+            ->setIsSingle($manifestMap['is_single'])
         ;
 
         $value           = $manifestMap['settings'];
