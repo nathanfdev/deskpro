@@ -176,7 +176,7 @@ HTML;
                         ol_category.value
                     FROM text_snippet_categories tsc
                       LEFT JOIN text_snippets ts ON tsc.id = ts.category_id
-                      LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT('text_snippet_categories.', tsc.id) AND ol_category.language_id = 1
+                      LEFT JOIN object_lang ol_category ON ol_category.ref = CONCAT('text_snippet_categories.', tsc.id) AND ol_category.language_id = $langId
                       LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT('text_snippets.', ts.id) AND ol_content.prop_name = 'snippet'
                     WHERE ol_content.id IS NOT NULL
                     AND ts.id IS NOT NULL
