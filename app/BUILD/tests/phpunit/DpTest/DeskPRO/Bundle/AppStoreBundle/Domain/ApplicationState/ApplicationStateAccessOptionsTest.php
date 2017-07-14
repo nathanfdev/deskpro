@@ -26,49 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 
-class SearchStateFilter
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DpTest\DeskProTestCase;
+
+class ApplicationStateAccessOptionsTest extends DeskProTestCase
 {
-    /** @var array|StateScope[]  */
-    private $scopeList;
-
-    /** @var string */
-    private $name;
-
-    /**
-     * @param array|StateScope[] $scopeList
-     * @param $name
-     */
-    public function __construct(array $scopeList, $name)
+    public function testDefaultAccessOptions()
     {
-        $this->scopeList = $scopeList;
-        $this->name = $name;
-    }
+        $accessOptions = new Domain\ApplicationState\AccessOptions();
 
-    /**
-     * @param StateScope $scope
-     * @return $this
-     */
-    public function addScope(StateScope $scope)
-    {
-        $this->scopeList[] = $scope;
-        return $this;
-    }
-
-    /**
-     * @return array|StateScope[]
-     */
-    public function getScopeList()
-    {
-        return $this->scopeList;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
+        $this->assertEquals(
+            Domain\Constants::PERMISSION_OWNER,
+            $accessOptions->getReadPermission(),
+            sprintf('default read access should be %s', Domain\Constants::PERMISSION_OWNER)
+        );
+        $this->assertEquals(
+            Domain\Constants::PERMISSION_OWNER,
+            $accessOptions->getWritePermission(),
+            sprintf('default write access should be %s', Domain\Constants::PERMISSION_OWNER)
+        );
+        $this->assertFalse(
+            $accessOptions->isBackendOnly(),
+            sprintf('default system access should be backend only')
+        );
     }
 }

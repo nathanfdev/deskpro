@@ -8,6 +8,11 @@ services:
     class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService
     arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
 
+  DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState\AccessService:
+    class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState\AccessService
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationStateAccessService]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationInstanceFinder]

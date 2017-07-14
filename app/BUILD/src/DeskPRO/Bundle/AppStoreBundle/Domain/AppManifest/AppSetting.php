@@ -26,14 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AppManifestSetting.
  */
-class AppManifestSetting
+class AppSetting
 {
     /**
      * @JMS\Type("string")

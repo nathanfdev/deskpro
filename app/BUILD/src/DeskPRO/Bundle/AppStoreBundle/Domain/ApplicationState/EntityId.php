@@ -26,52 +26,74 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 
-class ApplicationStateId
+class EntityId
 {
-    /** @var string */
-    private $instanceId;
+    /**
+     * @var string
+     */
+    private $entityType;
 
-    /** @var string */
-    private $name;
-
-    /** @var ApplicationState\EntityId */
+    /**
+     * @var string
+     */
     private $entityId;
 
     /**
-     * @param string $instanceId
-     * @param string $name
-     * @param ApplicationState\EntityId $entityId
+     * @param string $idString
+     * @return EntityId|null
      */
-    public function __construct($instanceId, $name, ApplicationState\EntityId $entityId)
+    public static function parse($idString)
     {
-        $this->instanceId = $instanceId;
-        $this->name = $name;
-        $this->entityId = ApplicationState\EntityId::convertToString($entityId);
+        $separator = ':';
+        $pieces = explode($separator, trim($idString));
+
+        if (count($pieces) != 2) {
+            return null;
+        }
+
+        return new EntityId($pieces[0], $pieces[1]);
     }
 
     /**
+     * @param EntityId $entityId
      * @return string
      */
-    public function getInstanceId()
+    public static function convertToString(EntityId $entityId)
     {
-        return $this->instanceId;
+        $separator = ':';
+        $pieces = [
+            $entityId->getEntityType(),
+            $entityId->getEntityId(),
+        ];
+        return  implode($separator, $pieces);
     }
 
     /**
-     * @return string
+     * @param string $entityType
+     * @param string $entityId
      */
-    public function getName()
+    public function __construct($entityType, $entityId)
     {
-        return $this->name;
+        $this->entityType = $entityType;
+        $this->entityId = $entityId;
     }
 
     /**
-     * @return string
+     * @return mixed
+     */
+    public function getEntityType()
+    {
+        return $this->entityType;
+    }
+
+    /**
+     * @return mixed
      */
     public function getEntityId()
     {
         return $this->entityId;
     }
+
 }

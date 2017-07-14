@@ -28,20 +28,10 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface ApplicationStateFinder
+interface SearchSettingsFilterOptions
 {
     /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
-     *
-     * @return ApplicationState
+     * @return string
      */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
-
-    /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
-     */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public function getShowPrivateSettings();
 }

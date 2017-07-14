@@ -26,38 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
-class ApplicationStateId
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class AppManifestAuthor.
+ */
+class AppAuthor
 {
-    /** @var string */
-    private $instanceId;
-
-    /** @var string */
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
     private $name;
 
-    /** @var ApplicationState\EntityId */
-    private $entityId;
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $email;
 
     /**
-     * @param string $instanceId
-     * @param string $name
-     * @param ApplicationState\EntityId $entityId
+     * @JMS\Type("string")
+     *
+     * @var string
      */
-    public function __construct($instanceId, $name, ApplicationState\EntityId $entityId)
-    {
-        $this->instanceId = $instanceId;
-        $this->name = $name;
-        $this->entityId = ApplicationState\EntityId::convertToString($entityId);
-    }
-
-    /**
-     * @return string
-     */
-    public function getInstanceId()
-    {
-        return $this->instanceId;
-    }
+    private $url;
 
     /**
      * @return string
@@ -68,10 +65,54 @@ class ApplicationStateId
     }
 
     /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
-    public function getEntityId()
+    public function getEmail()
     {
-        return $this->entityId;
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return $this
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return $this
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
     }
 }

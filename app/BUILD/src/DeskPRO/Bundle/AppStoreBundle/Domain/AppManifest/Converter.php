@@ -26,17 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
-interface SearchStateFilterValueMap
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+
+class Converter
 {
     /**
-     * @return string
+     * @param Domain\AppManifest $manifest
+     * @return array|Domain\ApplicationState\AccessRule[]
      */
-    public function getScopeList();
+    public function convertToAccessRuleList(Domain\AppManifest $manifest) {
+        $stateRules = $manifest->getState();
+        if (0 === count($stateRules)) {
+            return [];
+        }
 
-    /**
-     * @return string
-     */
-    public function getStateVariableName();
+        $accessRuleList = [];
+        forEach ($stateRules as $stateRule) {
+            $options = new Domain\ApplicationState\AccessOptions(
+                $stateRule->getPermRead(),
+                $stateRule->getPermWrite(),
+                $stateRule->getIsBackendOnly()
+            );
+
+            $accessRule = new Domain\ApplicationState\AccessRule($stateRule->getName(), $options);
+            $accessRuleList[] = $accessRule;
+        }
+
+        return $accessRuleList;
+    }
 }

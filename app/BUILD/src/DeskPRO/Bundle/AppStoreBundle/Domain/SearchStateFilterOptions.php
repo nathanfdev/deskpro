@@ -28,55 +28,20 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-use JMS\Serializer\Annotation as JMS;
-
-class AppManifestTarget
+interface SearchStateFilterOptions
 {
     /**
-     * @JMS\Type("string")
-     * @JMS\SerializedName("target")
-     *
-     * @var string
+     * @return string
      */
-    private $type;
-
-    /**
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $url;
+    public function getApplicationId();
 
     /**
      * @return string
      */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
+    public function getEntityId();
 
     /**
      * @return string
      */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-
+    public function getStateVariableName();
 }

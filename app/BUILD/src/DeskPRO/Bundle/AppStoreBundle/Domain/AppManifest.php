@@ -71,17 +71,24 @@ class AppManifest
     private $scope;
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestSetting>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppSetting>")
      *
-     * @var AppManifestSetting[]
+     * @var AppManifest\AppSetting[]
      */
     private $settings = [];
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestTarget>")
-     * @var AppManifestTarget[]
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppTarget>")
+     * @var AppManifest\AppTarget[]
      */
     private $targets = [];
+
+    /**
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StateAccessRule>")
+     *
+     * @var AppManifest\StateAccessRule[]
+     */
+    private $state = [];
 
     /**
      * @JMS\Type("array")
@@ -92,9 +99,9 @@ class AppManifest
     private $defaultSettings;
 
     /**
-     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestAuthor")
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppAuthor")
      *
-     * @var AppManifestAuthor
+     * @var AppAuthor
      */
     private $author;
 
@@ -242,7 +249,7 @@ class AppManifest
     }
 
     /**
-     * @return AppManifestAuthor
+     * @return AppAuthor
      */
     public function getAuthor()
     {
@@ -250,11 +257,11 @@ class AppManifest
     }
 
     /**
-     * @param AppManifestAuthor $author
+     * @param AppAuthor $author
      *
      * @return $this
      */
-    public function setAuthor(AppManifestAuthor $author = null)
+    public function setAuthor(AppAuthor $author = null)
     {
         $this->author = $author;
 
@@ -262,7 +269,7 @@ class AppManifest
     }
 
     /**
-     * @return AppManifestSetting[]
+     * @return AppManifest\AppSetting[]
      */
     public function getSettings()
     {
@@ -270,7 +277,7 @@ class AppManifest
     }
 
     /**
-     * @param AppManifestSetting[] $settings
+     * @param AppManifest\AppSetting[] $settings
      *
      * @return $this
      */
@@ -322,7 +329,7 @@ class AppManifest
     }
 
     /**
-     * @return AppManifestTarget[]
+     * @return AppManifest\AppTarget[]
      */
     public function getTargets()
     {
@@ -330,7 +337,7 @@ class AppManifest
     }
 
     /**
-     * @param AppManifestTarget[] $targets
+     * @param AppManifest\AppTarget[] $targets
      *
      * @return $this
      */
@@ -355,5 +362,21 @@ class AppManifest
     public function setDeskproApiTags(array $deskproApiTags)
     {
         $this->deskproApiTags = $deskproApiTags;
+    }
+
+    /**
+     * @return AppManifest\StateAccessRule[]
+     */
+    public function getState(): array
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param AppManifest\StateAccessRule[] $state
+     */
+    public function setState(array $state)
+    {
+        $this->state = $state;
     }
 }

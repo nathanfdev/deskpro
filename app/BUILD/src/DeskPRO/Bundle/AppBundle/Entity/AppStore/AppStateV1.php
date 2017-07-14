@@ -30,16 +30,17 @@ namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
+use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository")
  * @ORM\Table(
- *  name="app2_app_state_v2", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "person_id"})
+ *  name="app2_app_state", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "owner_id"})
  *  })
  */
-class AppState implements EntityInterface
+class AppStateV1 implements EntityInterface
 {
     /**
      * @ORM\Id()
@@ -57,11 +58,11 @@ class AppState implements EntityInterface
     private $appInstance;
 
     /**
-     * @ORM\Column(name="entity_id", type="string", nullable=false)
+     * @ORM\Column(type="appstore_state_scope", nullable=false)
      *
-     * @var string
+     * @var Domain\StateScope
      */
-    private $entityId;
+    private $scope;
 
     /**
      * @ORM\Column(type="string", nullable=false)
@@ -78,40 +79,17 @@ class AppState implements EntityInterface
     private $value;
 
     /**
-     * @ORM\Column(name="value_type", type="string", length=50, nullable=false)
-     *
-     * @return string
-     */
-    private $valueType = 'object';
-
-    /**
-     * @ORM\Column(name="perm_read", type="string", length=50, nullable=false)
-     *
-     * @return string
-     */
-    private $permRead = 'OWNER';
-
-    /**
-     * @ORM\Column(name="perm_write", type="string", length=50, nullable=false)
-     *
-     * @return string
-     */
-    private $permWrite = 'OWNER';
-
-    /**
-     * @ORM\Column(name="is_backend_only", type="boolean", nullable=false)
-     *
-     * @return bool
-     */
-    private $isBackendOnly = true;
-
-    /**
      * @ORM\ManyToOne(targetEntity="\Application\DeskPRO\Entity\Person")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @var \Application\DeskPRO\Entity\Person
      */
     private $owner;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $targetId;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
@@ -119,17 +97,11 @@ class AppState implements EntityInterface
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
-     */
-    private $lastModifiedAt;
-
-    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->createdAt      = new \DateTime();
-        $this->lastModifiedAt = new \DateTime();
+        $this->createdAt = new \DateTime();
     }
 
     /**
@@ -143,33 +115,51 @@ class AppState implements EntityInterface
     /**
      * @return AppInstance
      */
-    public function getAppInstance(): AppInstance
+    public function getAppInstance()
     {
         return $this->appInstance;
     }
 
     /**
      * @param AppInstance $appInstance
+     *
+     * @return $this
      */
-    public function setAppInstance(AppInstance $appInstance)
+    public function setAppInstance(AppInstance $appInstance = null)
     {
         $this->appInstance = $appInstance;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * todo BC, remove.
+     *
+     * {@inheritdoc}
      */
-    public function getEntityId(): string
+    public function getInstanceId()
     {
-        return $this->entityId;
+        return $this->appInstance ? $this->appInstance->getId() : null;
     }
 
     /**
-     * @param string $entityId
+     * @return Domain\StateScope
      */
-    public function setEntityId(string $entityId)
+    public function getScope()
     {
-        $this->entityId = $entityId;
+        return $this->scope;
+    }
+
+    /**
+     * @param Domain\StateScope $scope
+     *
+     * @return $this
+     */
+    public function setScope(Domain\StateScope $scope)
+    {
+        $this->scope = $scope;
+
+        return $this;
     }
 
     /**
@@ -182,10 +172,14 @@ class AppState implements EntityInterface
 
     /**
      * @param mixed $name
+     *
+     * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+
+        return $this;
     }
 
     /**
@@ -198,89 +192,63 @@ class AppState implements EntityInterface
 
     /**
      * @param mixed $value
+     *
+     * @return $this
      */
     public function setValue($value)
     {
         $this->value = $value;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * todo BC, remove.
+     *
+     * @return int
      */
-    public function getValueType()
+    public function getOwnerId()
     {
-        return $this->valueType;
+        return $this->owner ? $this->owner->getId() : null;
     }
 
     /**
-     * @param mixed $valueType
+     * @param Person $person
+     *
+     * @return $this
      */
-    public function setValueType($valueType)
+    public function setOwner(Person $person = null)
     {
-        $this->valueType = $valueType;
+        $this->owner = $person;
+
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return \Application\DeskPRO\Entity\Person
      */
-    public function getPermRead()
-    {
-        return $this->permRead;
-    }
-
-    /**
-     * @param mixed $permRead
-     */
-    public function setPermRead($permRead)
-    {
-        $this->permRead = $permRead;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPermWrite()
-    {
-        return $this->permWrite;
-    }
-
-    /**
-     * @param mixed $permWrite
-     */
-    public function setPermWrite($permWrite)
-    {
-        $this->permWrite = $permWrite;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsBackendOnly()
-    {
-        return $this->isBackendOnly;
-    }
-
-    /**
-     * @param mixed $isBackendOnly
-     */
-    public function setIsBackendOnly($isBackendOnly)
-    {
-        $this->isBackendOnly = $isBackendOnly;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getOwner(): Person
+    public function getOwner()
     {
         return $this->owner;
     }
 
     /**
-     * @param Person $owner
+     * @return mixed
      */
-    public function setOwner(Person $owner)
+    public function getTargetId()
     {
-        $this->owner = $owner;
+        return $this->targetId;
+    }
+
+    /**
+     * @param mixed $targetId
+     *
+     * @return $this
+     */
+    public function setTargetId($targetId)
+    {
+        $this->targetId = $targetId;
+
+        return $this;
     }
 }

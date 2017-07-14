@@ -28,20 +28,57 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface ApplicationStateFinder
+class ApplicationStateSearchFilter
 {
-    /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
-     *
-     * @return ApplicationState
-     */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
+    /** @var string */
+    private $appId;
+
+    /** @var ApplicationState\EntityId */
+    private $entityId;
+
+    /** @var string */
+    private $name;
 
     /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
+     * @param string $appId
+     * @param string $entityId
+     * @param string $name
      */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public function __construct($appId, $entityId, $name = null)
+    {
+        $this->appId = $appId;
+        $this->entityId = $entityId;
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApplicationInstanceId()
+    {
+        return (string) $this->appId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityId()
+    {
+        return (string) $this->entityId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasName() {
+        return !empty($this->name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return (string) $this->name;
+    }
 }

@@ -26,22 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\API;
 
-interface ApplicationStateFinder
+use DeskPRO\Bundle\AppStoreBundle\Domain;
+use Symfony\Component\HttpKernel\Exception;
+
+class HttpExceptionConverter
 {
     /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
+     * @param Domain\ApplicationState\Exception $e
      *
-     * @return ApplicationState
+     * @return Exception\HttpException
      */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
-
-    /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
-     */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public static function fromApplicationStateException(Domain\ApplicationState\Exception $e)
+    {
+        switch ($e->getCode()) {
+            case Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND:
+                return new Exception\NotFoundHttpException($e->getMessage(), $e);
+            case Domain\ApplicationState\Exception::CODE_ACCESS_RULE_NOT_FOUND:
+                return new Exception\UnprocessableEntityHttpException($e->getMessage(), $e);
+            case Domain\ApplicationState\Exception::CODE_ACCESS_DENIED:
+                return new Exception\UnprocessableEntityHttpException($e->getMessage(), $e);
+            default:
+                return new Exception\HttpException(500, 'unknown exception while processing application state', $e);
+        }
+    }
 }

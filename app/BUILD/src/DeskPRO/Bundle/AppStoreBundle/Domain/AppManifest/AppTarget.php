@@ -26,22 +26,57 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
-interface ApplicationStateFinder
+use JMS\Serializer\Annotation as JMS;
+
+class AppTarget
 {
     /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
+     * @JMS\Type("string")
+     * @JMS\SerializedName("target")
      *
-     * @return ApplicationState
+     * @var string
      */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
+    private $type;
 
     /**
-     * @param ApplicationStateSearchFilter $searchFilter
+     * @JMS\Type("string")
      *
-     * @return ApplicationState[]
+     * @var string
      */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    private $url;
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+
 }
