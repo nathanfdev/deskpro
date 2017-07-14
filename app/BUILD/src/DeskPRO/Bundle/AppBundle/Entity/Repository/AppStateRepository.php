@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
+use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -41,25 +42,23 @@ class AppStateRepository extends EntityRepository
     /**
      * @param AppInstance $instance
      * @param Person      $person
-     * @param string      $scope
      * @param array       $names
      *
      * @return AppState[]
      */
-    public function findByName(AppInstance $instance, Person $person, $scope, array $names)
+    public function findReadableByName(AppInstance $instance, Person $person, array $names)
     {
         $qb = $this->createQueryBuilder('s');
         $qb
             ->select('s')
             ->where(
                 's.appInstance = :instance',
-                's.owner = :owner',
-                's.scope LIKE :scope',
+                '(s.owner = :owner OR s.permRead = :permRead)',
                 's.name IN (:names)'
             )
             ->setParameter('instance', $instance)
+            ->setParameter('permRead', Constants::PERMISSION_EVERYONE)
             ->setParameter('owner', $person)
-            ->setParameter('scope', $scope.'.%')
             ->setParameter('names', $names)
             ->groupBy('s.name') // the could be more than one value for the name, get the first match
         ;

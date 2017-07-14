@@ -124,7 +124,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'site_url' => 'http://deskpro-dev',
         ]);
         $instance->getApp()->willReturn(null);
-        $appStateRepository->findByName($instance, $person, 'private', [])->willReturn([]);
+        $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
 
         $proxyRequest = $this->createFromRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('http://deskpro-dev/api/some-endpoint');
@@ -151,7 +151,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $headers->get('X-Proxy-Url')->willReturn('{{privateState.site_url}}/api/{{privateState.endpoint}}');
         $instance->getSettings()->willReturn([]);
         $instance->getApp()->willReturn(null);
-        $appStateRepository->findByName($instance, $person, 'private', ['site_url', 'endpoint'])->willReturn([
+        $appStateRepository->findReadableByName($instance, $person, ['site_url', 'endpoint'])->willReturn([
             $appState1,
             $appState2,
         ]);
@@ -176,7 +176,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $headers->get('X-Proxy-Url')->willReturn('{{privateState.site_url}}/api/some-endpoint');
         $instance->getSettings()->willReturn([]);
         $instance->getApp()->willReturn(null);
-        $appStateRepository->findByName($instance, $person, 'private', ['site_url'])->willReturn([]);
+        $appStateRepository->findReadableByName($instance, $person, ['site_url'])->willReturn([]);
 
         $proxyRequest = $this->createFromRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('(undefined)/api/some-endpoint');
@@ -220,7 +220,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'site_url' => 'deskpro-dev',
         ]);
 
-        $appStateRepository->findByName($instance, $person, 'private', [])->willReturn([]);
+        $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
 
         $app->getManifest()->willReturn($manifest);
         $manifest->getExternalApis()->willReturn([
@@ -277,7 +277,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'api_key' => 'key_val',
         ]);
 
-        $appStateRepository->findByName($instance, $person, 'private', [])->willReturn([]);
+        $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
 
         $proxyRequest = $this->createFromRequest($instance, $request, $person);
         $proxyRequest->getProxyHeaders()->shouldReturn([

@@ -236,7 +236,7 @@ class ProxyRequestFactory
 
         /** @var AppStateRepository $appStateRepo */
         $appStateRepo = $this->em->getRepository(AppState::class);
-        $appStates    = $appStateRepo->findByName($instance, $person, 'private', $names);
+        $appStates    = $appStateRepo->findReadableByName($instance, $person, $names);
 
         if ($appStates) {
             foreach ($appStates as $appState) {
