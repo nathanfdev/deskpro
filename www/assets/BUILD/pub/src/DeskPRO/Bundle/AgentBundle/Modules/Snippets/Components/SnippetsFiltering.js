@@ -9,7 +9,7 @@ class SnippetsFiltering extends React.Component {
   static propTypes = {
     me:                  PropTypes.object,
     snippets:            PropTypes.object,
-    filteredSnippets:    PropTypes.filteredSnippets,
+    filteredSnippets:    PropTypes.object,
     labelFilter:         PropTypes.string,
     selectLabel:         PropTypes.func,
     selectMultiMode:     PropTypes.func,
@@ -224,6 +224,7 @@ class SnippetsFiltering extends React.Component {
         </div>
         {this.state.showOptions.map(option =>
           <Radio
+            key={option.value}
             onChange={this.props.handleShowMode}
             checked={option.value === this.props.showMode}
             value={option.value}

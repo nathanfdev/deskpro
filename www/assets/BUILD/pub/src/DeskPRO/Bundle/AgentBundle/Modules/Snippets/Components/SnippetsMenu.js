@@ -77,6 +77,8 @@ export class SnippetsMenuContainer extends React.Component {
   render() {
     const { me, closeMenu, type, department, languages, width, langId, open } = this.props;
     const langPref = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
+    let labels = this.props.snippets.map(snippet => snippet.get('labels')).toArray().reduce((a, b) => a.concat(b.toArray()), []);
+    labels = Array.from(new Set(labels));
     const filteredSnippets = this.props.snippets
       .filter(snippet => snippet.get('types').indexOf(type) !== -1)
       .filter(snippet => snippet.get('translations').find(translation =>
@@ -140,6 +142,7 @@ export class SnippetsMenuContainer extends React.Component {
         handleFilter={this.handleFilter}
         handleShowMode={this.handleShowMode}
         snippets={snippets}
+        labels={labels}
         filteredSnippets={filteredSnippets}
         languages={languages}
         type={type}
@@ -159,7 +162,8 @@ export class SnippetsMenu extends React.Component {
   static propTypes = {
     me:               PropTypes.object,
     snippets:         PropTypes.object,
-    filteredSnippets: PropTypes.filteredSnippets,
+    labels:           PropTypes.array,
+    filteredSnippets: PropTypes.object,
     languages:        PropTypes.object,
     langId:           PropTypes.number,
     width:            PropTypes.number,
@@ -189,6 +193,7 @@ export class SnippetsMenu extends React.Component {
       labelFilter:   '',
       focusedId:     0,
       editLang:      this.props.langId,
+      height:        0,
     };
   }
 
@@ -202,10 +207,21 @@ export class SnippetsMenu extends React.Component {
 
   componentDidMount = () => {
     setTimeout(() => this.searchInput.focus(), 500);
+    this.updateWindowDimensions();
+    window.addEventListener('resize', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.updateWindowDimensions();
+          this.ticking = false;
+        });
+      }
+      this.ticking = true;
+    });
   };
 
   componentWillUnmount = () => {
     window.document.removeEventListener('keydown', this.closeShortCut);
+    window.removeEventListener('resize', this.updateWindowDimensions);
   };
 
   onSearchFocus = () => {
@@ -231,9 +247,17 @@ export class SnippetsMenu extends React.Component {
         snippet={this.state.snippetEdit}
         langId={this.state.editLang}
         type={this.props.type}
+        height={this.state.height}
+        labelsSource={this.props.labels}
         closeModal={this.closeEditSnippet}
       />
     );
+  };
+
+  updateWindowDimensions = () => {
+    this.setState({
+      height: window.innerHeight
+    });
   };
 
   closeShortCut = (ev) => {
@@ -463,6 +487,7 @@ export class SnippetsMenu extends React.Component {
             languages={languages}
             langPref={langPref}
             filter={filter}
+            height={this.state.height}
             focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
             multiLabels={this.state.multiLabels}

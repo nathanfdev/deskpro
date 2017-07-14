@@ -159,42 +159,16 @@ export class SnippetsList extends React.Component {
     multiMode:     PropTypes.string,
     multiLabels:   PropTypes.array,
     focusedId:     PropTypes.number,
+    height:        PropTypes.number,
     filter:        PropTypes.string,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langPref:      PropTypes.array,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      height: 0
-    };
-  }
-
   componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', () => {
-      if (!this.ticking) {
-        window.requestAnimationFrame(() => {
-          this.updateWindowDimensions();
-          this.ticking = false;
-        });
-      }
-      this.ticking = true;
-    });
     this.offsetTop = this.list.offsetTop;
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
-
-  updateWindowDimensions = () => {
-    this.setState({
-      height: window.innerHeight
-    });
-  };
 
   renderElements = () => {
     const elements = [];
@@ -260,7 +234,7 @@ export class SnippetsList extends React.Component {
   };
 
   render() {
-    let height = this.state.height - this.offsetTop;
+    let height = this.props.height - this.offsetTop;
     if (isNaN(height)) {
       height = 0;
     }
