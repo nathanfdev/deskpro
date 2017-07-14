@@ -107,6 +107,14 @@ class ApplicationState
     /**
      * @return string
      */
+    public function getName()
+    {
+        return $this->identifier->getName();
+    }
+
+    /**
+     * @return string
+     */
     public function getValue()
     {
         return $this->value;

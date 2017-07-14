@@ -88,7 +88,7 @@ class AppStateController extends BaseController
 
         $converter = function(AppStoreBundle\Domain\ApplicationState $state) {
             return [
-                "name" => $state->getIdentifier()->getName(),
+                "name" => $state->getName(),
                 'app_id' => $state->getIdentifier()->getInstanceId(),
                 "value" => json_decode($state->getValue(), $assoc = true)
             ];
