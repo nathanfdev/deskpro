@@ -5831,7 +5831,7 @@ CSS;
             $account = $ticket->email_account;
         }
         if (!$account || !$account->is_enabled || !$account->outgoing_account) {
-            $account = $this->container->getEmailAccountManager()->getPrimaryTicketAccount();
+            $account = $this->container->getEmailAccountManager()->getPrimaryTicketAccountWithFallback();
         }
 
         return $account;
