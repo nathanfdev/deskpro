@@ -98,7 +98,7 @@ class StateAccessRule
     /**
      * @param bool $permRead
      */
-    public function setPermRead(bool $permRead)
+    public function setPermRead($permRead)
     {
         $this->permRead = $permRead;
     }
@@ -106,7 +106,7 @@ class StateAccessRule
     /**
      * @param bool $permWrite
      */
-    public function setPermWrite(bool $permWrite)
+    public function setPermWrite($permWrite)
     {
         $this->permWrite = $permWrite;
     }

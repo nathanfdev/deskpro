@@ -34,14 +34,23 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AppStateOptionsConverter implements ParamConverterInterface
 {
-
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        if ($request->query->has('mode')) {
-            $mode = $request->query->get('mode');
-            $request->attributes->set('options', $mode);
+        $options = [];
+
+        $optionKeyToQueryParam = [
+            'mode' => 'options.mode'
+        ];
+        foreach ($optionKeyToQueryParam as $optionKey => $optionParamName) {
+            //see  http://ca.php.net/variables.external
+            // php replaces dots with underscores in query parameters, very funny indeed
+            $phpSafeParamName = str_replace('.', '_', $optionParamName);
+            if ($request->query->has($phpSafeParamName)) {
+                $options[$optionKey] = $request->query->get($phpSafeParamName);
+            }
         }
 
+        $request->attributes->set('options', $options);
         return true;
     }
 

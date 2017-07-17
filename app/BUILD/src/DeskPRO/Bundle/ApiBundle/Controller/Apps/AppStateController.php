@@ -156,10 +156,10 @@ class AppStateController extends BaseController
      * @param Entity\AppStore\AppInstance $application
      * @param $entityId
      * @param $stateName
-     * @param string|null $options
+     * @param array $options
      * @return View\View
      */
-    public function getStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName, $options = null)
+    public function getStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName, $options)
     {
         $instanceId = null;
         if ($application instanceof Entity\AppStore\AppInstance) {
@@ -182,14 +182,14 @@ class AppStateController extends BaseController
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
         try {
             $value = $stateAccessService->readValue($stateIdentifer, $accessRequest);
+            return View\View::create(json_decode($value, $assoc = true), Response::HTTP_OK);
+        } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
+            $stateNotFound = $e->getCode() === AppStoreBundle\Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND;
+            $returnHttpNoContent = array_key_exists('mode', $options) && $options['mode'] === 'find';
 
-            if (is_null($value) && $options === 'find') {
+            if ($stateNotFound && $returnHttpNoContent) {
                 return View\View::create([], Response::HTTP_NO_CONTENT);
             }
-
-            return View\View::create(json_decode($value, $assoc = true), Response::HTTP_OK);
-
-        } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
             throw HttpExceptionConverter::fromApplicationStateException($e);
         }
     }

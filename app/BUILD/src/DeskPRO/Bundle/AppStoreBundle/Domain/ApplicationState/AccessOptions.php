@@ -31,23 +31,23 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 class AccessOptions
 {
     /** @var string */
-    private $read;
+    private $readPermission;
 
     /** @var string */
-    private $write;
+    private $writePermission;
 
     /** @var boolean */
     private $isBackendOnly;
 
     /**
-     * @param string $read
-     * @param string $write
+     * @param string $readPermission
+     * @param string $writePermission
      * @param boolean $isBackendOnly
      */
-    public function __construct($read = 'OWNER', $write = 'OWNER', $isBackendOnly = false)
+    public function __construct($readPermission = 'OWNER', $writePermission = 'OWNER', $isBackendOnly = false)
     {
-        $this->read = $read;
-        $this->write = $write;
+        $this->readPermission = $readPermission;
+        $this->writePermission = $writePermission;
         $this->isBackendOnly = $isBackendOnly;
     }
 
@@ -64,7 +64,7 @@ class AccessOptions
      */
     public function getReadPermission()
     {
-        return $this->read;
+        return $this->readPermission;
     }
 
     /**
@@ -72,7 +72,7 @@ class AccessOptions
      */
     public function getWritePermission()
     {
-        return $this->read;
+        return $this->writePermission;
     }
 
 }
