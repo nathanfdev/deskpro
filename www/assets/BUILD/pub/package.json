@@ -93,6 +93,7 @@
     "react-timeago": "3.0.0",
     "react-tooltip": "^3.2.7",
     "react-transform-catch-errors": "1.0.1",
+    "react-virtualized": "^9.9.0",
     "recordrtc": "^5.4.0",
     "redbox-react": "1.1.1",
     "redux": "3.5.x",

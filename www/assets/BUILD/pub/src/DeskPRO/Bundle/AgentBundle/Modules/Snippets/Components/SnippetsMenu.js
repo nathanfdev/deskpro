@@ -11,6 +11,7 @@ import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Compo
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
+import { LanguageSelect } from './Menus/LanguageSelect';
 
 @connect(state => ({
   me:        meSelector(state),
@@ -473,6 +474,10 @@ export class SnippetsMenu extends React.Component {
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
+            <LanguageSelect
+              languages={languages}
+              langPref={langPref}
+            />
           </div>
         </div>
         <div className="body">
@@ -498,6 +503,7 @@ export class SnippetsMenu extends React.Component {
             langPref={langPref}
             filter={filter}
             height={this.state.height}
+            width={width}
             focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
             multiLabels={this.state.multiLabels}

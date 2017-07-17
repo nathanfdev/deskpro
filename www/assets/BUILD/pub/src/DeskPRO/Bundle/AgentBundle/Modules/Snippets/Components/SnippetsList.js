@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import Immutable from 'immutable';
 import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { List } from 'react-virtualized';
 import { Tag } from 'deskpro-components/lib/Components/Forms';
 
 export class SnippetsListElement extends React.PureComponent {
@@ -14,6 +16,7 @@ export class SnippetsListElement extends React.PureComponent {
     focused:       PropTypes.bool,
     langPref:      PropTypes.array,
     filter:        PropTypes.string,
+    style:         PropTypes.object,
   };
   static defaultProps = {
     focused: false,
@@ -132,10 +135,13 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   render() {
-    const { snippet, editSnippet, insertSnippet, focused } = this.props;
+    const { snippet, editSnippet, insertSnippet, focused, style } = this.props;
     const langId = this.findLanguage();
     return (
-      <div className={classNames('snippet_list_element_wrapper', { 'snippet_list_element_wrapper--focused': focused })}>
+      <div
+        className={classNames('snippet_list_element_wrapper', { 'snippet_list_element_wrapper--focused': focused })}
+        style={style}
+      >
         <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet, langId)} >
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
@@ -160,34 +166,76 @@ export class SnippetsList extends React.Component {
     multiLabels:   PropTypes.array,
     focusedId:     PropTypes.number,
     height:        PropTypes.number,
+    width:         PropTypes.number,
     filter:        PropTypes.string,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langPref:      PropTypes.array,
   };
 
-  componentDidMount() {
-    this.offsetTop = this.list.offsetTop;
+  static noRowsRenderer() {
+    return (
+      <div className="snippet_list_element_wrapper">
+        {agentPhrases.get('agent.search.no_results_found')}
+      </div>
+    );
   }
 
-  renderElements = () => {
-    const elements = [];
+  constructor(props) {
+    super(props);
+    this.rowRenderer = this.rowRenderer.bind(this);
+  }
+
+  componentDidMount() {
+    this.offsetTop = this.listRef.offsetTop;
+  }
+
+  rowRenderer({
+    key,
+    index,
+    style
+  }) {
     const {
-      snippets,
       languages,
-      selectedLabel,
-      multiLabels,
-      multiMode,
       editSnippet,
       insertSnippet,
       focusedId,
       langPref,
       filter,
     } = this.props;
-    if (!snippets) {
+    const snippet = this.list[index];
+    if (!snippet) {
+      console.log(index);
       return null;
     }
-    snippets
+    return (
+      <SnippetsListElement
+        key={key}
+        snippet={new Immutable.Map(snippet)}
+        languages={languages}
+        langPref={langPref}
+        filter={filter}
+        editSnippet={editSnippet}
+        insertSnippet={insertSnippet}
+        focused={focusedId === snippet.id}
+        style={style}
+      />
+    );
+  }
+
+  render() {
+    const {
+      snippets,
+      selectedLabel,
+      multiLabels,
+      multiMode,
+      width,
+    } = this.props;
+    let height = this.props.height - 123;
+    if (isNaN(height)) {
+      height = 400;
+    }
+    this.list = snippets
       .filter((snippet) => {
         if (multiLabels.length) {
           if (multiMode === 'any') {
@@ -197,51 +245,30 @@ export class SnippetsList extends React.Component {
               )).length > 0;
           }
           return multiLabels.filter(checkedLabel => snippet.get('labels').find(label =>
-                  label.replace(/\s*\/\s*/, '/') === checkedLabel ||
-                  label.replace(/\s*\/\s*/, '/').match(`${checkedLabel}/`)
-                )).length === multiLabels.length;
+              label.replace(/\s*\/\s*/, '/') === checkedLabel ||
+              label.replace(/\s*\/\s*/, '/').match(`${checkedLabel}/`)
+            )).length === multiLabels.length;
         }
         if (!selectedLabel) {
           return true;
         }
         return snippet.get('labels').find(label =>
-            label.replace(/\s*\/\s*/, '/') === selectedLabel ||
-            label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
-          );
-      })
-      .forEach((element) => {
-        elements.push(
-          <SnippetsListElement
-            key={element.get('id')}
-            snippet={element}
-            languages={languages}
-            langPref={langPref}
-            filter={filter}
-            editSnippet={editSnippet}
-            insertSnippet={insertSnippet}
-            focused={focusedId === element.get('id')}
-          />
+          label.replace(/\s*\/\s*/, '/') === selectedLabel ||
+          label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
         );
-      });
-    if (elements.length === 0) {
-      return (
-        <div className="snippet_list_element_wrapper">
-          {agentPhrases.get('agent.search.no_results_found')}
-        </div>
-      );
-    }
-    return elements;
-  };
-
-  render() {
-    let height = this.props.height - this.offsetTop;
-    if (isNaN(height)) {
-      height = 0;
-    }
+      }).toArray();
     return (
-      <div className="snippets__list" ref={(c) => { this.list = c; }} style={{ height }}>
-        {this.renderElements()}
-      </div>
+      <List
+        className="snippets__list"
+        height={height}
+        width={(width - 5) * 0.7}
+        rowCount={this.list.length}
+        rowHeight={66}
+        rowRenderer={this.rowRenderer}
+        noRowsRenderer={SnippetsList.noRowsRenderer}
+        overscanRowCount={2}
+        ref={(c) => { this.listRef = c; }}
+      />
     );
   }
 }
