@@ -367,7 +367,7 @@ class AppManifest
     /**
      * @return AppManifest\StateAccessRule[]
      */
-    public function getState(): array
+    public function getState()
     {
         return $this->state;
     }

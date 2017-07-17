@@ -143,7 +143,7 @@ class AppState implements EntityInterface
     /**
      * @return AppInstance
      */
-    public function getAppInstance(): AppInstance
+    public function getAppInstance()
     {
         return $this->appInstance;
     }
@@ -159,7 +159,7 @@ class AppState implements EntityInterface
     /**
      * @return string
      */
-    public function getEntityId(): string
+    public function getEntityId()
     {
         return $this->entityId;
     }
@@ -271,7 +271,7 @@ class AppState implements EntityInterface
     /**
      * @return Person
      */
-    public function getOwner(): Person
+    public function getOwner()
     {
         return $this->owner;
     }

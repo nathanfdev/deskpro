@@ -97,7 +97,7 @@ class AccessRequest
     /**
      * @return string
      */
-    public function getService(): string
+    public function getService()
     {
         return $this->service;
     }
