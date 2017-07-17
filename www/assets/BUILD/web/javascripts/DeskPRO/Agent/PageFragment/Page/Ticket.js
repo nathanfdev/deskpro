@@ -2484,9 +2484,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				name: messageRow.data('message-author-name'),
 				email: messageRow.data('message-author-email')
 			},
-			date: new Date(parseInt(messageRow.data('message-ts'))),
+			date: new Date(parseInt(messageRow.data('message-ts'), 10) * 1000),
 			bodyHtml: messageRow.find('.body-text-message').first().html()
-		}
+		};
 	},
 
 	showDeleteOverlay: function(doBan) {
