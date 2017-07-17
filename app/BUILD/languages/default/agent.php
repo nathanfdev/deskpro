@@ -448,6 +448,7 @@ return [
     'agent.general.choose_a_type'                              => 'Choose a type',
     'agent.general.choose_criteria'                            => 'Choose criteria...',
     'agent.general.choose_person_for_ticket'                   => 'Choose a person to create this ticket for',
+    'agent.general.clear'                                      => 'Clear',
     'agent.general.click_learn_more'                           => 'Click here to learn more',
     'agent.general.click_to_upload_picture'                    => 'Click to upload a new picture',
     'agent.general.close_lc'                                   => 'close',

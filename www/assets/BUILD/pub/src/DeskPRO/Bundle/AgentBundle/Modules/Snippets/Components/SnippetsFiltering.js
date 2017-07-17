@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import Immutable from 'immutable';
+import Isvg from 'react-inlinesvg';
 import { Input, Checkbox, Radio } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -11,6 +12,7 @@ class SnippetsFiltering extends React.Component {
     snippets:            PropTypes.object,
     filteredSnippets:    PropTypes.object,
     labelFilter:         PropTypes.string,
+    clearLabels:         PropTypes.func,
     selectLabel:         PropTypes.func,
     selectMultiMode:     PropTypes.func,
     handleLabelFilter:   PropTypes.func,
@@ -149,14 +151,17 @@ class SnippetsFiltering extends React.Component {
 
   countShowOptions = (snippets) => {
     const { me } = this.props;
+    const allSnippets = snippets.count(snippet => !snippet.get('is_draft', false));
     const showOptions = [
       {
         value: 'all',
         label: agentPhrases.get('agent.snippets.all_snippets'),
-        count: snippets.size,
+        count: allSnippets,
       },
     ];
-    const mySnippets = snippets.count(snippet => snippet.get('person') === me.get('id'));
+    const mySnippets = snippets.count(snippet =>
+      snippet.get('person') === me.get('id') && !snippet.get('is_draft', false)
+    );
     showOptions.push({
       value: 'my_snippets',
       label: agentPhrases.get('agent.snippets.my_snippets'),
@@ -165,6 +170,7 @@ class SnippetsFiltering extends React.Component {
     const myTeams = me.get('teams', new Immutable.List());
     if (myTeams.size > 0) {
       const teamSnippets = snippets.count(snippet =>
+        !snippet.get('is_draft', false) &&
         snippet.get('ownership_teams', new Immutable.List())
           .filter(team => myTeams.find(t => t === team)).size > 0
       );
@@ -216,55 +222,69 @@ class SnippetsFiltering extends React.Component {
   }
 
   render() {
-    const { labelFilter, handleLabelFilter, multiLabels } = this.props;
+    const { labelFilter, handleLabelFilter, multiLabels, selectedLabel } = this.props;
     return (
       <div className={classNames('snippets__filtering', { 'multi-labels': multiLabels.length })}>
-        <div className="title">
-          {agentPhrases.get('agent.general.show')}
-        </div>
-        {this.state.showOptions.map(option =>
-          <Radio
-            key={option.value}
-            onChange={this.props.handleShowMode}
-            checked={option.value === this.props.showMode}
-            value={option.value}
-          >
-            {option.label} ({option.count})
-          </Radio>
-        )}
-        <div className="title">
-          <i className="fa fa-tag" />&nbsp;
-          {agentPhrases.get('agent.general.labels')}
-        </div>
-        <Input
-          value={labelFilter}
-          className="search"
-          onChange={handleLabelFilter}
-          icon="search"
-        />
-        { multiLabels.length ?
-          <div className="multi-mode">
-            <Radio
-              checked={this.props.multiMode === 'any'}
-              onChange={this.props.selectMultiMode}
-              value="any"
-              name="label-mode"
-            >
-              Match any
-            </Radio>
-            <Radio
-              checked={this.props.multiMode === 'all'}
-              onChange={this.props.selectMultiMode}
-              value="all"
-              name="label-mode"
-            >
-              Match all
-            </Radio>
+        <div className="show block">
+          <div className="title">
+            {agentPhrases.get('agent.general.show')}
           </div>
-          : null}
-        <List>
-          {this.getLabels(this.state.labels)}
-        </List>
+          {this.state.showOptions.map(option =>
+            <Radio
+              key={option.value}
+              onChange={this.props.handleShowMode}
+              checked={option.value === this.props.showMode}
+              value={option.value}
+            >
+              {option.label} ({option.count})
+            </Radio>
+          )}
+        </div>
+        <div className="labels block">
+          <div className="title">
+            <i className="fa fa-tag" />&nbsp;
+            {agentPhrases.get('agent.general.labels')}
+          </div>
+          { multiLabels.length || selectedLabel ?
+            <a className="clear" onClick={this.props.clearLabels}>
+              <Isvg
+                className="close-icon"
+                src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
+              />
+              {agentPhrases.get('agent.general.clear')}
+            </a>
+            : null
+          }
+          <Input
+            value={labelFilter}
+            className="search"
+            onChange={handleLabelFilter}
+            icon="search"
+          />
+          { multiLabels.length ?
+            <div className="multi-mode">
+              <Radio
+                checked={this.props.multiMode === 'any'}
+                onChange={this.props.selectMultiMode}
+                value="any"
+                name="label-mode"
+              >
+                Match any
+              </Radio>
+              <Radio
+                checked={this.props.multiMode === 'all'}
+                onChange={this.props.selectMultiMode}
+                value="all"
+                name="label-mode"
+              >
+                Match all
+              </Radio>
+            </div>
+            : null}
+          <List>
+            {this.getLabels(this.state.labels)}
+          </List>
+        </div>
       </div>
     );
   }

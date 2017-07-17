@@ -5,7 +5,7 @@ import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Tag } from 'deskpro-components/lib/Components/Forms';
 
-export class SnippetsListElement extends React.Component {
+export class SnippetsListElement extends React.PureComponent {
   static propTypes = {
     snippet:       PropTypes.object,
     languages:     PropTypes.object,

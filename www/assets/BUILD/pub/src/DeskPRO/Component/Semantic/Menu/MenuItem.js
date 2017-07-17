@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-class MenuItem extends React.Component {
+class MenuItem extends React.PureComponent {
   static propTypes = {
     label:       PropTypes.string,
     icon:        PropTypes.string,

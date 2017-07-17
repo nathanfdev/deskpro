@@ -80,20 +80,21 @@ export class SnippetsMenuContainer extends React.Component {
     let labels = this.props.snippets.map(snippet => snippet.get('labels')).toArray().reduce((a, b) => a.concat(b.toArray()), []);
     labels = Array.from(new Set(labels));
     const filteredSnippets = this.props.snippets
-      .filter(snippet => snippet.get('types').indexOf(type) !== -1)
-      .filter(snippet => snippet.get('translations').find(translation =>
-        langPref.indexOf(translation.get('language')) !== -1
-      ))
       .filter((snippet) => {
-        if (department === 0) {
-          return true;
+        if (snippet.get('types').indexOf(type) === -1) {
+          return false;
         }
-        if (snippet.get('is_visible_global')) {
-          return true;
+        if (!snippet.get('translations').find(translation =>
+            langPref.indexOf(translation.get('language')) !== -1
+          )) {
+          return false;
         }
-        return snippet.get('visible_departments', []).find(d => d === department);
-      })
-      .filter((snippet) => {
+        if (department !== 0
+          && !snippet.get('is_visible_global')
+          && !snippet.get('visible_departments', []).find(d => d === department)
+        ) {
+          return false;
+        }
         if (!this.state.filter) {
           return true;
         }
@@ -107,13 +108,14 @@ export class SnippetsMenuContainer extends React.Component {
     const snippets = filteredSnippets.filter((snippet) => {
       switch (this.state.showMode) {
         case 'all':
-          return true;
+          return !snippet.get('is_draft', false);
         case 'my_snippets':
-          return snippet.get('person') === me.get('id');
+          return snippet.get('person') === me.get('id') && !snippet.get('is_draft', false);
         case 'my_team': {
           const myTeams = me.get('teams', new Immutable.List());
-          return snippet.get('ownership_teams', new Immutable.List())
-                .filter(team => myTeams.find(t => t === team)).size > 0;
+          return !snippet.get('is_draft', false) &&
+            snippet.get('ownership_teams', new Immutable.List())
+                .count(team => myTeams.find(t => t === team)) > 0;
         }
         case 'my_drafts':
           return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
@@ -305,6 +307,13 @@ export class SnippetsMenu extends React.Component {
     }
   };
 
+  clearLabels = () => {
+    this.setState({
+      multiLabels:   [],
+      selectedLabel: '',
+    });
+  };
+
   selectMultiMode = (checked, multiMode) => {
     this.setState({
       multiMode
@@ -471,6 +480,7 @@ export class SnippetsMenu extends React.Component {
             me={me}
             snippets={snippets}
             filteredSnippets={filteredSnippets}
+            clearLabels={this.clearLabels}
             selectLabel={this.selectLabel}
             selectMultiMode={this.selectMultiMode}
             labelFilter={this.state.labelFilter}
