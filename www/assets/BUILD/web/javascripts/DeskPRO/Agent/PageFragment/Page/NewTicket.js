@@ -2071,6 +2071,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 
 				var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
+				$attachRow.find('ul.files').empty();
 				$attachRow.find('ul.files:first').append(html);
 				item.attachments.length && $attachRow.removeClass('is-hidden').show();
 
