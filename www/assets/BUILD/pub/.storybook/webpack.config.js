@@ -35,7 +35,8 @@ const config = {
       $:      'jquery',
       jQuery: 'jquery'
     })
-  ]
+  ],
+  node: { fs: 'empty' }
 };
 
 module.exports = config;

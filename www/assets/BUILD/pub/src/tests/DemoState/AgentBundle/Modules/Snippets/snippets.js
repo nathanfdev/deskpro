@@ -1,6 +1,6 @@
 import Immutable from 'immutable';
 
-const messageOne = {
+const snippetOne = {
   id:            1,
   title:         'Admin manual',
   shortcut_code: 'admin',
@@ -17,7 +17,7 @@ const messageOne = {
     }
   ]
 };
-const messageTwo = {
+const snippetTwo = {
   id:            2,
   title:         'AGENT manual',
   shortcut_code: 'agent',
@@ -34,11 +34,11 @@ const messageTwo = {
     }
   ]
 };
-const messageThree = {
+const snippetThree = {
   id:            3,
   title:         'API docs',
   shortcut_code: 'api',
-  labels:        ['Docs'],
+  labels:        ['Docs', 'General / Sublabel'],
   lang:          ['en', 'es', 'de'],
   translations:  [
     {
@@ -51,11 +51,11 @@ const messageThree = {
     }
   ]
 };
-const messageFour = {
+const snippetFour = {
   id:            4,
   title:         'Price Quote',
   shortcut_code: 'price',
-  labels:        ['General', 'Sales'],
+  labels:        ['General', 'Sales', 'General/Test/Deep'],
   lang:          ['en', 'es', 'de'],
   translations:  [
     {
@@ -68,7 +68,7 @@ const messageFour = {
     }
   ]
 };
-const messageFive = {
+const snippetFive = {
   id:            5,
   title:         'Delete Agent',
   shortcut_code: 'deleteagent',
@@ -85,11 +85,11 @@ const messageFive = {
     }
   ]
 };
-const messageSix = {
+const snippetSix = {
   id:            6,
   title:         'SSL for custom Portal/Chat',
   shortcut_code: 'SSL',
-  labels:        ['Docs'],
+  labels:        ['Docs', 'After Sales'],
   lang:          ['en'],
   translations:  [
     {
@@ -102,7 +102,7 @@ const messageSix = {
     }
   ]
 };
-const messageSeven = {
+const snippetSeven = {
   id:            7,
   title:         'Where is data hosted?',
   draft:         true,
@@ -122,13 +122,13 @@ const messageSeven = {
 };
 
 export const snippetsState = Immutable.fromJS([
-  messageOne,
-  messageTwo,
-  messageThree,
-  messageFour,
-  messageFive,
-  messageSix,
-  messageSeven
+  snippetOne,
+  snippetTwo,
+  snippetThree,
+  snippetFour,
+  snippetFive,
+  snippetSix,
+  snippetSeven
 ]);
 
 export const editSnippet = Immutable.fromJS({
@@ -238,3 +238,8 @@ export const languages = Immutable.fromJS([
     lang_code:  'fre'
   }
 ]);
+export const me = Immutable.fromJS({
+  id:    1,
+  name:  'John Doe',
+  teams: [],
+});

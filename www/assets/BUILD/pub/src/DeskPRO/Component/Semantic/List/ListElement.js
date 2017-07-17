@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import List from './List';
 
-class ListElement extends React.Component {
+class ListElement extends React.PureComponent {
   static propTypes = {
     label:       PropTypes.string,
     description: PropTypes.string,

@@ -3,9 +3,9 @@ import classNames from 'classnames';
 import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { Label } from 'deskpro-components/lib/Components/Forms';
+import { Tag } from 'deskpro-components/lib/Components/Forms';
 
-export class SnippetsListElement extends React.Component {
+export class SnippetsListElement extends React.PureComponent {
   static propTypes = {
     snippet:       PropTypes.object,
     languages:     PropTypes.object,
@@ -42,7 +42,7 @@ export class SnippetsListElement extends React.Component {
     if (snippet.get('labels')) {
       const labels = [];
       snippet.get('labels').forEach((label, key) => {
-        labels.push(<Label key={key}>{label} </Label>);
+        labels.push(<Tag key={key}>{label} </Tag>);
       });
       if (labels.length) {
         return <div className="labels"><i className="fa fa-tag" /> {labels}</div>;
@@ -156,43 +156,19 @@ export class SnippetsList extends React.Component {
     snippets:      PropTypes.object,
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
+    multiMode:     PropTypes.string,
+    multiLabels:   PropTypes.array,
     focusedId:     PropTypes.number,
+    height:        PropTypes.number,
     filter:        PropTypes.string,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langPref:      PropTypes.array,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      height: 0
-    };
-  }
-
   componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', () => {
-      if (!this.ticking) {
-        window.requestAnimationFrame(() => {
-          this.updateWindowDimensions();
-          this.ticking = false;
-        });
-      }
-      this.ticking = true;
-    });
     this.offsetTop = this.list.offsetTop;
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
-
-  updateWindowDimensions = () => {
-    this.setState({
-      height: window.innerHeight
-    });
-  };
 
   renderElements = () => {
     const elements = [];
@@ -200,6 +176,8 @@ export class SnippetsList extends React.Component {
       snippets,
       languages,
       selectedLabel,
+      multiLabels,
+      multiMode,
       editSnippet,
       insertSnippet,
       focusedId,
@@ -211,10 +189,25 @@ export class SnippetsList extends React.Component {
     }
     snippets
       .filter((snippet) => {
+        if (multiLabels.length) {
+          if (multiMode === 'any') {
+            return multiLabels.filter(checkedLabel => snippet.get('labels').find(label =>
+                label.replace(/\s*\/\s*/, '/') === checkedLabel ||
+                label.replace(/\s*\/\s*/, '/').match(`${checkedLabel}/`)
+              )).length > 0;
+          }
+          return multiLabels.filter(checkedLabel => snippet.get('labels').find(label =>
+                  label.replace(/\s*\/\s*/, '/') === checkedLabel ||
+                  label.replace(/\s*\/\s*/, '/').match(`${checkedLabel}/`)
+                )).length === multiLabels.length;
+        }
         if (!selectedLabel) {
           return true;
         }
-        return snippet.get('labels').find(label => label === selectedLabel);
+        return snippet.get('labels').find(label =>
+            label.replace(/\s*\/\s*/, '/') === selectedLabel ||
+            label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
+          );
       })
       .forEach((element) => {
         elements.push(
@@ -241,7 +234,7 @@ export class SnippetsList extends React.Component {
   };
 
   render() {
-    let height = this.state.height - this.offsetTop;
+    let height = this.props.height - this.offsetTop;
     if (isNaN(height)) {
       height = 0;
     }

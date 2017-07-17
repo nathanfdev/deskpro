@@ -2,12 +2,12 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import { Input, Select } from 'deskpro-components/lib/Components/Forms';
+import { Input } from 'deskpro-components/lib/Components/Forms';
 import Button from 'deskpro-components/lib/Components/Button';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import SnippetsLabels from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsLabels';
+import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
@@ -35,7 +35,7 @@ export class SnippetsMenuContainer extends React.Component {
   static defaultProps = {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
-  };;
+  };
 
   static getSnippetTranslationToUse(snippetTranslations, langPref) {
     for (let i = 0; i < langPref.length; i++) {
@@ -62,6 +62,7 @@ export class SnippetsMenuContainer extends React.Component {
   insertSnippet = (e, snippet, langId) => {
     e.preventDefault();
     e.stopPropagation();
+
     this.props.insertSnippet(snippet.toJS(), this.props.blobs.toJS(), langId);
   };
 
@@ -69,28 +70,31 @@ export class SnippetsMenuContainer extends React.Component {
     this.setState({ filter });
   };
 
-  handleShowMode = (showMode) => {
+  handleShowMode = (checked, showMode) => {
     this.setState({ showMode });
   };
 
   render() {
     const { me, closeMenu, type, department, languages, width, langId, open } = this.props;
     const langPref = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
-    const snippets = this.props.snippets
-      .filter(snippet => snippet.get('types').indexOf(type) !== -1)
-      .filter(snippet => snippet.get('translations').find(translation =>
-        langPref.indexOf(translation.get('language')) !== -1
-      ))
+    let labels = this.props.snippets.map(snippet => snippet.get('labels')).toArray().reduce((a, b) => a.concat(b.toArray()), []);
+    labels = Array.from(new Set(labels));
+    const filteredSnippets = this.props.snippets
       .filter((snippet) => {
-        if (department === 0) {
-          return true;
+        if (snippet.get('types').indexOf(type) === -1) {
+          return false;
         }
-        if (snippet.get('is_visible_global')) {
-          return true;
+        if (!snippet.get('translations').find(translation =>
+            langPref.indexOf(translation.get('language')) !== -1
+          )) {
+          return false;
         }
-        return snippet.get('visible_departments', []).find(d => d === department);
-      })
-      .filter((snippet) => {
+        if (department !== 0
+          && !snippet.get('is_visible_global')
+          && !snippet.get('visible_departments', []).find(d => d === department)
+        ) {
+          return false;
+        }
         if (!this.state.filter) {
           return true;
         }
@@ -99,26 +103,28 @@ export class SnippetsMenuContainer extends React.Component {
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
           || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langPref).get('content').match(re);
-      })
-      .filter((snippet) => {
-        switch (this.state.showMode) {
-          case 'all':
-            return true;
-          case 'my_snippets':
-            return snippet.get('person') === me.get('id');
-          case 'my_team': {
-            const myTeams = me.get('teams', new Immutable.List());
-            return snippet.get('ownership_teams', new Immutable.List())
-                .filter(team => myTeams.find(t => t === team)).size > 0;
-          }
-          case 'my_drafts':
-            return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
-          case 'all_drafts':
-            return snippet.get('is_draft', false);
-          default:
-            return true;
+      });
+
+    const snippets = filteredSnippets.filter((snippet) => {
+      switch (this.state.showMode) {
+        case 'all':
+          return !snippet.get('is_draft', false);
+        case 'my_snippets':
+          return snippet.get('person') === me.get('id') && !snippet.get('is_draft', false);
+        case 'my_team': {
+          const myTeams = me.get('teams', new Immutable.List());
+          return !snippet.get('is_draft', false) &&
+            snippet.get('ownership_teams', new Immutable.List())
+                .count(team => myTeams.find(t => t === team)) > 0;
         }
-      })
+        case 'my_drafts':
+          return snippet.get('is_draft', false) && snippet.get('person') === me.get('id');
+        case 'all_drafts':
+          return snippet.get('is_draft', false);
+        default:
+          return true;
+      }
+    })
       .sort((a, b) => {
         const titleA = a.get('title').toLowerCase();
         const titleB = b.get('title').toLowerCase();
@@ -138,6 +144,8 @@ export class SnippetsMenuContainer extends React.Component {
         handleFilter={this.handleFilter}
         handleShowMode={this.handleShowMode}
         snippets={snippets}
+        labels={labels}
+        filteredSnippets={filteredSnippets}
         languages={languages}
         type={type}
         filter={this.state.filter}
@@ -154,20 +162,22 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    me:             PropTypes.object,
-    snippets:       PropTypes.object,
-    languages:      PropTypes.object,
-    langId:         PropTypes.number,
-    width:          PropTypes.number,
-    closeMenu:      PropTypes.func,
-    insertSnippet:  PropTypes.func,
-    handleFilter:   PropTypes.func,
-    handleShowMode: PropTypes.func,
-    open:           PropTypes.bool,
-    type:           PropTypes.string,
-    filter:         PropTypes.string,
-    showMode:       PropTypes.string,
-    langPref:       PropTypes.array,
+    me:               PropTypes.object,
+    snippets:         PropTypes.object,
+    labels:           PropTypes.array,
+    filteredSnippets: PropTypes.object,
+    languages:        PropTypes.object,
+    langId:           PropTypes.number,
+    width:            PropTypes.number,
+    closeMenu:        PropTypes.func,
+    insertSnippet:    PropTypes.func,
+    handleFilter:     PropTypes.func,
+    handleShowMode:   PropTypes.func,
+    open:             PropTypes.bool,
+    type:             PropTypes.string,
+    filter:           PropTypes.string,
+    showMode:         PropTypes.string,
+    langPref:         PropTypes.array,
   };
   static defaultProps = {
     handleFilter() {},
@@ -178,11 +188,14 @@ export class SnippetsMenu extends React.Component {
     super(props);
     this.state = {
       selectedLabel: '',
+      multiLabels:   [],
+      multiMode:     'any',
       editOpen:      false,
       snippetEdit:   {},
       labelFilter:   '',
       focusedId:     0,
       editLang:      this.props.langId,
+      height:        0,
     };
   }
 
@@ -196,10 +209,21 @@ export class SnippetsMenu extends React.Component {
 
   componentDidMount = () => {
     setTimeout(() => this.searchInput.focus(), 500);
+    this.updateWindowDimensions();
+    window.addEventListener('resize', () => {
+      if (!this.ticking) {
+        window.requestAnimationFrame(() => {
+          this.updateWindowDimensions();
+          this.ticking = false;
+        });
+      }
+      this.ticking = true;
+    });
   };
 
   componentWillUnmount = () => {
     window.document.removeEventListener('keydown', this.closeShortCut);
+    window.removeEventListener('resize', this.updateWindowDimensions);
   };
 
   onSearchFocus = () => {
@@ -220,12 +244,22 @@ export class SnippetsMenu extends React.Component {
     if (!this.state.editOpen) {
       return null;
     }
-    return (<SnippetsModalContainer
-      snippet={this.state.snippetEdit}
-      langId={this.state.editLang}
-      type={this.props.type}
-      closeModal={this.closeEditSnippet}
-    />);
+    return (
+      <SnippetsModalContainer
+        snippet={this.state.snippetEdit}
+        langId={this.state.editLang}
+        type={this.props.type}
+        height={this.state.height}
+        labelsSource={this.props.labels}
+        closeModal={this.closeEditSnippet}
+      />
+    );
+  };
+
+  updateWindowDimensions = () => {
+    this.setState({
+      height: window.innerHeight
+    });
   };
 
   closeShortCut = (ev) => {
@@ -246,9 +280,43 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
-  selectLabel = (label) => {
+  handleMultiLabels = (checked, value) => {
+    let multiLabels = this.state.multiLabels;
+    if (checked) {
+      multiLabels.push(value);
+    } else {
+      multiLabels = multiLabels.filter(e => e !== value);
+    }
+    this.setState(
+      {
+        multiLabels,
+        selectedLabel: ''
+      }
+    );
+  };
+
+  selectLabel = (e, label) => {
+    e.stopPropagation();
+    if (this.state.multiLabels.length === 0) {
+      this.setState({
+        selectedLabel: label
+      });
+    } else {
+      const checked = this.state.multiLabels.indexOf(label) === -1;
+      this.handleMultiLabels(checked, label);
+    }
+  };
+
+  clearLabels = () => {
     this.setState({
-      selectedLabel: label
+      multiLabels:   [],
+      selectedLabel: '',
+    });
+  };
+
+  selectMultiMode = (checked, multiMode) => {
+    this.setState({
+      multiMode
     });
   };
 
@@ -355,20 +423,20 @@ export class SnippetsMenu extends React.Component {
   };
 
   render() {
-    const { me, snippets, languages, closeMenu, insertSnippet, filter, handleFilter, width, langPref } = this.props;
-    let showOptions = [
-      { value: 'all', label: agentPhrases.get('agent.snippets.all_snippets') },
-      { value: 'my_snippets', label: agentPhrases.get('agent.snippets.my_snippets') },
-    ];
-    if (me.get('teams').size > 1) {
-      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_teams_snippets') });
-    } else if (me.get('teams').size > 0) {
-      showOptions.push({ value: 'my_team', label: agentPhrases.get('agent.snippets.my_team_snippets') });
-    }
-    showOptions = showOptions.concat([
-      { value: 'my_drafts', label: agentPhrases.get('agent.snippets.my_drafts') },
-      { value: 'all_drafts', label: agentPhrases.get('agent.snippets.all_drafts') },
-    ]);
+    const {
+      me,
+      snippets,
+      filteredSnippets,
+      languages,
+      closeMenu,
+      insertSnippet,
+      filter,
+      handleFilter,
+      width,
+      langPref,
+      showMode,
+      handleShowMode,
+    } = this.props;
     const style = {};
     if (width) {
       style.width = width - 5;
@@ -400,38 +468,40 @@ export class SnippetsMenu extends React.Component {
           <div className="top">
             <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
             <Button
-              className="dp-button--secondary add-snippet"
+              className="dp-button--primary add-snippet"
               onClick={this.newSnippet}
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
-            <Select
-              placeholder={agentPhrases.get('agent.general.show')}
-              searchable={false}
-              clearable={false}
-              simpleValue
-              value={this.props.showMode}
-              onChange={this.props.handleShowMode}
-              className="show-mode"
-              options={showOptions}
-            />
           </div>
         </div>
         <div className="body">
-          <SnippetsLabels
+          <SnippetsFiltering
+            me={me}
             snippets={snippets}
+            filteredSnippets={filteredSnippets}
+            clearLabels={this.clearLabels}
             selectLabel={this.selectLabel}
+            selectMultiMode={this.selectMultiMode}
             labelFilter={this.state.labelFilter}
             handleLabelFilter={this.handleLabelFilter}
+            onMultiLabelsChange={this.handleMultiLabels}
             selectedLabel={this.state.selectedLabel}
+            multiLabels={this.state.multiLabels}
+            multiMode={this.state.multiMode}
+            showMode={showMode}
+            handleShowMode={handleShowMode}
           />
           <SnippetsList
             snippets={snippets}
             languages={languages}
             langPref={langPref}
             filter={filter}
+            height={this.state.height}
             focusedId={this.state.focusedId}
             selectedLabel={this.state.selectedLabel}
+            multiLabels={this.state.multiLabels}
+            multiMode={this.state.multiMode}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}
           />

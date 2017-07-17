@@ -192,7 +192,7 @@ export class SideBarContainer extends SeparateComponent {
   }
 }
 
-export class SideBar extends React.Component {
+export class SideBar extends React.PureComponent {
   static propTypes = {
     canUseTicket:     PropTypes.func.isRequired,
     canUseChat:       PropTypes.func.isRequired,

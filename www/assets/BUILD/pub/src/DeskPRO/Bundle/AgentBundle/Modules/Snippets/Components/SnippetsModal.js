@@ -1,11 +1,12 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import Button from 'deskpro-components/lib/Components/Button';
 import ConfirmButton from 'deskpro-components/lib/Components/ConfirmButton';
-import { Checkbox, Input, InputLabel, LabelInput, Select } from 'deskpro-components/lib/Components/Forms';
+import { Checkbox, Input, Label, TagSet, Select } from 'deskpro-components/lib/Components/Forms';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -104,7 +105,9 @@ export class SnippetsModalContainer extends React.Component {
     chatDepartments:      PropTypes.object,
     ticketDepartments:    PropTypes.object,
     agentTeams:           PropTypes.object,
+    labelsSource:         PropTypes.array,
     langId:               PropTypes.number,
+    height:               PropTypes.number,
     closeModal:           PropTypes.func,
     dispatch:             PropTypes.func,
     type:                 PropTypes.string,
@@ -122,6 +125,7 @@ export class SnippetsModalContainer extends React.Component {
       teams:        [],
       types:        [],
       title:        this.props.snippet.get('title', ''),
+      shortcutCode: this.props.snippet.get('shortcut_code', ''),
       isDraft:      false,
       langId:       props.langId,
     };
@@ -233,7 +237,7 @@ export class SnippetsModalContainer extends React.Component {
     const snippetData = {
       title:               this.state.title,
       types:               this.state.types,
-      shortcut_code:       this.modal.shortcut_code.input.value,
+      shortcut_code:       this.state.shortcutCode,
       labels:              this.state.labels,
       translations:        translations.toJS(),
       is_draft:            this.state.isDraft,
@@ -384,6 +388,12 @@ export class SnippetsModalContainer extends React.Component {
     });
   };
 
+  handleShortcutCode = (shortcutCode) => {
+    this.setState({
+      shortcutCode
+    });
+  };
+
   changeLabels = (labels) => {
     this.setState({
       labels
@@ -415,6 +425,7 @@ export class SnippetsModalContainer extends React.Component {
       chatDepartments,
       ticketDepartments,
       agentTeams,
+      height,
     } = this.props;
 
     let translation = this.state.translations.find(t => t.get('language') === this.state.langId);
@@ -429,6 +440,7 @@ export class SnippetsModalContainer extends React.Component {
       <SnippetsModal
         snippet={snippet}
         labels={this.state.labels}
+        labelsSource={this.props.labelsSource}
         translation={translation}
         closeModal={closeModal}
         languages={languages}
@@ -443,6 +455,8 @@ export class SnippetsModalContainer extends React.Component {
         isDraft={this.state.isDraft}
         types={this.state.types}
         langId={this.state.langId}
+        height={height}
+        shortcutCode={this.state.shortcutCode}
         title={this.state.title}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
@@ -454,6 +468,7 @@ export class SnippetsModalContainer extends React.Component {
         handleChangeTypes={this.handleChangeTypes}
         handleDepartmentsChange={this.handleDepartmentsChange}
         handleTeamsChange={this.handleTeamsChange}
+        handleShortcutCode={this.handleShortcutCode}
         handleTitle={this.handleTitle}
         ref={(c) => { this.modal = c; }}
       />
@@ -476,8 +491,11 @@ export class SnippetsModal extends React.Component {
     isDraft:                 PropTypes.bool,
     types:                   PropTypes.array,
     langId:                  PropTypes.number,
+    height:                  PropTypes.number,
+    shortcutCode:            PropTypes.string,
     title:                   PropTypes.string,
     labels:                  PropTypes.array,
+    labelsSource:            PropTypes.array,
     addAttachment:           PropTypes.func,
     saveSnippet:             PropTypes.func,
     deleteSnippet:           PropTypes.func,
@@ -488,17 +506,13 @@ export class SnippetsModal extends React.Component {
     handleChangeDraft:       PropTypes.func,
     handleChangeTypes:       PropTypes.func,
     handleDepartmentsChange: PropTypes.func,
+    handleShortcutCode:      PropTypes.func,
     handleTeamsChange:       PropTypes.func,
     handleTitle:             PropTypes.func,
   };
   static defaultProps = {
     changeLabels() {}
   };
-
-  constructor(props) {
-    super(props);
-    this.height = window.innerHeight;
-  }
 
   getVariables = () => {
     let variables = [];
@@ -623,19 +637,27 @@ export class SnippetsModal extends React.Component {
 
   getUploadUrl = () => '/api/v2/blobs/temp';
 
-  isValid = () => this.props.title !== '';
+  isValid = () => this.isTitleValid() && this.isShortcutCodeValid();
+
+  isTitleValid = () => this.props.title !== '';
+
+  isShortcutCodeValid = () => this.props.shortcutCode.match(/^[-_a-z0-9]*$/i);
 
   render() {
     const {
       snippet,
       labels,
+      labelsSource,
       translation,
       languages,
       langId,
+      height,
+      shortcutCode,
       title,
       setLanguage,
       handleChangeDraft,
       handleChangeTypes,
+      handleShortcutCode,
       handleTitle,
       addAttachment,
       changeLabels,
@@ -651,6 +673,8 @@ export class SnippetsModal extends React.Component {
       option = option.set('value', language.get('id'));
       return option.toJS();
     });
+    // ratio between viewport and needed dropdowns size
+    const maxHeight = height * 0.52 - 200;
     return (
       <div id="snippets__modal">
         <Modal
@@ -688,7 +712,7 @@ export class SnippetsModal extends React.Component {
           {this.getVariables()}
           <form id="snippet_form">
             <div className="title-field field">
-              <InputLabel htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</InputLabel>
+              <Label htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</Label>
               <Input
                 id="snippet_title"
                 value={title}
@@ -714,20 +738,16 @@ export class SnippetsModal extends React.Component {
               uploadUrl={this.getUploadUrl()}
             />
             <div className="labels-field field">
-              <InputLabel htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</InputLabel>
-              <LabelInput
-                labels={labels}
+              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
+              <TagSet
+                tags={labels}
                 onChange={changeLabels}
-                addOnBlur
+                options={labelsSource}
                 editable
-                inputProps={{
-                  placeholder: 'Add a label',
-                  id:          'snippet_label_input'
-                }}
               />
             </div>
             <div className="types-field field">
-              <InputLabel htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</InputLabel>
+              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
               <Checkbox
                 checked={this.props.types.find(type => type === 'ticket')}
                 value="ticket"
@@ -744,7 +764,7 @@ export class SnippetsModal extends React.Component {
               </Checkbox>
             </div>
             <div className="draft-field field">
-              <InputLabel htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</InputLabel>
+              <Label htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</Label>
               <Checkbox
                 checked={this.props.isDraft}
                 value="is_draft"
@@ -755,28 +775,28 @@ export class SnippetsModal extends React.Component {
             </div>
             <br />
             <div className="shortcut-field field">
-              <InputLabel htmlFor="snippet_shortcut_code">
+              <Label htmlFor="snippet_shortcut_code">
                 {agentPhrases.get('agent.snippets.shortcut_code')}
-              </InputLabel>
+              </Label>
               <Input
                 id="snippet_shortcut_code"
-                className="snippet_shortcut_code"
-                defaultValue={snippet.get('shortcut_code')}
+                className={classNames('snippet_shortcut_code', { 'dp-input--error': !this.isShortcutCodeValid() })}
+                value={shortcutCode}
                 prefix="%"
                 suffix="%"
                 required
-                ref={(c) => { this.shortcut_code = c; }}
+                onChange={handleShortcutCode}
               />
             </div>
             <div className="ownership-field field">
-              <InputLabel htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</InputLabel>
+              <Label htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</Label>
               <Select
                 multiple
                 includeSelectAllOption
                 selectAllText={agentPhrases.get('agent.general.global')}
                 allSelectedText={agentPhrases.get('agent.general.global')}
                 nonSelectedText={agentPhrases.get('agent.general.myself')}
-                maxHeight={this.height > 850 ? 300 : 150}
+                maxHeight={maxHeight}
                 nSelectedText={agentPhrases.get('agent.general.teams').toLowerCase()}
                 value={this.props.snippetTeams}
                 onChange={this.props.handleTeamsChange}
@@ -784,14 +804,14 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="visibility-field field">
-              <InputLabel htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</InputLabel>
+              <Label htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</Label>
               <Select
                 multiple
                 includeSelectAllOption
                 selectAllText={agentPhrases.get('agent.general.global')}
                 allSelectedText={agentPhrases.get('agent.general.global')}
                 nonSelectedText={agentPhrases.get('agent.general.none')}
-                maxHeight={this.height > 850 ? 300 : 150}
+                maxHeight={maxHeight}
                 nSelectedText={agentPhrases.get('agent.general.departments').toLowerCase()}
                 value={this.props.snippetDepartments}
                 onChange={this.props.handleDepartmentsChange}

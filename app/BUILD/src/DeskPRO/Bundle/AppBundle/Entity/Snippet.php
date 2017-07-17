@@ -73,6 +73,12 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(type="string", length=255, name="shortcut_code")
      *
+     *
+     * @Assert\Regex(
+     *     pattern="/^[-_a-z0-9]*$/i",
+     *     message="Shortcode should only contains letters, numbers, hyphen or underscores"
+     * )
+     *
      * @var string
      */
     protected $shortcutCode = '';

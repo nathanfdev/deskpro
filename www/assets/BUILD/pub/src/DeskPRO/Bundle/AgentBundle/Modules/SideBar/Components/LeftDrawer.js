@@ -14,31 +14,26 @@ export class LeftDrawerContainer extends SeparateComponent {
       active: false,
       module: null,
       props:  {},
-      width:  600
+      width:  600,
+      zIndex: null,
     };
+    this.ticking  = false;
+    this.splitter = document.getElementById('dp_list_resizer');
   }
 
   componentWillMount = () => {
     window.document.addEventListener('dpLeftDrawer', (e) => {
       let module;
       let props;
-      let width = e.detail.width;
       switch (e.detail.module) {
         case 'SnippetsMenu': {
           const type = e.detail.type ? e.detail.type : 'ticket';
           const departmentId = e.detail.department ? e.detail.department : 0;
-          const splitter = document.getElementById('dp_list_resizer');
-          if (splitter.className.match(/\bng-hide\b/)) {
-            width = 725;
-          } else {
-            const rect = splitter.getBoundingClientRect();
-            width = Math.max(rect.left - 46, 725);
-          }
+          this.resize();
           module = SnippetsMenuContainer;
           props = {
             closeMenu:     this.closeDrawer,
             type,
-            width,
             langId:        parseInt(e.detail.langId, 10),
             department:    departmentId,
             insertSnippet: e.detail.insertSnippet,
@@ -58,7 +53,7 @@ export class LeftDrawerContainer extends SeparateComponent {
           this.setState({
             module,
             props,
-            width
+            zIndex: e.detail.zIndex ? e.detail.zIndex : null,
           });
           this.openDrawer();
         }
@@ -69,18 +64,20 @@ export class LeftDrawerContainer extends SeparateComponent {
         });
       }
     });
-    window.document.addEventListener('dpLeftDrawerClose', () => {
-      this.closeDrawer();
-    });
-    window.document.addEventListener('dpChangeSection', () => {
-      this.closeDrawer();
-    });
+    window.document.addEventListener('dpLeftDrawerClose', this.closeDrawer);
+    window.document.addEventListener('dpChangeSection', this.closeDrawer);
   };
+
+  componentWillUnmount() {
+    window.document.removeEventListener('dpLeftDrawerClose', this.closeDrawer);
+    window.document.removeEventListener('dpChangeSection', this.closeDrawer);
+  }
 
   openDrawer = () => {
     this.setState({
       active: true
     });
+    DeskPRO_Window.layout.addEvent('resized', this.resize); // eslint-disable-line no-undef
   };
 
   closeDrawer = () => {
@@ -95,14 +92,34 @@ export class LeftDrawerContainer extends SeparateComponent {
     });
   };
 
+  resize = () => {
+    let width;
+    if (!window.DeskPRO_Window.paneVis.tabs || !window.DeskPRO_Window.paneVis.list) {
+    // if (this.splitter.className.match(/\bng-hide\b/)) {
+      width = 725;
+    } else {
+      const rect = this.splitter.getBoundingClientRect();
+      width = Math.max(rect.left - 46, 725);
+    }
+    this.setState({ width });
+  };
+
   render() {
-    const { active, width } = this.state;
+    const { active, width, zIndex } = this.state;
     const style = { width: active ? width : 0 };
+    if (zIndex) {
+      style.zIndex = zIndex;
+    }
     const props = this.state.props;
     const Module = this.state.module;
     if (Module) {
       return (<LeftDrawer active={active} style={style}>
-        <Module open={active} {...props} ref={(c) => { this.module = c; }} />
+        <Module
+          open={active}
+          width={width}
+          {...props}
+          ref={(c) => { this.module = c; }}
+        />
       </LeftDrawer>);
     }
     return <LeftDrawer active={active} style={style} />;
