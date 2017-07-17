@@ -258,8 +258,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		}
 
+		this.billingRollbackCharges = {};
 		this.billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('billing_wrap'), this.meta.baseId, {
-			auto_start_bill: this.meta.auto_start_bill
+			auto_start_bill: this.meta.auto_start_bill,
+      onBeforeBillingChange: this.onBeforeBillingChange.bind(this),
+      onAfterBillingChange: this.onAfterBillingChange.bind(this),
 		});
 
 		this.addEvent('deactivate', function() {
@@ -921,6 +924,98 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this.initDeferred && this.initDeferred.resolve();
 	},
 
+  onAfterBillingChange: function (status, changeType, charge, chargeFormData)
+  {
+    // revert ticket metadata in case of error or clear any billing charge objects stored in the rollback buffer
+    if (status === 'failure' && this.billingRollbackCharges) {
+      this.meta.api_data.charges = this.billingRollbackCharges;
+    }
+    this.billingRollbackCharges = null;
+  },
+
+  /**
+   * @param {'add'|'delete'|'udpdate'} changeType
+   * @param {{ id }}  charge
+   * @param {{ billing_type:String, custom_fields:Array, hours:String, minutes:String, seconds:String }} chargeFormData
+   */
+  onBeforeBillingChange: function (changeType, charge, chargeFormData) {
+    /**
+     * @param {{ billing_type:String, custom_fields:Array, hours:String, minutes:String, seconds:String }} formData
+     * @param {{ chargeTime:Number }} chargeObject
+     * @return {boolean}
+     */
+	  var setChargeTime = function (formData, chargeObject) {
+        var chargeAmounts = [
+          parseInt(formData.hours) * 3600,
+          parseInt(formData.minutes) * 60,
+          parseInt(formData.seconds),
+        ].filter(function(amount) { return !isNaN(amount) && amount > 0; });
+
+        var chargeTime = null;
+        if (chargeAmounts.length) {
+          chargeTime = 0;
+          chargeAmounts.forEach(function (amount) {
+            chargeTime = chargeTime + amount;
+          });
+        }
+
+        if (chargeTime !== null) {
+          chargeObject.chargeTime = chargeTime;
+          return true;
+        }
+
+        return false;
+    };
+
+	  // update ticket metadata before saving the new billing charge
+    var charges = this.meta.api_data.charges;
+    var newCharges = null;
+
+    if (changeType === 'add') {
+      var newCharge = { id: charge.id, chargeTime: null, amount: null, custom_data: [] };
+
+      if (chargeFormData.billing_type === 'time') {
+        setChargeTime(chargeFormData, newCharge);
+      }
+      newCharges = charges ? charges.concat([newCharge]) : [newCharge];
+      this.billingRollbackCharges = charges ? charges : [];
+    } else if (changeType === 'delete') {
+      if (charges) {
+        newCharges = charges.filter(function (aCharge) {
+          return aCharge.id !== charge.id;
+        });
+        this.billingRollbackCharges = charges;
+      }
+    } else if (changeType === 'update') {
+      var updatedCharge = null;
+      if (charges) {
+        updatedCharge = charges.filter(function (aCharge) {
+          return aCharge.id === charge.id;
+        }).pop();
+      }
+
+      if (updatedCharge) {
+        // exclude the charge and replace with clone
+        newCharges = charges.filter(function (aCharge) {
+          return aCharge.id !== charge.id;
+        }).pop();
+
+        // clone the charge
+        var newUpdatedCharge = JSON.parse(JSON.stringify(updatedCharge));
+        if (chargeFormData.billing_type === 'time') {
+          setChargeTime(chargeFormData, updatedCharge);
+        }
+
+        newCharges.push(newUpdatedCharge);
+        this.billingRollbackCharges = changes;
+      }
+    }
+
+    if (newCharges !== null) {
+      this.meta.api_data.charges = newCharges;
+    }
+  },
+
 	setTicketReplyBox: function(rb) {
 		var isFirst = this.ticketReplyBox ? false : true;
 
@@ -1364,6 +1459,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
+
+  updateTicketApiDataFragment: function(key, data) {
+    if (!data) {
+      return;
+    }
+
+    this.meta.api_data[key] = data;
+  },
 
 	updateTicketApiData: function(data) {
 		if (!data) {

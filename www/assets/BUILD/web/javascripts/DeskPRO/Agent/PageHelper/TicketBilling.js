@@ -6,7 +6,8 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 	initialize: function(wrap, baseId, options) {
 		this.baseId = baseId;
 		this.options = {
-			auto_start_bill: false
+			auto_start_bill: false,
+      onBeforeBillingChange: function (changeType, charge, chargeFormData) {}
 		};
 
 		this.setOptions(options);
@@ -109,16 +110,23 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				var $err = self.getEl('billing_save_errors').hide()
 					, id   = $(this).data('charge-id')
 					;
+				var formData = self.getFormData();
+
+				var tmpId = 'tmp-' + Math.random().toString(36);
+        self.fireEvent('onBeforeBillingChange', ['add', {id: 'tmpId'}, formData]);
+
 				$.ajax({
 					url:      $(this).data('submit-url'),
-					data:     self.getFormData(),
+					data:     formData,
 					type:     'POST',
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.inserted && self.addBillingRow) {
+            self.fireEvent('onAfterBillingChange', ['success', 'add', {id: 'tmpId'}, formData]);
 						self.addBillingRow(json.html);
 						self.resetBillingForm();
 					} else if (json.invalid_custom_fields) {
+            self.fireEvent('onAfterBillingChange', ['failure', 'add', {id: 'tmpId'}, formData]);
 						$err.children().remove();
 						for (var i in json.invalid_custom_fields) {
 							$err.append('<li>' + json.invalid_custom_fields[i] + '</li>');
@@ -142,17 +150,21 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			e.preventDefault();
 
 			if (confirm(billingRows.data('delete-confirm'))) {
+        self.fireEvent('onBeforeBillingChange', ['delete', {id: id}]);
 				$.ajax({
 					url: $(this).attr('href'),
 					type: 'POST',
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.success) {
+            self.fireEvent('onAfterBillingChange', ['success', 'delete', {id: id}]);
 						wrap.find('tr.ticket-charge-edit-' + id + ', tr#ticket-charge-row-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
 						if (!table.find('tbody tr').length) {
 							table.hide();
 						}
-					}
+					} else {
+            self.fireEvent('onAfterBillingChange', ['failure', 'delete', {id: id}]);
+          }
 				});
 			}
 		});
@@ -181,17 +193,22 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
         ;
 			wrap.find('.ticket-charge-edit-errors-' + id).hide();
 
+			var formData = self.getFormData($form);
+      self.fireEvent('onBeforeBillingChange', ['update', {id: id}, formData]);
+
 			$.ajax({
 				url: $(this).attr('href'),
-				data: self.getFormData($form),
+				data: formData,
 				type: 'POST',
 				dataType: 'json'
 			}).done(function(json) {
 				if (json.updated && json.html) {
+          self.fireEvent('onAfterBillingChange', ['success', 'update', {id: id}], formData);
 					wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
 					wrap.find('tr#ticket-charge-row-' + id).replaceWith(json.html);
           initDateTimePicker();
 				}else if(json.invalid_custom_fields) {
+          self.fireEvent('onAfterBillingChange', ['failure', 'update', {id: id}], formData);
 					var $err = wrap.find('.ticket-charge-edit-errors-' + id).show().find('.form-errors');
 					$err.children().remove();
 					for (var i in json.invalid_custom_fields) {
