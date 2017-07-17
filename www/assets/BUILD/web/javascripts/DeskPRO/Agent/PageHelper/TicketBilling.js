@@ -7,7 +7,8 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		this.baseId = baseId;
 		this.options = {
 			auto_start_bill: false,
-      onBeforeBillingChange: function (changeType, charge, chargeFormData) {}
+      onBeforeBillingChange: function (changeType, charge, chargeFormData) {},
+      onAfterBillingChange: function (status, changeType, charge, chargeFormData) {}
 		};
 
 		this.setOptions(options);
