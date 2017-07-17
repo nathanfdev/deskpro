@@ -224,7 +224,11 @@ class AuditListener
         }
 
         // TODO [cloudspam] proper cloud spam checker/handling
-        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
+        if (
+            defined('DPC_IS_CLOUD')
+            && DPC_DEMO_EXPIRE
+            && !DPC_SITE_IS_APPROVED
+        ) {
             if ($entity instanceof \Application\DeskPRO\Entity\Template && ($action === self::UPDATE || $action === self::INSERT) && strpos($entity->getName(), ':emails_') !== false) {
                 $code = $entity->getTemplateCode();
                 $code = \Orb\Util\Strings::decodeHtmlEntities($code);
@@ -235,6 +239,7 @@ class AuditListener
                     \DpShutdown::add(function () use ($tpl) {
                         $tmpdata = new \Application\DeskPRO\Entity\TmpData();
                         $tmpdata->setType('cancel_for_abuse');
+                        $tmpdata->setData('message', 'Template was updated with a link: '.$tpl);
                         $tmpdata->date_expire = new \DateTime('+30 minutes');
                         $this->em->persist($tmpdata);
                         $this->em->flush();
