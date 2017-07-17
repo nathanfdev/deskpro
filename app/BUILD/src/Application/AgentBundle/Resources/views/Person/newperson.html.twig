@@ -179,7 +179,7 @@
                                                             id="{{ baseId }}_labels_input"
                                                             class="labels-input dpe_select dpe_select_noborder"
                                                             data-select-width="auto"
-                                                            data-placeholder="Add a label"
+                                                            data-placeholder="{{ phrase('agent.general.add_a_label') }}"
                                                             value="{% for label in state.newperson.labels %}{{ label }},{% endfor %}"
                                                             data-allow-new="{% if app.user.hasPerm('agent_people.create_labels') %}1{% endif %}"
                                                             />

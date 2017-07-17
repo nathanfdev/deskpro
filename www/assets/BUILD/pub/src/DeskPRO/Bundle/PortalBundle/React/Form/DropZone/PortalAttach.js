@@ -88,7 +88,7 @@ export default class PortalAttach extends React.Component {
   };
 
   onUploadFail = (event, data) => {
-    const { $form } = this.props;
+    const { $form, maxFileSize } = this.props;
     const file = data.files[0];
     const response = data.jqXHR.responseJSON;
     const error = response && response.error;
@@ -98,9 +98,15 @@ export default class PortalAttach extends React.Component {
       lastError = error.message;
     }
     if (data.jqXHR.status === 413) {
-      lastError = portalPhrases.get('portal.forms.error_upload_html_size');
-      if (this.props.maxFileSize) {
-        lastError =  `${lastError} Maximum allowed size is ${this.props.maxFileSize}`;
+      if (maxFileSize) {
+        const maxFileInfo = maxFileSize.split(' ');
+
+        lastError =  portalPhrases.get('portal.forms.error_upload_ini_size', {
+          '{ limit }':  maxFileInfo[0],
+          '{ suffix }': maxFileInfo[1]
+        });
+      } else {
+        lastError = portalPhrases.get('portal.forms.error_upload_html_size');
       }
     }
     const $button = $form.find('button[type=submit]');

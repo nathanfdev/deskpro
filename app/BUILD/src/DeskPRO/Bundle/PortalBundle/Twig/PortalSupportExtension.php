@@ -500,11 +500,11 @@ class PortalSupportExtension extends \Twig_Extension
     /**
      * @param $date
      * @param null      $timezone
-     * @param bool|true $include_html_wrapper
+     * @param bool|true $includeHtmlWrapper
      *
      * @return string
      */
-    public function dateAgo($date, $timezone = null, $include_html_wrapper = true)
+    public function dateAgo($date, $timezone = null, $includeHtmlWrapper = true)
     {
         $date = $this->ensureDateTime($date);
 
@@ -514,20 +514,27 @@ class PortalSupportExtension extends \Twig_Extension
             return "invalid_date($date_str)";
         }
 
-        $carbon     = Carbon::createFromTimestamp($date->getTimestamp(), $timezone);
-        $ago_string = $carbon->diffForHumans();
+        $locale   = null;
+        $language = $this->container->get('language_manager')->getLanguageStack()->getActiveOrDefault();
+        if ($language) {
+            $locale = $language->getLocale();
+        }
 
-        if ($include_html_wrapper) {
+        $carbon = Carbon::createFromTimestamp($date->getTimestamp(), $timezone);
+        $carbon->setLocale($locale);
+        $agoString = $carbon->diffForHumans();
+
+        if ($includeHtmlWrapper) {
             // a standard <time> element, set $include_html_wrapper to false to get the raw ago string
             return sprintf(
                 '<time class="date-ago" datetime="%s" title="%s">%s</time>',
                 $carbon->toIso8601String(),
                 $this->date($date, 'fulltime'),
-                $ago_string
+                $agoString
             );
         }
 
-        return $ago_string;
+        return $agoString;
     }
 
     /**

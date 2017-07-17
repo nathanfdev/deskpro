@@ -104,7 +104,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
     arguments:
       - "@captcha_decider"
-      - "@deskpro.core.translate"
+      - "@language_manager"
     tags:
       - { name: form.type }
 

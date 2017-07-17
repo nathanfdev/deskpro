@@ -75,7 +75,7 @@ pageMeta.baseId = '{{ baseId }}';
 						id="{{baseId}}_labels_input"
 						class="dpe_select dpe_select_noborder"
 						data-select-width="auto"
-						data-placeholder="Add a label"
+						data-placeholder="{{ phrase('agent.general.add_a_label') }}"
 						value="{% for label in download.labels %}{{ label.label }},{% endfor %}"
 						data-allow-new="{% if app.user.hasPerm('agent_publish.downloads_create_labels') %}1{% endif %}"
 					/>

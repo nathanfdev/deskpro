@@ -1118,7 +1118,7 @@ class TicketSearch extends SearcherAbstract
         }
 
         $order_by = '';
-        $tr       = App::getTranslator();
+        $tr       = App::get('language_manager');
 
         switch ($type) {
             case 'ticket.urgency':

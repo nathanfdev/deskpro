@@ -636,7 +636,7 @@
                                                           type="hidden"
                                                           id="{{ baseId }}_labels_input"
                                                           class="dpe_select dpe_select_noborder"
-                                                          data-placeholder="Add a label"
+                                                          data-placeholder="{{ phrase('agent.general.add_a_label') }}"
                                                           value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
                                                           data-allow-new="{% if app.user.hasPerm('agent_tickets.create_labels') %}1{% endif %}"
                                                     />
