@@ -138,12 +138,10 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         AppStateRepository $appStateRepository
     ) {
         $appState1 = new AppState();
-        $appState1->setScope(new StateScope('private', 'tickets'));
         $appState1->setName('site_url');
         $appState1->setValue('http://deskpro-dev');
 
         $appState2 = new AppState();
-        $appState2->setScope(new StateScope('private', 'tickets'));
         $appState2->setName('endpoint');
         $appState2->setValue('some-endpoint');
 
@@ -168,7 +166,6 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         AppStateRepository $appStateRepository
     ) {
         $appState = new AppState();
-        $appState->setScope(new StateScope('public', 'tickets'));
         $appState->setName('site_url');
         $appState->setValue('http://deskpro-dev');
 
