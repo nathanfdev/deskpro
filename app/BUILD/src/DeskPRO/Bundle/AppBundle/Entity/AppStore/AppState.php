@@ -34,9 +34,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository")
+ * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(
  *  name="app2_app_state_v2", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "person_id"})
+ *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "entity_id", "name"})
  *  })
  */
 class AppState implements EntityInterface
@@ -116,21 +117,12 @@ class AppState implements EntityInterface
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $createdAt;
+    private $persistedAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private $lastModifiedAt;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-        $this->createdAt      = new \DateTime();
-        $this->lastModifiedAt = new \DateTime();
-    }
+    private $updatedAt;
 
     /**
      * {@inheritdoc}
@@ -167,7 +159,7 @@ class AppState implements EntityInterface
     /**
      * @param string $entityId
      */
-    public function setEntityId(string $entityId)
+    public function setEntityId($entityId)
     {
         $this->entityId = $entityId;
     }
@@ -282,5 +274,22 @@ class AppState implements EntityInterface
     public function setOwner(Person $owner)
     {
         $this->owner = $owner;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestampsOnPersist()
+    {
+        $this->persistedAt = new \DateTime();
+        $this->updatedAt = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function setTimestampsOnUpdate()
+    {
+        $this->updatedAt = new \DateTime();
     }
 }
