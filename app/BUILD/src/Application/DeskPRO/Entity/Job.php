@@ -84,6 +84,7 @@ class Job extends DomainObject
     /**
      * The unique job id.
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
@@ -94,6 +95,7 @@ class Job extends DomainObject
     /**
      * The job type, used by the Job Router to find the right Job Processor.
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("string")
      *
@@ -118,6 +120,7 @@ class Job extends DomainObject
      * delegated: The job has been delegated to an external job service.
      * aborted: The job was manually aborted/cancelled by the admin
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("string")
      */
@@ -132,6 +135,7 @@ class Job extends DomainObject
      * for an exception, or maybe 'expired' to mean that the job can't complete because necessary data is no longer
      * available
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("string")
      */
@@ -145,6 +149,7 @@ class Job extends DomainObject
      * We'll use this in processors to prevent supervisors from
      * considering the job a timeout
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      */
@@ -153,6 +158,7 @@ class Job extends DomainObject
     /**
      * Date this job entered the "jobs" table.
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      *
@@ -163,6 +169,7 @@ class Job extends DomainObject
     /**
      * Last time we processed this job.
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      *
@@ -173,6 +180,7 @@ class Job extends DomainObject
     /**
      * If this DateTime is in the future, it won't be selected for execution.
      *
+     * @JMS\Groups("DEFAULT")
      * @JMS\Expose()
      * @JMS\Type("DateTime")
      *
@@ -192,6 +200,10 @@ class Job extends DomainObject
     /**
      * The number of times this job has been executed Job Processor (usually indicated failures if > 1).
      *
+     * @JMS\Groups("DEFAULT")
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $num_tries;
@@ -199,12 +211,20 @@ class Job extends DomainObject
     /**
      * A human readable summary of the job's execution.
      *
+     * @JMS\Groups("details")
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $log_summary;
 
     /**
      * A more verbose log.
+     *
+     * @JMS\Groups("details")
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -214,6 +234,10 @@ class Job extends DomainObject
      * An array of data, or payload, that the job processor needs to execute this job (stored in the db as json).
      *
      * This MUST always be an array, even if its an empty array
+     *
+     * @JMS\Groups("details")
+     * @JMS\Expose()
+     * @JMS\Type("array")
      *
      * @var array
      */
@@ -229,6 +253,10 @@ class Job extends DomainObject
     /**
      * Null unless the job was created as a retry - if so, the originating job ID is stored here so we can query
      * it later. Note: You MUST specify the originating job, do not create a linked list of failed jobs.
+     *
+     * @JMS\Groups("DEFAULT")
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var Job|null
      */

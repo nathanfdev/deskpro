@@ -2628,13 +2628,33 @@ define(function() {
 		target: "appbody@server"
 	});
 
-	// routes.push({
-	// 	id: 'server.incidents.view',
-	// 	url: '/view/{id}',
-	// 	templateName: 'Server/server-incidents-view.html',
-	// 	controller: 'Admin_ServerIncidents_Ctrl_View',
-	// 	target: "appbody@server"
-	// });
+  // routes.push({
+  // 	id: 'server.incidents.view',
+  // 	url: '/view/{id}',
+  // 	templateName: 'Server/server-incidents-view.html',
+  // 	controller: 'Admin_ServerIncidents_Ctrl_View',
+  // 	target: "appbody@server"
+  // });
+
+  //###
+  //# Jobs
+  //###
+  routes.push({
+    id: 'server.jobs',
+    url: '/jobs',
+    templateName: 'Server/server-jobs-list.html',
+    controller: 'Admin_ServerJobs_Ctrl_List',
+    target: "appbody@server"
+  });
+
+  routes.push({
+    id: 'server.jobs.view',
+    url: '/{id}',
+    templateName: 'Server/server-jobs-view.html',
+    controller: 'Admin_ServerJobs_Ctrl_View',
+    target: "appbody@server"
+  });
+
 
   //###
   //# Sendmail Queue

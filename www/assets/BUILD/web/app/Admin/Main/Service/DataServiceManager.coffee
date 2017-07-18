@@ -30,6 +30,7 @@ define [
   'Admin/Tasks/DataService/Tasks',
   'Admin/Usersources/DataService/Usersources',
   'Admin/Portal/DataService/PortalGeneralSettings'
+  'Admin/Server/DataService/Jobs'
 ], (
   Strings,
   DataService_TicketFields,
@@ -62,6 +63,7 @@ define [
   DataService_Tasks,
   DataService_Usersources,
   DataService_PortalGeneralSettings
+  DataService_Jobs
 ) ->
   ###
   # A simple wrapper around the data services

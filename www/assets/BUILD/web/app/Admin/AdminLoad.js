@@ -137,6 +137,8 @@ define([
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
   'Admin/Server/Ctrl/ServerReportFile',
+  'Admin/Server/Ctrl/ServerJobsList',
+  'Admin/Server/Ctrl/ServerJobsView',
   'Admin/Settings/Ctrl/AdvancedSettings',
   'Admin/Settings/Ctrl/ElasticSearch',
   'Admin/Settings/Ctrl/GeneralSettings',
