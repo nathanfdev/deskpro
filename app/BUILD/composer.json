@@ -86,7 +86,8 @@
     "guzzlehttp/psr7": "^1.4.1",
     "aws/aws-sdk-php": "^3.25",
     "jms/serializer": "~1.7.1",
-    "justinrainbow/json-schema": "^5.2"
+    "justinrainbow/json-schema": "^5.2",
+    "arcturial/clickatell": "^3.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

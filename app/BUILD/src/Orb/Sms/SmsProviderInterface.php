@@ -41,15 +41,15 @@ namespace Orb\Sms;
 interface SmsProviderInterface
 {
     /**
-     * @param string          $fromPhoneNumber phone number to send to, provider should be able to handle any format
-     * @param string          $toPhoneNumber   phone number, provider should be able to handle any format
-     * @param SmsMessageChunk $textMessage     the message chunk to be sent to the given number
+     * @param string          $fromNumber  phone number to send to, provider should be able to handle any format
+     * @param string          $toNumber    phone number, provider should be able to handle any format
+     * @param SmsMessageChunk $textMessage the message chunk to be sent to the given number
      *
      * @throws \Orb\Sms\SmsException
      *
      * @return \Orb\Sms\SmsResult
      */
-    public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber);
+    public function sendMessage($toNumber, SmsMessageChunk $textMessage, $fromNumber);
 
     /**
      * A string identifier of the provider. This should be unique across the system.

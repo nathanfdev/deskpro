@@ -15,24 +15,10 @@
 	},
 	"settings_def": [
 		{
-			"name": "username",
+			"name": "auth_token",
 			"type": "text",
-			"label": "Username",
-			"description": "Your Clickatell account username.",
-			"native_only": true
-		},
-		{
-			"name": "password",
-			"type": "password",
-			"label": "Password",
-			"description": "Your Clickatell account password.",
-			"native_only": true
-		},
-		{
-			"name": "api_id",
-			"type": "text",
-			"label": "API ID",
-			"description": "Your Clickatell API ID. You can find your API IDs when logged into the Clickatell website. It is most likely listed here: https://central.clickatell.com/api/manage",
+			"label": "API Key",
+			"description": "You can find your API IDs when logged into the Clickatell website. Ensure you select REST as the API Type. It is most likely listed here: https://portal.clickatell.com/#/integrations/sms",
 			"native_only": true
 		}
 	]

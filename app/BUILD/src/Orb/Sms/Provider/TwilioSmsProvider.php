@@ -72,23 +72,17 @@ class TwilioSmsProvider implements SmsProviderInterface
     }
 
     /**
-     * @param string $toPhoneNumber   phone number, provider should be able to handle any format
-     * @param string $textMessage     the message to be sent to the given number
-     * @param string $fromPhoneNumber phone number to send to, provider should be able to handle any format
-     *
-     * @throws \Orb\Sms\SmsException
-     *
-     * @return \Orb\Sms\SmsResult
+     * {@inheritdoc}
      */
-    public function sendMessage($toPhoneNumber, SmsMessageChunk $chunk, $fromPhoneNumber)
+    public function sendMessage($toNumber, SmsMessageChunk $chunk, $fromNumber)
     {
         $textMessage = $chunk->getText();
 
         try {
-            $message = $this->twilio->sendSms($toPhoneNumber, $textMessage, $fromPhoneNumber);
+            $message = $this->twilio->sendSms($toNumber, $textMessage, $fromNumber);
         } catch (\Services_Twilio_RestException $e) {
             $result = new SmsResult(
-                SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), [
+                SmsResult::SMS_FAIL, $fromNumber, $toNumber, $textMessage, $this->getName(), [
                     'status'        => $e->getCode(),
                     'message'       => $e->getMessage(),
                     'twilio_status' => $e->getStatus(),
@@ -100,7 +94,7 @@ class TwilioSmsProvider implements SmsProviderInterface
             return $result;
         } catch (\Exception $e) {
             $result = new SmsResult(
-                SmsResult::SMS_FAIL, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), [
+                SmsResult::SMS_FAIL, $fromNumber, $toNumber, $textMessage, $this->getName(), [
                     'status'  => $e->getCode(),
                     'message' => $e->getMessage(),
                 ]
@@ -112,7 +106,7 @@ class TwilioSmsProvider implements SmsProviderInterface
 
         // we successfully sent a valid SMS to Twilio
         $result = new SmsResult(
-            SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this->getName(), [
+            SmsResult::SMS_SENT, $fromNumber, $toNumber, $textMessage, $this->getName(), [
                 'sid'             => $message->sid, // this can later be used to find the status of the sms
                 'num_segments'    => $message->num_segments,
                 'provider_status' => $message->status,
