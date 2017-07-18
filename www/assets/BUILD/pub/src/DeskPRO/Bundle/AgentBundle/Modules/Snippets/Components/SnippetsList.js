@@ -190,6 +190,12 @@ export class SnippetsList extends React.Component {
     this.offsetTop = this.listRef.offsetTop;
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.focusedId !== this.props.focusedId) {
+      setTimeout(() => this.listRef.forceUpdateGrid(), 10);
+    }
+  }
+
   rowRenderer({
     key,
     index,
@@ -211,13 +217,13 @@ export class SnippetsList extends React.Component {
     return (
       <SnippetsListElement
         key={key}
-        snippet={new Immutable.Map(snippet)}
+        snippet={snippet}
         languages={languages}
         langPref={langPref}
         filter={filter}
         editSnippet={editSnippet}
         insertSnippet={insertSnippet}
-        focused={focusedId === snippet.id}
+        focused={focusedId === snippet.get('id')}
         style={style}
       />
     );

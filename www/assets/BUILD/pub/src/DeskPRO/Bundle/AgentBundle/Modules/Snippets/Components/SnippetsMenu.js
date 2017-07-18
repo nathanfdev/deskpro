@@ -78,8 +78,9 @@ export class SnippetsMenuContainer extends React.Component {
   render() {
     const { me, closeMenu, type, department, languages, width, langId, open } = this.props;
     const langPref = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
-    let labels = this.props.snippets.map(snippet => snippet.get('labels')).toArray().reduce((a, b) => a.concat(b.toArray()), []);
-    labels = Array.from(new Set(labels));
+    let labels = new Set();
+    this.props.snippets.map(snippet => snippet.get('labels').forEach(label => labels.add(label)));
+    labels = Array.from(labels);
     const filteredSnippets = this.props.snippets
       .filter((snippet) => {
         if (snippet.get('types').indexOf(type) === -1) {
@@ -364,7 +365,6 @@ export class SnippetsMenu extends React.Component {
         this.focusNext();
         break;
       default:
-        setTimeout(() => this.focusFirst(), 300);
         return;
     }
     event.preventDefault();

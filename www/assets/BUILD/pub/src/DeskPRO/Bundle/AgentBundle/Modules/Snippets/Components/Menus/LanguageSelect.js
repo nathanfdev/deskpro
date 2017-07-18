@@ -55,7 +55,6 @@ export class LanguageSelect extends React.PureComponent {
   getOptions() {
     const { languages, langPref } = this.props;
     const languageOptions = [];
-    console.log(langPref);
     const contextLanguage = languages.find(lang => lang.get('id') === langPref[0]);
     languageOptions.push(
       {
@@ -106,7 +105,6 @@ export class LanguageSelect extends React.PureComponent {
           );
         }
       });
-    console.log(languageOptions);
     return languageOptions;
   }
 
