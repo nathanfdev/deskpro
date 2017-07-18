@@ -54,7 +54,7 @@ class Build1500371902 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function run()
     {
-        // copy auth
+        // copy app private
         $this->execDbQuery(
         'default',
         "INSERT INTO `deskprodb`.`app2_app_state_v2` (
@@ -84,7 +84,43 @@ class Build1500371902 extends AbstractBuild implements BlockingBuildInterface, S
             NOW()
           FROM
             `app2_app_state` INNER JOIN `app2_app_instance` ON `app2_app_state`.`app_instance_id` =  `app2_app_instance`.`id` 
-          WHERE `app2_app_state`.`name` = 'auth'
+          WHERE `app2_app_state`.`scope` = 'private.app'
+        ;"
+        );
+
+        // copy shared app entries, these entries do not have an owner so we assign them to the person with the lowest id
+        // which in theory should be the first person added to deskpro which has also used the app
+        $this->execDbQuery(
+            'default',
+            "INSERT INTO `deskprodb`.`app2_app_state_v2` (
+            `app_instance_id`,
+            `person_id`,
+            `entity_id`,
+            `name`,
+            `value`,
+            `value_type`,
+            `perm_read`,
+            `perm_write`,
+            `is_backend_only`,
+            `persistedAt`,
+            `updatedAt`
+          )
+          SELECT 
+            `app2_app_state`.`app_instance_id`,
+            (SELECT MIN(owners.`owner_id`) FROM `app2_app_state` owners  WHERE owners.`owner_id` IS NOT NULL) as `owners_id` ,
+
+            CONCAT_WS(':', 'ticket', `app2_app_state`.`name`),
+            'cards',
+            `app2_app_state`.`value`,
+            'object',
+            'EVERYBODY',
+            'EVERYBODY',
+            0,
+            IFNULL(`app2_app_state`.`createdAt`, NOW()),
+            NOW()
+          FROM
+            `app2_app_state` INNER JOIN `app2_app_instance` ON `app2_app_state`.`app_instance_id` =  `app2_app_instance`.`id` 
+          WHERE `app2_app_state`.`scope` = 'shared.app'
         ;"
         );
     }
