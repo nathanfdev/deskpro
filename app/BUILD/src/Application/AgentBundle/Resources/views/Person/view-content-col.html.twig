@@ -20,6 +20,7 @@
 {% if person.summary|length or perms.edit %}
     <div class="profile-box-container dp-simpletab-container dp-simpletab-container summary"
 		 id="{{ baseId }}_summary_saver"
+         data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
          data-form-save-url="{{ path('agent_people_ajaxsave', {'person_id': person.id}) }}"
     >
         <header>
@@ -404,6 +405,7 @@
                         {% if perms.notes %}
                             <li class="new-note"
 								id="{{ baseId }}_new_note"
+                                data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
                                 data-form-list-selector="ul"
                                 data-form-result-html-key="note_li_html"
                                 data-form-save-url="{{ path('agent_people_ajaxsave_note', {'person_id': person.id}) }}"
