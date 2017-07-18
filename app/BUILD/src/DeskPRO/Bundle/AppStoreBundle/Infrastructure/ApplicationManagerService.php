@@ -78,7 +78,7 @@ class ApplicationManagerService
      */
     public function createFirstInstance(Domain\AppBundle $bundle)
     {
-        $appEntity      = $this->createAppEntity($bundle);
+        $appEntity      = $this->createOrUpdateAppEntity($bundle);
         $instanceEntity = $this->createInstance($appEntity);
 
         return $instanceEntity;
@@ -89,7 +89,7 @@ class ApplicationManagerService
      *
      * @return App
      */
-    public function createAppEntity(Domain\AppBundle $bundle)
+    public function createOrUpdateAppEntity(Domain\AppBundle $bundle)
     {
         $manifestReader = new Infrastructure\AppManifestJsonReader();
         $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());

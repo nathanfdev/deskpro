@@ -24,7 +24,19 @@
 				</div>
 			</div>
 		</article>
-		<article ng-if="default_form" class="form-horizontal dp-form">
+		<article ng-if="Ctrl.pack.is_single && Ctrl.pack.is_installed" class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<p>
+						This application is already installed.
+						<span ng-if="Ctrl.pack.app_version == 2">
+							Do you want to update it? <button class="btn btn-success" ng-click="Ctrl.installApp()">Update App</button>
+						</span>
+					</p>
+				</div>
+			</div>
+		</article>
+		<article ng-if="default_form && !(Ctrl.pack.is_single && Ctrl.pack.is_installed)" class="form-horizontal dp-form">
 			<div class="panel panel-fill indent">
 				<div class="panel-body" ng-show="!has_display_settings">
 					<p>
@@ -38,10 +50,10 @@
 				</div>
 			</div>
 		</article>
-		<div ng-if="!default_form && form_template && install_ctrl" class="dp-sep-top">
+		<div ng-if="!default_form && form_template && install_ctrl && !(Ctrl.pack.is_single && Ctrl.pack.is_installed)" class="dp-sep-top">
 			<div ng-include="form_template" ng-controller="install_ctrl"></div>
 		</div>
-		<footer ng-hide="has_own_footer">
+		<footer ng-hide="has_own_footer || (Ctrl.pack.is_single && Ctrl.pack.is_installed)">
 			<div class="dp-content">
 				<div class="dp-btn-controls">
 					<div dp-hide-spinning="saving_settings">

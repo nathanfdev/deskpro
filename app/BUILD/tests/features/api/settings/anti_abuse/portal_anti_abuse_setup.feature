@@ -16,11 +16,11 @@ Feature: Portal Anti-Abuse Setup
     And the JSON node "data.agent_rate_limit.login_settings.response" should be equal to "lockout"
     And the JSON node "data.agent_rate_limit.login_settings.lockout_time" should be equal to 15
 
-    And the JSON node "data.account_rate_limit.registration_settings.enabled" should be equal to 1
+    And the JSON node "data.account_rate_limit.registration_settings.enabled" should be equal to 0
     And the JSON node "data.account_rate_limit.registration_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.registration_settings.time" should be equal to 15
 
-    And the JSON node "data.account_rate_limit.reset_password_settings.enabled" should be equal to 1
+    And the JSON node "data.account_rate_limit.reset_password_settings.enabled" should be equal to 0
     And the JSON node "data.account_rate_limit.reset_password_settings.limit" should be equal to 3
     And the JSON node "data.account_rate_limit.reset_password_settings.time" should be equal to 15
 

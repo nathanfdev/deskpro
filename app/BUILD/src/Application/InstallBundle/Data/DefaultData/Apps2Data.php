@@ -45,7 +45,7 @@ class Apps2Data extends AbstractDefaultData
 
         $this->getLogger()->info('Installing Trello');
         $instanceCreator = $this->getContainer()->get('apps2.application_manager');
-        $instanceCreator->createAppEntity(new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($trelloAppPath)));
+        $instanceCreator->createOrUpdateAppEntity(new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($trelloAppPath)));
     }
 
     /**

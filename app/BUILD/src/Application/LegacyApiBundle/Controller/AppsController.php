@@ -314,8 +314,20 @@ class AppsController extends AbstractController
             // app v2 package info
             $appArchive = $this->getAppV2ArchiveBundle($name);
             if ($appArchive) {
-                $instanceCreator = $this->container->get('apps2.application_manager');
-                $instance        = $instanceCreator->createFirstInstance($appArchive);
+                $app = $this->em->getRepository(App::class)->findOneBy([
+                    'name' => $name,
+                ]);
+
+                $manifestReader = new AppManifestJsonReader();
+                $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
+                $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
+
+                if ($isAppUpdate) {
+                    $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appArchive);
+                    $instance = $app->getInstances()->first();
+                } else {
+                    $instance = $this->container->get('apps2.application_manager')->createFirstInstance($appArchive);
+                }
 
                 $context = new SideloadSerializationContext();
                 $context->setIncludes(['app']);
@@ -334,7 +346,13 @@ class AppsController extends AbstractController
                 $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
 
                 return $this->createApiCreateResponse(
-                    array_merge($serialized, ['version' => 2]),
+                    array_merge(
+                        $serialized,
+                        [
+                            'version' => 2,
+                            'updated' => $isAppUpdate,
+                        ]
+                    ),
                     $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
                 );
             }
