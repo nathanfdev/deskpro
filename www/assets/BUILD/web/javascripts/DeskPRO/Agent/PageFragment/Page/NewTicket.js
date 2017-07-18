@@ -574,7 +574,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			sig;
 
     if (api) {
-
       sig = api.$editor.find('.dp-signature-start:first');
       if (sig.length) {
 				return;
@@ -584,20 +583,31 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       if (!sig) {
 				return;
 			}
+
       sig = $(sig);
       if ('DIV' === sig[0].tagName) {
         sig = $('<p class="dp-signature-start"></p>').append(sig.html());
 			}
 
-      api.$editor.append($($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>'), sig);
+			var separator = $($.browser.msie ? '<p></p><p></p>' : '<p><br></p><p><br></p>');
 
+			if (this.meta.linked_ticket) {
+				api.$editor.prepend(separator.clone());
+				api.$editor.prepend(sig);
+				api.$editor.prepend(separator.clone());
+			} else {
+				api.$editor.append(separator.clone(), sig);
+			}
     } else {
-
       sig = this.getEl('signature_value').val();
 			var text = textarea.val();
 
       if (!text.match(new RegExp(sig + '$'))) {
-      	textarea.val(text + "\n\n" + sig);
+				if (this.meta.linked_ticket) {
+					textarea.val("\n\n" + sig + "\n\n" + text);
+				} else {
+					textarea.val(text + "\n\n" + sig);
+				}
 			}
     }
   },
