@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import Immutable from 'immutable';
 import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -164,7 +163,7 @@ export class SnippetsList extends React.Component {
     selectedLabel: PropTypes.string,
     multiMode:     PropTypes.string,
     multiLabels:   PropTypes.array,
-    focusedId:     PropTypes.number,
+    focusedIndex:  PropTypes.number,
     height:        PropTypes.number,
     width:         PropTypes.number,
     filter:        PropTypes.string,
@@ -191,9 +190,30 @@ export class SnippetsList extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.focusedId !== this.props.focusedId) {
-      setTimeout(() => this.listRef.forceUpdateGrid(), 10);
+    if (nextProps.focusedIndex !== this.props.focusedIndex) {
+      setTimeout(() => this.updateList(this.props.focusedIndex), 10);
     }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.snippets !== this.props.snippets) {
+      return true;
+    }
+    if (nextProps.height !== this.props.height) {
+      return true;
+    }
+    if (nextProps.width !== this.props.width) {
+      return true;
+    }
+    if (nextProps.focusedIndex !== this.props.focusedIndex) {
+      return true;
+    }
+    return nextProps.filter !== this.props.filter;
+  }
+
+  updateList(index) {
+    this.listRef.forceUpdateGrid();
+    this.listRef.scrollToRow(index);
   }
 
   rowRenderer({
@@ -205,13 +225,12 @@ export class SnippetsList extends React.Component {
       languages,
       editSnippet,
       insertSnippet,
-      focusedId,
+      focusedIndex,
       langPref,
       filter,
     } = this.props;
     const snippet = this.list[index];
     if (!snippet) {
-      console.log(index);
       return null;
     }
     return (
@@ -223,7 +242,7 @@ export class SnippetsList extends React.Component {
         filter={filter}
         editSnippet={editSnippet}
         insertSnippet={insertSnippet}
-        focused={focusedId === snippet.get('id')}
+        focused={focusedIndex === index}
         style={style}
       />
     );

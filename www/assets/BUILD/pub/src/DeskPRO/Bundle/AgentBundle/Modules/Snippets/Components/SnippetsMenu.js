@@ -56,6 +56,31 @@ export class SnippetsMenuContainer extends React.Component {
     };
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.snippets !== this.props.snippets) {
+      return true;
+    }
+    if (nextProps.blobs !== this.props.blobs) {
+      return true;
+    }
+    if (nextProps.languages !== this.props.languages) {
+      return true;
+    }
+    if (nextProps.width !== this.props.width) {
+      return true;
+    }
+    if (nextProps.langId !== this.props.langId) {
+      return true;
+    }
+    if (nextProps.type !== this.props.type) {
+      return true;
+    }
+    if (nextProps.department !== this.props.department) {
+      return true;
+    }
+    return false;
+  }
+
   onClose = () => {
     this.menu.onClose();
   };
@@ -195,7 +220,7 @@ export class SnippetsMenu extends React.Component {
       editOpen:      false,
       snippetEdit:   {},
       labelFilter:   '',
-      focusedId:     0,
+      focusedIndex:  null,
       editLang:      this.props.langId,
       height:        0,
     };
@@ -234,7 +259,7 @@ export class SnippetsMenu extends React.Component {
 
   onSearchBlur = () => {
     this.setState({
-      focusedId: 0
+      focusedIndex: null
     });
   };
 
@@ -373,12 +398,12 @@ export class SnippetsMenu extends React.Component {
   focusFirst = () => {
     if (this.props.snippets.size) {
       this.setState({
-        focusedId: this.props.snippets.first().get('id')
+        focusedIndex: 0
       });
       this.focusedIndex = 0;
     } else {
       this.setState({
-        focusedId: 0
+        focusedIndex: null
       });
     }
   };
@@ -387,16 +412,8 @@ export class SnippetsMenu extends React.Component {
     if (this.focusedIndex > 0) {
       this.focusedIndex -= 1;
     }
-    let i = 0;
-    this.props.snippets.forEach((snippet) => {
-      if (i === this.focusedIndex) {
-        this.setState({
-          focusedId: snippet.get('id')
-        });
-        return false;
-      }
-      i += 1;
-      return true;
+    this.setState({
+      focusedIndex: this.focusedIndex
     });
   };
 
@@ -404,16 +421,8 @@ export class SnippetsMenu extends React.Component {
     if (this.focusedIndex < this.props.snippets.size - 1) {
       this.focusedIndex += 1;
     }
-    let i = 0;
-    this.props.snippets.forEach((snippet) => {
-      if (i === this.focusedIndex) {
-        this.setState({
-          focusedId: snippet.get('id')
-        });
-        return false;
-      }
-      i += 1;
-      return true;
+    this.setState({
+      focusedIndex: this.focusedIndex
     });
   };
 
@@ -504,7 +513,7 @@ export class SnippetsMenu extends React.Component {
             filter={filter}
             height={this.state.height}
             width={width}
-            focusedId={this.state.focusedId}
+            focusedIndex={this.state.focusedIndex}
             selectedLabel={this.state.selectedLabel}
             multiLabels={this.state.multiLabels}
             multiMode={this.state.multiMode}
