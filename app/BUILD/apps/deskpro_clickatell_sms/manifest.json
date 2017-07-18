@@ -18,7 +18,7 @@
 			"name": "auth_token",
 			"type": "text",
 			"label": "API Key",
-			"description": "Your Clickatell Auth Token. You can find your API IDs when logged into the Clickatell website. It is most likely listed here: https://portal.clickatell.com/#/integrations/sms",
+			"description": "You can find your API IDs when logged into the Clickatell website. Ensure you select REST as the API Type. It is most likely listed here: https://portal.clickatell.com/#/integrations/sms",
 			"native_only": true
 		}
 	]
