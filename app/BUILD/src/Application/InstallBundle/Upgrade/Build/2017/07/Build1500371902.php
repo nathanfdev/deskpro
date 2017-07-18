@@ -54,5 +54,38 @@ class Build1500371902 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function run()
     {
+        // copy auth
+        $this->execDbQuery(
+        'default',
+        "INSERT INTO `deskprodb`.`app2_app_state_v2` (
+            `app_instance_id`,
+            `person_id`,
+            `entity_id`,
+            `name`,
+            `value`,
+            `value_type`,
+            `perm_read`,
+            `perm_write`,
+            `is_backend_only`,
+            `persistedAt`,
+            `updatedAt`
+          )
+          SELECT 
+            `app2_app_state`.`app_instance_id`,
+            `app2_app_state`.`owner_id`,
+            CONCAT_WS(':', 'person', `app2_app_state`.`owner_id`),
+            `app2_app_state`.`name`,
+            `app2_app_state`.`value`,
+            'object',
+            'OWNER',
+            'OWNER',
+            0,
+            IFNULL(`app2_app_state`.`createdAt`, NOW()),
+            NOW()
+          FROM
+            `app2_app_state` INNER JOIN `app2_app_instance` ON `app2_app_state`.`app_instance_id` =  `app2_app_instance`.`id` 
+          WHERE `app2_app_state`.`name` = 'auth'
+        ;"
+        );
     }
 }
