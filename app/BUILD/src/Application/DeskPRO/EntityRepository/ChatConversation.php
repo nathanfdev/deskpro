@@ -367,11 +367,11 @@ class ChatConversation extends AbstractEntityRepository
         $wheres                = [];
 
         if (!$agent->hasPerm('agent_chat.view_others')) {
-            $wheres[] = 'chat_conversations.agent_id IS NULL';
+            $wheres[] = 'c.agent IS NULL';
         }
 
         if (!$agent->hasPerm('agent_chat.view_unassigned')) {
-            $wheres[] = 'chat_conversations.agent_id IS NOT NULL';
+            $wheres[] = 'c.agent IS NOT NULL';
         }
 
         if ($departmentsIds) {
