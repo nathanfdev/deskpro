@@ -10,12 +10,14 @@ Feature: To prevent registration spam
   Scenario: Checking lockout response
     Given I set "registration" rate limit to 1 attempt within 1 minute with "lockout" response and 15 minutes lockout time
     And I am on "/register"
+    And I get captcha code from the form field "captcha"
     When I fill in the following:
       | person_registration[primary_email][email] | Luke0BBY@tatooine.galaxy |
       | person_registration[name]                 | Luke Skywalker           |
       | person_registration[password][password]   | iamthejediknight         |
       | person_registration[password][confirm]    | iamthejediknight         |
       | person_registration[timezone]             | Africa/Tunis             |
+    And I fill in "person_registration[captcha][captcha]" with "{captchaCode}"
     And I press "Register"
 
     When I am on "/register"

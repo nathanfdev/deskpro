@@ -253,6 +253,14 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
         ];
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

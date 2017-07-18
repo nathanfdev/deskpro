@@ -26,23 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Bundle\AppBundle\AntiAbuse\EventListener;
 
 use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\AntiAbuseEvent;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
 use DpTest\PortalTestCase;
 
 class CaptchaEventListenerTest extends PortalTestCase
@@ -76,8 +70,6 @@ class CaptchaEventListenerTest extends PortalTestCase
 
         return [
             [AntiAbuse::ACTION_LOGIN, new LoginAbuseCheck($person_email, $ip)],
-            [AntiAbuse::ACTION_REGISTER, new RegistrationAbuseCheck($person_email, $ip)],
-            [AntiAbuse::ACTION_RESET_PASSWORD, new PasswordResetAbuseCheck($person_email, $ip)],
             [AntiAbuse::ACTION_SUBMIT_COMMENT, new SubmitCommentAbuseCheck($person_email, $ip)],
             [AntiAbuse::ACTION_SUBMIT_FEEDBACK, new SubmitFeedbackAbuseCheck($person_email, $ip)],
             [AntiAbuse::ACTION_SUBMIT_TICKET, new SubmitTicketAbuseCheck($person_email, $ip)],
@@ -99,7 +91,7 @@ class CaptchaEventListenerTest extends PortalTestCase
             $settingName = AntiAbuse::KEY.'.'.$type.'.response';
         }
 
-        $this->getEntityManager()->getRepository(Setting::class)->updateSetting($settingName, RateLimitGroup::RESPONSE_CAPTCHA);
+        $this->getEntityManager()->getRepository(Setting::class)->updateSetting($settingName, RateLimitOptionsGroup::RESPONSE_CAPTCHA);
 
         $lessThanMaxAttempts = $this->getRateLimitMaxAttempts($type);
         for ($i = 0; $i < $lessThanMaxAttempts; ++$i) {

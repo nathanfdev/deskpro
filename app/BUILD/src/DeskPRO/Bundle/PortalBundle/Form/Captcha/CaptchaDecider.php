@@ -107,19 +107,9 @@ class CaptchaDecider
         return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_COMMENT, 'user.captcha.comments');
     }
 
-    public function shouldRequireRegistrationCaptchaForCurrentPerson()
-    {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_REGISTER, 'user.captcha.register');
-    }
-
     public function shouldRequireTicketCaptchaForCurrentPerson()
     {
         return $this->shouldRequireCaptcha(AntiAbuse::ACTION_SUBMIT_TICKET, 'user.captcha.tickets');
-    }
-
-    public function shouldRequireForgotPasswordCaptchaForCurrentPerson()
-    {
-        return $this->shouldRequireCaptcha(AntiAbuse::ACTION_RESET_PASSWORD, 'user.captcha.register');
     }
 
     public function shouldRequireShareCaptchaForCurrentPerson()

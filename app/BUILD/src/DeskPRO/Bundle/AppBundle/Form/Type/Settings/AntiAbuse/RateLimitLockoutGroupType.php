@@ -26,26 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitOptionsGroupType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAgentRateLimit;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitLockoutGroup;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class PortalUserRateLimitType.
+ * Class RateLimitLockoutGroupType.
  */
-class PortalAgentRateLimitType extends AbstractType
+class RateLimitLockoutGroupType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('login_settings', RateLimitOptionsGroupType::class, [
-            'property_path' => 'loginSettings',
+        $builder->add('lockout_time', NumberType::class, [
+            'property_path' => 'lockoutTime',
         ]);
     }
 
@@ -55,7 +55,15 @@ class PortalAgentRateLimitType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => PortalAgentRateLimit::class,
+            'data_class' => RateLimitLockoutGroup::class,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return BaseRateLimitGroupType::class;
     }
 }

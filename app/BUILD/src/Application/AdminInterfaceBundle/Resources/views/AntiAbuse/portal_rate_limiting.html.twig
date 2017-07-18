@@ -169,11 +169,8 @@
                                 {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.registration_settings.time" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_minutes') }}
-                                <select ng-model="settings.account_rate_limit.registration_settings.response">
-                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
-                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
-                                </select>
-                                <span ng-show="settings.account_rate_limit.registration_settings.response === 'lockout'">
+                                <span>
+                                    {{ phrase('admin.settings.portal_rate_limit_reject_form') }}
                                     {{ phrase('admin.settings.portal_rate_limit_for') }}
                                     <input
                                             type="number"
@@ -205,11 +202,8 @@
                                 {{ phrase('admin.settings.portal_rate_limit_times_within') }}
                                 <input type="number" min="1" ng-model="settings.account_rate_limit.reset_password_settings.time" class="form-control" style="width: 60px;" />
                                 {{ phrase('admin.settings.portal_rate_limit_minutes') }}
-                                <select ng-model="settings.account_rate_limit.reset_password_settings.response">
-                                    <option value="captcha">{{ phrase('admin.settings.portal_rate_limit_show_captcha') }}</option>
-                                    <option value="lockout">{{ phrase('admin.settings.portal_rate_limit_reject_form') }}</option>
-                                </select>
-                                <span ng-show="settings.account_rate_limit.reset_password_settings.response === 'lockout'">
+                                <span>
+                                    {{ phrase('admin.settings.portal_rate_limit_reject_form') }}
                                     {{ phrase('admin.settings.portal_rate_limit_for') }}
                                     <input
                                         type="number"

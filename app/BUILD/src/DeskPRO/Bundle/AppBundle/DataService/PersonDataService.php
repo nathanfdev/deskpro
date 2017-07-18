@@ -26,16 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 
+/**
+ * Class PersonDataService.
+ */
 class PersonDataService extends AbstractDataService
 {
     /**
@@ -60,6 +59,20 @@ class PersonDataService extends AbstractDataService
     }
 
     /**
+     * @param Person $person
+     *
+     * @return bool
+     */
+    public function isPasswordResetReSendExpired(Person $person)
+    {
+        $tmpData = $this->em->getRepository(TmpData::class)->findOneBy([
+            'name' => 'reset-password-'.$person->getId(),
+        ]);
+
+        return !$tmpData || new \DateTime('-1 hour') > $tmpData->getDateCreated();
+    }
+
+    /**
      * @param Person     $person
      * @param string|int $expire
      *
@@ -67,20 +80,20 @@ class PersonDataService extends AbstractDataService
      */
     public function createPasswordReset(Person $person, $expire = null)
     {
-        $name = 'reset-password-'.$person->id;
+        $name = 'reset-password-'.$person->getId();
 
         // only 1 valid at a time
         $this->em->getConnection()->delete('tmp_data', ['name' => $name]);
 
-        $tmpdata = TmpData::create('reset-password', ['person' => $person->id], $expire ?: '+1 day', $name);
-        $this->em->persist($tmpdata);
+        $tmpData = TmpData::create('reset-password', ['person' => $person->getId()], $expire ?: '+1 day', $name);
+        $this->em->persist($tmpData);
         $this->em->flush();
 
         return [
             'person'         => $person,
-            'tmpdata'        => $tmpdata,
-            'code'           => $tmpdata->getCode(),
-            'date_requested' => $tmpdata->date_created,
+            'tmpdata'        => $tmpData,
+            'code'           => $tmpData->getCode(),
+            'date_requested' => $tmpData->getDateCreated(),
         ];
     }
 
@@ -101,7 +114,7 @@ class PersonDataService extends AbstractDataService
                         'person'         => $person,
                         'tmpdata'        => $tmpdata,
                         'code'           => $tmpdata->getCode(),
-                        'date_requested' => $tmpdata->date_created,
+                        'date_requested' => $tmpdata->getDateCreated(),
                     ];
                 }
             }

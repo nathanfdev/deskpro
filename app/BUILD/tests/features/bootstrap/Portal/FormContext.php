@@ -39,6 +39,20 @@ use DpBehat\Data\DataContext;
 class FormContext extends BasePortalContext
 {
     /**
+     * @Given I get captcha code from the form field :name
+     *
+     * @param string $name
+     */
+    public function iSetCaptchaCode($name)
+    {
+        $key     = sprintf('gcb_%s', $name);
+        $session = $this->container()->get('session');
+        $options = $session->get($key);
+
+        DataContext::setPlaceholder('captchaCode', $options['phrase']);
+    }
+
+    /**
      * @Then I should see a form error with :message
      *
      * @param string $message

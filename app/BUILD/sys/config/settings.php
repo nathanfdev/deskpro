@@ -992,17 +992,15 @@ return [
     'rate_limit.login.guest.lockout_time' => 15 * 60, // 15 min
     'rate_limit.login.guest.response'     => 'captcha',
 
-    'rate_limit.registration.enabled'      => true,
+    'rate_limit.registration.enabled'      => false,
     'rate_limit.registration.limit'        => 3,
     'rate_limit.registration.time'         => 15 * 60, // 15 min
     'rate_limit.registration.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.registration.response'     => 'captcha',
 
-    'rate_limit.reset_password.enabled'      => true,
+    'rate_limit.reset_password.enabled'      => false,
     'rate_limit.reset_password.limit'        => 3,
     'rate_limit.reset_password.time'         => 15 * 60, // 15 min
     'rate_limit.reset_password.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.reset_password.response'     => 'captcha',
 
     'rate_limit.token_exchange.enabled'      => true,
     'rate_limit.token_exchange.limit'        => 50,
