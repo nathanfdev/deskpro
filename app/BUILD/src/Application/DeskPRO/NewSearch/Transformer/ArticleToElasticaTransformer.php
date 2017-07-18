@@ -76,7 +76,7 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
             $labels = Arrays::map(function ($l) {
                 return $l->label;
             }, $object->getLabels());
-            $document->set('labels', $labels);
+            $document->set('labels', array_values($labels));
         }
 
         $sticky_words = App::$container->getDb()->fetchAllCol('
