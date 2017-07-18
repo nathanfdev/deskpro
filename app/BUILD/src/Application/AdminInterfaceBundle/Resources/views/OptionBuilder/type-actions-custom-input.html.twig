@@ -1,16 +1,36 @@
 <dp-optionbuilder-row>
 	<div class="dp-ob-standard-row">
-		<label class="row-label">{{ ng_var('type_title') }}</label>
-		<select
-				ui-select2="{dropdownAutoWidth:true}"
-				ng-model="model.op"
-				style="min-width: 80px"
-		>
-			<option value="set">Set to</option>
-			<option value="unset">Unset</option>
-		</select>
-		<input type="text" class="form-control row-content" ng-model="model.value"
-			   ng-if="'unset' !== model.op"
-			   placeholder="{{ ng_var('options.placeholder') }}" />
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" width="50">
+					<label class="row-label">{{ ng_var('type_title') }}</label>
+				</td>
+				<td>
+					<table class="display-table spaced" width="100%">
+						<tr>
+							<td>
+								<select
+										ui-select2="{dropdownAutoWidth:true}"
+										ng-model="model.op"
+										style="min-width: 80px"
+								>
+									<option value="set">Set to</option>
+									<option value="unset">Unset</option>
+								</select>
+								<input type="text" class="form-control row-content" ng-model="model.value"
+									   ng-if="'unset' !== model.op"
+									   placeholder="{{ ng_var('options.placeholder') }}" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" ng-model="model.with_formatter" /> Use advanced formatting
+								<i style="color: #aaa;" class="fa fa-question-circle" tooltip="This allows you to use advanced formatting and variables using the same syntax you can use with replies and snippets. Note that new lines and extra whitespace will be automatically removed in the result."></i>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
 	</div>
 </dp-optionbuilder-row>

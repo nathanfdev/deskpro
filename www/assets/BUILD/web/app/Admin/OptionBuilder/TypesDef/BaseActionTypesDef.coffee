@@ -175,6 +175,7 @@ define [
               return {
                 value: val
                 op: value.options?.op || value.op || _.first(data.operators)
+                with_formatter: value.options?.with_formatter || false
               }
             getValue: (model = {}, data) ->
               val = model.value || ''
@@ -186,6 +187,7 @@ define [
               value.options            = {}
               value.options[prop_name] = val
               value.options.op         = model.op
+              value.options.with_formatter = !!model.with_formatter
               return value
           }
       }
