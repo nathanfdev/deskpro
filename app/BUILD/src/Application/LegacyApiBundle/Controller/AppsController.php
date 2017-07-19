@@ -324,7 +324,7 @@ class AppsController extends AbstractController
                     'name' => $name,
                 ]);
 
-                $manifestReader = new AppManifestJsonReader();
+                $manifestReader = new AppManifestReader();
                 $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
                 $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
 
