@@ -1109,6 +1109,9 @@ class Person extends DomainObject implements
      */
     public function getHelper($name)
     {
+        // force load helper if was not loaded
+        $this->loadHelper($name);
+
         return $this->getHelperManager()->getHelper($name);
     }
 
