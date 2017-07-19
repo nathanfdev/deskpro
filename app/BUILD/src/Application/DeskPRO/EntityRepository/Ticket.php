@@ -344,7 +344,7 @@ class Ticket extends AbstractEntityRepository
     ) {
         $agentWherePermissions = 'tickets.agent_id = ?';
         $wheres                = [];
-        $join                  = '';
+        $join                  = 'INNER JOIN tickets ON tickets.id = tickets_participants.ticket_id';
 
         if (!$agent->hasPerm('agent_tickets.view_unassigned')) {
             $wheres[] = '(tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)';
@@ -355,12 +355,11 @@ class Ticket extends AbstractEntityRepository
         }
 
         if (!$person->isAgent()) {
-            $params      = [$person->getId(), $person->getId(), $agent->getId()];
-            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT];
+            $params      = [$person->getId(), $agent->getId()];
+            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT];
 
             if ($departmentIds) {
                 $wheres[] = 'tickets.department_id IN (?)';
-                $join     = 'INNER JOIN tickets ON tickets.id = tickets_participants.ticket_id';
 
                 $params = [
                     $person->getId(),
@@ -531,7 +530,7 @@ class Ticket extends AbstractEntityRepository
 
         $agentWherePermissions = '%alias%.agent_id = ?';
         $wheres                = [];
-        $join                  = '';
+        $join                  = 'INNER JOIN tickets t2 ON t2.id = tp.ticket_id';
 
         if (!$agent->hasPerm('agent_tickets.view_unassigned')) {
             $wheres[] = '(%alias%.agent_id IS NOT NULL OR %alias%.agent_team_id IS NOT NULL)';
@@ -547,7 +546,6 @@ class Ticket extends AbstractEntityRepository
 
             if ($departmentIds) {
                 $wheres[] = '%alias%.department_id IN (?)';
-                $join     = 'INNER JOIN tickets t2 ON t2.id = tp.ticket_id';
 
                 $params = [
                     $person->getId(),
@@ -865,8 +863,25 @@ class Ticket extends AbstractEntityRepository
         return [];
     }
 
-    public function getTicketCountsForPeople(array $people)
-    {
+    public function getTicketCountsForPeople(
+        array $people,
+        Entity\Person $agent
+    ) {
+        $permissionsHelper          = $agent->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+
+        $agentWherePermissions = '%alias%.agent_id = ?';
+        $wheres                = [];
+        $join                  = 'INNER JOIN tickets t2 ON t2.id = tp.ticket_id';
+
+        if (!$agent->hasPerm('agent_tickets.view_unassigned')) {
+            $wheres[] = '(%alias%.agent_id IS NOT NULL OR %alias%.agent_team_id IS NOT NULL)';
+        }
+        if (!$agent->hasPerm('agent_tickets.view_others')) {
+            $wheres[] = '%alias%.agent_id IS NULL';
+            $wheres[] = '%alias%.agent_team_id IS NULL';
+        }
+
         $ids = [];
         foreach ($people as $p) {
             $ids[] = $p['id'];
@@ -879,14 +894,45 @@ class Ticket extends AbstractEntityRepository
         $agentIds  = $db->fetchAllCol('SELECT id FROM people WHERE id IN (?) AND is_agent = 1', [$ids], [Connection::PARAM_INT_ARRAY]);
 
         if ($peopleIds) {
+            $params      = [$peopleIds, $agent->getId()];
+            $paramsTypes = [Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT];
+
+            if ($allowedTicketDepartmentIds) {
+                $wheres[] = '%alias%.department_id IN (?)';
+
+                $params = [
+                    $peopleIds,
+                    $agent->getId(),
+                    $allowedTicketDepartmentIds,
+                ];
+                $paramsTypes = [
+                    Connection::PARAM_INT_ARRAY,
+                    \PDO::PARAM_INT,
+                    Connection::PARAM_INT_ARRAY,
+                ];
+            }
+
+            if ($wheres) {
+                $constructedWhere = sprintf(' AND (%s OR (%s))', $agentWherePermissions, implode(' AND ', $wheres));
+            } else {
+                $constructedWhere = sprintf(' AND %s', $agentWherePermissions);
+            }
+            $where  = str_replace('%alias%', 't1', $constructedWhere);
+            $where2 = str_replace('%alias%', 't2', $constructedWhere);
+
             $countsPeople = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
-                SELECT person_id, COUNT(person_id) FROM (
-                    SELECT person_id FROM tickets WHERE person_id IN (?)
+                SELECT person_id, COUNT(DISTINCT(id)) FROM (
+                    SELECT t1.id, t1.person_id FROM tickets as t1 
+                    WHERE t1.person_id IN (?)
+                    '.$where.'
                     UNION ALL
-                    SELECT person_id FROM tickets_participants WHERE person_id IN (?)
+                    SELECT tp.person_id, tp.ticket_id as id FROM tickets_participants as tp
+                    '.$join.'
+                    WHERE tp.person_id IN (?)
+                    '.$where2.'
                 ) a
                 GROUP BY person_id
-            ', [$peopleIds, $peopleIds], [Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY]);
+            ', array_merge($params, $params), array_merge($paramsTypes, $paramsTypes));
         } else {
             $countsPeople = [];
         }

@@ -1625,7 +1625,13 @@ class PersonController extends AbstractController
 
         $sort_by = $this->in->getString('sort_by');
 
-        $person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
+        /** @var Ticket $rep */
+        $rep = $this->em->getRepository('DeskPRO:Ticket');
+
+        $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+
+        $person_tickets = $rep->getPersonTickets($person, $this->getPerson(), 250, $sort_by, 'DESC', $allowedTicketDepartmentIds);
 
         return $this->render('AgentBundle:Person:view-tickets.html.twig', [
             'tickets' => $person_tickets,
