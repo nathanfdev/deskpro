@@ -81,7 +81,9 @@ class AppManifestReader
                 }
             }
 
-            $transformedManifest['version'] = $targetVersion;
+            if (!empty($targetVersion)) {
+                $transformedManifest['version'] = $targetVersion;
+            }
 
         } while (count($applicableTransforms) > 0);
 
@@ -106,27 +108,11 @@ class AppManifestReader
     public function readManifestFromArray(array $manifestMap)
     {
         $transformedMap = $this->applyBackwardsCompatibleTransformation($manifestMap);
-
         // todo inject serializer
         /** @var \JMS\Serializer\Serializer $serializer */
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
 
         $manifest = $serializer->fromArray($transformedMap, Domain\AppManifest::class);
-
-        $value           = $transformedMap['settings'];
-        $defaultSettings = [];
-        foreach ($value as $setting) {
-            if (
-                is_array($setting)
-                && array_key_exists('defaultValue', $setting)
-                && array_key_exists('name', $setting)
-            ) {
-                $defaultSettings[$setting['name']] = $setting['defaultValue'];
-            }
-        }
-
-        $manifest->setDefaultSettings($defaultSettings);
-
         return $manifest;
     }
 }

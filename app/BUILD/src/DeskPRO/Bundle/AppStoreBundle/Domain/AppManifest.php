@@ -32,25 +32,36 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Representation of an application's manifest. This is a mutable class to be used when creating other objects, like Application.
+ * @JMS\ExclusionPolicy("all")
  */
 class AppManifest
 {
     /**
      * @JMS\Type("string")
-     *
+     * @JMS\Expose()
      * @var string
      */
     private $name;
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
+     * @JMS\SerializedName("appVersion")
      *
+     * @var string
+     */
+    private $appVersion;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\Expose()
      * @var string
      */
     private $version;
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
@@ -58,6 +69,7 @@ class AppManifest
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
@@ -65,6 +77,7 @@ class AppManifest
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
@@ -72,6 +85,8 @@ class AppManifest
 
     /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppSetting>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("settings")
      *
      * @var AppManifest\AppSetting[]
      */
@@ -79,34 +94,31 @@ class AppManifest
 
     /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppTarget>")
+     * @JMS\Expose()
+     *
      * @var AppManifest\AppTarget[]
      */
     private $targets = [];
 
     /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StateAccessRule>")
+     * @JMS\Expose()
      *
      * @var AppManifest\StateAccessRule[]
      */
     private $state = [];
 
     /**
-     * @JMS\Type("array")
-     * @JMS\SerializedName("defaultSettings")
-     *
-     * @var array
-     */
-    private $defaultSettings;
-
-    /**
      * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppAuthor")
+     * @JMS\Expose()
      *
-     * @var AppAuthor
+     * @var AppManifest\AppAuthor
      */
     private $author;
 
     /**
      * @JMS\Type("array<string>")
+     * @JMS\Expose()
      * @JMS\SerializedName("externalApis")
      *
      * @var string[]
@@ -115,7 +127,8 @@ class AppManifest
 
     /**
      * @JMS\Type("array<string>")
-     * @JMS\SerializedName("$deskproApiTags")
+     * @JMS\Expose()
+     * @JMS\SerializedName("deskproApiTags")
      *
      * @var string[]
      */
@@ -123,6 +136,8 @@ class AppManifest
 
     /**
      * @JMS\Type("boolean")
+     * @JMS\Expose()
+     * @JMS\SerializedName("isSingle")
      *
      * @var bool
      */
@@ -229,46 +244,6 @@ class AppManifest
     }
 
     /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return $this->defaultSettings;
-    }
-
-    /**
-     * @param array $defaultSettings
-     *
-     * @return $this
-     */
-    public function setDefaultSettings(array $defaultSettings)
-    {
-        $this->defaultSettings = $defaultSettings;
-
-        return $this;
-    }
-
-    /**
-     * @return AppAuthor
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * @param AppAuthor $author
-     *
-     * @return $this
-     */
-    public function setAuthor(AppAuthor $author = null)
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
      * @return AppManifest\AppSetting[]
      */
     public function getSettings()
@@ -284,6 +259,26 @@ class AppManifest
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return AppManifest\AppAuthor
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param AppManifest\AppAuthor $author
+     *
+     * @return $this
+     */
+    public function setAuthor(AppManifest\AppAuthor $author = null)
+    {
+        $this->author = $author;
 
         return $this;
     }
@@ -378,5 +373,21 @@ class AppManifest
     public function setState(array $state)
     {
         $this->state = $state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppVersion()
+    {
+        return $this->appVersion;
+    }
+
+    /**
+     * @param string $appVersion
+     */
+    public function setAppVersion($appVersion)
+    {
+        $this->appVersion = $appVersion;
     }
 }
