@@ -57,13 +57,13 @@ export class SnippetsMenuContainer extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (nextProps.snippets !== this.props.snippets) {
+    if (!nextProps.snippets.equals(this.props.snippets)) {
       return true;
     }
-    if (nextProps.blobs !== this.props.blobs) {
+    if (!nextProps.blobs.equals(this.props.blobs)) {
       return true;
     }
-    if (nextProps.languages !== this.props.languages) {
+    if (!nextProps.languages.equals(this.props.languages)) {
       return true;
     }
     if (nextProps.width !== this.props.width) {
@@ -75,10 +75,7 @@ export class SnippetsMenuContainer extends React.Component {
     if (nextProps.type !== this.props.type) {
       return true;
     }
-    if (nextProps.department !== this.props.department) {
-      return true;
-    }
-    return false;
+    return nextProps.department !== this.props.department;
   }
 
   onClose = () => {
