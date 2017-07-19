@@ -21,11 +21,13 @@ const extractPropsFromPage = (page, location) => {
 };
 
 /**
+ * Returns a list of the properties of all contexts found in the page
+ *
  * @param {DeskPRO.Agent.PageFragment.Basic} page
  * @param {Location} windowLocation
- * @return Array<Context>
+ * @return {Array<Object>}
  */
-export const createContextsFromPage = (page, windowLocation) => {
+export const extractPageContextProps = (page, windowLocation) => {
   try {
     const foundNodes = WidgetDOM.container.findAllFromList(page.wrapper.get());
     if (foundNodes.length === 0) { return []; }
@@ -38,23 +40,27 @@ export const createContextsFromPage = (page, windowLocation) => {
 
     const pageProps = extractPropsFromPage(page, windowLocation);
     if (!pageProps) {
-      console.log('failed to extract container props from page', page);
+      // console.log('failed to extract container props from page', page);
       return [];
     }
 
     // build list of context objects
-    return containerPropsList
-      .map(containerProps => ({ ...pageProps, ...containerProps }))
-      .map(Context.fromProps)
-      ;
+    return containerPropsList.map(containerProps => ({ ...pageProps, ...containerProps }));
   } catch (e) {
-    console.log('failed to extract app context from page fragment', e);
+    // console.log('failed to extract app context from page fragment', e);
     return [];
   }
 };
 
 /**
- * @param {Object} tab
+ * @param {DeskPRO.Agent.PageFragment.Basic} page
+ * @param {Location} windowLocation
+ * @return Array<Context>
+ */
+export const createContextsFromPage = (page, windowLocation) => extractPageContextProps(page, windowLocation).map(Context.fromProps);
+
+/**
+ * @param {{page}} tab
  * @param {Location} windowLocation
  * @return Array<Context>
  */

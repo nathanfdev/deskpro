@@ -320,7 +320,7 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
 
     response(null, { height });
   } catch (e) {
-    console.log('app reset size failed', e);
+    // console.log('app reset size failed', e);
     response(e);
   }
 };
@@ -374,7 +374,6 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
     }
     response(null, markup);
   } catch (e) {
-    console.log(e);
     response(e);
   }
 };

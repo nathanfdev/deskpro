@@ -1,4 +1,6 @@
-class DeskproAppStoreConfiguration {
+import { PropertyBag } from './PropertyBag';
+
+class DeskproAppStoreConfiguration extends PropertyBag {
   static get validTargets() {
     return [
 
@@ -33,30 +35,17 @@ class DeskproAppStoreConfiguration {
     ];
   }
 
-  static get validEnvironments() {
-    return ['development', 'production'];
+  static get validEnvironments() { return ['development', 'production']; }
+
+  static get devEndpoint() { return 'http://127.0.0.1:31080'; }
+
+  constructor({ environment, endpoint, location, ...undeclaredProps }) {
+    super({ environment, endpoint, location, ...undeclaredProps });
   }
 
-  static get devAppManifestUrl() {
-    return 'http://127.0.0.1:31080/manifest.json';
-  }
+  get environment() { return this.props.environment; }
 
-  constructor(environment, location) {
-    this.state = { environment, location };
-  }
-
-  get environment() {
-    return this.state.environment;
-  }
-
-  get endpoint() {
-    if (this.environment === 'development') {
-      return 'http://127.0.0.1:31080';
-    }
-
-    const { location } = this.state;
-    return location.origin;
-  }
+  get endpoint() { return this.props.endpoint; }
 }
 
 export default DeskproAppStoreConfiguration;

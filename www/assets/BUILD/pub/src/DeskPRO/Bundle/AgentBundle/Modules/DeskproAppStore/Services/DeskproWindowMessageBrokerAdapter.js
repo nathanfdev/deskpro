@@ -1,3 +1,5 @@
+import { loadPageFragmentApps } from '../Actions/Actions';
+
 class DeskproWindowMessageBrokerAdapter {
   /**
    * @return {Array<String>}
@@ -8,11 +10,12 @@ class DeskproWindowMessageBrokerAdapter {
 
   /**
    * @param {DeskPRO.MessageBroker} messageBroker
+   * @param {DeskproAppStoreConfiguration} config
    * @returns {function(*=, *=)}
    */
-  static registerListener(messageBroker)  {
-    return (store, domScanner) => {
-      const listener = this.createMessageListener(store, domScanner);
+  static registerListener(messageBroker, config)  {
+    return (reduxDispatch) => {
+      const listener = this.createMessageListener(reduxDispatch, config);
       for (const pattern of this.EVENTPATTERNS) {
         messageBroker.addMessageListener(pattern, listener);
       }
@@ -20,21 +23,20 @@ class DeskproWindowMessageBrokerAdapter {
   }
 
   /**
-   * @param {ReduxActionDispatcher} reduxActionDispatcher
+   * @param {function} reduxDispatch
+   * @param {DeskproAppStoreConfiguration} config
    * @returns {function(*, ...[*])}
    */
-  static createMessageListener(reduxActionDispatcher)  {
+  static createMessageListener(reduxDispatch, config)  {
     return (page, ...args) => { // eslint-disable-line no-unused-vars
       if (page instanceof window.DeskPRO.Agent.PageFragment.Basic) {
         const { TYPENAME } = page;
-
         const metadata = page.getMetaData(TYPENAME);
-        if (!metadata || !metadata.id) {
-          return false;
+        if (metadata && metadata.id) {
+          const action = loadPageFragmentApps([page], config, window.location);
+          reduxDispatch(action);
+          return true;
         }
-
-        reduxActionDispatcher.dispatchLoadPageFragmentApps(page);
-        return true;
       }
 
       return false;

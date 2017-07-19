@@ -166,7 +166,7 @@ class DeskproAppContainer extends React.Component {
    * @param {Array<function>} removeListeners
    */
   registerWidget = (widget, removeListeners) => {
-    console.log('registering widget');
+    // console.log('registering widget');
 
     // store the widget
     this.widgets.push(widget);
@@ -179,8 +179,8 @@ class DeskproAppContainer extends React.Component {
    * @param {Widget} widget
    */
   unregisterWidget = (widget) => {
-    console.log('un-registering widget');
-
+    // console.log('un-registering widget');
+    //
     // remove widget
     removeMatching(this.widgets, aWidget => aWidget === widget);
 

@@ -1,12 +1,15 @@
-export class InstanceProps {
+import { PropertyBag } from './PropertyBag';
+
+export class InstanceProps extends PropertyBag {
   /**
    * @param {String} appId
    * @param {String} appTitle
    * @param {String} appPackageName
    * @param {String} instanceId
+   * @param {Object} undeclaredProps
    */
-  constructor({ appId, appTitle, appPackageName, instanceId })  {
-    this.props = { appId, appTitle, appPackageName, instanceId };
+  constructor({ appId, appTitle, appPackageName, instanceId, ...undeclaredProps })  {
+    super({ appId, appTitle, appPackageName, instanceId, ...undeclaredProps });
   }
 
   get appId() { return this.props.appId; }
@@ -16,21 +19,19 @@ export class InstanceProps {
   get appPackageName() { return this.props.appPackageName; }
 
   get instanceId() { return this.props.instanceId; }
-
-  toJS = () => JSON.parse(JSON.stringify(this.props));
-
 }
 
-export class ContextProps {
+export class ContextProps extends PropertyBag  {
   /**
    * @param {String} type
    * @param {String} entityId
    * @param {String} locationId
    * @param {String} tabId
    * @param {String} tabUrl
+   * @param undeclaredProps
    */
-  constructor({ type, entityId, locationId, tabId, tabUrl })  {
-    this.props = { type, entityId, locationId, tabId, tabUrl };
+  constructor({ type, entityId, locationId, tabId, tabUrl, ...undeclaredProps })  {
+    super({ type, entityId, locationId, tabId, tabUrl, ...undeclaredProps });
   }
 
   get type() { return this.props.type; }
@@ -42,6 +43,4 @@ export class ContextProps {
   get tabId() { return this.props.tabId; }
 
   get tabUrl() { return this.props.tabUrl; }
-
-  toJS = () => JSON.parse(JSON.stringify(this.props));
 }

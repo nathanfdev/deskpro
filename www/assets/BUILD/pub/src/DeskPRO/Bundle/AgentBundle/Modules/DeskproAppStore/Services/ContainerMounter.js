@@ -15,12 +15,10 @@ import { dispatchIncomingWidgetMessage, parseIncomingWidgetMessageJS, addWidgetE
 class ContainerMounter {
   /**
    * @param reduxStore
-   * @param {ReduxActionDispatcher} appstoreDispatcher
    * @param {DeskproAppRegistry} appRegistry
    */
-  constructor(reduxStore, appstoreDispatcher, appRegistry)  {
+  constructor(reduxStore, appRegistry)  {
     this.reduxStore = reduxStore;
-    this.appstoreDispatcher = appstoreDispatcher;
     this.appRegistry = appRegistry;
   }
 
@@ -65,7 +63,7 @@ class ContainerMounter {
       throw new Error(`unknown render strategy: ${renderStrategy}`);
     }
 
-    // TODO this is a temporary hack to prevent the sidebar appearing everytime
+    // TODO this is a temporary hack to prevent the sidebar appearing every time
     return props.widgetsConfigList.length;
   };
 

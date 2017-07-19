@@ -16,9 +16,10 @@ export class Context {
    * @param {String} locationId
    * @param {String} tabId
    * @param {String} tabUrl
+   * @param {Object} undeclaredProps
    */
-  constructor({ id, type, entityId, locationId, tabId, tabUrl }) {
-    const props = { id, type, entityId, locationId, tabId, tabUrl };
+  constructor({ id, type, entityId, locationId, tabId, tabUrl, ...undeclaredProps }) {
+    const props = { id, type, entityId, locationId, tabId, tabUrl, ...undeclaredProps };
     this.props = Immutable.fromJS(props);
   }
 
@@ -53,8 +54,8 @@ export class Context {
   get tabUrl() { return this.props.get('tabUrl'); }
 
   get widgetProps() {
-    const { type, entityId, locationId, tabId, tabUrl } = this.toJS();
-    return new ContextProps({ type, entityId, locationId, tabId, tabUrl });
+    const propsJS = this.props.toJS();
+    return new ContextProps(propsJS);
   }
 
   toJS = () => this.props.toJS();
