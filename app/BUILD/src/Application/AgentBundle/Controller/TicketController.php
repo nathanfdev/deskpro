@@ -442,7 +442,12 @@ class TicketController extends AbstractController
             }
         }
 
-        $brands = $this->em->getRepository(Brand::class)->findAll();
+        $brands      = $this->em->getRepository(Brand::class)->findAll();
+        $chatChecker = $this->getPerson()->getPermissionsManager()->ChatChecker;
+        $linkedChat  = null;
+        if ($ticket->linked_chat && $chatChecker->canView($ticket->linked_chat)) {
+            $linkedChat = $ticket->linked_chat;
+        }
 
         $vars = [
             'agent_teams' => $agent_teams,
@@ -454,6 +459,7 @@ class TicketController extends AbstractController
             'ticket_api'                 => $ticket_api,
             'ticket_attachments'         => $ticket_attachments,
             'ticket_message_attachments' => $ticket_message_attachments,
+            'linked_chat'                => $linkedChat,
 
             'validator_errors' => $validator_errors,
 
