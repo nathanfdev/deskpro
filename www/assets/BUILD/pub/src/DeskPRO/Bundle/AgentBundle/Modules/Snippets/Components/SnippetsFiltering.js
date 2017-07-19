@@ -54,6 +54,16 @@ class SnippetsFiltering extends React.Component {
     }
   }
 
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.snippets !== this.props.snippets) {
+      return true;
+    }
+    if (nextProps.selectedLabels !== this.props.selectedLabel) {
+      return true;
+    }
+    return false;
+  }
+
   getChildren = (label) => {
     const labels = label.get('children');
     if (!labels.size) {
@@ -159,8 +169,9 @@ class SnippetsFiltering extends React.Component {
         count: allSnippets,
       },
     ];
+    const myId = me.get('id');
     const mySnippets = snippets.count(snippet =>
-      snippet.get('person') === me.get('id') && !snippet.get('is_draft', false)
+      snippet.get('person') === myId && !snippet.get('is_draft', false)
     );
     showOptions.push({
       value: 'my_snippets',
