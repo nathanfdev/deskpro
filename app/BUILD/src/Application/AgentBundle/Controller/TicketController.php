@@ -5533,6 +5533,10 @@ CSS;
             if (!$this->person->PermissionsManager->TicketChecker->canReply($ticket)) {
                 $fail = true;
             }
+        } elseif ($check_perm == 'view') {
+            if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                $fail = true;
+            }
         }
 
         if ($fail) {
