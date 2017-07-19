@@ -38,10 +38,13 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		$(document).unbind('mousemove.faviconbadge');
 		$(document).unbind('keypress.faviconbadge');
 		$(document).unbind('visibilitychange.faviconbadge');
+    $(document).unbind('visibilitychange');
+    $(document).unbind('msvisibilitytchange');
+    $(document).unbind('webkitvisibilitytchange');
 	},
 
 	enableCrazyMode: function(title) {
-
+		var self = this;
 		if (document.visibilityState && document.visibilityState === 'visible') {
 			return;
 		}
@@ -49,11 +52,20 @@ DeskPRO.FaviconBadge = new Orb.Class({
     $(document).one('windowshow.faviconbadge', this.disableCrazyMode.bind(this));
     $(document).one('mousemove.faviconbadge', this.disableCrazyMode.bind(this));
     $(document).one('keypress.faviconbadge', this.disableCrazyMode.bind(this));
-    $(document).one('visibilitychange.faviconbadge', this.disableCrazyMode.bind(this));
+    $(document).one('visibilitychange.faviconbadge', this.disableCrazyModeIfVisible.bind(this));
+    $(document).one('visibilitychange', this.disableCrazyModeIfVisible.bind(this));
+    $(document).one('msvisibilitychange', this.disableCrazyModeIfVisible.bind(this));
+    $(document).one('webkitvisibilitychange', this.disableCrazyModeIfVisible.bind(this));
 
 		this.crazyTitle = title || null;
 		this.crazyMode = true;
-		this.updateBadge(this.lastNum, true);
+		this.updateBadge(this.lastNum);
+	},
+
+	disableCrazyModeIfVisible: function() {
+    if (document.visibilityState && document.visibilityState === 'visible') {
+      this.disableCrazyMode();
+    }
 	},
 
 	disableCrazyMode: function() {
@@ -61,7 +73,7 @@ DeskPRO.FaviconBadge = new Orb.Class({
 		this.crazyMode = false;
 		this.crazyTitle = null;
 		document.title = this.origWindowTitle;
-		this.updateBadge(this.lastNum, false);
+		this.updateBadge(this.lastNum);
 	},
 
 	updateBadge: function(num) {

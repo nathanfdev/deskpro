@@ -651,7 +651,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		this.addMessageRow(data.author_name, data.content, data.author_type, data.is_html, data.message_id, data.metadata, data);
 		if(data.author_id == DESKPRO_PERSON_ID && data.metadata && data.metadata.type && data.metadata.type == 'file') {
-			this.getEl('messages_box').find('.message-' + data.message_id).addClass('server-ack').data('message-id', data.message_id)
+			this.getEl('messages_box').find('.message-' + data.message_id).addClass('server-ack').data('message-id', data.message_id);
 		}
 	},
 
@@ -857,6 +857,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			url: BASE_URL + 'agent/chat/leave/' + this.meta.conversation_id,
 			data: {
 				action: action
+			},
+			success: function() {
+        DeskPRO_Window.faviconBadge.disableCrazyMode();
 			}
 		});
 	},
