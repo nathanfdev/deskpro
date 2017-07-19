@@ -74,14 +74,6 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 			});
 		};
 
-		var statusMenu = this.statusMenu = new DeskPRO.UI.Menu({
-			menuElement: menuVis,
-			onItemClicked: function(info) {
-				sendUpdate(openForEl, 'visibility', $(info.itemEl).data('vis'));
-				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
-			}
-		});
-
 		el.on('click', 'input.item-select', function(ev) {
 			var row = $(this).closest('article.task');
 			var value = $(this).is(':checked');
@@ -124,11 +116,26 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				});
 			});
 		});
+		el.find('li.visibility select.visibility_sel').not('.has-init').each(function() {
+			var row = $(this).closest('article.task');
+			DP.select($(this));
 
-		el.on('click', '.opt-trigger.visibility', function(ev) {
-			openForEl = $(this).closest('article.task');
-			statusMenu.open(ev);
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = '';
+				}
+
+				row.find('.visibility').find('label').text(label);
+				sendUpdate(row, 'visibility', val, function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+				});
+			});
 		});
+
 		el.on('click', '.opt-trigger.time_due', function(ev) {
 
 			openForEl = $(this).closest('article.task');

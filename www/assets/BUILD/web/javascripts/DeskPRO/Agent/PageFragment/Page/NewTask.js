@@ -16,14 +16,6 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 		var nolink = false;
 
-		var statusMenu = new DeskPRO.UI.Menu({
-			menuElement: this.getEl('menu_vis'),
-			onItemClicked: function(info) {
-				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
-				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
-			}
-		});
-
 
 		var form = this.getEl('form');
 		form.on('submit', Orb.cancelEvent);
@@ -40,10 +32,6 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			});
 		});
 
-		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
-			openForEl = $(this).closest('.task-row');
-			statusMenu.open(ev);
-		});
 		rowContainer.on('click', '.opt-trigger.time_due', function(ev) {
 
 			var row = $(this).closest('.task-row');
@@ -210,6 +198,22 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 				row.find('.assigned_agent').find('label').text(label);
 				$('input.input-agent', row).val(val);
+			});
+
+			var visibility_sel = row.find('.visibility_sel');
+			DP.select(visibility_sel);
+
+			visibility_sel.on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = '';
+				}
+
+				row.find('.visibility').find('label').text(label);
+				$('input.input-vis', row).val(val);
 			});
 
 			self.updateUi();

@@ -266,9 +266,6 @@ class TaskController extends AbstractController
                 } elseif ($t->getAssignedAgentTeam()) {
                     $key   = 'agent_team:'.$t->getAssignedAgentTeam()->getId();
                     $title = $t->getAssignedAgentTeam()->getName();
-                } elseif ($t->getAssignedDepartment()) {
-                    $key   = 'agent_team:'.$t->getAssignedDepartment()->getId();
-                    $title = $t->getAssignedDepartment()->getFullTitle();
                 } elseif ($t->getPerson()) {
                     $key   = 'agent:'.$t->getPerson()->getId();
                     $title = $t->getPerson()->getDisplayName();
@@ -550,7 +547,21 @@ class TaskController extends AbstractController
                 break;
 
             case 'visibility':
-                $task->setVisibility($this->in->getString('value'));
+                $val = $this->in->getString('value');
+
+                $task->setAssignedDepartment(null);
+                $task->setVisibility(Task::PRIVATE_VISIBILITY);
+
+                if ($val && is_string($val) && strpos($val, ':') !== false) {
+                    list($type, $id) = explode(':', $val);
+                    if ($type === 'department') {
+                        $department = $this->getDoctrine()->getManager()->getRepository(Department::class)->find($id);
+                        $task->setAssignedDepartment($department);
+                    }
+                } else {
+                    $task->setVisibility($val);
+                }
+
                 break;
 
             case 'completed':
@@ -569,15 +580,12 @@ class TaskController extends AbstractController
                 $task->setAssignedAgentTeam(null);
                 $task->setAssignedDepartment(null);
 
-                if ($val) {
+                if ($val && is_string($val) && strpos($val, ':') !== false) {
                     list($type, $id) = explode(':', $val);
                     if ($type == 'agent') {
                         $task->setAsignedAgentId($id);
                     } elseif ($type === 'agent_team') {
                         $task->setAsignedAgentTeamId($id);
-                    } elseif ($type === 'department') {
-                        $department = $this->getDoctrine()->getManager()->getRepository(Department::class)->find($id);
-                        $task->setAssignedDepartment($department);
                     }
                 }
 
