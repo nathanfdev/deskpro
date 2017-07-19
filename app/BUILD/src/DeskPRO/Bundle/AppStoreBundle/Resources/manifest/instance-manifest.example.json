@@ -9,7 +9,7 @@
   "id": "com.deskpro.my-app",
   "isSingle": true,
   "name": "@deskproapps/app-boilerplate-react",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "title": "Your app title",
   "scope": "agent",
   "targets": [

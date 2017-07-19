@@ -11,6 +11,14 @@
   "title": "Your app title",
   "isSingle": true,
   "scope": "agent",
+  "state" : [
+    {
+      "name": "settings",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    }
+  ],
   "targets": [
     {
       "target": "ticket-sidebar",
