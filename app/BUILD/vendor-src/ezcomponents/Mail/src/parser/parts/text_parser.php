@@ -98,6 +98,14 @@ class ezcMailTextParser extends ezcMailPartParser
             $this->text = base64_decode( $this->text );
         }
 
+        if ($charset === 'x-unknown') { // we're really not excited about unknown encoding
+            $charset = mb_detect_encoding($this->text, mb_detect_order(), true);
+        }
+
+        if (!$charset) { // if we still can't realize which charset to use - use default as a fallback.
+            $charset = "us-ascii"; // RFC 2822 default
+        }
+
         $this->text = ezcMailCharsetConverter::convertToUTF8( $this->text, $charset );
 
         $part = new ezcMailText( $this->text, 'utf-8', ezcMail::EIGHT_BIT, $charset );
