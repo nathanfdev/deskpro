@@ -11,6 +11,8 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetBlobsSelector } from '../Selectors/snippets';
+import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
+import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
 
 class LanguageOption extends React.Component {
   static propTypes = {
@@ -92,7 +94,6 @@ class VariableValue extends React.Component {
   personCustomFields:   allSelectorFactory('PersonCustomFields')(state),
   ticketCustomFields:   allSelectorFactory('TicketCustomFields')(state),
   ticketDepartments:    collectionSelectorFactory('Department', 'all_tickets')(state),
-  agentTeams:           allSelectorFactory('AgentTeam')(state),
 }))
 export class SnippetsModalContainer extends React.Component {
   static propTypes = {
@@ -103,7 +104,6 @@ export class SnippetsModalContainer extends React.Component {
     ticketCustomFields:   PropTypes.object,
     chatDepartments:      PropTypes.object,
     ticketDepartments:    PropTypes.object,
-    agentTeams:           PropTypes.object,
     labelsSource:         PropTypes.array,
     langId:               PropTypes.number,
     height:               PropTypes.number,
@@ -118,47 +118,33 @@ export class SnippetsModalContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels:       [],
-      translations: [],
-      departments:  [],
-      teams:        [],
-      types:        [],
-      title:        this.props.snippet.get('title', ''),
-      shortcutCode: this.props.snippet.get('shortcut_code', ''),
-      isDraft:      false,
-      langId:       props.langId,
+      labels:            [],
+      translations:      [],
+      departments:       new Set(),
+      teams:             new Set(),
+      types:             [],
+      isOwnershipGlobal: true,
+      title:             this.props.snippet.get('title', ''),
+      shortcutCode:      this.props.snippet.get('shortcut_code', ''),
+      isDraft:           false,
+      langId:            props.langId,
     };
   }
 
   componentWillMount() {
-    const { snippet, ticketDepartments, chatDepartments, agentTeams, type } = this.props;
-    const departments = snippet.get('visible_departments', new Immutable.List()).toArray().map(id => `${id}`);
-    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray().map(id => `${id}`);
+    const { snippet, type } = this.props;
+    const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
+    const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
     const types = snippet.get('types', new Immutable.List([type])).toArray();
-    if (snippet.get('is_visible_global')) {
-      if (types.find(t => t === 'ticket')) {
-        ticketDepartments.forEach((department) => {
-          departments.push(`${department.get('id')}`);
-        });
-      }
-      if (types.find(t => t === 'chat')) {
-        chatDepartments.forEach((department) => {
-          departments.push(`${department.get('id')}`);
-        });
-      }
-    }
-    if (snippet.get('is_ownership_global')) {
-      agentTeams.forEach((team) => {
-        teams.push(`${team.get('id')}`);
-      });
-    }
     this.setState({
-      translations: snippet.get('translations', []),
-      labels:       snippet.get('labels', new Immutable.List()).toArray(),
+      translations:      snippet.get('translations', []),
+      labels:            snippet.get('labels', new Immutable.List()).toArray(),
       types,
-      isDraft:      snippet.get('is_draft', false),
-      departments:  Array.from(new Set(departments)),
-      teams,
+      isDraft:           snippet.get('is_draft', false),
+      departments:       new Set(departments),
+      teams:             new Set(teams),
+      isOwnershipGlobal: snippet.get('is_ownership_global'),
+      isVisibleGlobal:   snippet.get('is_visible_global'),
     });
   }
 
@@ -219,20 +205,8 @@ export class SnippetsModalContainer extends React.Component {
   };
 
   saveSnippet = () => {
-    const { snippet, dispatch, closeModal, type } = this.props;
+    const { snippet, dispatch, closeModal } = this.props;
     const translations = this.saveTranslation();
-    let isVisibleGlobal   = false;
-    let isOwnershipGlobal = false;
-    if (this.state.teams.length === this.props.agentTeams.size) {
-      isOwnershipGlobal = true;
-    }
-    if (type === 'ticket') {
-      if (this.state.departments.length === this.props.ticketDepartments.size) {
-        isVisibleGlobal = true;
-      }
-    } else if (this.state.departments.length === this.props.chatDepartments.size) {
-      isVisibleGlobal = true;
-    }
     const snippetData = {
       title:               this.state.title,
       types:               this.state.types,
@@ -240,10 +214,10 @@ export class SnippetsModalContainer extends React.Component {
       labels:              this.state.labels,
       translations:        translations.toJS(),
       is_draft:            this.state.isDraft,
-      is_visible_global:   isVisibleGlobal,
-      is_ownership_global: isOwnershipGlobal,
-      ownership_teams:     isOwnershipGlobal ? [] : this.state.teams,
-      visible_departments: isVisibleGlobal ? [] : this.state.departments,
+      is_visible_global:   this.state.isVisibleGlobal,
+      is_ownership_global: this.state.isOwnershipGlobal,
+      ownership_teams:     [...this.state.teams],
+      visible_departments: [...this.state.departments],
     };
     if (snippet.get('id', false)) {
       snippetData.id = snippet.get('id');
@@ -323,61 +297,17 @@ export class SnippetsModalContainer extends React.Component {
     }
   };
 
-  handleDepartmentsChange = (departments) => {
-    let next = departments;
-    const previous = this.state.departments;
-    const added = next.filter(i => previous.indexOf(i) < 0);
-    const removed = previous.filter(i => next.indexOf(i) < 0);
-    if (added.length === 1) {
-      const addedId = parseInt(added[0], 10);
-      let department = this.props.ticketDepartments.get(addedId);
-      if (!department) {
-        department = this.props.chatDepartments.get(addedId);
-      }
-      if (department && department.get('children')) {
-        department.get('children').forEach((child) => {
-          if (next.indexOf(`${child}`) === -1) {
-            next.push(`${child}`);
-          }
-        });
-      }
-      if (department && department.get('parent')) {
-        let parent = this.props.ticketDepartments.get(department.get('parent'));
-        if (!parent) {
-          parent = this.props.chatDepartments.get(department.get('parent'));
-        }
-        if (parent.get('children').filter(e => next.indexOf(`${e}`) < 0).size === 0) {
-          next.push(`${parent.get('id')}`);
-        }
-      }
-    }
-    if (removed.length === 1) {
-      const removedId = parseInt(removed[0], 10);
-      let department = this.props.ticketDepartments.get(removedId);
-      if (!department) {
-        department = this.props.chatDepartments.get(removedId);
-      }
-      if (department && department.get('children')) {
-        department.get('children').forEach((child) => {
-          next = next.filter(item => parseInt(item, 10) !== child);
-        });
-      }
-      if (department && department.get('parent')) {
-        let parent = this.props.ticketDepartments.get(department.get('parent'));
-        if (!parent) {
-          parent = this.props.chatDepartments.get(department.get('parent'));
-        }
-        next = next.filter(item => parseInt(item, 10) !== parent.get('id'));
-      }
-    }
+  handleDepartmentsChange = (departments, isVisibleGlobal) => {
     this.setState({
-      departments: next
+      departments,
+      isVisibleGlobal,
     });
   };
 
-  handleTeamsChange = (teams) => {
+  handleTeamsChange = (teams, isOwnershipGlobal) => {
     this.setState({
-      teams
+      teams,
+      isOwnershipGlobal
     });
   };
 
@@ -423,7 +353,6 @@ export class SnippetsModalContainer extends React.Component {
       ticketCustomFields,
       chatDepartments,
       ticketDepartments,
-      agentTeams,
       height,
     } = this.props;
 
@@ -449,9 +378,10 @@ export class SnippetsModalContainer extends React.Component {
         chatDepartments={chatDepartments}
         ticketDepartments={ticketDepartments}
         snippetDepartments={this.state.departments}
-        agentTeams={agentTeams}
         snippetTeams={this.state.teams}
         isDraft={this.state.isDraft}
+        isOwnershipGlobal={this.state.isOwnershipGlobal}
+        isVisibleGlobal={this.state.isVisibleGlobal}
         types={this.state.types}
         langId={this.state.langId}
         height={height}
@@ -484,11 +414,12 @@ export class SnippetsModal extends React.Component {
     ticketCustomFields:      PropTypes.object,
     chatDepartments:         PropTypes.object,
     ticketDepartments:       PropTypes.object,
-    snippetDepartments:      PropTypes.array,
-    agentTeams:              PropTypes.object,
-    snippetTeams:            PropTypes.array,
-    isDraft:                 PropTypes.bool,
-    types:                   PropTypes.array,
+    snippetDepartments:      PropTypes.object,
+    snippetTeams:            PropTypes.object,
+    isDraft:                 PropTypes.bool.isRequired,
+    isOwnershipGlobal:       PropTypes.bool.isRequired,
+    isVisibleGlobal:         PropTypes.bool.isRequired,
+    types:                   PropTypes.array.isRequired,
     langId:                  PropTypes.number,
     height:                  PropTypes.number,
     shortcutCode:            PropTypes.string,
@@ -510,7 +441,8 @@ export class SnippetsModal extends React.Component {
     handleTitle:             PropTypes.func,
   };
   static defaultProps = {
-    changeLabels() {}
+    shortcutCode: '',
+    changeLabels() {},
   };
 
   getVariables = () => {
@@ -619,19 +551,6 @@ export class SnippetsModal extends React.Component {
       });
     }
     return departments;
-  };
-
-  getTeams = () => {
-    const { agentTeams } = this.props;
-    const teams = [];
-    agentTeams.forEach((team) => {
-      teams.push({
-        value:    `${team.get('id')}`,
-        label:    team.get('name'),
-        selected: this.props.snippetTeams.find(d => parseInt(d, 10) === team.get('id')),
-      });
-    });
-    return teams;
   };
 
   getUploadUrl = () => '/api/v2/blobs/temp';
@@ -789,32 +708,21 @@ export class SnippetsModal extends React.Component {
             </div>
             <div className="ownership-field field">
               <Label htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</Label>
-              <Select
-                multiple
-                includeSelectAllOption
-                selectAllText={agentPhrases.get('agent.general.global')}
-                allSelectedText={agentPhrases.get('agent.general.global')}
-                nonSelectedText={agentPhrases.get('agent.general.myself')}
-                maxHeight={maxHeight}
-                nSelectedText={agentPhrases.get('agent.general.teams').toLowerCase()}
-                value={this.props.snippetTeams}
+              <OwnershipSelectContainer
+                selectedTeams={this.props.snippetTeams}
+                isOwnershipGlobal={this.props.isOwnershipGlobal}
                 onChange={this.props.handleTeamsChange}
-                options={this.getTeams()}
+                style={{ maxHeight }}
               />
             </div>
             <div className="visibility-field field">
               <Label htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</Label>
-              <Select
-                multiple
-                includeSelectAllOption
-                selectAllText={agentPhrases.get('agent.general.global')}
-                allSelectedText={agentPhrases.get('agent.general.global')}
-                nonSelectedText={agentPhrases.get('agent.general.none')}
-                maxHeight={maxHeight}
-                nSelectedText={agentPhrases.get('agent.general.departments').toLowerCase()}
-                value={this.props.snippetDepartments}
+              <VisibilitySelectContainer
+                selectedDepartments={this.props.snippetDepartments}
+                isVisibleGlobal={this.props.isVisibleGlobal}
+                types={this.props.types}
                 onChange={this.props.handleDepartmentsChange}
-                options={this.getDepartments()}
+                style={{ maxHeight }}
               />
             </div>
           </form>
@@ -823,6 +731,7 @@ export class SnippetsModal extends React.Component {
     );
   }
 }
+
 @connect(state => ({
   blobs: allSnippetBlobsSelector(state)
 }))

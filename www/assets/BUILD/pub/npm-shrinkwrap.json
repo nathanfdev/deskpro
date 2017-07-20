@@ -3011,9 +3011,9 @@
       "resolved": "https://registry.npmjs.org/derivable/-/derivable-1.0.0-beta11.tgz"
     },
     "deskpro-components": {
-      "version": "0.5.2",
-      "from": "deskpro-components@0.5.2",
-      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.2.tgz",
+      "version": "0.5.3",
+      "from": "deskpro-components@0.5.3",
+      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.3.tgz",
       "dependencies": {
         "add-px-to-style": {
           "version": "1.0.0",

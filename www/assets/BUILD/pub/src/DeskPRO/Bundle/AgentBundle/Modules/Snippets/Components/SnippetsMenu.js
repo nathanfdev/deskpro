@@ -56,7 +56,7 @@ export class SnippetsMenuContainer extends React.Component {
     };
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (!nextProps.snippets.equals(this.props.snippets)) {
       return true;
     }
@@ -73,6 +73,12 @@ export class SnippetsMenuContainer extends React.Component {
       return true;
     }
     if (nextProps.type !== this.props.type) {
+      return true;
+    }
+    if (nextState.filter !== this.state.filter) {
+      return true;
+    }
+    if (nextState.showMode !== this.state.showMode) {
       return true;
     }
     return nextProps.department !== this.props.department;
@@ -373,18 +379,22 @@ export class SnippetsMenu extends React.Component {
   };
 
   handleSearchKeyDown = (event) => {
-    switch (event.keyCode) {
-      case 13: // enter
+    this.closeShortCut(event);
+    switch (event.key) {
+      case 'Enter':
         this.selectFocused(event);
         break;
-      case 27: // escape
+      case 'Escape':
         this.props.closeMenu();
         break;
-      case 38: // up
+      case 'ArrowUp':
         this.focusPrevious();
         break;
-      case 40: // down
+      case 'ArrowDown':
         this.focusNext();
+        break;
+      case 'Esc':
+        this.props.closeMenu();
         break;
       default:
         return;
@@ -501,6 +511,7 @@ export class SnippetsMenu extends React.Component {
             multiLabels={this.state.multiLabels}
             multiMode={this.state.multiMode}
             showMode={showMode}
+            height={this.state.height}
             handleShowMode={handleShowMode}
           />
           <SnippetsList
