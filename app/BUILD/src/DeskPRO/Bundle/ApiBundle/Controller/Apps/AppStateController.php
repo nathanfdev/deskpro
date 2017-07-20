@@ -182,7 +182,9 @@ class AppStateController extends BaseController
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
         try {
             $value = $stateAccessService->readValue($stateIdentifer, $accessRequest);
-            return View\View::create(json_decode($value, $assoc = true), Response::HTTP_OK);
+            $responseBody = [ 'value' => json_decode($value, $assoc = true) ];
+
+            return View\View::create($responseBody, Response::HTTP_OK);
         } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
             $stateNotFound = $e->getCode() === AppStoreBundle\Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND;
             $returnHttpNoContent = array_key_exists('mode', $options) && $options['mode'] === 'find';
@@ -222,11 +224,14 @@ class AppStateController extends BaseController
         }
         $stateIdentifer = new AppStoreBundle\Domain\ApplicationStateId($instanceId, $stateName, $entityIdentifier);
 
-        $value = $request->getContent();
-        $parsedValue = json_decode($value, $associative = true);
-        if (is_null($parsedValue)) {
+        // extract the state value from the request. somewhere before reaching this controller, JsonToFormDecoder
+        // fails to handle a json encoded scalars, so we must wrap the state value in object... sad :(
+        $stateValue = $request->getContent();
+        $parsedStateValue = json_decode($stateValue, $associative = true);
+        if (is_null($parsedStateValue) || !array_key_exists('value', $parsedStateValue)) {
             throw new BadRequestHttpException('could not decode value');
         }
+        $value = json_encode($parsedStateValue['value']);
 
         $auth = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\AccessRequest::newAPIWriteAccessRequest($auth);
@@ -235,7 +240,7 @@ class AppStateController extends BaseController
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
         try {
             $stateAccessService->writeValue($stateIdentifer, $accessRequest, $value);
-            return View\View::create($parsedValue, Response::HTTP_OK);
+            return View\View::create($parsedStateValue, Response::HTTP_OK);
 
         } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
             throw HttpExceptionConverter::fromApplicationStateException($e);
