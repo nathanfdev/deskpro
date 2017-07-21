@@ -5,6 +5,60 @@ import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
+class Department extends React.Component {
+  static propTypes = {
+    department:          PropTypes.object.isRequired,
+    departments:         PropTypes.object.isRequired,
+    selectedDepartments: PropTypes.object.isRequired,
+    checked:             PropTypes.bool.isRequired,
+    onChange:            PropTypes.func.isRequired,
+  };
+
+  getChildren(department) {
+    const children = department.get('children');
+    if (children.size) {
+      const departments = [];
+      children.forEach((child) => {
+        const childDepartment = this.props.departments.find(d => d.get('id') === child);
+        if (childDepartment) {
+          departments.push(
+            <Department
+              key={childDepartment.get('id')}
+              department={childDepartment}
+              departments={this.props.departments}
+              selectedDepartments={this.props.selectedDepartments}
+              checked={this.props.selectedDepartments.has(childDepartment.get('id'))}
+              onChange={this.props.onChange}
+            />
+          );
+        }
+      });
+      return (
+        <List>
+          {departments}
+        </List>
+      );
+    }
+    return null;
+  }
+
+  render() {
+    const { department, checked, onChange } = this.props;
+    return (
+      <ListElement>
+        <Checkbox
+          value={department.get('id')}
+          onChange={(c, v) => onChange(c, v, department)}
+          checked={checked}
+        >
+          {department.get('title')}
+        </Checkbox>
+        {this.getChildren(department)}
+      </ListElement>
+    );
+  }
+}
+
 @connect(state => ({
   chatDepartments:   collectionSelectorFactory('Department', 'all_chat')(state),
   ticketDepartments: collectionSelectorFactory('Department', 'all_tickets')(state)
@@ -75,12 +129,25 @@ export class VisibilitySelect extends React.Component {
   };
 
   onCheckboxChange = (checked, value, department) => {
-    console.log(department);
     const { selectedDepartments } = this.props;
     if (checked) {
       selectedDepartments.add(value);
+      department.get('children').forEach(child => selectedDepartments.add(child));
+      if (department.get('parent')) {
+        let parent = this.props.ticketDepartments.get(department.get('parent'));
+        if (!parent) {
+          parent = this.props.chatDepartments.get(department.get('parent'));
+        }
+        if (parent.get('children').filter(child => !selectedDepartments.has(child)).size === 0) {
+          selectedDepartments.add(parent.get('id'));
+        }
+      }
     } else {
       selectedDepartments.delete(value);
+      department.get('children').forEach(child => selectedDepartments.delete(child));
+      if (department.get('parent')) {
+        selectedDepartments.delete(department.get('parent'));
+      }
     }
     this.props.onChange(selectedDepartments, false);
     this.forceUpdate();
@@ -98,17 +165,18 @@ export class VisibilitySelect extends React.Component {
         );
       }
       this.props.ticketDepartments.forEach((department) => {
-        departments.push(
-          <ListElement key={department.get('id')}>
-            <Checkbox
-              value={department.get('id')}
-              onChange={(checked, value) => this.onCheckboxChange(checked, value, department)}
+        if (!department.get('parent')) {
+          departments.push(
+            <Department
+              key={department.get('id')}
+              department={department}
+              departments={this.props.ticketDepartments}
+              selectedDepartments={selectedDepartments}
               checked={selectedDepartments.has(department.get('id'))}
-            >
-              {department.get('title')}
-            </Checkbox>
-          </ListElement>
-        );
+              onChange={this.onCheckboxChange}
+            />
+          );
+        }
       });
     }
     if (types.indexOf('chat') !== -1) {
@@ -121,15 +189,14 @@ export class VisibilitySelect extends React.Component {
       }
       this.props.chatDepartments.forEach((department) => {
         departments.push(
-          <ListElement key={department.get('id')}>
-            <Checkbox
-              value={department.get('id')}
-              onChange={this.onCheckboxChange}
-              checked={selectedDepartments.has(department.get('id'))}
-            >
-              {department.get('title')}
-            </Checkbox>
-          </ListElement>
+          <Department
+            key={department.get('id')}
+            department={department}
+            departments={this.props.chatDepartments}
+            selectedDepartments={selectedDepartments}
+            checked={selectedDepartments.has(department.get('id'))}
+            onChange={this.onCheckboxChange}
+          />
         );
       });
     }

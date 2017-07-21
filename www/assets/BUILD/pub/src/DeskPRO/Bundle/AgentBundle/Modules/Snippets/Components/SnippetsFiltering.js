@@ -155,8 +155,6 @@ class SnippetsFiltering extends React.Component {
         });
       }
     });
-    console.log(this.props.selectedLabel);
-    console.log(occurrences);
     this.setState({
       labels: Immutable.fromJS(occurrences)
     });
