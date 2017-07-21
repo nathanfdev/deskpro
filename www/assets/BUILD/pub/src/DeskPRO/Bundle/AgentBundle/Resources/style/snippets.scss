@@ -387,4 +387,11 @@
       display: inline-block;
     }
   }
+  .teams_filter,
+  .departments_filter {
+    &, input {
+      width: 100%;
+    }
+    margin-bottom: 5px;
+  }
 }

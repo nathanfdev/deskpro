@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { CustomSelect, Radio, Checkbox } from 'deskpro-components/lib/Components/Forms';
+import { CustomSelect, Radio, Checkbox, Input } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -47,19 +47,25 @@ export class OwnershipSelect extends React.Component {
       radio = 'me';
     }
     this.state = {
-      radio
+      radio,
+      filter: '',
     };
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.agentTeams !== this.props.agentTeams) {
       return true;
     }
     if (nextProps.isOwnershipGlobal !== this.props.isOwnershipGlobal) {
       return true;
     }
+    if (nextState.filter !== this.state.filter) {
+      return true;
+    }
     return nextProps.selectedTeams !== this.props.selectedTeams;
   }
+
+  onFilterChange = filter => this.setState({ filter });
 
   onRadioChange = (checked, value) => {
     this.setState({
@@ -86,23 +92,36 @@ export class OwnershipSelect extends React.Component {
   getSpecific = () => {
     const { selectedTeams } = this.props;
     const teams = [];
+    const re = new RegExp(this.state.filter, 'i');
     this.props.agentTeams.forEach((team) => {
-      teams.push(
-        <ListElement key={team.get('id')}>
-          <Checkbox
-            value={team.get('id')}
-            onChange={this.onCheckboxChange}
-            checked={selectedTeams.has(team.get('id'))}
-          >
-            {team.get('name')}
-          </Checkbox>
-        </ListElement>
-      );
+      if (!this.state.filter || team.get('name').match(re)) {
+        teams.push(
+          <ListElement key={team.get('id')}>
+            <Checkbox
+              value={team.get('id')}
+              onChange={this.onCheckboxChange}
+              checked={selectedTeams.has(team.get('id'))}
+            >
+              {team.get('name')}
+            </Checkbox>
+          </ListElement>
+        );
+      }
     });
     return (
-      <List>
-        {teams}
-      </List>
+      <div>
+        {this.props.agentTeams.size > 10 ?
+          <Input
+            placeholder={agentPhrases.get('agent.general.filter')}
+            value={this.state.filter}
+            className="teams_filter"
+            onChange={this.onFilterChange}
+          />
+          : null }
+        <List>
+          {teams}
+        </List>
+      </div>
     );
   };
 

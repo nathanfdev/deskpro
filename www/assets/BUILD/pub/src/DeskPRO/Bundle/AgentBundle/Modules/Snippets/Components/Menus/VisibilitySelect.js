@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { CustomSelect, Radio, Checkbox } from 'deskpro-components/lib/Components/Forms';
+import { CustomSelect, Radio, Checkbox, Input } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -10,6 +10,7 @@ class Department extends React.Component {
     department:          PropTypes.object.isRequired,
     departments:         PropTypes.object.isRequired,
     selectedDepartments: PropTypes.object.isRequired,
+    filter:              PropTypes.object,
     checked:             PropTypes.bool.isRequired,
     onChange:            PropTypes.func.isRequired,
   };
@@ -21,16 +22,15 @@ class Department extends React.Component {
       children.forEach((child) => {
         const childDepartment = this.props.departments.find(d => d.get('id') === child);
         if (childDepartment) {
-          departments.push(
-            <Department
-              key={childDepartment.get('id')}
-              department={childDepartment}
-              departments={this.props.departments}
-              selectedDepartments={this.props.selectedDepartments}
-              checked={this.props.selectedDepartments.has(childDepartment.get('id'))}
-              onChange={this.props.onChange}
-            />
-          );
+          departments.push(<Department
+            key={childDepartment.get('id')}
+            department={childDepartment}
+            filter={this.props.filter}
+            departments={this.props.departments}
+            selectedDepartments={this.props.selectedDepartments}
+            checked={this.props.selectedDepartments.has(childDepartment.get('id'))}
+            onChange={this.props.onChange}
+          />);
         }
       });
       return (
@@ -43,7 +43,17 @@ class Department extends React.Component {
   }
 
   render() {
-    const { department, checked, onChange } = this.props;
+    const { department, checked, onChange, filter } = this.props;
+    if (filter && !department.get('title').match(filter) && department.get('children').size === 0) {
+      return null;
+    } else if (filter && department.get('children').size > 0) {
+      const children = department.get('children');
+      if (children.count(child =>
+        this.props.departments.find(d => d.get('id') === child).get('title').match(filter)) === 0) {
+        return null;
+      }
+    }
+
     return (
       <ListElement>
         <Checkbox
@@ -113,9 +123,12 @@ export class VisibilitySelect extends React.Component {
       radio = 'specific';
     }
     this.state = {
-      radio
+      radio,
+      filter: '',
     };
   }
+
+  onFilterChange = filter => this.setState({ filter });
 
   onRadioChange = (checked, value) => {
     this.setState({
@@ -156,7 +169,10 @@ export class VisibilitySelect extends React.Component {
   getSpecific = () => {
     const { selectedDepartments, types } = this.props;
     const departments = [];
+    let departmentsCount = 0;
+    const re = new RegExp(this.state.filter, 'i');
     if (types.indexOf('ticket') !== -1) {
+      departmentsCount += this.props.ticketDepartments.size;
       if (types.length > 1) {
         departments.push(
           <ListElement key="ticket_header">
@@ -170,6 +186,7 @@ export class VisibilitySelect extends React.Component {
             <Department
               key={department.get('id')}
               department={department}
+              filter={re}
               departments={this.props.ticketDepartments}
               selectedDepartments={selectedDepartments}
               checked={selectedDepartments.has(department.get('id'))}
@@ -180,6 +197,7 @@ export class VisibilitySelect extends React.Component {
       });
     }
     if (types.indexOf('chat') !== -1) {
+      departmentsCount += this.props.chatDepartments.size;
       if (types.length > 1) {
         departments.push(
           <ListElement key="chat_header">
@@ -188,22 +206,35 @@ export class VisibilitySelect extends React.Component {
         );
       }
       this.props.chatDepartments.forEach((department) => {
-        departments.push(
-          <Department
-            key={department.get('id')}
-            department={department}
-            departments={this.props.chatDepartments}
-            selectedDepartments={selectedDepartments}
-            checked={selectedDepartments.has(department.get('id'))}
-            onChange={this.onCheckboxChange}
-          />
-        );
+        if (!department.get('parent')) {
+          departments.push(
+            <Department
+              key={department.get('id')}
+              department={department}
+              filter={re}
+              departments={this.props.chatDepartments}
+              selectedDepartments={selectedDepartments}
+              checked={selectedDepartments.has(department.get('id'))}
+              onChange={this.onCheckboxChange}
+            />
+          );
+        }
       });
     }
     return (
-      <List>
-        {departments}
-      </List>
+      <div>
+        {departmentsCount > 10 ?
+          <Input
+            placeholder={agentPhrases.get('agent.general.filter')}
+            value={this.state.filter}
+            className="departments_filter"
+            onChange={this.onFilterChange}
+          />
+          : null }
+        <List>
+          {departments}
+        </List>
+      </div>
     );
   };
 

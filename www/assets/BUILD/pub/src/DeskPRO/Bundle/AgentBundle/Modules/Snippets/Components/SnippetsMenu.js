@@ -11,7 +11,6 @@ import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Compo
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
-import { LanguageSelect } from './Menus/LanguageSelect';
 
 @connect(state => ({
   me:        meSelector(state),
@@ -233,8 +232,10 @@ export class SnippetsMenu extends React.Component {
     window.document.addEventListener('dpLeftDrawer', () => {
       this.searchInput.focus();
       setTimeout(() => window.document.addEventListener('keydown', this.closeShortCut), 500);
+      window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
     });
     window.document.addEventListener('keydown', this.closeShortCut);
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
   };
 
   componentDidMount = () => {
@@ -254,6 +255,7 @@ export class SnippetsMenu extends React.Component {
   componentWillUnmount = () => {
     window.document.removeEventListener('keydown', this.closeShortCut);
     window.removeEventListener('resize', this.updateWindowDimensions);
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   };
 
   onSearchFocus = () => {
@@ -268,6 +270,7 @@ export class SnippetsMenu extends React.Component {
 
   onClose = () => {
     window.document.removeEventListener('keydown', this.closeShortCut);
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   };
 
   getEditSnippet = () => {
@@ -487,13 +490,10 @@ export class SnippetsMenu extends React.Component {
             <Button
               className="dp-button--primary add-snippet"
               onClick={this.newSnippet}
+              size="medium"
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
-            <LanguageSelect
-              languages={languages}
-              langPref={langPref}
-            />
           </div>
         </div>
         <div className="body">

@@ -100,6 +100,7 @@ class LanguagesController extends CrudController
             'agent.general.email_address',
             'agent.general.everyone',
             'agent.general.feedback',
+            'agent.general.filter',
             'agent.general.global',
             'agent.general.just_me',
             'agent.general.labels',
