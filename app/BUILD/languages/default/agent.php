@@ -722,6 +722,7 @@ return [
     'agent.general.labels_removed'                             => 'Labels removed',
     'agent.general.landing_page'                               => 'Landing Page',
     'agent.general.language'                                   => 'Language',
+    'agent.general.languages'                                  => 'Languages',
     'agent.general.last_activity'                              => 'Last Activity',
     'agent.general.last_login'                                 => 'Last Login',
     'agent.general.last_login_time'                            => 'Last Login Time',

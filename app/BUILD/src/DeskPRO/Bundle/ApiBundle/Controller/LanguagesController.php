@@ -105,6 +105,7 @@ class LanguagesController extends CrudController
             'agent.general.just_me',
             'agent.general.labels',
             'agent.general.language',
+            'agent.general.languages',
             'agent.general.myself',
             'agent.general.name',
             'agent.general.news_post',

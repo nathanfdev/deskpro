@@ -12,69 +12,10 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetBlobsSelector } from '../Selectors/snippets';
+import { ModalLanguageSelect } from './Menus/ModalLanguageSelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
 
-class LanguageOption extends React.Component {
-  static propTypes = {
-    children:  PropTypes.node,
-    className: PropTypes.string,
-    isFocused: PropTypes.bool,
-    onFocus:   PropTypes.func,
-    onSelect:  PropTypes.func,
-    option:    PropTypes.object.isRequired,
-  };
-
-  handleMouseDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    this.props.onSelect(this.props.option, event);
-  };
-
-  handleMouseEnter = (event) => {
-    this.props.onFocus(this.props.option, event);
-  };
-
-  handleMouseMove = (event) => {
-    if (this.props.isFocused) return;
-    this.props.onFocus(this.props.option, event);
-  };
-
-  render() {
-    return (
-      <div
-        className={this.props.className}
-        onMouseDown={this.handleMouseDown}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseMove={this.handleMouseMove}
-        title={this.props.option.title}
-      >
-        <img src={this.props.option.flag_image} role="presentation" />&nbsp;
-        {this.props.children}
-      </div>
-    );
-  }
-}
-class LanguageValue extends React.Component {
-  static propTypes = {
-    children: PropTypes.node,
-    value:    PropTypes.object
-  };
-
-  render() {
-    if (!this.props.value) {
-      return null;
-    }
-    return (
-      <div className="Select-value" title={this.props.value.title}>
-        <span className="Select-value-label">
-          <img src={this.props.value.flag_image} role="presentation" />&nbsp;
-          {this.props.children}
-        </span>
-      </div>
-    );
-  }
-}
 class VariableValue extends React.Component {
   render() {
     return (
@@ -178,9 +119,9 @@ export class SnippetsModalContainer extends React.Component {
   setLanguage = (value) => {
     this.saveTranslation();
     this.setState({
-      langId: value.id
+      langId: value
     });
-    const translation = this.state.translations.find(t => t.get('language') === value.id);
+    const translation = this.state.translations.find(t => t.get('language') === value);
     if (translation) {
       this.redactor.setCode(translation.get('content'));
     } else {
@@ -375,6 +316,7 @@ export class SnippetsModalContainer extends React.Component {
         labels={this.state.labels}
         labelsSource={this.props.labelsSource}
         translation={translation}
+        translations={this.state.translations}
         closeModal={closeModal}
         languages={languages}
         userChatCustomFields={userChatCustomFields}
@@ -414,6 +356,7 @@ export class SnippetsModal extends React.Component {
     me:                      PropTypes.object,
     snippet:                 PropTypes.object,
     translation:             PropTypes.object,
+    translations:            PropTypes.object,
     languages:               PropTypes.object,
     userChatCustomFields:    PropTypes.object,
     personCustomFields:      PropTypes.object,
@@ -578,6 +521,7 @@ export class SnippetsModal extends React.Component {
       labels,
       labelsSource,
       translation,
+      translations,
       languages,
       langId,
       height,
@@ -597,11 +541,6 @@ export class SnippetsModal extends React.Component {
     if (!snippet) {
       return null;
     }
-    const languageOptions = languages.map((language) => {
-      let option = language.set('label', language.get('title'));
-      option = option.set('value', language.get('id'));
-      return option.toJS();
-    });
     const canDelete = snippet.get('id') &&
       (snippet.get('person') === me.get('id') || window.DESKPRO_PERSON_PERMS['agent_snippets.delete_by_others']);
     // ratio between viewport and needed dropdowns size
@@ -631,13 +570,11 @@ export class SnippetsModal extends React.Component {
         }
         >
           <div className="language-switch field">
-            <Select
+            <ModalLanguageSelect
+              langId={langId}
+              languages={languages}
               onChange={setLanguage}
-              optionComponent={LanguageOption}
-              options={languageOptions.toArray()}
-              value={langId}
-              clearable={false}
-              valueComponent={LanguageValue}
+              translations={translations}
             />
           </div>
           {this.getVariables()}

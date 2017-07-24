@@ -67,7 +67,39 @@
         width: 150px;
         margin-right: 5px;
         display: inline-block;
-        display: none;
+        .dp-select__input {
+          width: 100%;
+          padding-left: 24px;
+        }
+        .dp-select__content {
+          width: 100%;
+          .dp-list {
+            -webkit-margin-after: 0;
+            -webkit-margin-before: 0;
+          }
+          .dp-list__element {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 3px 0;
+            cursor: move; /* fallback if grab cursor is unsupported */
+            cursor: grab;
+            cursor: -moz-grab;
+            cursor: -webkit-grab;
+            border-top: 1px solid $dp-greyscale-250;
+            background-color: white;
+            &:first-child {
+              border-top: 0;
+            }
+          }
+          .separator {
+            cursor: default;
+            border: 0;
+            padding: 0;
+          }
+          .separator + .dp-list__element {
+            border-top: 0;
+          }
+        }
       }
       .add-snippet {
         float: right;
@@ -363,6 +395,30 @@
     right: 7px;
     top: 107px;
     z-index: 1;
+    .dp-select {
+      width: 100%;
+      .dp-select__input {
+        width: 100%;
+        background-color: $dp-greyscale-00;
+      }
+      .dp-select__content {
+        .dp-list__element {
+          max-width: 140px;
+        }
+        .content-preview {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .separator {
+          cursor: default;
+          &:hover {
+            color: inherit;
+            background-color: inherit;
+          }
+        }
+      }
+    }
   }
   .variable-switch {
     width: 140px;
