@@ -130,8 +130,8 @@ define ['angular', 'moment'], (angular, moment) ->
 
       isValid = (targetMoment, granularity) ->
         return false if !targetMoment.isValid()
-        return false if $scope.minDate && targetMoment.isBefore($scope.minDate, granularity)
-        return false if $scope.maxDate && targetMoment.isAfter($scope.maxDate, granularity)
+        return false if $scope.minDate? && $scope.minDate != 'undefined' && targetMoment.isBefore($scope.minDate, granularity)
+        return false if $scope.maxDate? && $scope.maxDate != 'undefined' && targetMoment.isAfter($scope.maxDate, granularity)
         return true
 
       renderers = {}
