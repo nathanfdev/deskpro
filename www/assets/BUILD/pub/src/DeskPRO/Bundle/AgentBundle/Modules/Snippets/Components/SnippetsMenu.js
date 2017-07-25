@@ -10,6 +10,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
+import * as actions from '../Actions/snippetsActions';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
 import { LanguageSelect } from './Menus/LanguageSelect';
 
@@ -27,6 +28,7 @@ export class SnippetsMenuContainer extends React.Component {
     languages:     PropTypes.object,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
+    dispatch:      PropTypes.func,
     open:          PropTypes.bool,
     type:          PropTypes.string,
     department:    PropTypes.number,
@@ -37,6 +39,8 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
   };
+
+  static defaultLangPref = new Set(['context', 'agent', 'helpdesk']);
 
   static getSnippetTranslationToUse(snippetTranslations, langPref) {
     for (let i = 0; i < langPref.length; i++) {
@@ -53,8 +57,23 @@ export class SnippetsMenuContainer extends React.Component {
     this.state = {
       filter:   '',
       showMode: 'all',
-      langPref: new Set(['context', 'agent', 'helpdesk'])
+      langPref: SnippetsMenuContainer.defaultLangPref
     };
+    this.props.dispatch(actions.loadSnippetLanguagePreferences())
+      .then((data) => {
+        const values = data.value.map((l) => {
+          if (l.match(/^\d+$/)) {
+            return parseInt(l, 10);
+          }
+          return l;
+        });
+        this.setState({ langPref: new Set(values) });
+      },
+        (reason) => {
+          if (reason.data && reason.data.status === 404) {
+            this.props.dispatch(actions.createSnippetLanguagePreferences([...SnippetsMenuContainer.defaultLangPref]));
+          }
+        });
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -82,6 +101,9 @@ export class SnippetsMenuContainer extends React.Component {
     if (nextState.showMode !== this.state.showMode) {
       return true;
     }
+    if (nextState.langPref !== this.state.langPref) {
+      return true;
+    }
     return nextProps.department !== this.props.department;
   }
 
@@ -90,10 +112,11 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   updateLanguagePref = (newPrefs) => {
-    console.log(newPrefs);
     this.setState({
       langPref: newPrefs
     });
+    this.forceUpdate();
+    this.props.dispatch(actions.saveSnippetLanguagePreferences([...newPrefs]));
   };
 
   insertSnippet = (e, snippet, langId) => {

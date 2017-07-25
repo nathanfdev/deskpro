@@ -59,3 +59,16 @@ export const addSnippetAttachment = createAction(
     dispatch(addToCollection('SnippetsBlobs', 'all', replaceIds([blob], 'blob_id')));
   }
 );
+export const loadSnippetLanguagePreferences = createAction(
+  'SNIPPETS_LOAD_LANGUAGE_PREFERENCES',
+  () => repository('PersonSetting').load('agent.ui.snippets.language_preferences').then(value => value.getData().data)
+);
+export const saveSnippetLanguagePreferences = createAction(
+  'SNIPPETS_LOAD_LANGUAGE_PREFERENCES',
+  data => repository('PersonSetting').update({ name: 'agent.ui.snippets.language_preferences', value: data })
+);
+export const createSnippetLanguagePreferences = createAction(
+  'SNIPPETS_LOAD_LANGUAGE_PREFERENCES',
+  data => repository('PersonSetting')
+    .create({ name: 'agent.ui.snippets.language_preferences', value: data }).then(value => value.getData())
+);
