@@ -48,6 +48,7 @@ export class LanguageList extends React.Component {
     langContext: PropTypes.array,
     langPref:    PropTypes.object,
     onChange:    PropTypes.func,
+    type:        PropTypes.string,
   };
 
   static defaultProps = {
@@ -65,14 +66,25 @@ export class LanguageList extends React.Component {
 
   getContextLanguage = (checked) => {
     const contextLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[0]);
-    if (contextLanguage) {
+    if (contextLanguage && !isNaN(contextLanguage)) {
+      let title;
+      switch (this.props.type) {
+        case 'ticket':
+          title = agentPhrases.get('agent.general.ticket');
+          break;
+        case 'chat':
+          title = agentPhrases.get('agent.general.chat');
+          break;
+        default:
+          title = 'Context';
+      }
       return (
         <LanguageItem
           id="context"
           key={`context_lang_${contextLanguage.get('id')}`}
         >
           <Checkbox checked={checked} value="context" readOnly>
-            Context ({contextLanguage.get('title')})
+            {title} ({contextLanguage.get('title')})
           </Checkbox>
         </LanguageItem>
       );
@@ -82,14 +94,14 @@ export class LanguageList extends React.Component {
 
   getAgentLanguage = (checked) => {
     const agentLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[1]);
-    if (agentLanguage) {
+    if (agentLanguage && !isNaN(agentLanguage)) {
       return (
         <LanguageItem
           id="agent"
           key={`agent_lang_${agentLanguage.get('id')}`}
         >
           <Checkbox checked={checked} value="agent" readOnly>
-            Agent ({agentLanguage.get('title')})
+            {agentPhrases.get('agent.snippets.your_language')} ({agentLanguage.get('title')})
           </Checkbox>
         </LanguageItem>
       );
@@ -99,14 +111,14 @@ export class LanguageList extends React.Component {
 
   getHelpdeskLanguage = (checked) => {
     const helpdeskLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[2]);
-    if (helpdeskLanguage) {
+    if (helpdeskLanguage && !isNaN(helpdeskLanguage)) {
       return (
         <LanguageItem
           id="helpdesk"
           key={`helpdesk_lang_${helpdeskLanguage.get('id')}`}
         >
           <Checkbox checked={checked} value="helpdesk" readOnly>
-            HelpDesk ({helpdeskLanguage.get('title')})
+            {agentPhrases.get('agent.snippets.helpdesk_default')} ({helpdeskLanguage.get('title')})
           </Checkbox>
         </LanguageItem>
       );
@@ -137,7 +149,10 @@ export class LanguageList extends React.Component {
           );
         } else {
           const functionName = langId.charAt(0).toUpperCase() + langId.slice(1);
-          draggableList.push(this[`get${functionName}Language`](true));
+          const item = this[`get${functionName}Language`](true);
+          if (item) {
+            draggableList.push(item);
+          }
         }
       }
     });
@@ -207,12 +222,13 @@ export class LanguageSelect extends React.PureComponent {
     langContext: PropTypes.array,
     langPref:    PropTypes.object,
     onChange:    PropTypes.func,
+    type:        PropTypes.string,
   };
 
   inputRenderer = () => <span><Icon name="globe" />&nbsp;{agentPhrases.get('agent.general.languages')}</span>;
 
   render() {
-    const { languages, langContext, langPref, onChange } = this.props;
+    const { languages, langContext, langPref, onChange, type } = this.props;
     return (
       <CustomSelect
         inputRenderer={this.inputRenderer}
@@ -224,6 +240,7 @@ export class LanguageSelect extends React.PureComponent {
           langContext={langContext}
           langPref={langPref}
           onChange={onChange}
+          type={type}
         />
       </CustomSelect>
     );

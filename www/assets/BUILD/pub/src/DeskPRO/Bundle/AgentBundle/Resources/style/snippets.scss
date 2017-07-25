@@ -82,6 +82,9 @@
             white-space: nowrap;
             padding: 3px 0;
             background-color: white;
+            label.dp-input__label {
+              cursor: pointer;
+            }
             &.movable,
             &.movable label.dp-input__label {
               cursor: move; /* fallback if grab cursor is unsupported */

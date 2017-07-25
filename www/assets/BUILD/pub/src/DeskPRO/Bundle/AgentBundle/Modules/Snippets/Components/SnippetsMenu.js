@@ -523,6 +523,7 @@ export class SnippetsMenu extends React.Component {
       updateLanguagePref,
       showMode,
       handleShowMode,
+      type,
     } = this.props;
     const style = {};
     if (width) {
@@ -573,6 +574,7 @@ export class SnippetsMenu extends React.Component {
               langContext={langContext}
               langPref={langPref}
               onChange={updateLanguagePref}
+              type={type}
             />
           </div>
         </div>
