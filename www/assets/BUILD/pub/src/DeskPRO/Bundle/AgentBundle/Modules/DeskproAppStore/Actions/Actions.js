@@ -3,6 +3,7 @@ import { extractPageContextProps } from '../Services';
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
+export const DESKPRO_APPSTORE_API_TOKEN = 'DESKPRO_APPSTORE_API_TOKEN';
 
 /**
  * @param {Array<DeskPRO.Agent.PageFragment.Basic>} pageList
@@ -32,3 +33,12 @@ const loadAppsHandler = (api, config) => {
  */
 export const loadApps = createAction(DESKPRO_APPSTORE_LOAD_APPS, loadAppsHandler);
 
+const loadApiTokenHandler = (api, config) => {
+  const onRetrieveApiTokenSuccess = (response) => {
+    const { token } = response.data.data;
+    return { config, token };
+  };
+
+  return api.sendGet('DP_API/api_tokens/session').then(onRetrieveApiTokenSuccess);
+};
+export const loadApiToken = createAction(DESKPRO_APPSTORE_API_TOKEN, loadApiTokenHandler);

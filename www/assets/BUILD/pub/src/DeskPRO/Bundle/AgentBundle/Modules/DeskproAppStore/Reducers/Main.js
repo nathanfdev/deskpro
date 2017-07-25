@@ -7,9 +7,9 @@ import { Context } from '../Domain/Context';
 const initialState = Immutable.fromJS({
   apps:     null, // all loaded apps (instances)
   widgets:  null, // configuration for all instances
-  contexts: {}
+  contexts: {},
+  apiToken: null
 });
-
 
 /**
  * @param {Object} state
@@ -71,11 +71,28 @@ function loadPageFragmentAppsHandler(state, payload, action) { // eslint-disable
   return state.set('contexts', allContexts);
 }
 
+function loadApiTokenHandler(state, payload, action) {
+  const { sequence } = action.meta;
+  if (sequence !== 'done') { return state; }
+
+   // the deskpro appstore config is also available in the payload if we need
+  // /** @var {DeskproAppStoreConfiguration} */
+  // const { config, token } = payload;
+  const { token } = payload;
+
+  if (token) {
+    const newState = Immutable.fromJS({ apiToken: token });
+    return state.merge(newState);
+  }
+
+  return state;
+}
 
 export default createReducer(
   initialState,
   {
     [actions.loadPageFragmentApps]: loadPageFragmentAppsHandler,
     [actions.loadApps]:             loadAppsHandler,
+    [actions.loadApiToken]:         loadApiTokenHandler,
   }
 );

@@ -1,4 +1,7 @@
 export const filterAppConfig =  ({ DeskproAppStore: { Main:state } }) => state.get('apps').toJS();
+
+export const filterApiToken =  ({ DeskproAppStore: { Main:state } }) => state.get('apiToken');
+
 export const filterAppManifestsConfig = ({ DeskproAppStore: { Main:state } }) => {
   const manifests = state.get('apps').get('manifests');
   return manifests.toJS();

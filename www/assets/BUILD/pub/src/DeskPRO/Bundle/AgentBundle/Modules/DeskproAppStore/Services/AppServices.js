@@ -1,6 +1,9 @@
+import { default as URL } from 'url-parse';
+
 import { WidgetDOM } from '../WidgetDOM';
 import { subscribeWidgetToEvent } from '../WidgetMessage';
 import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
+import { Base64Converter } from './Base64Converter';
 
 export class AppServices {
 
@@ -11,11 +14,32 @@ export class AppServices {
 
   /**
    * @param {Http} api
+   * @param {string} apiToken
    * @param {Window} window
+   * @param {DeskproAppStoreConfiguration} config
    */
-  constructor({ api, window }) {
-    this.props = { api, window };
+  constructor({ api, apiToken, window, config }) {
+    this.props = { api, apiToken, window, config };
     this.state = { eventSubscribers: new Map() };
+  }
+
+  /**
+   * @return {Base64Converter}
+   */
+  get base64() {
+    return new Base64Converter(this.window);
+  }
+
+  /**
+   * @param urlString
+   * @return {URL}
+   */
+  getUrlBuilder(urlString) {
+    // es-lint forces the use of this in class methods....
+    const { props } = this;
+    const parseUrlString = !!props || true;
+
+    return new URL(urlString, parseUrlString);
   }
 
   /**
@@ -34,9 +58,13 @@ export class AppServices {
     return new DPAPIClient({ api });
   }
 
-  /**
-   * @return {Http}
-   */
+  /** @return {string} */
+  get apiRoot() { return this.props.config.apiRoot; }
+
+  /** @return {String} */
+  get apiToken() { return this.props.apiToken; }
+
+  /** @return {Http} */
   get api() { return this.props.api; }
 
   /**

@@ -1,12 +1,37 @@
 import { events } from './Events';
 
-const sendResponse = response => (data) => {
-  if (data instanceof Error) {
-    response(data);
-  } else {
-    response(null, data);
-  }
-  return data;
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ * @constructor
+ */
+export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessage, services) => {
+  const { correlationId }  = widgetMessage;
+  const { applicationId, id } = widget;
+
+  // register a post message listener for an authorize message with same correlation id
+
+  const { provider } = widgetMessage.body;
+  const state = services.base64.encode({ correlationId, applicationId });
+  const queryParams = {
+    'API-TOKEN': services.apiToken,
+    'API-ROOT':  services.apiRoot,
+    state,
+    provider
+  };
+  const windowUrl = services.getUrlBuilder('http://localhost:9000/oauth-proxy/authorize')
+      .set('query', queryParams).toString()
+  ;
+
+  const windowName = `auth-${id}-${provider}`;
+  const windowFeatures = [
+    'width=500,height=500,left=500,top=10',
+    'status=yes'
+  ].join(',');
+
+  services.window.open(windowUrl, windowName, windowFeatures);
 };
 
 /**
@@ -129,110 +154,6 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
 
       return httpResponse;
     })
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices}  services
- * @constructor
- */
-export const EVENT_STATE_FIND = (response, widget, widgetMessage, services) => {
-  const { api } = services;
-  const { name, scope } = widgetMessage.body;
-
-  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      if (httpResponse.data.status === 404) { return null; }
-
-      return new Error('failed to get app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices}  services
- * @constructor
- */
-export const EVENT_STATE_GET = (response, widget, widgetMessage, services) => {
-  const { api } = services;
-  const { name, scope } = widgetMessage.body;
-
-  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}?mode=find`)
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      if (httpResponse.data.status === 404) { return null; }
-
-      return new Error('failed to get app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices} services
- * @constructor
- */
-export const EVENT_STATE_SET = (response, widget, widgetMessage, services) => {
-  const { api } = services;
-  const { name, scope } = widgetMessage.body;
-  const { body: state } = widgetMessage;
-
-  api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then((httpResponse) => {
-      if (httpResponse.getResponseCode() === 204) {
-        return api.sendPost(`DP_API/apps/${widget.instanceId}/state`, state);
-      } else if (httpResponse.getResponseCode() === 200) {
-        return api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`, state);
-      }
-
-      throw new Error('could not save state');
-    })
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      return new Error('failed to get app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices} services
- * @constructor
- */
-export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) => {
-  const { name, scope } = widgetMessage.body;
-  const { api } = services;
-
-  api.sendDelete(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      if (httpResponse.data.status === 404) { return null; }
-
-      return new Error('failed to delete app state');
-    })
-    .then(sendResponse(response))
   ;
 };
 
@@ -381,21 +302,15 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
 
 export const handlers = {
 
+  // SECURITY EVENT HANDLERS
+
+  EVENT_SECURITY_AUTHENTICATE_OAUTH,
+
   // GENERIC REST API REQUEST EVENT
 
   EVENT_WEBAPI_REQUEST_DESKPRO,
 
   EVENT_WEBAPI_REQUEST_FETCH,
-
-  // STATE EVENT HANDLERS
-
-  EVENT_STATE_FIND,
-
-  EVENT_STATE_GET,
-
-  EVENT_STATE_SET,
-
-  EVENT_STATE_DELETE,
 
   // TAB EVENTS
 

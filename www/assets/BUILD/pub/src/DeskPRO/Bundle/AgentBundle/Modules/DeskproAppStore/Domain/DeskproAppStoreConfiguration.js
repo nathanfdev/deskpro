@@ -35,16 +35,33 @@ class DeskproAppStoreConfiguration extends PropertyBag {
     ];
   }
 
+  /**
+   * @return {[string,string]}
+   */
   static get validEnvironments() { return ['development', 'production']; }
 
+  /**
+   * @return {string}
+   */
   static get devEndpoint() { return 'http://127.0.0.1:31080'; }
 
-  constructor({ environment, endpoint, location, ...undeclaredProps }) {
-    super({ environment, endpoint, location, ...undeclaredProps });
+  constructor({ environment, apiRoot, endpoint, location, ...undeclaredProps }) {
+    super({ environment, endpoint, apiRoot, location, ...undeclaredProps });
   }
 
+  /**
+   * @return {string}
+   */
   get environment() { return this.props.environment; }
 
+  /**
+   * @return {string}
+   */
+  get apiRoot() { return this.props.apiRoot; }
+
+  /**
+   * @return {string}
+   */
   get endpoint() { return this.props.endpoint; }
 }
 
