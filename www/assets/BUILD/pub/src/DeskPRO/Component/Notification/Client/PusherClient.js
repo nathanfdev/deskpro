@@ -112,7 +112,7 @@ export default class PusherClient extends AbstractClient {
         demultiplexData += item.data;
         return demultiplexData;
       });
-      demultiplexData = JSON.parse(demultiplexData);
+      demultiplexData = JSON.parse(atob(demultiplexData));
       if (Array.isArray(demultiplexData)) {
         demultiplexData.map((message) => {
           message.data = JSON.parse(message.data);

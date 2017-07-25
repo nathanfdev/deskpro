@@ -187,7 +187,8 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      */
     protected function deliverMultiplex($channel, $encodedMessages)
     {
-        $encodedMessagesParts = str_split($encodedMessages, intval(0.9 * static::MAX_MESSAGE_SIZE));
+        // 1Kb of overhead is more than anyone will ever need :)
+        $encodedMessagesParts = str_split(base64_encode($encodedMessages), intval(0.9 * static::MAX_MESSAGE_SIZE));
         $i                    = 0;
         $allParts             = count($encodedMessagesParts);
         $multiplexId          = time().'-'.hash('crc32b', $encodedMessages); // crc32b just much faster than md5 or sha1
