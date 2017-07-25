@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
+import debounce from 'lodash/function/debounce';
 import { Input } from 'deskpro-components/lib/Components/Forms';
 import { Button } from 'deskpro-components/lib/Components/Buttons';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -74,6 +75,9 @@ export class SnippetsMenuContainer extends React.Component {
             this.props.dispatch(actions.createSnippetLanguagePreferences([...SnippetsMenuContainer.defaultLangPref]));
           }
         });
+    this.debouncedSavePrefs = debounce((value) => {
+      this.props.dispatch(actions.saveSnippetLanguagePreferences([...value]));
+    }, 1000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -107,6 +111,10 @@ export class SnippetsMenuContainer extends React.Component {
     return nextProps.department !== this.props.department;
   }
 
+  componentWillUnmount() {
+    this.debouncedSavePrefs.flush();
+  }
+
   onClose = () => {
     this.menu.onClose();
   };
@@ -116,7 +124,7 @@ export class SnippetsMenuContainer extends React.Component {
       langPref: newPrefs
     });
     this.forceUpdate();
-    this.props.dispatch(actions.saveSnippetLanguagePreferences([...newPrefs]));
+    this.debouncedSavePrefs(newPrefs);
   };
 
   insertSnippet = (e, snippet, langId) => {
@@ -175,7 +183,8 @@ export class SnippetsMenuContainer extends React.Component {
         return snippet.get('labels').find(label => label.match(re))
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
-          || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langContext)
+          || SnippetsMenuContainer
+              .getSnippetTranslationToUse(snippet.get('translations'), langContext)
             .get('content').match(re);
       });
 

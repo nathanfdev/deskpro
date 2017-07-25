@@ -88,6 +88,7 @@
               cursor: grab;
               cursor: -moz-grab;
               cursor: -webkit-grab;
+              user-select: none;
             }
             &:first-child {
               border-top: 0;

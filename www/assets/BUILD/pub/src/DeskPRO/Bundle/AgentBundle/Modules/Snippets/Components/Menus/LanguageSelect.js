@@ -1,11 +1,48 @@
 import React, { PropTypes } from 'react';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import Icon from 'deskpro-components/lib/Components/Icon';
 import { CustomSelect, Checkbox } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import { sortByAttribute } from 'DeskPRO/Component/Util/Map';
+import LanguageItem from './LanguageItem';
 
-class LanguageList extends React.Component {
+@DragDropContext(HTML5Backend)
+class SortableList extends React.Component {
+  static propTypes = {
+    langPref: PropTypes.object,
+    onChange: PropTypes.func,
+    children: PropTypes.node,
+  };
+
+  constructor(props) {
+    super(props);
+    this.moveCard = this.moveCard.bind(this);
+  }
+
+  moveCard(dragIndex, hoverIndex) {
+    const prefs = [...this.props.langPref];
+    const dragCard = prefs[dragIndex];
+
+    prefs.splice(dragIndex, 1);
+    prefs.splice(hoverIndex, 0, dragCard);
+    this.props.onChange(new Set(prefs));
+  }
+
+  render() {
+    const childrenWithProps = React.Children.map(this.props.children,
+      (child, i) => React.cloneElement(child, {
+        moveCard: this.moveCard,
+        index:    i
+      })
+    );
+
+    return (<div>{childrenWithProps}</div>);
+  }
+}
+
+export class LanguageList extends React.Component {
   static propTypes = {
     languages:   PropTypes.object,
     langContext: PropTypes.array,
@@ -30,14 +67,14 @@ class LanguageList extends React.Component {
     const contextLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[0]);
     if (contextLanguage) {
       return (
-        <ListElement
+        <LanguageItem
+          id="context"
           key={`context_lang_${contextLanguage.get('id')}`}
-          className="movable"
         >
           <Checkbox checked={checked} value="context" readOnly>
             Context ({contextLanguage.get('title')})
           </Checkbox>
-        </ListElement>
+        </LanguageItem>
       );
     }
     return null;
@@ -47,14 +84,14 @@ class LanguageList extends React.Component {
     const agentLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[1]);
     if (agentLanguage) {
       return (
-        <ListElement
+        <LanguageItem
+          id="agent"
           key={`agent_lang_${agentLanguage.get('id')}`}
-          className="movable"
         >
           <Checkbox checked={checked} value="agent" readOnly>
             Agent ({agentLanguage.get('title')})
           </Checkbox>
-        </ListElement>
+        </LanguageItem>
       );
     }
     return null;
@@ -64,14 +101,14 @@ class LanguageList extends React.Component {
     const helpdeskLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[2]);
     if (helpdeskLanguage) {
       return (
-        <ListElement
+        <LanguageItem
+          id="helpdesk"
           key={`helpdesk_lang_${helpdeskLanguage.get('id')}`}
-          className="movable"
         >
           <Checkbox checked={checked} value="helpdesk" readOnly>
             HelpDesk ({helpdeskLanguage.get('title')})
           </Checkbox>
-        </ListElement>
+        </LanguageItem>
       );
     }
     return null;
@@ -80,37 +117,45 @@ class LanguageList extends React.Component {
   getLanguages = () => {
     const { languages, langPref } = this.props;
     const list = [];
+    const draggableList = [];
     const displayedLanguages = [];
     langPref.forEach((langId) => {
       if (displayedLanguages.indexOf(langId) === -1) {
         displayedLanguages.push(langId);
         if (Number.isInteger(langId)) {
           const lang = languages.find(l => l.get('id') === langId);
-          list.push(
-            <ListElement
-              key={lang.get('id')}
-              className="movable"
+          draggableList.push(
+            <LanguageItem
+              id={langId}
+              key={langId}
             >
-              <Checkbox checked value={lang.get('id')} onChange={this.updateLanguage}>
+              <Checkbox checked value={langId} onChange={this.updateLanguage}>
                 <img src={lang.get('flag_image')} alt={lang.get('title')} />
                 &nbsp;{lang.get('title')}
               </Checkbox>
-            </ListElement>
+            </LanguageItem>
           );
         } else {
           const functionName = langId.charAt(0).toUpperCase() + langId.slice(1);
-          list.push(this[`get${functionName}Language`](true));
+          draggableList.push(this[`get${functionName}Language`](true));
         }
       }
     });
-    if (list.length) {
-      list.push(
-        <ListElement
-          key="separator"
-          className="separator"
-        />
-      );
-    }
+    list.push(
+      <SortableList
+        key="sortable"
+        onChange={this.props.onChange}
+        langPref={this.props.langPref}
+      >
+        {draggableList}
+      </SortableList>
+    );
+    list.push(
+      <ListElement
+        key="separator"
+        className="separator"
+      />
+    );
     this.languageList
       .forEach((langId) => {
         if (displayedLanguages.indexOf(langId) === -1) {
