@@ -243,3 +243,169 @@ export const me = Immutable.fromJS({
   name:  'John Doe',
   teams: [],
 });
+
+const teamOne = {
+  id:     1,
+  name:   'Tarley',
+  agents: [1, 4],
+  avatar: Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const teamTwo = {
+  id:     2,
+  name:   'Martell',
+  agents: [1, 4, 6],
+  avatar: Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+const teamThree = {
+  id:     3,
+  name:   'Clegane',
+  agents: [1, 2, 3, 4, 6],
+  avatar: Immutable.Map({
+    default_url_pattern: 'http://localhost/file.php/avatar/{{IMG_SIZE}}/default.jpg?size-fit=1'
+  })
+};
+
+export const agentTeams = Immutable.Seq({
+  [teamOne.id]:   Immutable.Map(teamOne),
+  [teamTwo.id]:   Immutable.Map(teamTwo),
+  [teamThree.id]: Immutable.Map(teamThree)
+});
+
+export const ticketDepartments = Immutable.fromJS([
+  {
+    id:                 1,
+    parent:             null,
+    children:           [],
+    title:              'Support',
+    user_title:         'Support',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      0,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  },
+  {
+    id:                 2,
+    parent:             null,
+    children:           [],
+    title:              'Sales',
+    user_title:         'Sales',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      0,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  },
+  {
+    id:                 5,
+    parent:             null,
+    children:           [],
+    title:              'Widgets',
+    user_title:         'Widgets',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      0,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  },
+  {
+    id:       6,
+    parent:   null,
+    children: [
+      7,
+      8
+    ],
+    title:              'Regulation and Control of Magical Creatures',
+    user_title:         'Regulation and Control of Magical Creatures',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      1,
+    avatar:             null,
+    brands:             []
+  },
+  {
+    id:                 7,
+    parent:             6,
+    children:           [],
+    title:              'Regulation',
+    user_title:         'Regulation',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      2,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  },
+  {
+    id:                 8,
+    parent:             6,
+    children:           [],
+    title:              'Control',
+    user_title:         'Control',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      3,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  },
+  {
+    id:                 9,
+    parent:             null,
+    children:           [],
+    title:              'Hotdogs',
+    user_title:         'Hotdogs',
+    is_tickets_enabled: true,
+    is_chat_enabled:    false,
+    display_order:      4,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  }
+]);
+
+export const chatDepartments = Immutable.fromJS([
+  {
+    id:                 3,
+    parent:             null,
+    children:           [],
+    title:              'Support',
+    user_title:         'Support',
+    is_tickets_enabled: false,
+    is_chat_enabled:    true,
+    display_order:      0,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  },
+  {
+    id:                 4,
+    parent:             null,
+    children:           [],
+    title:              'Sales',
+    user_title:         'Sales',
+    is_tickets_enabled: false,
+    is_chat_enabled:    true,
+    display_order:      0,
+    avatar:             null,
+    brands:             [
+      1
+    ]
+  }
+]);

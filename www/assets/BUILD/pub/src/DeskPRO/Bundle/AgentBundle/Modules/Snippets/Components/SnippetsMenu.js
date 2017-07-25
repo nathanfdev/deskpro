@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import { Input } from 'deskpro-components/lib/Components/Forms';
-import Button from 'deskpro-components/lib/Components/Button';
+import { Button } from 'deskpro-components/lib/Components/Buttons';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -11,7 +11,6 @@ import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Compo
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
-import { LanguageSelect } from './Menus/LanguageSelect';
 
 @connect(state => ({
   me:        meSelector(state),
@@ -56,14 +55,14 @@ export class SnippetsMenuContainer extends React.Component {
     };
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.snippets !== this.props.snippets) {
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!nextProps.snippets.equals(this.props.snippets)) {
       return true;
     }
-    if (nextProps.blobs !== this.props.blobs) {
+    if (!nextProps.blobs.equals(this.props.blobs)) {
       return true;
     }
-    if (nextProps.languages !== this.props.languages) {
+    if (!nextProps.languages.equals(this.props.languages)) {
       return true;
     }
     if (nextProps.width !== this.props.width) {
@@ -75,10 +74,13 @@ export class SnippetsMenuContainer extends React.Component {
     if (nextProps.type !== this.props.type) {
       return true;
     }
-    if (nextProps.department !== this.props.department) {
+    if (nextState.filter !== this.state.filter) {
       return true;
     }
-    return false;
+    if (nextState.showMode !== this.state.showMode) {
+      return true;
+    }
+    return nextProps.department !== this.props.department;
   }
 
   onClose = () => {
@@ -230,8 +232,10 @@ export class SnippetsMenu extends React.Component {
     window.document.addEventListener('dpLeftDrawer', () => {
       this.searchInput.focus();
       setTimeout(() => window.document.addEventListener('keydown', this.closeShortCut), 500);
+      window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
     });
     window.document.addEventListener('keydown', this.closeShortCut);
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
   };
 
   componentDidMount = () => {
@@ -251,6 +255,7 @@ export class SnippetsMenu extends React.Component {
   componentWillUnmount = () => {
     window.document.removeEventListener('keydown', this.closeShortCut);
     window.removeEventListener('resize', this.updateWindowDimensions);
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   };
 
   onSearchFocus = () => {
@@ -265,6 +270,7 @@ export class SnippetsMenu extends React.Component {
 
   onClose = () => {
     window.document.removeEventListener('keydown', this.closeShortCut);
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
   };
 
   getEditSnippet = () => {
@@ -376,18 +382,22 @@ export class SnippetsMenu extends React.Component {
   };
 
   handleSearchKeyDown = (event) => {
-    switch (event.keyCode) {
-      case 13: // enter
+    this.closeShortCut(event);
+    switch (event.key) {
+      case 'Enter':
         this.selectFocused(event);
         break;
-      case 27: // escape
+      case 'Escape':
         this.props.closeMenu();
         break;
-      case 38: // up
+      case 'ArrowUp':
         this.focusPrevious();
         break;
-      case 40: // down
+      case 'ArrowDown':
         this.focusNext();
+        break;
+      case 'Esc':
+        this.props.closeMenu();
         break;
       default:
         return;
@@ -480,13 +490,10 @@ export class SnippetsMenu extends React.Component {
             <Button
               className="dp-button--primary add-snippet"
               onClick={this.newSnippet}
+              size="medium"
             >
               + {agentPhrases.get('agent.general.snippet')}
             </Button>
-            <LanguageSelect
-              languages={languages}
-              langPref={langPref}
-            />
           </div>
         </div>
         <div className="body">
@@ -504,6 +511,7 @@ export class SnippetsMenu extends React.Component {
             multiLabels={this.state.multiLabels}
             multiMode={this.state.multiMode}
             showMode={showMode}
+            height={this.state.height}
             handleShowMode={handleShowMode}
           />
           <SnippetsList

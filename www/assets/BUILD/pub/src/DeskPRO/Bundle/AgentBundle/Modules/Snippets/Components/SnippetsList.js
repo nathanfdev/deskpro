@@ -193,22 +193,9 @@ export class SnippetsList extends React.Component {
     if (nextProps.focusedIndex !== this.props.focusedIndex) {
       setTimeout(() => this.updateList(this.props.focusedIndex), 10);
     }
-  }
-
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.snippets !== this.props.snippets) {
-      return true;
+    if (!nextProps.snippets.equals(this.props.snippets)) {
+      this.listRef.forceUpdateGrid();
     }
-    if (nextProps.height !== this.props.height) {
-      return true;
-    }
-    if (nextProps.width !== this.props.width) {
-      return true;
-    }
-    if (nextProps.focusedIndex !== this.props.focusedIndex) {
-      return true;
-    }
-    return nextProps.filter !== this.props.filter;
   }
 
   updateList(index) {

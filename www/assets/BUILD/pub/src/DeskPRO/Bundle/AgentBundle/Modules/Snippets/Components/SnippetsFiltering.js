@@ -18,6 +18,7 @@ class SnippetsFiltering extends React.Component {
     handleLabelFilter:   PropTypes.func,
     onMultiLabelsChange: PropTypes.func,
     handleShowMode:      PropTypes.func,
+    height:              PropTypes.number,
     showMode:            PropTypes.string,
     selectedLabel:       PropTypes.string,
     multiMode:           PropTypes.string,
@@ -187,11 +188,15 @@ class SnippetsFiltering extends React.Component {
       );
       showOptions.push({
         value: 'my_team',
-        label: me.get('teams').size > 1 ? agentPhrases.get('agent.snippets.my_teams_snippets') : agentPhrases.get('agent.snippets.my_team_snippets'),
+        label: me.get('teams').size > 1 ?
+                 agentPhrases.get('agent.snippets.my_teams_snippets')
+                 : agentPhrases.get('agent.snippets.my_team_snippets'),
         count: teamSnippets,
       });
     }
-    const myDrafts = snippets.count(snippet => snippet.get('is_draft', false) && snippet.get('person') === me.get('id'));
+    const myDrafts = snippets.count(snippet =>
+      snippet.get('is_draft', false) && snippet.get('person') === me.get('id')
+    );
     showOptions.push({
       value: 'my_drafts',
       label: agentPhrases.get('agent.snippets.my_drafts'),
@@ -234,8 +239,15 @@ class SnippetsFiltering extends React.Component {
 
   render() {
     const { labelFilter, handleLabelFilter, multiLabels, selectedLabel } = this.props;
+    let height = this.props.height - 123;
+    if (isNaN(height)) {
+      height = 400;
+    }
     return (
-      <div className={classNames('snippets__filtering', { 'multi-labels': multiLabels.length })}>
+      <div
+        className={classNames('snippets__filtering', { 'multi-labels': multiLabels.length })}
+        style={{ maxHeight: height }}
+      >
         <div className="show block">
           <div className="title">
             {agentPhrases.get('agent.general.show')}
@@ -264,8 +276,8 @@ class SnippetsFiltering extends React.Component {
               />
               {agentPhrases.get('agent.general.clear')}
             </a>
-            : null
-          }
+              : null
+            }
           <Input
             value={labelFilter}
             className="search"
@@ -280,18 +292,18 @@ class SnippetsFiltering extends React.Component {
                 value="any"
                 name="label-mode"
               >
-                Match any
-              </Radio>
+                  Match any
+                </Radio>
               <Radio
                 checked={this.props.multiMode === 'all'}
                 onChange={this.props.selectMultiMode}
                 value="all"
                 name="label-mode"
               >
-                Match all
-              </Radio>
+                  Match all
+                </Radio>
             </div>
-            : null}
+              : null}
           <List>
             {this.getLabels(this.state.labels)}
           </List>

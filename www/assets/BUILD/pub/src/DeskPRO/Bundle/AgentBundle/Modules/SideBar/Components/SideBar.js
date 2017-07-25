@@ -394,7 +394,8 @@ export class SideBar extends React.PureComponent {
     return (
       <div
         className={classNames('sidebar-menu ui vertical menu', { ready: this.state.ready })}
-        onMouseMove={() => { this.setState({ ready: true }); }}
+        onMouseEnter={() => { this.setState({ ready: true }); }}
+        onMouseLeave={() => { this.setState({ ready: false }); }}
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />
