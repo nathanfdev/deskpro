@@ -81,23 +81,25 @@
             overflow: hidden;
             white-space: nowrap;
             padding: 3px 0;
-            cursor: move; /* fallback if grab cursor is unsupported */
-            cursor: grab;
-            cursor: -moz-grab;
-            cursor: -webkit-grab;
-            border-top: 1px solid $dp-greyscale-250;
             background-color: white;
+            &.movable,
+            &.movable label.dp-input__label {
+              cursor: move; /* fallback if grab cursor is unsupported */
+              cursor: grab;
+              cursor: -moz-grab;
+              cursor: -webkit-grab;
+            }
             &:first-child {
               border-top: 0;
+            }
+            .dp-input--checkbox {
+              margin: 0;
             }
           }
           .separator {
             cursor: default;
-            border: 0;
             padding: 0;
-          }
-          .separator + .dp-list__element {
-            border-top: 0;
+            border-bottom: 1px solid $dp-greyscale-450;
           }
         }
       }
