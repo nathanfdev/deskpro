@@ -39,8 +39,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				messageTextarea.setCode('');
 				messageTextarea.change();
 
-				self.getEl('replybox').css('height', 40+69);
-				self.getEl('messages_box').css('bottom', 40+69);
+				var size = 40+69;
+				self.getEl('replybox').css('height', size);
+				self.getEl('messages_box').css('bottom', size);
 			} else {
 				messageTextarea.val('');
 			}
@@ -218,8 +219,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 						var tmp = ed.height();
 						if (lastH != tmp) {
 							lastH = tmp;
-							self.getEl('replybox').css('height', lastH+44);
-							self.getEl('messages_box').css('bottom', lastH+44);
+							var newHeight = 44 + lastH;
+							if (self.hasAttachments) {
+								newHeight += 31;
+							}
+							self.getEl('replybox').css('height', newHeight);
+							self.getEl('messages_box').css('bottom', newHeight);
 						}
 					}, 50);
 				});
@@ -469,8 +474,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
               var tmp = ed.height();
               if (lastH != tmp) {
                 lastH = tmp;
-                self.getEl('replybox').css('height', lastH + 69);
-                self.getEl('messages_box').css('bottom', lastH + 69);
+                var newHeight = 69 + lastH;
+                if (self.hasAttachments) {
+                  newHeight += 31;
+                }
+                self.getEl('replybox').css('height', newHeight);
+                self.getEl('messages_box').css('bottom', newHeight);
               }
             }, 100);
           } else {
@@ -647,7 +656,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       }
     });
     $attachRow.slideDown().removeClass('is-hidden');
-    this.hasAttachments = true;
+    self.hasAttachments = true;
     var ed = this.textarea.getEditor();
     var lastH = ed.height();
     self.getEl('replybox').css('height', lastH+75);
@@ -678,6 +687,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     var lastH = ed.height();
     self.getEl('replybox').css('height', lastH + 45);
     self.getEl('messages_box').css('bottom', lastH + 45);
+    self.hasAttachments = false;
 	},
 
   removeBlob: function(blobId, row) {
@@ -692,6 +702,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
         var lastH = ed.height();
         self.getEl('replybox').css('height', lastH+45);
         self.getEl('messages_box').css('bottom', lastH+45);
+        self.hasAttachments = false;
       }
     });
   },
