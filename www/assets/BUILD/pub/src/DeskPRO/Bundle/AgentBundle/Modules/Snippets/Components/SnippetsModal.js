@@ -445,6 +445,10 @@ export class SnippetsModal extends React.Component {
     changeLabels() {},
   };
 
+  onSubmit = (e) => {
+    e.preventDefault();
+  };
+
   getVariables = () => {
     let variables = [];
     const { types, ticketCustomFields, personCustomFields, userChatCustomFields } = this.props;
@@ -628,7 +632,7 @@ export class SnippetsModal extends React.Component {
             />
           </div>
           {this.getVariables()}
-          <form id="snippet_form">
+          <form id="snippet_form" onSubmit={this.onSubmit}>
             <div className="title-field field">
               <Label htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</Label>
               <Input

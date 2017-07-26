@@ -77,6 +77,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				// Sets the real message ID after we've come back from ajax
 				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id).attr('title', 'User read message at: ' + time);
 			});
+
+      self.sendSnippetAttachments();
 		};
 
 		this.doSendMsg = function() {
@@ -611,6 +613,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
       });
     });
+
+    this.el.on('click', '.remove-attach-trigger', function() {
+      var blobId = $(this).prev('input').val();
+      var row = $(this).closest('li');
+      self.removeBlob(blobId, row);
+    });
 	},
 
 	insertSnippet: function(snippet, blobs, langId) {
@@ -629,7 +637,64 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
   attachBlobs: function(blobs, source) {
     // At the moment attachment as sent straight away we need to be able to edit them or review the message
     // before sending them
+    var self = this;
+    var $attachRow = this.getEl('attach_row');
+    Array.each(blobs, function (info) {
+      var blob = source[info];
+      if (blob) {
+        var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+        $attachRow.find('ul.files:first').append(html);
+      }
+    });
+    $attachRow.slideDown().removeClass('is-hidden');
+    this.hasAttachments = true;
+    var ed = this.textarea.getEditor();
+    var lastH = ed.height();
+    self.getEl('replybox').css('height', lastH+75);
+    self.getEl('messages_box').css('bottom', lastH+75);
 	},
+
+	sendSnippetAttachments() {
+    var self = this;
+    var rows = $('ul.files li', self.getEl('attach_row'));
+    var blob_id;
+
+    if (!rows.length) {
+    	return;
+		}
+
+    for (var x = 0; x < rows.length; x++) {
+      blob_id = $('input', rows[x]).val();
+      if (blob_id) {
+        DeskPRO_Window.util.ajaxWithClientMessages({
+          url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
+          data: {send_blob_id: blob_id }
+        });
+      }
+      rows[x].remove();
+    }
+    self.getEl('attach_row').hide().addClass('is-hidden');
+    var ed = self.textarea.getEditor();
+    var lastH = ed.height();
+    self.getEl('replybox').css('height', lastH + 45);
+    self.getEl('messages_box').css('bottom', lastH + 45);
+	},
+
+  removeBlob: function(blobId, row) {
+    $(this).trigger('blobremove', [blobId]);
+    var self = this;
+    row.fadeOut('fast', function() {
+      row.remove();
+      var rows = $('ul.files li', self.getEl('attach_row'));
+      if (!rows.length) {
+        self.getEl('attach_row').hide().addClass('is-hidden');
+        var ed = self.textarea.getEditor();
+        var lastH = ed.height();
+        self.getEl('replybox').css('height', lastH+45);
+        self.getEl('messages_box').css('bottom', lastH+45);
+      }
+    });
+  },
 
   recordSnippetUse: function(snippetId) {
     // Add Snippet usage record mechanism

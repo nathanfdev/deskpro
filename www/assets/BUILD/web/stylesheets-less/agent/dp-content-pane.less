@@ -5710,6 +5710,50 @@ section.new-user-chat-alert footer {
 	overflow: hidden;
 }
 
+.chatreply > div.attach-row {
+	border-bottom: 1px dotted #999;
+	padding:  6px 8px 5px 8px;
+	font-family: @heading-font;
+	overflow: hidden;
+	background-color: #FFF;
+}
+
+.chatreply > div.attach-row > label {
+	display: block;
+	float: left;
+	width: 60px;
+	font-weight: bold;
+	color: #888;
+	text-align: right;
+	margin-right: 15px;
+}
+
+.chatreply > div.attach-row > label span {
+	display: block;
+	float: right;
+	background-image: url("../../images/agent/icons/attach.png") /** sprite-ref: ui-v */;
+	width: 16px;
+	height: 16px;
+	line-height: 100px;
+	overflow: hidden;
+}
+.chatreply > div.attach-row > div .files {
+	-webkit-margin-after: 0;
+	-webkit-margin-before: 0;
+}
+
+.chatreply > div.attach-row > div .files li {
+	float: left;
+	margin-right: 5px;
+	white-space: nowrap;
+}
+
+.chatreply > div.attach-row > div .files li span {
+	color: #888;
+	font-size: 9px;
+	margin-left: 5px;
+}
+
 .chatreply > nav ul.option-buttons li.attach span    { background-image: url("../../images/agent/icons/attach.png"); }
 .chatreply > nav ul.option-buttons li.snippets span  { background-image: url("../../images/agent/icons/page.png"); }
 .chatreply > nav ul.option-buttons li.article span   { background-image: url("../../images/agent/icons/document_pencil.png"); }
