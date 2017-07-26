@@ -66,7 +66,7 @@ export class LanguageList extends React.Component {
 
   getContextLanguage = (checked) => {
     const contextLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[0]);
-    if (contextLanguage && !isNaN(contextLanguage)) {
+    if (contextLanguage) {
       let title;
       switch (this.props.type) {
         case 'ticket':
@@ -94,7 +94,7 @@ export class LanguageList extends React.Component {
 
   getAgentLanguage = (checked) => {
     const agentLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[1]);
-    if (agentLanguage && !isNaN(agentLanguage)) {
+    if (agentLanguage) {
       return (
         <LanguageItem
           id="agent"
@@ -111,7 +111,7 @@ export class LanguageList extends React.Component {
 
   getHelpdeskLanguage = (checked) => {
     const helpdeskLanguage = this.props.languages.find(lang => lang.get('id') === this.props.langContext[2]);
-    if (helpdeskLanguage && !isNaN(helpdeskLanguage)) {
+    if (helpdeskLanguage) {
       return (
         <LanguageItem
           id="helpdesk"

@@ -233,7 +233,7 @@ export class SnippetsMenuContainer extends React.Component {
         type={type}
         filter={this.state.filter}
         showMode={this.state.showMode}
-        langId={langId}
+        langId={isNaN(langId) ? window.DP_PERSON_LANG_ID : langId}
         langDisplay={langDisplay}
         langContext={langContext}
         langPref={this.state.langPref}
@@ -433,6 +433,7 @@ export class SnippetsMenu extends React.Component {
     this.setState({
       editOpen:    true,
       snippetEdit: snippet,
+      editLang:    this.props.langId,
     });
   };
 
