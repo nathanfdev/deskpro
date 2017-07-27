@@ -8,6 +8,7 @@ import { Tag } from 'deskpro-components/lib/Components/Forms';
 
 export class SnippetsListElement extends React.PureComponent {
   static propTypes = {
+    me:            PropTypes.object,
     snippet:       PropTypes.object,
     languages:     PropTypes.object,
     editSnippet:   PropTypes.func,
@@ -134,7 +135,7 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   render() {
-    const { snippet, editSnippet, insertSnippet, focused, style } = this.props;
+    const { me, snippet, editSnippet, insertSnippet, focused, style } = this.props;
     const langId = this.findLanguage();
     return (
       <div
@@ -149,15 +150,18 @@ export class SnippetsListElement extends React.PureComponent {
           {this.getLabels()}
           <span className="content">{this.getContent(langId)}</span>
         </div>
-        <div onClick={() => editSnippet(snippet, langId)} className="edit-snippet">
-          <i className="fa fa-pencil" />
-        </div>
+        { window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id') ?
+          <div onClick={() => editSnippet(snippet, langId)} className="edit-snippet">
+            <i className="fa fa-pencil" />
+          </div>
+        : null}
       </div>
     );
   }
 }
 export class SnippetsList extends React.Component {
   static propTypes = {
+    me:            PropTypes.object,
     snippets:      PropTypes.object,
     languages:     PropTypes.object,
     selectedLabel: PropTypes.string,
@@ -209,6 +213,7 @@ export class SnippetsList extends React.Component {
     style
   }) {
     const {
+      me,
       languages,
       editSnippet,
       insertSnippet,
@@ -223,6 +228,7 @@ export class SnippetsList extends React.Component {
     return (
       <SnippetsListElement
         key={key}
+        me={me}
         snippet={snippet}
         languages={languages}
         langPref={langPref}

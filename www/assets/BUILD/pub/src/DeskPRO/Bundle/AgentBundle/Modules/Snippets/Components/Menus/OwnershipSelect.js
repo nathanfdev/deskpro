@@ -144,36 +144,45 @@ export class OwnershipSelect extends React.Component {
         displayInputWhenOpened={false}
       >
         <List>
-          <ListElement>
-            <Radio
-              name="ownership"
-              value="me"
-              onChange={this.onRadioChange}
-              checked={radio === 'me'}
-            >
-              {agentPhrases.get('agent.general.just_me')}
-            </Radio>
-          </ListElement>
-          <ListElement>
-            <Radio
-              name="ownership"
-              value="everyone"
-              onChange={this.onRadioChange}
-              checked={radio === 'everyone'}
-            >
-              {agentPhrases.get('agent.general.everyone')}
-            </Radio>
-          </ListElement>
-          <ListElement>
-            <Radio
-              name="ownership"
-              value="specific"
-              onChange={this.onRadioChange}
-              checked={radio === 'specific'}
-            >
-              {agentPhrases.get('agent.snippets.specific_teams')}
-            </Radio>
-          </ListElement>
+          { (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+            || window.DESKPRO_PERSON_PERMS['agent_snippets.create_self_snippet']) ?
+              <ListElement>
+                <Radio
+                  name="ownership"
+                  value="me"
+                  onChange={this.onRadioChange}
+                  checked={radio === 'me'}
+                >
+                  {agentPhrases.get('agent.general.just_me')}
+                </Radio>
+              </ListElement>
+            : null }
+          { (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+            || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']) ?
+              <ListElement>
+                <Radio
+                  name="ownership"
+                  value="everyone"
+                  onChange={this.onRadioChange}
+                  checked={radio === 'everyone'}
+                >
+                  {agentPhrases.get('agent.general.everyone')}
+                </Radio>
+              </ListElement>
+            : null }
+          { (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+            || window.DESKPRO_PERSON_PERMS['agent_snippets.create_team_snippet']) ?
+              <ListElement>
+                <Radio
+                  name="ownership"
+                  value="specific"
+                  onChange={this.onRadioChange}
+                  checked={radio === 'specific'}
+                >
+                  {agentPhrases.get('agent.snippets.specific_teams')}
+                </Radio>
+              </ListElement>
+            : null }
           { this.state.radio === 'specific' ? this.getSpecific() : null}
         </List>
       </CustomSelect>

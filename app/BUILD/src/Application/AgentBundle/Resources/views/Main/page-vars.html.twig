@@ -66,7 +66,13 @@
 		'agent_admin.use': {% if app.user.can_admin %}true{% else %}false{% endif %},
 		'chat_dep_ids': [
 			0{% for id in chat_dep_ids %},{{id}}{% endfor %}
-		]
+		],
+		'agent_snippets.create_snippet': {% if app.user.hasPerm('agent_snippets.create_snippet') %}true{% else %}false{% endif %},
+		'agent_snippets.create_self_snippet': {% if app.user.hasPerm('agent_snippets.create_self_snippet') %}true{% else %}false{% endif %},
+		'agent_snippets.create_team_snippet': {% if app.user.hasPerm('agent_snippets.create_team_snippet') %}true{% else %}false{% endif %},
+		'agent_snippets.create_global_snippet': {% if app.user.hasPerm('agent_snippets.create_global_snippet') %}true{% else %}false{% endif %},
+		'agent_snippets.edit_by_others': {% if app.user.hasPerm('agent_snippets.edit_by_others') %}true{% else %}false{% endif %},
+		'agent_snippets.delete_by_others': {% if app.user.hasPerm('agent_snippets.delete_by_others') %}true{% else %}false{% endif %}
 	};
     var DESKPRO_APP_SETTINGS = {
         'core.apps_chat': {% if isChatAvailable() %}true{% else %}false{% endif %},
