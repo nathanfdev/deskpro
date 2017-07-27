@@ -150,7 +150,7 @@ define ['angular', 'moment'], (angular, moment) ->
         $scope.years.length = 0
         $scope.headerDisabled = true
         $scope.header = startY.year() + '-' + endY.year()
-        while !startY.isAfter(endY, 'y')
+        while date.isValid() && !startY.isAfter(endY, 'y')
           $scope.years.push startY.year()
           startY.add(1, 'y')
       renderers[modes.month] = ->
@@ -168,7 +168,7 @@ define ['angular', 'moment'], (angular, moment) ->
         $scope.days.length = 0
         $scope.header = date.format defaults.dayViewHeaderFormat
         currentDate = date.clone().startOf('M').startOf('week')
-        while !date.clone().endOf('M').endOf('w').isBefore(currentDate, 'd')
+        while date.isValid() && !date.clone().endOf('M').endOf('w').isBefore(currentDate, 'd')
           if 0 == currentDate.weekday()
             row = []
             $scope.days.push row
