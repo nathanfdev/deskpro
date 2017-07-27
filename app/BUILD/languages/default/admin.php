@@ -82,7 +82,7 @@ return [
     'adm.agents.perm_snippet_create_team_snippet'                                          => 'Can create snippets for agent teams',
     'adm.agents.perm_snippet_create_global_snippet'                                        => 'Can create global snippets',
     'adm.agents.perm_snippet_edit_by_others'                                               => 'Can edit snippets created by others',
-    'adm.agents.perm_snippet_remove_by_others'                                             => 'Can remove snippets created by others',
+    'adm.agents.perm_snippet_delete_by_others'                                             => 'Can remove snippets created by others',
     'adm.agents.perm_tasks_use'                                                            => 'Can use tasks',
     'adm.agents.perm_ticket_associate_problem'                                             => 'Can associate a ticket with a Problem',
     'adm.agents.perm_ticket_create'                                                        => 'Can create new tickets',

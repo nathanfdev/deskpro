@@ -206,6 +206,7 @@ define [
         general: {}
         tasks: {}
         problems: {}
+        snippet: {}
       }
 
       @ugEffectiveDepPerms = {

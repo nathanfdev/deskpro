@@ -45,15 +45,15 @@ class SnippetsPermissions implements PermissionValueInterface
     /** @var bool */
     public $edit_by_others = false;
     /** @var bool */
-    public $remove_by_others = false;
+    public $delete_by_others = false;
 
     public function getNames()
     {
-        return ['create_snippet', 'create_self_snippet', 'create_team_snippet', 'create_global_snippet', 'edit_by_others', 'remove_by_others'];
+        return ['create_snippet', 'create_self_snippet', 'create_team_snippet', 'create_global_snippet', 'edit_by_others', 'delete_by_others'];
     }
 
     public function getDestructiveNames()
     {
-        return ['remove_by_others'];
+        return ['delete_by_others'];
     }
 }

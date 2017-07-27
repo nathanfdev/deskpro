@@ -74,7 +74,7 @@ class SnippetVoter implements PermissionGroupEntityVoterInterface
                 }
                 break;
             case PermissionGroupVoter::DELETE:
-                if ($user->hasPerm('agent_snippets.remove_by_others')) {
+                if ($user->hasPerm('agent_snippets.delete_by_others')) {
                     return true;
                 }
                 if ($snippet->getPerson() && $snippet->getPerson()->getId() === $user->getId()) {

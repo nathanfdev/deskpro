@@ -31,6 +31,7 @@
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.profile', type: 'perms', section: 'general'} %}
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tasks', type: 'perms', section: 'tasks'} %}
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.problems', type: 'perms', section: 'problems'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.snippets', type: 'perms', section: 'snippet'} %}
 </nav>
 
 {# TICKET PERMISSIONS #}
@@ -250,7 +251,7 @@
     {{ macro.perm_row('snippet', 'create_team_snippet',   {toggleName: 'snippet.create_snippet'}) }}
     {{ macro.perm_row('snippet', 'create_global_snippet', {toggleName: 'snippet.create_snippet'}) }}
     {{ macro.perm_row('snippet', 'edit_by_others') }}
-    {{ macro.perm_row('snippet', 'remove_by_others', {destructive: true}) }}
+    {{ macro.perm_row('snippet', 'delete_by_others', {destructive: true}) }}
     </tbody>
 </table>
 {# /OTHER PERMISSIONS #}
