@@ -56,7 +56,8 @@ export const preloadData    = createAction(
         alerts:                  { endpoint: 'notify/setup/action-alerts' },
         user_chat_custom_fields: { endpoint: 'user_chat_custom_fields' },
         person_custom_fields:    { endpoint: 'person_custom_fields' },
-        ticket_custom_fields:    { endpoint: 'ticket_custom_fields' }
+        ticket_custom_fields:    { endpoint: 'ticket_custom_fields' },
+        discover:                { endpoint: 'helpdesk/discover' }
       };
 
       if (window.DP_HAS_VOICE) {
@@ -155,12 +156,26 @@ export const preloadData    = createAction(
             ;
           }
         }
+        return data;
       };
 
-      // bootstrap deskpro
-      const appStoreConfig = DeskproAppStore.configurationFromWindow(window);
-      DeskproAppStore.bootstrap(dispatch, api, appStoreConfig)
-        .then(() => api.sendGet(api.prepareParams(batchComponents)).success(onBatchComponentsSuccess))
+      api.sendGet(api.prepareParams(batchComponents))
+        .success(onBatchComponentsSuccess)
+        .then((data) => {
+          // create appstore configuration
+          const builder = DeskproAppStore.configureWithWindowParams(window);
+          if (data.discover) {
+            builder.addHelpdeskDiscoverySettings(data.discover.data);
+          }
+          const appStoreConfig = builder.build();
+
+          // bootstrap appstore
+          return DeskproAppStore.bootstrap(dispatch, api, appStoreConfig)
+            .then(() => api.sendGet(api.prepareParams(batchComponents)).success(onBatchComponentsSuccess))
+            .then(() => {
+              dispatch(donePreloading());
+            });
+        })
         .then(() => {
           dispatch(donePreloading());
         })

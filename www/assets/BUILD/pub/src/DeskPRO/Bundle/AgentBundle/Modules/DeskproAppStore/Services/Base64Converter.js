@@ -3,25 +3,19 @@ export class Base64Converter {
     this.window = window;
   }
 
+  encode = payload => window.btoa(payload);
+
+  decode = payload => window.atob(payload);
+
   /**
    * @param {string|object} payload
    * @return {string}
    */
-  encode = (payload) => {
-    if (typeof payload === 'string') {
-      return window.btoa(payload);
-    }
-
-    if (typeof payload === 'object') {
-      return window.btoa(JSON.stringify(payload));
-    }
-
-    throw new Error('Base64Converter.encode method accepts only strings or plain objects');
-  };
+  encodeJSON = payload => this.encode(JSON.stringify(payload));
 
   /**
-   * @param {string} string
-   * @return {string}
+   * @param {string} payload
+   * @return {*}
    */
-  decode = string => window.atob(string);
+  decodeJSON = payload => JSON.parse(this.decode(payload));
 }

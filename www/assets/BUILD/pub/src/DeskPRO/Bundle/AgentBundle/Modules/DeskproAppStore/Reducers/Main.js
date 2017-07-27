@@ -8,8 +8,25 @@ const initialState = Immutable.fromJS({
   apps:     null, // all loaded apps (instances)
   widgets:  null, // configuration for all instances
   contexts: {},
-  apiToken: null
+  apiToken: null,
+  config:   {},
 });
+
+/**
+ * @param {Object} state
+ * @param {{config:DeskproAppStoreConfiguration, manifests:*}}  payload
+ * @param {Object} action
+ * @returns {Object}
+ */
+function loadAppstoreConfigHandler(state, payload, action) {
+  const { sequence } = action.meta;
+  if (sequence !== 'done') { return state; }
+  // let's assume it was validated before is was serialized
+  const { config } = payload;
+
+  const changes = Immutable.fromJS({ config });
+  return state.merge(changes);
+}
 
 /**
  * @param {Object} state
@@ -94,5 +111,6 @@ export default createReducer(
     [actions.loadPageFragmentApps]: loadPageFragmentAppsHandler,
     [actions.loadApps]:             loadAppsHandler,
     [actions.loadApiToken]:         loadApiTokenHandler,
+    [actions.loadAppstoreConfig]:   loadAppstoreConfigHandler
   }
 );

@@ -70,7 +70,7 @@ class HttpProxyController extends BaseController
      * @Rest\Head("/{instance}")
      * @Rest\Options("/{instance}")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     * @ParamConverter("instance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param AppInstance $instance
      * @param Request     $request

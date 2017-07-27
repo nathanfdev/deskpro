@@ -3,7 +3,14 @@ import { extractPageContextProps } from '../Services';
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
+export const DESKPRO_APPSTORE_LOAD_CONFIG = 'DESKPRO_APPSTORE_LOAD_CONFIG';
 export const DESKPRO_APPSTORE_API_TOKEN = 'DESKPRO_APPSTORE_API_TOKEN';
+
+/**
+ * @param {DeskproAppStoreConfiguration} config
+ */
+const loadAppstoreConfigHandler = ({ config }) => Promise.resolve({ config: config.toJS() });
+export const loadAppstoreConfig = createAction(DESKPRO_APPSTORE_LOAD_CONFIG, loadAppstoreConfigHandler);
 
 /**
  * @param {Array<DeskPRO.Agent.PageFragment.Basic>} pageList
@@ -22,7 +29,7 @@ export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAG
  * @param {DpApi} api
  * @param {DeskproAppStoreConfiguration} config
  */
-const loadAppsHandler = (api, config) => {
+const loadAppsHandler = ({ api, config }) => {
   const isDev = config.environment === 'development';
   const manifestUrl = isDev ? `${config.endpoint}/manifest.json` : 'DP_API/apps?include=app';
 
@@ -33,7 +40,7 @@ const loadAppsHandler = (api, config) => {
  */
 export const loadApps = createAction(DESKPRO_APPSTORE_LOAD_APPS, loadAppsHandler);
 
-const loadApiTokenHandler = (api, config) => {
+const loadApiTokenHandler = ({ api, config }) => {
   const onRetrieveApiTokenSuccess = (response) => {
     const { token } = response.data.data;
     return { config, token };

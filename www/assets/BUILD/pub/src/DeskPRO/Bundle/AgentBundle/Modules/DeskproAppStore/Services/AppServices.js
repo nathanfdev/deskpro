@@ -31,10 +31,25 @@ export class AppServices {
   }
 
   /**
+   * @param {String} urlString
+   * @param {String} verifyUrl
+   * @param {String} state
+   * @param {String} provider
+   * @param {String} callbackMethod
+   * @param {String} callbackUrl
+   * @return {URL}
+   */
+  buildOauthProxyAuthorizeUrl(urlString, { verifyUrl, state, provider, callbackMethod, callbackUrl })  {
+    return this.buildURL(urlString)
+      .set('pathname', '/oauth-proxy/authorize')
+      .set('query', { verifyUrl, state, provider, callbackMethod, callbackUrl });
+  }
+
+  /**
    * @param urlString
    * @return {URL}
    */
-  getUrlBuilder(urlString) {
+  buildURL(urlString) {
     // es-lint forces the use of this in class methods....
     const { props } = this;
     const parseUrlString = !!props || true;
@@ -58,14 +73,21 @@ export class AppServices {
     return new DPAPIClient({ api });
   }
 
-  /** @return {string} */
-  get apiRoot() { return this.props.config.apiRoot; }
+  /**
+   * @return {DeskproAppStoreConfiguration}
+   */
+  get config() { return this.props.config; }
 
   /** @return {String} */
   get apiToken() { return this.props.apiToken; }
 
   /** @return {Http} */
   get api() { return this.props.api; }
+
+  /**
+   * @return {Location}
+   */
+  get location() { return this.props.window.location; }
 
   /**
    * @return {Window}

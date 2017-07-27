@@ -1,6 +1,13 @@
+import DeskproAppStoreConfiguration from '../Domain/DeskproAppStoreConfiguration';
+
 export const filterAppConfig =  ({ DeskproAppStore: { Main:state } }) => state.get('apps').toJS();
 
 export const filterApiToken =  ({ DeskproAppStore: { Main:state } }) => state.get('apiToken');
+
+export const filterAppstoreConfig =  ({ DeskproAppStore: { Main:state } }) => {
+  const configJS = state.get('config').toJS();
+  return new DeskproAppStoreConfiguration(configJS);
+};
 
 export const filterAppManifestsConfig = ({ DeskproAppStore: { Main:state } }) => {
   const manifests = state.get('apps').get('manifests');

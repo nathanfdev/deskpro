@@ -1,6 +1,25 @@
 import { events } from './Events';
 
 /**
+ * @param {window} windowObject
+ * @param {function} handler
+ */
+const registerPostMessageListener = (windowObject, handler) => {
+  const addListener = windowObject.addEventListener ? windowObject.addEventListener : windowObject.attachEvent;
+  const removeListener = windowObject.removeEventListener ? windowObject.removeEventListener : windowObject.detachEvent;
+  const event = windowObject.addEventListener ? 'message' : 'onmessage';
+
+  const listener = (e) => {
+    const remove = handler(e);
+    if (remove) {
+      removeListener(event, listener, false);
+    }
+  };
+
+  addListener(event, listener, false);
+};
+
+/**
  * @param {function} response
  * @param {Widget} widget
  * @param {WidgetRequest} widgetMessage
@@ -11,27 +30,67 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
   const { correlationId }  = widgetMessage;
   const { applicationId, id } = widget;
 
-  // register a post message listener for an authorize message with same correlation id
-
   const { provider } = widgetMessage.body;
-  const state = services.base64.encode({ correlationId, applicationId });
-  const queryParams = {
-    'API-TOKEN': services.apiToken,
-    'API-ROOT':  services.apiRoot,
-    state,
-    provider
-  };
-  const windowUrl = services.getUrlBuilder('http://localhost:9000/oauth-proxy/authorize')
-      .set('query', queryParams).toString()
-  ;
+  const state = services.base64.encodeJSON({ correlationId, applicationId });
+
+  const verifyUrl = services.buildURL(services.config.apiRoot) // use canonic xxx.deskpro.com
+      .set('username', services.window.DP_PERSON_ID)
+      .set('password', services.base64.encode(`token ${services.apiToken}`))
+      .toString()
+    ;
+
+  let oauthProxyUrl;
+  const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
+  if (oauthProxyEndpoint) {
+    const oauthProxyParams = {
+      verifyUrl,
+      state,
+      provider,
+      callbackMethod: 'postMessage',
+      callbackUrl:    services.location.href
+    };
+    oauthProxyUrl = services.buildOauthProxyAuthorizeUrl(oauthProxyEndpoint, oauthProxyParams).toString();
+  }
+
+  if (!oauthProxyUrl) {
+    response(new Error('oauth proxy url is not configured'));
+    return;
+  }
 
   const windowName = `auth-${id}-${provider}`;
-  const windowFeatures = [
-    'width=500,height=500,left=500,top=10',
-    'status=yes'
-  ].join(',');
+  const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
 
-  services.window.open(windowUrl, windowName, windowFeatures);
+  const listener = (ev) => {
+    const { type, status } = ev.data;
+    if (type !== 'oauth-proxy-callback' || ev.origin !== oauthProxyEndpoint) {
+      return false;
+    }
+
+    try {
+      const receivedState = services.base64.decodeJSON(ev.data.body.state);
+      const stateIsValid = correlationId === receivedState.correlationId && applicationId === receivedState.applicationId;
+      if (!stateIsValid) {
+        return false;
+      }
+    } catch (error) { return false; }
+
+    const messageIsAuthentic = true;
+    if (!messageIsAuthentic) {
+      response(new Error('authentication failed'));
+      return true;
+    }
+
+    if (status === 'success') {
+      const { token } = ev.data.body;
+      response(null, token);
+    } else {
+      response(new Error('authentication failed'), null);
+    }
+    return true;
+  };
+
+  registerPostMessageListener(services.window, listener);
+  services.window.open(oauthProxyUrl, windowName, windowFeatures);
 };
 
 /**

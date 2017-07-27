@@ -45,8 +45,8 @@ class DeskproAppStoreConfiguration extends PropertyBag {
    */
   static get devEndpoint() { return 'http://127.0.0.1:31080'; }
 
-  constructor({ environment, apiRoot, endpoint, location, ...undeclaredProps }) {
-    super({ environment, endpoint, apiRoot, location, ...undeclaredProps });
+  constructor({ environment, apiRoot, endpoint, ...undeclaredProps }) {
+    super({ environment, endpoint, apiRoot, ...undeclaredProps });
   }
 
   /**
@@ -58,6 +58,11 @@ class DeskproAppStoreConfiguration extends PropertyBag {
    * @return {string}
    */
   get apiRoot() { return this.props.apiRoot; }
+
+  /**
+   * @return {string}
+   */
+  get oauthProxyEndpoint() { return this.props.oauthProxyEndpoint; }
 
   /**
    * @return {string}
