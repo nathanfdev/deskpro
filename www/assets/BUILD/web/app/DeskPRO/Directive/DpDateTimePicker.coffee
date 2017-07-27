@@ -83,7 +83,7 @@ define ['angular', 'moment'], (angular, moment) ->
     controller: ->
 
     link: ($scope, $el) ->
-      date = if $scope.date? then moment($scope.date) else moment()
+      date = if $scope.date? && $scope.date != 'undefined' then moment($scope.date) else moment()
       today = moment()
 
       $scope.modes = modes =

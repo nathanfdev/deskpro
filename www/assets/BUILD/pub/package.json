@@ -225,7 +225,7 @@
     "dev": "npm run-script resources:copy && gulp dev:all",
     "prod": "node --max-old-space-size=2048 ./node_modules/.bin/gulp prod && npm run-script resources:copy",
     "gulp-prod": "node --max-old-space-size=2048 ./node_modules/.bin/gulp prod && npm run-script resources:copy",
-    "build:prod": "gulp prod && npm run-script resources:copy",
+    "build:prod": "node --max-old-space-size=2048 ./node_modules/.bin/gulp prod && npm run-script resources:copy",
     "gulp-refresh-reducers": "gulp refresh-reducers",
     "test:unit": "jest",
     "test:visual": "start-storybook -p 9001 -s src/tests/Visual/Resources",
