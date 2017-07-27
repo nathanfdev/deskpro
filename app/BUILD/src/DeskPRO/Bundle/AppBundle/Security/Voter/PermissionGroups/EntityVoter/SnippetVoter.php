@@ -54,9 +54,29 @@ class SnippetVoter implements PermissionGroupEntityVoterInterface
 
         switch ($attribute) {
             case PermissionGroupVoter::CREATE:
-                return true;
+                if ($user->hasPerm('agent_snippets.create_snippet')) {
+                    return true;
+                }
+                if ($snippet->isOwnershipGlobal()) {
+                    return $user->hasPerm('agent_snippets.create_global_snippet');
+                } elseif (count($snippet->getOwnershipTeams()) > 0) {
+                    return $user->hasPerm('agent_snippets.create_team_snippet');
+                }
+
+                return $user->hasPerm('agent_snippets.create_self_snippet');
+                break;
             case PermissionGroupVoter::MODIFY:
+                if ($user->hasPerm('agent_snippets.edit_by_others')) {
+                    return true;
+                }
+                if ($snippet->getPerson() && $snippet->getPerson()->getId() === $user->getId()) {
+                    return true;
+                }
+                break;
             case PermissionGroupVoter::DELETE:
+                if ($user->hasPerm('agent_snippets.remove_by_others')) {
+                    return true;
+                }
                 if ($snippet->getPerson() && $snippet->getPerson()->getId() === $user->getId()) {
                     return true;
                 }
@@ -81,6 +101,8 @@ class SnippetVoter implements PermissionGroupEntityVoterInterface
             case PermissionGroupVoter::VIEW_LIST:
                 return true;
         }
+
+        return false;
     }
 
     /**
