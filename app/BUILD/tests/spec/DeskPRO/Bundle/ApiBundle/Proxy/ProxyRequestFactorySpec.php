@@ -68,7 +68,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
     {
         $request->getMethod()->shouldNotBeCalled();
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyMethod()->shouldReturn('POST');
     }
 
@@ -81,7 +81,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $headers->get('X-Proxy-Method')->willReturn(null);
         $request->getMethod()->willReturn('PUT');
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyMethod()->shouldReturn('PUT');
     }
 
@@ -94,7 +94,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(null);
         $headers->get('X-Proxy-Url')->willReturn('{{settings.site_url}}/api/some-endpoint');
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('{{settings.site_url}}/api/some-endpoint');
     }
 
@@ -107,7 +107,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
         $headers->get('X-Proxy-Url')->willReturn('{{settings.site_url}}/api/some-endpoint');
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('(undefined)/api/some-endpoint');
     }
 
@@ -126,7 +126,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $instance->getApp()->willReturn(null);
         $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('http://deskpro-dev/api/some-endpoint');
     }
 
@@ -154,7 +154,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             $appState2,
         ]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('http://deskpro-dev/api/some-endpoint');
     }
 
@@ -175,7 +175,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $instance->getApp()->willReturn(null);
         $appStateRepository->findReadableByName($instance, $person, ['site_url'])->willReturn([]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('(undefined)/api/some-endpoint');
     }
 
@@ -198,7 +198,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'site_url' => 'http://deskpro-dev',
         ]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getWhiteList()->shouldReturn($whiteList);
     }
 
@@ -225,7 +225,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'http://{{settings.site_url}}/api/*',
         ]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getWhiteList()->shouldReturn([
             'http://my_url/api/*',
             'http://deskpro-dev/api/*',
@@ -246,7 +246,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'x-proxy-header-person-id'     => 'value 3',
         ]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyHeaders()->shouldReturn([
             'authorization' => 'value 2',
             'person-id'     => 'value 3',
@@ -276,7 +276,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
 
         $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyHeaders()->shouldReturn([
             'authorization' => [
                 'key key_val',
@@ -299,7 +299,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
             'x-forward-url'                => 'http://deskpro-dev',
         ]);
 
-        $proxyRequest = $this->createFromRequest($instance, $request, $person);
+        $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyHeaders()->shouldReturn([
             'header-1'      => 'value 1',
             'authorization' => 'value 2',

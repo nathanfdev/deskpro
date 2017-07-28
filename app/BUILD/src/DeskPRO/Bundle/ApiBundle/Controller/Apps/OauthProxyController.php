@@ -30,7 +30,7 @@ class OauthProxyController
      *
      * @Rest\Get("/authorize/{instance}/{provider}")
      */
-    public function authorize(AppInstance $instance, $provider, Request $request)
+    public function authorize(AppInstance $instance = null, $provider, Request $request)
     {
         if (is_null($provider)) {
             return new Response('Provider not found', 400);
@@ -71,7 +71,7 @@ class OauthProxyController
     /**
      * @Rest\Get("/grant-access/{instance}/{provider}")
      */
-    public function grantAccess(AppInstance $instance, $provider, Request $request)
+    public function grantAccess(AppInstance $instance = null, $provider, Request $request)
     {
         try {
             $state = $request->query->get('state');

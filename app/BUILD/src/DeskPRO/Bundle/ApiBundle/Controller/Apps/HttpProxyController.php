@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestFactory;
+use DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestValidator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
@@ -77,18 +79,23 @@ class HttpProxyController extends BaseController
      *
      * @return string
      */
-    public function proxyAction(AppInstance $instance, Request $request)
+    public function proxyAction(AppInstance $instance = null, Request $request)
     {
         // create proxy request
-        $proxyRequest = $this->get('api_proxy_request_factory')->createFromRequest(
-            $instance,
-            $request,
-            $this->getUser()
-        );
+        /** @var ProxyRequestFactory $proxyRequestFactory */
+        $proxyRequestFactory = $this->get('api_proxy_request_factory');
+
+        if (is_null($instance)) {
+            $proxyRequest = $proxyRequestFactory->createFromRequest($request);
+        } else {
+            $proxyRequest = $proxyRequestFactory->createFromAppRequest($instance, $request, $this->getUser());
+        }
 
         // verify proxy request
         try {
-            $this->get('api_proxy_validator')->validateProxyUrl($proxyRequest);
+            /** @var ProxyRequestValidator $proxyRequestValidator */
+            $proxyRequestValidator = $this->get('api_proxy_validator');
+            $proxyRequestValidator->validate($proxyRequest);
         } catch (\Exception $e) {
             throw $this->createBadRequestException($e->getMessage());
         }

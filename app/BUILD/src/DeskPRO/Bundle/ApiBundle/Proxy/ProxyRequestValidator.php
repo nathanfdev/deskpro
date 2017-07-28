@@ -55,11 +55,18 @@ class ProxyRequestValidator
     }
 
     /**
-     * @param ProxyRequest $request
-     *
-     * @return bool
+     * @param ProxyRequestInterface $request
      */
-    public function validateProxyUrl(ProxyRequest $request)
+    public function validate(ProxyRequestInterface $request)
+    {
+        if ($request instanceof WhitelistableProxyRequest) {
+            $this->validateWhitelistableRequest($request);
+        }
+
+        $this->validateProxyRequest($request);
+    }
+
+    public function validateProxyRequest(ProxyRequestInterface $request)
     {
         if (!$request->getProxyUrl()) {
             throw new \RuntimeException('No proxy url provided.');
@@ -71,14 +78,24 @@ class ProxyRequestValidator
         }
 
         try {
-            $proxyUrl = Url::createFromUrl($request->getProxyUrl());
+            Url::createFromUrl($request->getProxyUrl());
         } catch (\Exception $e) {
             throw new \RuntimeException('Unable to parse proxy url.');
         }
+    }
+
+    /**
+     * @param WhitelistableProxyRequest $request
+     */
+    public function validateWhitelistableRequest(WhitelistableProxyRequest $request)
+    {
+        $this->validateProxyRequest($request);
 
         if (empty($request->getWhiteList())) {
             throw new \RuntimeException('No proxy whitelist is defined.');
         }
+
+        $proxyUrl = Url::createFromUrl($request->getProxyUrl());
 
         $baseProxyUrl = $proxyUrl->getBaseUrl().$proxyUrl->getPath()->getUriComponent();
 
@@ -103,4 +120,5 @@ class ProxyRequestValidator
             implode(', ', $request->getWhiteList())
         ));
     }
+
 }
