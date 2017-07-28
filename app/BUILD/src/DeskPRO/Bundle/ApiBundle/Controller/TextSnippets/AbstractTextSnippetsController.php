@@ -26,25 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace DeskPRO\Bundle\ApiBundle\Traits\TextSnippets;
+namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippetCategory;
-use Doctrine\ORM\EntityRepository;
+use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Class ContextTypeTrait.
- *
- * @method EntityRepository getRepository($class)
+ * Class AbstractTextSnippetsController.
  */
-trait ContextTypeTrait
+abstract class AbstractTextSnippetsController extends CrudController
 {
     /**
      * @param Request $request
@@ -83,39 +77,50 @@ trait ContextTypeTrait
     /**
      * @param Request      $request
      * @param QueryBuilder $qb
-     * @param string       $ref_type
+     * @param string       $refType
      */
-    protected function applyFilterByLanguage(Request $request, QueryBuilder $qb, $ref_type)
+    protected function applyFilterByLanguageAndQueryString(Request $request, QueryBuilder $qb, $refType)
     {
         $query = $request->query;
-        if (!$query->get('language')) {
+        if (!$query->get('language') && !$query->get('q')) {
             return;
-        }
-
-        if (is_numeric($query->get('language'))) {
-            $language_id = $query->getInt('language');
-        } else {
-            // look by lang code or locale
-            $language = $this
-                ->getRepository('DeskPRO:Language')
-                ->createQueryBuilder('l')
-                ->where('l.locale = :language OR l.lang_code = :language')
-                ->setParameter('language', $query->get('language'))
-                ->getQuery()
-                ->getOneOrNullResult()
-            ;
-
-            $language_id = $language ? $language->getId() : 0;
         }
 
         $qb
             ->join('DeskPRO:ObjectLang', 'o', Join::WITH, 'o.ref_id = e.id')
-            ->andWhere(
-                'o.language = :language',
-                'o.ref_type = :ref_type'
-            )
-            ->setParameter('language', $language_id)
-            ->setParameter('ref_type', $ref_type)
+            ->andWhere('o.ref_type = :ref_type')
+            ->setParameter('ref_type', $refType)
         ;
+
+        if ($query->get('language')) {
+            if (is_numeric($query->get('language'))) {
+                $languageId = $query->getInt('language');
+            } else {
+                // look by lang code or locale
+                $language = $this
+                    ->getRepository('DeskPRO:Language')
+                    ->createQueryBuilder('l')
+                    ->where('l.locale = :language OR l.lang_code = :language')
+                    ->setParameter('language', $query->get('language'))
+                    ->getQuery()
+                    ->getOneOrNullResult()
+                ;
+
+                $languageId = $language ? $language->getId() : 0;
+            }
+
+            $qb->andWhere('o.language = :language');
+            $qb->setParameter('language', $languageId);
+        }
+
+        if ($query->get('q')) {
+            if ($refType === 'text_snippets') {
+                $qb->andWhere('o.value LIKE :query_string OR e.shortcut_code LIKE :query_string');
+            } else {
+                $qb->andWhere('o.value LIKE :query_string');
+            }
+
+            $qb->setParameter('query_string', '%'.$query->get('q').'%');
+        }
     }
 }
