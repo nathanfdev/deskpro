@@ -3,14 +3,14 @@
 use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Component\HttpFoundation\Response;
 
-class Oauth2ResponseBuilder
+class OauthResponseBuilder
 {
     /**
      * @param string $type
-     * @return Oauth2ResponseBuilder
+     * @return OauthResponseBuilder
      */
     public static function forResponseType(string $type = 'token') {
-        return new Oauth2ResponseBuilder($type === 'error');
+        return new OauthResponseBuilder($type === 'error');
     }
 
     /** @var string */
@@ -28,7 +28,7 @@ class Oauth2ResponseBuilder
 
     /**
      * @param string $state
-     * @return Oauth2ResponseBuilder
+     * @return OauthResponseBuilder
      */
     public function withApplicationState(string $state)
     {
@@ -38,7 +38,7 @@ class Oauth2ResponseBuilder
 
     /**
      * @param AccessToken $token
-     * @return Oauth2ResponseBuilder
+     * @return OauthResponseBuilder
      */
     public function withToken(AccessToken $token)
     {
@@ -48,7 +48,7 @@ class Oauth2ResponseBuilder
 
     /**
      * @param array $params
-     * @return Oauth2ResponseBuilder
+     * @return OauthResponseBuilder
      */
     public function withTokenParams(array $params)
     {
@@ -58,7 +58,7 @@ class Oauth2ResponseBuilder
 
     /**
      * @param string $url
-     * @return Oauth2ResponseBuilder
+     * @return OauthResponseBuilder
      */
     public function withCallbackUrl(string $url)
     {

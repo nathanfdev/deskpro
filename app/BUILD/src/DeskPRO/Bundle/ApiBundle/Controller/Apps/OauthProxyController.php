@@ -95,14 +95,14 @@ class OauthProxyController
                 $provider = new GenericProvider($clientDetails);
                 $token = $provider->getAccessToken('authorization_code', [ 'code' => $code ]);
 
-                return Oauth2ResponseBuilder::forResponseType('token')
+                return OauthResponseBuilder::forResponseType('token')
                     ->withApplicationState($proxyState['appState'])
                     ->withToken($token)
                     ->withCallbackUrl($proxyState['callbackUrl'])
                     ->buildPostMessage()
                     ;
             } else { // $responseType === 'error'
-                return Oauth2ResponseBuilder::forResponseType('error')
+                return OauthResponseBuilder::forResponseType('error')
                     ->withApplicationState($proxyState['appState'])
                     ->withCallbackUrl($proxyState['callbackUrl'])
                     ->buildPostMessage()
