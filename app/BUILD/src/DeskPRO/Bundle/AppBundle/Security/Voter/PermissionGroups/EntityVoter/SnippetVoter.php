@@ -59,8 +59,15 @@ class SnippetVoter implements PermissionGroupEntityVoterInterface
                 }
                 if ($snippet->isOwnershipGlobal()) {
                     return $user->hasPerm('agent_snippets.create_global_snippet');
-                } elseif (count($snippet->getOwnershipTeams()) > 0) {
-                    return $user->hasPerm('agent_snippets.create_team_snippet');
+                } elseif (count($snippet->getOwnershipTeams()) > 0 && $user->hasPerm('agent_snippets.create_team_snippet')) {
+                    $user->loadHelper('AgentTeam');
+                    $agentTeams = $user->getAgentTeamIds();
+                    /** @var AgentTeam $team */
+                    foreach ($snippet->getOwnershipTeams() as $team) {
+                        if (!in_array($team->getId(), $agentTeams)) {
+                            return false;
+                        }
+                    }
                 }
 
                 return $user->hasPerm('agent_snippets.create_self_snippet');
