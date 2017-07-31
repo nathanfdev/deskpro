@@ -2,14 +2,17 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { CustomSelect, Radio, Checkbox, Input } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 @connect(state => ({
+  me:         meSelector(state),
   agentTeams: allSelectorFactory('AgentTeam')(state)
 }))
 export class OwnershipSelectContainer extends React.Component {
   static propTypes = {
+    me:                PropTypes.object,
     agentTeams:        PropTypes.object,
     selectedTeams:     PropTypes.object.isRequired,
     isOwnershipGlobal: PropTypes.bool,
@@ -17,9 +20,10 @@ export class OwnershipSelectContainer extends React.Component {
   };
 
   render() {
-    const { agentTeams, onChange, selectedTeams, isOwnershipGlobal } = this.props;
+    const { me, agentTeams, onChange, selectedTeams, isOwnershipGlobal } = this.props;
     return (
       <OwnershipSelect
+        me={me}
         agentTeams={agentTeams}
         selectedTeams={selectedTeams}
         isOwnershipGlobal={isOwnershipGlobal}
@@ -30,6 +34,7 @@ export class OwnershipSelectContainer extends React.Component {
 }
 export class OwnershipSelect extends React.Component {
   static propTypes = {
+    me:                PropTypes.object,
     agentTeams:        PropTypes.object,
     selectedTeams:     PropTypes.object,
     isOwnershipGlobal: PropTypes.bool,
@@ -90,24 +95,26 @@ export class OwnershipSelect extends React.Component {
   };
 
   getSpecific = () => {
-    const { selectedTeams } = this.props;
+    const { me, selectedTeams } = this.props;
     const teams = [];
     const re = new RegExp(this.state.filter, 'i');
-    this.props.agentTeams.forEach((team) => {
-      if (!this.state.filter || team.get('name').match(re)) {
-        teams.push(
-          <ListElement key={team.get('id')}>
-            <Checkbox
-              value={team.get('id')}
-              onChange={this.onCheckboxChange}
-              checked={selectedTeams.has(team.get('id'))}
-            >
-              {team.get('name')}
-            </Checkbox>
-          </ListElement>
+    this.props.agentTeams
+      .filter(team => me.get('can_admin') || me.get('teams').indexOf(team.get('id')) !== -1)
+      .forEach((team) => {
+        if (!this.state.filter || team.get('name').match(re)) {
+          teams.push(
+            <ListElement key={team.get('id')}>
+              <Checkbox
+                value={team.get('id')}
+                onChange={this.onCheckboxChange}
+                checked={selectedTeams.has(team.get('id'))}
+              >
+                {team.get('name')}
+              </Checkbox>
+            </ListElement>
         );
-      }
-    });
+        }
+      });
     return (
       <div>
         {this.props.agentTeams.size > 10 ?
@@ -137,6 +144,7 @@ export class OwnershipSelect extends React.Component {
   };
 
   render() {
+    const { me } = this.props;
     const { radio } = this.state;
     return (
       <CustomSelect
@@ -144,36 +152,46 @@ export class OwnershipSelect extends React.Component {
         displayInputWhenOpened={false}
       >
         <List>
-          <ListElement>
-            <Radio
-              name="ownership"
-              value="me"
-              onChange={this.onRadioChange}
-              checked={radio === 'me'}
-            >
-              {agentPhrases.get('agent.general.just_me')}
-            </Radio>
-          </ListElement>
-          <ListElement>
-            <Radio
-              name="ownership"
-              value="everyone"
-              onChange={this.onRadioChange}
-              checked={radio === 'everyone'}
-            >
-              {agentPhrases.get('agent.general.everyone')}
-            </Radio>
-          </ListElement>
-          <ListElement>
-            <Radio
-              name="ownership"
-              value="specific"
-              onChange={this.onRadioChange}
-              checked={radio === 'specific'}
-            >
-              {agentPhrases.get('agent.snippets.specific_teams')}
-            </Radio>
-          </ListElement>
+          { (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+            || window.DESKPRO_PERSON_PERMS['agent_snippets.create_self_snippet']) ?
+              <ListElement>
+                <Radio
+                  name="ownership"
+                  value="me"
+                  onChange={this.onRadioChange}
+                  checked={radio === 'me'}
+                >
+                  {agentPhrases.get('agent.general.just_me')}
+                </Radio>
+              </ListElement>
+            : null }
+          { (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+            || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']) ?
+              <ListElement>
+                <Radio
+                  name="ownership"
+                  value="everyone"
+                  onChange={this.onRadioChange}
+                  checked={radio === 'everyone'}
+                >
+                  {agentPhrases.get('agent.general.everyone')}
+                </Radio>
+              </ListElement>
+            : null }
+          { (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+            || window.DESKPRO_PERSON_PERMS['agent_snippets.create_team_snippet'])
+          && (me.get('can_admin') || me.get('teams').size) ?
+            <ListElement>
+              <Radio
+                name="ownership"
+                value="specific"
+                onChange={this.onRadioChange}
+                checked={radio === 'specific'}
+              >
+                {agentPhrases.get('agent.snippets.specific_teams')}
+              </Radio>
+            </ListElement>
+            : null }
           { this.state.radio === 'specific' ? this.getSpecific() : null}
         </List>
       </CustomSelect>

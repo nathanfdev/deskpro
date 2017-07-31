@@ -104,6 +104,8 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
+use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -356,6 +358,8 @@ class ObjectsManager
             'Problem'                  => [Factory\SimpleFactory::class, 'create', Problem::class],
             'PersonPref'               => [Factory\SimpleFactory::class, 'create', PersonPref::class],
             'Blob'                     => [Factory\SimpleFactory::class, 'create', Blob::class],
+            'Snippet'                  => [Factory\SimpleFactory::class, 'create', Snippet::class],
+            'SnippetTranslation'       => [Factory\SimpleFactory::class, 'create', SnippetTranslation::class],
             'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
             'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
             'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
@@ -462,6 +466,8 @@ class ObjectsManager
             'Problem'                  => [$this, 'find', Problem::class],
             'PersonPref'               => [$this, 'find', PersonPref::class],
             'Sla'                      => [$this, 'find', Sla::class],
+            'Snippet'                  => [$this, 'find', Snippet::class],
+            'SnippetTranslation'       => [$this, 'find', SnippetTranslation::class],
             'TextSnippet'              => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],

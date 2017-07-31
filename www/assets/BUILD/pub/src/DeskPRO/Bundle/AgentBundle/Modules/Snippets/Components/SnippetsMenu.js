@@ -131,7 +131,8 @@ export class SnippetsMenuContainer extends React.Component {
         return snippet.get('labels').find(label => label.match(re))
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
-          || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langPref).get('content').match(re);
+          || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langPref)
+            .get('content').match(re);
       });
 
     const snippets = filteredSnippets.filter((snippet) => {
@@ -362,9 +363,11 @@ export class SnippetsMenu extends React.Component {
   };
 
   newSnippet = () => {
+    const isOwnershipGlobal = (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+      || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']);
     const snippet = Immutable.fromJS({
       is_visible_global:   true,
-      is_ownership_global: true,
+      is_ownership_global: isOwnershipGlobal,
       translations:        [],
       type:                [this.props.type],
     });
@@ -438,7 +441,8 @@ export class SnippetsMenu extends React.Component {
 
   selectFocused = (e) => {
     const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
-    const langId = SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), this.props.langPref).get('language');
+    const langId = SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), this.props.langPref)
+      .get('language');
     this.props.insertSnippet(e, snippet, langId);
   };
 
@@ -487,13 +491,20 @@ export class SnippetsMenu extends React.Component {
           </div>
           <div className="top">
             <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
-            <Button
-              className="dp-button--primary add-snippet"
-              onClick={this.newSnippet}
-              size="medium"
-            >
-              + {agentPhrases.get('agent.general.snippet')}
-            </Button>
+            { (
+              window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+              || window.DESKPRO_PERSON_PERMS['agent_snippets.create_self_snippet']
+              || window.DESKPRO_PERSON_PERMS['agent_snippets.create_team_snippet']
+              || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']
+            ) ?
+              <Button
+                className="dp-button--primary add-snippet"
+                onClick={this.newSnippet}
+                size="medium"
+              >
+                + {agentPhrases.get('agent.general.snippet')}
+              </Button>
+              : null}
           </div>
         </div>
         <div className="body">
@@ -515,6 +526,7 @@ export class SnippetsMenu extends React.Component {
             handleShowMode={handleShowMode}
           />
           <SnippetsList
+            me={me}
             snippets={snippets}
             languages={languages}
             langPref={langPref}

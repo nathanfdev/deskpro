@@ -206,6 +206,7 @@ define [
         general: {}
         tasks: {}
         problems: {}
+        snippet: {}
       }
 
       @ugEffectiveDepPerms = {
@@ -249,11 +250,9 @@ define [
                 @ugEffectivePerms[type][pname] = pval
 
     hasSomePerms: (typename, permname) ->
-      suffix = permname.replace(/^.*?_(.*?)$/, '$1')
+      prefix = permname.replace(/(^.*?_).*?$/, '$1')
+      suffix = permname.replace(/^.*?(_.*?)$/, '$1')
       return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form?[typename]?)
-
-      suffix = "_" + suffix
-      prefix = "modify_"
 
       if @ugEffectivePerms?[typename]?
         for own name, val of @ugEffectivePerms[typename]

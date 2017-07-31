@@ -8,6 +8,7 @@ import { Button, ConfirmButton } from 'deskpro-components/lib/Components/Buttons
 import { Checkbox, Input, Label, TagSet, Select } from 'deskpro-components/lib/Components/Forms';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetBlobsSelector } from '../Selectors/snippets';
@@ -88,6 +89,7 @@ class VariableValue extends React.Component {
 }
 
 @connect(state => ({
+  me:                   meSelector(state),
   languages:            allSelectorFactory('Language')(state),
   chatDepartments:      collectionSelectorFactory('Department', 'all_chat')(state),
   userChatCustomFields: allSelectorFactory('UserChatCustomFields')(state),
@@ -97,6 +99,7 @@ class VariableValue extends React.Component {
 }))
 export class SnippetsModalContainer extends React.Component {
   static propTypes = {
+    me:                   PropTypes.object,
     snippet:              PropTypes.object,
     languages:            PropTypes.object,
     userChatCustomFields: PropTypes.object,
@@ -345,6 +348,7 @@ export class SnippetsModalContainer extends React.Component {
 
   render() {
     const {
+      me,
       snippet,
       closeModal,
       languages,
@@ -366,6 +370,7 @@ export class SnippetsModalContainer extends React.Component {
     }
     return (
       <SnippetsModal
+        me={me}
         snippet={snippet}
         labels={this.state.labels}
         labelsSource={this.props.labelsSource}
@@ -406,6 +411,7 @@ export class SnippetsModalContainer extends React.Component {
 }
 export class SnippetsModal extends React.Component {
   static propTypes = {
+    me:                      PropTypes.object,
     snippet:                 PropTypes.object,
     translation:             PropTypes.object,
     languages:               PropTypes.object,
@@ -563,6 +569,7 @@ export class SnippetsModal extends React.Component {
 
   render() {
     const {
+      me,
       snippet,
       labels,
       labelsSource,
@@ -591,6 +598,8 @@ export class SnippetsModal extends React.Component {
       option = option.set('value', language.get('id'));
       return option.toJS();
     });
+    const canDelete = snippet.get('id') &&
+      (snippet.get('person') === me.get('id') || window.DESKPRO_PERSON_PERMS['agent_snippets.delete_by_others']);
     // ratio between viewport and needed dropdowns size
     const maxHeight = height * 0.52 - 200;
     return (
@@ -609,7 +618,7 @@ export class SnippetsModal extends React.Component {
               <ConfirmButton
                 className="dp-button--l dp-button--secondary right"
                 onClick={deleteSnippet}
-                disabled={!snippet.get('id')}
+                disabled={!canDelete}
                 message={agentPhrases.get('agent.general.are_you_sure')}
               >
                 {agentPhrases.get('agent.general.delete')}

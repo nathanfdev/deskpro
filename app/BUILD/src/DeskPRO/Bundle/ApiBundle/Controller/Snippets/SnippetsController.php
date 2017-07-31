@@ -34,6 +34,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -102,6 +104,31 @@ class SnippetsController extends CrudController
             $qb->andWhere("$alias.types LIKE :type")
                 ->setParameter('type', '%'.$type.'%');
         }
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Create a new resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *          201="Returned in case of successful resource creation",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     * @Rest\Post("")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postAction(Request $request)
+    {
+        return $this->handleForm($this->instantiateEntity($request), $request);
+    }
+
+    protected function additionalValidation($model, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, new PermissionGroupContext($model));
     }
 
     /**
