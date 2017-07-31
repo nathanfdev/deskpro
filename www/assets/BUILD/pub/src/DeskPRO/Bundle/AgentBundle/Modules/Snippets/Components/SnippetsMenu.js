@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
+import debounce from 'lodash/function/debounce';
 import { Input } from 'deskpro-components/lib/Components/Forms';
 import { Button } from 'deskpro-components/lib/Components/Buttons';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -10,7 +11,9 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
+import * as actions from '../Actions/snippetsActions';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
+import { LanguageSelect } from './Menus/LanguageSelect';
 
 @connect(state => ({
   me:        meSelector(state),
@@ -26,6 +29,7 @@ export class SnippetsMenuContainer extends React.Component {
     languages:     PropTypes.object,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
+    dispatch:      PropTypes.func,
     open:          PropTypes.bool,
     type:          PropTypes.string,
     department:    PropTypes.number,
@@ -36,6 +40,8 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
   };
+
+  static defaultLangPref = new Set(['context', 'agent', 'helpdesk']);
 
   static getSnippetTranslationToUse(snippetTranslations, langPref) {
     for (let i = 0; i < langPref.length; i++) {
@@ -52,7 +58,26 @@ export class SnippetsMenuContainer extends React.Component {
     this.state = {
       filter:   '',
       showMode: 'all',
+      langPref: SnippetsMenuContainer.defaultLangPref
     };
+    this.props.dispatch(actions.loadSnippetLanguagePreferences())
+      .then((data) => {
+        const values = data.value.map((l) => {
+          if (l.match(/^\d+$/)) {
+            return parseInt(l, 10);
+          }
+          return l;
+        });
+        this.setState({ langPref: new Set(values) });
+      },
+        (reason) => {
+          if (reason.data && reason.data.status === 404) {
+            this.props.dispatch(actions.createSnippetLanguagePreferences([...SnippetsMenuContainer.defaultLangPref]));
+          }
+        });
+    this.debouncedSavePrefs = debounce((value) => {
+      this.props.dispatch(actions.saveSnippetLanguagePreferences([...value]));
+    }, 1000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -80,11 +105,26 @@ export class SnippetsMenuContainer extends React.Component {
     if (nextState.showMode !== this.state.showMode) {
       return true;
     }
+    if (nextState.langPref !== this.state.langPref) {
+      return true;
+    }
     return nextProps.department !== this.props.department;
+  }
+
+  componentWillUnmount() {
+    this.debouncedSavePrefs.flush();
   }
 
   onClose = () => {
     this.menu.onClose();
+  };
+
+  updateLanguagePref = (newPrefs) => {
+    this.setState({
+      langPref: newPrefs
+    });
+    this.forceUpdate();
+    this.debouncedSavePrefs(newPrefs);
   };
 
   insertSnippet = (e, snippet, langId) => {
@@ -104,7 +144,19 @@ export class SnippetsMenuContainer extends React.Component {
 
   render() {
     const { me, closeMenu, type, department, languages, width, langId, open } = this.props;
-    const langPref = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
+    const langContext = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
+    const langDisplay = [...this.state.langPref].map((lang) => {
+      if (lang === 'context') {
+        return langId;
+      }
+      if (lang === 'agent') {
+        return window.DP_PERSON_LANG_ID;
+      }
+      if (lang === 'helpdesk') {
+        return window.DP_DEFAULT_LANG_ID;
+      }
+      return lang;
+    });
     let labels = new Set();
     this.props.snippets.map(snippet => snippet.get('labels').forEach(label => labels.add(label)));
     labels = Array.from(labels);
@@ -114,7 +166,7 @@ export class SnippetsMenuContainer extends React.Component {
           return false;
         }
         if (!snippet.get('translations').find(translation =>
-            langPref.indexOf(translation.get('language')) !== -1
+            langDisplay.indexOf(translation.get('language')) !== -1
           )) {
           return false;
         }
@@ -131,7 +183,8 @@ export class SnippetsMenuContainer extends React.Component {
         return snippet.get('labels').find(label => label.match(re))
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
-          || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langPref)
+          || SnippetsMenuContainer
+              .getSnippetTranslationToUse(snippet.get('translations'), langContext)
             .get('content').match(re);
       });
 
@@ -180,8 +233,11 @@ export class SnippetsMenuContainer extends React.Component {
         type={type}
         filter={this.state.filter}
         showMode={this.state.showMode}
-        langId={langId}
-        langPref={langPref}
+        langId={isNaN(langId) ? window.DP_PERSON_LANG_ID : langId}
+        langDisplay={langDisplay}
+        langContext={langContext}
+        langPref={this.state.langPref}
+        updateLanguagePref={this.updateLanguagePref}
         open={open}
         width={width}
         ref={(c) => { this.menu = c; }}
@@ -192,22 +248,25 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    me:               PropTypes.object,
-    snippets:         PropTypes.object,
-    labels:           PropTypes.array,
-    filteredSnippets: PropTypes.object,
-    languages:        PropTypes.object,
-    langId:           PropTypes.number,
-    width:            PropTypes.number,
-    closeMenu:        PropTypes.func,
-    insertSnippet:    PropTypes.func,
-    handleFilter:     PropTypes.func,
-    handleShowMode:   PropTypes.func,
-    open:             PropTypes.bool,
-    type:             PropTypes.string,
-    filter:           PropTypes.string,
-    showMode:         PropTypes.string,
-    langPref:         PropTypes.array,
+    me:                 PropTypes.object,
+    snippets:           PropTypes.object,
+    labels:             PropTypes.array,
+    filteredSnippets:   PropTypes.object,
+    languages:          PropTypes.object,
+    langId:             PropTypes.number,
+    width:              PropTypes.number,
+    closeMenu:          PropTypes.func,
+    insertSnippet:      PropTypes.func,
+    handleFilter:       PropTypes.func,
+    handleShowMode:     PropTypes.func,
+    open:               PropTypes.bool,
+    type:               PropTypes.string,
+    filter:             PropTypes.string,
+    showMode:           PropTypes.string,
+    langContext:        PropTypes.array,
+    langDisplay:        PropTypes.array,
+    langPref:           PropTypes.object,
+    updateLanguagePref: PropTypes.func,
   };
   static defaultProps = {
     handleFilter() {},
@@ -374,6 +433,7 @@ export class SnippetsMenu extends React.Component {
     this.setState({
       editOpen:    true,
       snippetEdit: snippet,
+      editLang:    this.props.langId,
     });
   };
 
@@ -441,7 +501,8 @@ export class SnippetsMenu extends React.Component {
 
   selectFocused = (e) => {
     const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
-    const langId = SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), this.props.langPref)
+    const langId = SnippetsMenuContainer
+      .getSnippetTranslationToUse(snippet.get('translations'), this.props.langPref)
       .get('language');
     this.props.insertSnippet(e, snippet, langId);
   };
@@ -457,9 +518,13 @@ export class SnippetsMenu extends React.Component {
       filter,
       handleFilter,
       width,
+      langContext,
+      langDisplay,
       langPref,
+      updateLanguagePref,
       showMode,
       handleShowMode,
+      type,
     } = this.props;
     const style = {};
     if (width) {
@@ -505,6 +570,13 @@ export class SnippetsMenu extends React.Component {
                 + {agentPhrases.get('agent.general.snippet')}
               </Button>
               : null}
+            <LanguageSelect
+              languages={languages}
+              langContext={langContext}
+              langPref={langPref}
+              onChange={updateLanguagePref}
+              type={type}
+            />
           </div>
         </div>
         <div className="body">
@@ -529,7 +601,7 @@ export class SnippetsMenu extends React.Component {
             me={me}
             snippets={snippets}
             languages={languages}
-            langPref={langPref}
+            langPref={langDisplay}
             filter={filter}
             height={this.state.height}
             width={width}

@@ -55,20 +55,22 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   getLanguages() {
-    const { snippet, languages, insertSnippet } = this.props;
+    const { snippet, languages, insertSnippet, langPref } = this.props;
     if (snippet.get('translations')) {
       const flags = [];
       snippet.get('translations').forEach((translation, key) => {
-        const language = languages.find(l => l.get('id') === translation.get('language'));
-        if (language && language.get('flag_image')) {
-          flags.push(
-            <img
-              key={key}
-              src={language.get('flag_image')}
-              alt={language.get('title')}
-              title={language.get('title')}
-              onClick={e => insertSnippet(e, snippet, language.get('id'))}
-            />);
+        if (langPref.indexOf(translation.get('language')) !== -1) {
+          const language = languages.find(l => l.get('id') === translation.get('language'));
+          if (language && language.get('flag_image')) {
+            flags.push(
+              <img
+                key={key}
+                src={language.get('flag_image')}
+                alt={language.get('title')}
+                title={language.get('title')}
+                onClick={e => insertSnippet(e, snippet, language.get('id'))}
+              />);
+          }
         }
       });
       if (flags.length) {
@@ -200,6 +202,9 @@ export class SnippetsList extends React.Component {
     if (!nextProps.snippets.equals(this.props.snippets)) {
       this.listRef.forceUpdateGrid();
     }
+    if (nextProps.langPref !== this.props.langPref) {
+      this.listRef.forceUpdateGrid();
+    }
   }
 
   updateList(index) {
@@ -285,7 +290,7 @@ export class SnippetsList extends React.Component {
         height={height}
         width={listWidth}
         rowCount={this.list.length}
-        rowHeight={66}
+        rowHeight={68}
         rowRenderer={this.rowRenderer}
         noRowsRenderer={SnippetsList.noRowsRenderer}
         overscanRowCount={2}

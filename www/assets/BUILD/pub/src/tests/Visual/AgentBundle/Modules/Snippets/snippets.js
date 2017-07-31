@@ -16,6 +16,12 @@ import {
 import { OwnershipSelect } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/Menus/OwnershipSelect';
 import { css } from '../../../decorators';
 
+window.DeskPRO_Window = {
+  keyboardShortcuts: {
+    isPaused: true
+  }
+};
+
 storiesOf('Agent: Snippets', module)
   .addDecorator(story => css(story()))
   .add(
