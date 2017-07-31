@@ -80,7 +80,7 @@ class AppStateController extends BaseController
         $filter = new AppStoreBundle\Domain\ApplicationStateSearchFilter($instanceId, $entityId);
 
         $auth = $this->getUser();
-        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\AccessRequest::newAPIReadAccessRequest($auth);
+        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIReadAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
@@ -134,7 +134,7 @@ class AppStateController extends BaseController
         }
 
         $auth = $this->getUser();
-        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\AccessRequest::newAPIReadAccessRequest($auth);
+        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\PersonAccessRequest::newReadAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
@@ -176,7 +176,7 @@ class AppStateController extends BaseController
         $stateIdentifer = new AppStoreBundle\Domain\ApplicationStateId($instanceId, $stateName, $entityIdentifier);
 
         $auth = $this->getUser();
-        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\AccessRequest::newAPIReadAccessRequest($auth);
+        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIReadAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
@@ -234,7 +234,7 @@ class AppStateController extends BaseController
         $value = json_encode($parsedStateValue['value']);
 
         $auth = $this->getUser();
-        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\AccessRequest::newAPIWriteAccessRequest($auth);
+        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIWriteAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
@@ -275,7 +275,7 @@ class AppStateController extends BaseController
         $stateIdentifer = new AppStoreBundle\Domain\ApplicationStateId($instanceId, $stateName, $entityIdentifier);
 
         $auth = $this->getUser();
-        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\AccessRequest::newAPIWriteAccessRequest($auth);
+        $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIWriteAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);

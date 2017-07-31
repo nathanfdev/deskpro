@@ -40,14 +40,42 @@ use Doctrine\ORM\EntityRepository;
 class AppStateRepository extends EntityRepository
 {
     /**
-     * @param AppInstance $instance
-     * @param Person      $person
-     * @param array       $names
+     * @param AppInstance|string $instance
+     * @param Person             $person
+     * @param string              $name
+     *
+     * @return AppState|null
+     */
+    public function findOneReadableByName($instance, Person $person, $name)
+    {
+        $results = $this->findReadableByName($instance, $person, [ $name ]);
+        if (count($results) === 1) {
+            return array_pop($results);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param AppInstance|string $instance
+     * @param Person             $person
+     * @param array              $names
      *
      * @return AppState[]
      */
-    public function findReadableByName(AppInstance $instance, Person $person, array $names)
+    public function findReadableByName($instance, Person $person, array $names)
     {
+        $instanceId = null;
+        if ($instance instanceof AppInstance) {
+            $instanceId = $instance->getId();
+        } else if (is_string($instance) && !empty($instance)) {
+            $instanceId = $instance;
+        }
+
+        if (empty($instanceId)) {
+            throw new \BadMethodCallException('Parameter instance must be a valid AppInstance id or an instance of AppInstance');
+        }
+
         $qb = $this->createQueryBuilder('s');
         $qb
             ->select('s')
@@ -56,7 +84,7 @@ class AppStateRepository extends EntityRepository
                 '(s.owner = :owner OR s.permRead = :permRead)',
                 's.name IN (:names)'
             )
-            ->setParameter('instance', $instance)
+            ->setParameter('instance', $instanceId)
             ->setParameter('permRead', Constants::PERMISSION_EVERYONE)
             ->setParameter('owner', $person)
             ->setParameter('names', $names)

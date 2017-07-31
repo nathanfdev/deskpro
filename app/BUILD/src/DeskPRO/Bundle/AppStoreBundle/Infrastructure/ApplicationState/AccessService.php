@@ -66,10 +66,12 @@ class AccessService
      */
     public function allowWriteAccess(AccessRequest $request, Domain\ApplicationState $state)
     {
-        return
+        $allowsPersonAccess =
             $request->getAccessLevel() === Domain\Constants::ACCESS_LEVEL_WRITE
             && $state->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_WRITE)
         ;
+
+        return $allowsPersonAccess;
     }
 
     /**
@@ -79,11 +81,20 @@ class AccessService
      */
     public function allowReadAccess(AccessRequest $request, Domain\ApplicationState $state)
     {
-        return
-            $request->getAccessLevel() === Domain\Constants::ACCESS_LEVEL_READ
-            && $state->confirmAccessLevelForService($request->getService(), Domain\Constants::ACCESS_LEVEL_READ)
+        $allowsPersonAccess = $request->getAccessLevel() === Domain\Constants::ACCESS_LEVEL_READ
             && $state->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_READ)
         ;
+
+
+        if (! $allowsPersonAccess) {
+            return false;
+        }
+
+        if ($request instanceof ServiceAccessRequest) {
+            return $state->confirmAccessLevelForService($request->getService(), Domain\Constants::ACCESS_LEVEL_READ);
+        }
+
+        return true;
     }
 
     /**
@@ -150,11 +161,11 @@ class AccessService
 
     /**
      * @param Domain\ApplicationStateId $identifier
-     * @param AccessRequest $request
+     * @param ServiceAccessRequest $request
      * @param $value
      * @return Domain\ApplicationState
      */
-    public function writeValue(Domain\ApplicationStateId $identifier, AccessRequest $request, $value)
+    public function writeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value)
     {
         /** @var \Exception $exception */
         $exception = null;
@@ -178,11 +189,11 @@ class AccessService
 
     /**
      * @param Domain\ApplicationStateId $identifier
-     * @param AccessRequest $request
+     * @param ServiceAccessRequest $request
      * @param $value
      * @return Domain\ApplicationState
      */
-    public function addValue(Domain\ApplicationStateId $identifier, AccessRequest $request, $value)
+    public function addValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value)
     {
         /** @var Entity\AppStore\AppInstance $appInstance */
         $appInstance = $this->entityManager->find(Entity\AppStore\AppInstance::class, $identifier->getInstanceId());
@@ -228,11 +239,11 @@ class AccessService
 
     /**
      * @param Domain\ApplicationStateId $identifier
-     * @param AccessRequest $request
+     * @param ServiceAccessRequest $request
      * @param string $value
      * @return Domain\ApplicationState
      */
-    public function changeValue(Domain\ApplicationStateId $identifier, AccessRequest $request, $value) {
+    public function changeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value) {
         /** @var Entity\AppStore\AppState $stateEntity */
         $stateEntity = null;
         $findStateEntityQuery = $this->queryBuilder->buildFindStateEntityByIdQuery($this->entityManager, $identifier);
@@ -263,10 +274,10 @@ class AccessService
 
     /**
      * @param Domain\ApplicationStateId $identifier
-     * @param AccessRequest $request
+     * @param ServiceAccessRequest $request
      * @return string
      */
-    public function readValue(Domain\ApplicationStateId $identifier, AccessRequest $request) {
+    public function readValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request) {
         /** @var Entity\AppStore\AppState $stateEntity */
         $stateEntity = null;
         $findStateEntityQuery = $this->queryBuilder->buildFindStateEntityByIdQuery($this->entityManager, $identifier);
@@ -293,10 +304,10 @@ class AccessService
 
     /**
      * @param Domain\ApplicationStateSearchFilter $filter
-     * @param AccessRequest $request
+     * @param ServiceAccessRequest $request
      * @return Domain\ApplicationState[]|array
      */
-    public function readAllValues(Domain\ApplicationStateSearchFilter $filter, AccessRequest $request) {
+    public function readAllValues(Domain\ApplicationStateSearchFilter $filter, ServiceAccessRequest $request) {
         $findQuery = $this->queryBuilder->buildFindStateEntityByFilterQuery($this->entityManager, $filter);
         $entities = $findQuery->getResult();
 
@@ -319,10 +330,10 @@ class AccessService
 
     /**
      * @param Domain\ApplicationStateId $identifier
-     * @param AccessRequest $request
+     * @param ServiceAccessRequest $request
      * @return string
      */
-    public function removeValue(Domain\ApplicationStateId $identifier, AccessRequest $request)
+    public function removeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request)
     {
         /** @var Entity\AppStore\AppState $stateEntity */
         $stateEntity = null;
