@@ -269,11 +269,15 @@ export class SnippetsList extends React.Component {
           label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
         );
       }).toArray();
+    let listWidth = (width - 5) * 0.74;
+    if (width > 928) {
+      listWidth = width - 245;
+    }
     return (
       <List
         className="snippets__list"
         height={height}
-        width={(width - 5) * 0.7}
+        width={listWidth}
         rowCount={this.list.length}
         rowHeight={66}
         rowRenderer={this.rowRenderer}
