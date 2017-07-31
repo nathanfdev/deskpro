@@ -37,7 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 abstract class AbstractCustomFieldsController extends CrudController
 {
-    public static $exposeOnly  = ['list', 'get', 'put'];
+    public static $exposeOnly  = ['list', 'get', 'put', 'delete'];
     public static $type        = CustomFieldType::class;
     public static $listSort    = 'display_order';
     public static $listOrder   = 'asc';

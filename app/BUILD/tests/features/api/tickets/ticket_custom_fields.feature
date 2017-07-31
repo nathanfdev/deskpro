@@ -121,4 +121,4 @@ Feature: Ticket custom fields
 
   Scenario: I try to delete a custom field via API
     Given I send a DELETE request to "/api/v2/ticket_custom_fields/{text_field}"
-    Then the response status code should be 405
+    Then the response status code should be 200
