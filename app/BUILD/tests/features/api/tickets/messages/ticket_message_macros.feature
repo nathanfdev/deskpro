@@ -4,13 +4,17 @@ Feature: /tickets/{id}/messages endpoint
   Background:
     Given I'm authenticated as admin
     And agent and user exist
+    And only the following TextSnippet records exist:
+      | #  | Person  | Shortcut Code   | Is Draft |
+      | s1 | NULL    | ticket_snippet1 | 0        |
     And only the following TicketMacro records exist:
       | #  | Person  | Is Global | Title          | Actions                                                                                   |
       | m1 | {admin} | 0         | Ticket macro 1 | [{"type": "add_labels", "options": {"labels": ["label1", "label2"]}}]                     |
       | m2 | {admin} | 0         | Ticket macro 2 | [{"type": "add_labels", "options": {"labels": ["label3", "label4"]}}]                     |
       | m3 | {agent} | 0         | Ticket macro 3 | [{"type": "add_labels", "options": {"labels": ["label5", "label6"]}}]                     |
       | m4 | {admin} | 0         | Ticket macro 4 | [{"type": "reply", "options": {"reply_text": "My macro message", "reply_pos": "append"}}] |
-      | m5 | {admin} | 0         | Ticket macro 5 | [{"type": "status", "options": {"status": "resolved"}}]                                   |
+      | m5 | {admin} | 0         | Ticket macro 5 | [{"type": "reply_snippet", "options": {"snippet_id": "~s1~", "reply_pos": "append"}}]     |
+      | m6 | {admin} | 0         | Ticket macro 6 | [{"type": "status", "options": {"status": "resolved"}}]                                   |
     And only the following Ticket records exist:
       | #  | Subject  | Status         |
       | t1 | Ticket 1 | awaiting_agent |
@@ -48,7 +52,7 @@ Feature: /tickets/{id}/messages endpoint
     """
 {
   "message": "my message",
-  "macros": [~m4~]
+  "macros": [~m4~, ~m5~]
 }
     """
     Then the response status code should be 201
@@ -62,7 +66,7 @@ Feature: /tickets/{id}/messages endpoint
     """
 {
   "message": "my message",
-  "macros": [~m5~]
+  "macros": [~m6~]
 }
     """
     Then the response status code should be 201

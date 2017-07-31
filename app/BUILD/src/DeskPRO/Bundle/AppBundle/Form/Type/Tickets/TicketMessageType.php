@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
+use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
@@ -440,7 +441,9 @@ class TicketMessageType extends AbstractType
             $actions = new ActionsCollection();
             foreach ($macro->getActionsCollection()->getActions() as $action) {
                 // skip reply and status actions
-                if ($action instanceof ReplyAction || $action instanceof StatusAction) {
+                if ($action instanceof ReplyAction
+                    || $action instanceof ReplySnippetAction
+                    || $action instanceof StatusAction) {
                     continue;
                 }
 
