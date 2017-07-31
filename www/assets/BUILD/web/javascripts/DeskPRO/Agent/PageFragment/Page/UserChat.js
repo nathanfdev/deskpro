@@ -663,7 +663,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     self.getEl('messages_box').css('bottom', lastH+75);
 	},
 
-	sendSnippetAttachments() {
+	sendSnippetAttachments: function() {
     var self = this;
     var rows = $('ul.files li', self.getEl('attach_row'));
     var blob_id;
