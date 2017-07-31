@@ -21,22 +21,22 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return parseInt(catId) || 0;
 			},
 			getCategoryId: function() {
-				var catId = self.display.find('.prop-input-category_id').first().val();
+				var catId = self.display.find('select.prop-input-category_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getPriorityId: function() {
-				var catId = self.display.find('.prop-input-priority_id').first().val();
+				var catId = self.display.find('select.prop-input-priority_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
-				var catId = self.display.find('.prop-input-product').first().val();
+				var catId = self.display.find('select.prop-input-product').first().val();
 				return parseInt(catId) || 0;
 			},
 			getOrganizationId: function() {
 				return 0;
 			},
 			getWorkflowId: function() {
-				var catId = self.display.find('.prop-input-workflow_id').first().val();
+				var catId = self.display.find('select.prop-input-workflow_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getFieldValue: function(name) {
