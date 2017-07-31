@@ -5,7 +5,8 @@ import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import { Button, ConfirmButton } from 'deskpro-components/lib/Components/Buttons';
-import { Checkbox, Input, Label, TagSet, Select } from 'deskpro-components/lib/Components/Forms';
+import Icon from 'deskpro-components/lib/Components/Icon';
+import { Checkbox, Input, Label, TagInput, Select } from 'deskpro-components/lib/Components/Forms';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -555,7 +556,15 @@ export class SnippetsModal extends React.Component {
               <Button className="dp-button--l" onClick={saveSnippet} disabled={!this.isValid()}>
                 {agentPhrases.get('agent.general.save')}
               </Button>
-              <Button className="dp-button--l dp-button--secondary" onClick={closeModal}>
+              <Checkbox
+                checked={this.props.isDraft}
+                value="is_draft"
+                className="draft"
+                onChange={handleChangeDraft}
+              >
+                {agentPhrases.get('agent.snippets.snippet_is_draft')}
+              </Checkbox>
+              <Button className="dp-button--l dp-button--secondary right" onClick={closeModal}>
                 {agentPhrases.get('agent.general.cancel')}
               </Button>
               <ConfirmButton
@@ -569,15 +578,6 @@ export class SnippetsModal extends React.Component {
             </div>
         }
         >
-          <div className="language-switch field">
-            <ModalLanguageSelect
-              langId={langId}
-              languages={languages}
-              onChange={setLanguage}
-              translations={translations}
-            />
-          </div>
-          {this.getVariables()}
           <form id="snippet_form" onSubmit={this.onSubmit}>
             <div className="title-field field">
               <Label htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</Label>
@@ -588,60 +588,6 @@ export class SnippetsModal extends React.Component {
                 required
               />
             </div>
-            <textarea
-              id="snippet__editor"
-              cols="30"
-              rows="10"
-              defaultValue={translation.get('content', '')}
-              ref={(c) => { this.textArea = c; }}
-            />
-            <span className="files">
-              {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}
-            </span>
-            <UploadButton
-              id={'upload_attachment'}
-              ref={(c) => { this.uploadButton = c; }}
-              name="file"
-              onSuccess={addAttachment}
-              uploadUrl={this.getUploadUrl()}
-            />
-            <div className="labels-field field">
-              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
-              <TagSet
-                tags={labels}
-                onChange={changeLabels}
-                options={labelsSource}
-                editable
-              />
-            </div>
-            <div className="types-field field">
-              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
-              <Checkbox
-                checked={this.props.types.find(type => type === 'ticket')}
-                value="ticket"
-                onChange={handleChangeTypes}
-              >
-                {agentPhrases.get('agent.general.ticket')}
-              </Checkbox>
-              <Checkbox
-                checked={this.props.types.find(type => type === 'chat')}
-                value="chat"
-                onChange={handleChangeTypes}
-              >
-                {agentPhrases.get('agent.general.chat')}
-              </Checkbox>
-            </div>
-            <div className="draft-field field">
-              <Label htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</Label>
-              <Checkbox
-                checked={this.props.isDraft}
-                value="is_draft"
-                onChange={handleChangeDraft}
-              >
-                {agentPhrases.get('agent.snippets.snippet_is_draft')}
-              </Checkbox>
-            </div>
-            <br />
             <div className="shortcut-field field">
               <Label htmlFor="snippet_shortcut_code">
                 {agentPhrases.get('agent.snippets.shortcut_code')}
@@ -655,6 +601,50 @@ export class SnippetsModal extends React.Component {
                 required
                 onChange={handleShortcutCode}
               />
+            </div>
+            <div className="labels-field field">
+              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
+              <TagInput
+                tags={labels}
+                onChange={changeLabels}
+                options={labelsSource}
+                editable
+              />
+            </div>
+            <div className="editor">
+              <textarea
+                id="snippet__editor"
+                cols="30"
+                rows="10"
+                defaultValue={translation.get('content', '')}
+                ref={(c) => { this.textArea = c; }}
+              />
+              <div className="language-switch field">
+                <ModalLanguageSelect
+                  langId={langId}
+                  languages={languages}
+                  onChange={setLanguage}
+                  translations={translations}
+                />
+              </div>
+              {this.getVariables()}
+            </div>
+            <div className="upload">
+              <div className="upload-button">
+                <span className="styled-button">
+                  <Icon name="paperclip" /> {agentPhrases.get('agent.general.attach_files')}
+                </span>
+                <UploadButton
+                  id={'upload_attachment'}
+                  ref={(c) => { this.uploadButton = c; }}
+                  name="file"
+                  onSuccess={addAttachment}
+                  uploadUrl={this.getUploadUrl()}
+                />
+              </div>
+              <span className="files">
+                {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}
+              </span>
             </div>
             <div className="ownership-field field">
               <Label htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</Label>
@@ -674,6 +664,23 @@ export class SnippetsModal extends React.Component {
                 onChange={this.props.handleDepartmentsChange}
                 style={{ maxHeight }}
               />
+            </div>
+            <div className="types-field field">
+              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
+              <Checkbox
+                checked={this.props.types.find(type => type === 'ticket')}
+                value="ticket"
+                onChange={handleChangeTypes}
+              >
+                {agentPhrases.get('agent.general.ticket')}
+              </Checkbox>
+              <Checkbox
+                checked={this.props.types.find(type => type === 'chat')}
+                value="chat"
+                onChange={handleChangeTypes}
+              >
+                {agentPhrases.get('agent.general.chat')}
+              </Checkbox>
             </div>
           </form>
         </Modal>

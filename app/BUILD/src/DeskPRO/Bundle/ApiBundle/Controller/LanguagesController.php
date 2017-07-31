@@ -85,6 +85,7 @@ class LanguagesController extends CrudController
             'agent.general.all',
             'agent.general.article',
             'agent.general.are_you_sure',
+            'agent.general.attach_files',
             'agent.general.brand',
             'agent.general.category',
             'agent.general.chat',

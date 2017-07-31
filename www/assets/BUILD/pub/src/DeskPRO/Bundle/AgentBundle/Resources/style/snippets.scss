@@ -369,7 +369,27 @@
 }
 #snippets__modal {
   .dp-modal {
-    min-height: 525px;
+    min-height: 492px;
+  }
+  .dp-input__label {
+    padding-bottom: 2px;
+  }
+  .dp-input {
+    width: 100%;
+  }
+  .dp-modal__buttons {
+    .dp-button.right {
+      margin-right: 12px;
+    }
+    .dp-button:not(.right) + .dp-button.right {
+      margin-right: 0;
+    }
+    .draft {
+      display: inline-block;
+      .dp-input__label {
+        text-transform: uppercase;
+      }
+    }
   }
   .snippet-attachment {
     border: 1px solid $dp-sonic-primary;
@@ -395,11 +415,27 @@
     margin-bottom: 5px;
     margin-right: 10px;
   }
+  .title-field {
+    width: 70%;
+    input {
+      width: 100%;
+    }
+  }
+  .shortcut-field {
+    width: calc(30% - 10px);
+    margin-right: 0;
+    input {
+      width: calc(100% - 40px);
+    }
+  }
+  .editor {
+    position: relative;
+  }
   .language-switch {
     width: 140px;
     position: absolute;
-    right: 7px;
-    top: 107px;
+    right: 137px;
+    top: 5px;
     z-index: 1;
     .dp-select {
       width: 100%;
@@ -426,11 +462,40 @@
       }
     }
   }
+  .upload {
+    .upload-button {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      height: 21px;
+      margin-right: 5px;
+      .styled-button {
+        border: 1px solid $dp-greyscale-300;
+        font-family: $primary-font;
+        border-bottom-left-radius: $rad-size-m-l;
+        border-bottom-right-radius: $rad-size-m-l;
+        box-shadow: 0 -1px 0 $dp-greyscale-200 inset;
+        color: $dp-greyscale-850;
+        padding: 2px 4px;
+      }
+      input {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 20px;
+        cursor: pointer;
+        opacity: 0;
+        filter: alpha(opacity=0);
+      }
+    }
+  }
   .variable-switch {
     width: 140px;
     position: absolute;
-    right: 150px;
-    top: 107px;
+    right: -5px;
+    top: 5px;
     z-index: 1;
   }
   .ownership-field,
@@ -440,6 +505,7 @@
   }
   .labels-field {
     display: block;
+    margin-right: 0;
     .dp-input__label {
       padding-bottom: 0;
       margin-bottom: -2px;

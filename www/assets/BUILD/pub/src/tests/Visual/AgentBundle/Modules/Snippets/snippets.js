@@ -22,6 +22,10 @@ window.DeskPRO_Window = {
   }
 };
 
+window.DESKPRO_PERSON_PERMS = {
+  'agent_snippets.delete_by_others': true
+};
+
 storiesOf('Agent: Snippets', module)
   .addDecorator(story => css(story()))
   .add(
@@ -38,6 +42,7 @@ storiesOf('Agent: Snippets', module)
   .add(
     'Modal',
     () => <SnippetsModal
+      me={me}
       snippet={editSnippet}
       translation={editTranslation}
       languages={languages}

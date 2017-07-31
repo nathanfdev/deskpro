@@ -3011,9 +3011,9 @@
       "resolved": "https://registry.npmjs.org/derivable/-/derivable-1.0.0-beta11.tgz"
     },
     "deskpro-components": {
-      "version": "0.5.5",
-      "from": "deskpro-components@0.5.5",
-      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.5.tgz",
+      "version": "0.5.7",
+      "from": "deskpro-components@0.5.7",
+      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.7.tgz",
       "dependencies": {
         "add-px-to-style": {
           "version": "1.0.0",
@@ -3142,6 +3142,16 @@
           "from": "react@15.6.1",
           "resolved": "https://registry.npmjs.org/react/-/react-15.6.1.tgz"
         },
+        "react-autosuggest": {
+          "version": "9.3.2",
+          "from": "react-autosuggest@>=9.3.2 <10.0.0",
+          "resolved": "https://registry.npmjs.org/react-autosuggest/-/react-autosuggest-9.3.2.tgz"
+        },
+        "react-autowhatever": {
+          "version": "10.1.0",
+          "from": "react-autowhatever@>=10.1.0 <11.0.0",
+          "resolved": "https://registry.npmjs.org/react-autowhatever/-/react-autowhatever-10.1.0.tgz"
+        },
         "react-custom-scrollbars": {
           "version": "4.1.2",
           "from": "react-custom-scrollbars@>=4.1.2 <5.0.0",
@@ -3177,10 +3187,32 @@
           "from": "react-tagsinput@>=3.17.0 <4.0.0",
           "resolved": "https://registry.npmjs.org/react-tagsinput/-/react-tagsinput-3.17.0.tgz"
         },
+        "react-themeable": {
+          "version": "1.1.0",
+          "from": "react-themeable@>=1.1.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/react-themeable/-/react-themeable-1.1.0.tgz",
+          "dependencies": {
+            "object-assign": {
+              "version": "3.0.0",
+              "from": "object-assign@>=3.0.0 <4.0.0",
+              "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-3.0.0.tgz"
+            }
+          }
+        },
+        "section-iterator": {
+          "version": "2.0.0",
+          "from": "section-iterator@>=2.0.0 <3.0.0",
+          "resolved": "https://registry.npmjs.org/section-iterator/-/section-iterator-2.0.0.tgz"
+        },
         "setimmediate": {
           "version": "1.0.5",
           "from": "setimmediate@>=1.0.5 <2.0.0",
           "resolved": "https://registry.npmjs.org/setimmediate/-/setimmediate-1.0.5.tgz"
+        },
+        "shallow-equal": {
+          "version": "1.0.0",
+          "from": "shallow-equal@>=1.0.0 <2.0.0",
+          "resolved": "https://registry.npmjs.org/shallow-equal/-/shallow-equal-1.0.0.tgz"
         },
         "to-camel-case": {
           "version": "1.0.0",
@@ -3463,7 +3495,7 @@
     },
     "emojione": {
       "version": "2.2.7",
-      "from": "emojione@>=2.2.6 <3.0.0",
+      "from": "emojione@>=2.2.7 <3.0.0",
       "resolved": "https://registry.npmjs.org/emojione/-/emojione-2.2.7.tgz"
     },
     "emojione-picker": {
@@ -6598,7 +6630,7 @@
       "resolved": "https://registry.npmjs.org/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz"
     },
     "json2csv": {
-      "version": "3.7.3",
+      "version": "3.7.4",
       "from": "json2csv@>=3.4.2 <4.0.0",
       "resolved": "https://registry.npmjs.org/json2csv/-/json2csv-3.7.3.tgz"
     },
