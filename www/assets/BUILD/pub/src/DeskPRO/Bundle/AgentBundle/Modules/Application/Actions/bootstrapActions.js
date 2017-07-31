@@ -156,16 +156,19 @@ export const preloadData    = createAction(
             ;
           }
         }
+
         return data;
       };
 
       api.sendGet(api.prepareParams(batchComponents))
         .success(onBatchComponentsSuccess)
-        .then((data) => {
+        .then((responses) => {
+          const { discover } = responses.data.responses;
           // create appstore configuration
           const builder = DeskproAppStore.configureWithWindowParams(window);
-          if (data.discover) {
-            builder.addHelpdeskDiscoverySettings(data.discover.data);
+
+          if (discover && discover.data) {
+            builder.addHelpdeskDiscoverySettings(discover.data);
           }
           const appStoreConfig = builder.build();
 

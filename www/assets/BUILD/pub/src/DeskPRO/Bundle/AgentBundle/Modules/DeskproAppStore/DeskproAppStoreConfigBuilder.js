@@ -52,7 +52,13 @@ export class DeskproAppStoreConfigBuilder {
    * @return {DeskproAppStoreConfigBuilder}
    */
   addHelpdeskDiscoverySettings(settings)  {
-    this.state.discoveryProps = { oauthProxyEndpoint: settings.oauth_proxy_url };
+    this.state.discoveryProps = {
+      oauthProxyEndpoint: `${settings.helpdesk_url}api/v2/apps/oauth-proxy`,
+      helpdeskUrl:        `${settings.helpdesk_url}`,
+      helpdeskBuild:      `${settings.build}`,
+      apiEndpoint:        `${settings.base_api_url}`
+    };
+
     return this;
   }
 
@@ -61,13 +67,13 @@ export class DeskproAppStoreConfigBuilder {
    */
   build()  {
     const { windowProps, discoveryProps } = this.state;
-
     if (windowProps.environment === 'development') { // window props override discovery props
       const props = Object.assign({}, discoveryProps, windowProps);
       return new DeskproAppStoreConfiguration(props);
     }
 
     const props = Object.assign({}, windowProps, discoveryProps);
+    console.log('DeskproAppStoreConfigBuilder:build', props);
     return new DeskproAppStoreConfiguration(props);
   }
 }

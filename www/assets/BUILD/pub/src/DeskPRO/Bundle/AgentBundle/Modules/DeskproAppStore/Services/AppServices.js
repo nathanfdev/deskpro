@@ -39,10 +39,18 @@ export class AppServices {
    * @param {String} callbackUrl
    * @return {URL}
    */
-  buildOauthProxyAuthorizeUrl(urlString, { verifyUrl, state, provider, callbackMethod, callbackUrl })  {
-    return this.buildURL(urlString)
-      .set('pathname', '/oauth-proxy/authorize')
-      .set('query', { verifyUrl, state, provider, callbackMethod, callbackUrl });
+  buildOauthProxyAuthorizeUrl(urlString, { verifyUrl, state, provider, callbackMethod, callbackUrl, applicationId })  {
+    const builder = this.buildURL(urlString);
+
+    let existingPath = builder.pathname;
+    if (!existingPath) {
+      existingPath = '';
+    }
+    existingPath = existingPath.trim('/');
+
+    return builder.set('protocol', 'https')
+      .set('pathname', `${existingPath}/authorize`)
+      .set('query', { verifyUrl, state, provider, callbackMethod, callbackUrl, applicationId });
   }
 
   /**

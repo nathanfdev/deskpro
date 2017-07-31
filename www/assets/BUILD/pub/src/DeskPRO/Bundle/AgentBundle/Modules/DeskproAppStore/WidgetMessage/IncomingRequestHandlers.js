@@ -28,10 +28,11 @@ const registerPostMessageListener = (windowObject, handler) => {
  */
 export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessage, services) => {
   const { correlationId }  = widgetMessage;
-  const { applicationId, id } = widget;
+  const { id } = widget;
+
 
   const { provider } = widgetMessage.body;
-  const state = services.base64.encodeJSON({ correlationId, applicationId });
+  const state = services.base64.encodeJSON({ correlationId });
 
   const verifyUrl = services.buildURL(services.config.apiRoot) // use canonic xxx.deskpro.com
       .set('username', services.window.DP_PERSON_ID)
@@ -43,6 +44,8 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
   const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
   if (oauthProxyEndpoint) {
     const oauthProxyParams = {
+      applicationId: widget.instanceId,
+
       verifyUrl,
       state,
       provider,
@@ -50,6 +53,7 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
       callbackUrl:    services.location.href
     };
     oauthProxyUrl = services.buildOauthProxyAuthorizeUrl(oauthProxyEndpoint, oauthProxyParams).toString();
+    console.log('oauthProxyEndpoint ', oauthProxyEndpoint, oauthProxyUrl);
   }
 
   if (!oauthProxyUrl) {
@@ -68,7 +72,7 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
 
     try {
       const receivedState = services.base64.decodeJSON(ev.data.body.state);
-      const stateIsValid = correlationId === receivedState.correlationId && applicationId === receivedState.applicationId;
+      const stateIsValid = correlationId === receivedState.correlationId;
       if (!stateIsValid) {
         return false;
       }
