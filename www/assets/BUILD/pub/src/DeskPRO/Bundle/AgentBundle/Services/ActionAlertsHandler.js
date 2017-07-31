@@ -35,8 +35,8 @@ class ActionAlertsHandler {
       case 'helpdesk.agent.refresh_interface': {
         const { who, message, isIgnoreAllowed, reasonCode } = payload.data;
         if (reasonCode === 'upgrade_complete') {
-          if (!DeskPRO_Window.update_running) {
-            // the upgrading message was never disaplyed,
+          if (!window.DeskPRO_Window.update_running) {
+            // the upgrading message was never displayed,
             // show a fake one now and then refresh
             $('#reload_overlay').show();
             $('#reload_overlay_updates').show();
@@ -45,7 +45,7 @@ class ActionAlertsHandler {
           // on a slight delay to let any offline trigger files to be unset
           window.setTimeout(() => window.location.reload(false), 5000);
         } else {
-          DeskPRO_Window.showRefreshAlert(who, message, isIgnoreAllowed);
+          window.DeskPRO_Window.showRefreshAlert(who, message, isIgnoreAllowed);
         }
       }
         break;
@@ -75,7 +75,14 @@ class ActionAlertsHandler {
       case 'snippet.snippets_updated':
         switch (payload.data.action) {
           case 'update':
-            this.options.dispatch(snippetActions.getSnippet([payload.data.snippet_id]));
+            this.options.dispatch(snippetActions.getSnippet([payload.data.snippet_id])).then((snippet) => {
+              const shortcutCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
+              if (shortcutCodes[snippet.shortcut_code]) {
+                shortcutCodes[snippet.shortcut_code] = shortcutCodes[snippet.shortcut_code].concat([snippet.id]);
+              } else {
+                shortcutCodes[snippet.shortcut_code] = [snippet.id];
+              }
+            });
             break;
           case 'remove':
             this.options.dispatch(removeFromCollection('Snippets', 'all', [payload.data.snippet_id]));
