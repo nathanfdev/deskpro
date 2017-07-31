@@ -606,7 +606,7 @@
             ]
         },
         {
-            "path": "/tickets/filters/count",
+            "path": "/tickets/filters/counts",
             "description": "Get array of filters and counts.",
             "operations": [
                 {
