@@ -579,7 +579,7 @@ class TicketSearchController extends AbstractController
      * Get array of filters and counts.
      *
      * SWG\Api(
-     * 	path="/tickets/filters/count",
+     * 	path="/tickets/filters/counts",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get array of filters and counts",
