@@ -53,7 +53,6 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
       callbackUrl:    services.location.href
     };
     oauthProxyUrl = services.buildOauthProxyAuthorizeUrl(oauthProxyEndpoint, oauthProxyParams).toString();
-    console.log('oauthProxyEndpoint ', oauthProxyEndpoint, oauthProxyUrl);
   }
 
   if (!oauthProxyUrl) {
