@@ -46,11 +46,13 @@ class OauthProxyController extends BaseController
     }
 
     /**
-     * @Rest\Get("/authorize")
+     * @Rest\Get("/{provider}/authorize")
+     * @param string|null $provider
+     * @param Request $request
+     * @return RedirectResponse|Response
      */
-    public function authorizeAction(AppInstance $instance = null, Request $request)
+    public function authorizeAction($provider = null, Request $request)
     {
-        $provider = $request->query->get('provider', null);
         $applicationId = $request->query->get('applicationId', null);
         if (is_null($provider) || is_null($applicationId)) {
             return new Response('Connection not found', 400);
@@ -97,7 +99,7 @@ class OauthProxyController extends BaseController
     /**
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
-     * @Rest\Get("/grant-access/{application}/{provider}")
+     * @Rest\Get("/{provider}/grant-access/{application}")
      * @param AppInstance $application
      * @param string|null $provider
      * @param Request $request

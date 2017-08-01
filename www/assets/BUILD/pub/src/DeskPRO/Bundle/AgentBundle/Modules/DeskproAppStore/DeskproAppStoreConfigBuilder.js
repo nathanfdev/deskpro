@@ -73,7 +73,6 @@ export class DeskproAppStoreConfigBuilder {
     }
 
     const props = Object.assign({}, windowProps, discoveryProps);
-    console.log('DeskproAppStoreConfigBuilder:build', props);
     return new DeskproAppStoreConfiguration(props);
   }
 }

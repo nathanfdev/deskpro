@@ -19,6 +19,21 @@ const registerPostMessageListener = (windowObject, handler) => {
   addListener(event, listener, false);
 };
 
+export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, services) => {
+  const { provider } = widgetMessage.body;
+  const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
+  if (oauthProxyEndpoint) {
+    const redirectUrlParams = { provider, applicationId: widget.instanceId };
+    const urlRedirect = services.buildOauthProxyRedirectUrl(oauthProxyEndpoint, redirectUrlParams).toString();
+
+    const settings = { urlRedirect };
+    response(null, settings);
+    return;
+  }
+
+  response(new Error('oauth proxy url is not configured'));
+};
+
 /**
  * @param {function} response
  * @param {Widget} widget
@@ -66,7 +81,8 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
 
     const urlBuilder = services.buildURL(originURL);
     const origin =  `${urlBuilder.protocol.replace(/:+$/, '')}://${urlBuilder.host}`;
-    return origin !== ev.origin;
+
+    return origin === ev.origin;
   };
 
   const windowName = `auth-${id}-${provider}`;
@@ -375,6 +391,8 @@ export const handlers = {
   // SECURITY EVENT HANDLERS
 
   EVENT_SECURITY_AUTHENTICATE_OAUTH,
+
+  EVENT_SECURITY_SETTINGS_OAUTH,
 
   // GENERIC REST API REQUEST EVENT
 

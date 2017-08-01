@@ -30,6 +30,17 @@ export class AppServices {
     return new Base64Converter(this.window);
   }
 
+  buildOauthProxyRedirectUrl(urlString, { provider, applicationId })  {
+    const builder = this.buildURL(urlString);
+
+    let existingPath = builder.pathname;
+    if (!existingPath) {
+      existingPath = '';
+    }
+    const pathname = `${existingPath.trim('/')}/${provider}/grant-access/${applicationId}`;
+    return builder.set('protocol', 'https').set('pathname', pathname);
+  }
+
   /**
    * @param {String} urlString
    * @param {String} verifyUrl
@@ -37,6 +48,7 @@ export class AppServices {
    * @param {String} provider
    * @param {String} callbackMethod
    * @param {String} callbackUrl
+   * @param applicationId
    * @return {URL}
    */
   buildOauthProxyAuthorizeUrl(urlString, { verifyUrl, state, provider, callbackMethod, callbackUrl, applicationId })  {
@@ -46,11 +58,12 @@ export class AppServices {
     if (!existingPath) {
       existingPath = '';
     }
-    existingPath = existingPath.trim('/');
+    const pathname = `${existingPath.trim('/')}/${provider}/authorize`;
 
     return builder.set('protocol', 'https')
-      .set('pathname', `${existingPath}/authorize`)
-      .set('query', { verifyUrl, state, provider, callbackMethod, callbackUrl, applicationId });
+      .set('pathname', pathname)
+      .set('query', { verifyUrl, state, callbackMethod, callbackUrl, applicationId })
+    ;
   }
 
   /**
