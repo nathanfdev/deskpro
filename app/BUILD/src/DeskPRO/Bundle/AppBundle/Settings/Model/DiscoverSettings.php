@@ -44,6 +44,14 @@ class DiscoverSettings
     private $isDeskpro = true;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"discover"})
+     */
+    private $isCloud = false;
+
+    /**
      * @var string
      *
      * @JMS\Type("string")
@@ -83,6 +91,26 @@ class DiscoverSettings
     public function setIsDeskpro($isDeskpro)
     {
         $this->isDeskpro = $isDeskpro;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCloud()
+    {
+        return $this->isCloud;
+    }
+
+    /**
+     * @param bool $isCloud
+     *
+     * @return $this
+     */
+    public function setIsCloud($isCloud)
+    {
+        $this->isCloud = $isCloud;
 
         return $this;
     }

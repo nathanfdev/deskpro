@@ -60,29 +60,38 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
     return;
   }
 
+  const validateOauthProxyMessage = (ev, originURL) => {
+    const { type } = ev.data;
+    if (type !== 'oauth-proxy-callback') { return false; }
+
+    const urlBuilder = services.buildURL(originURL);
+    const origin =  `${urlBuilder.protocol.replace(/:+$/, '')}://${urlBuilder.host}`;
+    return origin !== ev.origin;
+  };
+
   const windowName = `auth-${id}-${provider}`;
   const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
 
   const listener = (ev) => {
-    const { type, status } = ev.data;
-    if (type !== 'oauth-proxy-callback' || ev.origin !== oauthProxyEndpoint) {
+    // there could two different authentication schemes running concurrently
+    if (!validateOauthProxyMessage(ev, oauthProxyUrl)) {
       return false;
     }
 
+    let messageIsAuthentic;
     try {
       const receivedState = services.base64.decodeJSON(ev.data.body.state);
-      const stateIsValid = correlationId === receivedState.correlationId;
-      if (!stateIsValid) {
-        return false;
-      }
-    } catch (error) { return false; }
+      messageIsAuthentic = correlationId === receivedState.correlationId;
+    } catch (error) {
+      messageIsAuthentic = false;
+    }
 
-    const messageIsAuthentic = true;
     if (!messageIsAuthentic) {
       response(new Error('authentication failed'));
       return true;
     }
 
+    const { status } = ev.data;
     if (status === 'success') {
       response(null, ev.data);
     } else {

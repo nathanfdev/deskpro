@@ -41,10 +41,12 @@ class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getSettings()
     {
         $helpdeskUrl = rtrim($this->getSetting('core.deskpro_url'), '/').'/';
+        $isCloud = defined('DPC_IS_CLOUD') ? DPC_IS_CLOUD : false;
 
         $model = new DiscoverSettings();
         $model
             ->setIsDeskpro(true)
+            ->setIsCloud($isCloud)
             ->setHelpdeskUrl($helpdeskUrl)
             ->setBaseApiUrl($helpdeskUrl.'api/v2/')
             ->setBuild(DP_BUILD_TIME)

@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauthConnection;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -124,7 +125,6 @@ class OauthProxyController extends BaseController
             }
 
             $token = $connection->getAccessToken('authorization_code', ['code' => $code]);
-
             return OauthResponseBuilder::forResponseType('token')
                 ->withApplicationState($proxyState['appState'])
                 ->withToken($token)

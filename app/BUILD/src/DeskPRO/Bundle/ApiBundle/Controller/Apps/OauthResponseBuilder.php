@@ -111,6 +111,7 @@ window.close();
 EOT;
 
         $status = $this->buildErrorResponse ? 400 : 200;
-        return new Response($content, $status);
+        $headers = [ 'Content-Type' =>  'text/html; charset=UTF8' ];
+        return new Response($content, $status, $headers);
     }
 }
