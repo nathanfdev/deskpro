@@ -43,13 +43,19 @@ export class SnippetsMenuContainer extends React.Component {
 
   static defaultLangPref = new Set(['context', 'agent', 'helpdesk']);
 
-  static getSnippetTranslationToUse(snippetTranslations, langPref) {
+  static getSnippetTranslationToUse(snippet, langPref, type) {
+    const snippetTranslations = snippet.get('translations');
+    const isSplit = snippet.get('is_split', false);
     for (let i = 0; i < langPref.length; i++) {
-      const found = snippetTranslations.find(tr => tr.get('language') === langPref[i]);
+      const found = snippetTranslations.find(tr =>
+        tr.get('language') === langPref[i]  && (!isSplit || tr.get('type') === type)
+      );
       if (found) {
         return found;
       }
     }
+    console.log(snippetTranslations.toJS());
+    console.log(snippet.toJS());
     return null;
   }
 
@@ -184,7 +190,7 @@ export class SnippetsMenuContainer extends React.Component {
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
           || SnippetsMenuContainer
-              .getSnippetTranslationToUse(snippet.get('translations'), langContext)
+              .getSnippetTranslationToUse(snippet, langContext, type)
             .get('content').match(re);
       });
 
@@ -502,7 +508,7 @@ export class SnippetsMenu extends React.Component {
   selectFocused = (e) => {
     const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
     const langId = SnippetsMenuContainer
-      .getSnippetTranslationToUse(snippet.get('translations'), this.props.langPref)
+      .getSnippetTranslationToUse(snippet, this.props.langPref, this.props.type)
       .get('language');
     this.props.insertSnippet(e, snippet, langId);
   };
@@ -605,6 +611,7 @@ export class SnippetsMenu extends React.Component {
             filter={filter}
             height={this.state.height}
             width={width}
+            type={type}
             focusedIndex={this.state.focusedIndex}
             selectedLabel={this.state.selectedLabel}
             multiLabels={this.state.multiLabels}

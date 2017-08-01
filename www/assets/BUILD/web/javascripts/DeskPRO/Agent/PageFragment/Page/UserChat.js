@@ -636,6 +636,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       blobs,
       langId,
       this.meta.api_data,
+      'chat',
       this.textarea,
       this.attachBlobs.bind(this),
       this.recordSnippetUse.bind(this)

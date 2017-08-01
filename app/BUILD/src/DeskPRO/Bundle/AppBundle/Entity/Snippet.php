@@ -374,8 +374,9 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     {
         foreach ($this->translations as $t) {
             if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()
-            && $t->getType() === $translation->getType()) {
+            && (!$t->getType() || $t->getType() === $translation->getType())) {
                 $t->setContent($translation->getContent());
+                $t->setType($translation->getContent());
 
                 return $this;
             }

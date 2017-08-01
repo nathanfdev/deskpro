@@ -1521,6 +1521,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       blobs,
       ticketLangId,
       vars,
+      'ticket',
       this.textarea,
       this.attachBlobs.bind(this),
       this.recordSnippetUse.bind(this)
