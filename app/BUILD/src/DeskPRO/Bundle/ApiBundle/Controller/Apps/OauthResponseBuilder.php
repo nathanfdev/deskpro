@@ -21,7 +21,10 @@ class OauthResponseBuilder
 
     private $callbackUrl;
 
-    public function __construct(bool $buildErrorResponse)
+    /**
+     * @param bool $buildErrorResponse
+     */
+    public function __construct($buildErrorResponse)
     {
         $this->buildErrorResponse = $buildErrorResponse;
     }
@@ -30,7 +33,7 @@ class OauthResponseBuilder
      * @param string $state
      * @return OauthResponseBuilder
      */
-    public function withApplicationState(string $state)
+    public function withApplicationState($state)
     {
         $this->messageProps['state'] = $state;
         return $this;
@@ -60,7 +63,7 @@ class OauthResponseBuilder
      * @param string $url
      * @return OauthResponseBuilder
      */
-    public function withCallbackUrl(string $url)
+    public function withCallbackUrl($url)
     {
         $this->callbackUrl = $url;
         return $this;
@@ -71,7 +74,7 @@ class OauthResponseBuilder
      * @return Response
      * @throws \DomainException
      */
-    public function build(string $callbackType)
+    public function build($callbackType)
     {
         switch ($callbackType) {
             case 'postMessage' :
