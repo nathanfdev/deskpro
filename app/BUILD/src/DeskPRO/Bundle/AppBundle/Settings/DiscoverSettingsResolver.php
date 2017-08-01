@@ -46,12 +46,12 @@ class DiscoverSettingsResolver extends AbstractBrandAwareSettingsResolver
 
 
         $isCloud = defined('DPC_IS_CLOUD') ? DPC_IS_CLOUD : false;
-        $appsOauthProxyUrl = $isCloud ? $this->getSetting('apps.oauth_proxy_url') : null;
+        $appsOauthProxyUrl = $this->getSetting('apps.oauth_proxy_url');
 
         if (empty($appsOauthProxyUrl)) {
             $appsOauthProxyUrl = $baseApiUrl.'apps/proxy-oauth';
         } else {
-            $appsOauthProxyUrl = rtrim($appsOauthProxyUrl, '/').'/';
+            $appsOauthProxyUrl = rtrim($appsOauthProxyUrl, '/');
         }
 
 
