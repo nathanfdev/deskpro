@@ -53,7 +53,8 @@ export class DeskproAppStoreConfigBuilder {
    */
   addHelpdeskDiscoverySettings(settings)  {
     this.state.discoveryProps = {
-      oauthProxyEndpoint: `${settings.helpdesk_url}api/v2/apps/oauth-proxy`,
+      oauthProxyEndpoint: `${settings.apps_oauth_proxy_url}`,
+      httpProxyEndpoint:  `${settings.apps_http_proxy_url}`,
       helpdeskUrl:        `${settings.helpdesk_url}`,
       helpdeskBuild:      `${settings.build}`,
       apiEndpoint:        `${settings.base_api_url}`

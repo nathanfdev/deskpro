@@ -49,7 +49,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("session")
  * @ApiUserContext("agent")
- * @Rest\Route("/http-api-proxy")
+ * @Rest\Route("/apps/proxy-http")
  */
 class HttpProxyController extends BaseController
 {

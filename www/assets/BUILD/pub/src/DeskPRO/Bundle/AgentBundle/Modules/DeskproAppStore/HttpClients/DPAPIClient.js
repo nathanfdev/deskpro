@@ -1,20 +1,23 @@
 export class DPAPIClient {
   /**
    * @param {Http} api
+   * @param {boolean} allowAbsoluteUrls
    */
-  constructor({ api }) {
-    this.props = { api };
+  constructor({ api, allowAbsoluteUrls }) {
+    this.props = { api, allowAbsoluteUrls };
   }
 
   fetch = (url, init) => {
-    if (url.match(/^(?:[a-z]+:)?\/\//i)) {
+    const isAbsoluteUrl = url.match(/^(?:[a-z]+:)?\/\//i);
+
+    if (isAbsoluteUrl && !this.props.allowAbsoluteUrls) {
       throw new Error(`[API]: Invalid path: ${url}. Absolute paths are not allowed`);
     }
 
     const { api } = this.props;
     const { method, body, headers } = init;
 
-    const apiEndpoint = ['DP_API', url].join('/');
+    const apiEndpoint = isAbsoluteUrl ? url : ['DP_API', url].join('/');
     let requestPromise;
 
     switch (method.toLowerCase()) {

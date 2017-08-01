@@ -67,6 +67,11 @@ class DeskproAppStoreConfiguration extends PropertyBag {
   /**
    * @return {string}
    */
+  get httpProxyEndpoint() { return this.props.httpProxyEndpoint; }
+
+  /**
+   * @return {string}
+   */
   get endpoint() { return this.props.endpoint; }
 }
 

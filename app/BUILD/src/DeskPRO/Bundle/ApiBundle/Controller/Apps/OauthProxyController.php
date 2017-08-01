@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("session")
  * @ApiUserContext("agent")
- * @Rest\Route("/apps/oauth-proxy")
+ * @Rest\Route("/apps/proxy-oauth")
  */
 class OauthProxyController extends BaseController
 {

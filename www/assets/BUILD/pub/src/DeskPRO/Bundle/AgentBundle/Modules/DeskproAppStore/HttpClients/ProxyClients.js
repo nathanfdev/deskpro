@@ -11,10 +11,11 @@ const mapHeaders = (headers) => {
 export class InstanceProxyClient {
   /**
    * @param {DPAPIClient} apiClient
+   * @param {String} httpProxyEndpoint
    * @param {String} instanceId
    */
-  constructor({ apiClient, instanceId }) {
-    this.props = { apiClient, instanceId };
+  constructor({ apiClient, httpProxyEndpoint, instanceId }) {
+    this.props = { apiClient, httpProxyEndpoint, instanceId };
   }
 
   fetch = (url, init) => {
@@ -29,7 +30,7 @@ export class InstanceProxyClient {
     const proxyInit = { ...passthroughInit, method, mode: 'same-origin', headers };
 
 
-    const { apiClient, instanceId } = this.props;
-    return apiClient.fetch(`http-api-proxy/${instanceId}`, proxyInit);
+    const { apiClient, httpProxyEndpoint, instanceId } = this.props;
+    return apiClient.fetch(`${httpProxyEndpoint}/${instanceId}`, proxyInit);
   }
 }

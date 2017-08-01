@@ -76,6 +76,22 @@ class DiscoverSettings
     private $build;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
+     */
+    private $appsOauthProxyUrl = '';
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
+     */
+    private $appsHttpProxyUrl = '';
+
+    /**
      * @return bool
      */
     public function isDeskpro()
@@ -172,6 +188,42 @@ class DiscoverSettings
     {
         $this->build = $build;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppsOauthProxyUrl()
+    {
+        return $this->appsOauthProxyUrl;
+    }
+
+    /**
+     * @param string $appsOauthProxyUrl
+     * @return DiscoverSettings
+     */
+    public function setAppsOauthProxyUrl($appsOauthProxyUrl)
+    {
+        $this->appsOauthProxyUrl = $appsOauthProxyUrl;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppsHttpProxyUrl()
+    {
+        return $this->appsHttpProxyUrl;
+    }
+
+    /**
+     * @param string $appsHttpProxyUrl
+     * @return DiscoverSettings
+     */
+    public function setAppsHttpProxyUrl($appsHttpProxyUrl)
+    {
+        $this->appsHttpProxyUrl = $appsHttpProxyUrl;
         return $this;
     }
 }

@@ -84,14 +84,15 @@ export class AppServices {
    */
   getProxyClient({ widget }) {
     const { api } = this.props;
-    const apiClient = new DPAPIClient({ api });
+    const apiClient = new DPAPIClient({ api, allowAbsoluteUrls: true });
 
-    return new InstanceProxyClient({ apiClient, instanceId: widget.instanceId });
+    const { httpProxyEndpoint } = this.config;
+    return new InstanceProxyClient({ apiClient, httpProxyEndpoint, instanceId: widget.instanceId });
   }
 
   get dpClient() {
     const { api } = this.props;
-    return new DPAPIClient({ api });
+    return new DPAPIClient({ api, allowAbsoluteUrls: false });
   }
 
   /**
