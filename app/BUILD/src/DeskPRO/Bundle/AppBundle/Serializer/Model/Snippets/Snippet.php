@@ -110,7 +110,16 @@ class Snippet
     private $isDraft;
 
     /**
-     * Is this just a draft?
+     * Flag indicates that content is different for different types.
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $isSplit;
+
+    /**
+     * Flag indicates that snippet is accessible to everyone.
      *
      * @JMS\Type("boolean")
      *
@@ -119,7 +128,7 @@ class Snippet
     private $isOwnershipGlobal;
 
     /**
-     * Is this just a draft?
+     * Flag indicates that snippet is visible with all departments.
      *
      * @JMS\Type("boolean")
      *
@@ -149,6 +158,7 @@ class Snippet
         $this->types              = $snippet->getTypes();
         $this->shortcutCode       = $snippet->getShortcutCode();
         $this->isDraft            = $snippet->isDraft();
+        $this->isSplit            = $snippet->isSplit();
         $this->translations       = $snippet->getTranslations();
         $this->isOwnershipGlobal  = $snippet->isOwnershipGlobal();
         $this->isVisibleGlobal    = $snippet->isVisibleGlobal();

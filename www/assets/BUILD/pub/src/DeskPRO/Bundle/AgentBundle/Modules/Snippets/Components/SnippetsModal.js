@@ -7,6 +7,7 @@ import Modal from 'deskpro-components/lib/Components/Modal';
 import { Button, ConfirmButton } from 'deskpro-components/lib/Components/Buttons';
 import Icon from 'deskpro-components/lib/Components/Icon';
 import { Checkbox, Input, Label, TagInput, Select } from 'deskpro-components/lib/Components/Forms';
+import { Tabs, TabLink } from 'deskpro-components/lib/Components/Tabs';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -62,35 +63,25 @@ export class SnippetsModalContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      labels:            [],
-      translations:      [],
-      departments:       new Set(),
-      teams:             new Set(),
-      types:             [],
-      isOwnershipGlobal: true,
-      title:             this.props.snippet.get('title', ''),
-      shortcutCode:      this.props.snippet.get('shortcut_code', ''),
-      isDraft:           false,
-      langId:            props.langId,
-    };
-  }
-
-  componentWillMount() {
     const { snippet, type } = this.props;
     const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
     const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
     const types = snippet.get('types', new Immutable.List([type])).toArray();
-    this.setState({
-      translations:      snippet.get('translations', []),
+    this.state = {
       labels:            snippet.get('labels', new Immutable.List()).toArray(),
-      types,
-      isDraft:           snippet.get('is_draft', false),
+      translations:      snippet.get('translations', []),
       departments:       new Set(departments),
       teams:             new Set(teams),
+      type,
+      types,
       isOwnershipGlobal: snippet.get('is_ownership_global'),
       isVisibleGlobal:   snippet.get('is_visible_global'),
-    });
+      isSplit:           snippet.get('is_split', false),
+      title:             snippet.get('title', ''),
+      shortcutCode:      snippet.get('shortcut_code', ''),
+      isDraft:           snippet.get('is_draft', false),
+      langId:            props.langId,
+    };
   }
 
   componentDidMount() {
@@ -122,7 +113,9 @@ export class SnippetsModalContainer extends React.Component {
     this.setState({
       langId: value
     });
-    const translation = this.state.translations.find(t => t.get('language') === value);
+    const translation = this.state.translations.find(t =>
+      t.get('language') === value && (!this.state.isSplit || t.get('type') === this.state.type)
+    );
     if (translation) {
       this.redactor.setCode(translation.get('content'));
     } else {
@@ -131,15 +124,18 @@ export class SnippetsModalContainer extends React.Component {
   };
 
   saveTranslation = () => {
-    const index = this.state.translations.findIndex(translation => translation.get('language') === this.state.langId);
+    const index = this.state.translations.findIndex(t =>
+      t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type)
+    );
     let translations = {};
     if (index !== -1) {
-      translations = this.state.translations.update(index, translation =>
-        translation.set('content', this.redactor.getCode().replace(/^<p>/, '').replace(/(<p>)?<\/p>\s*$/, '')));
+      translations = this.state.translations.update(index, t =>
+        t.set('content', this.redactor.getCode().replace(/^<p>/, '').replace(/(<p>)?<\/p>\s*$/, '')));
     } else {
       translations = this.state.translations.push(Immutable.fromJS({
         language: this.state.langId,
         content:  this.redactor.getCode(),
+        type:     this.state.isSplit ? this.state.type : null,
         blobs:    [],
       }));
     }
@@ -158,6 +154,7 @@ export class SnippetsModalContainer extends React.Component {
       shortcut_code:       this.state.shortcutCode,
       labels:              this.state.labels,
       translations:        translations.toJS(),
+      is_split:            this.state.isSplit,
       is_draft:            this.state.isDraft,
       is_visible_global:   this.state.isVisibleGlobal,
       is_ownership_global: this.state.isOwnershipGlobal,
@@ -199,7 +196,7 @@ export class SnippetsModalContainer extends React.Component {
     this.props.dispatch(actions.addSnippetAttachment(blob));
 
     // Add blob to translation Map
-    const index = this.state.translations.findIndex(translation => translation.get('language') === this.state.langId);
+    const index = this.state.translations.findIndex(t => t.get('language') === this.state.langId);
 
     let translations = {};
     if (index !== -1) {
@@ -210,6 +207,7 @@ export class SnippetsModalContainer extends React.Component {
       translations = this.state.translations.push(Immutable.fromJS({
         language: this.state.langId,
         content:  this.redactor.getCode(),
+        type:     this.state.isSplit ? this.state.type : null,
         blobs:    [blob.blob_id],
       }));
     }
@@ -288,6 +286,38 @@ export class SnippetsModalContainer extends React.Component {
     return true;
   };
 
+  changeType = (type) => {
+    this.saveTranslation();
+    this.setState({
+      type
+    });
+    const translation = this.state.translations.find(t =>
+      t.get('language') === this.state.langId && t.get('type') === type
+    );
+    if (translation) {
+      this.redactor.setCode(translation.get('content'));
+    } else {
+      this.redactor.setCode('');
+    }
+  };
+
+  splitSnippet = () => {
+    const { type } = this.state;
+    let newTranslations = new Immutable.List();
+    let translations = this.saveTranslation();
+    translations = translations.map((t) => {
+      let newType = t;
+      newType = newType.set('type', type === 'ticket' ? 'chat' : 'ticket').delete('id').delete('snippet');
+      newTranslations = newTranslations.push(newType);
+      return t.set('type', type);
+    });
+    translations = translations.concat(newTranslations);
+    this.setState({
+      translations,
+      isSplit: true,
+    });
+  };
+
   render() {
     const {
       me,
@@ -302,11 +332,12 @@ export class SnippetsModalContainer extends React.Component {
       height,
     } = this.props;
 
-    let translation = this.state.translations.find(t => t.get('language') === this.state.langId);
+    let translation = this.state.translations.find(t => t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type));
     if (!translation) {
       translation = Immutable.fromJS({
         language: this.state.langId,
         content:  '',
+        type:     this.state.isSplit ? this.state.type : null,
         blobs:    [],
       });
     }
@@ -330,6 +361,8 @@ export class SnippetsModalContainer extends React.Component {
         isDraft={this.state.isDraft}
         isOwnershipGlobal={this.state.isOwnershipGlobal}
         isVisibleGlobal={this.state.isVisibleGlobal}
+        isSplit={this.state.isSplit}
+        type={this.state.type}
         types={this.state.types}
         langId={this.state.langId}
         height={height}
@@ -347,6 +380,8 @@ export class SnippetsModalContainer extends React.Component {
         handleTeamsChange={this.handleTeamsChange}
         handleShortcutCode={this.handleShortcutCode}
         handleTitle={this.handleTitle}
+        splitSnippet={this.splitSnippet}
+        changeType={this.changeType}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -369,6 +404,8 @@ export class SnippetsModal extends React.Component {
     isDraft:                 PropTypes.bool.isRequired,
     isOwnershipGlobal:       PropTypes.bool.isRequired,
     isVisibleGlobal:         PropTypes.bool.isRequired,
+    isSplit:                 PropTypes.bool.isRequired,
+    type:                    PropTypes.string,
     types:                   PropTypes.array.isRequired,
     langId:                  PropTypes.number,
     height:                  PropTypes.number,
@@ -389,6 +426,8 @@ export class SnippetsModal extends React.Component {
     handleShortcutCode:      PropTypes.func,
     handleTeamsChange:       PropTypes.func,
     handleTitle:             PropTypes.func,
+    splitSnippet:            PropTypes.func,
+    changeType:              PropTypes.func,
   };
   static defaultProps = {
     shortcutCode: '',
@@ -538,6 +577,8 @@ export class SnippetsModal extends React.Component {
       closeModal,
       saveSnippet,
       deleteSnippet,
+      splitSnippet,
+      changeType,
     } = this.props;
     if (!snippet) {
       return null;
@@ -611,6 +652,16 @@ export class SnippetsModal extends React.Component {
                 editable
               />
             </div>
+            {this.props.isSplit ?
+              <Tabs active={this.props.type} onChange={changeType} className="type-tabs">
+                <TabLink name="ticket">
+                  {agentPhrases.get('agent.general.ticket')}
+                </TabLink>
+                <TabLink name="chat">
+                  {agentPhrases.get('agent.general.chat')}
+                </TabLink>
+              </Tabs>
+              : null}
             <div className="editor">
               <textarea
                 id="snippet__editor"
@@ -681,6 +732,9 @@ export class SnippetsModal extends React.Component {
               >
                 {agentPhrases.get('agent.general.chat')}
               </Checkbox>
+              {!this.props.isSplit ?
+                <a href="#expand" onClick={splitSnippet}><Icon name="expand" /> Split snippet</a>
+              : null}
             </div>
           </form>
         </Modal>

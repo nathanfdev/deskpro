@@ -113,6 +113,15 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $isDraft = false;
 
     /**
+     * Flag indicates that content is different for different types.
+     *
+     * @ORM\Column(type="boolean", nullable=false, name="is_split")
+     *
+     * @var bool
+     */
+    protected $isSplit = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation", mappedBy="snippet",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      *
@@ -129,7 +138,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $labels;
 
     /**
-     * Flag indicates that request is dupe.
+     * Flag indicates that snippet is accessible to everyone.
      *
      * @ORM\Column(type="boolean", nullable=false, name="ownership_global")
      *
@@ -154,7 +163,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $ownershipTeams;
 
     /**
-     * Flag indicates that request is dupe.
+     * Flag indicates that snippet is visible with all departments.
      *
      * @ORM\Column(type="boolean", nullable=false, name="visible_global")
      *
@@ -329,6 +338,26 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isSplit()
+    {
+        return $this->isSplit;
+    }
+
+    /**
+     * @param bool $isSplit
+     *
+     * @return Snippet
+     */
+    public function setIsSplit($isSplit)
+    {
+        $this->setModelField('isSplit', $isSplit);
+
+        return $this;
+    }
+
+    /**
      * @return SnippetTranslation[]|ArrayCollection
      */
     public function getTranslations()
@@ -344,7 +373,8 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function addTranslation(SnippetTranslation $translation)
     {
         foreach ($this->translations as $t) {
-            if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()) {
+            if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()
+            && $t->getType() === $translation->getType()) {
                 $t->setContent($translation->getContent());
 
                 return $this;
