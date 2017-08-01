@@ -62,6 +62,11 @@ services:
       - "@settings_resolver"
       - "@database_connection"
 
+  deskpro.notification.delivery.handler.deskpro:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeskproDeliveryHandler
+    arguments:
+      - "@settings_resolver"
+
   deskpro.notification.pusher_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherFactory
   deskpro.notification.pusher:

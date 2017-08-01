@@ -202,7 +202,10 @@ class NotificationService
                     'last_alert'  => $this->lastAlert(),
                     'last_notify' => $this->lastNotify(),
                 ]);
-
+            case 'deskpro':
+                return new NotificationClient('deskpro', [
+                    'debug' => true,
+                ]);
             default:
                 throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));
         }
