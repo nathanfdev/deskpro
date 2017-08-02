@@ -47,7 +47,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
 
     public function it_throws_exception_on_empty_proxy_url(WhitelistableProxyRequest $request)
     {
-        $this->shouldThrow(new \RuntimeException('No proxy url provided.'))->during('validateProxyUrl', [$request]);
+        $this->shouldThrow(new \RuntimeException('No proxy url provided.'))->during('validateWhitelistableRequest', [$request]);
     }
 
     public function it_throws_exception_on_url_validation(WhitelistableProxyRequest $request, ValidatorInterface $validator)
@@ -55,7 +55,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $validator->validate('http://deskpro-dev/api/some-endpoint', Argument::type('array'))->willReturn(false);
 
-        $this->shouldThrow(new \RuntimeException('The proxy url is not valid.'))->during('validateProxyUrl', [$request]);
+        $this->shouldThrow(new \RuntimeException('The proxy url is not valid.'))->during('validateWhitelistableRequest', [$request]);
     }
 
     public function it_throws_exception_if_empty_white_list(WhitelistableProxyRequest $request)
@@ -63,7 +63,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $request->getWhiteList()->willReturn([]);
 
-        $this->shouldThrow(new \RuntimeException('No proxy whitelist is defined.'))->during('validateProxyUrl', [$request]);
+        $this->shouldThrow(new \RuntimeException('No proxy whitelist is defined.'))->during('validateWhitelistableRequest', [$request]);
     }
 
     public function it_throws_exception_on_exact_match(WhitelistableProxyRequest $request)
@@ -73,7 +73,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
             'http://my-site/api/some-endpoint',
         ]);
 
-        $this->shouldThrow(new \RuntimeException('The proxy url is not allowed (allowed http://my-site/api/some-endpoint).'))->during('validateProxyUrl', [$request]);
+        $this->shouldThrow(new \RuntimeException('The proxy url is not allowed (allowed http://my-site/api/some-endpoint).'))->during('validateWhitelistableRequest', [$request]);
     }
 
     public function it_should_pass_on_exact_match(WhitelistableProxyRequest $request)
