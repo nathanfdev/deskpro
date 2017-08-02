@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
+import htmlToText from 'html-to-text';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import { Button, ConfirmButton } from 'deskpro-components/lib/Components/Buttons';
 import Icon from 'deskpro-components/lib/Components/Icon';
@@ -72,6 +73,7 @@ export class SnippetsModalContainer extends React.Component {
       translations:      snippet.get('translations', []),
       departments:       new Set(departments),
       teams:             new Set(teams),
+      saving:            false,
       type,
       types,
       isOwnershipGlobal: snippet.get('is_ownership_global'),
@@ -81,6 +83,7 @@ export class SnippetsModalContainer extends React.Component {
       shortcutCode:      snippet.get('shortcut_code', ''),
       isDraft:           snippet.get('is_draft', false),
       langId:            props.langId,
+      mergeKeepValue:    'ticket',
     };
   }
 
@@ -139,6 +142,7 @@ export class SnippetsModalContainer extends React.Component {
         blobs:    [],
       }));
     }
+    translations = translations.filter(t => htmlToText.fromString(t.get('content')).replace(/\s*/, '') !== '');
     this.setState({
       translations
     });
@@ -147,6 +151,12 @@ export class SnippetsModalContainer extends React.Component {
 
   saveSnippet = () => {
     const { snippet, dispatch, closeModal } = this.props;
+    if (this.state.saving) {
+      return false;
+    }
+    this.setState({
+      saving: true
+    });
     const translations = this.saveTranslation();
     const snippetData = {
       title:               this.state.title,
@@ -172,11 +182,15 @@ export class SnippetsModalContainer extends React.Component {
         } else {
           shortcodes[newSnippet.shortcut_code] = [newSnippet.id];
         }
+        this.setState({
+          saving: false
+        });
         closeModal();
       }, (error) => {
         console.log(error);
       })
     ;
+    return true;
   };
 
   deleteSnippet = () => {
@@ -301,7 +315,8 @@ export class SnippetsModalContainer extends React.Component {
     }
   };
 
-  splitSnippet = () => {
+  splitSnippet = (e) => {
+    e.preventDefault();
     const { type } = this.state;
     let newTranslations = new Immutable.List();
     let translations = this.saveTranslation();
@@ -315,6 +330,30 @@ export class SnippetsModalContainer extends React.Component {
     this.setState({
       translations,
       isSplit: true,
+    });
+  };
+
+  mergeSnippet = (e) => {
+    e.preventDefault();
+    const translations = this.saveTranslation().filter(t => t.get('type') === this.state.mergeKeepValue);
+    this.setState({
+      translations,
+      isSplit: false,
+    });
+    const translation = translations.find(t =>
+      t.get('language') === this.state.langId && t.get('type') === this.state.mergeKeepValue
+    );
+    if (translation) {
+      this.redactor.setCode(translation.get('content'));
+    } else {
+      this.redactor.setCode('');
+    }
+    this.modal.displayMerge();
+  };
+
+  updateMergeKeep = (value) => {
+    this.setState({
+      mergeKeepValue: value.value
     });
   };
 
@@ -332,7 +371,9 @@ export class SnippetsModalContainer extends React.Component {
       height,
     } = this.props;
 
-    let translation = this.state.translations.find(t => t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type));
+    let translation = this.state.translations.find(t =>
+      t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type)
+    );
     if (!translation) {
       translation = Immutable.fromJS({
         language: this.state.langId,
@@ -368,6 +409,8 @@ export class SnippetsModalContainer extends React.Component {
         height={height}
         shortcutCode={this.state.shortcutCode}
         title={this.state.title}
+        mergeKeepValue={this.state.mergeKeepValue}
+        saving={this.state.saving}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
         deleteSnippet={this.deleteSnippet}
@@ -381,6 +424,8 @@ export class SnippetsModalContainer extends React.Component {
         handleShortcutCode={this.handleShortcutCode}
         handleTitle={this.handleTitle}
         splitSnippet={this.splitSnippet}
+        mergeSnippet={this.mergeSnippet}
+        updateMergeKeep={this.updateMergeKeep}
         changeType={this.changeType}
         ref={(c) => { this.modal = c; }}
       />
@@ -405,12 +450,14 @@ export class SnippetsModal extends React.Component {
     isOwnershipGlobal:       PropTypes.bool.isRequired,
     isVisibleGlobal:         PropTypes.bool.isRequired,
     isSplit:                 PropTypes.bool.isRequired,
+    saving:                  PropTypes.bool,
     type:                    PropTypes.string,
     types:                   PropTypes.array.isRequired,
     langId:                  PropTypes.number,
     height:                  PropTypes.number,
     shortcutCode:            PropTypes.string,
     title:                   PropTypes.string,
+    mergeKeepValue:          PropTypes.string,
     labels:                  PropTypes.array,
     labelsSource:            PropTypes.array,
     addAttachment:           PropTypes.func,
@@ -427,12 +474,21 @@ export class SnippetsModal extends React.Component {
     handleTeamsChange:       PropTypes.func,
     handleTitle:             PropTypes.func,
     splitSnippet:            PropTypes.func,
+    mergeSnippet:            PropTypes.func,
+    updateMergeKeep:         PropTypes.func,
     changeType:              PropTypes.func,
   };
   static defaultProps = {
     shortcutCode: '',
     changeLabels() {},
   };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayMerge: false,
+    };
+  }
 
   onSubmit = (e) => {
     e.preventDefault();
@@ -554,6 +610,15 @@ export class SnippetsModal extends React.Component {
 
   isShortcutCodeValid = () => this.props.shortcutCode.match(/^[-_a-z0-9]*$/i);
 
+  displayMerge = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    this.setState({
+      displayMerge: !this.state.displayMerge
+    });
+  };
+
   render() {
     const {
       me,
@@ -578,7 +643,11 @@ export class SnippetsModal extends React.Component {
       saveSnippet,
       deleteSnippet,
       splitSnippet,
+      mergeSnippet,
+      mergeKeepValue,
+      updateMergeKeep,
       changeType,
+      saving,
     } = this.props;
     if (!snippet) {
       return null;
@@ -587,6 +656,10 @@ export class SnippetsModal extends React.Component {
       (snippet.get('person') === me.get('id') || window.DESKPRO_PERSON_PERMS['agent_snippets.delete_by_others']);
     // ratio between viewport and needed dropdowns size
     const maxHeight = height * 0.52 - 200;
+    const mergeOptions = [
+      { value: 'ticket', label: 'Keep ticket text' },
+      { value: 'chat', label: 'Keep chat text' }
+    ];
     return (
       <div id="snippets__modal">
         <Modal
@@ -594,7 +667,7 @@ export class SnippetsModal extends React.Component {
           closeModal={closeModal}
           buttons={
             <div>
-              <Button className="dp-button--l" onClick={saveSnippet} disabled={!this.isValid()}>
+              <Button type="primary" size="large" onClick={saveSnippet} disabled={!this.isValid()} loading={saving}>
                 {agentPhrases.get('agent.general.save')}
               </Button>
               <Checkbox
@@ -605,11 +678,13 @@ export class SnippetsModal extends React.Component {
               >
                 {agentPhrases.get('agent.snippets.snippet_is_draft')}
               </Checkbox>
-              <Button className="dp-button--l dp-button--secondary right" onClick={closeModal}>
+              <Button type="secondary" size="large" className="right" onClick={closeModal}>
                 {agentPhrases.get('agent.general.cancel')}
               </Button>
               <ConfirmButton
-                className="dp-button--l dp-button--secondary right"
+                type="secondary"
+                size="large"
+                className="right"
                 onClick={deleteSnippet}
                 disabled={!canDelete}
                 message={agentPhrases.get('agent.general.are_you_sure')}
@@ -653,14 +728,39 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             {this.props.isSplit ?
-              <Tabs active={this.props.type} onChange={changeType} className="type-tabs">
-                <TabLink name="ticket">
-                  {agentPhrases.get('agent.general.ticket')}
-                </TabLink>
-                <TabLink name="chat">
-                  {agentPhrases.get('agent.general.chat')}
-                </TabLink>
-              </Tabs>
+              <div>
+                <div className="type-tabs">
+                  <Tabs active={this.props.type} onChange={changeType}>
+                    <TabLink name="ticket">
+                      {agentPhrases.get('agent.general.ticket')}
+                    </TabLink>
+                    <TabLink name="chat">
+                      {agentPhrases.get('agent.general.chat')}
+                    </TabLink>
+                  </Tabs>
+                </div>
+                {this.state.displayMerge ?
+                  <div className="merge-snippet">
+                    <Select
+                      value={mergeKeepValue}
+                      options={mergeOptions}
+                      clearable={false}
+                      searchable={false}
+                      onChange={updateMergeKeep}
+                    />
+                    <Button type="primary" size="medium" onClick={mergeSnippet}>
+                      <Icon name="compress" />
+                      {agentPhrases.get('agent.general.merge')}
+                    </Button>
+                    <Button type="secondary" size="medium" onClick={this.displayMerge}>
+                      {agentPhrases.get('agent.general.cancel')}
+                    </Button>
+                  </div>
+                 : <a href="#merge" className="merge-link" onClick={this.displayMerge}>
+                   <Icon name="compress" /> Merge
+                  </a>
+                }
+              </div>
               : null}
             <div className="editor">
               <textarea

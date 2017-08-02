@@ -376,13 +376,15 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
             if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()
             && (!$t->getType() || $t->getType() === $translation->getType())) {
                 $t->setContent($translation->getContent());
-                $t->setType($translation->getContent());
+                $t->setType($translation->getType());
 
                 return $this;
             }
         }
-        $translation->setSnippet($this);
-        $this->translations->add($translation);
+        if ($translation->getContent()) {
+            $translation->setSnippet($this);
+            $this->translations->add($translation);
+        }
 
         return $this;
     }

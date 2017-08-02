@@ -569,7 +569,8 @@ export class SnippetsMenu extends React.Component {
               || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']
             ) ?
               <Button
-                className="dp-button--primary add-snippet"
+                type="primary"
+                className="add-snippet"
                 onClick={this.newSnippet}
                 size="medium"
               >

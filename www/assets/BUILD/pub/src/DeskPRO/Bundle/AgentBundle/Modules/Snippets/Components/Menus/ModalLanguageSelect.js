@@ -80,12 +80,15 @@ export class ModalLanguageSelect extends React.PureComponent {
   inputRenderer = () => {
     const { langId, languages } = this.props;
     const selectedLanguage = languages.find(l => l.get('id') === langId);
-    return (
-      <span>
-        <img src={selectedLanguage.get('flag_image')} alt={selectedLanguage.get('title')} />
-        &nbsp;{selectedLanguage.get('title')}
-      </span>
-    );
+    if (selectedLanguage) {
+      return (
+        <span>
+          <img src={selectedLanguage.get('flag_image')} alt={selectedLanguage.get('title')} />
+          &nbsp;{selectedLanguage.get('title')}
+        </span>
+      );
+    }
+    return null;
   };
 
   render() {

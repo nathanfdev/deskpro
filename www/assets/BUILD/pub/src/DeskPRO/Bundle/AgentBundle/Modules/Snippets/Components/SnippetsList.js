@@ -140,7 +140,7 @@ export class SnippetsListElement extends React.PureComponent {
         return langPref[i];
       }
     }
-    return null;
+    return langPref[0];
   }
 
   render() {

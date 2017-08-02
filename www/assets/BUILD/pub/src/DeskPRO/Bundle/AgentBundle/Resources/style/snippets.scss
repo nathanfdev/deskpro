@@ -429,7 +429,24 @@
     }
   }
   .type-tabs {
+    display: inline-block;
     width: 30%;
+  }
+  .merge-snippet {
+    display: inline-block;
+    .dp-button {
+      margin-right: 5px;
+    }
+    .dp-select {
+      display: inline-block;
+      margin-bottom: 0;
+      width: 120px;
+      margin-right: 5px;
+      vertical-align: bottom;
+    }
+  }
+  .merge-link {
+    margin-left: 10px;
   }
   .editor {
     position: relative;
