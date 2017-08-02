@@ -9,7 +9,7 @@ class OauthResponseBuilder
      * @param string $type
      * @return OauthResponseBuilder
      */
-    public static function forResponseType(string $type = 'token') {
+    public static function forResponseType($type = 'token') {
         return new OauthResponseBuilder($type === 'error');
     }
 
