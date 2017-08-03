@@ -139,6 +139,11 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
      */
     protected function triggerBatch($chunk)
     {
-        return $this->client->post('http://localhost:3000/send', [RequestOptions::JSON => $chunk]);
+        return $this->client->post(
+            'http://localhost:3000/send',
+            [
+                RequestOptions::JSON => ['jwt' => \JWT::encode($chunk, 'test')],
+            ]
+        );
     }
 }

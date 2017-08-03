@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\PusherType;
 use DeskPRO\Bundle\AppBundle\Model\PusherModel;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -247,25 +248,5 @@ class NotificationController extends BaseController
         $message = $handler->getMessagesAsString();
 
         return View::create(['success' => $success, 'message' => $message]);
-    }
-}
-
-class PusherLogger
-{
-    private $logger;
-
-    /**
-     * PusherLogger constructor.
-     *
-     * @param Logger $logger
-     */
-    public function __construct(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
-
-    public function log($msg)
-    {
-        $this->logger->log(Logger::INFO, $msg);
     }
 }

@@ -5,9 +5,10 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@settings_resolver"
+      - "@security.token_storage"
 
   #
-  # Strategis
+  # Strategies
   #
   deskpro.notification.strategy_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory

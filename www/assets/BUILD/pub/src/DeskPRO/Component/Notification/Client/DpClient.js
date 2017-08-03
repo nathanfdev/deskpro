@@ -8,12 +8,15 @@ export default class DpClient extends AbstractClient {
 
   constructor(props) {
     super(props);
+    const that = this;
     this.client = io('http://localhost:3000');
+    this.client.on('connect', () => that.client.emit('authenticate', { token: this.options.token }));
   }
 
   getDefaultOptions() { // eslint-disable-line class-methods-use-this
     return {
-      me: 0
+      me: 0,
+
     };
   }
 
