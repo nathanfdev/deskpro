@@ -613,8 +613,11 @@ class SystemErrorHandler
      *
      * @param array $errinfo
      */
-    public static function logErrorInfo(array $errinfo)
+    public static function logErrorInfo(array $errinfo = null)
     {
+        if (!$errinfo) {
+            return;
+        }
         if (self::$isLogging) {
             return;
         }
