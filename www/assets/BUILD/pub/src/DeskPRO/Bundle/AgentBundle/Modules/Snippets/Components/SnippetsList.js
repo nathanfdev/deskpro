@@ -264,7 +264,7 @@ export class SnippetsList extends React.Component {
       multiMode,
       width,
     } = this.props;
-    let height = this.props.height - 123;
+    let height = this.props.height;
     if (isNaN(height)) {
       height = 400;
     }

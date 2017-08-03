@@ -8,12 +8,14 @@ import { Button } from 'deskpro-components/lib/Components/Buttons';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import MassActions from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/MassActions';
 import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
 import { LanguageSelect } from './Menus/LanguageSelect';
+import { MassActionsSelect } from './Menus/MassActionsSelect';
 
 @connect(state => ({
   me:        meSelector(state),
@@ -282,15 +284,17 @@ export class SnippetsMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLabel: '',
-      multiLabels:   [],
-      multiMode:     'any',
-      editOpen:      false,
-      snippetEdit:   {},
-      labelFilter:   '',
-      focusedIndex:  null,
-      editLang:      this.props.langId,
-      height:        0,
+      selectedLabel:    '',
+      multiLabels:      [],
+      multiMode:        'any',
+      massActionMode:   false,
+      selectedSnippets: [],
+      editOpen:         false,
+      snippetEdit:      {},
+      labelFilter:      '',
+      focusedIndex:     null,
+      editLang:         this.props.langId,
+      height:           0,
     };
   }
 
@@ -358,6 +362,20 @@ export class SnippetsMenu extends React.Component {
   updateWindowDimensions = () => {
     this.setState({
       height: window.innerHeight
+    });
+  };
+
+  massActionsMode = (action) => {
+    console.log(action);
+    this.setState({
+      massActionMode: action
+    });
+  };
+
+  closeMassActions = (e) => {
+    e.preventDefault();
+    this.setState({
+      massActionMode: false
     });
   };
 
@@ -536,6 +554,11 @@ export class SnippetsMenu extends React.Component {
     if (width) {
       style.width = width - 5;
     }
+    let listHeight = this.state.height - 123;
+    if (this.state.massActionMode) {
+      listHeight -= 88;
+    }
+    const massActionsHeight = this.state.massActionMode ? 88 : 0;
     return (
       <div id="snippets__menu" style={style}>
         <div className="header">
@@ -577,6 +600,9 @@ export class SnippetsMenu extends React.Component {
                 + {agentPhrases.get('agent.general.snippet')}
               </Button>
               : null}
+            <MassActionsSelect
+              onChange={this.massActionsMode}
+            />
             <LanguageSelect
               languages={languages}
               langContext={langContext}
@@ -586,7 +612,7 @@ export class SnippetsMenu extends React.Component {
             />
           </div>
         </div>
-        <div className="body">
+        <div className="body" style={{ height: this.state.height - 113 }}>
           <SnippetsFiltering
             me={me}
             snippets={snippets}
@@ -604,13 +630,22 @@ export class SnippetsMenu extends React.Component {
             height={this.state.height}
             handleShowMode={handleShowMode}
           />
+          <div className="snippets__mass-actions" style={{ flexBasis: massActionsHeight }}>
+            { this.state.massActionMode ?
+              <MassActions
+                action={this.state.massActionMode}
+                snippets={snippets}
+                close={this.closeMassActions}
+              />
+          : null }
+          </div>
           <SnippetsList
             me={me}
             snippets={snippets}
             languages={languages}
             langPref={langDisplay}
             filter={filter}
-            height={this.state.height}
+            height={listHeight}
             width={width}
             type={type}
             focusedIndex={this.state.focusedIndex}
