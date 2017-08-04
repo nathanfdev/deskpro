@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use Application\DeskPRO\People\Helpers\AgentPermissions;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
@@ -83,7 +84,7 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
         /* @var UserChatEvent $event */
         $messages = [];
         foreach ($this->getTarget($event) as $target) {
-            if (in_array($target, $this->getAvailableAgents())) {
+            if (in_array($target, $this->getAvailableAgents()) && $this->checkPermissions($target, $event->getData())) {
                 $messages[] = new Notification($target, $this->getData($event), $event->getName());
             }
         }
@@ -150,5 +151,23 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
         }
 
         return $this->availableAgents;
+    }
+
+    /**
+     * @param $target
+     * @param $data
+     *
+     * @return bool
+     */
+    private function checkPermissions($target, $data)
+    {
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        /** @var Person $person */
+        $person = $personRepository->find($target);
+        /** @var AgentPermissions $agentPermissions */
+        $agentPermissions = $person->getHelper('AgentPermissions');
+
+        return in_array($data['department'], $agentPermissions->getAllowedDepartments('chat'));
     }
 }
