@@ -1721,6 +1721,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       {
         person: this.meta.person_api_data
       },
+      'ticket',
       this.textarea,
 			this.attachBlobs.bind(this),
 			this.recordSnippetUse.bind(this)

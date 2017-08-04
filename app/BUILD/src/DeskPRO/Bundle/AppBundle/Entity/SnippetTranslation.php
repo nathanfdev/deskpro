@@ -116,6 +116,17 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     protected $title;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
+     * @var string
+     */
+    protected $type;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Blob")
      * @ORM\JoinTable(
      *     name="snippet_translation_blob",
@@ -226,6 +237,26 @@ class SnippetTranslation implements EntityInterface, NotifyPropertyChanged
     public function setTitle($title)
     {
         $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param mixed $type
+     *
+     * @return SnippetTranslation
+     */
+    public function setType($type)
+    {
+        $this->setModelField('type', $type);
 
         return $this;
     }

@@ -679,6 +679,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       blobs,
       ticketLangId,
       null,
+      'ticket',
       this.textarea,
       this.attachBlobs.bind(this),
       this.recordSnippetUse.bind(this)

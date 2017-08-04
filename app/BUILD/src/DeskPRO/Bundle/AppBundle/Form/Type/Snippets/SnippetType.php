@@ -66,7 +66,7 @@ class SnippetType extends AbstractType
             ->add('types', ChoiceType::class, [
                 'multiple'          => true,
                 'choices_as_values' => true,
-                'choices'           => ['chat', 'ticket'],
+                'choices'           => [Snippet::TYPE_CHAT, Snippet::TYPE_TICKET],
             ])
             ->add('translations', CollectionType::class, [
                 'entry_type'     => SnippetTranslationType::class,
@@ -81,6 +81,7 @@ class SnippetType extends AbstractType
             ])
             ->add('shortcut_code', TextType::class)
             ->add('is_draft', ApiBooleanType::class)
+            ->add('is_split', ApiBooleanType::class)
             ->add('is_ownership_global', ApiBooleanType::class)
             ->add('is_visible_global', ApiBooleanType::class)
             ->add('ownership_teams', EntityType::class, [

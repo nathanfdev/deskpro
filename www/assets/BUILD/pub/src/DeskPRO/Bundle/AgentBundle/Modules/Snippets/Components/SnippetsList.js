@@ -16,6 +16,7 @@ export class SnippetsListElement extends React.PureComponent {
     focused:       PropTypes.bool,
     langPref:      PropTypes.array,
     filter:        PropTypes.string,
+    type:          PropTypes.string,
     style:         PropTypes.object,
   };
   static defaultProps = {
@@ -55,12 +56,15 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   getLanguages() {
-    const { snippet, languages, insertSnippet, langPref } = this.props;
+    const { snippet, languages, insertSnippet, langPref, type } = this.props;
     if (snippet.get('translations')) {
       const flags = [];
+      const isSplit = snippet.get('is_split', false);
       snippet.get('translations').forEach((translation, key) => {
         if (langPref.indexOf(translation.get('language')) !== -1) {
-          const language = languages.find(l => l.get('id') === translation.get('language'));
+          const language = languages.find(l =>
+            l.get('id') === translation.get('language') && (!isSplit || translation.get('type') === type)
+          );
           if (language && language.get('flag_image')) {
             flags.push(
               <img
@@ -81,8 +85,11 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   getContent(langId) {
-    const { snippet, filter } = this.props;
-    const translation = snippet.get('translations').find(element => element.get('language') === langId);
+    const { snippet, filter, type } = this.props;
+    const isSplit = snippet.get('is_split', false);
+    const translation = snippet.get('translations').find(element =>
+      element.get('language') === langId && (!isSplit || element.get('type') === type)
+    );
     if (translation && translation.get('content')) {
       let content = htmlToText.fromString(translation.get('content'));
       const lines = [];
@@ -133,7 +140,7 @@ export class SnippetsListElement extends React.PureComponent {
         return langPref[i];
       }
     }
-    return null;
+    return langPref[0];
   }
 
   render() {
@@ -173,6 +180,7 @@ export class SnippetsList extends React.Component {
     height:        PropTypes.number,
     width:         PropTypes.number,
     filter:        PropTypes.string,
+    type:          PropTypes.string,
     editSnippet:   PropTypes.func,
     insertSnippet: PropTypes.func,
     langPref:      PropTypes.array,
@@ -225,6 +233,7 @@ export class SnippetsList extends React.Component {
       focusedIndex,
       langPref,
       filter,
+      type,
     } = this.props;
     const snippet = this.list[index];
     if (!snippet) {
@@ -238,6 +247,7 @@ export class SnippetsList extends React.Component {
         languages={languages}
         langPref={langPref}
         filter={filter}
+        type={type}
         editSnippet={editSnippet}
         insertSnippet={insertSnippet}
         focused={focusedIndex === index}
