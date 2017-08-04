@@ -6,39 +6,62 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
       @$scope.mode = 'default';
-      @$scope.clusters = [
-        { title: 'mt1 (us-west-1)', value: 'mt1' }
-        { title: 'eu (eu-west-1)', value: 'eu' }
-        { title: 'ap1 (ap-southwest-1)', value: 'ap1' }
-        { title: 'ap2 (ap-south-1)', value: 'ap2' }
-      ];
+      @$scope.deskpro = {};
+      @$scope.pusher = {
+        clusters: [
+          { title: 'mt1 (us-west-1)', value: 'mt1' }
+          { title: 'eu (eu-west-1)', value: 'eu' }
+          { title: 'ap1 (ap-southwest-1)', value: 'ap1' }
+          { title: 'ap2 (ap-south-1)', value: 'ap2' }
+        ]
+      };
       return
 
     initialLoad: ->
-      @Api2.sendGet('/notify/setup/action-alerts/pusher').then(
+      @Api2.sendGet('/notify/setup/action-alerts/clients').then(
         (response) =>
-          pusherModel = response.data.data
-          @$scope.mode           = if pusherModel.pusher_enabled then 'pusher' else 'default'
-          @$scope.id             = pusherModel.id
-          @$scope.secret         = pusherModel.secret
-          @$scope.key            = pusherModel.key
-          @$scope.currentCluster = pusherModel.cluster
+          clients = response.data.data
+          @$scope.mode                  = if clients.pusher.pusher_enabled then 'pusher' else 'default'
+          @$scope.mode                  = if clients.deskpro.deskpro_client_enabled then 'deskpro' else 'default'
+
+          @$scope.pusher.id             = clients.pusher.id
+          @$scope.pusher.secret         = clients.pusher.secret
+          @$scope.pusher.key            = clients.pusher.key
+          @$scope.pusher.currentCluster = clients.pusher.cluster
+
+          @$scope.deskpro.secret         = clients.deskpro.secret
+          @$scope.deskpro.host           = clients.deskpro.host
+          @$scope.deskpro.port           = clients.deskpro.port
       )
       return
 
     getPusherParams: ->
       params = {
-        key:     @$scope.key
-        id:      @$scope.id
-        secret:  @$scope.secret
-        cluster: @$scope.currentCluster
-        pusher_enabled: @$scope.mode == 'pusher'
+        key:     @$scope.pusher.key
+        id:      @$scope.pusher.id
+        secret:  @$scope.pusher.secret
+        cluster: @$scope.pusher.currentCluster
       }
       return params
 
-    save:  =>
-      params = @getPusherParams()
-      @Api2.sendPutJson('/notify/setup/action-alerts/pusher', params).success(
+    getDeskproParams: ->
+      params = {
+        port:   @$scope.deskpro.port
+        host:   @$scope.deskpro.host
+        secret: @$scope.deskpro.secret
+      }
+      return params
+
+    save: =>
+
+      if(@$scope.mode == 'deskpro')
+        params = @getDeskproParams()
+      else if (@$scope.mode == 'pusher')
+        params = @getPusherParams()
+
+      params.mode = @$scope.mode
+
+      @Api2.sendPutJson('/notify/setup/action-alerts/clients', params).success(
         => @Growl.success('Your request is successful')
       ).error(
         =>

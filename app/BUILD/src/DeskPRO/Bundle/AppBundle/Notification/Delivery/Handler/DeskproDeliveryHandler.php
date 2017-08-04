@@ -48,13 +48,6 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
     const CHANNEL_USER_NOTIFY  = 'user_notify';
 
     /**
-     * @var Pusher
-     */
-    protected $pusher;
-
-    private $channelPrefix = '';
-
-    /**
      * @var array
      */
     private $messages = [];
@@ -63,11 +56,27 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
     private $client;
 
     /**
+     * @var string
+     */
+    private $secret;
+
+    /**
      * @param SettingsResolver $resolver
      */
     public function __construct(SettingsResolver $resolver)
     {
-        $this->client = new HttpClient();
+        $settingsBag  = $resolver->getGlobalSettings();
+        $this->secret = $settingsBag->get('notification.settings.deskpro_client.secret', '');
+
+        $this->client = new HttpClient(
+            [
+                'base_uri' => sprintf(
+                    '%s:%d',
+                    $settingsBag->get('notification.settings.deskpro_client.host'),
+                    $settingsBag->get('notification.settings.deskpro_client.port')
+                    ),
+            ]
+        );
     }
 
     /**
@@ -139,11 +148,6 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
      */
     protected function triggerBatch($chunk)
     {
-        return $this->client->post(
-            'http://localhost:3000/send',
-            [
-                RequestOptions::JSON => ['jwt' => \JWT::encode($chunk, 'test')],
-            ]
-        );
+        return $this->client->post('/send', [RequestOptions::JSON => ['jwt' => \JWT::encode($chunk, $this->secret)]]);
     }
 }

@@ -86,29 +86,29 @@
                                 <label>
                                     <h4>Pusher App ID:</h4>
 
-                                    <input type="text" class="form-control" ng-model="id" />
+                                    <input type="text" class="form-control" ng-model="pusher.id" />
                                 </label>
                             </div>
                             <div class="inner-group">
                                 <label>
                                     <h4>Pusher App Key:</h4>
-                                    <input type="text" class="form-control" ng-model="key" />
+                                    <input type="text" class="form-control" ng-model="pusher.key" />
                                 </label>
                             </div>
                             <div class="inner-group">
                                 <label>
                                     <h4>Pusher App Secret:</h4>
-                                    <input type="text" class="form-control" ng-model="secret" />
+                                    <input type="text" class="form-control" ng-model="pusher.secret" />
                                 </label>
                             </div>
                             <div class="inner-group">
                                 <label>
                                     <h4>Pusher cluster:</h4>
-                                    <select ui-select2 ng-model="currentCluster" style="width: 90%">
+                                    <select ui-select2 ng-model="pusher.currentCluster" style="width: 90%">
                                         <option
-                                            ng-repeat="cluster in clusters"
+                                            ng-repeat="cluster in pusher.clusters"
                                             value="{{ ng_var('cluster.value') }}"
-                                            ng-selected="currentCluster === cluster.value"
+                                            ng-selected="pusher.currentCluster === cluster.value"
                                         >
                                             {{ ng_var('cluster.title') }}
                                         </option>
@@ -120,6 +120,50 @@
                                 <button class="btn btn-default" ng-click="Notifications.testPusher()">Test Pusher Settings</button>
                                 <br/>
                                 <textarea class="form-control" ng-show="pusherTestResult" ng-bind="pusherTestResult" style="width: 65%; height: 250px; font-size: 90%; font-family: Monaco, monospace;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="form-horizontal dp-form">
+                <div class="panel panel-innertable">
+                    <div class="panel-heading">
+                        <h3>
+                            <label style="margin-bottom: 10px;">
+                                <input type="radio" ng-model="mode" value="deskpro" />
+                                <spam>Deskpro Own service (experimental)</spam>
+                            </label>
+                        </h3>
+                    </div>
+                    <div class="panel-help" ng-show="mode == 'deskpro'">
+                        <p>
+                            <strong>Advantages:</strong> Realtime distribution of events (your users see changes on their screens instantly); Reduces server load because polling is no longer necessary.
+                        </p>
+                        <p>
+                            <strong>Requirements:</strong> installed node.js and little bit of configuration
+                        </p>
+                    </div>
+                    <div class="form-group" data-ng-show="mode == 'deskpro'">
+                        <div class="col-lg-12">
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Secret:</h4>
+
+                                    <input type="text" class="form-control" ng-model="deskpro.secret" />
+                                </label>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Host:</h4>
+                                    <input type="text" class="form-control" ng-model="deskpro.host" />
+                                </label>
+                            </div>
+                            <div class="inner-group">
+                                <label>
+                                    <h4>Port:</h4>
+                                    <input type="text" class="form-control" ng-model="deskpro.port" />
+                                </label>
                             </div>
                         </div>
                     </div>
