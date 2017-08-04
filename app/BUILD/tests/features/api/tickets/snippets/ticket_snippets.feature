@@ -355,3 +355,28 @@ Feature: /ticket_snippets endpoint
 
     When I send a DELETE request to "/api/v2/ticket_snippets/{s1}"
     Then the response status code should be 200
+
+  Scenario: I filter by a query string
+    Given only the following TextSnippet records exist:
+      | #  | Person  | Category | Shortcut Code   |
+      | s1 | {admin} | {c1}     | ticket_snippet1 |
+      | s2 | {admin} | {c1}     | ticket_snippet2 |
+    And only the following ObjectLang records exist:
+      | #  | Ref                | Ref Type      | Ref Id  | Prop Name | Value         |
+      | o1 | text_snippets.~s1~ | text_snippets | ~s1:id~ | title     | SnippetTitle1 |
+      | o2 | text_snippets.~s1~ | text_snippets | ~s1:id~ | snippet   | SnippetValue1 |
+      | o3 | text_snippets.~s2~ | text_snippets | ~s2:id~ | title     | SnippetTitle2 |
+      | o4 | text_snippets.~s2~ | text_snippets | ~s2:id~ | snippet   | SnippetValue2 |
+
+    When I send a GET request to "/api/v2/ticket_snippets?q=snippet"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{s1}"
+    And the JSON node "data[1].id" should be equal to "{s2}"
+
+    When I send a GET request to "/api/v2/ticket_snippets?q=snippettitle1"
+    Then the JSON node "data" should have 1 elements
+    And the JSON node "data[0].id" should be equal to "{s1}"
+
+    When I send a GET request to "/api/v2/ticket_snippets?q=ticket_snippet2"
+    Then the JSON node "data" should have 1 elements
+    And the JSON node "data[0].id" should be equal to "{s2}"
