@@ -9,14 +9,30 @@ export default class DpClient extends AbstractClient {
   constructor(props) {
     super(props);
     const that = this;
-    this.client = io('http://localhost:3000');
-    this.client.on('connect', () => that.client.emit('authenticate', { token: this.options.token }));
+    this.client = io(`${that.options.host}:${that.options.port}`);
+    this.client.on(
+      'connect',
+      () => {
+        that.client.emit('authenticate', { token: this.options.token });
+
+        that.client.on('authenticated', () => {
+          if (that.options.debug) {
+            console.log('Successfully authenticated on DP Notifications server');
+          }
+        });
+
+        that.client.on('unauthorized', () => {
+          console.error('Failed to auth on DP Notifications server. Please - check your settings and server is running');
+        });
+      }
+    );
   }
 
   getDefaultOptions() { // eslint-disable-line class-methods-use-this
     return {
       me: 0,
-
+      // host: localhost,
+      // port: 3000,
     };
   }
 

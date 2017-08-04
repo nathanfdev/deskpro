@@ -214,6 +214,8 @@ class NotificationService
                 return new NotificationClient('deskpro', [
                     'token' => $this->getJwtToken(),
                     'debug' => $this->settings->get('notification.settings.deskpro_client.debug'),
+                    'host'  => $this->settings->get('notification.settings.deskpro_client.host'),
+                    'port'  => $this->settings->get('notification.settings.deskpro_client.port'),
                 ]);
             default:
                 throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));
@@ -222,6 +224,13 @@ class NotificationService
 
     protected function getJwtToken()
     {
-        return \JWT::encode(['id' => 1], 'test');
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return \JWT::encode(
+            [
+                'id' => $user instanceof Person ? $user->getId() : 0,
+            ],
+            $this->settings->get('notification.settings.deskpro_client.secret')
+        );
     }
 }
