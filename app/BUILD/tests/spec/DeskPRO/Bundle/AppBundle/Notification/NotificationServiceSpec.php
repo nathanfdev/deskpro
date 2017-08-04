@@ -41,6 +41,8 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @mixin NotificationService
@@ -53,7 +55,10 @@ class NotificationServiceSpec extends ObjectBehavior
         SettingsBag $settings,
         EntityRepository $repo,
         QueryBuilder $qb,
-        AbstractQuery $query
+        AbstractQuery $query,
+        TokenStorageInterface $tokenStorage,
+        TokenInterface $token
+
     ) {
         $settings_resolver->getGlobalSettings()->willReturn($settings);
         $settings->get('notification.settings.strategies')->willReturn($this->getStrategies());
@@ -70,7 +75,9 @@ class NotificationServiceSpec extends ObjectBehavior
         $qb->setMaxResults(Argument::any())->willReturn($qb);
         $qb->getQuery()->willReturn($query);
         $query->getOneOrNullResult(Argument::any())->willReturn(null);
-        $this->beConstructedWith($em, $settings_resolver);
+        $tokenStorage->getToken()->willReturn($token);
+        $token->getUser()->willReturn('anon.');
+        $this->beConstructedWith($em, $settings_resolver, $tokenStorage);
     }
 
     public function it_could_construct_configuration_array()
