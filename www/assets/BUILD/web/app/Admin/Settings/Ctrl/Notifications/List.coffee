@@ -81,4 +81,17 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @$scope.pusherTestResult = "FAILED :: The test did not complete successfully"
       )
 
+    testDeskpro: =>
+      @$scope.deskproTestResult = "Testing settings ..."
+
+      params = @getDeskproParams()
+      @Api2.sendPostJson('/notify/setup/action-alerts/deskpro/test', params).then( (res) =>
+        if res.data.success
+          @$scope.deskproTestResult = "Success. Settings are OK.\n\n----- Log -----\n\n" + res.data.message
+        else
+          @$scope.deskproTestResult = "FAILED. Settings are INVALID..\n\n----- Log -----\n\n" + res.data.message
+      , =>
+        @$scope.deskproTestResult = "FAILED :: The test did not complete successfully"
+      )
+
   Admin_Settings_Ctrl_Notifications.EXPORT_CTRL()

@@ -38,8 +38,11 @@ use DeskPRO\Bundle\AppBundle\Model\DeskproClientModel;
 use DeskPRO\Bundle\AppBundle\Model\PusherModel;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
 use Orb\Logger\Handler\ArrayHandler;
@@ -283,5 +286,52 @@ class NotificationController extends BaseController
         $message = $handler->getMessagesAsString();
 
         return View::create(['success' => $success, 'message' => $message]);
+    }
+
+    /**
+     * @Rest\Post("/notify/setup/action-alerts/deskpro/test")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function testDeskproCredentialsAction(Request $request)
+    {
+        $form = $this->createForm(DeskproClientType::class);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            return View::create([
+                'success' => false,
+                'message' => 'Invalid settings were supplied. Make sure you have filled in all form fields.',
+            ]);
+        }
+
+        /** @var DeskproClientModel $deskproClientModel */
+        $deskproClientModel = $form->getData();
+
+        $client = new HttpClient(
+            [
+                'base_uri' => sprintf('%s:%d',
+                    $deskproClientModel->getHost(),
+                    $deskproClientModel->getPort()),
+            ]
+        );
+
+        $testData = ['test' => true];
+        try {
+            $response = $client->post(
+                '/test',
+                [
+                    RequestOptions::JSON => ['jwt' => \JWT::encode($testData, $deskproClientModel->getSecret())],
+                ]
+            );
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+        }
+
+        $message = $response->getBody()->getContents() ?: 'Can\'t connect to server';
+
+        return View::create(['success' => $response->getStatusCode() === 200, 'message' => $message]);
     }
 }

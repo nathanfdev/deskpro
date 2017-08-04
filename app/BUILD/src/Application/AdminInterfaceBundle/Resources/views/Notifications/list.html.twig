@@ -165,6 +165,12 @@
                                     <input type="text" class="form-control" ng-model="deskpro.port" />
                                 </label>
                             </div>
+
+                            <div class="inner-group">
+                                <button class="btn btn-default" ng-click="Notifications.testDeskpro()">Test Deskpro Settings</button>
+                                <br/>
+                                <textarea class="form-control" ng-show="deskproTestResult" ng-bind="deskproTestResult" style="width: 65%; height: 250px; font-size: 90%; font-family: Monaco, monospace;"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
