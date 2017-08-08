@@ -4,63 +4,76 @@
 # Read options
 ################################################################
 
+EXTRA_ARGS=""
+
 while [[ $# -gt 0 ]];
 do
 key="$1"
-case $key in
-	-d|--deskpro)
-		OPT_DESKPRO="$2"
-		shift
-	;;
 
-	-p|--php)
-		OPT_PHP="$2"
-		shift
-	;;
+if [[ "${OPT_DOUBLE_DASH}" = true ]]; then
+    EXTRA_ARGS="${EXTRA_ARGS} ${key}"
+else
+    case $key in
+        -d|--deskpro)
+            OPT_DESKPRO="$2"
+            shift
+        ;;
 
-	-v|--verbose)
-		OPT_VERBOSE=true
-	;;
+        -p|--php)
+            OPT_PHP="$2"
+            shift
+        ;;
 
-	-l|--pidfile)
-		OPT_PIDFILE="$2"
-		shift
-	;;
+        -v|--verbose)
+            OPT_VERBOSE=true
+        ;;
 
-	-h|--help)
-		printf 'Usage:\n  %s [OPTION...]\n\n' "$(basename "$0")"
+        -l|--pidfile)
+            OPT_PIDFILE="$2"
+            shift
+        ;;
 
-		printf 'Help Options:\n'
-		printf '  %-30s %s\n' '-h, --help' 'Show this help message'
-		echo
+        -h|--help)
+            printf 'Usage:\n  %s [OPTION...]\n\n' "$(basename "$0")"
+            printf 'Usage:\n  %s [OPTION...] -- [extra args to deskpro cron command]\n\n' "$(basename "$0")"
 
-		printf 'Options:\n'
-		printf '  %-30s %s\n' '-d dir, --deskpro dir' 'The path to Deskpro. This is only needed if this script is run outside of the default Deskpro bin/ directory (i.e. you moved/copied it).'
-		printf '  %-30s %s\n' '-p path, --php path' 'The path to PHP. This should be the same as the PHP defined in config/config.paths.php'
-		printf '  %-30s %s\n' '-v, --verbose' 'Enable verbose output'
-		printf '  %-30s %s\n' '-l path, --pidfile path' 'Path to the cron pid file. Defaults to the tmp directory within the Deskpro dir.'
-		printf '  %-30s %s\n' '--status' 'Show if cron is currently running or not'
+            printf 'Help Options:\n'
+            printf '  %-30s %s\n' '-h, --help' 'Show this help message'
+            echo
 
-		echo
-		exit 0
-	;;
+            printf 'Options:\n'
+            printf '  %-30s %s\n' '-d dir, --deskpro dir' 'The path to Deskpro. This is only needed if this script is run outside of the default Deskpro bin/ directory (i.e. you moved/copied it).'
+            printf '  %-30s %s\n' '-p path, --php path' 'The path to PHP. This should be the same as the PHP defined in config/config.paths.php'
+            printf '  %-30s %s\n' '-v, --verbose' 'Enable verbose output'
+            printf '  %-30s %s\n' '-l path, --pidfile path' 'Path to the cron pid file. Defaults to the tmp directory within the Deskpro dir.'
+            printf '  %-30s %s\n' '--status' 'Show if cron is currently running or not'
+            printf '  %-30s %s\n' '-- extra args' 'Anything after the double-dash will be passed on to the Deskpro cron command as-is'
 
-	--status)
-        OPT_SHOWSTATUS=true
-        OPT_VERBOSE=true
-	;;
+            echo
+            exit 0
+        ;;
 
-	-*|--*)
-		echo "Unknown option: $key"
-        echo "Use --help for usage information"
-        exit 1
-    ;;
+        --status)
+            OPT_SHOWSTATUS=true
+            OPT_VERBOSE=true
+        ;;
 
-    *)
-        echo "Unknown argument: $1"
-        echo "Use --help for usage information"
-    ;;
-esac
+        --)
+           OPT_DOUBLE_DASH=true
+        ;;
+
+        -*|--*)
+            echo "Unknown option: $key"
+            echo "Use --help for usage information"
+            exit 1
+        ;;
+
+        *)
+            echo "Unknown argument: $1"
+            echo "Use --help for usage information"
+        ;;
+    esac
+fi
 shift
 done
 
@@ -138,10 +151,11 @@ fi
 ################################################################
 
 if [[ "${OPT_VERBOSE}" = true ]]; then
-    $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck --verbose &
+    echo "Command: $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck --verbose $EXTRA_ARGS"
+    $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck --verbose $EXTRA_ARGS &
     PID=$!
 else
-    $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck &
+    $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck $EXTRA_ARGS &
     PID=$!
 fi
 
