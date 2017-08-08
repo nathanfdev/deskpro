@@ -16,8 +16,8 @@ class DraftSelect extends React.PureComponent {
   render() {
     const { value, setValue } = this.props;
     const options = [
-      { value: true, label: 'Set as draft' },
-      { value: true, label: 'Set as published' },
+      { value: true, label: agentPhrases.get('agent.snippets.set_as_draft') },
+      { value: true, label: agentPhrases.get('agent.snippets.set_as_published') },
     ];
     return (
       <Select
@@ -132,6 +132,14 @@ class TypeSelect extends React.Component {
               {agentPhrases.get('agent.general.chat')}
             </Checkbox>
           </ListElement>
+          { this.props.selected.size
+            && !values.ticket.checked && !values.ticket.existing
+            && !values.chat.checked && !values.chat.existing ?
+              <ListElement className="error">
+                {agentPhrases.get('agent.snippets.at_least_one_type')}
+              </ListElement>
+            : null
+          }
         </List>
       </CustomSelect>
     );

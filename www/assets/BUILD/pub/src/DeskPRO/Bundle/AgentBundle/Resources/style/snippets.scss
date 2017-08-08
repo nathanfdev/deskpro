@@ -316,6 +316,11 @@
       .dp-select__content {
         width: 150px;
       }
+      .error {
+        color: $dp-knuckles-primary;
+        font-family: $primary-font;
+        font-size: $font-size-s;
+      }
     }
   }
 }

@@ -393,8 +393,6 @@ export class SnippetsMenu extends React.Component {
     this.setState({
       massActionMode: action
     });
-    // Hack to unselect all snippets
-    this.props.selectForMassAction(false, [1]);
   };
 
   closeMassActions = (e) => {
