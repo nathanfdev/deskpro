@@ -4,20 +4,23 @@ import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { List } from 'react-virtualized';
-import { Tag } from 'deskpro-components/lib/Components/Forms';
+import { Checkbox, Tag } from 'deskpro-components/lib/Components/Forms';
 
 export class SnippetsListElement extends React.PureComponent {
   static propTypes = {
-    me:            PropTypes.object,
-    snippet:       PropTypes.object,
-    languages:     PropTypes.object,
-    editSnippet:   PropTypes.func,
-    insertSnippet: PropTypes.func,
-    focused:       PropTypes.bool,
-    langPref:      PropTypes.array,
-    filter:        PropTypes.string,
-    type:          PropTypes.string,
-    style:         PropTypes.object,
+    me:                  PropTypes.object,
+    snippet:             PropTypes.object,
+    languages:           PropTypes.object,
+    editSnippet:         PropTypes.func,
+    insertSnippet:       PropTypes.func,
+    focused:             PropTypes.bool,
+    massActionMode:      PropTypes.string,
+    langPref:            PropTypes.array,
+    filter:              PropTypes.string,
+    type:                PropTypes.string,
+    style:               PropTypes.object,
+    selectForMassAction: PropTypes.func,
+    massActionSelected:  PropTypes.bool,
   };
   static defaultProps = {
     focused: false,
@@ -31,6 +34,7 @@ export class SnippetsListElement extends React.PureComponent {
     this.getLabels    = this.getLabels.bind(this);
     this.getLanguages = this.getLanguages.bind(this);
     this.findLanguage = this.findLanguage.bind(this);
+    this.insertSnippet = this.insertSnippet.bind(this);
   }
 
   getDraft() {
@@ -56,7 +60,7 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   getLanguages() {
-    const { snippet, languages, insertSnippet, langPref, type } = this.props;
+    const { snippet, languages, langPref, type } = this.props;
     if (snippet.get('translations')) {
       const flags = [];
       const isSplit = snippet.get('is_split', false);
@@ -72,7 +76,7 @@ export class SnippetsListElement extends React.PureComponent {
                 src={language.get('flag_image')}
                 alt={language.get('title')}
                 title={language.get('title')}
-                onClick={e => insertSnippet(e, snippet, language.get('id'))}
+                onClick={e => this.insertSnippet(e, snippet, language.get('id'))}
               />);
           }
         }
@@ -124,6 +128,21 @@ export class SnippetsListElement extends React.PureComponent {
     return null;
   }
 
+  getMassActions() {
+    const { snippet, massActionMode, selectForMassAction, massActionSelected } = this.props;
+    if (massActionMode) {
+      return (
+        <Checkbox
+          value={snippet.get('id')}
+          checked={massActionSelected}
+          stopPropagation
+          onChange={selectForMassAction}
+        />
+      );
+    }
+    return null;
+  }
+
   getShortcutCode() {
     const { snippet } = this.props;
     if (snippet.get('shortcut_code')) {
@@ -143,15 +162,31 @@ export class SnippetsListElement extends React.PureComponent {
     return langPref[0];
   }
 
+  insertSnippet(e, snippet, languageId) {
+    const { massActionMode, massActionSelected, insertSnippet, selectForMassAction } = this.props;
+    if (massActionMode !== '') {
+      selectForMassAction(!massActionSelected, snippet.get('id'));
+    } else {
+      insertSnippet(e, snippet, languageId);
+    }
+  }
+
   render() {
-    const { me, snippet, editSnippet, insertSnippet, focused, style } = this.props;
+    const { me, snippet, editSnippet, focused, massActionMode, massActionSelected, style } = this.props;
     const langId = this.findLanguage();
     return (
       <div
-        className={classNames('snippet_list_element_wrapper', { 'snippet_list_element_wrapper--focused': focused })}
+        className={classNames(
+          'snippet_list_element_wrapper',
+          {
+            'snippet_list_element_wrapper--focused':      focused || massActionSelected,
+            'snippet_list_element_wrapper--mass-actions': massActionMode,
+          }
+        )}
         style={style}
       >
-        <div className="snippets__list__element" onClick={e => insertSnippet(e, snippet, langId)} >
+        {this.getMassActions()}
+        <div className="snippets__list__element" onClick={e => this.insertSnippet(e, snippet, langId)} >
           {this.getDraft()}
           <span className="title">{snippet.get('title')} </span>
           {this.getShortcutCode()}<br />
@@ -170,20 +205,23 @@ export class SnippetsListElement extends React.PureComponent {
 }
 export class SnippetsList extends React.Component {
   static propTypes = {
-    me:            PropTypes.object,
-    snippets:      PropTypes.object,
-    languages:     PropTypes.object,
-    selectedLabel: PropTypes.string,
-    multiMode:     PropTypes.string,
-    multiLabels:   PropTypes.array,
-    focusedIndex:  PropTypes.number,
-    height:        PropTypes.number,
-    width:         PropTypes.number,
-    filter:        PropTypes.string,
-    type:          PropTypes.string,
-    editSnippet:   PropTypes.func,
-    insertSnippet: PropTypes.func,
-    langPref:      PropTypes.array,
+    me:                  PropTypes.object,
+    snippets:            PropTypes.object,
+    languages:           PropTypes.object,
+    selectedLabel:       PropTypes.string,
+    multiMode:           PropTypes.string,
+    multiLabels:         PropTypes.array,
+    focusedIndex:        PropTypes.number,
+    height:              PropTypes.number,
+    width:               PropTypes.number,
+    filter:              PropTypes.string,
+    type:                PropTypes.string,
+    editSnippet:         PropTypes.func,
+    insertSnippet:       PropTypes.func,
+    langPref:            PropTypes.array,
+    massActionMode:      PropTypes.string,
+    selectForMassAction: PropTypes.func,
+    massActionsSelected: PropTypes.object,
   };
 
   static noRowsRenderer() {
@@ -207,10 +245,16 @@ export class SnippetsList extends React.Component {
     if (nextProps.focusedIndex !== this.props.focusedIndex) {
       setTimeout(() => this.updateList(this.props.focusedIndex), 10);
     }
+    if (nextProps.massActionsSelected !== this.props.massActionsSelected) {
+      this.listRef.forceUpdateGrid();
+    }
     if (!nextProps.snippets.equals(this.props.snippets)) {
       this.listRef.forceUpdateGrid();
     }
     if (nextProps.langPref !== this.props.langPref) {
+      this.listRef.forceUpdateGrid();
+    }
+    if (nextProps.massActionMode !== this.props.massActionMode) {
       this.listRef.forceUpdateGrid();
     }
   }
@@ -234,6 +278,9 @@ export class SnippetsList extends React.Component {
       langPref,
       filter,
       type,
+      massActionMode,
+      massActionsSelected,
+      selectForMassAction,
     } = this.props;
     const snippet = this.list[index];
     if (!snippet) {
@@ -251,6 +298,9 @@ export class SnippetsList extends React.Component {
         editSnippet={editSnippet}
         insertSnippet={insertSnippet}
         focused={focusedIndex === index}
+        massActionMode={massActionMode}
+        massActionSelected={massActionsSelected.has(snippet.get('id'))}
+        selectForMassAction={selectForMassAction}
         style={style}
       />
     );
@@ -263,6 +313,9 @@ export class SnippetsList extends React.Component {
       multiLabels,
       multiMode,
       width,
+      massActionMode,
+      selectForMassAction,
+      massActionsSelected,
     } = this.props;
     let height = this.props.height;
     if (isNaN(height)) {
@@ -294,18 +347,34 @@ export class SnippetsList extends React.Component {
     if (width > 928) {
       listWidth = width - 245;
     }
+    if (massActionMode) {
+      height -= 18;
+    }
     return (
-      <List
-        className="snippets__list"
-        height={height}
-        width={listWidth}
-        rowCount={this.list.length}
-        rowHeight={68}
-        rowRenderer={this.rowRenderer}
-        noRowsRenderer={SnippetsList.noRowsRenderer}
-        overscanRowCount={2}
-        ref={(c) => { this.listRef = c; }}
-      />
+      <div className="snippets__list">
+        { massActionMode ?
+          <Checkbox
+            value="select_all"
+            stopPropagation
+            onChange={(checked) => { selectForMassAction(checked, this.list); }}
+            checked={this.list.filter(snippet => !massActionsSelected.has(snippet.get('id'))).length === 0}
+          >
+            {agentPhrases.get('agent.general.select_all')}
+          </Checkbox>
+          : null
+        }
+        <List
+          className="snippets__list"
+          height={height}
+          width={listWidth}
+          rowCount={this.list.length}
+          rowHeight={68}
+          rowRenderer={this.rowRenderer}
+          noRowsRenderer={SnippetsList.noRowsRenderer}
+          overscanRowCount={2}
+          ref={(c) => { this.listRef = c; }}
+        />
+      </div>
     );
   }
 }

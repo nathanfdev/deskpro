@@ -269,7 +269,6 @@
 }
 .snippets__mass-actions {
   display: inline-block;
-  transition: flex-basis 0.5s ease-out;
   .snippets__mass-actions--content {
     margin: 10px 17px 5px 10px;
     min-height: 52px;
@@ -313,22 +312,28 @@
       display: inline-block;
       vertical-align: bottom;
       margin: 0 5px 0 0;
+      .dp-select__input,
+      .dp-select__content {
+        width: 150px;
+      }
     }
-  }
-  > div > .dp-input--checkbox {
-    margin-left: 15px;
   }
 }
 .snippets__list {
-  margin-top: 10px;
-  padding-left: 10px;
-  overflow-y: auto;
-  padding-bottom: 2px;
-  width: 100%;
-  flex-basis: -webkit-fill-available;
-  flex-basis: -moz-available;
-  flex-basis: fill;
-  transition: flex-basis 0.5s ease-out;
+  & > .dp-input--checkbox {
+    margin-bottom: 0;
+    margin-left: 15px;
+  }
+  .ReactVirtualized__Grid {
+    margin-top: 10px;
+    padding-left: 10px;
+    overflow-y: auto;
+    padding-bottom: 2px;
+    width: 100%;
+    flex-basis: -webkit-fill-available;
+    flex-basis: -moz-available;
+    flex-basis: fill;
+  }
 }
 .snippet_list_element_wrapper {
   .snippets__list__element {
@@ -387,6 +392,17 @@
       span.line:last-child .line-break {
         display: none;
       }
+    }
+  }
+  &.snippet_list_element_wrapper--mass-actions {
+    .dp-input--checkbox {
+      position: absolute;
+      left: 5px;
+      top: 7px;
+      z-index: 1;
+    }
+    .snippets__list__element {
+      padding-left: 25px;
     }
   }
   &:last-child .snippets__list__element {

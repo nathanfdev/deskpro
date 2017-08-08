@@ -937,6 +937,7 @@ return [
     'agent.general.search'                                     => 'Search',
     'agent.general.search_terms'                               => 'Search Terms',
     'agent.general.seconds'                                    => 'seconds',
+    'agent.general.select'                                     => 'Select',
     'agent.general.select_a_department'                        => 'Select a department',
     'agent.general.select_agent'                               => 'Select an Agent',
     'agent.general.select_all'                                 => 'Select all',

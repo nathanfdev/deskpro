@@ -56,17 +56,16 @@ export class SnippetsMenuContainer extends React.Component {
         return found;
       }
     }
-    console.log(snippetTranslations.toJS());
-    console.log(snippet.toJS());
     return null;
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      filter:   '',
-      showMode: 'all',
-      langPref: SnippetsMenuContainer.defaultLangPref
+      filter:              '',
+      showMode:            'all',
+      langPref:            SnippetsMenuContainer.defaultLangPref,
+      massActionsSelected: new Set(),
     };
     this.props.dispatch(actions.loadSnippetLanguagePreferences())
       .then((data) => {
@@ -116,6 +115,9 @@ export class SnippetsMenuContainer extends React.Component {
     if (nextState.langPref !== this.state.langPref) {
       return true;
     }
+    if (nextState.massActionsSelected !== this.state.massActionsSelected) {
+      return true;
+    }
     return nextProps.department !== this.props.department;
   }
 
@@ -148,6 +150,24 @@ export class SnippetsMenuContainer extends React.Component {
 
   handleShowMode = (checked, showMode) => {
     this.setState({ showMode });
+  };
+
+  selectForMassAction = (checked, value) => {
+    let newMassActionsSelected = new Set(this.state.massActionsSelected);
+    if (value.length) {
+      if (checked) {
+        newMassActionsSelected = new Set(value.map(snippet => snippet.get('id')));
+      } else {
+        newMassActionsSelected.clear();
+      }
+    } else if (checked) {
+      newMassActionsSelected.add(value);
+    } else {
+      newMassActionsSelected.delete(value);
+    }
+    this.setState({
+      massActionsSelected: newMassActionsSelected
+    });
   };
 
   render() {
@@ -246,6 +266,8 @@ export class SnippetsMenuContainer extends React.Component {
         langContext={langContext}
         langPref={this.state.langPref}
         updateLanguagePref={this.updateLanguagePref}
+        selectForMassAction={this.selectForMassAction}
+        massActionsSelected={this.state.massActionsSelected}
         open={open}
         width={width}
         ref={(c) => { this.menu = c; }}
@@ -256,25 +278,27 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    me:                 PropTypes.object,
-    snippets:           PropTypes.object,
-    labels:             PropTypes.array,
-    filteredSnippets:   PropTypes.object,
-    languages:          PropTypes.object,
-    langId:             PropTypes.number,
-    width:              PropTypes.number,
-    closeMenu:          PropTypes.func,
-    insertSnippet:      PropTypes.func,
-    handleFilter:       PropTypes.func,
-    handleShowMode:     PropTypes.func,
-    open:               PropTypes.bool,
-    type:               PropTypes.string,
-    filter:             PropTypes.string,
-    showMode:           PropTypes.string,
-    langContext:        PropTypes.array,
-    langDisplay:        PropTypes.array,
-    langPref:           PropTypes.object,
-    updateLanguagePref: PropTypes.func,
+    me:                  PropTypes.object,
+    snippets:            PropTypes.object,
+    labels:              PropTypes.array,
+    filteredSnippets:    PropTypes.object,
+    languages:           PropTypes.object,
+    langId:              PropTypes.number,
+    width:               PropTypes.number,
+    closeMenu:           PropTypes.func,
+    insertSnippet:       PropTypes.func,
+    handleFilter:        PropTypes.func,
+    handleShowMode:      PropTypes.func,
+    open:                PropTypes.bool,
+    type:                PropTypes.string,
+    filter:              PropTypes.string,
+    showMode:            PropTypes.string,
+    langContext:         PropTypes.array,
+    langDisplay:         PropTypes.array,
+    langPref:            PropTypes.object,
+    updateLanguagePref:  PropTypes.func,
+    selectForMassAction: PropTypes.func,
+    massActionsSelected: PropTypes.object,
   };
   static defaultProps = {
     handleFilter() {},
@@ -287,7 +311,7 @@ export class SnippetsMenu extends React.Component {
       selectedLabel:    '',
       multiLabels:      [],
       multiMode:        'any',
-      massActionMode:   false,
+      massActionMode:   '',
       selectedSnippets: [],
       editOpen:         false,
       snippetEdit:      {},
@@ -366,17 +390,20 @@ export class SnippetsMenu extends React.Component {
   };
 
   massActionsMode = (action) => {
-    console.log(action);
     this.setState({
       massActionMode: action
     });
+    // Hack to unselect all snippets
+    this.props.selectForMassAction(false, [1]);
   };
 
   closeMassActions = (e) => {
     e.preventDefault();
     this.setState({
-      massActionMode: false
+      massActionMode: ''
     });
+    // Hack to unselect all snippets
+    this.props.selectForMassAction(false, [1]);
   };
 
   closeShortCut = (ev) => {
@@ -549,6 +576,8 @@ export class SnippetsMenu extends React.Component {
       showMode,
       handleShowMode,
       type,
+      selectForMassAction,
+      massActionsSelected,
     } = this.props;
     const style = {};
     if (width) {
@@ -556,9 +585,9 @@ export class SnippetsMenu extends React.Component {
     }
     let listHeight = this.state.height - 123;
     if (this.state.massActionMode) {
-      listHeight -= 88;
+      listHeight -= 80;
     }
-    const massActionsHeight = this.state.massActionMode ? 88 : 0;
+    const massActionsHeight = this.state.massActionMode ? 80 : 0;
     return (
       <div id="snippets__menu" style={style}>
         <div className="header">
@@ -634,7 +663,7 @@ export class SnippetsMenu extends React.Component {
             { this.state.massActionMode ?
               <MassActions
                 action={this.state.massActionMode}
-                snippets={snippets}
+                selected={massActionsSelected}
                 close={this.closeMassActions}
               />
           : null }
@@ -654,6 +683,9 @@ export class SnippetsMenu extends React.Component {
             multiMode={this.state.multiMode}
             editSnippet={this.editSnippet}
             insertSnippet={insertSnippet}
+            massActionMode={this.state.massActionMode}
+            selectForMassAction={selectForMassAction}
+            massActionsSelected={massActionsSelected}
           />
         </div>
         {this.getEditSnippet()}

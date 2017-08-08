@@ -52,7 +52,6 @@ export class MassActionsSelect extends React.PureComponent {
   inputRenderer = () => <span>{agentPhrases.get('agent.general.mass_actions')}</span>;
 
   render() {
-    console.log(MassActionsSelect.getActions());
     return (
       <CustomSelect
         inputRenderer={this.inputRenderer}

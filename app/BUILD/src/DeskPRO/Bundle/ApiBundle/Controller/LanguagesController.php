@@ -123,6 +123,7 @@ class LanguagesController extends CrudController
             'agent.general.priority',
             'agent.general.product',
             'agent.general.save',
+            'agent.general.select',
             'agent.general.select_all',
             'agent.general.show',
             'agent.general.subject',
