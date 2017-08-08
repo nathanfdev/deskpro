@@ -75,5 +75,10 @@ interface NotificationStrategyInterface
 
     public function stopBatch();
 
-    public function deliver();
+    /**
+     * @param bool $postpone
+     *
+     * @return mixed
+     */
+    public function deliver($postpone = false);
 }

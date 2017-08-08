@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
@@ -48,8 +49,16 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     /**
      * @var Pusher
      */
-    protected $pusher;
+    private $pusher;
 
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
     private $channelPrefix = '';
 
     /**
@@ -58,13 +67,24 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     private $messages = [];
 
     /**
+     * @var array
+     */
+    private $postponeMessages = [];
+
+    /**
      * @param Pusher           $pusher
      * @param SettingsResolver $resolver
+     * @param Connection       $connection
      */
-    public function __construct(Pusher $pusher, SettingsResolver $resolver)
-    {
+    public function __construct(
+        Pusher $pusher,
+        SettingsResolver $resolver,
+        Connection $connection
+    ) {
         $this->pusher        = $pusher;
         $this->channelPrefix = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
+        $this->connection    = $connection;
+        \DpShutdown::add([$this, 'doDeliverSoon'], null, 'db_done_trans_commit');
     }
 
     /**
@@ -91,6 +111,23 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
             'name'    => $this->getChannel($message),
             'data'    => $data,
         ];
+    }
+
+    public function deliverSoon()
+    {
+        if ($this->connection->getTransactionNestingLevel() > 1) {
+            $this->postponeMessages = array_merge($this->postponeMessages, $this->messages);
+            $this->messages         = [];
+        } else {
+            $this->deliver();
+        }
+    }
+
+    public function doDeliverSoon()
+    {
+        $this->messages         = array_merge($this->messages, $this->postponeMessages);
+        $this->postponeMessages = [];
+        $this->deliver();
     }
 
     /**

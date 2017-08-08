@@ -199,6 +199,6 @@ class FilterChangeSet
                 );
             }
         }
-        $this->eventManager->deliver();
+        $this->eventManager->deliver(true);
     }
 }

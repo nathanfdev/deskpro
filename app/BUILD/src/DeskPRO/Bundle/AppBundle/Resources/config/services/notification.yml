@@ -60,6 +60,7 @@ services:
     arguments:
       - "@deskpro.notification.pusher"
       - "@settings_resolver"
+      - "@database_connection"
 
   deskpro.notification.pusher_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherFactory
