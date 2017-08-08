@@ -419,6 +419,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
                 App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']]);
             } catch (\Exception $e) {
+                \DpSys\LowError\SystemErrorHandler::logException($e, false);
             }
         });
 
