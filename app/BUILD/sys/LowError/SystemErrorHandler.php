@@ -745,7 +745,17 @@ class SystemErrorHandler
             echo "\n";
         }
 
-        $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'/error.log'];
+        if (self::getLogDir()) {
+            $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'/error.log'];
+        } else {
+            // we dont have an env log, so lets try to re-use server error log
+            $phpErrLog = ini_get('error_log');
+            if ($phpErrLog) {
+                $logFiles = [$phpErrLog];
+            } else {
+                $logFiles = [];
+            }
+        }
 
         if ($secondaryLogFile = self::getDpEnv()->getConfig('settings.secondary_errorlog_file')) {
             $logFiles[] = $secondaryLogFile;
@@ -848,6 +858,10 @@ class SystemErrorHandler
             return self::$bugsnagClient;
         }
 
+        if (self::getDpEnv() instanceof UnknownDpEnv) {
+            return;
+        }
+
         if (self::$bugsnagConfig['backend_api_key']) {
             if (!class_exists('Bugsnag_Client', true)) {
                 // failed to autoload the class, so ignore
@@ -901,12 +915,25 @@ class SystemErrorHandler
     }
 
     /**
+     * Get the DP environment.
+     *
+     * NOTE: Only use methods that are added to UnknownDpEnv below.
+     *
      * @return \DpRun\DpEnv
      */
     private static function getDpEnv()
     {
+        static $unknownEnv;
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
+
+        if (!$DP_ENV) {
+            if (!$unknownEnv) {
+                $unknownEnv = new UnknownDpEnv();
+            }
+
+            return $unknownEnv;
+        }
 
         return $DP_ENV;
     }
@@ -1378,5 +1405,42 @@ class SystemErrorHandler
         } finally {
             self::$noShowErrors = false;
         }
+    }
+}
+
+/**
+ * In some rare cases we might not have a real DpEnv loaded (see getDpEnv above) when an error
+ * happens before it could be set. So this is a duck'd class that has the methods used above.
+ */
+class UnknownDpEnv
+{
+    public function getDpRoot()
+    {
+        return '';
+    }
+
+    public function getAppName()
+    {
+        return '';
+    }
+
+    public function getAppDir()
+    {
+        return '';
+    }
+
+    public function getUserLogsDir()
+    {
+        return '';
+    }
+
+    public function getRuntimeVar($name, $defaultVal = null)
+    {
+        return $defaultVal;
+    }
+
+    public function getConfig($name, $defaultVal = null)
+    {
+        return $defaultVal;
     }
 }
