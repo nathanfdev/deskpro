@@ -5,30 +5,138 @@ import { Button } from 'deskpro-components/lib/Components/Buttons';
 import { Label, Select, CustomSelect, Checkbox } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { MassActionsSelect } from './Menus/MassActionsSelect';
+import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { allSnippetsSelector } from '../Selectors/snippets';
 
-class DraftSelect extends React.PureComponent {
+@connect(state => ({
+  chatDepartments:   collectionSelectorFactory('Department', 'all_chat')(state),
+  ticketDepartments: collectionSelectorFactory('Department', 'all_tickets')(state)
+}))
+class VisibilitySelect extends React.Component {
   static propTypes = {
-    value:    PropTypes.object,
-    setValue: PropTypes.func,
+    chatDepartments:   PropTypes.object,
+    ticketDepartments: PropTypes.object,
+    value:             PropTypes.object,
+    setValue:          PropTypes.func,
+    snippets:          PropTypes.object,
+    selected:          PropTypes.object,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedDepartments: new Set(),
+      departmentsExisting: new Set(),
+      isVisibleGlobal:     false,
+    };
+
+    this.initialExisting = new Set();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selected !== this.props.selected || !nextProps.snippets.equals(this.props.snippets)) {
+      let isVisibleGlobalChecked = false;
+      let isVisibleGlobalExisting = false;
+
+      const departmentsExisting = new Set();
+      const selectedTeams = new Set();
+
+      if (nextProps.selected.size) {
+        const selectedSnippets = nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')));
+
+        isVisibleGlobalExisting = selectedSnippets.some(snippet => snippet.get('is_visible_global'));
+
+        if (isVisibleGlobalExisting) {
+          isVisibleGlobalChecked = selectedSnippets.count(snippet => !snippet.get('is_visible_global')) === 0;
+        }
+
+        if (!isVisibleGlobalChecked) {
+          this.props.ticketDepartments.forEach((department) => {
+            if (selectedSnippets.some(snippet =>
+                snippet.get('visible_departments', new Immutable.List()).includes(department.get('id')))
+            ) {
+              departmentsExisting.add(department.get('id'));
+              if (!isVisibleGlobalExisting
+                && selectedSnippets.count(snippet =>
+                  !snippet.get('visible_departments', new Immutable.List()).includes(department.get('id'))) === 0) {
+                selectedTeams.add(department.get('id'));
+              }
+            }
+          });
+          this.props.chatDepartments.forEach((department) => {
+            if (selectedSnippets.some(snippet =>
+                snippet.get('visible_departments', new Immutable.List()).includes(department.get('id')))
+            ) {
+              departmentsExisting.add(department.get('id'));
+              if (!isVisibleGlobalExisting
+                && selectedSnippets.count(snippet =>
+                  !snippet.get('visible_departments', new Immutable.List()).includes(department.get('id'))) === 0) {
+                selectedTeams.add(department.get('id'));
+              }
+            }
+          });
+        }
+      }
+
+      this.initialExisting = new Set(departmentsExisting);
+
+      this.setState({
+        isVisibleGlobal: isVisibleGlobalChecked,
+        selectedTeams,
+        departmentsExisting,
+      });
+    }
+  }
+
+  handleChange = (departments, isVisibleGlobal, remove) => {
+    if (departments.size || remove) {
+      const removedDepartments = [...this.state.selectedDepartments].filter(x => !departments.has(x));
+      const newDepartments = [...departments].filter(x => !this.state.selectedDepartments.has(x));
+      let { value } = this.props;
+      if (!value) {
+        value = { selectedDepartments: {} };
+      }
+      newDepartments.forEach((x) => { value.selectedDepartments[x] = true; });
+      const departmentsExisting = new Set(this.state.departmentsExisting);
+      removedDepartments.forEach((x) => {
+        value.selectedDepartments[x] = false;
+        departmentsExisting.delete(x);
+      });
+      this.setState({
+        isVisibleGlobal:     false,
+        selectedDepartments: departments,
+        departmentsExisting,
+      });
+      this.props.setValue({
+        isVisibleGlobal:     true,
+        selectedDepartments: value.selectedDepartments,
+      });
+    } else {
+      const toRemove = {};
+      this.initialExisting.forEach((x) => { toRemove[x] = false; });
+      this.props.setValue({
+        isVisibleGlobal,
+        selectedDepartments: toRemove,
+      });
+      this.setState({
+        isVisibleGlobal,
+        selectedDepartments: new Set(),
+        departmentsExisting: new Set(),
+      });
+    }
   };
 
   render() {
-    const { value, setValue } = this.props;
-    const options = [
-      { value: 'draft', label: agentPhrases.get('agent.snippets.set_as_draft') },
-      { value: 'published', label: agentPhrases.get('agent.snippets.set_as_published') },
-    ];
     return (
-      <Select
-        value={value}
-        options={options}
-        clearable={false}
-        searchable={false}
-        onChange={setValue}
+      <VisibilitySelectContainer
+        selectedDepartments={this.state.selectedDepartments}
+        isVisibleGlobal={this.state.isVisibleGlobal}
+        existingDepartments={this.state.departmentsExisting}
+        onChange={this.handleChange}
+        types={['ticket', 'chat']}
       />
     );
   }
@@ -270,6 +378,30 @@ class TypeSelect extends React.Component {
   }
 }
 
+class DraftSelect extends React.PureComponent {
+  static propTypes = {
+    value:    PropTypes.object,
+    setValue: PropTypes.func,
+  };
+
+  render() {
+    const { value, setValue } = this.props;
+    const options = [
+      { value: 'draft', label: agentPhrases.get('agent.snippets.set_as_draft') },
+      { value: 'published', label: agentPhrases.get('agent.snippets.set_as_published') },
+    ];
+    return (
+      <Select
+        value={value}
+        options={options}
+        clearable={false}
+        searchable={false}
+        onChange={setValue}
+      />
+    );
+  }
+}
+
 @connect(state => ({
   snippets: allSnippetsSelector(state),
 }))
@@ -311,7 +443,12 @@ export default class MassActions extends React.Component {
       case 'labels':
         return <span>Unknown action</span>;
       case 'visibility':
-        return <span>Unknown action</span>;
+        return (<VisibilitySelect
+          value={this.state.actionValue}
+          setValue={this.setActionValue}
+          selected={this.props.selected}
+          snippets={this.props.snippets}
+        />);
       case 'ownership':
         return (<OwnershipSelect
           value={this.state.actionValue}

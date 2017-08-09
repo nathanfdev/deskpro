@@ -308,17 +308,21 @@
       transform: rotate(-45deg);
     }
     .dp-select {
-      width: 150px;
+      width: 200px;
       display: inline-block;
       vertical-align: bottom;
       margin: 0 5px 0 0;
       .dp-select__input {
-        width: 150px;
+        width: 200px;
         white-space: nowrap;
         overflow: hidden;
       }
       .dp-select__content {
-        width: 150px;
+        width: 200px;
+        .dp-input--checkbox {
+          white-space: nowrap;
+          overflow: hidden;
+        }
       }
       .error {
         color: $dp-knuckles-primary;

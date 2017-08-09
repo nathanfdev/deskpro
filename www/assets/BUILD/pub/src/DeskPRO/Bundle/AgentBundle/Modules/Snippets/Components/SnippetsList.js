@@ -343,9 +343,9 @@ export class SnippetsList extends React.Component {
           label.replace(/\s*\/\s*/, '/').match(`${selectedLabel}/`)
         );
       }).toArray();
-    let listWidth = (width - 5) * 0.74;
+    let listWidth = (width - 15) * 0.74;
     if (width > 928) {
-      listWidth = width - 245;
+      listWidth = width - 255;
     }
     if (massActionMode) {
       height -= 18;

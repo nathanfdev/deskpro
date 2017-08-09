@@ -9,10 +9,16 @@ class Department extends React.Component {
   static propTypes = {
     department:          PropTypes.object.isRequired,
     departments:         PropTypes.object.isRequired,
-    selectedDepartments: PropTypes.object.isRequired,
+    selectedDepartments: PropTypes.instanceOf(Set).isRequired,
+    existingDepartments: PropTypes.instanceOf(Set),
     filter:              PropTypes.object,
     checked:             PropTypes.bool.isRequired,
+    existing:            PropTypes.bool,
     onChange:            PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    existing: false
   };
 
   getChildren(department) {
@@ -28,7 +34,9 @@ class Department extends React.Component {
             filter={this.props.filter}
             departments={this.props.departments}
             selectedDepartments={this.props.selectedDepartments}
+            existingDepartments={this.props.existingDepartments}
             checked={this.props.selectedDepartments.has(childDepartment.get('id'))}
+            existing={this.props.existingDepartments.has(childDepartment.get('id'))}
             onChange={this.props.onChange}
           />);
         }
@@ -43,7 +51,7 @@ class Department extends React.Component {
   }
 
   render() {
-    const { department, checked, onChange, filter } = this.props;
+    const { department, checked, existing, onChange, filter } = this.props;
     if (filter && !department.get('title').match(filter) && department.get('children').size === 0) {
       return null;
     } else if (filter && department.get('children').size > 0) {
@@ -60,6 +68,7 @@ class Department extends React.Component {
           value={department.get('id')}
           onChange={(c, v) => onChange(c, v, department)}
           checked={checked}
+          existing={existing}
         >
           {department.get('title')}
         </Checkbox>
@@ -77,10 +86,15 @@ export class VisibilitySelectContainer extends React.Component {
   static propTypes = {
     chatDepartments:     PropTypes.object,
     ticketDepartments:   PropTypes.object,
-    selectedDepartments: PropTypes.object.isRequired,
+    selectedDepartments: PropTypes.instanceOf(Set).isRequired,
+    existingDepartments: PropTypes.instanceOf(Set),
     isVisibleGlobal:     PropTypes.bool,
     types:               PropTypes.array,
     onChange:            PropTypes.func,
+  };
+
+  static defaultProps = {
+    existingDepartments: new Set()
   };
 
   render() {
@@ -88,6 +102,7 @@ export class VisibilitySelectContainer extends React.Component {
       chatDepartments,
       ticketDepartments,
       selectedDepartments,
+      existingDepartments,
       onChange,
       types,
       isVisibleGlobal
@@ -97,6 +112,7 @@ export class VisibilitySelectContainer extends React.Component {
         chatDepartments={chatDepartments}
         ticketDepartments={ticketDepartments}
         selectedDepartments={selectedDepartments}
+        existingDepartments={existingDepartments}
         isVisibleGlobal={isVisibleGlobal}
         types={types}
         onChange={onChange}
@@ -108,7 +124,8 @@ export class VisibilitySelect extends React.Component {
   static propTypes = {
     chatDepartments:     PropTypes.object,
     ticketDepartments:   PropTypes.object,
-    selectedDepartments: PropTypes.object,
+    selectedDepartments: PropTypes.instanceOf(Set),
+    existingDepartments: PropTypes.instanceOf(Set),
     isVisibleGlobal:     PropTypes.bool,
     types:               PropTypes.array,
     onChange:            PropTypes.func,
@@ -128,6 +145,23 @@ export class VisibilitySelect extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isVisibleGlobal !== this.props.isVisibleGlobal
+      || nextProps.selectedDepartments !== this.props.selectedDepartments
+      || nextProps.existingDepartments !== this.props.existingDepartments
+    ) {
+      let radio = '';
+      if (nextProps.isVisibleGlobal) {
+        radio = 'all';
+      } else {
+        radio = 'specific';
+      }
+      this.setState({
+        radio,
+      });
+    }
+  }
+
   onFilterChange = filter => this.setState({ filter });
 
   onRadioChange = (checked, value) => {
@@ -139,10 +173,11 @@ export class VisibilitySelect extends React.Component {
     } else {
       this.props.onChange(new Set(), false);
     }
+    this.forceUpdate();
   };
 
   onCheckboxChange = (checked, value, department) => {
-    const { selectedDepartments } = this.props;
+    const selectedDepartments = new Set(this.props.selectedDepartments);
     if (checked) {
       selectedDepartments.add(value);
       department.get('children').forEach(child => selectedDepartments.add(child));
@@ -167,7 +202,7 @@ export class VisibilitySelect extends React.Component {
   };
 
   getSpecific = () => {
-    const { selectedDepartments, types } = this.props;
+    const { selectedDepartments, existingDepartments, types } = this.props;
     const departments = [];
     let departmentsCount = 0;
     const re = new RegExp(this.state.filter, 'i');
@@ -189,7 +224,9 @@ export class VisibilitySelect extends React.Component {
               filter={re}
               departments={this.props.ticketDepartments}
               selectedDepartments={selectedDepartments}
+              existingDepartments={existingDepartments}
               checked={selectedDepartments.has(department.get('id'))}
+              existing={existingDepartments.has(department.get('id'))}
               onChange={this.onCheckboxChange}
             />
           );
