@@ -1,10 +1,13 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { Button } from 'deskpro-components/lib/Components/Buttons';
 import { Label, Select, CustomSelect, Checkbox } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { MassActionsSelect } from './Menus/MassActionsSelect';
+import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { allSnippetsSelector } from '../Selectors/snippets';
 
 class DraftSelect extends React.PureComponent {
@@ -16,8 +19,8 @@ class DraftSelect extends React.PureComponent {
   render() {
     const { value, setValue } = this.props;
     const options = [
-      { value: true, label: agentPhrases.get('agent.snippets.set_as_draft') },
-      { value: true, label: agentPhrases.get('agent.snippets.set_as_published') },
+      { value: 'draft', label: agentPhrases.get('agent.snippets.set_as_draft') },
+      { value: 'published', label: agentPhrases.get('agent.snippets.set_as_published') },
     ];
     return (
       <Select
@@ -26,6 +29,122 @@ class DraftSelect extends React.PureComponent {
         clearable={false}
         searchable={false}
         onChange={setValue}
+      />
+    );
+  }
+}
+
+@connect(state => ({
+  agentTeams: allSelectorFactory('AgentTeam')(state)
+}))
+class OwnershipSelect extends React.Component {
+  static propTypes = {
+    agentTeams: PropTypes.object,
+    value:      PropTypes.object,
+    setValue:   PropTypes.func,
+    snippets:   PropTypes.object,
+    selected:   PropTypes.object,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedTeams:     new Set(),
+      teamsExisting:     new Set(),
+      isOwnershipGlobal: false,
+    };
+
+    this.initialExisting = new Set();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.selected !== this.props.selected || !nextProps.snippets.equals(this.props.snippets)) {
+      let isOwnershipGlobalChecked = false;
+      let isOwnershipGlobalExisting = false;
+
+      const teamsExisting = new Set();
+      const selectedTeams = new Set();
+
+      if (nextProps.selected.size) {
+        const selectedSnippets = nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')));
+
+        isOwnershipGlobalExisting = selectedSnippets.some(snippet => snippet.get('is_ownership_global'));
+
+        if (isOwnershipGlobalExisting) {
+          isOwnershipGlobalChecked = selectedSnippets.count(snippet => !snippet.get('is_ownership_global')) === 0;
+        }
+
+        if (!isOwnershipGlobalChecked) {
+          this.props.agentTeams.forEach((team) => {
+            if (selectedSnippets.some(snippet =>
+                snippet.get('ownership_teams', new Immutable.List()).includes(team.get('id')))
+            ) {
+              teamsExisting.add(team.get('id'));
+              if (!isOwnershipGlobalExisting
+                && selectedSnippets.count(snippet =>
+                  !snippet.get('ownership_teams', new Immutable.List()).includes(team.get('id'))) === 0) {
+                selectedTeams.add(team.get('id'));
+              }
+            }
+          });
+        }
+      }
+
+      this.initialExisting = new Set(teamsExisting);
+
+      this.setState({
+        isOwnershipGlobal: isOwnershipGlobalChecked,
+        selectedTeams,
+        teamsExisting,
+      });
+    }
+  }
+
+  handleChange = (teams, isOwnershipGlobal, remove) => {
+    if (teams.size || remove) {
+      const removedTeams = [...this.state.selectedTeams].filter(x => !teams.has(x));
+      const newTeams = [...teams].filter(x => !this.state.selectedTeams.has(x));
+      let { value } = this.props;
+      if (!value) {
+        value = { selectedTeams: {} };
+      }
+      newTeams.forEach((x) => { value.selectedTeams[x] = true; });
+      const teamsExisting = new Set(this.state.teamsExisting);
+      removedTeams.forEach((x) => {
+        value.selectedTeams[x] = false;
+        teamsExisting.delete(x);
+      });
+      this.setState({
+        isOwnershipGlobal: false,
+        selectedTeams:     teams,
+        teamsExisting,
+      });
+      this.props.setValue({
+        isOwnershipGlobal: true,
+        selectedTeams:     value.selectedTeams,
+      });
+    } else {
+      const toRemove = {};
+      this.initialExisting.forEach((x) => { toRemove[x] = false; });
+      this.props.setValue({
+        isOwnershipGlobal,
+        selectedTeams: toRemove,
+      });
+      this.setState({
+        isOwnershipGlobal,
+        selectedTeams: new Set(),
+        teamsExisting: new Set(),
+      });
+    }
+  };
+
+  render() {
+    return (
+      <OwnershipSelectContainer
+        selectedTeams={this.state.selectedTeams}
+        isOwnershipGlobal={this.state.isOwnershipGlobal}
+        existingTeams={this.state.teamsExisting}
+        onChange={this.handleChange}
       />
     );
   }
@@ -57,18 +176,23 @@ class TypeSelect extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected !== this.props.selected || !nextProps.snippets.equals(this.props.snippets)) {
-      const ticketChecked = nextProps.selected.size
-        && nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')))
-        .count(snippet => !snippet.get('types').includes('ticket')) === 0;
-      const ticketExisting = nextProps.selected.size
-        && nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')))
-        .some(snippet => snippet.get('types').includes('ticket'));
-      const chatChecked = nextProps.selected.size
-        && nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')))
-        .count(snippet => !snippet.get('types').includes('chat')) === 0;
-      const chatExisting = nextProps.selected.size
-        && nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')))
-        .some(snippet => snippet.get('types').includes('chat'));
+      let ticketChecked = false;
+      let ticketExisting = false;
+      let chatChecked = false;
+      let chatExisting = false;
+
+      if (nextProps.selected.size) {
+        const selectedSnippets = nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')));
+
+        ticketExisting = selectedSnippets.some(snippet => snippet.get('types').includes('ticket'));
+        if (ticketExisting) {
+          ticketChecked = selectedSnippets.count(snippet => !snippet.get('types').includes('ticket')) === 0;
+        }
+        chatExisting = selectedSnippets.some(snippet => snippet.get('types').includes('chat'));
+        if (chatExisting) {
+          chatChecked = selectedSnippets.count(snippet => !snippet.get('types').includes('chat')) === 0;
+        }
+      }
 
       this.setState({
         values: {
@@ -189,7 +313,12 @@ export default class MassActions extends React.Component {
       case 'visibility':
         return <span>Unknown action</span>;
       case 'ownership':
-        return <span>Unknown action</span>;
+        return (<OwnershipSelect
+          value={this.state.actionValue}
+          setValue={this.setActionValue}
+          selected={this.props.selected}
+          snippets={this.props.snippets}
+        />);
       case 'type':
         return (<TypeSelect
           value={this.state.actionValue}
@@ -228,13 +357,18 @@ export default class MassActions extends React.Component {
         <Button
           size="medium"
           onClick={this.runAction}
-          disabled={selected.size === 0}
+          disabled={selected.size === 0 || this.state.actionValue === null}
         >
           {this.props.action === 'export' ?
             agentPhrases.get('agent.general.export')
             : agentPhrases.get('agent.snippets.save_changes')
           }
         </Button>
+        <span className="count">
+          ({selected.size} {selected.size === 1 ?
+            agentPhrases.get('agent.general.snippet')
+          : agentPhrases.get('agent.general.snippets')})
+        </span>
       </div>
     );
   }

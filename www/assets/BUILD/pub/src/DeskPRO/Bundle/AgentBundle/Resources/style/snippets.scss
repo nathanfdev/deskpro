@@ -312,7 +312,11 @@
       display: inline-block;
       vertical-align: bottom;
       margin: 0 5px 0 0;
-      .dp-select__input,
+      .dp-select__input {
+        width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
       .dp-select__content {
         width: 150px;
       }
@@ -321,6 +325,11 @@
         font-family: $primary-font;
         font-size: $font-size-s;
       }
+    }
+    .count {
+      margin-left: 5px;
+      font-family: $primary-font;
+      font-size: $font-size-s;
     }
   }
 }
