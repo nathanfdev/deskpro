@@ -306,7 +306,7 @@ export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
  * @constructor
  */
 export const EVENT_ME_GET = (response, widget, widgetMessage, services) => {
-  response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
+  response(null, services.authUser);
 };
 
 /**

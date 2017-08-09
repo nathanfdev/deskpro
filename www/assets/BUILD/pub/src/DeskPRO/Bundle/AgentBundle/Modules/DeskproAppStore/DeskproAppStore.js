@@ -109,18 +109,25 @@ class DeskproAppStore {
     const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
 
     const appServices = new AppServices({ api, apiToken, window: windowObject, config });
+    appServices.onAppStateChanged(state);
     registerIncomingWidgetRequestListeners(appServices);
     registerOutgoingWidgetRequestListeners(appServices);
 
     // subscribe to redux store changes
     reduxStore.subscribe(() => {
-      const contexts = newContextsStateSelector(reduxStore.getState());
-      if (!contexts) { return; }
+      const newState = reduxStore.getState();
 
-      const containerMounter = new ContainerMounter(reduxStore, appRegistry);
-      /** @var {Context} context **/
-      for (const context of contexts.values()) {
-        mountContextInWindow(context, containerMounter, windowObject);
+      // notify app services
+      appServices.onAppStateChanged(newState);
+
+      // mount new contexts if any
+      const newContexts = newContextsStateSelector(newState);
+      if (newContexts) {
+        const containerMounter = new ContainerMounter(reduxStore, appRegistry);
+        /** @var {Context} context **/
+        for (const context of newContexts.values()) {
+          mountContextInWindow(context, containerMounter, windowObject);
+        }
       }
     });
 

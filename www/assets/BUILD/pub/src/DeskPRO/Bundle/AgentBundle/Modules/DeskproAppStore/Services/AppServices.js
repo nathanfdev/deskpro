@@ -1,4 +1,5 @@
 import { default as URL } from 'url-parse';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
 import { WidgetDOM } from '../WidgetDOM';
 import { subscribeWidgetToEvent } from '../WidgetMessage';
@@ -20,7 +21,27 @@ export class AppServices {
    */
   constructor({ api, apiToken, window, config }) {
     this.props = { api, apiToken, window, config };
-    this.state = { eventSubscribers: new Map() };
+    this.state = { authUser: null };
+  }
+
+  /**
+   * Hook called when redux state changes
+   *
+   * @param {{}} state
+   */
+  onAppStateChanged(state)  {
+    this.state.me = meSelector(state);
+  }
+
+  /**
+   * @return {{}}
+   */
+  get authUser() {
+    if (!this.state.authUser) {
+      return { id: this.window.DP_PERSON_ID, email: this.window.DP_PERSON_EMAIL };
+    }
+
+    return this.state.authUser.toJS();
   }
 
   /**
