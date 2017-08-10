@@ -111,7 +111,9 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
     if (status === 'success') {
       response(null, ev.data);
     } else {
-      response(new Error('authentication failed'), null);
+      const { error: oauthError } = ev.data.body;
+      const errorMessage = oauthError || 'authentication failed';
+      response(new Error(errorMessage), null);
     }
     return true;
   };

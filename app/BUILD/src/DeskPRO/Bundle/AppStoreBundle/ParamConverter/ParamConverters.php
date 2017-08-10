@@ -14,6 +14,15 @@ class ParamConverters
 {
     /**
      * @param ORM\EntityManager $entityManager
+     * @return OauthProviderConnectionLoaderConverter
+     */
+    static public function createOauthProviderConnectionLoader(ORM\EntityManager $entityManager)
+    {
+        return new OauthProviderConnectionLoaderConverter($entityManager);
+    }
+
+    /**
+     * @param ORM\EntityManager $entityManager
      * @return AppInstanceParamConverter
      */
     static public function createAppInstanceConverter(ORM\EntityManager $entityManager)

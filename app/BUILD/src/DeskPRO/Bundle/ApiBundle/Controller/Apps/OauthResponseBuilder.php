@@ -2,6 +2,7 @@
 
 use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 
 class OauthResponseBuilder
 {
@@ -60,10 +61,20 @@ class OauthResponseBuilder
     }
 
     /**
+     * @param string $message
+     * @return OauthResponseBuilder
+     */
+    public function withErrorType($message)
+    {
+        $this->messageProps['error'] = $message;
+        return $this;
+    }
+
+    /**
      * @param string $url
      * @return OauthResponseBuilder
      */
-    public function withCallbackUrl($url)
+    public function withRedirectUrl($url)
     {
         $this->callbackUrl = $url;
         return $this;

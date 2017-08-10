@@ -66,6 +66,13 @@ services:
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter }
 
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createOauthProviderConnectionLoader]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter }
+
   DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter:
     class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter
     factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter, createFromGlobals]
