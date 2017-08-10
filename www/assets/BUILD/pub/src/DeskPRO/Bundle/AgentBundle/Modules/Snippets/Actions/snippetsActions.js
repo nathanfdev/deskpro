@@ -72,3 +72,17 @@ export const createSnippetLanguagePreferences = createAction(
   data => repository('PersonSetting')
     .create({ name: 'agent.ui.snippets.language_preferences', value: data }).then(value => value.getData())
 );
+export const massActions = createAction(
+  'SNIPPETS_MASS_ACTIONS',
+  data => () => new Promise(
+    (resolve, reject) => {
+      repository('Snippets').massActions(data)
+        .then((promise) => {
+          resolve(promise.data.data);
+        },
+          response => reject(response)
+        );
+    }
+  )
+);
+

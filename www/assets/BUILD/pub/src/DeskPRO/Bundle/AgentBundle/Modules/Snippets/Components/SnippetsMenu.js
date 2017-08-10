@@ -5,6 +5,8 @@ import Isvg from 'react-inlinesvg';
 import debounce from 'lodash/function/debounce';
 import { Input } from 'deskpro-components/lib/Components/Forms';
 import { Button } from 'deskpro-components/lib/Components/Buttons';
+import Progress from 'deskpro-components/lib/Components/Progress';
+import ProgressBar from 'deskpro-components/lib/Components/ProgressBar';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -42,6 +44,7 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
   };
+  static batchSize = 20;
 
   static defaultLangPref = new Set(['context', 'agent', 'helpdesk']);
 
@@ -66,6 +69,7 @@ export class SnippetsMenuContainer extends React.Component {
       showMode:            'all',
       langPref:            SnippetsMenuContainer.defaultLangPref,
       massActionsSelected: new Set(),
+      massActionsProgress: null,
     };
     this.props.dispatch(actions.loadSnippetLanguagePreferences())
       .then((data) => {
@@ -116,6 +120,9 @@ export class SnippetsMenuContainer extends React.Component {
       return true;
     }
     if (nextState.massActionsSelected !== this.state.massActionsSelected) {
+      return true;
+    }
+    if (nextState.massActionsProgress !== this.state.massActionsProgress) {
       return true;
     }
     return nextProps.department !== this.props.department;
@@ -174,6 +181,47 @@ export class SnippetsMenuContainer extends React.Component {
     this.setState({
       massActionsSelected: newMassActionsSelected
     });
+  };
+
+  processBatch(evolution) {
+    const { dispatch } = this.props;
+    const { payload, selected } = evolution;
+    const { i } = evolution;
+
+    const self = this;
+    if (i < selected.length) {
+      return new Promise((resolve) => {
+        payload.select = selected.slice(i, Math.min(i + SnippetsMenuContainer.batchSize, selected.length));
+        dispatch(actions.massActions(payload))
+          .then(() => {
+            self.setState({
+              massActionsProgress: { current: i + SnippetsMenuContainer.batchSize, total: selected.length }
+            });
+            return resolve({ payload, selected, i: i + SnippetsMenuContainer.batchSize });
+          });
+      }).then((newEvolution) => {
+        self.processBatch(newEvolution);
+      });
+    }
+    this.setState({
+      massActionsProgress: null
+    });
+    return true;
+  }
+
+  runMassActions = (payload) => {
+    const { dispatch } = this.props;
+    const selected = [...this.state.massActionsSelected];
+    if (selected.length > SnippetsMenuContainer.batchSize) {
+      this.setState({
+        massActionsProgress: { current: 0, total: selected.length }
+      });
+      const i = 0;
+      this.processBatch({ selected, payload, i });
+    } else {
+      payload.selected = selected;
+      dispatch(actions.massActions(payload));
+    }
   };
 
   render() {
@@ -273,6 +321,8 @@ export class SnippetsMenuContainer extends React.Component {
         langPref={this.state.langPref}
         updateLanguagePref={this.updateLanguagePref}
         selectForMassAction={this.selectForMassAction}
+        runMassActions={this.runMassActions}
+        massActionsProgress={this.state.massActionsProgress}
         massActionsSelected={this.state.massActionsSelected}
         open={open}
         width={width}
@@ -304,6 +354,8 @@ export class SnippetsMenu extends React.Component {
     langPref:            PropTypes.object,
     updateLanguagePref:  PropTypes.func,
     selectForMassAction: PropTypes.func,
+    runMassActions:      PropTypes.func,
+    massActionsProgress: PropTypes.object,
     massActionsSelected: PropTypes.object,
   };
   static defaultProps = {
@@ -402,7 +454,9 @@ export class SnippetsMenu extends React.Component {
   };
 
   closeMassActions = (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     this.setState({
       massActionMode: ''
     });
@@ -582,6 +636,7 @@ export class SnippetsMenu extends React.Component {
       type,
       selectForMassAction,
       massActionsSelected,
+      massActionsProgress,
     } = this.props;
     const style = {};
     if (width) {
@@ -664,33 +719,42 @@ export class SnippetsMenu extends React.Component {
             handleShowMode={handleShowMode}
           />
           <div className="snippets__mass-actions" style={{ flexBasis: massActionsHeight }}>
-            { this.state.massActionMode ?
+            {this.state.massActionMode ?
               <MassActions
                 action={this.state.massActionMode}
                 selected={massActionsSelected}
                 close={this.closeMassActions}
+                runMassActions={this.props.runMassActions}
               />
-          : null }
+              : null}
           </div>
-          <SnippetsList
-            me={me}
-            snippets={snippets}
-            languages={languages}
-            langPref={langDisplay}
-            filter={filter}
-            height={listHeight}
-            width={width}
-            type={type}
-            focusedIndex={this.state.focusedIndex}
-            selectedLabel={this.state.selectedLabel}
-            multiLabels={this.state.multiLabels}
-            multiMode={this.state.multiMode}
-            editSnippet={this.editSnippet}
-            insertSnippet={insertSnippet}
-            massActionMode={this.state.massActionMode}
-            selectForMassAction={selectForMassAction}
-            massActionsSelected={massActionsSelected}
-          />
+          {massActionsProgress !== null ?
+            <div className="snippets__mass-actions__progress">
+              <Progress size="large" type="cta" style={{ margin: 10, border: '1px solid #ccc' }}>
+                <ProgressBar percent={massActionsProgress.current * 100 / massActionsProgress.total} />
+              </Progress>
+              Processed {massActionsProgress.current} of {massActionsProgress.total} mass actions
+            </div>
+            : <SnippetsList
+              me={me}
+              snippets={snippets}
+              languages={languages}
+              langPref={langDisplay}
+              filter={filter}
+              height={listHeight}
+              width={width}
+              type={type}
+              focusedIndex={this.state.focusedIndex}
+              selectedLabel={this.state.selectedLabel}
+              multiLabels={this.state.multiLabels}
+              multiMode={this.state.multiMode}
+              editSnippet={this.editSnippet}
+              insertSnippet={insertSnippet}
+              massActionMode={this.state.massActionMode}
+              selectForMassAction={selectForMassAction}
+              massActionsSelected={massActionsSelected}
+            />
+          }
         </div>
         {this.getEditSnippet()}
       </div>

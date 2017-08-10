@@ -345,6 +345,15 @@
     }
   }
 }
+.snippets__mass-actions__progress {
+  width: calc(74% - 10px);
+  padding: 40px;
+  text-align: center;
+  .dp-progress {
+    border-radius: 11px;
+    overflow: hidden;
+  }
+}
 .snippets__list {
   & > .dp-input--checkbox {
     margin-bottom: 0;

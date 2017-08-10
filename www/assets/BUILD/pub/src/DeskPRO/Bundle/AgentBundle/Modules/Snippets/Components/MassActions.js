@@ -644,10 +644,11 @@ class DraftSelect extends React.PureComponent {
 }))
 export default class MassActions extends React.Component {
   static propTypes = {
-    snippets: PropTypes.object,
-    selected: PropTypes.object,
-    action:   PropTypes.string.isRequired,
-    close:    PropTypes.func,
+    snippets:       PropTypes.object,
+    selected:       PropTypes.object,
+    action:         PropTypes.string.isRequired,
+    close:          PropTypes.func,
+    runMassActions: PropTypes.func,
   };
 
   constructor(props) {
@@ -719,11 +720,11 @@ export default class MassActions extends React.Component {
 
   runAction() {
     const payload = {
-      action:   this.props.action,
-      value:    this.state.actionValue,
-      selected: [...this.props.selected]
+      action: this.props.action,
+      value:  this.state.actionValue
     };
-    console.log(JSON.stringify(payload));
+    this.props.runMassActions(payload);
+    this.props.close();
   }
 
   render() {

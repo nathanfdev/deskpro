@@ -10,8 +10,8 @@ class SnippetsRepository extends ApiRepository {
     return this.api.sendPost(`DP_API/${this.url}?inline_sideloads=true&include=snippet_translation`, data);
   }
 
-  loadLabels() {
-    return this.api.sendGet(`DP_API/${this.url}/labels`);
+  massActions(payload) {
+    return this.api.sendPost(`DP_API/${this.url}/mass_actions`, payload);
   }
 }
 export default SnippetsRepository;
