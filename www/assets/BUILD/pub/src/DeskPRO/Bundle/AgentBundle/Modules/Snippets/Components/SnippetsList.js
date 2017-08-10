@@ -129,8 +129,9 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   getMassActions() {
-    const { snippet, massActionMode, selectForMassAction, massActionSelected } = this.props;
-    if (massActionMode) {
+    const { me, snippet, massActionMode, selectForMassAction, massActionSelected } = this.props;
+    if (massActionMode
+      && (window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id'))) {
       return (
         <Checkbox
           value={snippet.get('id')}
@@ -163,9 +164,11 @@ export class SnippetsListElement extends React.PureComponent {
   }
 
   insertSnippet(e, snippet, languageId) {
-    const { massActionMode, massActionSelected, insertSnippet, selectForMassAction } = this.props;
+    const { me, massActionMode, massActionSelected, insertSnippet, selectForMassAction } = this.props;
     if (massActionMode !== '') {
-      selectForMassAction(!massActionSelected, snippet.get('id'));
+      if ((window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id'))) {
+        selectForMassAction(!massActionSelected, snippet.get('id'));
+      }
     } else {
       insertSnippet(e, snippet, languageId);
     }

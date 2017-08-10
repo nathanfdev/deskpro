@@ -153,10 +153,16 @@ export class SnippetsMenuContainer extends React.Component {
   };
 
   selectForMassAction = (checked, value) => {
+    const { me } = this.props;
     let newMassActionsSelected = new Set(this.state.massActionsSelected);
     if (value.length) {
       if (checked) {
-        newMassActionsSelected = new Set(value.map(snippet => snippet.get('id')));
+        newMassActionsSelected = new Set(value.map((snippet) => {
+          if (window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id')) {
+            return snippet.get('id');
+          }
+          return false;
+        }));
       } else {
         newMassActionsSelected.clear();
       }
