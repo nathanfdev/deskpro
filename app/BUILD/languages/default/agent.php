@@ -1877,6 +1877,7 @@ return [
     'agent.snippets.my_team_snippets'                          => 'My Team\'s Snippets',
     'agent.snippets.my_teams_snippets'                         => 'My Teams\' Snippets',
     'agent.snippets.new_snippet'                               => 'New Snippet',
+    'agent.snippets.no_results_new_label'                      => 'No results for ‘{label}’ press ENTER to add new label',
     'agent.snippets.ownership'                                 => 'Ownership',
     'agent.snippets.please_select'                             => 'Please select',
     'agent.snippets.save_changes'                              => 'Save changes',

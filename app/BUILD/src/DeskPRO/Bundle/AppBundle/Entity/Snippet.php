@@ -131,7 +131,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetLabel", mappedBy="snippet",
-     *     cascade={"persist", "remove"}, orphanRemoval=true)
+     *     cascade={"persist", "remove"}, orphanRemoval=true, fetch="EAGER")
      *
      * @var SnippetLabel[]|ArrayCollection
      */
@@ -307,7 +307,12 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         return $this;
     }
 
-    public function removeEvent($type)
+    public function hasType($type)
+    {
+        return in_array($type, $this->types, true);
+    }
+
+    public function removeType($type)
     {
         if (false !== $key = array_search($type, $this->types, true)) {
             unset($this->types[$key]);
@@ -416,7 +421,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      */
     public function addLabel(SnippetLabel $label)
     {
-        if (!$this->labels->contains($label)) {
+        if (!$this->hasLabel($label)) {
             $this->labels->add($label);
             $label->setSnippet($this);
         }
@@ -427,11 +432,31 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * @param SnippetLabel $label
      *
+     * @return bool
+     */
+    public function hasLabel($label)
+    {
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param SnippetLabel $label
+     *
      * @return $this
      */
     public function removeLabel(SnippetLabel $label)
     {
-        $this->labels->removeElement($label);
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                $this->labels->removeElement($l);
+            }
+        }
 
         return $this;
     }

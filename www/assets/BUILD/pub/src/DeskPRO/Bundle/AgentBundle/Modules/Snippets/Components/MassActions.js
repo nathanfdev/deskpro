@@ -2,14 +2,247 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import { Button } from 'deskpro-components/lib/Components/Buttons';
-import { Label, Select, CustomSelect, Checkbox } from 'deskpro-components/lib/Components/Forms';
+import { Label, Select, CustomSelect, Checkbox, Input } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { MassActionsSelect } from './Menus/MassActionsSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
-import { allSnippetsSelector } from '../Selectors/snippets';
+import { allSnippetsSelector, allSnippetLabelsSelector } from '../Selectors/snippets';
+
+@connect(state => ({
+  snippetLabels: allSnippetLabelsSelector(state)
+}))
+class LabelSelect extends React.Component {
+  static propTypes = {
+    snippetLabels: PropTypes.object,
+    value:         PropTypes.object,
+    setValue:      PropTypes.func,
+    snippets:      PropTypes.object,
+    selected:      PropTypes.object,
+  };
+
+  constructor(props) {
+    super(props);
+    const labels = this.parseLabels(props.snippetLabels);
+    this.state = {
+      filter:         '',
+      labels,
+      selectedLabels: new Set(),
+      labelsExisting: new Set(),
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.snippetLabels !== this.props.snippetLabels) {
+      const labels = this.parseLabels(nextProps.snippetLabels);
+      this.setState({
+        labels
+      });
+    }
+    if (nextProps.selected !== this.props.selected || !nextProps.snippets.equals(this.props.snippets)) {
+      const labelExisting = new Set();
+      const selectedLabels = new Set();
+
+      if (nextProps.selected.size) {
+        const selectedSnippets = nextProps.snippets.filter(snippet => nextProps.selected.has(snippet.get('id')));
+
+        this.props.snippetLabels.forEach((label) => {
+          if (selectedSnippets.some(snippet =>
+              snippet.get('labels', new Immutable.List()).includes(label.get('label')))
+          ) {
+            labelExisting.add(label.get('id'));
+            if (selectedSnippets.count(snippet =>
+                !snippet.get('labels', new Immutable.List()).includes(label.get('label'))) === 0) {
+              selectedLabels.add(label.get('id'));
+            }
+          }
+        });
+      }
+
+      this.setState({
+        selectedLabels,
+        labelsExisting: labelExisting,
+      });
+    }
+  }
+
+  onFilterChange = filter => this.setState({ filter });
+
+  getChildren = (label) => {
+    const labels = label.get('children');
+    if (!labels.size) {
+      return null;
+    }
+    return <List>{this.getLabels(labels)}</List>;
+  };
+
+  getLabels = (labels) => {
+    const result = [];
+
+    function findInChildren(value, re) {
+      if (value.get('children').find(e => e.get('tag').match(re))) {
+        return true;
+      }
+      let found = false;
+      value.get('children').forEach((child) => {
+        if (child.get('children').size) {
+          found = findInChildren(child, re);
+          if (found) {
+            return false;
+          }
+        }
+        return true;
+      });
+      return found;
+    }
+
+    labels
+      .filter((value) => {
+        const { filter } = this.state;
+        if (filter === '') {
+          return true;
+        }
+        const re = new RegExp(filter, 'i');
+        return value.get('tag').match(re) || findInChildren(value, re);
+      })
+      .sort((a, b) => {
+        const atag = a.get('tag').toLowerCase();
+        const btag = b.get('tag').toLowerCase();
+        if (atag > btag) {
+          return 1;
+        } else if (atag < btag) {
+          return -1;
+        }
+        return 0;
+      })
+      .forEach((label, key) => {
+        result.push(
+          <ListElement
+            key={key}
+          >
+            <div className="element">
+              <Checkbox
+                value={label.get('tag')}
+                checked={this.state.selectedLabels.has(label.get('tag'))}
+                existing={this.state.labelsExisting.has(label.get('tag'))}
+                onChange={this.handleChange}
+                stopPropagation
+              >
+                <span className="tag">
+                  {label.get('label')}
+                </span>
+              </Checkbox>
+            </div>
+            {this.getChildren(label)}
+          </ListElement>
+        );
+      });
+    if (result.length === 0 && this.state.filter !== '') {
+      result.push(
+        <ListElement
+          key="create_label"
+        >
+          {agentPhrases.get('agent.snippets.no_results_new_label', { label: this.state.filter })}
+        </ListElement>
+      );
+    }
+    return result;
+  };
+
+  parseLabels(labels) {
+    const hierarchy = {};
+    labels.forEach((label) => {
+      const parts = label.get('label').split('/');
+      this.insertInHierarchy(parts[0].trim(), parts[0].trim(), hierarchy, parts.slice(1));
+    });
+    return Immutable.fromJS(hierarchy);
+  }
+
+  addLabel(label) {
+    const labels = this.state.labels.toJS();
+    const selectedLabels = new Set(this.state.selectedLabels);
+    const parts = label.split('/');
+    this.insertInHierarchy(parts[0].trim(), parts[0].trim(), labels, parts.slice(1));
+    selectedLabels.add(label.replace(/\s*\/\s*/, '/'));
+    this.setState({
+      labels: Immutable.fromJS(labels),
+      selectedLabels,
+      filter: '',
+    });
+  }
+
+  insertInHierarchy(tag, label, hierarchy, parts) {
+    if (!hierarchy[label]) {
+      hierarchy[label] = {
+        label,
+        tag,
+        children: {}
+      };
+    }
+    if (parts.length > 0) {
+      this.insertInHierarchy(
+        `${tag}/${parts[0].trim()}`,
+        parts[0].trim(),
+        hierarchy[label].children,
+        parts.slice(1)
+      );
+    }
+  }
+
+  inputRenderer = () => agentPhrases.get('agent.general.select');
+
+  handleChange = (checked, newValue) => {
+    const labelsExisting = new Set(this.state.labelsExisting);
+    const selectedLabels = new Set(this.state.selectedLabels);
+    if (checked) {
+      selectedLabels.add(newValue);
+    } else {
+      selectedLabels.delete(newValue);
+      labelsExisting.delete(newValue);
+    }
+    this.setState({
+      labelsExisting,
+      selectedLabels,
+    });
+    let { value } = this.props;
+    if (!value) {
+      value = {};
+    }
+    value[newValue] = checked;
+    this.props.setValue(value);
+  };
+
+  /**
+   * Handles pressing ENTER in the search box
+   */
+  handleInputKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      this.addLabel(e.target.value);
+    }
+  };
+
+  render() {
+    return (
+      <CustomSelect
+        inputRenderer={this.inputRenderer}
+        displayInputWhenOpened={false}
+      >
+        <Input
+          placeholder={agentPhrases.get('agent.general.filter')}
+          value={this.state.filter}
+          className="labels_filter"
+          onChange={this.onFilterChange}
+          onKeyDown={this.handleInputKeyDown}
+        />
+        <List>
+          {this.getLabels(this.state.labels)}
+        </List>
+      </CustomSelect>
+    );
+  }
+}
 
 @connect(state => ({
   chatDepartments:   collectionSelectorFactory('Department', 'all_chat')(state),
@@ -111,7 +344,7 @@ class VisibilitySelect extends React.Component {
         departmentsExisting,
       });
       this.props.setValue({
-        isVisibleGlobal:     true,
+        isVisibleGlobal:     false,
         selectedDepartments: value.selectedDepartments,
       });
     } else {
@@ -228,7 +461,7 @@ class OwnershipSelect extends React.Component {
         teamsExisting,
       });
       this.props.setValue({
-        isOwnershipGlobal: true,
+        isOwnershipGlobal: false,
         selectedTeams:     value.selectedTeams,
       });
     } else {
@@ -380,12 +613,16 @@ class TypeSelect extends React.Component {
 
 class DraftSelect extends React.PureComponent {
   static propTypes = {
-    value:    PropTypes.object,
+    value:    PropTypes.string,
     setValue: PropTypes.func,
   };
 
+  handleChange = (value) => {
+    this.props.setValue(value.value);
+  };
+
   render() {
-    const { value, setValue } = this.props;
+    const { value } = this.props;
     const options = [
       { value: 'draft', label: agentPhrases.get('agent.snippets.set_as_draft') },
       { value: 'published', label: agentPhrases.get('agent.snippets.set_as_published') },
@@ -396,7 +633,7 @@ class DraftSelect extends React.PureComponent {
         options={options}
         clearable={false}
         searchable={false}
-        onChange={setValue}
+        onChange={this.handleChange}
       />
     );
   }
@@ -441,7 +678,12 @@ export default class MassActions extends React.Component {
   getAction() {
     switch (this.props.action) {
       case 'labels':
-        return <span>Unknown action</span>;
+        return (<LabelSelect
+          value={this.state.actionValue}
+          setValue={this.setActionValue}
+          selected={this.props.selected}
+          snippets={this.props.snippets}
+        />);
       case 'visibility':
         return (<VisibilitySelect
           value={this.state.actionValue}
@@ -476,7 +718,12 @@ export default class MassActions extends React.Component {
   }
 
   runAction() {
-    console.log(this.state.actionValue);
+    const payload = {
+      action:   this.props.action,
+      value:    this.state.actionValue,
+      selected: [...this.props.selected]
+    };
+    console.log(JSON.stringify(payload));
   }
 
   render() {

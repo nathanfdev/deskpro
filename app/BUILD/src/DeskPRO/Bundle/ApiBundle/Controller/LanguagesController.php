@@ -176,6 +176,7 @@ class LanguagesController extends CrudController
             'agent.snippets.my_team_snippets',
             'agent.snippets.my_teams_snippets',
             'agent.snippets.new_snippet',
+            'agent.snippets.no_results_new_label',
             'agent.snippets.ownership',
             'agent.snippets.please_select',
             'agent.snippets.save_changes',

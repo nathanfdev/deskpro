@@ -335,6 +335,14 @@
       font-family: $primary-font;
       font-size: $font-size-s;
     }
+    .labels_filter,
+    .teams_filter,
+    .departments_filter {
+      &, input {
+        width: 100%;
+      }
+      margin-bottom: 5px;
+    }
   }
 }
 .snippets__list {

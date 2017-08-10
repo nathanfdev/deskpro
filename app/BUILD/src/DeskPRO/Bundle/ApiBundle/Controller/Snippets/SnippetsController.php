@@ -28,11 +28,14 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Snippets;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -217,5 +220,195 @@ class SnippetsController extends CrudController
         $snippet = $this->findEntity($id, $request, $type);
 
         return View::create($this->wrap($snippet));
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Apply mass actions function",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *          201="Returned in case of successful resource creation",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     * @Rest\Post("/mass_actions")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postMassActionsAction(Request $request)
+    {
+        $action   = $request->request->get('action');
+        $value    = $request->request->get('value');
+        $selected = $request->request->get('selected');
+
+        /** @var Snippet[] $snippets */
+        $snippets  = $this->getRepository(Snippet::class)->findSnippetsForAgent($this->getUser(), $selected);
+        $processed = [];
+
+        switch ($action) {
+            case 'labels':
+                foreach ($snippets as $snippet) {
+                    foreach ($value as $label => $labelValue) {
+                        $labelObject = new SnippetLabel($label);
+                        if ($labelValue) {
+                            if (!$snippet->hasLabel($labelObject)) {
+                                $snippet->addLabel($labelObject);
+                                $processed[] = $snippet->getId();
+                            }
+                        } else {
+                            if ($snippet->hasLabel($labelObject)) {
+                                $snippet->removeLabel($labelObject);
+                                $processed[] = $snippet->getId();
+                            }
+                        }
+                    }
+                }
+                break;
+            case 'visibility':
+                $departmentsBuffer = [];
+                foreach ($snippets as $snippet) {
+                    if (!$this->getUser()->hasPerm('agent_snippets.edit_by_others') && $snippet->getPerson() !== $this->getUser()) {
+                        continue;
+                    }
+                    if ($value['isVisibleGlobal']) {
+                        if (!$snippet->isVisibleGlobal()) {
+                            $snippet->setIsVisibleGlobal(true);
+                            foreach ($snippet->getVisibleDepartments() as $department) {
+                                $snippet->removeDepartment($department);
+                                $processed[] = $snippet->getId();
+                            }
+                        }
+                    } else {
+                        $snippetsDepartments = $snippet->getVisibleDepartments();
+                        foreach ($value['selectedDepartments'] as $departmentId => $departmentValue) {
+                            if (!isset($departmentsBuffer[$departmentId])) {
+                                $departmentsBuffer[$departmentId] = $this->getManager()->getRepository(Department::class)->find($departmentId);
+                            }
+                            $department = $departmentsBuffer[$departmentId];
+                            if ($departmentValue) {
+                                if (!$snippetsDepartments->contains($department)) {
+                                    $snippet->addDepartment($department);
+                                    if (!in_array($snippet->getId(), $processed)) {
+                                        $processed[] = $snippet->getId();
+                                    }
+                                }
+                            } else {
+                                if ($snippetsDepartments->contains($department)) {
+                                    $snippet->removeDepartment($department);
+                                    if (!in_array($snippet->getId(), $processed)) {
+                                        $processed[] = $snippet->getId();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case 'ownership':
+                $teamsBuffer = [];
+                foreach ($snippets as $snippet) {
+                    if ($value['isOwnershipGlobal']) {
+                        if (!$snippet->isOwnershipGlobal()) {
+                            $snippet->setIsOwnershipGlobal(true);
+                            foreach ($snippet->getOwnershipTeams() as $team) {
+                                $snippet->removeTeam($team);
+                                $processed[] = $snippet->getId();
+                            }
+                        }
+                    } else {
+                        $snippetsTeams = $snippet->getOwnershipTeams();
+                        foreach ($value['selectedTeams'] as $teamId => $teamValue) {
+                            if (!isset($teamsBuffer[$teamId])) {
+                                $teamsBuffer[$teamId] = $this->getManager()->getRepository(AgentTeam::class)->find($teamId);
+                            }
+                            $team = $teamsBuffer[$teamId];
+                            if ($teamValue) {
+                                if (!$snippetsTeams->contains($team)) {
+                                    $snippet->addTeam($team);
+                                    if (!in_array($snippet->getId(), $processed)) {
+                                        $processed[] = $snippet->getId();
+                                    }
+                                }
+                            } else {
+                                if ($snippetsTeams->contains($team)) {
+                                    $snippet->removeTeam($team);
+                                    if (!in_array($snippet->getId(), $processed)) {
+                                        $processed[] = $snippet->getId();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case 'type':
+                foreach ($snippets as $snippet) {
+                    foreach ($value as $type => $typeValue) {
+                        if (!in_array($type, [Snippet::TYPE_TICKET, Snippet::TYPE_CHAT])) {
+                            throw $this->createNotFoundException("#Unkown type {$type} for type action");
+                        }
+                        if ($typeValue) {
+                            if (!$snippet->hasType($type)) {
+                                $snippet->addType($type);
+                                $processed[] = $snippet->getId();
+                            }
+                        } else {
+                            if ($snippet->hasType($type)) {
+                                $snippet->addType($type);
+                                $processed[] = $snippet->getId();
+                            }
+                        }
+                    }
+                }
+                break;
+            case 'draft':
+                foreach ($snippets as $snippet) {
+                    if ($value === 'draft') {
+                        if (!$snippet->isDraft()) {
+                            $snippet->setIsDraft(true);
+                            $processed[] = $snippet->getId();
+                        }
+                    } elseif ($value === 'published') {
+                        if ($snippet->isDraft()) {
+                            $snippet->setIsDraft(false);
+                            $processed[] = $snippet->getId();
+                        }
+                    } else {
+                        throw $this->createNotFoundException("#Unkown value {$value} for draft action");
+                    }
+                }
+                break;
+            default:
+                throw $this->createNotFoundException("#Unkown action {$action}");
+        }
+        $this->getManager()->flush();
+
+        return View::create($this->wrap(['processed' => $processed]));
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get collection of snippet labels",
+     *      tags={"CRUD"="#ffa500"},
+     *      filters={
+     *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"},
+     *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
+     *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
+     *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
+     *      },
+     *      statusCodes={
+     *          200="Returned if your request was successful",
+     *          400="An error will occur if you provide wrong filters set",
+     *      }
+     * )
+     * @Rest\Get("/labels")
+     *
+     * @return View
+     */
+    public function listLabelsAction()
+    {
+        return View::create($this->wrap($this->getRepository(Snippet::class)->getSnippetsLabelsForAgent($this->getUser())));
     }
 }

@@ -56,7 +56,7 @@ export const deleteSnippet = createAction(
 export const addSnippetAttachment = createAction(
   'SNIPPETS_ADD_ATTACHMENT',
   blob => (dispatch) => {
-    dispatch(addToCollection('SnippetsBlobs', 'all', replaceIds([blob], 'blob_id')));
+    dispatch(addToCollection('SnippetBlobs', 'all', replaceIds([blob], 'blob_id')));
   }
 );
 export const loadSnippetLanguagePreferences = createAction(

@@ -96,7 +96,7 @@ class SnippetsFiltering extends React.Component {
     labels
       .filter((value) => {
         const { labelFilter } = this.props;
-        if (this.state.labelFilter === '') {
+        if (labelFilter === '') {
           return true;
         }
         const re = new RegExp(labelFilter, 'i');
