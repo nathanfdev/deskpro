@@ -264,8 +264,7 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'              => $person,
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
             'action'              => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
