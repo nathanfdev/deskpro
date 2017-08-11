@@ -39,6 +39,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetMassActionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -234,7 +236,11 @@ class SnippetsController extends CrudController
      *      statusCodes={
      *          201="Returned in case of successful resource creation",
      *          400="We will return this in case your request was malformed",
-     *      }
+     *      },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetMassActionType"
+     *     },
+     *     output="array"
      * )
      * @Rest\Post("/mass_actions")
      *
@@ -244,9 +250,15 @@ class SnippetsController extends CrudController
      */
     public function postMassActionsAction(Request $request)
     {
-        $action   = $request->request->get('action');
-        $value    = $request->request->get('value');
-        $selected = $request->request->get('selected');
+        $form = $this->createForm(SnippetMassActionType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $action   = $form->get('action')->getData();
+        $value    = $form->get('value')->getData();
+        $selected = $form->get('selected')->getData();
 
         /** @var Snippet[] $snippets */
         $snippets  = $this->getRepository(Snippet::class)->findSnippetsForAgent($this->getUser(), $selected);
@@ -403,6 +415,7 @@ class SnippetsController extends CrudController
      *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
      *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
      *      },
+     *      output="array",
      *      statusCodes={
      *          200="Returned if your request was successful",
      *          400="An error will occur if you provide wrong filters set",
@@ -430,7 +443,8 @@ class SnippetsController extends CrudController
      *      statusCodes={
      *          200="Returned if your request was successful",
      *          400="An error will occur if you provide wrong filters set",
-     *      }
+     *      },
+     *      output="file"
      * )
      * @Rest\Get("/csv")
      *
