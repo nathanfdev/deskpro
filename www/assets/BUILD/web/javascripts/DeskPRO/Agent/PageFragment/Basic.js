@@ -558,7 +558,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			if (!outTimeout) {
 				outTimeout = window.setTimeout(function() {
 					outTimeout = null;
-					if (!isOver && !isPlaceOver && !isSizerOver && !isSizing) {
+					if (!isOver && !isPlaceOver && !isSizerOver && !isSizing && !sidebarEl.hasClass('sidebar-pinned')) {
 						close();
 					}
 				}, 380);
@@ -653,7 +653,13 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		}).on('mouseout', function() {
 			isOver = false;
 			startCloseTimeout();
-		});
+		}).on('mousedown', function() {
+		  if (! sidebarEl.hasClass('sidebar-pinned')) {
+        sidebarEl.addClass('sidebar-pinned')
+      } else {
+        sidebarEl.removeClass('sidebar-pinned')
+      }
+    });
 
 		iconsEl.on('click', function(ev) {
 		  if (!isPlaceOver) {
