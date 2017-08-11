@@ -35,7 +35,6 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DpSys\LowError\SystemErrorHandler;
 use GuzzleHttp\RequestOptions;
-use Pusher;
 
 /**
  * Class DeskproDeliveryHandler.
@@ -62,21 +61,14 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
 
     /**
      * @param SettingsResolver $resolver
+     * @param HttpClient       $client
      */
-    public function __construct(SettingsResolver $resolver)
+    public function __construct(SettingsResolver $resolver, HttpClient $client)
     {
         $settingsBag  = $resolver->getGlobalSettings();
         $this->secret = $settingsBag->get('notification.settings.deskpro_client.secret', '');
 
-        $this->client = new HttpClient(
-            [
-                'base_uri' => sprintf(
-                    '%s:%d',
-                    $settingsBag->get('notification.settings.deskpro_client.host'),
-                    $settingsBag->get('notification.settings.deskpro_client.port')
-                    ),
-            ]
-        );
+        $this->client = $client;
     }
 
     /**

@@ -67,6 +67,15 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeskproDeliveryHandler
     arguments:
       - "@settings_resolver"
+      - "@deskpro.notification.deskpro_client"
+
+  deskpro.notification.deskpro_client_factory:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeskproClientFactory
+  deskpro.notification.deskpro_client:
+    class: DeskPRO\Bundle\AppBundle\Util\HttpClient
+    factory: ["@deskpro.notification.deskpro_client_factory", createClient]
+    arguments:
+      - "@settings_resolver"
 
   deskpro.notification.pusher_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherFactory
