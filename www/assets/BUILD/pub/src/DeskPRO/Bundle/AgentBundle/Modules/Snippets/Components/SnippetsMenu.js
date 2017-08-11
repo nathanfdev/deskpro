@@ -54,8 +54,6 @@ export class SnippetsMenuContainer extends React.Component {
         return found;
       }
     }
-    console.log(snippetTranslations.toJS());
-    console.log(snippet.toJS());
     return null;
   }
 
