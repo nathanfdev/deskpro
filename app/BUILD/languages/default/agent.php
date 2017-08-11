@@ -1871,6 +1871,7 @@ return [
     'agent.snippets.insert_variable'                           => 'Insert Variable',
     'agent.snippets.snippet_is_draft'                          => 'This is a draft',
     'agent.snippets.learn_more_about_vars'                     => 'Learn more about variables',
+    'agent.snippets.mass_actions_progress'                     => 'Processed {current} of {total} mass actions',
     'agent.snippets.must_create_cat'                           => 'Before you start creating snippets,<br/>you need to create your first category.',
     'agent.snippets.my_drafts'                                 => 'My Drafts',
     'agent.snippets.my_snippets'                               => 'My Snippets',

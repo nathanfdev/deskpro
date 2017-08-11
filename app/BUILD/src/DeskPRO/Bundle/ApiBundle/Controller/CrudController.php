@@ -220,7 +220,7 @@ abstract class CrudController extends BaseController
             }
 
             $qb->andWhere('e.id IN (:ids)');
-            $qb->setParameters(compact('ids'));
+            $qb->setParameter('ids', $ids);
         }
 
         $limit = (int) $request->query->getInt('limit', static::$listLimit);

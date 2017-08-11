@@ -482,7 +482,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return AgentTeam[]
      */
     public function getOwnershipTeams()
     {

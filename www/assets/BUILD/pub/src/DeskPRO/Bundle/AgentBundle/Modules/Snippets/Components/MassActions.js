@@ -742,7 +742,7 @@ export default class MassActions extends React.Component {
         <Button
           size="medium"
           onClick={this.runAction}
-          disabled={selected.size === 0 || this.state.actionValue === null}
+          disabled={selected.size === 0 || (this.state.actionValue === null && this.props.action !== 'export')}
         >
           {this.props.action === 'export' ?
             agentPhrases.get('agent.general.export')

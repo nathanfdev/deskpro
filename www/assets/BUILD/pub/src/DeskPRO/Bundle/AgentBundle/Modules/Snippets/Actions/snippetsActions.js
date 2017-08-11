@@ -17,6 +17,20 @@ export const getSnippet = createAction(
     }
   )
 );
+export const getSnippets = createAction(
+  'SNIPPETS_GET_SNIPPETS',
+  ids => dispatch => new Promise(
+    (resolve, reject) => {
+      repository('Snippets').loadBatch(ids, 'snippet_translation,blob', true)
+        .then((promise) => {
+          dispatch(addToCollection('Snippets', 'all', promise.data.data));
+          resolve(promise.data.data);
+        },
+          response => reject(response)
+        );
+    }
+  )
+);
 export const saveSnippet = createAction(
   'SNIPPETS_SAVE_SNIPPET',
   data => dispatch => new Promise(
@@ -85,4 +99,7 @@ export const massActions = createAction(
     }
   )
 );
-
+export const exportSnippets = createAction(
+  'SNIPPETS_EXPORT',
+  data => repository('Snippets').exportSnippets(data)
+);

@@ -44,7 +44,7 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
   };
-  static batchSize = 20;
+  static batchSize = 50;
 
   static defaultLangPref = new Set(['context', 'agent', 'helpdesk']);
 
@@ -191,7 +191,7 @@ export class SnippetsMenuContainer extends React.Component {
     const self = this;
     if (i < selected.length) {
       return new Promise((resolve) => {
-        payload.select = selected.slice(i, Math.min(i + SnippetsMenuContainer.batchSize, selected.length));
+        payload.selected = selected.slice(i, Math.min(i + SnippetsMenuContainer.batchSize, selected.length));
         dispatch(actions.massActions(payload))
           .then(() => {
             self.setState({
@@ -212,7 +212,9 @@ export class SnippetsMenuContainer extends React.Component {
   runMassActions = (payload) => {
     const { dispatch } = this.props;
     const selected = [...this.state.massActionsSelected];
-    if (selected.length > SnippetsMenuContainer.batchSize) {
+    if (payload.action === 'export') {
+      dispatch(actions.exportSnippets(selected));
+    } else if (selected.length > SnippetsMenuContainer.batchSize) {
       this.setState({
         massActionsProgress: { current: 0, total: selected.length }
       });
@@ -733,7 +735,8 @@ export class SnippetsMenu extends React.Component {
               <Progress size="large" type="cta" style={{ margin: 10, border: '1px solid #ccc' }}>
                 <ProgressBar percent={massActionsProgress.current * 100 / massActionsProgress.total} />
               </Progress>
-              Processed {massActionsProgress.current} of {massActionsProgress.total} mass actions
+              {agentPhrases.get('agent.snippets.mass_actions_progress',
+                { current: massActionsProgress.current, total: massActionsProgress.total })}
             </div>
             : <SnippetsList
               me={me}

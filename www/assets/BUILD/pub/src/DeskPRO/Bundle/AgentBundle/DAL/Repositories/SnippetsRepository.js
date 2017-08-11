@@ -13,5 +13,9 @@ class SnippetsRepository extends ApiRepository {
   massActions(payload) {
     return this.api.sendPost(`DP_API/${this.url}/mass_actions`, payload);
   }
+
+  exportSnippets(ids) {
+    window.location.href = `${window.DP_BASE_API_URL}/v2/${this.url}/csv?ids=${ids}`;
+  }
 }
 export default SnippetsRepository;

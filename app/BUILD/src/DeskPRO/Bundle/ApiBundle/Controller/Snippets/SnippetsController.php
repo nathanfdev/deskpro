@@ -28,14 +28,17 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Snippets;
 
+use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -43,6 +46,8 @@ use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Class SnippetsController.
@@ -90,7 +95,7 @@ class SnippetsController extends CrudController
         $agent->loadHelper('AgentTeam');
 
         $qb
-            ->where("($alias.person = :person")
+            ->andWhere("($alias.person = :person")
             ->orWhere("$alias.isOwnershipGlobal = true)")
             ->setParameter('person', $agent)
         ;
@@ -410,5 +415,217 @@ class SnippetsController extends CrudController
     public function listLabelsAction()
     {
         return View::create($this->wrap($this->getRepository(Snippet::class)->getSnippetsLabelsForAgent($this->getUser())));
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get an export of snippets",
+     *      tags={"CRUD"="#ffa500"},
+     *      filters={
+     *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"},
+     *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
+     *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
+     *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
+     *      },
+     *      statusCodes={
+     *          200="Returned if your request was successful",
+     *          400="An error will occur if you provide wrong filters set",
+     *      }
+     * )
+     * @Rest\Get("/csv")
+     *
+     * @param Request $request
+     *
+     * @return \FOS\RestBundle\View\View
+     */
+    public function csvAction(Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
+
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->select('e');
+        $qb->from(static::$entity, 'e');
+
+        $this->applyListFilters($qb, 'e', $request);
+        $this->applySorting($qb, 'e', $request);
+
+        $ids = $request->get('ids');
+        if ($ids) {
+            if (is_string($ids)) {
+                $ids = explode(',', $ids);
+            }
+
+            $ids = array_map(function ($id) {
+                return (int) $id;
+            }, $ids);
+
+            $qb->andWhere('e.id IN (:ids)');
+            $qb->setParameter('ids', $ids);
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+        $delimiter = ';';
+
+        $headers = [
+            'id',
+            'title',
+            'person_id',
+            'shortcut_code',
+            'types',
+            'labels',
+            'is_draft',
+            'is_ownership_global',
+            'teams_ids',
+            'is_visible_global',
+            'departments_ids',
+            'is_split',
+        ];
+
+        /** @var LanguageDataService $languageDataService */
+        $languageDataService = $this->container->getDataService('Language');
+        if ($languageDataService->isMultiLang()) {
+            $languages = $languageDataService->getAll();
+            foreach ($languages as $language) {
+                $headers[] = $language->getLocale().'_content';
+                $headers[] = $language->getLocale().'_blobs';
+                $headers[] = $language->getLocale().'_ticket_content';
+                $headers[] = $language->getLocale().'_ticket_blobs';
+                $headers[] = $language->getLocale().'_chat_content';
+                $headers[] = $language->getLocale().'_chat_blobs';
+            }
+        } else {
+            $headers[] = 'content';
+            $headers[] = 'blobs';
+            $headers[] = 'ticket_content';
+            $headers[] = 'ticket_blobs';
+            $headers[] = 'chat_content';
+            $headers[] = 'chat_blobs';
+        }
+
+        $response = new StreamedResponse();
+        $response->setCallback(function () use ($delimiter, $headers, $result, $languageDataService) {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, $headers);
+            flush();
+            $i = 0;
+            /** @var Snippet $snippet */
+            foreach ($result as $snippet) {
+                $labels = [];
+                foreach ($snippet->getLabels() as $label) {
+                    $labels[] = $label->getLabel();
+                }
+                $teams = [];
+                foreach ($snippet->getOwnershipTeams() as $team) {
+                    $teams[] = $team->getId();
+                }
+                $departments = [];
+                foreach ($snippet->getVisibleDepartments() as $department) {
+                    $departments[] = $department->getId();
+                }
+                $data = [
+                    $snippet->getId(),
+                    $snippet->getTitle(),
+                    $snippet->getPerson() ? $snippet->getPerson()->getId() : '',
+                    $snippet->getShortcutCode(),
+                    implode(',', $snippet->getTypes()),
+                    implode(',', $labels),
+                    $snippet->isDraft() ?: 0,
+                    $snippet->isOwnershipGlobal() ?: 0,
+                    implode(',', $teams),
+                    $snippet->isVisibleGlobal() ?: 0,
+                    implode(',', $departments),
+                    $snippet->isSplit() ?: 0,
+                ];
+                $translations = $snippet->getTranslations();
+                if ($languageDataService->isMultiLang()) {
+                    $languages = $languageDataService->getAll();
+                    foreach ($languages as $language) {
+                        $this->fillTranslations($language, $translations, $snippet, $data);
+                    }
+                } else {
+                    $language = $languageDataService->getDefault();
+                    $this->fillTranslations($language, $translations, $snippet, $data);
+                }
+                fputcsv($out, $data);
+                ++$i;
+                if ($i > 50) {
+                    flush();
+                    $i = 0;
+                }
+            }
+        });
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'export.csv'
+        );
+
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->send();
+    }
+
+    /**
+     * @param Language             $language
+     * @param SnippetTranslation[] $translations
+     * @param string               $type
+     *
+     * @return SnippetTranslation|bool
+     */
+    protected function findTranslation($language, $translations, $type = '')
+    {
+        $foundTranslation = false;
+        foreach ($translations as $translation) {
+            if ($translation->getLanguage()->getId() === $language->getId()) {
+                if (!$type || $translation->getType() === $type) {
+                    $foundTranslation = $translation;
+                    break;
+                }
+            }
+        }
+
+        return $foundTranslation;
+    }
+
+    protected function fillTranslations($language, $translations, $snippet, &$data)
+    {
+        if ($snippet->isSplit()) {
+            $data[] = '';
+            $data[] = '';
+            foreach (['ticket', 'chat'] as $type) {
+                $translation = $this->findTranslation($language, $translations, $type);
+                if ($translation) {
+                    $data[] = $translation->getContent();
+                    $blobs  = [];
+                    foreach ($translation->getBlobs() as $blob) {
+                        $blobs[] = $blob->getDownloadUrl(true);
+                    }
+                    $data[] = implode(',', $blobs);
+                } else {
+                    $data[] = '';
+                    $data[] = '';
+                }
+            }
+        } else {
+            $translation = $this->findTranslation($language, $translations);
+            if ($translation) {
+                $data[] = $translation->getContent();
+                $blobs  = [];
+                foreach ($translation->getBlobs() as $blob) {
+                    $blobs[] = $blob->getDownloadUrl(true);
+                }
+                $data[] = implode(',', $blobs);
+                $data[] = '';
+                $data[] = '';
+                $data[] = '';
+                $data[] = '';
+            } else {
+                $data[] = '';
+                $data[] = '';
+                $data[] = '';
+                $data[] = '';
+                $data[] = '';
+                $data[] = '';
+            }
+        }
     }
 }
