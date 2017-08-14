@@ -318,21 +318,25 @@ class PortalController extends AbstractController
      */
     public function changeLanguageAction(Request $request)
     {
-        $new_lang_code = $request->get('lang_code');
-        $referer       = $request->server->get('HTTP_REFERER');
+        $newLangCode = $request->get('lang_code');
+        $referer     = $request->server->get('HTTP_REFERER');
+        $langChanger = $this->get('language_changer');
 
-        $lang_changer = $this->get('language_changer');
-        $redirect_url = $lang_changer->changeLanguage($new_lang_code, $referer);
+        try {
+            $redirectUrl = $langChanger->changeLanguage($newLangCode, $referer);
+        } catch (\Exception $e) {
+            $redirectUrl = $this->get('router')->generate('portal_home');
+        }
 
         $person = $this->getCurrentPerson();
         if (!$person instanceof PersonGuest) {
-            if ($lang = $this->get('language_manager')->getLanguage($new_lang_code)) {
+            if ($lang = $this->get('language_manager')->getLanguage($newLangCode)) {
                 $person->setLanguage($lang);
                 $this->persistAndFlushEntity($person);
             }
         }
 
-        return $this->redirect($redirect_url);
+        return $this->redirect($redirectUrl);
     }
 
     /**
