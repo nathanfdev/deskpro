@@ -789,7 +789,7 @@ class SystemErrorHandler
                 }
             }
 
-            if ($errinfo['no_send_error']) {
+            if (!$errinfo['no_send_error']) { // if no send is false - then send
                 if ($bs = self::getBugsnagClient()) {
                     if ($errinfo['type'] === 'exception') {
                         $bs->notifyException($errinfo['exception']);
