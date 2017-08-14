@@ -1,3 +1,4 @@
+import debounce from 'lodash/function/debounce';
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
@@ -75,14 +76,7 @@ class ActionAlertsHandler {
       case 'snippet.snippets_updated':
         switch (payload.data.action) {
           case 'update':
-            this.options.dispatch(snippetActions.getSnippet([payload.data.snippet_id])).then((snippet) => {
-              const shortcutCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
-              if (shortcutCodes[snippet.shortcut_code]) {
-                shortcutCodes[snippet.shortcut_code] = shortcutCodes[snippet.shortcut_code].concat([snippet.id]);
-              } else {
-                shortcutCodes[snippet.shortcut_code] = [snippet.id];
-              }
-            });
+            this.handleNewSnippet(payload.data.snippet_id);
             break;
           case 'remove':
             this.options.dispatch(removeFromCollection('Snippets', 'all', [payload.data.snippet_id]));
@@ -98,6 +92,29 @@ class ActionAlertsHandler {
           this.options.dispatch(newActionAlerts(payload));
         }
     }
+  }
+
+  snippetIds = new Set();
+
+  loadBatch = () => {
+    this.options.dispatch(snippetActions.getSnippets([...this.snippetIds])).then((snippets) => {
+      const shortcutCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
+      snippets.forEach((snippet) => {
+        if (shortcutCodes[snippet.shortcut_code]) {
+          shortcutCodes[snippet.shortcut_code] = shortcutCodes[snippet.shortcut_code].concat([snippet.id]);
+        } else {
+          shortcutCodes[snippet.shortcut_code] = [snippet.id];
+        }
+      });
+    });
+    this.snippetIds.clear();
+  };
+
+  debouncedLoad = debounce(() => this.loadBatch(), 1000);
+
+  handleNewSnippet(snippetId) {
+    this.snippetIds.add(snippetId);
+    this.debouncedLoad();
   }
 
   static handleLegacyClientMessage(payload) {

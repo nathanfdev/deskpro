@@ -59,10 +59,7 @@ class SnippetsFiltering extends React.Component {
     if (nextProps.snippets !== this.props.snippets) {
       return true;
     }
-    if (nextProps.selectedLabels !== this.props.selectedLabel) {
-      return true;
-    }
-    return false;
+    return nextProps.selectedLabels !== this.props.selectedLabel;
   }
 
   getChildren = (label) => {
@@ -96,7 +93,7 @@ class SnippetsFiltering extends React.Component {
     labels
       .filter((value) => {
         const { labelFilter } = this.props;
-        if (this.state.labelFilter === '') {
+        if (labelFilter === '') {
           return true;
         }
         const re = new RegExp(labelFilter, 'i');

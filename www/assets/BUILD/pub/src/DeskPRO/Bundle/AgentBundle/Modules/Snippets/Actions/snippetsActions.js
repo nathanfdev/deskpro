@@ -17,6 +17,20 @@ export const getSnippet = createAction(
     }
   )
 );
+export const getSnippets = createAction(
+  'SNIPPETS_GET_SNIPPETS',
+  ids => dispatch => new Promise(
+    (resolve, reject) => {
+      repository('Snippets').loadBatch(ids, 'snippet_translation,blob', true)
+        .then((promise) => {
+          dispatch(addToCollection('Snippets', 'all', promise.data.data));
+          resolve(promise.data.data);
+        },
+          response => reject(response)
+        );
+    }
+  )
+);
 export const saveSnippet = createAction(
   'SNIPPETS_SAVE_SNIPPET',
   data => dispatch => new Promise(
@@ -56,7 +70,7 @@ export const deleteSnippet = createAction(
 export const addSnippetAttachment = createAction(
   'SNIPPETS_ADD_ATTACHMENT',
   blob => (dispatch) => {
-    dispatch(addToCollection('SnippetsBlobs', 'all', replaceIds([blob], 'blob_id')));
+    dispatch(addToCollection('SnippetBlobs', 'all', replaceIds([blob], 'blob_id')));
   }
 );
 export const loadSnippetLanguagePreferences = createAction(
@@ -71,4 +85,21 @@ export const createSnippetLanguagePreferences = createAction(
   'SNIPPETS_CREATE_LANGUAGE_PREFERENCES',
   data => repository('PersonSetting')
     .create({ name: 'agent.ui.snippets.language_preferences', value: data }).then(value => value.getData())
+);
+export const massActions = createAction(
+  'SNIPPETS_MASS_ACTIONS',
+  data => () => new Promise(
+    (resolve, reject) => {
+      repository('Snippets').massActions(data)
+        .then((promise) => {
+          resolve(promise.data.data);
+        },
+          response => reject(response)
+        );
+    }
+  )
+);
+export const exportSnippets = createAction(
+  'SNIPPETS_EXPORT',
+  data => repository('Snippets').exportSnippets(data)
 );

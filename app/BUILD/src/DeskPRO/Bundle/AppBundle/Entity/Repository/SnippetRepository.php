@@ -41,7 +41,7 @@ class SnippetRepository extends EntityRepository
      * @param Person $agent
      * @param $type
      *
-     * @return array
+     * @return Snippet[]
      */
     public function getSnippetsForAgent(Person $agent, $type = '')
     {
@@ -65,6 +65,41 @@ class SnippetRepository extends EntityRepository
         $qb->setParameter('id', $id);
 
         return $qb->getQuery()->getOneOrNullResult();
+    }
+
+    /**
+     * @param Person $agent
+     * @param array  $ids
+     * @param string $type
+     *
+     * @return Snippet[]
+     */
+    public function findSnippetsForAgent(Person $agent, $ids, $type = '')
+    {
+        $qb = $this->getAgentSnippetQb($agent, $type);
+
+        $qb->andWhere('s.id IN (:ids)');
+        $qb->setParameter('ids', $ids);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @param Person $agent
+     * @param string $type
+     *
+     * @return Snippet[]
+     */
+    public function getSnippetsLabelsForAgent(Person $agent, $type = '')
+    {
+        $qb = $this->getAgentSnippetQb($agent, $type);
+
+        $qb->select('l.label', 'COUNT(DISTINCT s.id) AS snippet_count', 'l.label AS id');
+        $qb->innerJoin('s.labels', 'l');
+        $qb->groupBy('l.label');
+        $qb->orderBy('l.label');
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

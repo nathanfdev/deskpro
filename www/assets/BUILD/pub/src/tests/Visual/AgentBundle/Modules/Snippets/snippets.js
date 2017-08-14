@@ -34,6 +34,7 @@ storiesOf('Agent: Snippets', module)
       snippets={snippetsState}
       langId={1}
       me={me}
+      langDisplay={[1, 2, 3]}
       langPref={[1, 2, 3]}
       width={700}
       languages={languages}

@@ -70,6 +70,13 @@ class SnippetLabel implements EntityInterface, NotifyPropertyChanged, Label
      */
     protected $label;
 
+    public function __construct($value = null)
+    {
+        if ($value) {
+            $this->setLabel($value);
+        }
+    }
+
     /**
      * Composite id (person_id + name).
      *

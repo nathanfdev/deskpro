@@ -14,18 +14,24 @@ export class OwnershipSelectContainer extends React.Component {
   static propTypes = {
     me:                PropTypes.object,
     agentTeams:        PropTypes.object,
-    selectedTeams:     PropTypes.object.isRequired,
+    selectedTeams:     PropTypes.instanceOf(Set).isRequired,
+    existingTeams:     PropTypes.instanceOf(Set),
     isOwnershipGlobal: PropTypes.bool,
     onChange:          PropTypes.func,
   };
 
+  static defaultProps = {
+    existingTeams: new Set()
+  };
+
   render() {
-    const { me, agentTeams, onChange, selectedTeams, isOwnershipGlobal } = this.props;
+    const { me, agentTeams, onChange, selectedTeams, existingTeams, isOwnershipGlobal } = this.props;
     return (
       <OwnershipSelect
         me={me}
         agentTeams={agentTeams}
         selectedTeams={selectedTeams}
+        existingTeams={existingTeams}
         isOwnershipGlobal={isOwnershipGlobal}
         onChange={onChange}
       />
@@ -36,7 +42,8 @@ export class OwnershipSelect extends React.Component {
   static propTypes = {
     me:                PropTypes.object,
     agentTeams:        PropTypes.object,
-    selectedTeams:     PropTypes.object,
+    selectedTeams:     PropTypes.instanceOf(Set),
+    existingTeams:     PropTypes.instanceOf(Set),
     isOwnershipGlobal: PropTypes.bool,
     onChange:          PropTypes.func,
   };
@@ -46,7 +53,7 @@ export class OwnershipSelect extends React.Component {
     let radio = '';
     if (this.props.isOwnershipGlobal) {
       radio = 'everyone';
-    } else if (this.props.selectedTeams.size) {
+    } else if (this.props.selectedTeams.size || this.props.existingTeams.size) {
       radio = 'specific';
     } else {
       radio = 'me';
@@ -57,6 +64,25 @@ export class OwnershipSelect extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isOwnershipGlobal !== this.props.isOwnershipGlobal
+      || nextProps.selectedTeams !== this.props.selectedTeams
+      || nextProps.existingTeams !== this.props.existingTeams
+    ) {
+      let radio = '';
+      if (nextProps.isOwnershipGlobal) {
+        radio = 'everyone';
+      } else if (nextProps.selectedTeams.size || nextProps.existingTeams.size) {
+        radio = 'specific';
+      } else {
+        radio = 'me';
+      }
+      this.setState({
+        radio,
+      });
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.agentTeams !== this.props.agentTeams) {
       return true;
@@ -65,6 +91,9 @@ export class OwnershipSelect extends React.Component {
       return true;
     }
     if (nextState.filter !== this.state.filter) {
+      return true;
+    }
+    if (nextProps.existingTeams !== this.props.existingTeams) {
       return true;
     }
     return nextProps.selectedTeams !== this.props.selectedTeams;
@@ -78,24 +107,25 @@ export class OwnershipSelect extends React.Component {
     });
     if (value === 'everyone') {
       this.props.onChange(new Set(), true);
-    } else {
+    } else if (value === 'me') {
       this.props.onChange(new Set(), false);
     }
+    this.forceUpdate();
   };
 
   onCheckboxChange = (checked, value) => {
-    const { selectedTeams } = this.props;
+    const selectedTeams = new Set(this.props.selectedTeams);
     if (checked) {
       selectedTeams.add(value);
     } else {
       selectedTeams.delete(value);
     }
-    this.props.onChange(selectedTeams, false);
+    this.props.onChange(selectedTeams, false, true);
     this.forceUpdate();
   };
 
   getSpecific = () => {
-    const { me, selectedTeams } = this.props;
+    const { me, selectedTeams, existingTeams } = this.props;
     const teams = [];
     const re = new RegExp(this.state.filter, 'i');
     this.props.agentTeams
@@ -108,6 +138,7 @@ export class OwnershipSelect extends React.Component {
                 value={team.get('id')}
                 onChange={this.onCheckboxChange}
                 checked={selectedTeams.has(team.get('id'))}
+                existing={existingTeams.has(team.get('id'))}
               >
                 {team.get('name')}
               </Checkbox>
@@ -133,12 +164,14 @@ export class OwnershipSelect extends React.Component {
   };
 
   inputRenderer = () => {
-    const { selectedTeams, isOwnershipGlobal, agentTeams } = this.props;
-    if (selectedTeams.size === 0) {
+    const { selectedTeams, existingTeams, isOwnershipGlobal, agentTeams } = this.props;
+    if (selectedTeams.size === 0 && existingTeams.size === 0) {
       return isOwnershipGlobal ? agentPhrases.get('agent.general.everyone') : agentPhrases.get('agent.general.just_me');
-    } else if (selectedTeams.size <= 3) {
+    } else if (selectedTeams.size <= 3 && selectedTeams.size > 0) {
       return agentTeams.filter(t => selectedTeams.has(t.get('id')))
         .map(o => o.get('name')).toArray().join(', ');
+    } else if (selectedTeams.size === 0 && existingTeams.size > 0) {
+      return agentPhrases.get('agent.general.select');
     }
     return `${selectedTeams.size} ${agentPhrases.get('agent.general.teams').toLowerCase()}`;
   };
@@ -156,6 +189,7 @@ export class OwnershipSelect extends React.Component {
             || window.DESKPRO_PERSON_PERMS['agent_snippets.create_self_snippet']) ?
               <ListElement>
                 <Radio
+                  id="ownership-me"
                   name="ownership"
                   value="me"
                   onChange={this.onRadioChange}
@@ -169,6 +203,7 @@ export class OwnershipSelect extends React.Component {
             || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']) ?
               <ListElement>
                 <Radio
+                  id="ownership-everyone"
                   name="ownership"
                   value="everyone"
                   onChange={this.onRadioChange}
@@ -183,6 +218,7 @@ export class OwnershipSelect extends React.Component {
           && (me.get('can_admin') || me.get('teams').size) ?
             <ListElement>
               <Radio
+                id="ownership-specific"
                 name="ownership"
                 value="specific"
                 onChange={this.onRadioChange}
