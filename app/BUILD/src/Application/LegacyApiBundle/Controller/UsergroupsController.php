@@ -94,10 +94,15 @@ class UsergroupsController extends AbstractController implements ProtectedContro
     {
         $usergroups = $this->container->getUserGroups();
 
-        if (Numbers::isInteger($id)) {
-            $usergroup = $usergroups->getGroup($id);
-        } else {
-            $usergroup = $usergroups->getSysGroup($id);
+        try {
+            if (Numbers::isInteger($id)) {
+                $usergroup = $usergroups->getGroup($id);
+            } else {
+                $usergroup = $usergroups->getSysGroup($id);
+            }
+        } catch (\Exception $e) {
+            // handle not found
+            $usergroup = null;
         }
 
         if (!$usergroup || $usergroup->is_agent_group) {

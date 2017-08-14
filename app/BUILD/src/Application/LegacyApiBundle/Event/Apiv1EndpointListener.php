@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
@@ -94,6 +95,16 @@ class Apiv1EndpointListener implements EventSubscriberInterface
             $response->headers->set('X-Status-Code', Response::HTTP_FORBIDDEN);
             $response->setContent([
                 'error_code'    => $exception->getCode() === 42 ? 'insufficient_rights' : 'forbidden',
+                'error_message' => $exception->getMessage(),
+            ]);
+
+            $event->setResponse($response);
+        }
+        if ($exception instanceof NotFoundHttpException) {
+            $response = new JsonResponse();
+            $response->headers->set('X-Status-Code', Response::HTTP_NOT_FOUND);
+            $response->setContent([
+                'error_code'    => 'not_found',
                 'error_message' => $exception->getMessage(),
             ]);
 
