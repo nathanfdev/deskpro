@@ -44,6 +44,10 @@ class HttpUtils extends \Symfony\Component\Security\Http\HttpUtils
             return $path;
         }
 
-        return parent::generateUri($request, $path);
+        try {
+            return parent::generateUri($request, $path);
+        } catch (\Exception $e) {
+            return '/';
+        }
     }
 }
