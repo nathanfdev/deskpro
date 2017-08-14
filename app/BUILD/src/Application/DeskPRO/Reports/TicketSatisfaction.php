@@ -59,6 +59,11 @@ class TicketSatisfaction
          * @var \Application\DeskPRO\EntityRepository\TicketFeedback $repository
          */
 
+        $page = (int) $page;
+        if ($page < 1) {
+            $page = 1;
+        }
+
         $vars       = [];
         $repository = $this->em->getRepository('DeskPRO:TicketFeedback');
         $feedback   = $repository->getFeedbackForFeed($page - 1);
