@@ -28,14 +28,19 @@
 
 namespace DpSys\LowError;
 
+use Application\DeskPRO\JIRA\ApiGeneralException;
+use DeskPRO\Component\Exception\NoSendErrorException;
+use Elastica\Exception\Connection\HttpException as ElasticaConnectionHttpException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\LogoutException;
+use Zend\Mail\Protocol\Exception\RuntimeException as ZendMailProtocolRuntimeException;
 
 class SystemErrorHandler
 {
@@ -951,23 +956,20 @@ class SystemErrorHandler
         $exception)
     {
         static $ignore = [
-            'Swift_TransportException',
-            'Swift_IoException',
-            'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
+            \Swift_TransportException::class,
+            \Swift_IoException::class,
+            ZendMailProtocolRuntimeException::class,
+            MethodNotAllowedHttpException::class,
+            MethodNotAllowedException::class,
+            ElasticaConnectionHttpException::class,
+            ApiGeneralException::class,
+            NoSendErrorException::class,
         ];
 
         foreach ($ignore as $cls) {
             if ($exception instanceof $cls) {
                 return true;
             }
-        }
-
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-            return true;
-        }
-
-        if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
-            return true;
         }
 
         if ($exception instanceof \Doctrine\DBAL\Types\ConversionException && strpos($exception->getMessage(), 'Doctrine Type array') !== false) {
@@ -1085,14 +1087,6 @@ class SystemErrorHandler
         }
 
         if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Cannot create Imagine instance') !== false) {
-            return true;
-        }
-
-        if ($exception instanceof \Elastica\Exception\Connection\HttpException) {
-            return true;
-        }
-
-        if ($exception instanceof \Application\DeskPRO\JIRA\ApiGeneralException) {
             return true;
         }
 
