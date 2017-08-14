@@ -38,7 +38,7 @@ use DpBehat\Data\DataContext;
 /**
  * Class JsonContext.
  */
-class JsonContext extends \Sanpi\Behatch\Context\JsonContext
+class JsonContext extends \Behatch\Context\JsonContext
 {
     /**
      * @var RestContext
@@ -115,7 +115,9 @@ class JsonContext extends \Sanpi\Behatch\Context\JsonContext
     public function theJsonNodeShouldBeEqualToTheString($node, $text)
     {
         $node = DataContext::replace($node);
-        parent::theJsonNodeShouldBeEqualTo($node, $text);
+        $text = str_replace('\n', "\n", $text);
+
+        parent::theJsonNodeShouldBeEqualToTheString($node, $text);
     }
 
     /**

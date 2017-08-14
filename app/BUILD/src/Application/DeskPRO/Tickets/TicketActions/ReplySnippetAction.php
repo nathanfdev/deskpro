@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -37,10 +33,12 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketObjectUseLog;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 
-class ReplySnippetAction extends AbstractAction implements PersonContextInterface, PermissionableAction
+/**
+ * Class ReplySnippetAction.
+ */
+class ReplySnippetAction extends AbstractReplyAction
 {
     /**
      * @var ReplySnippetActionItem[]
@@ -48,10 +46,11 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
     protected $snippet_items;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * Constructor.
+     *
+     * @param null $snippet_id
+     * @param null $reply_pos
      */
-    protected $person_context;
-
     public function __construct($snippet_id = null, $reply_pos = null)
     {
         if (!$snippet_id) {
@@ -70,6 +69,8 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         if ($item->snippet) {
             $this->addSnippetItem($item);
         }
+
+        $this->reply_pos = $reply_pos;
     }
 
     /**
@@ -145,77 +146,15 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
      */
     public function apply(Ticket $ticket)
     {
-        if (!$this->snippet_items) {
+        $content = $this->getMessageContent($ticket);
+        if (!$content) {
             return;
         }
 
-        if (!$this->person_context) {
-            if ($ticket->agent) {
-                $this->person_context = $ticket->agent;
-            } else {
-                // Try to find last agent to replied in tikcet
-                $agent_id = App::getDb()->fetchColumn('
-                    SELECT tickets_messages.person_id
-                    FROM tickets_messages
-                    LEFT JOIN people ON (people.id = tickets_messages.person_id)
-                    WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
-                    ORDER BY tickets_messages.id DESC
-                ');
+        $message = new TicketMessage();
+        $message->setPerson($this->person_context);
+        $message->setMessageHtml($content);
 
-                if ($agent_id) {
-                    $this->person_context = App::getDataService('Agent')->get($agent_id);
-                }
-            }
-        }
-
-        if (!$this->person_context) {
-            return;
-        }
-
-        $message         = new TicketMessage();
-        $message->person = $this->person_context;
-
-        $snippet_text = [];
-        foreach ($this->snippet_items as $item) {
-            $text = App::getTranslator()->objectChoosePhraseText(
-                $item->snippet,
-                'snippet',
-                [
-                    $ticket->language,
-                    $this->person_context->getRealLanguage(),
-                ]
-            );
-            $text = trim($text);
-            if (!$text) {
-                continue;
-            }
-
-            if ($item->snippet && $this->person_context) {
-                $snippetLog = TicketObjectUseLog::createSnippetLog($ticket, $this->person_context, $item->snippet);
-                App::$container->getEm()->persist($snippetLog);
-            }
-
-            switch ($item->reply_pos) {
-                case 'append':
-                    $snippet_text[] = $text;
-                    break;
-                case 'prepend':
-                    array_unshift($snippet_text, $text);
-                    break;
-                case 'overwrite':
-                    $snippet_text = [$text];
-                    break;
-            }
-        }
-
-        $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
-
-        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-
-        $this->person_context->loadHelper('Agent');
-        $formatter->addVar('agent_signature', $this->person_context->getSignatureHtml());
-
-        $message->setMessageHtml($formatter->formatText($snippet_text, $ticket));
         $ticket->addMessage($message);
     }
 
@@ -287,13 +226,13 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
 
                     if ($text = trim($text)) {
                         switch ($item->reply_pos) {
-                            case 'append':
+                            case self::REPLY_POS_APPEND:
                                 $snippet_text[] = $text;
                                 break;
-                            case 'prepend':
+                            case self::REPLY_POS_PREPEND:
                                 array_unshift($snippet_text, $text);
                                 break;
-                            case 'overwrite':
+                            case self::REPLY_POS_OVERWRITE:
                                 $snippet_text = [$text];
                                 break;
                         }
@@ -317,6 +256,64 @@ class ReplySnippetAction extends AbstractAction implements PersonContextInterfac
         }
 
         return 'Reply with snippet: '.implode(', ', $this->getSnippetTitles());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessageContent(Ticket $ticket)
+    {
+        $person = $this->getTicketPerson($ticket);
+        if (!$person) {
+            return;
+        }
+
+        if (!$this->snippet_items) {
+            return;
+        }
+
+        $snippetText = [];
+        foreach ($this->snippet_items as $item) {
+            $text = App::getTranslator()->objectChoosePhraseText(
+                $item->snippet,
+                'snippet',
+                [
+                    $ticket->getLanguage(),
+                    $person->getRealLanguage(),
+                ]
+            );
+            $text = trim($text);
+            if (!$text) {
+                continue;
+            }
+
+            if ($item->snippet && $person) {
+                $snippetLog = TicketObjectUseLog::createSnippetLog($ticket, $person, $item->snippet);
+                App::$container->getEm()->persist($snippetLog);
+            }
+
+            switch ($item->reply_pos) {
+                case self::REPLY_POS_APPEND:
+                    $snippetText[] = $text;
+                    break;
+                case self::REPLY_POS_PREPEND:
+                    array_unshift($snippetText, $text);
+                    break;
+                case self::REPLY_POS_OVERWRITE:
+                    $snippetText = [$text];
+                    break;
+            }
+        }
+
+        $person->loadHelper('Agent');
+
+        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter->addVar('agent_signature', $person->getSignatureHtml());
+
+        $snippetText = implode("\n<br/><br/>\n", $snippetText);
+        $snippetText = $formatter->formatText($snippetText, $ticket);
+
+        return $snippetText;
     }
 }
 

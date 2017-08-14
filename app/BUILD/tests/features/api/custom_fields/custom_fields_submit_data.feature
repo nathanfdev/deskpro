@@ -77,7 +77,7 @@ Feature: Custom fields
     """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/tickets/{t1}"
-    Then the JSON node "data.fields.{f1}.value" should be equal to the string <response_value>
+    Then the JSON node "data.fields.{f1}.value" should be equal to <response_value>
 
     Examples:
       | request_value         | response_value             |
@@ -103,7 +103,7 @@ Feature: Custom fields
     """
     Then the response status code should be 204
     When I send a GET request to "/api/v2/tickets/{t1}"
-    Then the JSON node "data.fields.{f1}.value" should be equal to the string <response_value>
+    Then the JSON node "data.fields.{f1}.value" should be equal to <response_value>
 
     Examples:
       | request_value         | response_value             |
