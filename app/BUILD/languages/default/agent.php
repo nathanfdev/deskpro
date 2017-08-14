@@ -491,6 +491,7 @@ return [
     'agent.general.created_timeago_by_x_on_y'                  => 'Created {{timeago}} by {{name}} on {{date}}',
     'agent.general.criteria'                                   => 'Criteria',
     'agent.general.crm'                                        => 'CRM',
+    'agent.general.ctrlc'                                      => '(ctrl+c)',
     'agent.general.current_agent'                              => 'Current Agent',
     'agent.general.current_computer_tz'                        => 'The current time according to your computer',
     'agent.general.current_page'                               => 'Current Page',
