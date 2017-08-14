@@ -59,7 +59,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterOptions, SearchState
     /**
      * @param string $filePathPattern
      */
-    public function setFilePathPattern(string $filePathPattern)
+    public function setFilePathPattern($filePathPattern)
     {
         $this->filePathPattern = $filePathPattern;
     }
@@ -75,7 +75,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterOptions, SearchState
     /**
      * @param string $fileExtension
      */
-    public function setFileExtension(string $fileExtension)
+    public function setFileExtension($fileExtension)
     {
         $this->fileExtension = $fileExtension;
     }

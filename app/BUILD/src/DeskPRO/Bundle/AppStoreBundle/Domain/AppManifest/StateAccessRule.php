@@ -74,7 +74,7 @@ class StateAccessRule
     /**
      * @param string $name
      */
-    public function setName(string $name)
+    public function setName($name)
     {
         $this->name = $name;
     }
@@ -90,9 +90,9 @@ class StateAccessRule
     /**
      * @param bool $isBackendOnly
      */
-    public function setIsBackendOnly(bool $isBackendOnly)
+    public function setIsBackendOnly($isBackendOnly)
     {
-        $this->isBackendOnly = $isBackendOnly;
+        $this->isBackendOnly = (bool) $isBackendOnly;
     }
 
     /**

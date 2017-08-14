@@ -146,7 +146,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getProviderName(): string
+    public function getProviderName()
     {
         return $this->providerName;
     }
@@ -154,7 +154,7 @@ class SerializedOauthConnection
     /**
      * @param string $providerName
      */
-    public function setProviderName(string $providerName)
+    public function setProviderName($providerName)
     {
         $this->providerName = $providerName;
     }
@@ -162,7 +162,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getUrlAuthorize(): string
+    public function getUrlAuthorize()
     {
         return $this->urlAuthorize;
     }
@@ -170,7 +170,7 @@ class SerializedOauthConnection
     /**
      * @param string $urlAuthorize
      */
-    public function setUrlAuthorize(string $urlAuthorize)
+    public function setUrlAuthorize($urlAuthorize)
     {
         $this->urlAuthorize = $urlAuthorize;
     }
@@ -178,7 +178,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getUrlAccessToken(): string
+    public function getUrlAccessToken()
     {
         return $this->urlAccessToken;
     }
@@ -186,7 +186,7 @@ class SerializedOauthConnection
     /**
      * @param string $urlAccessToken
      */
-    public function setUrlAccessToken(string $urlAccessToken)
+    public function setUrlAccessToken($urlAccessToken)
     {
         $this->urlAccessToken = $urlAccessToken;
     }
@@ -194,7 +194,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getUrlResourceOwnerDetails(): string
+    public function getUrlResourceOwnerDetails()
     {
         return $this->urlResourceOwnerDetails;
     }
@@ -202,7 +202,7 @@ class SerializedOauthConnection
     /**
      * @param string $urlResourceOwnerDetails
      */
-    public function setUrlResourceOwnerDetails(string $urlResourceOwnerDetails)
+    public function setUrlResourceOwnerDetails($urlResourceOwnerDetails)
     {
         $this->urlResourceOwnerDetails = $urlResourceOwnerDetails;
     }
@@ -210,7 +210,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getClientId(): string
+    public function getClientId()
     {
         return $this->clientId;
     }
@@ -218,7 +218,7 @@ class SerializedOauthConnection
     /**
      * @param string $clientId
      */
-    public function setClientId(string $clientId)
+    public function setClientId($clientId)
     {
         $this->clientId = $clientId;
     }
@@ -226,7 +226,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getClientSecret(): string
+    public function getClientSecret()
     {
         return $this->clientSecret;
     }
@@ -234,7 +234,7 @@ class SerializedOauthConnection
     /**
      * @param string $clientSecret
      */
-    public function setClientSecret(string $clientSecret)
+    public function setClientSecret($clientSecret)
     {
         $this->clientSecret = $clientSecret;
     }
@@ -242,7 +242,7 @@ class SerializedOauthConnection
     /**
      * @return string
      */
-    public function getUrlRedirect(): string
+    public function getUrlRedirect()
     {
         return $this->urlRedirect;
     }
@@ -250,7 +250,7 @@ class SerializedOauthConnection
     /**
      * @param string $urlRedirect
      */
-    public function setUrlRedirect(string $urlRedirect)
+    public function setUrlRedirect($urlRedirect)
     {
         $this->urlRedirect = $urlRedirect;
     }
