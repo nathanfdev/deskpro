@@ -156,13 +156,14 @@ HTML;
                 "INSERT INTO snippets 
                       SELECT
                           ts.id,
-                          ts.person_id,
+                          IFNULL(ts.person_id, tcs.person_id) as person_id,
                           ts.shortcut_code,
                           ol_title.value as title,
                           REPLACE('ticket', 'tickets', tcs.typename) as types,
                           ts.is_draft,
                           tcs.is_global as ownership_global,
-                          1 as visible_global
+                          1 as visible_global,
+                          0 as is_split
                     FROM text_snippets ts
                     LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = $langId
                     LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT('text_snippets.', ts.id) AND ol_content.prop_name = 'snippet'
@@ -188,7 +189,8 @@ HTML;
                       ts.id as snippet_id,
                       ol_title.language_id,
                       ol_content.value as content,
-                      ol_title.value as title
+                      ol_title.value as title,
+                      NULL as type
                     FROM text_snippets ts
                       LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_title.prop_name = \'title\'
                       LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_content.prop_name = \'snippet\' AND ol_content.language_id = ol_title.language_id
