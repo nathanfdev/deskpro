@@ -59,12 +59,15 @@ class TicketHandler extends AbstractEntityHandler
         $entity
             ->disableAutoTicketProcess()
             ->setSubject($model->getSubject())
-            ->setDepartment($this->findOrCreateTicketDepartment($model->getDepartment()))
             ->setStatus($model->getStatus())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
         ;
+
+        if ($model->getDepartment()) {
+            $entity->setDepartment($this->helpers->getDepartmentHelper()->findOrCreateDepartment('ticket', $model->getDepartment()));
+        }
 
         if ($model->getUrgency()) {
             $entity->setUrgency($model->getUrgency());
@@ -269,41 +272,6 @@ class TicketHandler extends AbstractEntityHandler
                 $this->mappers->getTicketAttachmentMapper(), $attachmentModel, $messageEntity
             );
         }
-    }
-
-    /**
-     * Returns a department by title
-     * Creates a new department if not found.
-     *
-     * @param string $title
-     *
-     * @return Entity\Department|null
-     */
-    private function findOrCreateTicketDepartment($title)
-    {
-        $department = null;
-        if ($title) {
-            $department = $this->mappers->getDepartmentMapper()->findOneBy(['title' => $title]);
-            if ($department instanceof Entity\Department) {
-                $this->logger->debug(sprintf(
-                    'Found existing department `%d` with title `%s`',
-                    $department->getId(), $department->getTitle()
-                ));
-            } else {
-                $department = Entity\Department::createTicketDepartment();
-                $department->setRealTitle($title);
-
-                $defaultBrand = $this->mappers->getBrandMapper()->getDefaultBrand();
-                if ($defaultBrand) {
-                    $department->addBrand($defaultBrand);
-                }
-
-                $this->logger->notice(sprintf('New department creating `%s`', $department->getTitle()));
-                $this->persister->persistAndFlush($department);
-            }
-        }
-
-        return $department;
     }
 
     /**

@@ -270,19 +270,19 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
     {
         $brand = $this->getRepository(Entity\Brand::class)->findOneBy(['name' => 'default']);
 
-        $department = new Entity\Department();
+        $department = Entity\Department::createTicketDepartment();
         $department->setRealTitle('d');
         $department->addBrand($brand);
 
-        $department1 = new Entity\Department();
+        $department1 = Entity\Department::createTicketDepartment();
         $department1->setRealTitle('d1');
         $department1->addBrand($brand);
 
-        $department1a = new Entity\Department();
+        $department1a = Entity\Department::createTicketDepartment();
         $department1a->setRealTitle('d1a');
         $department1a->addBrand($brand);
 
-        $department2 = new Entity\Department();
+        $department2 = Entity\Department::createTicketDepartment();
         $department2->setRealTitle('d2');
         $department2->addBrand($brand);
 
@@ -314,7 +314,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->em()->persist($customBrand);
         $this->em()->flush();
 
-        $department = new Entity\Department();
+        $department = Entity\Department::createTicketDepartment();
         $department->setRealTitle('custom department');
         $department->addBrand($customBrand);
 
