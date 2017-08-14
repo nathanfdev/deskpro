@@ -36,6 +36,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
+use DeskPRO\Component\Exception\NoSendErrorException;
 
 /**
  * Abstract base for a date range placeholder (such as %TODAY% or %THIS_YEAR%).
@@ -169,7 +170,12 @@ abstract class AbstractDateRange extends AbstractPlaceholder
         } else {
             $format = 'Y-m-d H:i:s';
         }
-        $dt = new \DateTime($date);
+        try {
+            $dt = new \DateTime('2017-07-31 to 2017-08-06');
+        } catch (\Exception $e) {
+            throw new NoSendErrorException($e->getMessage(), $e->getCode());
+        }
+
         foreach ($intervals as $interval) {
             $operator = $interval->operator == \Application\DeskPRO\Dpql\Parser::T_OP_PLUS ? '+' : '-';
             $dt->modify("$operator $interval->amount $interval->unit");
