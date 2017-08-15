@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import first from 'lodash/first';
+import forEach from 'lodash/forEach';
+import map from 'lodash/map';
 
 export class FilterOptions {
 
@@ -10,37 +13,35 @@ export class FilterOptions {
     this.sort_directions = available.sort_directions;
   }
 
-  getStatusCategoryById(status_id, status_category_id) {
-    let f = _.filter(this.status_categories[status_id], (cat) => {
-      return cat.id === status_category_id;
-    });
-    return _.first(f);
+  getStatusCategoryById(statusId, statusCategoryId) {
+    const f = filter(this.status_categories[statusId], cat => cat.id === statusCategoryId);
+    return first(f);
   }
 
-  getStatusForStatusCategory(status_category_id) {
+  getStatusForStatusCategory(statusCategoryId) {
     let result = null;
 
-    _.forEach(this.status_categories, (st_cats, st_id) => {
-      _.forEach(st_cats, (st_cat) => {
-        if (st_cat.id === status_category_id) {
-          result = st_id;
+    forEach(this.status_categories, (stCats, stId) => {
+      forEach(stCats, (stCat) => {
+        if (stCat.id === statusCategoryId) {
+          result = stId;
         }
       });
     });
     return result;
   }
 
-  getStatusCategoriesForStatus(status_id) {
+  getStatusCategoriesForStatus(statusId) {
     let result = [];
-    _.forEach(this.status_categories, (st_cats, st_id) => {
-      if (st_id === status_id) {
-        result = st_cats;
+    forEach(this.status_categories, (stCats, stId) => {
+      if (stId === statusId) {
+        result = stCats;
       }
     });
     return result;
   }
 
-  getStatusCategoryIdsForStatus(status_id) {
-    return _.map(this.getStatusCategoriesForStatus(status_id), 'id');
+  getStatusCategoryIdsForStatus(statusId) {
+    return map(this.getStatusCategoriesForStatus(statusId), 'id');
   }
 }

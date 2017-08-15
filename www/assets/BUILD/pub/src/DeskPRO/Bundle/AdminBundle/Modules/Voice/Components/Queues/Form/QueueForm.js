@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import _ from 'lodash';
+import range from 'lodash/range';
 import { Fieldset } from 'react-forms';
 import { Input, Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
@@ -195,7 +195,7 @@ class MaxQueueSize extends React.Component {
 
   render() {
     const { value, onChange } = this.props;
-    const choices = _.range(1, 10).map(num => ({
+    const choices = range(1, 10).map(num => ({
       value: num,
       label: num
     }));

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import classNames from 'classnames';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';

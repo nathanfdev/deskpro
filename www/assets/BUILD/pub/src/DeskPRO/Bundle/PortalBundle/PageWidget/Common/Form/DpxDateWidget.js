@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import forEach from 'lodash/forEach';
+import includes from 'lodash/includes';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import moment from 'moment';
@@ -124,8 +125,8 @@ export class DpxDateWidget extends PageWidget {
         // disable all days of week
         options.onGenerate = function () {
           const that = this;
-          _.forEach([0, 1, 2, 3, 4, 5, 6], (weekDay) => {
-            if (!_.includes(weekdays, weekDay)) {
+          forEach([0, 1, 2, 3, 4, 5, 6], (weekDay) => {
+            if (!includes(weekdays, weekDay)) {
               $(that).find(`.xdsoft_day_of_week${weekDay}`).addClass('xdsoft_disabled');
             }
           });

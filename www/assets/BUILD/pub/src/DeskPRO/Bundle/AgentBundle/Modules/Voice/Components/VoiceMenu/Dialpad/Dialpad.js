@@ -5,7 +5,7 @@ import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
 import 'mark.js';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import NumberSelect from '../NumberSelect';
 import DialGrid from '../../Common/DialGrid';

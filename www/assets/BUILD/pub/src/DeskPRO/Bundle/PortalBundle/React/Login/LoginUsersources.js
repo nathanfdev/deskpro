@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
-import _ from 'lodash';
+import map from 'lodash/map';
 
 export class LoginUsersources extends React.Component {
 
@@ -16,7 +16,7 @@ export class LoginUsersources extends React.Component {
 
     return (
       <div>
-        {_.map(usersources, us =>
+        {map(usersources, us =>
           <div key={us.id}>
             <a
               href={portalUrlGenerator.path(`/login/authenticate/${us.id}?return=${window.location.href}`)}

@@ -2139,9 +2139,9 @@
       "dev": true
     },
     "card-validator": {
-      "version": "3.0.1",
-      "from": "card-validator@>=3.0.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/card-validator/-/card-validator-3.0.1.tgz"
+      "version": "4.1.0",
+      "from": "card-validator@4.1.0",
+      "resolved": "https://registry.npmjs.org/card-validator/-/card-validator-4.1.0.tgz"
     },
     "cardinal": {
       "version": "1.0.0",
@@ -2490,6 +2490,12 @@
           "from": "glob@>=6.0.4 <7.0.0",
           "resolved": "https://registry.npmjs.org/glob/-/glob-6.0.4.tgz",
           "dev": true
+        },
+        "lodash": {
+          "version": "3.10.1",
+          "from": "lodash@>=3.10.1 <4.0.0",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz",
+          "dev": true
         }
       }
     },
@@ -2574,9 +2580,9 @@
       "dev": true
     },
     "credit-card-type": {
-      "version": "5.0.1",
+      "version": "5.0.3",
       "from": "credit-card-type@>=5.0.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/credit-card-type/-/credit-card-type-5.0.1.tgz"
+      "resolved": "https://registry.npmjs.org/credit-card-type/-/credit-card-type-5.0.3.tgz"
     },
     "cropper": {
       "version": "1.0.0",
@@ -6824,9 +6830,9 @@
       "resolved": "https://registry.npmjs.org/locutus/-/locutus-2.0.9.tgz"
     },
     "lodash": {
-      "version": "3.10.1",
-      "from": "lodash@3.10.1",
-      "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
+      "version": "4.17.4",
+      "from": "lodash@4.17.4",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz"
     },
     "lodash-es": {
       "version": "4.17.4",

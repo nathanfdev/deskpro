@@ -1,6 +1,6 @@
-import escape from 'lodash/string/escape';
-import mapValues from 'lodash/object/mapValues';
-import assign from 'lodash/object/assign';
+import escape from 'lodash/escape';
+import mapValues from 'lodash/mapValues';
+import assign from 'lodash/assign';
 
 class PortalPhrases {
   constructor() {

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import { Input } from 'deskpro-components/lib/Components/Forms';
 import { Button } from 'deskpro-components/lib/Components/Buttons';
 import Progress from 'deskpro-components/lib/Components/Progress';

@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/lang/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep';
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
 import * as actions from '../Actions/Actions';
