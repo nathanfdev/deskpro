@@ -23,6 +23,7 @@ define ['angular', 'moment'], (angular, moment) ->
 
         ngModelCtrl.$formatters.push (val) ->
           return '' if !val
+          val = new Date(val.getTime() + val.getTimezoneOffset() * 60000)
           moment(val).format($scope.format || defaults.format)
 
         ngModelCtrl.$parsers.push (val) ->
