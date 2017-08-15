@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import postRobot from 'post-robot/dist/post-robot';
+import * as postRobot from 'post-robot';
 
 import { Widget } from '../Domain/Widget';
 import * as WidgetDOM from '../WidgetDOM';
