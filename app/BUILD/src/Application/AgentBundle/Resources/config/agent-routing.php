@@ -1576,7 +1576,7 @@ $collection->create('agent_publish_getsectiondata', [
 ]);
 
 $collection->create('agent_publish_ratingwhovoted', [
-    'path'       => '/publish/rating-who-voted/{object_type}/{object_id}',
+    'path'       => '/publish/rating-who-voted/{objectType}/{objectId}',
     'controller' => 'AgentBundle:Publish:ratingWhoVoted',
 ]);
 
