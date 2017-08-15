@@ -8,10 +8,12 @@ import { FormItem } from './FormItem';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
 import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 import { ChatBeginContainer } from '../ChatBeginContainer';
+import BannedMessage from '../BannedMessage';
 
 export class ChatBeginForm extends React.Component {
 
   static propTypes = {
+    banned:                   PropTypes.bool,
     submit:                   PropTypes.bool,
     errors:                   PropTypes.object,
     onSubmit:                 PropTypes.func,
@@ -41,7 +43,7 @@ export class ChatBeginForm extends React.Component {
 
   render() {
     const { customFields, allowDepartmentSelection, chatRequiredName, chatRequiredEmail } = this.props;
-    const { submit, errors, onSubmit, widgetLanguage, loggedIn, primaryColor } = this.props;
+    const { banned, submit, errors, onSubmit, widgetLanguage, loggedIn, primaryColor } = this.props;
 
     const buttonStyles = {};
     if (primaryColor) {
@@ -50,6 +52,7 @@ export class ChatBeginForm extends React.Component {
 
     return (
       <WidgetBodyScrollAreaContainer>
+        {banned && <BannedMessage />}
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
             {!loggedIn &&
