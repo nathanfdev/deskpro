@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import bind from 'lodash/bind';
+import forEach from 'lodash/forEach';
+import isPlainObject from 'lodash/isPlainObject';
+import isUndefined from 'lodash/isUndefined';
 import { HttpResponse } from './HttpResponse';
 
 export class Http {
@@ -101,22 +104,20 @@ export class Http {
     config.method = config.method.toUpperCase();
     config.rawData = config.data || null;
 
-    ['ALL', config.method].forEach(t => {
-      _.forEach(this.defaults[t], (configValue, configName) => {
+    ['ALL', config.method].forEach((t) => {
+      forEach(this.defaults[t], (configValue, configName) => {
         if (configName === 'headers') {
           Object.keys(configValue).forEach((headerName) => {
             const headerValue = configValue[headerName];
             if (!config.headers) {
               config.headers = {};
             }
-            if (_.isUndefined(config.headers[headerName])) {
+            if (isUndefined(config.headers[headerName])) {
               config.headers[headerName] = headerValue;
             }
           });
-        } else {
-          if (_.isUndefined(config[configName])) {
-            config[configName] = configValue;
-          }
+        } else if (isUndefined(config[configName])) {
+          config[configName] = configValue;
         }
       });
     });
@@ -157,7 +158,7 @@ export class Http {
           }
 
           ajaxResolve(response);
-        }).fail((jqXHR, textStatus, errorThrown) => {
+        }).fail((jqXHR, textStatus) => {
           let response = new HttpResponse(jqXHR, textStatus, config, jqXHR.responseJSON);
           if (config.transformResponse) {
             response = config.transformResponse(response);
@@ -169,9 +170,9 @@ export class Http {
     };
 
     const chain = [sendReq, null];
-    let promise = new Promise((resolve) => resolve(config));
+    let promise = new Promise(resolve => resolve(config));
 
-    this.interceptors.forEach(i => {
+    this.interceptors.forEach((i) => {
       if (i.request || i.requestError) {
         chain.unshift(this.getBoundInterceptor(i.request, i), this.getBoundInterceptor(i.requestError, i));
       }
@@ -180,7 +181,7 @@ export class Http {
       }
     });
 
-    this.resultResolvers.forEach(i => {
+    this.resultResolvers.forEach((i) => {
       if (i.response || i.responseError) {
         chain.push(this.getBoundInterceptor(i.response, i), this.getBoundInterceptor(i.responseError, i));
       }
@@ -214,10 +215,10 @@ export class Http {
   getBoundInterceptor(i, s) {
     if (!i) {
       return null;
-    } else if (_.isPlainObject(s)) {
+    } else if (isPlainObject(s)) {
       return i;
     }
-    return _.bind(i, s);
+    return bind(i, s);
   }
 
   sendGet(url, config = {}) {

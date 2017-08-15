@@ -13,7 +13,7 @@ export default class PortalAttach extends React.Component {
     $input:        PropTypes.object,
     inputName:     PropTypes.string,
     maxFileSize:   PropTypes.string,
-    $form:         PropTypes.$form
+    $form:         PropTypes.object
   };
 
   constructor(props) {

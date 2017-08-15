@@ -4,7 +4,9 @@ import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGe
 import { OmniSearchResultSection } from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import _ from 'lodash';
+import forOwn from 'lodash/forOwn';
+import keys from 'lodash/keys';
+import throttle from 'lodash/throttle';
 import moment from 'moment';
 
 export class OmniSearch extends React.Component {
@@ -40,7 +42,7 @@ export class OmniSearch extends React.Component {
 
     // typing listener
     let lastVal = null;
-    const throttleChanges = _.throttle((e) => {
+    const throttleChanges = throttle((e) => {
       // ensure we don't trigger a search if the actual search val hasn't changed
       if (lastVal !== e.target.value) {
         lastVal = e.target.value;
@@ -107,9 +109,9 @@ export class OmniSearch extends React.Component {
 
   doResultsExist() {
     let grandTotal = 0;
-    _.forOwn(this.state.data, (typeResults) => {
+    forOwn(this.state.data, (typeResults) => {
       if ('results' in typeResults) {
-        grandTotal += _.keys(typeResults.results).length;
+        grandTotal += keys(typeResults.results).length;
       }
     });
 

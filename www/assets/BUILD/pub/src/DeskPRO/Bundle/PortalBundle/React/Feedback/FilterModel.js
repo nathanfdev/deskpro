@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
 
 export class FilterModel {
 
@@ -8,9 +10,9 @@ export class FilterModel {
     this.sort = data.sort;
     this.sort_direction = data.sort_direction || 'desc';
     this.status = data.status;
-    this.status_categories = _.map(data.status_categories, val => _.parseInt(val));
-    this.types = _.map(data.types, val => _.parseInt(val));
-    this.page = _.parseInt(data.page || 1);
+    this.status_categories = map(data.status_categories, val => parseInt(val, 10));
+    this.types = map(data.types, val => parseInt(val, 10));
+    this.page = parseInt(data.page || 1, 10);
     this.checkEmptyStatusCategories();
   }
 
@@ -20,18 +22,18 @@ export class FilterModel {
     this.sort_direction = 'desc';
     this.status = 'all';
     this.status_categories = [];
-    this.types = _.map(this.data.types, val => _.parseInt(val));
+    this.types = map(this.data.types, val => parseInt(val, 10));
     this.checkEmptyStatusCategories();
   }
 
-  changeSort(new_sort) {
-    let parts = new_sort.split('-');
+  changeSort(newSort) {
+    const parts = newSort.split('-');
     if (parts.length === 2) {
       this.sort = parts[0];
       this.sort_direction = parts[1];
     }
     if (parts.length === 3) {
-      this.sort = parts[0] + '-' + parts[1];
+      this.sort = `${parts[0]}-${parts[1]}`;
       this.sort_direction = parts[2];
     }
   }
@@ -44,7 +46,7 @@ export class FilterModel {
   }
 
   getSelectedTypes() {
-    return '/type-' + this.types.join(',');
+    return `/type-${this.types.join(',')}`;
   }
 
   createUrl() {
@@ -53,7 +55,7 @@ export class FilterModel {
     url += this.status;
 
     if (this.status_categories.length > 0) {
-      url += '-' + this.status_categories.join(',');
+      url += `-${this.status_categories.join(',')}`;
     }
 
     if (this.types.length > 0) {
@@ -61,14 +63,14 @@ export class FilterModel {
     }
 
     if (this.sort) {
-      url += '/' + this.sort;
+      url += `/${this.sort}`;
       if (this.sort_direction) {
-        url += '-' + this.sort_direction;
+        url += `-${this.sort_direction}`;
       }
     }
 
     if (this.page > 1) {
-      url += '?page=' + this.page;
+      url += `?page=${this.page}`;
     }
 
     return url;
@@ -80,8 +82,8 @@ export class FilterModel {
       this.status = status;
     }
 
-    const avil = _.map(this.available.getStatusCategoriesForStatus(this.status), cat => cat.id);
-    this.status_categories = _.filter(this.status_categories, (cat) => _.includes(avil, cat));
+    const avil = map(this.available.getStatusCategoriesForStatus(this.status), cat => cat.id);
+    this.status_categories = filter(this.status_categories, cat => includes(avil, cat));
     this.checkEmptyStatusCategories();
   }
 
@@ -99,8 +101,8 @@ export class FilterModel {
     const category = parseInt(rawCategory, 10);
 
     this.page = 1;
-    if (_.includes(this.status_categories, category)) {
-      this.status_categories = _.filter(this.status_categories, n => n !== category);
+    if (includes(this.status_categories, category)) {
+      this.status_categories = filter(this.status_categories, n => n !== category);
     } else {
       this.status_categories.push(category);
     }
@@ -113,22 +115,20 @@ export class FilterModel {
     return this.status;
   }
 
-  toggleType(type_id) {
+  toggleType(typeId) {
     this.page = 1;
-    type_id = _.parseInt(type_id);
-    if (_.includes(this.types, type_id)) {
-      this.types = _.filter(this.types, (n) => {
-        return n != type_id;
-      });
+    typeId = parseInt(typeId, 10);
+    if (includes(this.types, typeId)) {
+      this.types = filter(this.types, n => n !== typeId);
     } else {
-      this.types.push(type_id);
+      this.types.push(typeId);
     }
   }
 
-  setType(type_id) {
+  setType(typeId) {
     this.page = 1;
-    type_id = _.parseInt(type_id);
+    typeId = parseInt(typeId, 10);
     this.types = [];
-    this.types.push(type_id);
+    this.types.push(typeId);
   }
 }
