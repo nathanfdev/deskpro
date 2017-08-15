@@ -1449,26 +1449,24 @@ class TicketController extends AbstractController
 
         $message->convertEmbeddedImagesToInlineAttach();
 
-        if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
-            if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
-                $snippet_ids = explode(',', $snippet_ids);
-                $snippet_ids = array_map(
-                    function ($x) {
-                        return (int) trim($x);
-                    },
-                    $snippet_ids
-                );
-                $snippet_ids = Arrays::removeFalsey($snippet_ids);
-                $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
+        if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
+            $snippet_ids = explode(',', $snippet_ids);
+            $snippet_ids = array_map(
+                function ($x) {
+                    return (int) trim($x);
+                },
+                $snippet_ids
+            );
+            $snippet_ids = Arrays::removeFalsey($snippet_ids);
+            $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
 
-                foreach ($snippet_ids as $snip_id) {
-                    $snippet = $this->em->find(TextSnippet::class, $snip_id);
+            foreach ($snippet_ids as $snip_id) {
+                $snippet = $this->em->find(TextSnippet::class, $snip_id);
 
-                    if ($snippet) {
-                        $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
-                        $this->em->persist($snippetLog);
-                        $this->em->flush();
-                    }
+                if ($snippet) {
+                    $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                    $this->em->persist($snippetLog);
+                    $this->em->flush();
                 }
             }
         }
