@@ -2,7 +2,8 @@ export {
   extractPageContextProps,
   createContextsFromPage,
   createContextsFromTab,
-  mountContextInWindow
+  mountContextInWindow,
+  unmountContextInWindow
 } from  './AppContextServices';
 
 export { AppServices } from './AppServices';

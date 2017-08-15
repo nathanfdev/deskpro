@@ -26,6 +26,8 @@ class LegacySidebarContainer extends DeskproAppContainer {
   }
 
   componentDidMount() {
+    super.componentDidMount();
+
     const { configuration } = this.props;
     const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
 
@@ -51,6 +53,7 @@ class LegacySidebarContainer extends DeskproAppContainer {
   }
 
   componentWillUnmount() {
+    super.componentWillUnmount();
     for (const cb of this.removeEventListeners) {
       cb();
     }

@@ -20,16 +20,22 @@ const createContextsStateSelector = (initialContexts) => {
   let oldContexts = initialContexts;
   return (state) => {
     const contexts = filterContexts(state);
+
     // no change detected
-    if (oldContexts === contexts) { return null; }
+    if (oldContexts === contexts) { return { added: [], deleted: [] }; }
 
     const oldKeys = oldContexts ? oldContexts.keySeq().toArray() : [];
-    const addedKeys =  contexts.keySeq().toArray().filter(key => oldKeys.indexOf(key) < 0);
-    const addedContexts = addedKeys.length ? contexts.filter((v, k) => addedKeys.indexOf(k) !== -1) : null;
+    const newKeys = contexts ? contexts.keySeq().toArray() : [];
+
+    const addedKeys = newKeys.filter(key => oldKeys.indexOf(key) < 0);
+    const deletedKeys = oldKeys.filter(key => newKeys.indexOf(key) < 0);
+
+    const added = contexts && addedKeys.length ? contexts.filter((v, k) => addedKeys.indexOf(k) !== -1).toArray() : [];
+    const deleted = oldContexts && deletedKeys.length ? oldContexts.filter((v, k) => deletedKeys.indexOf(k) !== -1).toArray() : [];
 
     oldContexts = contexts;
-    return addedContexts && addedContexts.size ? addedContexts : null;
+    return { added, deleted };
   };
 };
-export const newContextsStateSelector = createContextsStateSelector(null);
+export const changedContextsSelector = createContextsStateSelector(null);
 

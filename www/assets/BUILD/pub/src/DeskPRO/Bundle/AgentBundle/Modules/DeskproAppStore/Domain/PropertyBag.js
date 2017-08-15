@@ -10,15 +10,15 @@ export class PropertyBag {
     this.props = { ...props };
   }
 
-  getProp = (name) => {
+  getProp(name) {
     if (Object.prototype.hasOwnProperty.call(this.props, name)) {
       return this.props[name];
     }
 
     return null;
-  };
+  }
 
-  toJS = (namePrefix) => {
+  toJS(namePrefix) {
     let props;
     const unprefixedProps = Object.assign({}, { ...this.props });
 
@@ -32,5 +32,5 @@ export class PropertyBag {
     }
 
     return JSON.parse(JSON.stringify(props));
-  };
+  }
 }

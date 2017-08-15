@@ -1,12 +1,12 @@
 import ContainerMounter from './Services/ContainerMounter';
 import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
-import { filterAppManifestsConfig, filterApiToken, newContextsStateSelector, filterAppstoreConfig } from './Selectors/Main';
+import { filterAppManifestsConfig, filterApiToken, changedContextsSelector, filterAppstoreConfig } from './Selectors/Main';
 import DeskproAppRegistry from './Domain/DeskproAppRegistry';
-import { loadApps, loadApiToken, loadPageFragmentApps, loadAppstoreConfig } from './Actions/Actions';
+import { loadApps, loadApiToken, loadContextsFromPageFragments, loadAppstoreConfig } from './Actions/Actions';
 
 import { DeskproAppStoreConfigBuilder } from './DeskproAppStoreConfigBuilder';
 
-import { AppServices, mountContextInWindow } from './Services';
+import { AppServices, mountContextInWindow, unmountContextInWindow } from './Services';
 import {
   registerIncomingWidgetRequestListeners,
   registerOutgoingWidgetRequestListeners,
@@ -121,13 +121,17 @@ class DeskproAppStore {
       appServices.onAppStateChanged(newState);
 
       // mount new contexts if any
-      const newContexts = newContextsStateSelector(newState);
-      if (newContexts) {
-        const containerMounter = new ContainerMounter(reduxStore, appRegistry);
-        /** @var {Context} context **/
-        for (const context of newContexts.values()) {
-          mountContextInWindow(context, containerMounter, windowObject);
-        }
+      const changedContexts = changedContextsSelector(newState);
+      const containerMounter = new ContainerMounter(reduxStore, appRegistry);
+
+      /** @var {Context} context **/
+      for (const context of changedContexts.deleted) {
+        unmountContextInWindow(context, containerMounter, windowObject);
+      }
+
+      /** @var {Context} context **/
+      for (const context of changedContexts.added) {
+        mountContextInWindow(context, containerMounter, windowObject);
       }
     });
 
@@ -138,7 +142,7 @@ class DeskproAppStore {
     const tabs = windowObject.DeskPRO_Window.TabBar.getTabs();
     const pages = tabs ? Object.keys(tabs).map(key => tabs[key].page).filter(page => !!page.wrapper) : [];
     if (pages.length) {
-      const action = loadPageFragmentApps(pages, config, windowObject.location);
+      const action = loadContextsFromPageFragments(pages, config, windowObject.location);
       reduxStore.dispatch(action);
     }
   }

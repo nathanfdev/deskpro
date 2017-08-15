@@ -105,10 +105,13 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);
 		this.addEvent('destroy', function(){
-			if (self.wrapper) {
+      DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabbeforedestroy.' + this.TYPENAME, this);
+		}, this);
+    this.addEvent('destroy', function(){
+      if (self.wrapper) {
         $('.tipped', self.wrapper).remove();
-			}
-		});
+      }
+    });
 		this.addEvent('destroy', this.destroyPage);
 
 		this.init();

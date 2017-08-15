@@ -6,7 +6,7 @@ export class InstanceProps extends PropertyBag {
    * @param {String} appTitle
    * @param {String} appPackageName
    * @param {String} instanceId
-   * @param {Object} undeclaredProps
+   * @param [undeclaredProps]
    */
   constructor({ appId, appTitle, appPackageName, instanceId, ...undeclaredProps })  {
     super({ appId, appTitle, appPackageName, instanceId, ...undeclaredProps });

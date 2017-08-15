@@ -76,7 +76,24 @@ function loadAppsHandler(state, payload, action) {
  * @param {Object} action
  * @returns {Object}
  */
-function loadPageFragmentAppsHandler(state, payload, action) { // eslint-disable-line no-unused-vars
+function unloadContexts(state, payload, action) { // eslint-disable-line no-unused-vars
+  const { contexts } = payload;
+  if (contexts.length === 0) {
+    return state;
+  }
+
+  const keys = contexts.map(context => context.id);
+  const newContexts = state.get('contexts').filter((value, key) => keys.indexOf(key) < 0);
+  return state.set('contexts', newContexts);
+}
+
+/**
+ * @param {Object} state
+ * @param {{config:DeskproAppStoreConfiguration, contexts: Array<Context>}} payload
+ * @param {Object} action
+ * @returns {Object}
+ */
+function loadContexts(state, payload, action) { // eslint-disable-line no-unused-vars
   const { config, contexts: contextProps } = payload;
   if (contextProps.length === 0) { return state; }
 
@@ -108,9 +125,10 @@ function loadApiTokenHandler(state, payload, action) {
 export default createReducer(
   initialState,
   {
-    [actions.loadPageFragmentApps]: loadPageFragmentAppsHandler,
-    [actions.loadApps]:             loadAppsHandler,
-    [actions.loadApiToken]:         loadApiTokenHandler,
-    [actions.loadAppstoreConfig]:   loadAppstoreConfigHandler
+    [actions.loadContextsFromPageFragments]:   loadContexts,
+    [actions.unloadContextsFromPageFragments]: unloadContexts,
+    [actions.loadApps]:                        loadAppsHandler,
+    [actions.loadApiToken]:                    loadApiTokenHandler,
+    [actions.loadAppstoreConfig]:              loadAppstoreConfigHandler
   }
 );

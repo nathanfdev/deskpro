@@ -1,7 +1,8 @@
-import { AppUrlBuilder } from './AppUrlBuilder';
 import { AppAssets } from './AppAssets';
+import { PropertyBag } from './PropertyBag';
+import { InstanceProps } from './WidgetProps';
 
-class AppConfiguration {
+class AppConfiguration extends PropertyBag {
   /**
    * @param {object} config
    * @return {AppConfiguration}
@@ -28,19 +29,11 @@ class AppConfiguration {
    * @param {String} baseUrl
    * @param {String} title
    * @param {String} packageName
-   * @param version
+   * @param {String} version
+   * @param undeclared
    */
-  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version }) {
-    this.props = {
-      instanceId,
-      applicationId,
-      settings,
-      targets,
-      baseUrl,
-      title,
-      packageName,
-      version
-    };
+  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, ...undeclared }) {
+    super({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, ...undeclared });
   }
 
   /**
@@ -92,30 +85,39 @@ class AppConfiguration {
    * @param {String} target
    * @return {boolean}
    */
-  hasTarget = (target) => {
+  hasTarget(target) {
     const targetDefs = this.targets.filter(targetDef => targetDef.target === target);
     return targetDefs.length > 0;
-  };
+  }
 
   /**
-   * @param {String} target
-   * @return {AppUrlBuilder|null}
+   * @param {string} target
+   * @return {string|null}
    */
-  getUrlBuilder = (target) => {
+  getTargetPath(target)  {
     const targetDefs = this.targets.filter(targetDef => targetDef.target === target);
-    if (targetDefs.length === 0) {
+    if (targetDefs.length !== 1) {
       return null;
     }
 
-    const { baseUrl } = this.props;
-    const builder = new AppUrlBuilder({ baseUrl });
-    builder.setBundlePath(targetDefs[0].url);
-    builder.setAppVersion(`v${this.props.version}`);
+    return targetDefs[0].url;
+  }
 
-    return builder;
-  };
+  /**
+   * @return {InstanceProps}
+   */
+  toWidgetProps() {
+    const { instanceId, applicationId, applicationTitle, applicationPackageName } = this;
 
-  toJS = () => {
+    return new InstanceProps({
+      appId:          applicationId.toString(),
+      appTitle:       applicationTitle.toString(),
+      appPackageName: applicationPackageName.toString(),
+      instanceId:     instanceId.toString()
+    });
+  }
+
+  toJS() {
     const { instanceId:id, applicationId, settings, targets } = this;
     const js = { id, applicationId, settings, targets };
     return JSON.parse(JSON.stringify(js));

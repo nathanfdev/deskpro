@@ -1,11 +1,47 @@
-import { loadPageFragmentApps } from '../Actions/Actions';
+import { loadContextsFromPageFragments, unloadContextsFromPageFragments } from '../Actions/Actions';
+
+/**
+ * @param {function} reduxDispatch
+ * @param {DeskproAppStoreConfiguration} config
+ * @param {DeskPRO.Agent.PageFragment.Basic} page
+ * @param args
+ */
+const onTabInit = (reduxDispatch, config, page, ...args) => { // eslint-disable-line no-unused-vars
+  if (page instanceof window.DeskPRO.Agent.PageFragment.Basic) {
+    const { TYPENAME } = page;
+    const metadata = page.getMetaData(TYPENAME);
+    if (metadata && metadata.id) {
+      const action = loadContextsFromPageFragments([page], config, window.location);
+      reduxDispatch(action);
+    }
+  }
+};
+
+const onTabDestroy = (reduxDispatch, config, page, ...args)  => { // eslint-disable-line no-unused-vars
+  if (page instanceof window.DeskPRO.Agent.PageFragment.Basic) {
+    const { TYPENAME } = page;
+    const metadata = page.getMetaData(TYPENAME);
+    if (metadata && metadata.id) {
+      const action = unloadContextsFromPageFragments([page], config, window.location);
+      reduxDispatch(action);
+    }
+  }
+};
 
 class DeskproWindowMessageBrokerAdapter {
+
   /**
-   * @return {Array<String>}
+   * @type {string}
    */
-  static get EVENTPATTERNS()  {
-    return ['agent.ui.tabinit.*'];
+  static get EVENT_TAB_INIT()  {
+    return 'agent.ui.tabinit.*';
+  }
+
+  /**
+   * @type {string}
+   */
+  static get EVENT_TAB_BEFOREDESTROY()  {
+    return 'agent.ui.tabbeforedestroy.*';
   }
 
   /**
@@ -15,31 +51,11 @@ class DeskproWindowMessageBrokerAdapter {
    */
   static registerListener(messageBroker, config)  {
     return (reduxDispatch) => {
-      const listener = this.createMessageListener(reduxDispatch, config);
-      for (const pattern of this.EVENTPATTERNS) {
-        messageBroker.addMessageListener(pattern, listener);
-      }
-    };
-  }
+      const onTabInitListener = onTabInit.bind(this, reduxDispatch, config);
+      messageBroker.addMessageListener(DeskproWindowMessageBrokerAdapter.EVENT_TAB_INIT, onTabInitListener);
 
-  /**
-   * @param {function} reduxDispatch
-   * @param {DeskproAppStoreConfiguration} config
-   * @returns {function(*, ...[*])}
-   */
-  static createMessageListener(reduxDispatch, config)  {
-    return (page, ...args) => { // eslint-disable-line no-unused-vars
-      if (page instanceof window.DeskPRO.Agent.PageFragment.Basic) {
-        const { TYPENAME } = page;
-        const metadata = page.getMetaData(TYPENAME);
-        if (metadata && metadata.id) {
-          const action = loadPageFragmentApps([page], config, window.location);
-          reduxDispatch(action);
-          return true;
-        }
-      }
-
-      return false;
+      const onTabDestroyListener = onTabDestroy.bind(this, reduxDispatch, config);
+      messageBroker.addMessageListener(DeskproWindowMessageBrokerAdapter.EVENT_TAB_BEFOREDESTROY, onTabDestroyListener);
     };
   }
 }

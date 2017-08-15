@@ -1,21 +1,11 @@
 import React, { PropTypes } from 'react';
-import * as xcomponent from 'xcomponent/dist/xcomponent';
 import postRobot from 'post-robot/dist/post-robot';
 
 import { Widget } from '../Domain/Widget';
 import * as WidgetDOM from '../WidgetDOM';
 
 import { ContainerEvents } from './ContainerEvents';
-
-/**
- * @param {ParentComponent} parentComponent
- * @param {WidgetConfiguration} widgetConfig
- * @return {Widget}
- */
-export const createWidget = (parentComponent, widgetConfig) => {
-  const windowId = ['xcomponent', parentComponent.props.uid].join('-');
-  return new Widget({ configuration: widgetConfig, windowId });
-};
+import { WidgetIframe } from './WidgetIframe';
 
 /**
  * @param {Array} list
@@ -72,48 +62,15 @@ class DeskproAppContainer extends React.Component {
   static renderEmpty() { return (<div />); }
 
   /**
-   * @param {DeskproAppContainer} container
-   * @param {WidgetConfiguration} widgetConfig
-   * @param {Context} context
+   * @param {WidgetConfiguration} widgetConfiguration
    *
-   * @return {ReactElement}
+   * @return {Object}
    */
-  static createWidgetElement(container, widgetConfig, context) {
-    // widget properties
-
-    const onXComponentEnter = container.onXComponentEnter.bind(container);
-    const onXComponentClose = container.onXComponentClose.bind(container);
-    const onDpMessage = container.onWidgetMessageReceive.bind(container, widgetConfig);
-
-    const xcomponentProps = {
-      widgetId: widgetConfig.id,
-      onEnter() {
-        // xcomponent changes the scope of the callback to that of the ParentComponent instance and does not provide
-        // any other parameters so we resort to this type of closure to get a hold of the ParentComponent instance
-        // when the function executes, this points to the ParentComponent instance
-        onXComponentEnter(this);
-      },
-
-      onClose() {
-        // xcomponent changes the scope of the callback to that of the ParentComponent instance and does not provide
-        // any other parameters so we resort to this type of closure to get a hold of the ParentComponent instance
-        // when the function executes, this points to the ParentComponent instance
-        onXComponentClose(this);
-      },
-
-      onDpMessage
-    };
-
-    const reactProps = {
-      key:           widgetConfig.id,
-      ...xcomponentProps,
-      instanceProps: widgetConfig.widgetProps.toJS(),
-      contextProps:  context.widgetProps.toJS()
-    };
-
-    const xcomponentInstance = xcomponent.create(widgetConfig.xcomponentConfig);
-    const reactClass = xcomponentInstance.react;
-    return React.createElement(reactClass, reactProps);
+  static mapWidgetConfigurationToReactComponent(widgetConfiguration) {
+    return (<WidgetIframe
+      id={`urn:deskpro:widget?widgetId=${widgetConfiguration.id}`}
+      url={widgetConfiguration.getUrl()}
+    />);
   }
 
   constructor(props) {
@@ -122,12 +79,31 @@ class DeskproAppContainer extends React.Component {
     this.widgetRemoveListeners = [];
   }
 
+  componentDidMount() {
+    this.registerWidgetMessageListeners();
+  }
+
+  /**
+   * This component should not update after the initial render
+   *
+   * @param {{}} nextProps
+   * @param {{}} nextState
+   * @return {boolean}
+   */
+  shouldComponentUpdate(nextProps, nextState) { // eslint-disable-line class-methods-use-this, no-unused-vars
+    return false;
+  }
+
+  componentWillUnmount()  {
+    this.widgets.forEach(this.unregisterWidget.bind(this));
+  }
+
   /**
    * @param {Widget} widget
    * @param {String} eventName
    * @param {WidgetRequest} widgetMessage
    */
-  onWidgetMouseEventMessage(widget, eventName, widgetMessage) { /* empty on purpose */ } // eslint-disable-line no-unused-vars
+  onWidgetMouseEventMessage(widget, eventName, widgetMessage) { /* empty on purpose, can be overriden by subclasses*/ } // eslint-disable-line no-unused-vars
 
   /**
    * @param {Widget} widget
@@ -150,7 +126,11 @@ class DeskproAppContainer extends React.Component {
     return null;
   }
 
-  onWidgetMessageReceive(widgetConfiguration, eventName, message) {
+  /**
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {{data: Object}}  event
+   */
+  onWidgetMessageReceive(widgetConfiguration, event) {
     // find the widget
     const initiatorWidget = find(this.widgets, widget => widget.configuration === widgetConfiguration);
     if (!initiatorWidget) {
@@ -158,12 +138,19 @@ class DeskproAppContainer extends React.Component {
     }
 
     const { parseIncomingWidgetMessageJS } = this.props;
-    const widgetMessage = parseIncomingWidgetMessageJS(message);
+    const widgetMessage = parseIncomingWidgetMessageJS(event.data);
 
+    if (!widgetMessage) {
+      throw new Error('failed to dispatch incoming message: could not parse widget message');
+    }
+
+    const { eventName } = event.data;
     if (eventName === ContainerEvents.EVENT_WINDOW_MOUSEEVENT) {
       this.onWidgetMouseEventMessage(initiatorWidget, eventName, widgetMessage);
-    } else {
+    } else if (eventName)  {
       this.onWidgetAppMessage(initiatorWidget, eventName, widgetMessage);
+    } else {
+      throw new Error('failed to dispatch incoming message: unrecognized event name');
     }
   }
 
@@ -188,65 +175,63 @@ class DeskproAppContainer extends React.Component {
   }
 
   /**
-   * Handler for the onEnter event sent by the parentComponent of an xcomponent component
-   *
-   * @param {ParentComponent} parentComponent
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {{data: Object}} event
    */
-  onXComponentEnter = (parentComponent) =>  {
-    const { widgetId } = parentComponent.props;
-    const { widgetsConfigList, addWidgetEventListener } = this.props;
+  onWidgetInit(widgetConfiguration, event) { // eslint-disable-line no-unused-vars
+    const { addWidgetEventListener } = this.props;
+    const widget = new Widget({
+      configuration: widgetConfiguration,
+      windowId:      `urn:deskpro:widget?widgetId=${widgetConfiguration.id}`
+    });
 
-    const widgetConfiguration = find(widgetsConfigList, widget => widget.id.toString() === widgetId.toString());
-    if (widgetConfiguration) {
-      const widget = createWidget(parentComponent, widgetConfiguration);
-      const removeListeners = [
-        addWidgetEventListener(widget.id, this.onWidgetMessageSend.bind(this)),
-        addWidgetEventListener(`subscribe.${widget.id}`, this.onWidgetEventSubscribe.bind(this))
-      ];
+    const removeListeners = [
+      addWidgetEventListener(widget.id, this.onWidgetMessageSend.bind(this)),
+      addWidgetEventListener(`subscribe.${widget.id}`, this.onWidgetEventSubscribe.bind(this))
+    ];
 
-      this.registerWidget(widget, removeListeners);
-      return null;
+    this.registerWidget(widget, removeListeners);
+
+    const { context } = this.props;
+    return {
+      instanceProps: widgetConfiguration.appConfig.toWidgetProps().toJS(),
+      contextProps:  context.widgetProps.toJS()
+    };
+  }
+
+  registerWidgetMessageListeners()  {
+    /**
+     * @param {WidgetConfiguration} widgetConfiguration
+     */
+    for (const widgetConfiguration of this.props.widgetsConfigList) {
+      postRobot.once(
+        `urn:deskpro:apps.widget.onready?widgetId=${widgetConfiguration.id}`,
+        this.onWidgetInit.bind(this, widgetConfiguration)
+      );
+
+      postRobot.on(
+        `urn:deskpro:apps.widget.event?widgetId=${widgetConfiguration.id}`,
+        this.onWidgetMessageReceive.bind(this, widgetConfiguration)
+      );
     }
-
-    // TODO better handling of the case for unknown parentComponent widget
-    throw new Error(`failed to handle widget registering: configuration for widget id: ${widgetId} not found`);
-  };
-
-  /**
-   * Handler for the onClose event sent by the parentComponent of an xcomponent component
-   *
-   * @param {ParentComponent} parentComponent
-   */
-  onXComponentClose = (parentComponent) =>  {
-    const { widgetId } = parentComponent.props;
-    const { widgets } = this;
-
-    const widget = find(widgets, aWidget => aWidget.id.toString() === widgetId.toString());
-    if (widget) {
-      this.unregisterWidget(widget);
-      return null;
-    }
-
-    // TODO better handling of the case for unknown parentComponent widget
-    throw new Error(`failed to handle widget closing : widget id: ${widgetId} not found`);
-  };
+  }
 
   /**
    * @param {Widget} widget
    * @param {Array<function>} removeListeners
    */
-  registerWidget = (widget, removeListeners) =>  {
+  registerWidget(widget, removeListeners) {
     // store the widget
     this.widgets.push(widget);
     // index the widget remove listeners
     const widgetRemoveListeners = removeListeners.map(removeListener => ({ widget, removeListener }));
     this.widgetRemoveListeners = this.widgetRemoveListeners.concat(widgetRemoveListeners);
-  };
+  }
 
   /**
    * @param {Widget} widget
    */
-  unregisterWidget = (widget) => {
+  unregisterWidget(widget) {
     //
     // remove widget
     removeMatching(this.widgets, aWidget => aWidget === widget);
@@ -254,17 +239,15 @@ class DeskproAppContainer extends React.Component {
     // remove listeners
     const invokeRemoveListener = ({ removeListener }) => removeListener();
     removeMatching(this.widgetRemoveListeners, listener => listener.widget === widget).each(invokeRemoveListener);
-  };
+  }
 
   /**
    * Renders all the apps
    *
    * @returns {XML}
    */
-  renderApp() {
-    const { widgetsConfigList, context } = this.props;
-    const components = widgetsConfigList.map(widget => DeskproAppContainer.createWidgetElement(this, widget, context));
-
+  renderWidgets() {
+    const components = this.props.widgetsConfigList.map(DeskproAppContainer.mapWidgetConfigurationToReactComponent);
     return React.createElement('div', {}, components);
   }
 
@@ -276,7 +259,7 @@ class DeskproAppContainer extends React.Component {
   render() {
     const { widgetsConfigList } = this.props;
     if (widgetsConfigList && widgetsConfigList.length > 0) {
-      return this.renderApp();
+      return this.renderWidgets();
     }
 
     return DeskproAppContainer.renderEmpty();

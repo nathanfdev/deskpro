@@ -2,6 +2,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { extractPageContextProps } from '../Services';
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
+export const DESKPRO_APPSTORE_UNLOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_UNLOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_LOAD_APPS = 'DESKPRO_APPSTORE_LOAD_APPS';
 export const DESKPRO_APPSTORE_LOAD_CONFIG = 'DESKPRO_APPSTORE_LOAD_CONFIG';
 export const DESKPRO_APPSTORE_API_TOKEN = 'DESKPRO_APPSTORE_API_TOKEN';
@@ -17,13 +18,14 @@ export const loadAppstoreConfig = createAction(DESKPRO_APPSTORE_LOAD_CONFIG, loa
  * @param {DeskproAppStoreConfiguration} config
  * @param {Location} location
  */
-const loadPageFragmentAppsHandler = (pageList, config, location) => {
+const extractContextsFromPageFragment = (pageList, config, location) => {
   const contexts = pageList.map(page => extractPageContextProps(page, location))
     .reduce((acc, contextList) => acc.concat(contextList), [])
   ;
   return { config, contexts };
 };
-export const loadPageFragmentApps = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, loadPageFragmentAppsHandler);
+export const loadContextsFromPageFragments = createAction(DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS, extractContextsFromPageFragment);
+export const unloadContextsFromPageFragments = createAction(DESKPRO_APPSTORE_UNLOAD_PAGE_FRAGMENT_APPS, extractContextsFromPageFragment);
 
 /**
  * @param {DpApi} api
