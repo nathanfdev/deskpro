@@ -369,13 +369,8 @@ class GeneralSettings
         $db    = App::$container->get('database_connection');
         $brand = App::$container->getBrandStack()->getDefaultBrand();
 
-        foreach ([
-                     'core.deskpro_url',
-                     'core.deskpro_name',
-                     'core.site_url',
-                     'core.site_name',
-                 ] as $copyName) {
-            $db->delete('settings_brand', ['name' => $copyName]);
+        foreach (['core.deskpro_url', 'core.deskpro_name', 'core.site_url', 'core.site_name'] as $copyName) {
+            $db->delete('settings_brand', ['name' => $copyName, 'brand_id' => $brand->getId()]);
             $val = $db->fetchColumn('SELECT value FROM settings WHERE name = ?', [$copyName]);
             if ($val) {
                 $db->insert('settings_brand', [
