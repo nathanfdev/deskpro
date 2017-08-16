@@ -26,14 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class AppManifestSetting.
  */
-class AppManifestSetting
+class AppSetting
 {
     /**
      * @JMS\Type("string")
@@ -51,6 +51,7 @@ class AppManifestSetting
 
     /**
      * @JMS\Type("string")
+     * @JMS\SerializedName("defaultValue")
      *
      * @var string
      */
@@ -58,6 +59,7 @@ class AppManifestSetting
 
     /**
      * @JMS\Type("boolean")
+     * @JMS\SerializedName("isPrivate")
      *
      * @var bool
      */

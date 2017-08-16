@@ -26,49 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\ApiBundle\Proxy;
 
-class SearchStateFilter
+/**
+ * Class ProxyRequest.
+ */
+interface ProxyRequestInterface
 {
-    /** @var array|StateScope[]  */
-    private $scopeList;
-
-    /** @var string */
-    private $name;
-
     /**
-     * @param array|StateScope[] $scopeList
-     * @param $name
+     * @return string
      */
-    public function __construct(array $scopeList, $name)
-    {
-        $this->scopeList = $scopeList;
-        $this->name = $name;
-    }
-
-    /**
-     * @param StateScope $scope
-     * @return $this
-     */
-    public function addScope(StateScope $scope)
-    {
-        $this->scopeList[] = $scope;
-        return $this;
-    }
-
-    /**
-     * @return array|StateScope[]
-     */
-    public function getScopeList()
-    {
-        return $this->scopeList;
-    }
+    public function getProxyMethod();
 
     /**
      * @return string
      */
-    public function getName()
-    {
-        return $this->name;
-    }
+    public function getProxyUrl();
+
+    /**
+     * @return array
+     */
+    public function getProxyHeaders();
 }

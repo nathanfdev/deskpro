@@ -28,12 +28,17 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface SearchStateFilterValueMap
+interface SearchStateFilterOptions
 {
     /**
      * @return string
      */
-    public function getScopeList();
+    public function getApplicationId();
+
+    /**
+     * @return string
+     */
+    public function getEntityId();
 
     /**
      * @return string

@@ -4,32 +4,40 @@ import { IncomingEventDispatcher, OutgoingEventDispatcher } from './EventDispatc
 import { createDispatchResponse } from './MessageDispatcher';
 
 import { registerListeners as registerIncomingRequestListeners  } from './IncomingRequestHandlers';
-import { createListener as createOutgoingListener, chainHandlers as chainOutgoingRequestHandlers, handlerForEvent as outgoingHandlerForEvent  } from './OutgoingRequestHandlers';
+import {
+  createEventSubscriber,
+  chainHandlers as chainOutgoingRequestHandlers,
+  handlerForEvent as outgoingHandlerForEvent,
+  registerHandlers as registerOutgoingRequestListeners
+} from './OutgoingRequestHandlers';
 
 import { parseIncomingMessageJS, WidgetResponse, WidgetRequest } from './Message';
+
+export const parseIncomingWidgetMessageJS = parseIncomingMessageJS;
+
+export const addWidgetEventListener = OutgoingEventDispatcher.addRemovableListener.bind(OutgoingEventDispatcher);
 
 /**
  * @param {AppServices} appServices
  */
-export const registerIncomingWidgetRequestListeners = (appServices) => {
-  const result = registerIncomingRequestListeners(IncomingEventDispatcher, appServices);
-  return result;
-};
+export const registerIncomingWidgetRequestListeners = appServices => registerIncomingRequestListeners(IncomingEventDispatcher, appServices);
+
+/**
+ * @param {AppServices} appServices
+ */
+export const registerOutgoingWidgetRequestListeners = appServices => registerOutgoingRequestListeners(appServices);
 
 /**
  * @param {String} eventName
  * @param {Widget} widget
- * @param {AppServices} appServices
  */
-export const addWidgetEventListener = (eventName, widget, appServices) => {
-  const listener = createOutgoingListener({
-    eventName,
-    widget,
-    appServices,
+export const subscribeWidgetToEvent = (eventName, widget) => {
+  const eventSubscriber = createEventSubscriber({
+    outgoingEventDispatcher: OutgoingEventDispatcher,
     incomingEventDispatcher: IncomingEventDispatcher
   });
 
-  OutgoingEventDispatcher.addListener(eventName, listener);
+  OutgoingEventDispatcher.emit(`subscribe.${widget.id}`, widget.configuration, eventName, eventSubscriber);
 };
 
 // dispatchers
@@ -38,21 +46,24 @@ export const addWidgetEventListener = (eventName, widget, appServices) => {
  * Dispatches an incoming message to listening handlers
  *
  * @param {String} eventName
- * @param {*} widgetMessage
+ * @param {WidgetRequest|WidgetResponse} widgetMessage
  * @param {Widget} widget
  */
 export const dispatchIncomingWidgetMessage = (eventName, widgetMessage, widget) => {
-  // parse message
-  const message = parseIncomingMessageJS(widgetMessage);
+  if (widgetMessage instanceof WidgetRequest) {
+    const callback = createDispatchResponse({
+      eventName,
+      widget,
+      widgetMessage,
+      outgoingEventDispatcher: OutgoingEventDispatcher
+    });
 
-  if (message instanceof WidgetRequest) {
-    const callback = createDispatchResponse(eventName, widget, message);
-    IncomingEventDispatcher.emit(eventName, callback, widget, message);
+    IncomingEventDispatcher.emit(eventName, callback, widget, widgetMessage);
     return;
   }
 
-  if (message instanceof WidgetResponse) {
-    IncomingEventDispatcher.emit(`${eventName}.${message.correlationId}`, widget, message);
+  if (widgetMessage instanceof WidgetResponse) {
+    IncomingEventDispatcher.emit(`${eventName}.${widgetMessage.correlationId}`, widget, widgetMessage);
   }
 };
 

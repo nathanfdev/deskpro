@@ -1,4 +1,6 @@
-class DeskproAppStoreConfiguration {
+import { PropertyBag } from './PropertyBag';
+
+class DeskproAppStoreConfiguration extends PropertyBag {
   static get validTargets() {
     return [
 
@@ -33,30 +35,44 @@ class DeskproAppStoreConfiguration {
     ];
   }
 
-  static get validEnvironments() {
-    return ['development', 'production'];
+  /**
+   * @return {[string,string]}
+   */
+  static get validEnvironments() { return ['development', 'production']; }
+
+  /**
+   * @return {string}
+   */
+  static get devEndpoint() { return 'http://127.0.0.1:31080'; }
+
+  constructor({ environment, apiRoot, endpoint, ...undeclaredProps }) {
+    super({ environment, endpoint, apiRoot, ...undeclaredProps });
   }
 
-  static get devAppManifestUrl() {
-    return 'http://127.0.0.1:31080/manifest.json';
-  }
+  /**
+   * @return {string}
+   */
+  get environment() { return this.props.environment; }
 
-  constructor(environment, location) {
-    this.state = { environment, location };
-  }
+  /**
+   * @return {string}
+   */
+  get apiRoot() { return this.props.apiRoot; }
 
-  get environment() {
-    return this.state.environment;
-  }
+  /**
+   * @return {string}
+   */
+  get oauthProxyEndpoint() { return this.props.oauthProxyEndpoint; }
 
-  get endpoint() {
-    if (this.environment === 'development') {
-      return 'http://127.0.0.1:31080';
-    }
+  /**
+   * @return {string}
+   */
+  get httpProxyEndpoint() { return this.props.httpProxyEndpoint; }
 
-    const { location } = this.state;
-    return location.origin;
-  }
+  /**
+   * @return {string}
+   */
+  get endpoint() { return this.props.endpoint; }
 }
 
 export default DeskproAppStoreConfiguration;

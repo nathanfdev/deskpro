@@ -16,15 +16,14 @@ class DeskproAppRegistry {
         id:             1,
         application_id: 1,
         baseUrl:        config.endpoint,
-        ...manifest,
-        version:        manifest.appVersion
+        ...manifest
       });
     } else {
       mapper = manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest });
     }
     const manifests = rawManifests.map(mapper);
 
-    const appList = manifests.map(manifest => AppConfiguration.fromJS(manifest));
+    const appList = manifests.map(manifest => AppConfiguration.fromAppManifestJS(manifest));
     return new DeskproAppRegistry(appList);
   }
 
@@ -52,57 +51,12 @@ class DeskproAppRegistry {
 
   /**
    * @param {String} target
-   * @param {AppConfiguration} app
+   * @param {AppConfiguration} appConfig
    * @return {WidgetConfiguration}
    */
-  static createWidget(target, app)  {
-    // TODO the tag set here needs to match the tag set in the iframe by the SDK otherwise communication will not happen
-
-    const id = uuid.v4();
-    const tag = [target, app.instanceId, id].join('-');
-    const url = app.getUrlBuilder(target).setXconfTag(tag).build();
-
-    const xconfig = {
-      // TODO: this should not be necessary when rendering as iframe. Dig into xcomponent's code to understand why the template mechanism is activated
-      defaultContext: 'iframe',
-      parentTemplate: '<div class="{CLASS.ELEMENT}" />',
-
-      autoResize: true,
-      scrolling:  false,
-      tag,
-      url,
-
-      dimensions: { width: '100%', height: '100%' },
-
-      timeout: 3000, // millis
-      // The properties they can (or must) pass down to my component
-      props:   {
-
-        // WIDGET PROPERTIES
-
-        widgetId: {
-          type:     'string',
-          required: true
-        },
-
-        onDpMessage: {
-          type:     'function',
-          required: true
-        },
-
-        instanceProps: {
-          type:     'object',
-          required: true
-        },
-
-        contextProps: {
-          type:     'object',
-          required: true
-        }
-      }
-    };
-
-    return new WidgetConfiguration(id, target, app, xconfig);
+  static createWidget(target, appConfig)  {
+    /** @type {string} */ const id = uuid.v4();
+    return new WidgetConfiguration({ id, target, appConfig });
   }
 }
 

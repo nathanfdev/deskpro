@@ -8,6 +8,11 @@ services:
     class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService
     arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
 
+  DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState\AccessService:
+    class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState\AccessService
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationStateAccessService]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationInstanceFinder]
@@ -60,6 +65,13 @@ services:
     arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter }
+
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createOauthProviderConnectionLoader]
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter }
 
   DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter:
     class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter

@@ -44,7 +44,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class AppStateParamConverter implements ParamConverterInterface
 {
-    /** @var Infrastructure\ApplicationStateDoctrineFinder */
+    /** @var Infrastructure\ApplicationState\StateEntityFinder */
     private $finder;
 
     /** @var Infrastructure\IdentifierParser */
@@ -54,7 +54,7 @@ class AppStateParamConverter implements ParamConverterInterface
     private $tokenStorage;
 
     public function __construct(
-        Infrastructure\ApplicationStateDoctrineFinder $finder
+        Infrastructure\ApplicationState\StateEntityFinder $finder
         , Infrastructure\IdentifierParser $identifierParser
         , TokenStorageInterface $tokenStorage
     ) {

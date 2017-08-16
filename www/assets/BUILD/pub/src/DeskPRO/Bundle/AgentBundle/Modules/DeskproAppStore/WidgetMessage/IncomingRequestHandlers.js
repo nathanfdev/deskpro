@@ -1,12 +1,125 @@
 import { events } from './Events';
 
-const sendResponse = response => (data) => {
-  if (data instanceof Error) {
-    response(data);
-  } else {
-    response(null, data);
+/**
+ * @param {window} windowObject
+ * @param {function} handler
+ */
+const registerPostMessageListener = (windowObject, handler) => {
+  const addListener = windowObject.addEventListener ? windowObject.addEventListener : windowObject.attachEvent;
+  const removeListener = windowObject.removeEventListener ? windowObject.removeEventListener : windowObject.detachEvent;
+  const event = windowObject.addEventListener ? 'message' : 'onmessage';
+
+  const listener = (e) => {
+    const remove = handler(e);
+    if (remove) {
+      removeListener(event, listener, false);
+    }
+  };
+
+  addListener(event, listener, false);
+};
+
+export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, services) => {
+  const { provider } = widgetMessage.body;
+  const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
+  if (oauthProxyEndpoint) {
+    const redirectUrlParams = { provider, applicationId: widget.instanceId };
+    const urlRedirect = services.buildOauthProxyRedirectUrl(oauthProxyEndpoint, redirectUrlParams).toString();
+
+    const settings = { urlRedirect };
+    response(null, settings);
+    return;
   }
-  return data;
+
+  response(new Error('oauth proxy url is not configured'));
+};
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ * @constructor
+ */
+export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessage, services) => {
+  const { correlationId }  = widgetMessage;
+  const { id } = widget;
+
+
+  const { provider } = widgetMessage.body;
+  const state = services.base64.encodeJSON({ correlationId });
+
+  const verifyUrl = services.buildURL(services.config.apiRoot) // use canonic xxx.deskpro.com
+      .set('username', services.window.DP_PERSON_ID)
+      .set('password', services.base64.encode(`token ${services.apiToken}`))
+      .toString()
+    ;
+
+  let oauthProxyUrl;
+  const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
+  if (oauthProxyEndpoint) {
+    const oauthProxyParams = {
+      applicationId: widget.instanceId,
+
+      verifyUrl,
+      state,
+      provider,
+      callbackMethod: 'postMessage',
+      callbackUrl:    services.location.href
+    };
+    oauthProxyUrl = services.buildOauthProxyAuthorizeUrl(oauthProxyEndpoint, oauthProxyParams).toString();
+  }
+
+  if (!oauthProxyUrl) {
+    response(new Error('oauth proxy url is not configured'));
+    return;
+  }
+
+  const validateOauthProxyMessage = (ev, originURL) => {
+    const { type } = ev.data;
+    if (type !== 'oauth-proxy-callback') { return false; }
+
+    const urlBuilder = services.buildURL(originURL);
+    const origin =  `${urlBuilder.protocol.replace(/:+$/, '')}://${urlBuilder.host}`;
+
+    return origin === ev.origin;
+  };
+
+  const windowName = `auth-${id}-${provider}`;
+  const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
+
+  const listener = (ev) => {
+    // there could two different authentication schemes running concurrently
+    if (!validateOauthProxyMessage(ev, oauthProxyUrl)) {
+      return false;
+    }
+
+    let messageIsAuthentic;
+    try {
+      const receivedState = services.base64.decodeJSON(ev.data.body.state);
+      messageIsAuthentic = correlationId === receivedState.correlationId;
+    } catch (error) {
+      messageIsAuthentic = false;
+    }
+
+    if (!messageIsAuthentic) {
+      response(new Error('authentication failed'));
+      return true;
+    }
+
+    const { status } = ev.data;
+    if (status === 'success') {
+      response(null, ev.data);
+    } else {
+      const { error: oauthError } = ev.data.body;
+      const errorMessage = oauthError || 'authentication failed';
+      response(new Error(errorMessage), null);
+    }
+    return true;
+  };
+
+  registerPostMessageListener(services.window, listener);
+  services.window.open(oauthProxyUrl, windowName, windowFeatures);
 };
 
 /**
@@ -136,110 +249,6 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
  * @param {function} response
  * @param {Widget} widget
  * @param {WidgetRequest} widgetMessage
- * @param {AppServices}  services
- * @constructor
- */
-export const EVENT_STATE_FIND = (response, widget, widgetMessage, services) => {
-  const { api } = services;
-  const { name, scope } = widgetMessage.body;
-
-  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      if (httpResponse.data.status === 404) { return null; }
-
-      return new Error('failed to get app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices}  services
- * @constructor
- */
-export const EVENT_STATE_GET = (response, widget, widgetMessage, services) => {
-  const { api } = services;
-  const { name, scope } = widgetMessage.body;
-
-  api.sendGet(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}?mode=find`)
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      if (httpResponse.data.status === 404) { return null; }
-
-      return new Error('failed to get app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices} services
- * @constructor
- */
-export const EVENT_STATE_SET = (response, widget, widgetMessage, services) => {
-  const { api } = services;
-  const { name, scope } = widgetMessage.body;
-  const { body: state } = widgetMessage;
-
-  api.sendHead(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then((httpResponse) => {
-      if (httpResponse.getResponseCode() === 204) {
-        return api.sendPost(`DP_API/apps/${widget.instanceId}/state`, state);
-      } else if (httpResponse.getResponseCode() === 200) {
-        return api.sendPut(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`, state);
-      }
-
-      throw new Error('could not save state');
-    })
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      return new Error('failed to get app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
- * @param {AppServices} services
- * @constructor
- */
-export const EVENT_STATE_DELETE = (response, widget, widgetMessage, services) => {
-  const { name, scope } = widgetMessage.body;
-  const { api } = services;
-
-  api.sendDelete(`DP_API/apps/${widget.instanceId}/state/${name}/${scope}`)
-    .then(httpResponse => httpResponse.data)
-    .catch((httpResponse) => {
-      if (httpResponse instanceof Error) { return httpResponse; }
-
-      if (httpResponse.data.status === 404) { return null; }
-
-      return new Error('failed to delete app state');
-    })
-    .then(sendResponse(response))
-  ;
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} widgetMessage
  * @param {AppServices} services
  * @constructor
  */
@@ -299,7 +308,7 @@ export const EVENT_TAB_CLOSE = (response, widget, widgetMessage, services) => {
  * @constructor
  */
 export const EVENT_ME_GET = (response, widget, widgetMessage, services) => {
-  response(null, { id: services.window.DP_PERSON_ID, email: services.window.DP_PERSON_EMAIL });
+  response(null, services.authUser);
 };
 
 /**
@@ -320,7 +329,7 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
 
     response(null, { height });
   } catch (e) {
-    console.log('app reset size failed', e);
+    // console.log('app reset size failed', e);
     response(e);
   }
 };
@@ -374,7 +383,6 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
     }
     response(null, markup);
   } catch (e) {
-    console.log(e);
     response(e);
   }
 };
@@ -382,21 +390,17 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
 
 export const handlers = {
 
+  // SECURITY EVENT HANDLERS
+
+  EVENT_SECURITY_AUTHENTICATE_OAUTH,
+
+  EVENT_SECURITY_SETTINGS_OAUTH,
+
   // GENERIC REST API REQUEST EVENT
 
   EVENT_WEBAPI_REQUEST_DESKPRO,
 
   EVENT_WEBAPI_REQUEST_FETCH,
-
-  // STATE EVENT HANDLERS
-
-  EVENT_STATE_FIND,
-
-  EVENT_STATE_GET,
-
-  EVENT_STATE_SET,
-
-  EVENT_STATE_DELETE,
 
   // TAB EVENTS
 

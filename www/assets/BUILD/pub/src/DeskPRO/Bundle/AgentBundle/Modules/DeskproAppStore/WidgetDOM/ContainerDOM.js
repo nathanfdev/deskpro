@@ -84,11 +84,14 @@ export class ContainerDOM {
    * @return {string|null}
    */
   ensureContainerId = (dom) => {
-    if (!this.isContainerElement(dom) || dom.id) {
+    if (!this.isContainerElement(dom)) {
       return null;
     }
 
-    const id = uuid.v4();
+    let id = dom.hasAttribute('id') ? dom.getAttribute('id') : null;
+    if (id) { return null; }
+
+    id = uuid.v4();
     dom.setAttribute('id', id);
     return id;
   };

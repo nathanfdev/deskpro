@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Proxy;
 /**
  * Class ProxyRequest.
  */
-class ProxyRequest
+class WhitelistableProxyRequest implements ProxyRequestInterface
 {
     /**
      * @var string

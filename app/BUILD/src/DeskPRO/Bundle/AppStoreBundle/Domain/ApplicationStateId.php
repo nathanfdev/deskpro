@@ -30,18 +30,29 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 class ApplicationStateId
 {
+    /** @var string */
     private $instanceId;
 
+    /** @var string */
     private $name;
 
-    public function __construct($instanceId, $name)
+    /** @var ApplicationState\EntityId */
+    private $entityId;
+
+    /**
+     * @param string $instanceId
+     * @param string $name
+     * @param ApplicationState\EntityId $entityId
+     */
+    public function __construct($instanceId, $name, ApplicationState\EntityId $entityId)
     {
         $this->instanceId = $instanceId;
         $this->name = $name;
+        $this->entityId = ApplicationState\EntityId::convertToString($entityId);
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getInstanceId()
     {
@@ -49,10 +60,18 @@ class ApplicationStateId
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
     }
 }

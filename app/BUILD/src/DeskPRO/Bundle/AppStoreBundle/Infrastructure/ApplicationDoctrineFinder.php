@@ -39,9 +39,21 @@ class ApplicationDoctrineFinder implements ApplicationFinder
     /** @var ORM\EntityManager */
     private $entityManager;
 
-    public function __construct(ORM\EntityManager $entityManager)
+    /** @var EntityQueryBuilders */
+    private $queryBuilder;
+
+    /**
+     * @param ORM\EntityManager $entityManager
+     * @param EntityQueryBuilders $queryBuilder
+     */
+    public function __construct(ORM\EntityManager $entityManager, EntityQueryBuilders $queryBuilder = null)
     {
         $this->entityManager = $entityManager;
+        if (is_null($queryBuilder)) {
+            $this->queryBuilder = new EntityQueryBuilders();
+        } else {
+            $this->queryBuilder = $queryBuilder;
+        }
     }
 
     function findAll()
@@ -100,22 +112,15 @@ class ApplicationDoctrineFinder implements ApplicationFinder
      */
     function findByInstanceId($id)
     {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb
-            ->from(Entity\AppStore\AppInstance::class, 'i')
-            ->select('i, a')
-            ->innerJoin('i.app', 'a')
-            ->where('i.id = :id')
-            ->setParameter('id', $id)
-        ;
+        $query = $this->queryBuilder->buildFindApplicationByInstanceIdQuery($this->entityManager, $id);
+        $result = $query->setMaxResults(2)->getResult();
 
-        $result = $qb->getQuery()->getResult();
-        if (1 != count($result)) { //instance not found or more than one
-            return null;
+        /** @var Entity\AppStore\App $instance */
+        $instance = null;
+        if (1 === count($result)) { // must find exactly one
+            $instance = array_pop($result);
         }
 
-        /** @var Entity\AppStore\AppInstance $instance */
-        $instance = array_pop($result);
-        return $instance->getApp();
+        return $instance;
     }
 }

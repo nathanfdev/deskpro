@@ -165,8 +165,6 @@ function getWebpackConfig(mode, isProd) {
       ],
 
       alias: {
-        'xcomponent/src':       path.resolve(__dirname, 'node_modules', 'xcomponent', 'dist', 'xcomponent.js'),
-        'post-robot/src':       path.resolve(__dirname, 'node_modules', 'post-robot', 'dist', 'post-robot.js'),
         invariant:              'fbjs/lib/invariant',
         warning:                'fbjs/lib/warning',
         'jquery.ui':            'jquery-ui',
@@ -246,7 +244,7 @@ function getWebpackConfig(mode, isProd) {
         { test: require.resolve('react'), loader: 'expose-loader?React' },
         { test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM' },
       ],
-      noParse: [/(^(froala|jquery\.mark))\.min\.js/, /xcomponent/]
+      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
     },
 
     plugins: [

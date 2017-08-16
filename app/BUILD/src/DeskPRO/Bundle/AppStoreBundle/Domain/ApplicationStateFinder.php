@@ -32,16 +32,16 @@ interface ApplicationStateFinder
 {
     /**
      * @param ApplicationStateId $id
-     * @param string|null $stateOwnerId
+     * @param string|null        $stateOwnerId
+     *
      * @return ApplicationState
      */
     public function find(ApplicationStateId $id, $stateOwnerId = null);
 
     /**
-     * @param ApplicationInstance $application
-     * @param SearchStateFilter $searchFilter
+     * @param ApplicationStateSearchFilter $searchFilter
+     *
      * @return ApplicationState[]
      */
-    public function findApplicationStateByFilter(ApplicationInstance $application, SearchStateFilter $searchFilter);
+    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
 }
-

@@ -1,16 +1,11 @@
 import React, { PropTypes } from 'react';
-import * as xcomponent from 'xcomponent/dist/xcomponent';
-import { Widget } from '../Domain/Widget';
+import * as postRobot from 'post-robot';
 
-/**
- * @param {ParentComponent} parentComponent
- * @param {WidgetConfiguration} widgetConfig
- * @return {Widget}
- */
-export const createWidget = (parentComponent, widgetConfig) => {
-  const windowId = ['xcomponent', parentComponent.props.uid].join('-');
-  return new Widget({ configuration: widgetConfig, windowId });
-};
+import { Widget } from '../Domain/Widget';
+import * as WidgetDOM from '../WidgetDOM';
+
+import { ContainerEvents } from './ContainerEvents';
+import { WidgetIframe } from './WidgetIframe';
 
 /**
  * @param {Array} list
@@ -22,16 +17,41 @@ const find = (list, filter) => {
   return found.length === 1 ? found[0] : null;
 };
 
+const removeMatching = (list, filter) => {
+  let iterations = list.length;
+  const matching = [];
+
+  while (iterations > 0) {
+    iterations -= 1;
+    const item = list.pop();
+    const isMatching = filter(item);
+
+    if (isMatching) {
+      matching.unshift(item);
+    } else {
+      list.unshift(item);
+    }
+  }
+
+  return matching;
+};
+
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["onWidgetMouseEventMessage"] }] */
+
+
 /**
  * This container represents the integration point between an external app and deskpro.
  * It handles a list of apps within the same app context, managing their lifecycle and communication, behaving in this
  * respect as a router (routing and transforming deskpro events / messages to app components)
  */
 class DeskproAppContainer extends React.Component {
+
   static propTypes = {
     widgetsConfigList:             PropTypes.array.isRequired,
+    context:                       PropTypes.object.isRequired,
     dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
-    context:                       PropTypes.object.isRequired
+    addWidgetEventListener:        PropTypes.func.isRequired,
+    parseIncomingWidgetMessageJS:  PropTypes.func.isRequired
   };
 
   /**
@@ -41,87 +61,193 @@ class DeskproAppContainer extends React.Component {
    */
   static renderEmpty() { return (<div />); }
 
+  /**
+   * @param {WidgetConfiguration} widgetConfiguration
+   *
+   * @return {Object}
+   */
+  static mapWidgetConfigurationToReactComponent(widgetConfiguration) {
+    return (<WidgetIframe
+      id={`urn:deskpro:widget?widgetId=${widgetConfiguration.id}`}
+      url={widgetConfiguration.getUrl()}
+    />);
+  }
+
   constructor(props) {
     super(props);
     this.widgets = [];
+    this.widgetRemoveListeners = [];
+  }
+
+  componentDidMount() {
+    this.registerWidgetMessageListeners();
+  }
+
+  /**
+   * This component should not update after the initial render
+   *
+   * @param {{}} nextProps
+   * @param {{}} nextState
+   * @return {boolean}
+   */
+  shouldComponentUpdate(nextProps, nextState) { // eslint-disable-line class-methods-use-this, no-unused-vars
+    return false;
+  }
+
+  componentWillUnmount()  {
+    this.widgets.forEach(this.unregisterWidget.bind(this));
+  }
+
+  /**
+   * @param {Widget} widget
+   * @param {String} eventName
+   * @param {WidgetRequest} widgetMessage
+   */
+  onWidgetMouseEventMessage(widget, eventName, widgetMessage) { /* empty on purpose, can be overriden by subclasses*/ } // eslint-disable-line no-unused-vars
+
+  /**
+   * @param {Widget} widget
+   * @param {String} eventName
+   * @param {WidgetRequest|WidgetResponse} widgetMessage
+   */
+  onWidgetAppMessage(widget, eventName, widgetMessage)  {
+    const { dispatchIncomingWidgetMessage } = this.props;
+    dispatchIncomingWidgetMessage(eventName, widgetMessage, widget);
+  }
+
+  // generic widget message handlers
+
+  onWidgetEventSubscribe(widgetConfiguration, eventName, eventSubscriber) {
+    const widget = find(this.widgets, aWidget => aWidget.configuration === widgetConfiguration);
+    if (!widget) { return null; }
+
+    const unsubscribe = eventSubscriber(eventName, widget);
+    this.widgetRemoveListeners.push({ widget, removeListener: unsubscribe });
+    return null;
+  }
+
+  /**
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {{data: Object}}  event
+   */
+  onWidgetMessageReceive(widgetConfiguration, event) {
+    // find the widget
+    const initiatorWidget = find(this.widgets, widget => widget.configuration === widgetConfiguration);
+    if (!initiatorWidget) {
+      throw new Error('failed to dispatch incoming message: unrecognized widget');
+    }
+
+    const { parseIncomingWidgetMessageJS } = this.props;
+    const widgetMessage = parseIncomingWidgetMessageJS(event.data);
+
+    if (!widgetMessage) {
+      throw new Error('failed to dispatch incoming message: could not parse widget message');
+    }
+
+    const { eventName } = event.data;
+    if (eventName === ContainerEvents.EVENT_WINDOW_MOUSEEVENT) {
+      this.onWidgetMouseEventMessage(initiatorWidget, eventName, widgetMessage);
+    } else if (eventName)  {
+      this.onWidgetAppMessage(initiatorWidget, eventName, widgetMessage);
+    } else {
+      throw new Error('failed to dispatch incoming message: unrecognized event name');
+    }
   }
 
   /**
    * @param {WidgetConfiguration} widgetConfiguration
    * @param {String} eventName
-   * @param {*} widgetMessage
+   * @param {WidgetRequest|WidgetResponse} widgetMessage
    */
-  onXComponentMessage = (widgetConfiguration, eventName, widgetMessage) =>  {
-    const { dispatchIncomingWidgetMessage } = this.props;
-    const initiatorWidget = find(this.widgets, widget => widget.configuration === widgetConfiguration);
-
-    if (initiatorWidget) {
-      dispatchIncomingWidgetMessage(eventName, widgetMessage, initiatorWidget);
+  onWidgetMessageSend(widgetConfiguration, eventName, widgetMessage) {
+    const widget = find(this.widgets, aWidget => aWidget.configuration === widgetConfiguration);
+    if (!widget) { // do not throw exceptions yet, silently ignore
       return null;
     }
 
-    throw new Error('failed to dispatch incoming message: unrecognized widget');
-  };
-
-  /**
-   * Handler for the onEnter event sent by the parentComponent of an xcomponent
-   *
-   * @param {ParentComponent} parentComponent
-   */
-  onXComponentEnter = (parentComponent) =>  {
-    const { widgetId } = parentComponent.props;
-    const { widgetsConfigList } = this.props;
-    // TODO handle case for uknown parentComponent widget
-    const widgetConfiguration = find(widgetsConfigList, widget => widget.id.toString() === widgetId.toString());
-
-    if (widgetConfiguration) {
-      const widget = createWidget(parentComponent, widgetConfiguration);
-      this.widgets.push(widget);
+    const widgetWindow = WidgetDOM.findWidgetWindow(widget, window.document);
+    if (widgetWindow) {
+      postRobot.send(widgetWindow, eventName, widgetMessage.toJS());
       return null;
     }
 
-    throw new Error('failed to register widget: configuration not found');
-  };
+    throw new Error('can not find widget window');
+  }
 
   /**
-   * @param {WidgetConfiguration} widgetConfig
-   * @return {ReactElement}
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {{data: Object}} event
    */
-  createReactElement = (widgetConfig) =>  {
-    // widget properties
+  onWidgetInit(widgetConfiguration, event) { // eslint-disable-line no-unused-vars
+    const { addWidgetEventListener } = this.props;
+    const widget = new Widget({
+      configuration: widgetConfiguration,
+      windowId:      `urn:deskpro:widget?widgetId=${widgetConfiguration.id}`
+    });
 
-    const onEnter = this.onXComponentEnter.bind(this);
-    const widgetProps = {
-      widgetId:    widgetConfig.id,
-      // xcomponent changes the scope of the onEnter callback to that of the ParentComponent instance and does not provide
-      // any other parameters so we resort to this type of closure to get a hold of the ParentComponent instance
-      onEnter() { onEnter(this); },
-      onDpMessage: this.onXComponentMessage.bind(this, widgetConfig),
-    };
+    const removeListeners = [
+      addWidgetEventListener(widget.id, this.onWidgetMessageSend.bind(this)),
+      addWidgetEventListener(`subscribe.${widget.id}`, this.onWidgetEventSubscribe.bind(this))
+    ];
+
+    this.registerWidget(widget, removeListeners);
 
     const { context } = this.props;
-
-    const reactProps = {
-      key:           widgetConfig.id,
-      ...widgetProps,
-      instanceProps: widgetConfig.widgetProps.toJS(),
+    return {
+      instanceProps: widgetConfiguration.appConfig.toWidgetProps().toJS(),
       contextProps:  context.widgetProps.toJS()
     };
+  }
 
-    const xcomponentInstance = xcomponent.create(widgetConfig.xcomponentConfig);
-    const reactClass = xcomponentInstance.react;
-    return React.createElement(reactClass, reactProps);
-  };
+  registerWidgetMessageListeners()  {
+    /**
+     * @param {WidgetConfiguration} widgetConfiguration
+     */
+    for (const widgetConfiguration of this.props.widgetsConfigList) {
+      postRobot.once(
+        `urn:deskpro:apps.widget.onready?widgetId=${widgetConfiguration.id}`,
+        this.onWidgetInit.bind(this, widgetConfiguration)
+      );
+
+      postRobot.on(
+        `urn:deskpro:apps.widget.event?widgetId=${widgetConfiguration.id}`,
+        this.onWidgetMessageReceive.bind(this, widgetConfiguration)
+      );
+    }
+  }
+
+  /**
+   * @param {Widget} widget
+   * @param {Array<function>} removeListeners
+   */
+  registerWidget(widget, removeListeners) {
+    // store the widget
+    this.widgets.push(widget);
+    // index the widget remove listeners
+    const widgetRemoveListeners = removeListeners.map(removeListener => ({ widget, removeListener }));
+    this.widgetRemoveListeners = this.widgetRemoveListeners.concat(widgetRemoveListeners);
+  }
+
+  /**
+   * @param {Widget} widget
+   */
+  unregisterWidget(widget) {
+    //
+    // remove widget
+    removeMatching(this.widgets, aWidget => aWidget === widget);
+
+    // remove listeners
+    const invokeRemoveListener = ({ removeListener }) => removeListener();
+    removeMatching(this.widgetRemoveListeners, listener => listener.widget === widget).each(invokeRemoveListener);
+  }
 
   /**
    * Renders all the apps
    *
    * @returns {XML}
    */
-  renderApp() {
-    const { widgetsConfigList } = this.props;
-    const components = widgetsConfigList.map(widget => this.createReactElement(widget));
-
+  renderWidgets() {
+    const components = this.props.widgetsConfigList.map(DeskproAppContainer.mapWidgetConfigurationToReactComponent);
     return React.createElement('div', {}, components);
   }
 
@@ -133,11 +259,13 @@ class DeskproAppContainer extends React.Component {
   render() {
     const { widgetsConfigList } = this.props;
     if (widgetsConfigList && widgetsConfigList.length > 0) {
-      return this.renderApp();
+      return this.renderWidgets();
     }
 
     return DeskproAppContainer.renderEmpty();
   }
+
+
 }
 
 export default DeskproAppContainer;

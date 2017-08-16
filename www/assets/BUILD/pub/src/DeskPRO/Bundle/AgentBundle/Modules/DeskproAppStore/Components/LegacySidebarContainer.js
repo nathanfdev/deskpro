@@ -1,43 +1,41 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
 import DeskproAppContainer from './DeskproAppContainer';
 import LegacyAppSidebar from './LegacyAppSidebar';
 import LegacyAppIcons from './LegacyAppIcons';
 
-class LegacySidebarContainer extends React.Component {
+const addEventListener = (dom, event, handler) => {
+  dom.addEventListener(event, handler);
+  return () => dom.removeEventListener(event, handler);
+};
+
+class LegacySidebarContainer extends DeskproAppContainer {
   static propTypes = {
     widgetsConfigList:             PropTypes.array.isRequired,
+    context:                       PropTypes.object.isRequired,
     dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
-
-    context:       PropTypes.object.isRequired,
-    configuration: PropTypes.object.isRequired
+    addWidgetEventListener:        PropTypes.func.isRequired,
+    parseIncomingWidgetMessageJS:  PropTypes.func.isRequired,
+    // own properties
+    configuration:                 PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    this.iconsDOMListeners = { mouseout: [], mouseover: [], click: [] };
+    this.removeListeners = [];
+    this.onIconsToggle = true;
   }
 
   componentDidMount() {
+    super.componentDidMount();
+
     const { configuration } = this.props;
     const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
 
-    // TODO: refactor obviously
-    let onMouseOverToggle = true;
-    const onMouseOverListener = (e) => {
-      if (onMouseOverToggle) {
-        onMouseOverToggle = false;
-        this.onMouseOver(e);
-      }
-    };
-    iconsContainer.addEventListener('mouseover', onMouseOverListener);
-    this.iconsDOMListeners.mouseover.push(onMouseOverListener);
-
-    const onMouseOutListener = () => { onMouseOverToggle = true; };
-    iconsContainer.addEventListener('mouseout', onMouseOutListener);
-    this.iconsDOMListeners.mouseout.push(onMouseOverListener);
-
-    iconsContainer.addEventListener('click', this.onMouseClick);
-    this.iconsDOMListeners.click.push(this.onMouseClick);
+    this.removeEventListeners = [
+      addEventListener(iconsContainer, 'mouseover', this.onIconsMouseOver.bind(this)),
+      addEventListener(iconsContainer, 'click', this.onIconsMouseClick.bind(this)),
+      addEventListener(iconsContainer, 'mouseout', this.onIconsMouseOut.bind(this))
+    ];
 
     // add app icons
     const appIcons = LegacyAppIcons.fromSelector(configuration.renderIconsContainer);
@@ -55,17 +53,36 @@ class LegacySidebarContainer extends React.Component {
   }
 
   componentWillUnmount() {
-    const { configuration } = this.props;
-    const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
-
-    for (const event of ['click', 'mouseover', 'mouseover']) {
-      for (const listener of this.iconsDOMListeners[event]) {
-        iconsContainer.removeEventListener(event, listener);
-      }
+    super.componentWillUnmount();
+    for (const cb of this.removeEventListeners) {
+      cb();
     }
   }
 
-  onMouseOver = (e) => {
+  /**
+   * @param {Widget} widget
+   * @param {{ type:string }} e
+   */
+  /**
+   * @param {Widget} widget
+   * @param {String} eventName
+   * @param {WidgetRequest} widgetMessage
+   */
+  onWidgetMouseEventMessage(widget, eventName, widgetMessage) {
+    const { body : e } = widgetMessage;
+
+    if (e.type === 'mousedown') {
+      const { configuration } = this.props;
+      LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).togglePined();
+    }
+  }
+
+  onIconsMouseOut() { this.onIconsToggle = true; }
+
+  onIconsMouseOver(e) {
+    if (!this.onIconsToggle) { return; }
+    this.onIconsToggle = false;
+
     const { target } = e;
     const { configuration } = this.props;
 
@@ -80,9 +97,9 @@ class LegacySidebarContainer extends React.Component {
     } else if (appIcons.isLegacyAppIconDOM(target)) {
       sidebar.showLegacyContent();
     }
-  };
+  }
 
-  onMouseClick = (e) =>  {
+  onIconsMouseClick(e) {
     const { target } = e;
     const { configuration } = this.props;
 
@@ -97,20 +114,6 @@ class LegacySidebarContainer extends React.Component {
     } else if (appIcons.isLegacyAppIconDOM(target)) {
       sidebar.showLegacyContent();
     }
-  };
-
-  /**
-   * Renders the container and all the apps
-   *
-   * @returns {XML}
-   */
-  render() {
-    return (<DeskproAppContainer
-      widgetsConfigList={this.props.widgetsConfigList}
-      dispatchIncomingWidgetMessage={this.props.dispatchIncomingWidgetMessage}
-      context={this.props.context}
-      configuration={this.props.configuration}
-    />);
   }
 }
 

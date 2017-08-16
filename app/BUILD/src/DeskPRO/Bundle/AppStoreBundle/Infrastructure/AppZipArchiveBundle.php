@@ -60,6 +60,14 @@ class AppZipArchiveBundle implements Domain\AppBundle
     /**
      * @return string
      */
+    public function getFilePath()
+    {
+        return $this->fileInfo->getRealPath();
+    }
+
+    /**
+     * @return string
+     */
     public function getManifestAsString()
     {
         return $this->getResourceByPath(Domain\Constants::BUNDLE_MANIFEST_PATH);

@@ -53,21 +53,20 @@ class AppInstanceParamConverter implements ParamConverterInterface
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
         $attributeName = $configuration->getName();
-        $from          = $request->attributes->get($attributeName);
+        $from          = $request->attributes->get($attributeName, null);
 
         if (empty($from)) {
             return false;
         }
 
         $application = $this->convert($from);
-        if (empty($application)) {
-            //TODO provide a better exception context, serialization etc
-            throw new NotFoundHttpException('could not find application instance');
+        if (!empty($application)) {
+            $request->attributes->set($attributeName, $application);
+            return true;
         }
 
-        $request->attributes->set($attributeName, $application);
-
-        return true;
+        $request->attributes->set($attributeName, null);
+        return false;
     }
 
     /**

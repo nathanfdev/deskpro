@@ -1,9 +1,20 @@
 import { EventEmitter } from 'eventemitter3';
 import { createHandlerTrap, createReleaseTrap } from '../Services/Interceptors';
 
-export class EventDispatcher extends EventEmitter {}
+export class EventDispatcher extends EventEmitter {
+  /**
+   * @param {String} eventName
+   * @param {function} listener
+   * @return {function} a function that can be used to remove the listener
+   */
+  addRemovableListener = (eventName, listener) =>  {
+    this.addListener(eventName, listener);
+    return this.removeListener.bind(this, eventName, listener);
+  }
+}
 
 export const IncomingEventDispatcher = new EventDispatcher();
+
 export const OutgoingEventDispatcher = new EventDispatcher();
 
 /**
@@ -16,7 +27,7 @@ export const OutgoingEventDispatcher = new EventDispatcher();
  * @param {function} handler
  * @return {function(...[*])}
  */
-const createInterceptor = (eventName, onResponse, onActivate, handler) => { // eslint-disable-line no-unused-vars
+const createHandlerInterceptorDispatch = (eventName, onResponse, onActivate, handler) => { // eslint-disable-line no-unused-vars
   const handlerTrap = createHandlerTrap(handler);
   const releaseTrap = createReleaseTrap(handlerTrap);
 

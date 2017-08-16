@@ -141,6 +141,11 @@ security:
           pattern: ^/api/v2/?$
           stateless: true
           anonymous: ~
+        session_token:
+            pattern: ^/api/v2/api_tokens/session$
+            stateless: true
+            simple_preauth:
+                authenticator: api_authenticator
         api_anonymous:
             pattern: ^/api/v2/(doc|man$|api_tokens|get_session|helpdesk/discover|get_session|twilio_callbacks|user_sources|cloud/countries|cloud/states|cloud/eu_countries|cloud/geo_ip)
             stateless: true

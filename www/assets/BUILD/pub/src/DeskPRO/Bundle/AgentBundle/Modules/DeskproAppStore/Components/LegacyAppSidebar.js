@@ -45,6 +45,15 @@ class LegacyAppSidebar {
     hideAll(this.domRoot, '.dp-app-context');
     showAll(this.domRoot, '.dp-app-context[data-deskproapp-marker]');
   };
+
+  togglePined() {
+    if (this.domRoot.className.match(/(?:^|\s)sidebar-pinned(?!\S)/)) { // is pinned
+      this.domRoot.className = this.domRoot.className.replace(/(?:^|\s)sidebar-pinned(?!\S)/g, '');
+    } else {
+      this.domRoot.className += ' sidebar-pinned';
+    }
+  }
+
 }
 
 export default LegacyAppSidebar;

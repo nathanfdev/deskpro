@@ -26,14 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
 use JMS\Serializer\Annotation as JMS;
 
-/**
- * Class AppManifestAuthor.
- */
-class AppManifestAuthor
+class StateAccessRule
 {
     /**
      * @JMS\Type("string")
@@ -43,18 +40,28 @@ class AppManifestAuthor
     private $name;
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("isBackendOnly")
      *
-     * @var string
+     * @var boolean
      */
-    private $email;
+    private $isBackendOnly;
 
     /**
      * @JMS\Type("string")
+     * @JMS\SerializedName("permRead")
      *
      * @var string
      */
-    private $url;
+    private $permRead;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\SerializedName("permWrite")
+     *
+     * @var string
+     */
+    private $permWrite;
 
     /**
      * @return string
@@ -66,53 +73,57 @@ class AppManifestAuthor
 
     /**
      * @param string $name
-     *
-     * @return $this
      */
     public function setName($name)
     {
         $this->name = $name;
+    }
 
-        return $this;
+    /**
+     * @return bool
+     */
+    public function getIsBackendOnly()
+    {
+        return $this->isBackendOnly;
+    }
+
+    /**
+     * @param bool $isBackendOnly
+     */
+    public function setIsBackendOnly($isBackendOnly)
+    {
+        $this->isBackendOnly = (bool) $isBackendOnly;
+    }
+
+    /**
+     * @param bool $permRead
+     */
+    public function setPermRead($permRead)
+    {
+        $this->permRead = $permRead;
+    }
+
+    /**
+     * @param bool $permWrite
+     */
+    public function setPermWrite($permWrite)
+    {
+        $this->permWrite = $permWrite;
     }
 
     /**
      * @return string
      */
-    public function getEmail()
+    public function getPermRead()
     {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     *
-     * @return $this
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-
-        return $this;
+        return $this->permRead;
     }
 
     /**
      * @return string
      */
-    public function getUrl()
+    public function getPermWrite()
     {
-        return $this->url;
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return $this
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-
-        return $this;
+        return $this->permWrite;
     }
 }

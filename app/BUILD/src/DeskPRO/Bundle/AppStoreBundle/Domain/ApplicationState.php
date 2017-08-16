@@ -28,22 +28,95 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-interface ApplicationState
+class ApplicationState
 {
-    public function getInstanceId();
+    private $identifier;
+
+    private $securityDescriptor;
+
+    private $value;
+
+    /**
+     * @param ApplicationStateId $identifier
+     * @param ApplicationState\SecurityDescriptor $securityDescriptor
+     * @param string $value
+     */
+    public function __construct($identifier, $securityDescriptor, $value)
+    {
+        $this->identifier = $identifier;
+        $this->securityDescriptor = $securityDescriptor;
+        $this->value = $value;
+    }
+
+    /**
+     * @return ApplicationStateId
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
+
+    /**
+     * @param string $service
+     * @param string $accessLevel
+     * @return bool
+     */
+    public function confirmAccessLevelForService($service, $accessLevel)
+    {
+        $accessLevels = [Constants::ACCESS_LEVEL_READ, Constants::ACCESS_LEVEL_WRITE];
+        return in_array($accessLevel, $accessLevels) && $this->securityDescriptor->allowsServiceAccess($service);
+    }
+
+    /**
+     * @param string $personId
+     * @param $accessLevel
+     * @return bool
+     */
+    public function confirmAccessLevelForPerson($personId, $accessLevel)
+    {
+        if ($accessLevel === Constants::ACCESS_LEVEL_READ) {
+            return $this->securityDescriptor->hasOwnership($personId)
+                || $this->securityDescriptor->hasReadAccess(Constants::PERMISSION_EVERYONE);
+        }
+
+        if ($accessLevel === Constants::ACCESS_LEVEL_WRITE) {
+            return $this->securityDescriptor->hasOwnership($personId)
+                || $this->securityDescriptor->hasWriteAccess(Constants::PERMISSION_EVERYONE);
+        }
+
+        return false;
+    }
+
+    /**
+     * @param ApplicationState\SecurityDescriptor $newDescriptor
+     * @return ApplicationState
+     */
+    public function changeSecurityDescriptor(ApplicationState\SecurityDescriptor $newDescriptor)
+    {
+        return new ApplicationState($this->identifier, $newDescriptor, $this->value);
+    }
+
+    /**
+     * @return ApplicationState\SecurityDescriptor
+     */
+    public function getSecurityDescriptor()
+    {
+        return $this->securityDescriptor;
+    }
 
     /**
      * @return string
      */
-    public function getName();
-
-    /**
-     * @return StateScope
-     */
-    public function getScope();
+    public function getName()
+    {
+        return $this->identifier->getName();
+    }
 
     /**
      * @return string
      */
-    public function getValue();
+    public function getValue()
+    {
+        return $this->value;
+    }
 }

@@ -14,9 +14,18 @@ class ParamConverters
 {
     /**
      * @param ORM\EntityManager $entityManager
+     * @return OauthProviderConnectionLoaderConverter
+     */
+    static public function createOauthProviderConnectionLoader(ORM\EntityManager $entityManager)
+    {
+        return new OauthProviderConnectionLoaderConverter($entityManager);
+    }
+
+    /**
+     * @param ORM\EntityManager $entityManager
      * @return AppInstanceParamConverter
      */
-    public static function createAppInstanceConverter(ORM\EntityManager $entityManager)
+    static public function createAppInstanceConverter(ORM\EntityManager $entityManager)
     {
         $finder = new Infrastructure\ApplicationInstanceDoctrineFinder($entityManager);
         return new AppInstanceParamConverter($finder, new Infrastructure\IdentifierParser());
@@ -26,7 +35,7 @@ class ParamConverters
      * @param ORM\EntityManager $entityManager
      * @return AppParamConverter
      */
-    public static function createAppConverter(ORM\EntityManager $entityManager)
+    static public function createAppConverter(ORM\EntityManager $entityManager)
     {
         $finder = new Infrastructure\ApplicationDoctrineFinder($entityManager);
         return new AppParamConverter($finder, new Infrastructure\IdentifierParser());
@@ -36,18 +45,17 @@ class ParamConverters
      * @param ORM\EntityManager $entityManager
      * @param TokenStorage $tokenStorage
      * @return AppStateParamConverter
-     * @internal param ORM\EntityManager $entityManager
      */
-    public static function createAppStateConverter(ORM\EntityManager $entityManager, TokenStorage $tokenStorage)
+    static public function createAppStateConverter(ORM\EntityManager $entityManager, TokenStorage $tokenStorage)
     {
-        $finder = new Infrastructure\ApplicationStateDoctrineFinder($entityManager);
+        $finder = new Infrastructure\ApplicationState\StateEntityFinder($entityManager);
         return new AppStateParamConverter($finder, new Infrastructure\IdentifierParser(), $tokenStorage);
     }
 
     /**
      * @return AssetFilterParamConverter
      */
-    public static function createAssetFilterConverter()
+    static public function createAssetFilterConverter()
     {
         $filterConverter = new Domain\SearchFilters();
         return new AssetFilterParamConverter($filterConverter);
@@ -56,11 +64,9 @@ class ParamConverters
     /**
      * @return StateFilterParamConverter
      */
-    public static function createStateFilterConverter()
+    static public function createStateFilterConverter()
     {
         $filterConverter = new Domain\SearchFilters();
         return new StateFilterParamConverter($filterConverter);
     }
-
-
 }

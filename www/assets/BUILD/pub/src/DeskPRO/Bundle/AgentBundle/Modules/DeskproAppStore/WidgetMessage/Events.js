@@ -1,18 +1,12 @@
+// SECURITY EVENTS
+export const EVENT_SECURITY_AUTHENTICATE_OAUTH = 'security.authenticate.oauth';
+
+export const EVENT_SECURITY_SETTINGS_OAUTH = 'security.settings.oauth';
+
 // FETCH EVENTS
 export const EVENT_WEBAPI_REQUEST_FETCH = 'webapi.request.fetch';
 
 export const EVENT_WEBAPI_REQUEST_DESKPRO = 'webapi.request.deskpro';
-
-// STATE EVENTS
-
-
-export const EVENT_STATE_FIND = 'state.find';
-
-export const EVENT_STATE_GET = 'state.get';
-
-export const EVENT_STATE_SET = 'state.set';
-
-export const EVENT_STATE_DELETE = 'state.delete';
 
 // TAB EVENTS
 
@@ -46,21 +40,17 @@ export const EVENT_ME_GET = 'context.me_get';
 
 export const events =
   {
+  // SECURITY EVENTS
+
+    EVENT_SECURITY_AUTHENTICATE_OAUTH,
+
+    EVENT_SECURITY_SETTINGS_OAUTH,
+
   // API REQUEST EVENTS
 
     EVENT_WEBAPI_REQUEST_DESKPRO,
 
     EVENT_WEBAPI_REQUEST_FETCH,
-
-  // STATE EVENTS
-
-    EVENT_STATE_FIND,
-
-    EVENT_STATE_GET,
-
-    EVENT_STATE_SET,
-
-    EVENT_STATE_DELETE,
 
   // TAB EVENTS
 

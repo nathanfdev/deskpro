@@ -36,6 +36,16 @@ class Services
 {
     /**
      * @param ORM\EntityManager $entityManager
+     * @return ApplicationState\AccessService
+     */
+    public static function createApplicationStateAccessService(ORM\EntityManager $entityManager)
+    {
+        $service = new ApplicationState\AccessService($entityManager, new EntityQueryBuilders());
+        return $service;
+    }
+
+    /**
+     * @param ORM\EntityManager $entityManager
      *
      * @return ApplicationInstanceDoctrineFinder
      */
@@ -82,10 +92,10 @@ class Services
     /**
      * @param ORM\EntityManager $entityManager
      *
-     * @return ApplicationStateDoctrineFinder
+     * @return ApplicationState\StateEntityFinder
      */
     public static function createApplicationStateFinder(ORM\EntityManager $entityManager)
     {
-        return new ApplicationStateDoctrineFinder($entityManager);
+        return new ApplicationState\StateEntityFinder($entityManager);
     }
 }

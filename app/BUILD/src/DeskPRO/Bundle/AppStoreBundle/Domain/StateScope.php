@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
+/**
+ * @deprecated
+ */
 class StateScope
 {
     /** @var string */

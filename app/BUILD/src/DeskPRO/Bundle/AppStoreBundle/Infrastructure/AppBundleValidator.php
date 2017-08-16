@@ -33,36 +33,60 @@ use JsonSchema;
 
 class AppBundleValidator implements Domain\AppBundleValidator
 {
+    /** @var  \SplFileInfo */
+    private $schema;
+
     /** @var JsonSchema\Validator */
     private $schemaValidator;
 
-    /** @var \SplFileInfo */
-    private $schema;
-
     /**
      * ApplicationService constructor.
-     *
-     * @param JsonSchema\Validator $schemaValidator
-     * @param \SplFileInfo         $schema
+     * @param \SplFileInfo $schema
      */
     public function __construct(JsonSchema\Validator $schemaValidator, \SplFileInfo $schema)
     {
+        $this->schema = $schema;
         $this->schemaValidator = $schemaValidator;
-        $this->schema          = $schema;
     }
 
     public function validateBundle(Domain\AppBundle $bundle)
     {
         $manifestString = $bundle->getManifestAsString();
-        $manifestData   = json_decode($manifestString);
+        $manifestData = json_decode($manifestString);
         if (empty($manifestData) || false == $manifestData instanceof \stdClass) {
             return false;
         }
 
-        //$this->schemaValidator->validate($manifestData, (object)['$ref' => 'file://' . $this->schema->getRealPath()]);
-        //return $this->schemaValidator->isValid();
+        try {
+            $schema = $this->decodeSchema($this->schema);
+        } catch (\Exception $e) { // should log perhaps
+            return false;
+        }
 
-        // TODO this is a temporary hack till the conflicts between the two version of json-schema are fixed
-        return true;
+        $this->schemaValidator->validate($manifestData, (object)$schema);
+        return $this->schemaValidator->isValid();
     }
+
+    /**
+     * @param \SplFileInfo $schema
+     * @return \stdClass
+     */
+    private function decodeSchema(\SplFileInfo $schema)
+    {
+        $filePath = $schema->getRealPath();
+        $contents = file_get_contents($filePath);
+        if (false === $contents) {
+            throw new \RuntimeException('could not read contents of app manifest schema file from: ' .$filePath);
+        }
+
+        $contents = json_decode($contents);
+        if ($contents instanceof \stdClass) {
+            return $contents;
+        }
+
+        throw new \RuntimeException('could not decode contents of app manifest schema file from: ' .$filePath);
+    }
+
 }
+
+

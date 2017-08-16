@@ -66,13 +66,42 @@ class ProxyRequestFactory
     }
 
     /**
+     * @param Request   $request
+     *
+     * @return SimpleProxyRequest
+     */
+    public function createFromRequest(Request $request)
+    {
+        $proxyMethod  = $this->getProxyMethod($request);
+        $proxyUrl     = $this->getOriginalProxyUrl($request);
+        $proxyHeaders = $this->getOriginalProxyHeaders($request);
+
+        return new SimpleProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders);
+    }
+
+    /**
+     * @param array     $whiteList
+     * @param Request   $request
+     *
+     * @return WhitelistableProxyRequest
+     */
+    public function createWhitelistableFromRequest(array $whiteList, Request $request)
+    {
+        $proxyMethod  = $this->getProxyMethod($request);
+        $proxyUrl     = $this->getOriginalProxyUrl($request);
+        $proxyHeaders = $this->getOriginalProxyHeaders($request);
+
+        return new WhitelistableProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList);
+    }
+
+    /**
      * @param AppInstance $instance
      * @param Request     $request
      * @param Person      $person
      *
-     * @return ProxyRequest
+     * @return WhitelistableProxyRequest
      */
-    public function createFromRequest(AppInstance $instance, Request $request, Person $person)
+    public function createFromAppRequest(AppInstance $instance, Request $request, Person $person)
     {
         $proxyMethod  = $this->getProxyMethod($request);
         $proxyUrl     = $this->getOriginalProxyUrl($request);
@@ -95,7 +124,7 @@ class ProxyRequestFactory
             }
         }
 
-        return new ProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList);
+        return new WhitelistableProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList);
     }
 
     /**
@@ -145,7 +174,7 @@ class ProxyRequestFactory
             return [];
         }
 
-        $manifest = $app->getParsedManifest();
+        $manifest = $app->getManifest();
         if (!$manifest) {
             return [];
         }
@@ -236,7 +265,7 @@ class ProxyRequestFactory
 
         /** @var AppStateRepository $appStateRepo */
         $appStateRepo = $this->em->getRepository(AppState::class);
-        $appStates    = $appStateRepo->findByName($instance, $person, 'private', $names);
+        $appStates    = $appStateRepo->findReadableByName($instance, $person, $names);
 
         if ($appStates) {
             foreach ($appStates as $appState) {
