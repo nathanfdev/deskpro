@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\RefGenerator;
 
-use DeskPRO\Component\Exception\NoSendErrorException;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
@@ -191,7 +190,7 @@ class CustomRef implements RefGeneratorInterface
                 ++$append_count;
 
                 if ($attempt > $this->max_tries) {
-                    throw new NoSendErrorException("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
+                    throw new RefGeneratorException("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
                 }
 
                 if ($attempt > $this->max_tries - 5) {

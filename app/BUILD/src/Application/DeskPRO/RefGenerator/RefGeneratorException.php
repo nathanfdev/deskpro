@@ -26,11 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\Exception;
+namespace Application\DeskPRO\RefGenerator;
 
-/**
- * Class NoSendErrorException just a little class to let bugsnag client to know it should not be sent.
- */
-class NoSendErrorException extends \Exception
+use DeskPRO\Bundle\AppBundle\Exception\HelpdeskInstanceExceptionInterface;
+
+class RefGeneratorException extends \RuntimeException implements HelpdeskInstanceExceptionInterface
 {
 }

@@ -28,19 +28,14 @@
 
 namespace DpSys\LowError;
 
-use Application\DeskPRO\JIRA\ApiGeneralException;
-use DeskPRO\Component\Exception\NoSendErrorException;
-use Elastica\Exception\Connection\HttpException as ElasticaConnectionHttpException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Exception\LogoutException;
-use Zend\Mail\Protocol\Exception\RuntimeException as ZendMailProtocolRuntimeException;
 
 class SystemErrorHandler
 {
@@ -956,14 +951,13 @@ class SystemErrorHandler
         $exception)
     {
         static $ignore = [
-            \Swift_TransportException::class,
-            \Swift_IoException::class,
-            ZendMailProtocolRuntimeException::class,
-            MethodNotAllowedHttpException::class,
-            MethodNotAllowedException::class,
-            ElasticaConnectionHttpException::class,
-            ApiGeneralException::class,
-            NoSendErrorException::class,
+            'Swift_TransportException',
+            'Swift_IoException',
+            'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
+            'Symfony\\Component\\HttpKernel\\Exception\\MethodNotAllowedHttpException',
+            'Elastica\\Exception\\Connection\\HttpException',
+            'Application\\DeskPRO\\\JIRA\\\ApiGeneralException',
+            'DeskPRO\Bundle\\AppBundle\\Exception\\HelpdeskInstanceExceptionInterface',
         ];
 
         foreach ($ignore as $cls) {
