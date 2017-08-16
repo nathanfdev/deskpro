@@ -380,7 +380,7 @@ class GroupingCounter
             }
         }
 
-        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts)." ELSE 0 END AS $select_name";
 
         return $sql;
     }
