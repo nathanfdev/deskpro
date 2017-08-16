@@ -220,6 +220,7 @@
     "eslint-fix": "eslint --fix",
     "resources:copy": "cpx \"src/**/Resources/**/*.{gif,png,jpg,svg,mp3,ogg,wav}\" build",
     "gulp": "gulp && npm run-script resources:copy",
+    "gulp-dev": "gulp default-dev && npm run-script resources:copy",
     "gulp-dev-agent": "npm run-script resources:copy && gulp dev:agent",
     "gulp-dev-all": "npm run-script resources:copy && gulp dev:all",
     "dev": "npm run-script resources:copy && gulp dev:all",
