@@ -78,7 +78,12 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
             $scope.is_error   = false
             $scope.is_success = false
             $scope.is_loading = false
-            $scope.mode = 'manual'
+
+            $scope.manual_requested = true
+            if (!$scope.form.email_address.$error.required && !$scope.form.email_address.$error.email)
+              $scope.mode = 'manual'
+            else
+              return
 
           $scope.showAuto = ->
             $scope.errors = {}
@@ -89,7 +94,7 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
             $scope.mode = 'auto'
 
           $scope.keyfile = ->
-            url = Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
+            url = Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN + '&email_address=' + $scope.form_vals.email_address
             if not window.open(url)
               window.location = url
 
