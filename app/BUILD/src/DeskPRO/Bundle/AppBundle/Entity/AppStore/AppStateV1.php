@@ -34,7 +34,9 @@ use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository")
+ * @deprecated
+ *
+ * @ORM\Entity()
  * @ORM\Table(
  *  name="app2_app_state", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "owner_id"})
