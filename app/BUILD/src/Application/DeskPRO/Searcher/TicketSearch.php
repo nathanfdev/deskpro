@@ -1072,9 +1072,10 @@ class TicketSearch extends SearcherAbstract
 
         if ($with_part_union) {
             $select_query = "
-                ($sql)
+                SELECT DISTINCT ID FROM (($sql)
                 UNION
                 ($sql2)
+                $order_by) as t1
             ";
         } else {
             $select_query = $sql;

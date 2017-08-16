@@ -393,7 +393,7 @@ class TicketSearchController extends AbstractController
         $ticket_ids = Arrays::removeFalsey($ticket_ids);
         $ticket_ids = array_unique($ticket_ids);
 
-        $tickets = $this->em->getRepository(Ticket::class)->getTicketsResultsFromIds($ticket_ids, $this->person);
+        $tickets = $this->em->getRepository(Ticket::class)->getTicketsResultsFromIds($ticket_ids);
         $tickets = Arrays::orderIdArray($ticket_ids, $tickets);
 
         $display_fields = $this->in->getCleanValueArray('display_fields', 'string', 'discard');
