@@ -35,6 +35,12 @@ gulp.task('default', ['clean'], (cb) => {
   runSeq(['bundle'], cb);
 });
 
+// used in init-project-dev, builds to filesystem but without any optimisations
+// so its quicker during a new project checkout
+gulp.task('default-dev', ['clean'], (cb) => {
+  runSeq(['bundle:dev'], cb);
+});
+
 gulp.task('prod', ['clean', 'priv:start-prod'], (cb) => {
   runSeq(['bundle'], cb);
 });
@@ -441,6 +447,19 @@ gulp.task('bundle', (callback) => {
   refreshWidgetLoader('embed_loader');
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', true), callback);
+});
+
+gulp.task('bundle:dev', (callback) => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
+  reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
+  reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
+  refreshWidgetLoader('widget_loader');
+  refreshWidgetLoader('hit_recorder');
+  refreshWidgetLoader('embed_loader');
+  refreshPortalDesignerVariables();
+  runWebpackBundle(getWebpackConfig('all', false), callback);
 });
 
 gulp.task('bundle:agent', (callback) => {
