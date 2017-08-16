@@ -2355,6 +2355,7 @@ return [
     'agent.time.group_6_to_7_days'                             => '6 - 7 days',
     'agent.time.group_gt_6_months'                             => '> 6 months',
     'agent.time.group_lt_5_mins'                               => '< 5 minutes',
+    'agent.time.group_unknown'                                 => 'unkonwn',
     'agent.time.long-day_friday'                               => 'Friday',
     'agent.time.long-day_monday'                               => 'Monday',
     'agent.time.long-day_saturday'                             => 'Saturday',

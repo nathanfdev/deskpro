@@ -366,6 +366,9 @@ class GroupingCounter
 
         $parts = [];
         foreach ($times as $t) {
+            if ($t === 0) {
+                continue;
+            }
             if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
                 // total time is stored in seconds, so we're not doing a date compare
                 $from    = $ranges[$t];
@@ -720,6 +723,7 @@ class GroupingCounter
     public static function getTimeTitles()
     {
         $times = [
+            0                      => 'agent.time.group_unknown',
             300                    => 'agent.time.group_lt_5_mins',
             900                    => 'agent.time.group_5_to_15_mins',
             1800                   => 'agent.time.group_15_to_30_mins',
