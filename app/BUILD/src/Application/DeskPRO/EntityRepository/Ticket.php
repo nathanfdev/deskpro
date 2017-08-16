@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
+use Application\DeskPRO\Entity\CustomFieldData as CustomFieldDataEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
@@ -1087,5 +1088,18 @@ class Ticket extends AbstractEntityRepository
         }
 
         return $qb->getQuery();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getReportAssociations()
+    {
+        return [
+            'contextual_data' => [
+                'conditions'   => '%1$s.owner_id = %2$s.id',
+                'targetEntity' => CustomFieldDataEntity::class,
+            ],
+        ];
     }
 }
