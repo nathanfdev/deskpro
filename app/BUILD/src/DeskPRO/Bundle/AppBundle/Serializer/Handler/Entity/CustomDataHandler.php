@@ -110,6 +110,19 @@ class CustomDataHandler implements SubscribingHandlerInterface
                     $result[$defId]['value'] = $context->accept($value);
                     break;
 
+                case CustomDefAbstract::TYPE_DATA_JSON:
+                    $value = $customData->getData();
+                    try {
+                        $value = json_decode($value);
+                        if (json_last_error() !== JSON_ERROR_NONE) {
+                            $value = null;
+                        }
+                    } catch (\Exception $e) {
+                        $value = null;
+                    }
+
+                    $result[$defId]['value'] = $value;
+                    break;
                 default:
                     if ($customData->getData()) {
                         $value = $customData->getData();

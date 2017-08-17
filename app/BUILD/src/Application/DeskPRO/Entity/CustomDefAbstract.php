@@ -62,6 +62,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DISPLAY  = Handler\Display::class;
     const HANDLER_CLASS_HIDDEN   = Handler\Hidden::class;
     const HANDLER_CLASS_DATA     = Handler\Data::class;
+    const HANDLER_CLASS_DATAVALUE = Handler\DataJson::class;
 
     const TYPE_TEXT     = 'text';
     const TYPE_TEXTAREA = 'textarea';
@@ -72,6 +73,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_DISPLAY  = 'display';
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_DATA     = 'data';
+    const TYPE_DATA_JSON = 'datajson';
 
     /**
      * The unique ID.

@@ -42,6 +42,7 @@ use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -95,12 +96,43 @@ class CustomDataType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmitSerializeComplexTypes']);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
 
         if ($options['inline']) {
             $builder->addEventSubscriber(new InlineCustomDataListener());
+        }
+    }
+
+    /**
+     *
+     *
+     * @internal
+     *
+     * @param FormEvent $event
+     * @return string
+     */
+    public function onPreSubmitSerializeComplexTypes(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+        /** @var CustomDefAbstract $customDef */
+        $customDef = $config->getOption('custom_def');
+
+        $data = $event->getData();
+        $serializedData = null;
+
+        if ($customDef->getType() === CustomDefAbstract::TYPE_DATA_JSON) {
+            $serializedData = json_encode($data, JSON_NUMERIC_CHECK);
+            if (json_last_error() !== JSON_ERROR_NONE || !is_string($serializedData)) {
+                $serializedData = null;
+            }
+        }
+
+        if (is_string($serializedData)) {
+            $event->setData($serializedData);
         }
     }
 
@@ -133,6 +165,7 @@ class CustomDataType extends AbstractType
         // child field is not mapped so the form tries to get data from the options
         // so we should pass stored value via its options
         $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
+
         $form->add('data', $field->getType(), $options);
     }
 
@@ -212,7 +245,7 @@ class CustomDataType extends AbstractType
 
         // Merge custom def data with existing owner custom data collection.
         foreach ($customDefData as $customData) {
-            if (!$allCustomData->contains($customData)) {
+                 if (!$allCustomData->contains($customData)) {
                 $allCustomData->add($customData);
             }
         }
@@ -254,7 +287,6 @@ class CustomDataType extends AbstractType
                 return;
             }
         }
-
         $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
             'context'    => $context,
             'custom_def' => $customDef,
@@ -262,6 +294,7 @@ class CustomDataType extends AbstractType
         ]));
 
         foreach ($violations as $violation) {
+            var_dump(get_class($violation));die();
             $form->addError(new FormError(
                 $violation->getMessage(),
                 $violation->getMessageTemplate(),
@@ -440,6 +473,10 @@ class CustomDataType extends AbstractType
     private function createCustomField(CustomDefAbstract $def, $isInline = false)
     {
         switch ($def->getType()) {
+            case CustomDefAbstract::TYPE_DATA_JSON:
+                return new FormField(TextType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
             case CustomDefAbstract::TYPE_DATA:
             case CustomDefAbstract::TYPE_TEXT:
                 return new FormField(TextType::class, [
