@@ -735,6 +735,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		$('.prop-edit-trigger', box).on('click', function() {
 			propToggle('form');
 		});
+		$('section tr', box).on('click', function() {
+			propToggle('form');
+		});
 		$('.save', box).on('click', function() {
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
 			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
