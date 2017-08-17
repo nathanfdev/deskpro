@@ -86,8 +86,10 @@
 				{% if not app.isRelativeTimesDisabled() %}
 					class="timeago with-stickytip"
 					datetime="{{message.date_created|date('c', 'UTC')}}"
-					data-stickytip-target="#{{ elid }}"
+				{% else %}
+					class="with-stickytip"
 				{% endif %}
+				data-stickytip-target="#{{ elid }}"
 			>
 				{{message.date_created|date('fulltime')}}
 			</time>
