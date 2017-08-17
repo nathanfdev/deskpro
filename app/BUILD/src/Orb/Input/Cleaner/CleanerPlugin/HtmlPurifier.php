@@ -96,11 +96,7 @@ class HtmlPurifier implements CleanerPlugin
         }
 
         if (!$value || strpos($value, '<') === false) {
-            if ($type === 'html') {
-                return Strings::convert4ByteCharsToHtmlEntities($value);
-            } else {
-                return $value;
-            }
+            return Strings::convert4ByteCharsToHtmlEntities($value);
         }
 
         //------------------------------
