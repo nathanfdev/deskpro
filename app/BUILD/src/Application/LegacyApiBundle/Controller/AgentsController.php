@@ -612,7 +612,7 @@ class AgentsController extends AbstractController implements ProtectedController
                     'person_id'   => $person->getId(),
                     'person_name' => $person->getDisplayName(),
                     'is_deleted'  => $person->isDeleted(),
-                    'email'       => implode(', ', $person->getEmailAddresses()),
+                    'email'       => implode(', ', $person->getEmailAddresses(false, false)),
                 ];
             }
 
