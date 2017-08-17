@@ -26,14 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Dpql;
+namespace DeskPRO\Bundle\AppBundle\Exception;
 
-use DeskPRO\Bundle\AppBundle\Exception\HelpdeskInstanceExceptionInterface;
-
-/**
- * The exception for an error that occurs when compiling, preparing, or
- * executing a DPQL statement.
- */
-class Exception extends \Exception implements HelpdeskInstanceExceptionInterface
+interface HelpdeskInstanceExceptionInterface
 {
 }

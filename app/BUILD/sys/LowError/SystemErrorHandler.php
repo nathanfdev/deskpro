@@ -784,7 +784,7 @@ class SystemErrorHandler
                 }
             }
 
-            if ($errinfo['no_send_error']) {
+            if (!$errinfo['no_send_error']) { // if no send is false - then send
                 if ($bs = self::getBugsnagClient()) {
                     if ($errinfo['type'] === 'exception') {
                         $bs->notifyException($errinfo['exception']);
@@ -954,20 +954,16 @@ class SystemErrorHandler
             'Swift_TransportException',
             'Swift_IoException',
             'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
+            'Symfony\\Component\\HttpKernel\\Exception\\MethodNotAllowedHttpException',
+            'Elastica\\Exception\\Connection\\HttpException',
+            'Application\\DeskPRO\\\JIRA\\\ApiGeneralException',
+            'DeskPRO\Bundle\\AppBundle\\Exception\\HelpdeskInstanceExceptionInterface',
         ];
 
         foreach ($ignore as $cls) {
             if ($exception instanceof $cls) {
                 return true;
             }
-        }
-
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-            return true;
-        }
-
-        if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
-            return true;
         }
 
         if ($exception instanceof \Doctrine\DBAL\Types\ConversionException && strpos($exception->getMessage(), 'Doctrine Type array') !== false) {
@@ -1085,14 +1081,6 @@ class SystemErrorHandler
         }
 
         if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Cannot create Imagine instance') !== false) {
-            return true;
-        }
-
-        if ($exception instanceof \Elastica\Exception\Connection\HttpException) {
-            return true;
-        }
-
-        if ($exception instanceof \Application\DeskPRO\JIRA\ApiGeneralException) {
             return true;
         }
 
