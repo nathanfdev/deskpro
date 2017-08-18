@@ -91,7 +91,7 @@ class OrganizationEmailDomainTransformer implements DataTransformerInterface
             throw new \InvalidArgumentException('Organization is not defined.');
         }
 
-        $repository = $this->em->getRepository('DeskPRO:OrganizationEmailDomain');
+        $repository = $this->em->getRepository(OrganizationEmailDomain::class);
         $result     = [];
 
         foreach ($value as $email_domain) {
