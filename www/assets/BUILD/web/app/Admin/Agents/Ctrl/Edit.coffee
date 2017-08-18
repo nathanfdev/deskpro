@@ -350,6 +350,7 @@ define [
                 (res) =>
                   $scope.is_saving = false
                   $scope.error = res.data.error_message
+                  $scope.error_code = res.data.error_info.error_code
               )
             else
               doReset(false).then(
