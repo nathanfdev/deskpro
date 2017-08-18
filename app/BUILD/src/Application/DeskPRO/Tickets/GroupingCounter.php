@@ -840,10 +840,7 @@ class GroupingCounter
                 $key   = array_search($groupchoice, $times);
 
                 if ($key == 0) {
-                    $date1 = new \DateTime('-5 minutes');
-                    $date2 = new \DateTime('now');
-
-                    return ['type' => $groupvar, 'op' => 'between', 'options' => ['date1' => $date1, 'date2' => $date2]];
+                    return ['type' => $groupvar, 'op' => 'is', 'options' => [null]];
                 } elseif ($key == (count($times) - 1)) {
                     $date = new \DateTime('@'.(time() - 14515201));
 
