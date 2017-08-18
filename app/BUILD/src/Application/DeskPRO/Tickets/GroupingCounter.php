@@ -723,7 +723,7 @@ class GroupingCounter
     public static function getTimeTitles()
     {
         $times = [
-            0                      => 'agent.time.group_unknown',
+            0                      => 'agent.time.group_not_waiting',
             300                    => 'agent.time.group_lt_5_mins',
             900                    => 'agent.time.group_5_to_15_mins',
             1800                   => 'agent.time.group_15_to_30_mins',
