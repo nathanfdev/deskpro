@@ -1458,6 +1458,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
                 var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
                 var blobs = window.LegacyStoreProvider.getSnippetBlobs();
                 self.insertSnippet(snippet.toJS(), blobs.toJS());
+                self.pauseSend = false;
               } else {
                 $.ajax({
                   url:      BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
