@@ -58,6 +58,125 @@ class CustomDataHandler implements SubscribingHandlerInterface
     }
 
     /**
+     * @param CustomDataAbstract $fieldData
+     * @return CustomDefAbstract
+     */
+    public static function getFieldTypeDefinition(CustomDataAbstract $fieldData)
+    {
+        return  $fieldData->field->getParent() ? $fieldData->field->getParent() : $fieldData->field;
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param CustomDataAbstract $data
+     * @param SideloadSerializationContext $context
+     * @return array
+     */
+    public function serializeChoice(CustomDefAbstract $def, CustomDataAbstract $data, SideloadSerializationContext $context)
+    {
+        $choiceDef = $data->field;
+        $choiceId  = $choiceDef->getId();
+        return [
+            'value' => [$choiceId],
+            'detail' => [
+                $choiceId => [
+                    'id'    => $choiceDef->getId(),
+                    'title' => $choiceDef->getTitle()
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param CustomDataAbstract $data
+     * @param SideloadSerializationContext $context
+     * @return array
+     */
+    public function serializeDateTime(CustomDefAbstract $def, CustomDataAbstract $data, SideloadSerializationContext $context)
+    {
+        $value = $data->getData();
+
+        if ($value) {
+            try {
+                $value = new \DateTime('@'.$value);
+            } catch (\Exception $e) {
+                try {
+                    $value = new \DateTime($value);
+                } catch (\Exception $e) {
+                    $value = null;
+                }
+            }
+        } else {
+            $value = null;
+        }
+
+        return [
+            'value' => $context->accept($value)
+        ];
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param CustomDataAbstract $data
+     * @param SideloadSerializationContext $context
+     * @return array
+     */
+    public function serializeJson(CustomDefAbstract $def, CustomDataAbstract $data, SideloadSerializationContext $context)
+    {
+        if (! $def->isDataJsonType()) {
+
+        }
+
+        $value = $data->getData();
+        try {
+            $value = json_decode($value);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $value = null;
+            }
+        } catch (\Exception $e) {
+            $value = null;
+        }
+
+        return [ 'value' => $value ];
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param CustomDataAbstract[] $data
+     * @param SideloadSerializationContext $context
+     * @return array
+     */
+    public function serializeList(CustomDefAbstract $def, array $data, SideloadSerializationContext $context)
+    {
+        $extractValue = function (CustomDataAbstract $data) {
+            return $data->getData();
+        };
+
+        $values = array_map($extractValue, $data);
+        return [ 'value' => $values ];
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     * @param CustomDataAbstract $data
+     * @param SideloadSerializationContext $context
+     * @return array
+     */
+    public function serializeData(CustomDefAbstract $def, CustomDataAbstract $data, SideloadSerializationContext $context)
+    {
+        if ($data->getData()) {
+            $value = $data->getData();
+        } else {
+            $value = null;
+        }
+
+        return [
+            'value' => $value
+        ];
+    }
+
+    /**
      * @param JsonSerializationVisitor     $visitor
      * @param CustomDataAbstract[]         $collection
      * @param array                        $type
@@ -72,67 +191,49 @@ class CustomDataHandler implements SubscribingHandlerInterface
         }
 
         $result = [];
-
+        // split the result in two sets, one with list values and one with non-list values
+        $lists = [];
+        /** @var CustomDataAbstract[] $singles */
+        $singles = [];
         foreach ($collection as $customData) {
-            $customDef = $customData->field->getParent() ? $customData->field->getParent() : $customData->field;
+            $customDef = CustomDataHandler::getFieldTypeDefinition($customData);
             $defId     = $customDef->getId();
 
-            switch ($customDef->getType()) {
+            if ($customDef->isDataListType()) {
+                $values = array_key_exists($defId, $lists) ? $lists[$defId] : [];
+                array_push($values, $customData);
+                $lists[$defId] = $values;
+            } else {
+                $singles[$defId] = $customData;
+            }
+        }
+
+        /** @var CustomDataAbstract[] $customDataList */
+        foreach ($lists as $customDataList) {
+            $first = reset($customDataList);
+            $def = CustomDataHandler::getFieldTypeDefinition($first);
+            $serialized = $this->serializeList($def, $customDataList, $context);
+            $result[$def->getId()] = $serialized;
+        }
+
+        foreach ($singles as $customData) {
+            $def = CustomDataHandler::getFieldTypeDefinition($customData);
+            switch ($def->getType()) {
                 case CustomDefAbstract::TYPE_CHOICE:
-                    $choiceDef = $customData->field;
-                    $choiceId  = $choiceDef->getId();
-
-                    $result[$defId]['value'][]           = $choiceId;
-                    $result[$defId]['detail'][$choiceId] = [
-                        'id'    => $choiceDef->getId(),
-                        'title' => $choiceDef->getTitle(),
-                    ];
+                    $serialized = $this->serializeChoice($def, $customData, $context);
                     break;
-
                 case CustomDefAbstract::TYPE_DATE:
                 case CustomDefAbstract::TYPE_DATETIME:
-                    $value = $customData->getData();
-
-                    if ($value) {
-                        try {
-                            $value = new \DateTime('@'.$value);
-                        } catch (\Exception $e) {
-                            try {
-                                $value = new \DateTime($value);
-                            } catch (\Exception $e) {
-                                $value = null;
-                            }
-                        }
-                    } else {
-                        $value = null;
-                    }
-
-                    $result[$defId]['value'] = $context->accept($value);
+                    $serialized = $this->serializeDateTime($def, $customData, $context);
                     break;
-
                 case CustomDefAbstract::TYPE_DATA_JSON:
-                    $value = $customData->getData();
-                    try {
-                        $value = json_decode($value);
-                        if (json_last_error() !== JSON_ERROR_NONE) {
-                            $value = null;
-                        }
-                    } catch (\Exception $e) {
-                        $value = null;
-                    }
-
-                    $result[$defId]['value'] = $value;
+                    $serialized = $this->serializeJson($def, $customData, $context);
                     break;
                 default:
-                    if ($customData->getData()) {
-                        $value = $customData->getData();
-                    } else {
-                        $value = null;
-                    }
-
-                    $result[$defId]['value'] = $value;
+                    $serialized = $this->serializeData($def, $customData, $context);
                     break;
             }
+            $result[$def->getId()] = $serialized;
         }
 
         return $result ?: new \ArrayObject();

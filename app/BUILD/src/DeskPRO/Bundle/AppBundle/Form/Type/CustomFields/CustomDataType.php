@@ -33,6 +33,8 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DataJsonType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DataListType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
@@ -96,43 +98,12 @@ class CustomDataType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmitSerializeComplexTypes']);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
 
         if ($options['inline']) {
             $builder->addEventSubscriber(new InlineCustomDataListener());
-        }
-    }
-
-    /**
-     *
-     *
-     * @internal
-     *
-     * @param FormEvent $event
-     * @return string
-     */
-    public function onPreSubmitSerializeComplexTypes(FormEvent $event)
-    {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
-        /** @var CustomDefAbstract $customDef */
-        $customDef = $config->getOption('custom_def');
-
-        $data = $event->getData();
-        $serializedData = null;
-
-        if ($customDef->getType() === CustomDefAbstract::TYPE_DATA_JSON) {
-            $serializedData = json_encode($data, JSON_NUMERIC_CHECK);
-            if (json_last_error() !== JSON_ERROR_NONE || !is_string($serializedData)) {
-                $serializedData = null;
-            }
-        }
-
-        if (is_string($serializedData)) {
-            $event->setData($serializedData);
         }
     }
 
@@ -186,6 +157,8 @@ class CustomDataType extends AbstractType
 
         /* @var CustomDataAbstract[]|ArrayCollection $allCustomData */
         $allCustomData = $form->getData() ?: new ArrayCollection();
+
+        /** @var CustomDataAbstract[] */
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
@@ -218,6 +191,26 @@ class CustomDataType extends AbstractType
 
                     $customDefData->add($customData);
                 }
+            }
+        } else if ($customDef->isDataListType()) {
+            $data = $form->get('data')->getData();
+            $itemList = is_string($data) ? json_decode($data) : [];
+
+            // remove deleted items and collect the id's of existing ones
+            $existingItemList = [];
+            foreach ($customDefData as $customData) {
+                if (!in_array($customData->getData(), $itemList)) {
+                    $customDefData->removeElement($customData);
+                } else {
+                    array_push($existingItemList, $customData->getData());
+                }
+            }
+
+            $newItemList = array_diff($itemList, $existingItemList);
+            foreach ($newItemList as $item) {
+                $customData = $customDef->createCustomData();
+                $customData->setData($item);
+                $customDefData->add($customData);
             }
         } else {
             $data = $form->get('data')->getData();
@@ -293,8 +286,7 @@ class CustomDataType extends AbstractType
             'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
         ]));
 
-        foreach ($violations as $violation) {
-            var_dump(get_class($violation));die();
+        foreach ($violations as $violation) {;
             $form->addError(new FormError(
                 $violation->getMessage(),
                 $violation->getMessageTemplate(),
@@ -357,6 +349,14 @@ class CustomDataType extends AbstractType
     {
         $allCustomData = $customData ?: new ArrayCollection();
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
+
+        if ($customDef->isDataListType()) {
+            $formFieldData = [];
+            foreach ($customDefData as $data) {
+                array_push($formFieldData, $data->getData());
+            }
+            return $formFieldData;
+        }
 
         $formFieldData = null;
         if ($customDefData->count()) {
@@ -473,8 +473,12 @@ class CustomDataType extends AbstractType
     private function createCustomField(CustomDefAbstract $def, $isInline = false)
     {
         switch ($def->getType()) {
+            case CustomDefAbstract::TYPE_DATA_LIST:
+                return new FormField(DataListType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
             case CustomDefAbstract::TYPE_DATA_JSON:
-                return new FormField(TextType::class, [
+                return new FormField(DataJsonType::class, [
                     'help' => $def->getRealDescription(),
                 ]);
             case CustomDefAbstract::TYPE_DATA:

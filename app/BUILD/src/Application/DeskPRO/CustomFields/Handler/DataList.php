@@ -37,7 +37,7 @@ use Orb\Util\Strings;
 /**
  * Handles the data json value custom field.
  */
-class DataJson extends HandlerAbstract
+class DataList extends HandlerAbstract
 {
     public function getDataFromForm(array $form_data)
     {
@@ -47,7 +47,7 @@ class DataJson extends HandlerAbstract
 
             try {
                 $decodedValue = is_string($value) ? json_decode($value) : null;
-                if (json_last_error() !== JSON_ERROR_NONE) {
+                if (json_last_error() !== JSON_ERROR_NONE || !is_array($decodedValue)) {
                     $decodedValue = null;
                 }
             } catch (\Exception $e) {

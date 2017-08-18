@@ -30,49 +30,23 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\CustomFields\Handler;
+namespace Application\LegacyApiBundle\Form\CustomField\Type;
 
-use Orb\Util\Strings;
+use Application\LegacyApiBundle\Form\CustomField\Model;
+use Symfony\Component\Form\FormBuilderInterface;
 
-/**
- * Handles the data json value custom field.
- */
-class DataJson extends HandlerAbstract
+class DataListFieldType extends CustomFieldTypeAbstract
 {
-    public function getDataFromForm(array $form_data)
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        if (isset($form_data[$this->getFormFieldName()])) {
-            $value = $form_data[$this->getFormFieldName()];
-            $decodedValue = null;
-
-            try {
-                $decodedValue = is_string($value) ? json_decode($value) : null;
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $decodedValue = null;
-                }
-            } catch (\Exception $e) {
-                $decodedValue = null;
-            }
-
-            $data = is_null($decodedValue) ? $value : json_encode($decodedValue);
-            return [[$this->field_def->getId(), 'input', $data]] ;
-        }
-
-        return [];
+        $builder->add('usersource_id', 'text', ['required' => false]);
+        $builder->add('field_name', 'text', ['required' => false]);
     }
 
-    public function getSearchCapabilities()
+    public function getDefaultOptions(array $options)
     {
-        return ['is', 'not', 'contains', 'notcontains'];
-    }
-
-    public function getFilterCapabilities()
-    {
-        return ['is', 'not'];
-    }
-
-    public function getSearchType()
-    {
-        return 'input';
+        return [
+            'data_class' => Model\DataListField::class
+        ];
     }
 }

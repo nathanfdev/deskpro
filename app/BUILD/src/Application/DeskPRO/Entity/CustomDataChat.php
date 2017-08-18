@@ -133,15 +133,7 @@ class CustomDataChat extends CustomDataAbstract
         $metadata->setPrimaryTable(
             [
                 'name'              => 'custom_data_chat',
-                'uniqueConstraints' => [
-                    'unique_idx' => [
-                        'columns' => [
-                            'field_id',
-                            'conversation_id',
-                            'root_field_id',
-                        ],
-                    ],
-                ],
+                'uniqueConstraints' => [],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
