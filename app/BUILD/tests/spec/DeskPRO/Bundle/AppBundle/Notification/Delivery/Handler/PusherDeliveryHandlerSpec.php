@@ -61,7 +61,7 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
 
-        $pusher->triggerBatch(Argument::type('array'), true)->shouldBeCalled();
+        $pusher->triggerBatch(Argument::type('array'), true, true)->shouldBeCalled();
         $this->schedule($actionAlert);
         $this->deliver();
     }
