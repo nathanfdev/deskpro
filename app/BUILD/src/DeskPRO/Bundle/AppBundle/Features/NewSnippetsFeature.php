@@ -153,7 +153,8 @@ HTML;
         $em->beginTransaction();
         try {
             $connection->query(
-                "INSERT INTO snippets 
+                "INSERT INTO snippets
+                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, is_split) 
                       SELECT
                           ts.id,
                           IFNULL(ts.person_id, tcs.person_id) as person_id,
@@ -172,6 +173,10 @@ HTML;
                     GROUP BY ts.id, ol_title.id;");
             $connection->query(
                 "INSERT INTO snippet_labels
+                      (
+                        snippet_id,
+                        label
+                      ) 
                       SELECT 
                         ts.id, 
                         ol_category.value
@@ -184,13 +189,17 @@ HTML;
                     GROUP BY ts.id, ol_category.id");
             $connection->query(
                 'INSERT INTO snippet_translations
+                    (
+                      snippet_id, 
+                      language_id, 
+                      content, 
+                      title
+                    ) 
                     SELECT
-                      NULL as id,
                       ts.id as snippet_id,
                       ol_title.language_id,
                       ol_content.value as content,
-                      ol_title.value as title,
-                      NULL as type
+                      ol_title.value as title
                     FROM text_snippets ts
                       LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_title.prop_name = \'title\'
                       LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_content.prop_name = \'snippet\' AND ol_content.language_id = ol_title.language_id
