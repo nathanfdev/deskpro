@@ -172,7 +172,8 @@ export class ChatBeginContainer extends React.Component {
     }
 
     this.setState({
-      submit: true
+      submit: true,
+      banned: false
     });
 
     const promise = dispatch(createChat(this.state.formData.value));
@@ -188,10 +189,17 @@ export class ChatBeginContainer extends React.Component {
       },
       (result) => {
         if (this.mounted) {
-          this.setState({
+          const data = result.getData();
+          const newState = {
             submit: false,
-            errors: result.getData()
-          });
+            errors: data
+          };
+
+          if (data.message === 'banned') {
+            newState.banned = true;
+          }
+
+          this.setState(newState);
         }
       }
     );
