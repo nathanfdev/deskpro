@@ -405,9 +405,11 @@ button, .button, input[type="submit"] {
   @include margin-right(10px);
 
   @media screen and (max-width: 760px) {
-    display: block;
-    margin-bottom: 10px;
-    width: 100%;
+    &:not(.button-small) {
+      display: block;
+      margin-bottom: 10px;
+      width: 100%;
+    }
   }
 
   &.disabled {
