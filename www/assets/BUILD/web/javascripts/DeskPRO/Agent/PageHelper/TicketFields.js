@@ -43,14 +43,14 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				var $holders = self.page.getEl('field_holders');
 
 				// check single fields
-				var $field = $holders.find('[name="' + name + '"], [name="' + name + '[]"]').first();
-				if (!$field[0]) {
+				var $field = $holders.find('[name="' + name + '"], [name="' + name + '[]"]');
+				if (!$field.length) {
           // field is not present on the form
           // e.g. org field if user doesn't belong to a org
           return;
 				}
 
-        if ($field.is(':checkbox')) {
+        if ($field.length === 1 && $field.is(':checkbox')) {
           return $field.is(':checked');
         }
         if ($field.attr('type') === 'hidden') {
