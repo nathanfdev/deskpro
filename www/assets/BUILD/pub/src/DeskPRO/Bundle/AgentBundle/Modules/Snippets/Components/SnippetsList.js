@@ -264,7 +264,9 @@ export class SnippetsList extends React.Component {
 
   updateList(index) {
     this.listRef.forceUpdateGrid();
-    this.listRef.scrollToRow(index);
+    if (index) {
+      this.listRef.scrollToRow(index);
+    }
   }
 
   rowRenderer({
