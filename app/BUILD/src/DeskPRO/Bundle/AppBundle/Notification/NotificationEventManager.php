@@ -101,10 +101,10 @@ class NotificationEventManager implements EventSubscriberInterface
         return $this->strategyFactory->create($event);
     }
 
-    public function deliver()
+    public function deliver($postpone = false)
     {
         foreach ($this->strategyFactory->getAllBuiltStrategies() as $strategy) {
-            $strategy->deliver();
+            $strategy->deliver($postpone);
         }
     }
 

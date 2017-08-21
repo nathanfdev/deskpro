@@ -52,5 +52,16 @@ abstract class AbstractDeliveryHandler implements DeliveryHandlerInterface
         return static::TYPE;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     abstract protected function getChannel(MessageInterface $message);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deliverSoon()
+    {
+        $this->deliver();
+    }
 }

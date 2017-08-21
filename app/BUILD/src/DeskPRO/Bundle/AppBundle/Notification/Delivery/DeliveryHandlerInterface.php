@@ -51,4 +51,6 @@ interface DeliveryHandlerInterface
      * @return mixed
      */
     public function deliver();
+
+    public function deliverSoon();
 }

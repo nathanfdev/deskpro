@@ -314,11 +314,11 @@ class TicketManager
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
-            $this->notificationEventManager->deliver();
+            $this->notificationEventManager->deliver(true);
             throw $e;
         }
 
-        $this->notificationEventManager->deliver();
+        $this->notificationEventManager->deliver(true);
 
         return $ret;
     }
