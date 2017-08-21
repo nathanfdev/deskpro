@@ -573,10 +573,6 @@ define [
         }
       })
 
-    openDupePerson: ($event) ->
-      popover = window.parent.DeskPRO_Window._initInterfacePopover($($event.currentTarget));
-      popover.open()
-
     mergeDupePerson: (personId) ->
       merge = new window.parent.DeskPRO.Agent.Widget.Merge({
         tabType: 'person',
