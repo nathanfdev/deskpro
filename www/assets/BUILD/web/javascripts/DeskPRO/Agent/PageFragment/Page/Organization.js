@@ -518,6 +518,9 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 				success: function(rendered) {
 					fieldsRendered.empty().html(rendered);
 					propToggle('display');
+          $('section', box).on('click', function() {
+            propToggle('form');
+          });
 				}
 			});
 		});

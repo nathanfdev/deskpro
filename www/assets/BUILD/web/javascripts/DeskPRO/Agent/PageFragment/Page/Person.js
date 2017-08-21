@@ -762,6 +762,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					if (data.success) {
 						fieldsRendered.empty().html(data.tpl);
 						propToggle('display');
+            $('section tr', box).on('click', function() {
+              propToggle('form');
+            });
 					} else if (data.invalid_custom_fields) {
 						$('.is-loading', box).hide();
 						$('.save', box).show();
