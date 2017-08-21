@@ -238,7 +238,7 @@ class CustomDataType extends AbstractType
 
         // Merge custom def data with existing owner custom data collection.
         foreach ($customDefData as $customData) {
-                 if (!$allCustomData->contains($customData)) {
+            if (!$allCustomData->contains($customData)) {
                 $allCustomData->add($customData);
             }
         }
@@ -280,13 +280,14 @@ class CustomDataType extends AbstractType
                 return;
             }
         }
+
         $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
             'context'    => $context,
             'custom_def' => $customDef,
             'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
         ]));
 
-        foreach ($violations as $violation) {;
+        foreach ($violations as $violation) {
             $form->addError(new FormError(
                 $violation->getMessage(),
                 $violation->getMessageTemplate(),
