@@ -405,9 +405,11 @@ button, .button, input[type="submit"] {
   @include margin-right(10px);
 
   @media screen and (max-width: 760px) {
-    display: block;
-    margin-bottom: 10px;
-    width: 100%;
+    &:not(.button-small) {
+      display: block;
+      margin-bottom: 10px;
+      width: 100%;
+    }
   }
 
   &.disabled {
@@ -10206,6 +10208,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       }
     }
 
+    #edit_ticket_page,
     .ticket-messages {
       @include margin-right(340px);
     }
@@ -10223,7 +10226,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     .ticket-view-content-container {
       @include margin-right(0);
 
-      .header, .ticket-messages {
+      .header, .ticket-messages, #edit_ticket_page {
         @include margin-right(0);
       }
     }
