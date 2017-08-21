@@ -1,0 +1,132 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(
+ *  name="app2_app_object_connection", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_alias", columns={"app_id", "alias"})
+ *  })
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="object_type", type="string")
+ * @ORM\DiscriminatorMap({
+ *     "custom_def_ticket" = "AppCustomTicketFieldDefConnection",
+ *     "custom_def_organization" = "AppCustomOrganizationFieldDefConnection",
+ *     "custom_def_people" = "AppCustomPeopleFieldDefConnection",
+ *     "ticket_triggers" = "AppTicketTriggerConnection"
+ * })
+ * @JMS\ExclusionPolicy("all")
+ */
+abstract class AppObjectConnection
+{
+    /**
+     * @ORM\Id()
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
+     * @var integer
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", nullable=false, length=200)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $alias;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AppStore\App>")
+     *
+     * @var App
+     */
+    private $app;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param string $alias
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+    }
+
+    /**
+     * @return App
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
+
+    /**
+     * @param App $app
+     */
+    public function setApp(App $app)
+    {
+        $this->app = $app;
+    }
+}
