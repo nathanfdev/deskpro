@@ -2342,17 +2342,18 @@ class Person extends DomainObject implements
 
     /**
      * @param bool $skipPrimary
+     * @param bool $validatedOnly
      *
      * @return array
      */
-    public function getEmailAddresses($skipPrimary = false)
+    public function getEmailAddresses($skipPrimary = false, $validatedOnly = true)
     {
         $arr = [];
         foreach ($this->emails as $email) {
             if ($skipPrimary && $email->getEmail() === $this->primary_email->getEmail()) {
                 continue;
             }
-            if ($email->isValidated()) {
+            if ($email->isValidated() || !$validatedOnly) {
                 $arr[] = $email->getEmail();
             }
         }
