@@ -1361,51 +1361,53 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var ed = textarea.getEditor();
 		var api = textarea.data('redactor');
 		var lastH = ed.height();
-		ed.on('keyup', function(ev) {
-			var isCtrl = false;
-			if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
-				isCtrl = true;
-			} else if (ev.altKey) {
-				isCtrl = true;
-			}
+    if (DESKPRO_ENABLE_KB_SHORTCUTS) {
+      ed.on('keyup', function (ev) {
+        var isCtrl = false;
+        if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+          isCtrl = true;
+        } else if (ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) {
+          isCtrl = true;
+        }
 
-			if (isCtrl) {
-				if (isCtrl && (ev.which === 85)) {
-					ev.preventDefault();
-					self.shortcutReplySetAwaitingUser();
-					return;
-				}
-				if (isCtrl && (ev.which === 65)) {
-					ev.preventDefault();
-					self.shortcutReplySetAwaitingAgent();
-					return;
-				}
-				if (isCtrl && (ev.which === 68)) {
-					ev.preventDefault();
-					self.shortcutReplySetResolved();
-					return;
-				}
-				if (isCtrl && (ev.which === 82)) {
-					ev.preventDefault();
-					self.shortcutSendReply();
-					return;
-				}
-				if (isCtrl && (ev.which === 83)) {
-					ev.preventDefault();
-					window.setTimeout(function() {
-						self.shortcutOpenSnippets();
-					}, 10);
-					return;
-				}
-				if (isCtrl && (ev.which === 79)) {
-					ev.preventDefault();
-					window.setTimeout(function() {
-						self.shortcutReplyOpenProperties();
-					}, 10);
-					return;
-				}
-			}
-		});
+        if (isCtrl) {
+          if (isCtrl && (ev.which === 85)) {
+            ev.preventDefault();
+            self.shortcutReplySetAwaitingUser();
+            return;
+          }
+          if (isCtrl && (ev.which === 65)) {
+            ev.preventDefault();
+            self.shortcutReplySetAwaitingAgent();
+            return;
+          }
+          if (isCtrl && (ev.which === 68)) {
+            ev.preventDefault();
+            self.shortcutReplySetResolved();
+            return;
+          }
+          if (isCtrl && (ev.which === 82)) {
+            ev.preventDefault();
+            self.shortcutSendReply();
+            return;
+          }
+          if (isCtrl && (ev.which === 83)) {
+            ev.preventDefault();
+            window.setTimeout(function () {
+              self.shortcutOpenSnippets();
+            }, 10);
+            return;
+          }
+          if (isCtrl && (ev.which === 79)) {
+            ev.preventDefault();
+            window.setTimeout(function () {
+              self.shortcutReplyOpenProperties();
+            }, 10);
+            return;
+          }
+        }
+      });
+    }
 		ed.on('keypress change', function() {
 			textarea.addClass('touched');
 

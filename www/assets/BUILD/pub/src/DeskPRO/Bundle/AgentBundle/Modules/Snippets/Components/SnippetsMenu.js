@@ -471,9 +471,12 @@ export class SnippetsMenu extends React.Component {
       return;
     }
 
-    if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac || ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) { // eslint-disable-line no-undef
-      if (ev.key === 's') {
-        this.props.closeMenu();
+    if (window.DESKPRO_ENABLE_KB_SHORTCUTS) {
+      if (ev.ctrlKey && window.DeskPRO_Window.keyboardShortcuts.isMac
+        || ev.altKey && !window.DeskPRO_Window.keyboardShortcuts.isMac) {
+        if (ev.key === 's') {
+          this.props.closeMenu();
+        }
       }
     }
   };

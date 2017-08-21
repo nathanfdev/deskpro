@@ -144,7 +144,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var isCtrl = false;
 					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
 						isCtrl = true;
-					} else if (ev.altKey) {
+					} else if (ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) {
 						isCtrl = true;
 					}
 
