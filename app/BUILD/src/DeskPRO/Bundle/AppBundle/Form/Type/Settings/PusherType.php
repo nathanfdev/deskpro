@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Model\PusherModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -47,7 +46,6 @@ class PusherType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('pusher_enabled', ApiBooleanType::class, ['required' => true])
             ->add('key', TextType::class)
             ->add('secret', TextType::class)
             ->add('id', TextType::class)

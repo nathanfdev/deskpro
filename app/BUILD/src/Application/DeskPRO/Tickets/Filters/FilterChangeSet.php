@@ -174,7 +174,7 @@ class FilterChangeSet
                         [
                             'op'        => 'add',
                             'filter_id' => $filterId,
-                            'target'    => $agent,
+                            'target'    => $agent->getId(),
                         ]
                     )
                 );
@@ -193,7 +193,7 @@ class FilterChangeSet
                         [
                             'op'        => 'del',
                             'filter_id' => $filterId,
-                            'target'    => $agent,
+                            'target'    => $agent->getId(),
                         ]
                     )
                 );
