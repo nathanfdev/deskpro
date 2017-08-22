@@ -26,30 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
-use Application\DeskPRO\Entity\CustomDefPerson;
+namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\Repository")
  * @JMS\ExclusionPolicy("all")
  */
-class AppCustomPeopleFieldDefConnection extends AppObjectConnection
+class CustomOrganizationFieldDefinitionAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefPerson")
-     * @ORM\JoinColumn(name="custom_def_people_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefOrganization")
+     * @ORM\JoinColumn(name="custom_def_organization_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefPerson>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefOrganization>")
      *
-     * @var CustomDefPerson
+     * @var CustomDefOrganization
      */
     private $object;
 
     /**
-     * @return CustomDefPerson
+     * @return CustomDefOrganization
      */
     public function getObject()
     {
@@ -57,9 +57,9 @@ class AppCustomPeopleFieldDefConnection extends AppObjectConnection
     }
 
     /**
-     * @param CustomDefPerson $object
+     * @param CustomDefOrganization $object
      */
-    public function setObject(CustomDefPerson $object)
+    public function setObject(CustomDefOrganization $object)
     {
         $this->object = $object;
     }

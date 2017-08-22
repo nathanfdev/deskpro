@@ -26,30 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
-use Application\DeskPRO\Entity\TicketTrigger;
+namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\Repository")
  * @JMS\ExclusionPolicy("all")
  */
-class AppTicketTriggerConnection extends AppObjectConnection
+class CustomPeopleFieldDefinitionAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketTrigger")
-     * @ORM\JoinColumn(name="ticket_triggers_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefPerson")
+     * @ORM\JoinColumn(name="custom_def_people_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\TicketTrigger>")
+     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefPerson>")
      *
-     * @var TicketTrigger
+     * @var CustomDefPerson
      */
     private $object;
 
     /**
-     * @return TicketTrigger
+     * @return CustomDefPerson
      */
     public function getObject()
     {
@@ -57,9 +57,9 @@ class AppTicketTriggerConnection extends AppObjectConnection
     }
 
     /**
-     * @param TicketTrigger $object
+     * @param CustomDefPerson $object
      */
-    public function setObject(TicketTrigger $object)
+    public function setObject(CustomDefPerson $object)
     {
         $this->object = $object;
     }

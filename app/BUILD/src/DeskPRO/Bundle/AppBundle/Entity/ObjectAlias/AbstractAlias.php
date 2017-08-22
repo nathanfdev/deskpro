@@ -26,28 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
+namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
  * @ORM\Table(
- *  name="app2_app_object_connection", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_alias", columns={"app_id", "alias"})
+ *  name="object_aliases", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="unique_alias", columns={"alias", "app_id"})
  *  })
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="object_type", type="string")
  * @ORM\DiscriminatorMap({
- *     "custom_def_ticket" = "AppCustomTicketFieldDefConnection",
- *     "custom_def_organization" = "AppCustomOrganizationFieldDefConnection",
- *     "custom_def_people" = "AppCustomPeopleFieldDefConnection",
- *     "ticket_triggers" = "AppTicketTriggerConnection"
+ *     "custom_def_ticket" = "CustomTicketFieldDefinitionAlias",
+ *     "custom_def_organization" = "CustomOrganizationFieldDefinitionAlias",
+ *     "custom_def_people" = "CustomPeopleFieldDefinitionAlias",
+ *     "ticket_triggers" = "TicketTriggerAlias"
  * })
  * @JMS\ExclusionPolicy("all")
  */
-abstract class AppObjectConnection
+abstract class AbstractAlias
 {
     /**
      * @ORM\Id()
@@ -73,7 +74,7 @@ abstract class AppObjectConnection
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AppStore\App>")

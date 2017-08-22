@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
@@ -63,6 +64,34 @@ class CustomFieldManager
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    /**
+     * @param string $customFieldType
+     * @return FieldNameResolver
+     */
+    public function getFieldNameResolver($customFieldType)
+    {
+        try {
+            $aliasFieldNameStrategy = null;
+            $aliasType = ObjectAlias\Types::aliasTypeForObjectType($customFieldType, $this->em);
+            if (empty($aliasType)) {
+                throw new \DomainException('no alias type found');
+            }
+
+            /** @var ObjectAlias\Repository $repository */
+            $repository = $this->em->getRepository($aliasType);
+            $aliasFieldNameStrategy = new AliasFieldNameResolvingStrategy($repository);
+        } catch (\Exception $e) {
+            throw FieldNameResolverException::missingStrategy(AliasFieldNameResolvingStrategy::class, $e);
+        }
+
+        $defaultStrategies = [
+            new LegacyFieldNameResolvingStrategy(),
+            $aliasFieldNameStrategy
+        ];
+
+        return new FieldNameResolver($defaultStrategies);
     }
 
     /**

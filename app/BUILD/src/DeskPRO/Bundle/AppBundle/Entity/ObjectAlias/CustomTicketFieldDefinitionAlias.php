@@ -26,16 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
+namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
+
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\Repository")
  * @JMS\ExclusionPolicy("all")
  */
-class AppCustomTicketFieldDefConnection extends AppObjectConnection
+class CustomTicketFieldDefinitionAlias extends AbstractAlias
 {
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefTicket")

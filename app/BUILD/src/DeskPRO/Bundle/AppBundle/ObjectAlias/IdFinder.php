@@ -26,41 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Entity\AppStore;
-use Application\DeskPRO\Entity\CustomDefOrganization;
-use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
+namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-/**
- * @ORM\Entity
- * @JMS\ExclusionPolicy("all")
- */
-class AppCustomOrganizationFieldDefConnection extends AppObjectConnection
+interface IdFinder
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefOrganization")
-     * @ORM\JoinColumn(name="custom_def_organization_id", referencedColumnName="id", nullable=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\CustomDefOrganization>")
-     *
-     * @var CustomDefOrganization
+     * @return string
      */
-    private $object;
+    public function getObjectType();
 
     /**
-     * @return CustomDefOrganization
+     * @param $alias
+     *
+     * @return null|int
      */
-    public function getObject()
-    {
-        return $this->object;
-    }
-
-    /**
-     * @param CustomDefOrganization $object
-     */
-    public function setObject(CustomDefOrganization $object)
-    {
-        $this->object = $object;
-    }
+    public function findId($alias);
 }

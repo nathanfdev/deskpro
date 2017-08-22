@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Language;
@@ -49,6 +50,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
+use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\CustomFieldAliasTransformer;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -158,6 +160,10 @@ class TicketType extends AbstractType
                 'mapped' => false,
             ])
         ;
+
+        // resolve field name aliases
+        $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefTicket::class);
+        $builder->addEventSubscriber($fieldNameResolver);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddMessageField']);
