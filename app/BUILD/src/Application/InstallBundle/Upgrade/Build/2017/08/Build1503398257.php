@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1501581570 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1503398257 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -37,7 +37,7 @@ class Build1501581570 extends AbstractBuild implements BlockingBuildInterface, S
     public function runAlters()
     {
         $this->execDbQuery('default', 'ALTER TABLE snippet_translations ADD type VARCHAR(255) DEFAULT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE snippets ADD is_split TINYINT(1) NOT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE snippets ADD is_split TINYINT(1) NOT NULL DEFAULT 0');
     }
 
     public function run()
