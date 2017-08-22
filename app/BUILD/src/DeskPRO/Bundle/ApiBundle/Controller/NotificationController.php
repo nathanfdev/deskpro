@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\DeskproClientType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\PusherType;
 use DeskPRO\Bundle\AppBundle\Model\DeskproClientModel;
@@ -150,8 +151,17 @@ class NotificationController extends BaseController
 
         $deskproClientModel = new DeskproClientModel();
 
+        if ($pusherEnabled) {
+            $mode = 'pusher';
+        } elseif ($deskproEnabled) {
+            $mode = 'deskpro';
+        } else {
+            $mode = 'db';
+        }
+
         return View::create($this->wrap(
             [
+                'mode'   => $mode,
                 'pusher' => $pusherModel
                     ->setPusherEnabled($pusherEnabled)
                     ->setId($bag->get('notification.settings.pusher_client.appId', ''))
@@ -197,14 +207,18 @@ class NotificationController extends BaseController
      */
     public function saveClientsCredentialsAction(Request $request)
     {
-        $data = $request->request->all();
+        $mode = $request->request->get('mode');
+
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
         $settingRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
 
-        switch ($data['mode']) {
+        $formData = $request->request->all();
+        unset($formData['mode']);
+
+        switch ($mode) {
             case 'pusher':
                 $form = $this->createForm(PusherType::class);
-                $form->submit($request->request->all());
+                $form->submit($formData);
 
                 if ($form->isValid()) {
                     /** @var PusherModel $pusherModel */
@@ -213,11 +227,13 @@ class NotificationController extends BaseController
                     $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
                     $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
                     $settingRepo->updateSetting('notification.settings.pusher_client.cluster', $pusherModel->getCluster());
+                } else {
+                    throw new InvalidFormException($form);
                 }
                 break;
             case 'deskpro':
                 $form = $this->createForm(DeskproClientType::class);
-                $form->submit($request->request->all());
+                $form->submit($formData);
 
                 if ($form->isValid()) {
                     /** @var DeskproClientModel $deskproClientModel */
@@ -225,14 +241,18 @@ class NotificationController extends BaseController
                     $settingRepo->updateSetting('notification.settings.deskpro_client.host', $deskproClientModel->getHost());
                     $settingRepo->updateSetting('notification.settings.pusher_client.secret', $deskproClientModel->getSecret());
                     $settingRepo->updateSetting('notification.settings.pusher_client.port', $deskproClientModel->getPort());
+                } else {
+                    throw new InvalidFormException($form);
                 }
                 break;
+            default:
+                $mode = 'db';
         }
 
         $config = [
             'strategy' => 'immediate',
             'delivery' => [
-                $data['mode'],
+                $mode,
             ],
         ];
         $settingRepo->updateSetting('notification.settings.default_strategy', serialize($config));

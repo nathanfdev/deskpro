@@ -5,7 +5,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @DEPS      = ['Api2', 'Growl']
 
     init: ->
-      @$scope.mode = 'default';
+      @$scope.mode = 'db';
       @$scope.deskpro = {};
       @$scope.pusher = {
         clusters: [
@@ -18,11 +18,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       return
 
     initialLoad: ->
-      @Api2.sendGet('/notify/setup/action-alerts/clients').then(
-        (response) =>
+      return @Api2.sendGet('/notify/setup/action-alerts/clients').then( (response) =>
           clients = response.data.data
-          @$scope.mode                  = if clients.pusher.pusher_enabled then 'pusher' else 'default'
-          @$scope.mode                  = if clients.deskpro.deskpro_client_enabled then 'deskpro' else 'default'
+          @$scope.mode                  = clients.mode
 
           @$scope.pusher.id             = clients.pusher.id
           @$scope.pusher.secret         = clients.pusher.secret
@@ -33,7 +31,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @$scope.deskpro.host           = clients.deskpro.host
           @$scope.deskpro.port           = clients.deskpro.port
       )
-      return
 
     getPusherParams: ->
       params = {
