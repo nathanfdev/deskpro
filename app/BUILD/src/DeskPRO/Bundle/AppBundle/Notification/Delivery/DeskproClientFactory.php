@@ -26,40 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Util;
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
-use Composer\CaBundle\CaBundle;
-use GuzzleHttp\Client;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 
-/**
- * @method ResponseInterface post(string|UriInterface $uri, array $options = [])
- * Class HttpClient
- */
-class HttpClient extends Client
+class DeskproClientFactory
 {
-    /**
-     * Constructor.
-     *
-     * @param array $config
-     */
-    public function __construct($config = [])
+    public function createClient(SettingsResolver $resolver)
     {
-        global $DP_ENV;
-        $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
+        $settings = $resolver->getGlobalSettings();
 
-        $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
-        if ($proxy && !$config[RequestOptions::PROXY]) {
-            $config[RequestOptions::PROXY] = $proxy;
-        }
-
-        // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
-        if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
-            $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
-        }
-
-        parent::__construct($config);
+        return new HttpClient(
+            [
+                'base_uri' => sprintf(
+                    '%s:%d',
+                    $settings->get('notification.settings.deskpro_client.host'),
+                    $settings->get('notification.settings.deskpro_client.port')
+                ),
+            ]
+        );
     }
 }

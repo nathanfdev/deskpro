@@ -32,11 +32,17 @@ use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\DeskproClientType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Settings\PusherType;
+use DeskPRO\Bundle\AppBundle\Model\DeskproClientModel;
 use DeskPRO\Bundle\AppBundle\Model\PusherModel;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Logger;
 use Orb\Logger\Handler\ArrayHandler;
@@ -131,22 +137,34 @@ class NotificationController extends BaseController
      * @return View
      *
      * @todo move it to standalone controller
-     * @Rest\Get("/notify/setup/action-alerts/pusher")
+     * @Rest\Get("/notify/setup/action-alerts/clients")
      */
-    public function getPusherCredentialsAction()
+    public function getClientCredentialsAction()
     {
-        $config        = $this->get('deskpro.notification.service')->getClientsSetup();
-        $pusherEnabled = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'pusher';
-        $bag           = $this->get('settings_resolver')->getGlobalSettings();
-        $pusherModel   = new PusherModel();
+        $config = $this->get('deskpro.notification.service')->getClientsSetup();
+
+        $pusherEnabled  = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'pusher';
+        $deskproEnabled = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'deskpro';
+        $bag            = $this->get('settings_resolver')->getGlobalSettings();
+        $pusherModel    = new PusherModel();
+
+        $deskproClientModel = new DeskproClientModel();
 
         return View::create($this->wrap(
-            $pusherModel
-                ->setPusherEnabled($pusherEnabled)
-                ->setId($bag->get('notification.settings.pusher_client.appId', ''))
-                ->setSecret($bag->get('notification.settings.pusher_client.secret', ''))
-                ->setKey($bag->get('notification.settings.pusher_client.appKey', ''))
-                ->setCluster($bag->get('notification.settings.pusher_client.cluster', PusherModel::PUSHER_CLASTER_US_WEST_1))
+            [
+                'pusher' => $pusherModel
+                    ->setPusherEnabled($pusherEnabled)
+                    ->setId($bag->get('notification.settings.pusher_client.appId', ''))
+                    ->setSecret($bag->get('notification.settings.pusher_client.secret', ''))
+                    ->setKey($bag->get('notification.settings.pusher_client.appKey', ''))
+                    ->setCluster($bag->get('notification.settings.pusher_client.cluster', PusherModel::PUSHER_CLASTER_US_WEST_1)),
+
+                'deskpro' => $deskproClientModel
+                    ->setDeskproClientEnabled($deskproEnabled)
+                    ->setSecret($bag->get('notification.settings.deskpro_client.secret', ''))
+                    ->setHost($bag->get('notification.settings.deskpro_client.host', ''))
+                    ->setPort($bag->get('notification.settings.deskpro_client.port', '')),
+            ]
         ));
     }
 
@@ -163,11 +181,13 @@ class NotificationController extends BaseController
      *         {"name"="id", "description"="", "dataType"="string", "required"=false},
      *         {"name"="key", "description"="", "dataType"="string", "required"=false},
      *         {"name"="secret", "description"="", "dataType"="string", "required"=false},
-     *         {"name"="pusher_enabled", "description"="", "dataType"="boolean", "required"=false}
+     *         {"name"="host", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="port", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="mode", "description"="", "dataType"="string", "required"=false}
      *     }
      * )
      *
-     * @Rest\Put("/notify/setup/action-alerts/pusher")
+     * @Rest\Put("/notify/setup/action-alerts/clients")
      *
      * @todo this is quick method, consider it hack
      *
@@ -175,37 +195,56 @@ class NotificationController extends BaseController
      *
      * @return View
      */
-    public function savePusherCredentialsAction(Request $request)
+    public function saveClientsCredentialsAction(Request $request)
     {
-        $form = $this->createForm(PusherType::class);
-        $form->submit($request->request->all());
-        if ($form->isValid()) {
-            /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
-            $settingRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
-            /** @var PusherModel $pusherModel */
-            $pusherModel = $form->getData();
-            $settingRepo->updateSetting('notification.settings.pusher_client.appId', $pusherModel->getId());
-            $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
-            $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
-            $settingRepo->updateSetting('notification.settings.pusher_client.cluster', $pusherModel->getCluster());
+        $data = $request->request->all();
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
+        $settingRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
 
-            $config = [
-                'strategy' => 'immediate',
-                'delivery' => [
-                    $pusherModel->isPusherEnabled() ? 'pusher' : 'db',
-                ],
-            ];
-            $settingRepo->updateSetting('notification.settings.default_strategy', serialize($config));
+        switch ($data['mode']) {
+            case 'pusher':
+                $form = $this->createForm(PusherType::class);
+                $form->submit($request->request->all());
 
-            // this should work for immediate only, cause notification handlers already has been built
-            $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload',
-                    [
-                        'type'        => 'admin',
-                        'person_id'   => 0,
-                        'person_name' => 'System',
-                    ])
-            );
+                if ($form->isValid()) {
+                    /** @var PusherModel $pusherModel */
+                    $pusherModel = $form->getData();
+                    $settingRepo->updateSetting('notification.settings.pusher_client.appId', $pusherModel->getId());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.cluster', $pusherModel->getCluster());
+                }
+                break;
+            case 'deskpro':
+                $form = $this->createForm(DeskproClientType::class);
+                $form->submit($request->request->all());
+
+                if ($form->isValid()) {
+                    /** @var DeskproClientModel $deskproClientModel */
+                    $deskproClientModel = $form->getData();
+                    $settingRepo->updateSetting('notification.settings.deskpro_client.host', $deskproClientModel->getHost());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.secret', $deskproClientModel->getSecret());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.port', $deskproClientModel->getPort());
+                }
+                break;
         }
+
+        $config = [
+            'strategy' => 'immediate',
+            'delivery' => [
+                $data['mode'],
+            ],
+        ];
+        $settingRepo->updateSetting('notification.settings.default_strategy', serialize($config));
+
+        // this should work for immediate only, cause notification handlers already has been built
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload',
+                [
+                    'type'        => 'admin',
+                    'person_id'   => 0,
+                    'person_name' => 'System',
+                ])
+        );
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }
@@ -248,24 +287,51 @@ class NotificationController extends BaseController
 
         return View::create(['success' => $success, 'message' => $message]);
     }
-}
-
-class PusherLogger
-{
-    private $logger;
 
     /**
-     * PusherLogger constructor.
+     * @Rest\Post("/notify/setup/action-alerts/deskpro/test")
      *
-     * @param Logger $logger
+     * @param Request $request
+     *
+     * @return View
      */
-    public function __construct(Logger $logger)
+    public function testDeskproCredentialsAction(Request $request)
     {
-        $this->logger = $logger;
-    }
+        $form = $this->createForm(DeskproClientType::class);
+        $form->submit($request->request->all());
 
-    public function log($msg)
-    {
-        $this->logger->log(Logger::INFO, $msg);
+        if (!$form->isValid()) {
+            return View::create([
+                'success' => false,
+                'message' => 'Invalid settings were supplied. Make sure you have filled in all form fields.',
+            ]);
+        }
+
+        /** @var DeskproClientModel $deskproClientModel */
+        $deskproClientModel = $form->getData();
+
+        $client = new HttpClient(
+            [
+                'base_uri' => sprintf('%s:%d',
+                    $deskproClientModel->getHost(),
+                    $deskproClientModel->getPort()),
+            ]
+        );
+
+        $testData = ['test' => true];
+        try {
+            $response = $client->post(
+                '/test',
+                [
+                    RequestOptions::JSON => ['jwt' => \JWT::encode($testData, $deskproClientModel->getSecret())],
+                ]
+            );
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+        }
+
+        $message = $response->getBody()->getContents() ?: 'Can\'t connect to server';
+
+        return View::create(['success' => $response->getStatusCode() === 200, 'message' => $message]);
     }
 }

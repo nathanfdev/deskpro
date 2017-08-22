@@ -26,40 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Util;
+namespace spec\DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
-use Composer\CaBundle\CaBundle;
-use GuzzleHttp\Client;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
+use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeskproClientFactory;
+use PhpSpec\ObjectBehavior;
 
 /**
- * @method ResponseInterface post(string|UriInterface $uri, array $options = [])
- * Class HttpClient
+ * @mixin DeskproClientFactory
  */
-class HttpClient extends Client
+class DeskproClientFactorySpec extends ObjectBehavior
 {
-    /**
-     * Constructor.
-     *
-     * @param array $config
-     */
-    public function __construct($config = [])
+    public function it_uses_factory_method_to_be_constructed(SettingsResolver $resolver, SettingsBag $settings)
     {
-        global $DP_ENV;
-        $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
-
-        $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
-        if ($proxy && !$config[RequestOptions::PROXY]) {
-            $config[RequestOptions::PROXY] = $proxy;
-        }
-
-        // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
-        if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
-            $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
-        }
-
-        parent::__construct($config);
+        $resolver->getGlobalSettings()->willReturn($settings);
+        $settings->get('notification.settings.deskpro_client.port')->willReturn('localhost');
+        $settings->get('notification.settings.deskpro_client.host')->willReturn(3000);
+        $this->beConstructedThrough('createDeskproClient', [$resolver]);
     }
 }

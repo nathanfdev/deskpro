@@ -26,40 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Util;
+namespace DeskPRO\Bundle\AppBundle\Notification\Delivery;
 
-use Composer\CaBundle\CaBundle;
-use GuzzleHttp\Client;
-use GuzzleHttp\RequestOptions;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
+use Monolog\Logger;
 
-/**
- * @method ResponseInterface post(string|UriInterface $uri, array $options = [])
- * Class HttpClient
- */
-class HttpClient extends Client
+class PusherLogger
 {
+    private $logger;
+
     /**
-     * Constructor.
+     * PusherLogger constructor.
      *
-     * @param array $config
+     * @param Logger $logger
      */
-    public function __construct($config = [])
+    public function __construct(Logger $logger)
     {
-        global $DP_ENV;
-        $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
+        $this->logger = $logger;
+    }
 
-        $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
-        if ($proxy && !$config[RequestOptions::PROXY]) {
-            $config[RequestOptions::PROXY] = $proxy;
-        }
-
-        // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
-        if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
-            $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
-        }
-
-        parent::__construct($config);
+    public function log($msg)
+    {
+        $this->logger->log(Logger::INFO, $msg);
     }
 }
