@@ -2137,6 +2137,7 @@ return [
     'agent.tickets.merge_force'                                => 'Check this checkbox to override the lock and merge anyway.',
     'agent.tickets.message_id'                                 => 'Message ID',
     'agent.tickets.message_number'                             => 'Message #{{number}}',
+    'agent.tickets.note_number'                                => 'Note #{{number}}',
     'agent.tickets.messages'                                   => 'Messages',
     'agent.tickets.my_team'                                    => 'My Team',
     'agent.tickets.na'                                         => 'N/A',
