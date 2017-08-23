@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -48,7 +49,7 @@ use JMS\Serializer\Annotation as JMS;
  * })
  * @JMS\ExclusionPolicy("all")
  */
-abstract class AbstractAlias
+abstract class AbstractAlias implements ObjectAlias\ObjectAlias
 {
     /**
      * @ORM\Id()
@@ -129,5 +130,19 @@ abstract class AbstractAlias
     public function setApp(App $app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getQualifiers()
+    {
+        $qualifiers = [];
+
+        if ($this->app) {
+            $qualifiers[] = ['app', $this->app->getId()];
+        }
+
+        return $qualifiers;
     }
 }

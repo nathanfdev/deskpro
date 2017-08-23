@@ -38,7 +38,7 @@ use JMS\Serializer\Annotation as JMS;
 class TicketTriggerAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketTrigger")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketTrigger", inversedBy="aliases")
      * @ORM\JoinColumn(name="ticket_triggers_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
@@ -62,5 +62,23 @@ class TicketTriggerAlias extends AbstractAlias
     public function setObject(TicketTrigger $object)
     {
         $this->object = $object;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return TicketTrigger::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectId()
+    {
+        if ($this->object) {
+            return (string) $this->object->getId();
+        }
     }
 }

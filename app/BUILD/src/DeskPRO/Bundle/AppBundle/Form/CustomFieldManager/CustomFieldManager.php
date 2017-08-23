@@ -81,17 +81,13 @@ class CustomFieldManager
 
             /** @var ObjectAlias\Repository $repository */
             $repository = $this->em->getRepository($aliasType);
-            $aliasFieldNameStrategy = new AliasFieldNameResolvingStrategy($repository);
+            $aliasFieldNameStrategy = new FieldAliasResolvingStrategy($repository);
         } catch (\Exception $e) {
-            throw FieldNameResolverException::missingStrategy(AliasFieldNameResolvingStrategy::class, $e);
+            throw FieldNameResolverException::missingStrategy(FieldAliasResolvingStrategy::class, $e);
         }
 
-        $defaultStrategies = [
-            new LegacyFieldNameResolvingStrategy(),
-            $aliasFieldNameStrategy
-        ];
-
-        return new FieldNameResolver($defaultStrategies);
+        $strategies = [ $aliasFieldNameStrategy ];
+        return new FieldNameResolver($strategies);
     }
 
     /**

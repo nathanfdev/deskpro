@@ -39,6 +39,7 @@ use Application\DeskPRO\Tickets\Actions\ModStopTriggers;
 use Application\DeskPRO\Tickets\Actions\SetDeleted;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\TicketTriggerAlias;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Arrays;
@@ -161,6 +162,13 @@ class TicketTrigger extends DomainObject
      * @var int
      */
     protected $run_order = 0;
+
+    /**
+     * Aliases for this field.
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $aliases = null;
 
     /**
      * Constructor.
@@ -315,6 +323,14 @@ class TicketTrigger extends DomainObject
     }
 
     /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|TicketTriggerAlias[]|null
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = [])
@@ -330,6 +346,7 @@ class TicketTrigger extends DomainObject
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
         $data['has_delete_ticket_action'] = $this->hasDeleteTicketAction();
         $data['sys_name']                 = $this->sys_name;
+        $data['aliases']                  = $this->getAliases();
 
         return $data;
     }
@@ -449,6 +466,17 @@ class TicketTrigger extends DomainObject
                     'onDelete'             => 'CASCADE',
                 ],
             ],
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'aliases',
+            'targetEntity' => TicketTriggerAlias::class,
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'object',
+            'orphanRemoval' => true,
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'email_account',

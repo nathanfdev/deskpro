@@ -28,12 +28,19 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
-interface FieldNameResolvingStrategy
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
+
+class FieldAliasConverter
 {
     /**
-     * @param {string} $alias
-     *
-     * @return string|null
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $mapping
+     * @return array|string[]
      */
-    public function resolve($alias);
+    public static function toList(ObjectAlias\ObjectAlias $mapping)
+    {
+        $list = ObjectAlias\Converters::toList($mapping);
+        $list[] = 'field' . $mapping->getObjectId();
+
+        return $list;
+    }
 }

@@ -39,7 +39,7 @@ use JMS\Serializer\Annotation as JMS;
 class CustomTicketFieldDefinitionAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefTicket")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefTicket", inversedBy="aliases")
      * @ORM\JoinColumn(name="custom_def_ticket_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
@@ -64,4 +64,23 @@ class CustomTicketFieldDefinitionAlias extends AbstractAlias
     {
         $this->object = $object;
     }
+
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return CustomDefTicket::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectId()
+    {
+        if ($this->object) {
+            return (string) $this->object->getId();
+        }
+    }
+
 }

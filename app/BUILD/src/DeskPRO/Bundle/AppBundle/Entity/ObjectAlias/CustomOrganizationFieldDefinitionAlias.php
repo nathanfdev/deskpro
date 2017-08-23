@@ -38,7 +38,7 @@ use JMS\Serializer\Annotation as JMS;
 class CustomOrganizationFieldDefinitionAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefOrganization")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefOrganization", inversedBy="aliases")
      * @ORM\JoinColumn(name="custom_def_organization_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
@@ -62,5 +62,23 @@ class CustomOrganizationFieldDefinitionAlias extends AbstractAlias
     public function setObject(CustomDefOrganization $object)
     {
         $this->object = $object;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return CustomDefOrganization::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectId()
+    {
+        if ($this->object) {
+            return (string) $this->object->getId();
+        }
     }
 }

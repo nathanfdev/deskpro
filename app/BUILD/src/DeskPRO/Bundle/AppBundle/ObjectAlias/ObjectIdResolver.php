@@ -26,14 +26,32 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
+namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-interface FieldNameResolvingStrategy
+interface ObjectIdResolver
 {
     /**
-     * @param {string} $alias
+     * Returns the fully qualified class name of the type of objects handled by this resolver.
      *
-     * @return string|null
+     * @return string
      */
-    public function resolve($alias);
+    public function getObjectType();
+
+    /**
+     * Returns the id of the object referenced by the qualified $qualifiedAlias.
+     *
+     * @param string[]|array $qualifiedAlias
+     *
+     * @return null|int
+     */
+    public function resolveQualifiedAlias($qualifiedAlias);
+
+    /**
+     * Returns the id of the object referenced by the unqualified $alias.
+     *
+     * @param $alias
+     *
+     * @return null|int
+     */
+    public function resolveAlias($alias);
 }

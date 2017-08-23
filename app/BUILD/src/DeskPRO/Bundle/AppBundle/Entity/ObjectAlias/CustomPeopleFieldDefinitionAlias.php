@@ -38,7 +38,7 @@ use JMS\Serializer\Annotation as JMS;
 class CustomPeopleFieldDefinitionAlias extends AbstractAlias
 {
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefPerson")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\CustomDefPerson", inversedBy="aliases")
      * @ORM\JoinColumn(name="custom_def_people_id", referencedColumnName="id", nullable=true)
      *
      * @JMS\Expose()
@@ -62,5 +62,23 @@ class CustomPeopleFieldDefinitionAlias extends AbstractAlias
     public function setObject(CustomDefPerson $object)
     {
         $this->object = $object;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return CustomDefPerson::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObjectId()
+    {
+        if ($this->object) {
+            return (string) $this->object->getId();
+        }
     }
 }

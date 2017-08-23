@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\SerializerTypes;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\Common\Collections\Collection;
@@ -42,6 +43,20 @@ use JMS\Serializer\JsonSerializationVisitor;
  */
 class CustomDataHandler implements SubscribingHandlerInterface
 {
+
+    /**
+     * @param CustomDefAbstract $def
+     * @return array|string[]
+     */
+    public static function serializeAliases(CustomDefAbstract $def)
+    {
+        $aliases = [];
+        foreach ($def->getAliases() as $alias) {
+            $aliases = array_merge($aliases,  CustomFieldManager\FieldAliasConverter::toList($alias));
+        }
+        return array_unique($aliases);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -86,6 +101,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
         };
 
         $serialized = [
+            'aliases' => CustomDataHandler::serializeAliases($def),
             'value' => array_map($extractChoiceId, $choices),
             'detail' => array_reduce($choices, $mapToChoiceMap, [])
         ];
@@ -118,6 +134,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
         }
 
         return [
+            'aliases' => CustomDataHandler::serializeAliases($def),
             'value' => $context->accept($value)
         ];
     }
@@ -130,10 +147,6 @@ class CustomDataHandler implements SubscribingHandlerInterface
      */
     public function serializeJson(CustomDefAbstract $def, CustomDataAbstract $data, SideloadSerializationContext $context)
     {
-        if (! $def->isDataJsonType()) {
-
-        }
-
         $value = $data->getData();
         try {
             $value = json_decode($value);
@@ -144,7 +157,10 @@ class CustomDataHandler implements SubscribingHandlerInterface
             $value = null;
         }
 
-        return [ 'value' => $value ];
+        return [
+            'aliases' => CustomDataHandler::serializeAliases($def),
+            'value' => $value
+        ];
     }
 
     /**
@@ -160,7 +176,10 @@ class CustomDataHandler implements SubscribingHandlerInterface
         };
 
         $values = array_map($extractValue, $list);
-        return [ 'value' => $values ];
+        return [
+            'aliases' => CustomDataHandler::serializeAliases($def),
+            'value' => $values
+        ];
     }
 
     /**
@@ -178,6 +197,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
         }
 
         return [
+            'aliases' => CustomDataHandler::serializeAliases($def),
             'value' => $value
         ];
     }

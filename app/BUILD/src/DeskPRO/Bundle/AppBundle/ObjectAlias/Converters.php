@@ -28,17 +28,35 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-interface IdFinder
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
+
+class Converters
 {
     /**
-     * @return string
+     * @param $alias
+     * @return array
      */
-    public function getObjectType();
+    public static function toQualifiedListFromString( $alias)
+    {
+        return explode(":", $alias);
+    }
 
     /**
-     * @param $alias
-     *
-     * @return null|int
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $mapping
+     * @return array|string[]
      */
-    public function findId($alias);
+    public static function toList( ObjectAlias\ObjectAlias $mapping)
+    {
+        $aliases = [
+            $mapping->getObjectId(),
+            $mapping->getAlias()
+        ];
+
+        foreach ($mapping->getQualifiers() as $qualifier) {
+            $aliases[] = implode(':', $qualifier) . ':' . $mapping->getAlias();
+        }
+
+        return array_values(array_filter($aliases, 'is_string'));
+    }
+
 }

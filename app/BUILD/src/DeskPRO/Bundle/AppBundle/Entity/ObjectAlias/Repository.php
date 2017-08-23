@@ -31,24 +31,23 @@ namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
-use DeskPRO\Bundle\AppBundle\ObjectAlias\IdFinder;
+use DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectIdResolver;
 use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
 use Doctrine\ORM\EntityRepository;
 
-class Repository extends EntityRepository implements IdFinder
+class Repository extends EntityRepository implements ObjectIdResolver
 {
     /**
      * @param $alias
      * @return mixed|null
      */
-    public function aliasExists($alias)
+    public function aliasExists( $alias )
     {
         $qb = $this->createQueryBuilder('s');
         $qb
             ->select('COUNT(a.id)')
             ->where('a.alias = :alias')
-            ->setParameter('alias', $alias)
-        ;
+            ->setParameter('alias', $alias);
 
         $count = $qb->getQuery()->getSingleScalarResult();
         return 1 === $count;
@@ -62,11 +61,40 @@ class Repository extends EntityRepository implements IdFinder
         return $this->getEntityName();
     }
 
+    function resolveQualifiedAlias( $qualifiedAlias)
+    {
+        if (! is_array($qualifiedAlias)) {
+            throw new \BadMethodCallException('expected a list of strings');
+        }
+
+        if (3 == count($qualifiedAlias) && $qualifiedAlias[0] !== 'app') {
+            $qb = $this->createQueryBuilder('a');
+            $qb
+                ->select('o.id')
+                ->innerJoin('a.object', 'o')
+                ->innerJoin('a.app', 'app')
+                ->where('a.alias = :alias')
+                ->andWhere('app.id = :appid')
+                ->setParameter('alias', $qualifiedAlias[2])
+                ->setParameter('appid', $qualifiedAlias[1])
+            ;
+
+            $result = $qb->getQuery()->setMaxResults(2)->getScalarResult();
+            if (1 === count($result)) {
+                return $result[0]['id'];
+            }
+
+            return null;
+        }
+
+        return null;
+    }
+
     /**
      * @param $alias
      * @return null|integer
      */
-    function findId( $alias )
+    function resolveAlias( $alias )
     {
         $qb = $this->createQueryBuilder('a');
         $qb
