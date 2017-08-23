@@ -279,6 +279,8 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $vars['is_my_mention'] = true;
             }
 
+            $vars['is_mention_email'] = $context->getVars()->has('mention_agents');
+
             try {
                 $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
                 $ticketEmail->send($vars);
