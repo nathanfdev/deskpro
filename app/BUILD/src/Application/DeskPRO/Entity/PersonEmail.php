@@ -36,7 +36,9 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonEmailListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -327,19 +329,6 @@ class PersonEmail extends DomainObject
         $user_rule_proc->newEmail($this->person, $this);
     }
 
-    public function _verifyEmailAddress()
-    {
-        // Email address should be validated by the time we get here,
-        // this is a failsafe check
-        if (defined('DP_TESTS_RUNNING')) {
-            return;
-        }
-
-        if (App::$container->getEmailAccountManager()->findAccountForEmailAddress($this->email)) {
-            throw new \RuntimeException("`{$this->email}`` is an a gateway account address");
-        }
-    }
-
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -360,7 +349,6 @@ class PersonEmail extends DomainObject
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->addLifecycleCallback('_postPersist', 'postPersist');
-        $metadata->addLifecycleCallback('_verifyEmailAddress', 'prePersist');
         $metadata->mapField([
             'fieldName'  => 'id',
             'type'       => 'integer',
@@ -437,6 +425,9 @@ class PersonEmail extends DomainObject
                 ],
             ],
         ]);
+
+        $metadata->addEntityListener(Events::prePersist, PersonEmailListener::class, 'verifyEmailAddress');
+        $metadata->addEntityListener(Events::preUpdate, PersonEmailListener::class, 'verifyEmailAddress');
     }
 
     /**

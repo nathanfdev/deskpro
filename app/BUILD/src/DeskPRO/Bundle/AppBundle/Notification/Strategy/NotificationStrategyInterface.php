@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Strategy;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\DeliveryService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
 
 /**
  * Interface NotificationStrategyInterface.
@@ -63,9 +63,22 @@ interface NotificationStrategyInterface
     public function attachEventHandler(NotifyHandlerInterface $handler);
 
     /**
-     * @param PersistanceAdapterInterface $persistance_adapter
+     * @param PersistenceAdapterInterface $persistance_adapter
      *
      * @return NotificationStrategyInterface
      */
-    public function setPersistanceAdapter(PersistanceAdapterInterface $persistance_adapter);
+    public function setPersistenceAdapter(PersistenceAdapterInterface $persistance_adapter);
+
+    public function startBatch();
+
+    public function resetBatch();
+
+    public function stopBatch();
+
+    /**
+     * @param bool $postpone
+     *
+     * @return mixed
+     */
+    public function deliver($postpone = false);
 }

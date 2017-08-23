@@ -91,6 +91,11 @@ class TicketWithLayoutsContext
     private $formType;
 
     /**
+     * @var bool
+     */
+    private $fullLayout = false;
+
+    /**
      * @param FormEvent $event
      *
      * @return $this
@@ -359,5 +364,21 @@ class TicketWithLayoutsContext
     public function isWidgetType()
     {
         return $this->formType === self::FORM_TYPE_WIDGET;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFullLayout()
+    {
+        return $this->fullLayout;
+    }
+
+    /**
+     * @param bool $fullLayout
+     */
+    public function setFullLayout($fullLayout)
+    {
+        $this->fullLayout = $fullLayout;
     }
 }

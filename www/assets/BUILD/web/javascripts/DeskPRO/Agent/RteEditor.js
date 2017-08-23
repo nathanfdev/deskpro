@@ -84,7 +84,7 @@ DeskPRO.Agent.RteEditor = {
 
 		var editor = textarea.getEditor();
 		if (!editor) {
-			return false
+			return false;
 		}
 
 		// Need to capture clicks on the contenteditable
@@ -154,7 +154,8 @@ DeskPRO.Agent.RteEditor = {
 			};
 
 			var autosaveContent = api.getCode(),
-				autosaveData = getAutosaveData(api);
+				autosaveData = getAutosaveData(api),
+      	autosaveTimer;
 
 			var saveFnRunning = false;
 			var saveFn = $.proxy(function() {
@@ -219,9 +220,14 @@ DeskPRO.Agent.RteEditor = {
 				textarea.data('autosave-running', ajax);
 			}, api);
 
-			var autosaveTimer = setInterval(saveFn, autosaveInterval * 1000);
+			autosaveTimer = setInterval(saveFn, autosaveInterval * 1000);
 
 			textarea.on('dp_autosave_trigger', saveFn);
+
+			textarea.on('remove', function(){
+        $(this).off();
+        clearInterval(autosaveTimer);
+      });
 		}
 
 		// drag onto the editor to upload
@@ -376,24 +382,27 @@ DeskPRO.Agent.RteEditor = {
 
 			var div = $('<div data-redactor-wrapper="1" />').html(html).css({
 				position: 'absolute',
-				left: '-9999px'
+				left: '-9999px',
 			});
 
-			$(document.body).append(div);
+      $(document.body).append(div);
+      var sel = api.getSelection();
 
-			var sel = api.getSelection();
-			try {
-				sel.selectAllChildren(div.get(0));
-			} catch (e) {
-				if (document.createRange && sel.removeAllRanges && sel.addRange) {
-					var range = document.createRange();
-					range.selectNode(div.get(0));
-					sel.removeAllRanges();
-					sel.addRange(range);
-				}
-			}
+      try {
+        sel.selectAllChildren(div.get(0));
+        document.execCommand('copy');
+      } catch (error) {
+        if (document.createRange && sel.removeAllRanges && sel.addRange) {
+          var range = document.createRange();
+          range.selectNode(div.get(0));
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
 
 			setTimeout(function() {
+
+
 				div.remove();
 				api.restoreSelection();
 			}, 0);

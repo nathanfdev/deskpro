@@ -589,17 +589,11 @@ class AgentDataService
             $this->preload();
             $this->preloadTeamMap();
 
-            $agent = $this->get($aid);
-
-            if (!$agent) {
-                throw new \InvalidArgumentException();
-            }
-
-            if (empty($this->agent_to_groups[$agent->getId()])) {
+            if (empty($this->agent_to_groups[$aid])) {
                 return [];
             }
 
-            return $this->agent_to_groups[$agent->getId()];
+            return $this->agent_to_groups[$aid];
         }
     }
 

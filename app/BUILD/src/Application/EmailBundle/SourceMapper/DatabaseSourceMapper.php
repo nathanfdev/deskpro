@@ -465,6 +465,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
                 $old_log_blob = $this->db->fetchAssoc('SELECT * FROM blobs WHERE id = ?', [$source['log_blob_id']]);
                 if ($old_log_blob) {
                     $exist_log = $this->bs->copyBlobRowToString($old_log_blob);
+
+                    if ($old_log_blob['content_type'] === 'application/gzip') {
+                        $exist_log = @gzdecode($exist_log) ?: '';
+                    }
                 } else {
                     $exist_log = null;
                 }
@@ -477,7 +481,12 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
 
         try {
-            $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', ['tag' => 'logs.sendmail_source_log']);
+            $new_log_blob = $this->bs->createBlobRowFromString(
+                $log_text,
+                'log.txt',
+                'text/plain',
+                ['tag' => 'logs.sendmail_source_log', 'prefer_gzipped' => true]
+            );
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
 

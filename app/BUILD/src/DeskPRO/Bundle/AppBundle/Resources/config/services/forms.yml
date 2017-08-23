@@ -137,9 +137,15 @@ services:
     tags:
       - { name: form.type }
 
+  form.base_person:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\People\BasePersonType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
   form.person:
     class: DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType
-    arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager"]
+    arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type }
 
@@ -158,6 +164,12 @@ services:
   form.organization_email_domains:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationEmailDomainsType
     arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
+  form.feedback:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType
+    arguments: ["@custom_field_manager"]
     tags:
       - { name: form.type }
 
@@ -212,7 +224,6 @@ services:
   form.ticket_with_layouts:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsType
     arguments:
-      - "@doctrine.orm.default_entity_manager"
       - "@form_hierarchy_generator"
       - "@brand_form_helper"
     tags:
@@ -275,6 +286,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.widget_brand_chat_custom_field:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatCustomFieldType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
   form.widget_brand_ticket_settings:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\WidgetBrandTicketSettingsType
     arguments:
@@ -309,8 +327,14 @@ services:
       - { name: form.type }
 
   form.recaptcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\ReCaptchaType
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType
     arguments: ["@settings_resolver", "@language_manager"]
+    tags:
+      - { name: form.type }
+
+  form.captcha:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType
+    arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
     tags:
       - { name: form.type }
 

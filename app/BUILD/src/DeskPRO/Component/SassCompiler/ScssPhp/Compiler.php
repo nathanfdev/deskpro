@@ -35,7 +35,6 @@ namespace DeskPRO\Component\SassCompiler\ScssPhp;
 use Leafo\ScssPhp\Compiler as BaseCompiler;
 use Leafo\ScssPhp\Parser as ScssPhpParser;
 use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -111,8 +110,9 @@ class Compiler extends BaseCompiler
 
         // Manually locate plain CSS files cause BaseCompiler doesnt handle them properly
         if (preg_match('/^\.\/.*?\.css$/', $url) || preg_match('/^[^\/\\\].*?\.css$/', $url)) {
-            foreach ($this->importPaths as $path) {
-                $p = realpath($path.DIRECTORY_SEPARATOR.$url);
+            foreach ($this->importPaths as $pathOption) {
+                $path = $this->normalizeImportPath($url, $pathOption);
+                $p    = realpath($path.DIRECTORY_SEPARATOR.$url);
                 if ($p && is_file($p)) {
                     return $p;
                 }
@@ -125,6 +125,21 @@ class Compiler extends BaseCompiler
         }
 
         return $url;
+    }
+
+    /**
+     * @param string $filePath
+     * @param string $path
+     *
+     * @return string
+     */
+    private function normalizeImportPath($filePath, $path)
+    {
+        if (is_callable($path)) {
+            return $path($filePath);
+        }
+
+        return $path;
     }
 
     /**

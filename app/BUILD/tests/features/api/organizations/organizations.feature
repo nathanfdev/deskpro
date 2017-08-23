@@ -58,6 +58,18 @@ Feature: /organizations endpoint
     And the JSON node "errors.fields.email_domains.errors[0].code" should be equal to "not_unique_collection"
     And the JSON node "errors.fields.email_domains.errors[0].message" should be equal to "One or more of the given values is not unique."
 
+  Scenario: I check org email domain non empty validation
+    When I send a POST request to "/api/v2/organizations" with body:
+    """
+{
+  "name": "Yahoo",
+  "email_domains": ["", "domain2.com"]
+}
+    """
+    Then the response status code should be 400
+    And the response should be in JSON
+    And the JSON node "errors.fields.email_domains.fields.email_domains_0.errors[0].code" should be equal to "required"
+
   Scenario: I create a new organization
     Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
     When I send a POST request to "/api/v2/organizations" with body:

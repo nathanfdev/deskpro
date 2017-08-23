@@ -38,6 +38,8 @@ use Orb\Util\Numbers;
 
 class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInterface, WriteStreamInterface
 {
+    const REQUIRES_CACHE = false;
+
     /**
      * @var string
      */
@@ -125,8 +127,10 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param string                                $source_path
+     * @param Blob   $blob
+     * @param string $source_path
+     *
+     * @throws BlobStorageException
      *
      * @return int
      */
@@ -155,8 +159,10 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param resource                              $data
+     * @param Blob     $blob
+     * @param resource $fp_source
+     *
+     * @throws BlobStorageException
      *
      * @return int
      */
@@ -200,8 +206,11 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     }
 
     /**
-     * @param \Application\DeskPRO\BlobStorage\Blob $blob
-     * @param string                                $target_path
+     * @param Blob   $blob
+     * @param string $target_path
+     *
+     * @throws BlobStorageException
+     * @throws \Exception
      *
      * @return int
      */

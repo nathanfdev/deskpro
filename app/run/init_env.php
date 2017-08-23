@@ -89,6 +89,12 @@ if (isset($_SERVER['DESKPRO_USE_ROOT_DIR'])) {
     $dp_root = __DIR__.'/../../';
 }
 
+if (isset($_SERVER['DESKPRO_USE_CONFIG_DIR'])) {
+    $config['use_config_dir'] = $_SERVER['DESKPRO_USE_CONFIG_DIR'];
+} else if (defined('DESKPRO_USE_CONFIG_DIR')) {
+    $config['use_config_dir'] = DESKPRO_USE_CONFIG_DIR;
+}
+
 $DP_ENV = new \DpRun\DpEnv($dp_root, $config ?: null);
 
 /**

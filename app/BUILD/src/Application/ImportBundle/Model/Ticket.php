@@ -126,13 +126,6 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     private $subject;
 
     /**
-     * @var TicketPriority
-     *
-     * @JMS\Type("Application\ImportBundle\Model\TicketPriority")
-     */
-    private $priority;
-
-    /**
      * @var string
      *
      * @JMS\Type("string")
@@ -145,6 +138,13 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      * @JMS\Type("string")
      */
     private $category;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $priority;
 
     /**
      * @var string
@@ -407,30 +407,6 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     }
 
     /**
-     * Returns ticket priority.
-     *
-     * @return TicketPriority
-     */
-    public function getPriority()
-    {
-        return $this->priority;
-    }
-
-    /**
-     * Set priority.
-     *
-     * @param TicketPriority $priority
-     *
-     * @return $this
-     */
-    public function setPriority(TicketPriority $priority = null)
-    {
-        $this->priority = $priority;
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getLanguage()
@@ -444,6 +420,26 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     public function setLanguage($language)
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param string $priority
+     *
+     * @return $this
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
 
         return $this;
     }

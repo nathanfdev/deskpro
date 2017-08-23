@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\Response;
 use Twilio\Exceptions\RestException;
 
 /**
@@ -84,7 +85,7 @@ class VoiceNumberListener
                 'voiceApplicationSid' => '',
             ]);
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 

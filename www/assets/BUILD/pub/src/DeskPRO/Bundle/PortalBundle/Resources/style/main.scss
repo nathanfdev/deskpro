@@ -405,11 +405,17 @@ button, .button, input[type="submit"] {
   @include margin-right(10px);
 
   @media screen and (max-width: 760px) {
-    display: block;
-    margin-bottom: 10px;
-    width: 100%;
+    &:not(.button-small) {
+      display: block;
+      margin-bottom: 10px;
+      width: 100%;
+    }
   }
 
+  &.disabled {
+    @include generate-background-and-border($btn-link-disabled-color);
+  }
+  
   &.right {
     float: $float-right;
   }
@@ -10202,6 +10208,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
       }
     }
 
+    #edit_ticket_page,
     .ticket-messages {
       @include margin-right(340px);
     }
@@ -10219,7 +10226,7 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     .ticket-view-content-container {
       @include margin-right(0);
 
-      .header, .ticket-messages {
+      .header, .ticket-messages, #edit_ticket_page {
         @include margin-right(0);
       }
     }
@@ -10507,9 +10514,10 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     color: $text-color-lighter;
     font-weight: normal;
     font-size: inherit;
-    position: absolute;
-    @include left(0);
+    @include float('left');
     display: block;
+    width: 110px;
+    overflow: hidden;
   }
 
   a {
@@ -10638,9 +10646,15 @@ input[type="text"].dpx-date-input, .form-ticket input[type="text"].dpx-date-inpu
     }
 
     ul.major {
-      position: relative;
       > li {
-        @include padding-left(115px);
+        clear: both;
+
+        > ul {
+          @include padding-left(115px);
+        }
+        .item-clear {
+          clear: both;
+        }
       }
     }
   }

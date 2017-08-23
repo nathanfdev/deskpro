@@ -92,11 +92,6 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
     protected $avatar;
 
     /**
-     * @var ArrayCollection
-     */
-    protected $project_members;
-
-    /**
      * @return int
      */
     public function getId()
@@ -114,8 +109,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
 
     public function __construct()
     {
-        $this->members         = new ArrayCollection();
-        $this->project_members = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
     public function addPerson(Entity\Person $person)
@@ -225,13 +219,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
                 'columnName' => 'name',
             ]
         );
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'project_members',
-                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
-                'mappedBy'     => 'team',
-            ]
-        );
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToMany([
             'fieldName'    => 'members',

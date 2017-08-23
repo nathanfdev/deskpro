@@ -59,12 +59,19 @@ class TicketHandler extends AbstractEntityHandler
         $entity
             ->disableAutoTicketProcess()
             ->setSubject($model->getSubject())
-            ->setDepartment($this->findOrCreateTicketDepartment($model->getDepartment()))
             ->setStatus($model->getStatus())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
         ;
+
+        if ($model->getDepartment()) {
+            $entity->setDepartment($this->helpers->getDepartmentHelper()->findOrCreateDepartment('ticket', $model->getDepartment()));
+        }
+
+        if ($model->getUrgency()) {
+            $entity->setUrgency($model->getUrgency());
+        }
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
@@ -146,8 +153,24 @@ class TicketHandler extends AbstractEntityHandler
                 $this->mappers->getTicketCategoryMapper(),
                 $model->getCategory()
             ));
-        } else {
-            $entity->setCategory(null);
+        }
+
+        // update ticket product
+        if ($model->getProduct()) {
+            $entity->setProduct($this->helpers->getCategoryHelper()->findOrCreateCategory(
+                $this->mappers->getTicketProductMapper(),
+                $model->getProduct()
+            ));
+        }
+
+        // update ticket workflow
+        if ($model->getWorkflow()) {
+            $entity->setWorkflow($this->findOrCreateWorkflow($model->getWorkflow()));
+        }
+
+        // update ticket priority
+        if ($model->getPriority()) {
+            $entity->setPriority($this->findOrCreatePriority($model->getPriority()));
         }
 
         // ensure that the ticket has brand and department
@@ -252,37 +275,52 @@ class TicketHandler extends AbstractEntityHandler
     }
 
     /**
-     * Returns a department by title
-     * Creates a new department if not found.
-     *
      * @param string $title
      *
-     * @return Entity\Department|null
+     * @return Entity\TicketWorkflow|null
      */
-    private function findOrCreateTicketDepartment($title)
+    public function findOrCreateWorkflow($title)
     {
-        $department = null;
+        $entity = null;
         if ($title) {
-            $department = $this->mappers->getDepartmentMapper()->findOneBy(['title' => $title]);
-            if ($department instanceof Entity\Department) {
-                $this->logger->debug(sprintf(
-                    'Found existing department `%d` with title `%s`',
-                    $department->getId(), $department->getTitle()
-                ));
+            $entity = $this->mappers->getTicketWorkflowMapper()->findOneBy(['title' => $title]);
+            if ($entity) {
+                $this->logger->debug("Found existing ticket workflow `$title`");
             } else {
-                $department = Entity\Department::createTicketDepartment();
-                $department->setRealTitle($title);
+                $this->logger->notice("Create a new ticket workflow `$title`");
 
-                $defaultBrand = $this->mappers->getBrandMapper()->getDefaultBrand();
-                if ($defaultBrand) {
-                    $department->addBrand($defaultBrand);
-                }
+                $entity = new Entity\TicketWorkflow();
+                $entity->setTitle($title);
 
-                $this->logger->notice(sprintf('New department creating `%s`', $department->getTitle()));
-                $this->persister->persistAndFlush($department);
+                $this->persister->persistAndFlush($entity);
             }
         }
 
-        return $department;
+        return $entity;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return Entity\TicketPriority|null
+     */
+    public function findOrCreatePriority($title)
+    {
+        $entity = null;
+        if ($title) {
+            $entity = $this->mappers->getTicketPriorityMapper()->findOneBy(['title' => $title]);
+            if ($entity) {
+                $this->logger->debug("Found existing ticket priority `$title`");
+            } else {
+                $this->logger->notice("Create a new ticket priority `$title`");
+
+                $entity = new Entity\TicketPriority();
+                $entity->setTitle($title);
+
+                $this->persister->persistAndFlush($entity);
+            }
+        }
+
+        return $entity;
     }
 }

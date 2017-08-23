@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -38,6 +34,9 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Orb\Log\Logger;
 
+/**
+ * Class ChatTranscripts.
+ */
 class ChatTranscripts extends AbstractJob
 {
     const DEFAULT_INTERVAL = 600;
@@ -65,45 +64,46 @@ class ChatTranscripts extends AbstractJob
         ', [date('Y-m-d H:i:s'), $chatIds], [\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY]);
 
         foreach ($chatIds as $chatId) {
-            /** @var ChatConversation $chat */
-            $chat = App::getOrm()->find('DeskPRO:ChatConversation', $chatId);
+            $chat = App::getOrm()->find(ChatConversation::class, $chatId);
 
             $email = '';
             $name  = '';
-            if ($person = $chat->getPerson()) {
+
+            $person = $chat->getPerson();
+            if ($person) {
                 $email = $person->getPrimaryEmailAddress();
-                $name  = $person->name;
+                $name  = $person->getName();
                 App::getTranslator()->setPersonContext($chat->getPerson());
             }
-            if (!$email && $chat->person_email) {
-                $email = $chat->person_email;
+            if (!$email && $chat->getPersonEmail()) {
+                $email = $chat->getPersonEmail();
             }
-            if (!$name && $chat->person_name) {
-                $name = $chat->person_name;
+            if (!$name && $chat->getPersonName()) {
+                $name = $chat->getPersonName();
             }
 
             if ($email) {
-                $convoMessages = App::getOrm()->createQuery('
+                $chatMessages = App::getOrm()->createQuery('
                     SELECT m
                     FROM DeskPRO:ChatMessage m
                     WHERE m.conversation = ?1 AND m.is_user_hidden = false
                     ORDER BY m.id DESC
                 ')->setParameter(1, $chat)->execute();
 
-                $onlySys = true;
+                $noAgentAnswer = true;
 
-                /** @var ChatMessage $message */
-                foreach ($convoMessages as $message) {
-                    if (!$message->getIsSys()) {
-                        $onlySys = false;
+                /** @var ChatMessage $chatMessage */
+                foreach ($chatMessages as $chatMessage) {
+                    if (!$chatMessage->getIsSys() || ($chatMessage->getAuthor() && $chatMessage->getAuthor()->isAgent())) {
+                        $noAgentAnswer = false;
                         break;
                     }
                 }
 
-                if (!$onlySys) {
+                if (!$noAgentAnswer) {
                     $vars = [
                         'convo'          => $chat,
-                        'convo_messages' => $convoMessages,
+                        'convo_messages' => $chatMessages,
                     ];
 
                     $message = App::getMailer()->createMessage();

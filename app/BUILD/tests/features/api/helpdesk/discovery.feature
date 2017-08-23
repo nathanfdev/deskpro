@@ -8,6 +8,10 @@ Feature: Discover settings
       | #  | Type | Title      |
       | f1 | text | Text field |
       | f2 | text | Text field |
+    And only the following Language records exist:
+      | #  | Sys Name |
+      | l1 | default  |
+      | l2 | lang_2   |
 
   Scenario: I get discover settings
     When I send a GET request to "/api/v2/helpdesk/discover"
@@ -31,23 +35,23 @@ Feature: Discover settings
     And the JSON node "data.settings.attachments.agents.blacklist" should have 0 elements
 
     And the JSON node "data.account_info.timezone" should be equal to "UTC"
-    And the JSON node "data.account_info.language" should be equal to 1
+    And the JSON node "data.account_info.language" should be equal to "{l1}"
     And the JSON node "data.account_info.signature_html" should exist
 
     And the JSON node "data.tickets.enabled" should be equal to 1
     And the JSON node "data.tickets.ref_code" should be equal to 0
     And the JSON node "data.tickets.archiving" should be equal to 1
 
-    And the JSON node "data.tickets.field_info.product.enabled" should be equal to 0
+    And the JSON node "data.tickets.field_info.product.enabled" should exist
     And the JSON node "data.tickets.field_info.product.default_id" should be equal to 0
 
-    And the JSON node "data.tickets.field_info.category.enabled" should be equal to 0
+    And the JSON node "data.tickets.field_info.category.enabled" should exist
     And the JSON node "data.tickets.field_info.category.default_id" should be equal to 0
 
-    And the JSON node "data.tickets.field_info.workflow.enabled" should be equal to 0
+    And the JSON node "data.tickets.field_info.workflow.enabled" should exist
     And the JSON node "data.tickets.field_info.workflow.default_id" should be equal to 0
 
-    And the JSON node "data.tickets.field_info.priority.enabled" should be equal to 0
+    And the JSON node "data.tickets.field_info.priority.enabled" should exist
     And the JSON node "data.tickets.field_info.priority.default_id" should be equal to 0
 
     And the JSON node "data.tickets.field_info.custom.has_any" should be equal to 1
@@ -116,8 +120,8 @@ Feature: Discover settings
     And the JSON node "data.tickets.order_fields[6].id" should be equal to "total_user_waiting"
     And the JSON node "data.tickets.order_fields[6].type" should be equal to "total_user_waiting"
 
-    And the JSON node "data.chat.enabled" should be equal to 1
-    And the JSON node "data.crm.enabled" should be equal to 1
-    And the JSON node "data.feedback.enabled" should be equal to 0
-    And the JSON node "data.publish.enabled" should be equal to 0
-    And the JSON node "data.tasks.enabled" should be equal to 0
+    And the JSON node "data.chat.enabled" should exist
+    And the JSON node "data.crm.enabled" should exist
+    And the JSON node "data.feedback.enabled" should exist
+    And the JSON node "data.publish.enabled" should exist
+    And the JSON node "data.tasks.enabled" should exist

@@ -119,7 +119,7 @@
                 </div>
             {% endif %}
 
-            {% if app.hasFeature('guides') and can_use_guides() and guide_results %}
+            {% if app.hasBeta('guides') and can_use_guides() and guide_results %}
                 <div class="search-result-category-wrapper" id="guide_results">
                     <div class="deskpro-search-results">
                         <div class="search-result-category"><hr><i class="fa fa-book"></i><span class="title">{{ phrase('portal.topics.search-title') }} <span class="count">({{ guide_info['total_results'] }})</span></span></div>

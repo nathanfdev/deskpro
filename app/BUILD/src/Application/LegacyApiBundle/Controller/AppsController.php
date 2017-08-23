@@ -35,10 +35,19 @@ use Application\DeskPRO\App\Package\Package;
 use Application\DeskPRO\App\Package\PackageInstaller;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
@@ -132,10 +141,70 @@ class AppsController extends AbstractController
 
     public function getPackageAction($name)
     {
+        // we are expecting the client to double url encode $name
+        // in case it contains forward slashes, e.g @deskproapps/app-name
+        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
+        // but it is simpler on the client to double encode everything
+        $name = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
-            throw $this->createNotFoundException();
+            // app v2 package info
+            $appArchive = $this->getAppV2ArchiveBundle($name);
+
+            $app        = $this->em->getRepository(App::class)->findOneBy([
+                'name' => $name,
+            ]);
+            if ($appArchive) {
+                $manifestReader = new AppManifestReader();
+
+                $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
+                $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
+                    $appArchive->getIcon(),
+                    'icon.png',
+                    'image/png'
+                );
+
+                $iconBlob->setIsTemp(true);
+                $this->em->persist($iconBlob);
+                $this->em->flush();
+            } elseif ($app) {
+                $manifest = $app->getParsedManifest();
+                $iconBlob = $app->getIconAsset()->getBlob();
+            } else {
+                throw $this->createNotFoundException();
+            }
+
+            if ($app) {
+                $apps = $this->container->get('serializer')->toArray(new ApiWrapper($app->getInstances()), new SideloadSerializationContext());
+                $apps = $apps['data'];
+            } else {
+                $apps = [];
+            }
+
+            $data = [
+                'name'         => $manifest->getName(),
+                'native_name'  => $manifest->getName(),
+                'title'        => $manifest->getTitle(),
+                'scope'        => $manifest->getScope(),
+                'is_installed' => $app ? $app->getInstances()->count() > 0 : false,
+                'is_single'    => $manifest->isSingle(),
+                'readme'       => $manifest->getDescription(),
+                'readme_html'  => $manifest->getDescription(),
+                'settings_def' => [],
+                'assets'       => [],
+                'icon_32'      => $iconBlob->getThumbnailUrl(32),
+                'icon_48'      => $iconBlob->getThumbnailUrl(48),
+                'icon_64'      => $iconBlob->getThumbnailUrl(64),
+                'author_name'  => $manifest->getAuthor()->getName(),
+                'author_email' => $manifest->getAuthor()->getEmail(),
+                'author_link'  => $manifest->getAuthor()->getUrl(),
+                'version_name' => $manifest->getAppVersion(),
+                'apps'         => $apps,
+                'app_version'  => 2,
+            ];
+
+            return $this->createApiResponse(['package' => $data]);
         }
 
         $package = $manager->getPackage($name);
@@ -161,6 +230,7 @@ class AppsController extends AbstractController
         $data['is_installed'] = false;
         $data['readme']       = $readme;
         $data['readme_html']  = $readme_html;
+        $data['app_version']  = 1;
 
         //------------------------------
         // Get assets
@@ -244,9 +314,61 @@ class AppsController extends AbstractController
 
     public function installPackageAction($name)
     {
+        // we are expecting the client to double url encode $name
+        // in case it contains forward slashes, e.g @deskproapps/app-name
+        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
+        // but it is simpler on the client to double encode everything
+        $name = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
-        if (!$manager->getPackage($name)) {
+        if (!$manager->hasPackage($name)) {
+            // app v2 package info
+            $appArchive = $this->getAppV2ArchiveBundle($name);
+
+            if ($appArchive) {
+                $app = $this->em->getRepository(App::class)->findOneBy([
+                    'name' => $name,
+                ]);
+
+                $manifestReader = new AppManifestReader();
+                $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
+                $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
+
+                if ($isAppUpdate) {
+                    $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appArchive);
+                    $instance = $app->getInstances()->first();
+                } else {
+                    $instance = $this->container->get('apps2.application_manager')->createFirstInstance($appArchive);
+                }
+
+                $context = new SideloadSerializationContext();
+                $context->setIncludes(['app']);
+                $context->setInlineSideloads(true);
+
+                $this->container->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.ui.reload', [
+                        'type'           => 'admin',
+                        'person_id'      => 0,
+                        'person_name'    => 'System',
+                        'exclude_target' => $this->person->getId(),
+                    ])
+                );
+
+                $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
+
+                return $this->createApiCreateResponse(
+                    array_merge(
+                        $serialized,
+                        [
+                            'version' => 2,
+                            'updated' => $isAppUpdate,
+                        ]
+                    ),
+                    $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
+                );
+            }
+
             throw $this->createNotFoundException();
         }
 
@@ -829,6 +951,51 @@ class AppsController extends AbstractController
             return $this->createApiErrorResponse('missing_manifest', 'Missing manifest.json');
         }
 
+        // detect apps v2
+        $json = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
+        $data = @json_decode($json, true);
+
+        if (isset($data['version']) && version_compare($data['version'], '2.0.0', '>=')) {
+            $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
+            $bundleValidator = $this->container->get(AppBundleValidator::class);
+
+            if (!$bundleValidator->validateBundle($appBundle)) {
+                return $this->createApiErrorResponse('invalid_file', 'Uploaded app archive file is not valid.');
+            }
+
+            $slug    = Strings::slugifyTitle($data['name']);
+            $sysName = 'apps_v2_zip_'.$slug;
+
+            // delete previous blobs
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->delete(Blob::class, 'b')
+                ->where('b.sys_name = :sys_name')
+                ->setParameter('sys_name', $sysName)
+            ;
+
+            $qb->getQuery()->execute();
+
+            // save uploaded one
+            $file   = $request->files->get('file');
+            $accept = $this->getContainer()->getAttachmentAccepter();
+            $blob   = $accept->accept($file);
+            $blob->setIsTemp(false);
+            $blob->setSysName($sysName);
+
+            $this->em->persist($blob);
+            $this->em->flush();
+
+            $packageName = $data['name'];
+            $packageUrl = $this->generateUrl('api_apps_package', ['name' => $slug]);
+            return $this->createApiCreateResponse(
+                [
+                    'package_name' => $packageName,
+                ],
+                $packageUrl
+            );
+        }
+
         try {
             $app_package = new Package($app_dir);
         } catch (\Exception $e) {
@@ -884,5 +1051,36 @@ class AppsController extends AbstractController
         $meta = $meta ? $meta->toArray() : null;
 
         return $this->createApiResponse(['enabled' => $js->isEnabled(), 'meta' => $meta]);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return AppZipArchiveBundle|null
+     */
+    private function getAppV2ArchiveBundle($name)
+    {
+
+        $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
+        $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
+
+        // make sure the name is slugified
+        $slug = Strings::slugifyTitle($name);
+        $sysName = 'apps_v2_zip_'.$slug;
+
+        $blob     = $this->em->getRepository(Blob::class)->findOneBy([
+            'sys_name' => $sysName,
+        ]);
+
+        if ($blob) {
+            $appEnv   = $this->container->get('deskpro.app_env');
+            $blobPath = $appEnv->getUserTmpDir().'/'.$blob->getFilename();
+
+            $this->container->get('blob.storage')->copyBlobRecordToFile($blobPath, $blob);
+        } elseif (!file_exists($blobPath)) {
+            return;
+        }
+
+        return new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($blobPath));
     }
 }

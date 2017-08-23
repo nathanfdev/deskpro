@@ -55,10 +55,9 @@ abstract class ContentAbstract extends DomainObject
     const STATUS_HIDDEN             = 'hidden';
     const HIDDEN_STATUS_UNPUBLISHED = 'unpublished';
     const HIDDEN_STATUS_DELETED     = 'deleted';
-
-    const HIDDEN_STATUS_SPAM    = 'spam';
-    const HIDDEN_STATUS_DRAFT   = 'draft';
-    const HIDDEN_STATUS_PENDING = 'pending';
+    const HIDDEN_STATUS_SPAM        = 'spam';
+    const HIDDEN_STATUS_DRAFT       = 'draft';
+    const HIDDEN_STATUS_PENDING     = 'pending';
 
     const CONTENT_TYPE_RTE      = 'rte';
     const CONTENT_TYPE_MARKDOWN = 'markdown';
@@ -1002,7 +1001,7 @@ abstract class ContentAbstract extends DomainObject
 
     public function _preUpdate()
     {
-        foreach ($this->getStateChangeRecorder()->getTouchedFields() as $touchedField) {
+        foreach (array_keys($this->getStateChangeRecorder()->getTouchedFields()) as $touchedField) {
             if (in_array($touchedField, $this->getUpdateFields())) {
                 $this->setDateUpdated(new DateTime());
 

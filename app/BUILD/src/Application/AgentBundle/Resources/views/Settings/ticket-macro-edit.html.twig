@@ -15,6 +15,13 @@ pageMeta.baseId = '{{ baseId }}';
 <article class="padded" data-width="800" data-height="400">
 	<form id="{{baseId}}_form" action="{{ path('agent_settings_ticketmacros_edit_save', { 'macro_id': macro.id|default(0) }) }}" method="post" accept-charset="utf-8">
 
+	<div class="form-errors" style="display: none;">
+		Please correct the following errors with your form
+		<ul>
+			<li class="title_required" style="display: none;">Please enter macro title</li>
+		</ul>
+	</div>
+
 	<div class="dp-form">
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.title') }}</label></div>
@@ -27,7 +34,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 
 		<div class="dp-form-row">
-			<div class="dp-form-label"><label>{{ phrase('agent.settings.macro_who_can_use') }}?</label></div>
+			<div class="dp-form-label"><label>{{ phrase('agent.settings.macro_who_can_use') }}</label></div>
 			<div class="dp-form-input">
 				<select name="macro[is_global]">
 					<option value="0" {% if not macro.is_global %}selected="selected"{% endif %}>{{ phrase('agent.general.just_me') }}</option>

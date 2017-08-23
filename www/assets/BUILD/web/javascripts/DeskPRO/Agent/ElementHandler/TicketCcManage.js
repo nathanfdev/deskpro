@@ -13,7 +13,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 		this.el.find('li').each(function() {
 			self.initRow($(this));
-		})
+		});
 
 		var addRow = $('.addrow', this.el);
 		if (addRow.length) {
@@ -112,5 +112,16 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 				row.remove();
 			}
 		});
+	},
+
+	destroy: function() {
+		console.info();
+		var addRow = $('.addrow', this.el);
+		if (addRow.autoCompleteElement) {
+      addRow.autoCompleteElement.destroy();
+      addRow.autoCompleteElement = null;
+		}
+
+		this.destroyEl();
 	}
 });

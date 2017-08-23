@@ -34,12 +34,14 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
+use Symfony\Component\HttpFoundation\Response;
 use Twilio\Exceptions\RestException;
 use Twilio\Exceptions\TwilioException;
 use Twilio\Jwt\ClientToken;
@@ -47,6 +49,7 @@ use Twilio\Jwt\TaskRouter\WorkerCapability;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
 use Twilio\Rest\Taskrouter\V1\Workspace\ActivityInstance;
+use Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueInstance;
 use Twilio\Rest\Taskrouter\V1\Workspace\WorkerInstance;
 use Twilio\Rest\Taskrouter\V1\Workspace\WorkflowInstance;
 use Twilio\Rest\Taskrouter\V1\WorkspaceContext;
@@ -65,6 +68,16 @@ class TwilioAdapter
     private $em;
 
     /**
+     * @var VoiceSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
+     * @var array
+     */
+    private $activities;
+
+    /**
      * @var array
      */
     private $cache = [];
@@ -72,11 +85,13 @@ class TwilioAdapter
     /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager         $em
+     * @param VoiceSettingsResolver $settingsResolver
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver)
     {
-        $this->em = $em;
+        $this->em               = $em;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -287,6 +302,16 @@ class TwilioAdapter
 
     /**
      * @param VoiceAccount $account
+     *
+     * @return WorkerInstance
+     */
+    public function getVoicemailWorker(VoiceAccount $account)
+    {
+        return $this->getWorkspace($account)->workers($account->getVoicemailWorkerSid())->fetch();
+    }
+
+    /**
+     * @param VoiceAccount $account
      * @param string       $activityName
      *
      * @return WorkerInstance
@@ -309,7 +334,7 @@ class TwilioAdapter
             $taskRouter = $this->getClient($account)->taskrouter;
             $taskRouter->workspaces($account->getWorkspaceSid())->delete();
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 
@@ -366,29 +391,47 @@ class TwilioAdapter
         $taskQueueName  = $this->getQueueName($queue);
 
         // ensure we don't have task queue with this name
-        foreach ($workspace->taskQueues->read() as $existingTaskQueue) {
+        $existingTaskQueues = $workspace->taskQueues->read([
+            'friendlyName' => strtolower($taskQueueName),
+        ]);
+
+        foreach ($existingTaskQueues as $existingTaskQueue) {
             if (strtolower($existingTaskQueue->friendlyName) === strtolower($taskQueueName)) {
                 $existingTaskQueue->delete();
             }
         }
 
         return $workspace->taskQueues->create($taskQueueName, $reservationSid, $assignmentSid, [
+            'targetWorkers'      => 'deskpro_queue_ids HAS '.$queue->getId(),
             'maxReservedWorkers' => $queue->getMaxQueueSize(),
         ]);
     }
 
     /**
-     * @param VoiceQueue $queue
+     * @param VoiceQueue        $queue
+     * @param TaskQueueInstance $existingTaskQueue
      *
      * @throws TwilioException
      */
-    public function updateTaskQueue(VoiceQueue $queue)
+    public function updateTaskQueue(VoiceQueue $queue, TaskQueueInstance $existingTaskQueue = null)
     {
-        $this->getQueueWorkspace($queue)->taskQueues($queue->getTaskQueueSid())->update([
+        $options = [
             'friendlyName'       => $this->getQueueName($queue),
             'targetWorkers'      => 'deskpro_queue_ids HAS '.$queue->getId(),
             'maxReservedWorkers' => $queue->getMaxQueueSize(),
-        ]);
+        ];
+
+        if ($existingTaskQueue
+            && $existingTaskQueue->sid === $queue->getTaskQueueSid()
+            && $existingTaskQueue->friendlyName === $options['friendlyName']
+            && $existingTaskQueue->targetWorkers === $options['targetWorkers']
+            && $existingTaskQueue->maxReservedWorkers === $options['maxReservedWorkers']
+        ) {
+            // nothing was changed, skipping
+            return;
+        }
+
+        $this->getQueueWorkspace($queue)->taskQueues($queue->getTaskQueueSid())->update($options);
     }
 
     /**
@@ -402,7 +445,7 @@ class TwilioAdapter
         try {
             $this->getWorkspace($account)->taskQueues($queueSid)->delete();
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 
@@ -463,15 +506,16 @@ class TwilioAdapter
     }
 
     /**
-     * @param VoiceAccount $account
-     * @param Person       $person
-     * @param string       $activityName
+     * @param VoiceAccount   $account
+     * @param Person         $person
+     * @param string         $activityName
+     * @param WorkerInstance $existingWorker
      *
      * @throws TwilioException
      *
      * @return WorkerInstance
      */
-    public function updateAgentWorker(VoiceAccount $account, Person $person, $activityName = null)
+    public function updateAgentWorker(VoiceAccount $account, Person $person, $activityName = null, WorkerInstance $existingWorker = null)
     {
         $workerSid = $this->getWorkerSid($person);
         if (!$workerSid) {
@@ -485,6 +529,16 @@ class TwilioAdapter
 
         if ($activityName) {
             $options['activitySid'] = $this->getActivitySid($account, $activityName);
+        }
+
+        if ($existingWorker
+            && $existingWorker->sid === $workerSid
+            && $existingWorker->friendlyName === $options['friendlyName']
+            && $existingWorker->attributes === $options['attributes']
+            && (($activityName && $existingWorker->activitySid === $options['activitySid']) || !$activityName)
+        ) {
+            // nothing was changed, skipping
+            return;
         }
 
         return $this->getWorkspace($account)->workers($workerSid)->update($options);
@@ -506,7 +560,7 @@ class TwilioAdapter
             ]);
             $worker->delete();
         } catch (RestException $e) {
-            if ($e->getStatusCode() === 404) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
                 return;
             }
 
@@ -530,7 +584,11 @@ class TwilioAdapter
         $taskQueueName  = $this->getWorkerName($person);
 
         // ensure we don't have task queue with this name
-        foreach ($workspace->taskQueues->read() as $existingTaskQueue) {
+        $existingTaskQueues = $workspace->taskQueues->read([
+            'friendlyName' => strtolower($taskQueueName),
+        ]);
+
+        foreach ($existingTaskQueues as $existingTaskQueue) {
             if (strtolower($existingTaskQueue->friendlyName) === strtolower($taskQueueName)) {
                 $existingTaskQueue->delete();
             }
@@ -543,20 +601,32 @@ class TwilioAdapter
     }
 
     /**
-     * @param VoiceAccount $account
-     * @param Person       $person
+     * @param VoiceAccount      $account
+     * @param Person            $person
+     * @param TaskQueueInstance $existingTaskQueue
      *
      * @return \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueInstance
      */
-    public function updateAgentTaskQueue(VoiceAccount $account, Person $person)
+    public function updateAgentTaskQueue(VoiceAccount $account, Person $person, TaskQueueInstance $existingTaskQueue = null)
     {
         $workspace = $this->getWorkspace($account);
-
-        return $workspace->taskQueues($person->getAgentData()->getVoiceTaskQueueSid())->update([
+        $options   = [
             'friendlyName'       => $this->getWorkerName($person),
             'maxReservedWorkers' => 1,
             'targetWorkers'      => 'agent_id == '.$person->getId(),
-        ]);
+        ];
+
+        if ($existingTaskQueue
+            && $existingTaskQueue->sid === $person->getAgentData()->getVoiceTaskQueueSid()
+            && $existingTaskQueue->friendlyName === $options['friendlyName']
+            && $existingTaskQueue->targetWorkers === $options['targetWorkers']
+            && $existingTaskQueue->maxReservedWorkers === $options['maxReservedWorkers']
+        ) {
+            // nothing was changed, skipping
+            return;
+        }
+
+        $workspace->taskQueues($person->getAgentData()->getVoiceTaskQueueSid())->update($options);
     }
 
     /**
@@ -646,10 +716,17 @@ class TwilioAdapter
 
     /**
      * @param VoiceAccount $account
-     * @param $assignmentCallbackUrl
+     * @param string       $assignmentCallbackUrl
+     *
+     * @return WorkflowInstance
      */
     public function clearWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
     {
+        // force delete old workflow to avoid twilio FK errors
+        // just cleaning workflow still keeps task queue sids for some reason
+        $workspace = $this->getWorkspace($account);
+        $workspace->workflows($account->getQueueWorkflowSid())->delete();
+
         $configuration = json_encode([
             'task_routing' => [
                 'filters' => [
@@ -665,9 +742,8 @@ class TwilioAdapter
             ],
         ]);
 
-        $workspace = $this->getWorkspace($account);
-        $workspace->workflows($account->getQueueWorkflowSid())->update([
-            'configuration'         => $configuration,
+        // create a new empty workflow
+        return $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
             'assignmentCallbackUrl' => $assignmentCallbackUrl,
         ]);
     }
@@ -691,7 +767,7 @@ class TwilioAdapter
                         'queue'      => $queue->getTaskQueueSid(),
                         'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                         'priority'   => 1,
-                        'timeout'    => self::VOICEMAIL_WAITING_TIMEOUT,
+                        'timeout'    => $queue->getVoicemailTimeout() ?: self::VOICEMAIL_WAITING_TIMEOUT,
                     ],
                     [
                         'queue' => $account->getVoicemailQueueSid(),
@@ -714,7 +790,7 @@ class TwilioAdapter
                         'queue'      => $agent->getVoiceTaskQueueSid(),
                         'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                         'priority'   => 1,
-                        'timeout'    => self::VOICEMAIL_WAITING_TIMEOUT,
+                        'timeout'    => $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout(),
                     ],
                     [
                         'queue' => $account->getVoicemailQueueSid(),
@@ -1096,12 +1172,14 @@ class TwilioAdapter
      */
     protected function getActivitiesMap(WorkspaceContext $workspace)
     {
-        $activities = [];
-        foreach ($workspace->activities->read() as $activityInstance) {
-            $activities[$activityInstance->friendlyName] = $activityInstance;
+        if (null === $this->activities) {
+            $this->activities = [];
+            foreach ($workspace->activities->read() as $activityInstance) {
+                $this->activities[$activityInstance->friendlyName] = $activityInstance;
+            }
         }
 
-        return $activities;
+        return $this->activities;
     }
 
     /**

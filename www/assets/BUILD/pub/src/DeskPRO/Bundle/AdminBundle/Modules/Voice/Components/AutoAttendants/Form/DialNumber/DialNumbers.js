@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import _ from 'lodash';
+import range from 'lodash/range';
 import { Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import NumberTargetSelect from '../../../Common/NumberTarget/NumberTargetSelect';
 
@@ -29,7 +29,7 @@ class DialNumbers extends React.Component {
 
     return (
       <div>
-        {_.range(1, 10).map((dialNum, index) =>
+        {range(1, 10).map((dialNum, index) =>
           <div className="dial-number-target" key={index}>
             <div className="dial-number">
               {dialNum}

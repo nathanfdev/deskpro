@@ -41,6 +41,7 @@ use Doctrine\ORM\EntityManager;
 use DpSys\License;
 use Orb\Util\Files;
 use Orb\Util\Strings;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -92,6 +93,7 @@ class ServerReportFile
         'file-integrity.txt'    => '_createFileIntegrity',
         'templates.txt'         => '_createTemplates',
         'incidents'             => '_createIncidents',
+        'jobs-statuses.txt'     => '_createJobsStatuses',
     ];
 
     /**
@@ -820,5 +822,27 @@ class ServerReportFile
         }
 
         return true;
+    }
+
+    protected function _createJobsStatuses($fileName)
+    {
+        $content = '';
+
+        $sql = <<<'SQL'
+SELECT `type`, `date_created`, `date_last_try`, `status`, `status_code`, `num_tries`, `data`, `log_summary`, `log`
+FROM `jobs`
+SQL;
+        $rows = $this->em->getConnection()->query($sql)->fetchAll();
+        foreach ($rows as $row) {
+            $content .= "---------------------------------------------------------------------------------------------\r\n";
+            foreach ($row as $key => $value) {
+                if ($key === 'data') {
+                    $value = var_export(json_decode($value, true), true);
+                }
+                $content .= "\r\n$key: ".$value."\r\n";
+            }
+            $content .= "\r\n";
+        }
+        $this->_createFile($this->tmpdir.'/'.$fileName, $content);
     }
 }

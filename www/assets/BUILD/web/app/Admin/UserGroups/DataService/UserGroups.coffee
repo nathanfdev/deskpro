@@ -90,6 +90,7 @@ define [
     ###
     saveFormModel: (model, formModel, formPermsModel) ->
       mapper = @getFormMapper()
+      formModel.deps_perms = model.deps_perms;
       postData = mapper.getPostDataFromForm(formModel, formPermsModel)
 
       if model.id

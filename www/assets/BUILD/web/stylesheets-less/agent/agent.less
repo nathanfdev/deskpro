@@ -2436,19 +2436,16 @@ ul.pane-tabs {
 
 .dp-window-focus #dp_list .list-pane-view .list-listing {
 	&.list-animation .ng-enter, &.list-animation .ng-leave {
-		position: relative;
 		-webkit-transition:all linear 0.3s;
 		transition:all linear 0.3s;
 	}
 
 	&.list-animation .ng-leave.ng-leave-active, &.list-animation .ng-enter {
 		opacity: 0;
-		left: -500px;
 	}
 
 	&.list-animation .ng-leave, &.list-animation .ng-enter.ng-enter-active {
 		opacity: 1;
-		left: 0;
 	}
 }
 
@@ -3967,4 +3964,84 @@ em.downarrow {
 
 .intl-tel-input input {
   padding-left: 48px;
+}
+
+.email-history {
+	a {
+		color: #0065A3;
+		text-decoration: underline;
+	}
+
+	td {
+		padding: 0;
+	}
+
+	body, div, td, p, span {
+		font-family: Calibri, Helvetica, Arial, sans-serif;
+		line-height: 125%;
+		color: #242424;
+		font-size: 14px;
+	}
+
+	div.dp-layout-section-header {
+		padding-bottom: 2px;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		font-weight: bold;
+		margin-left: 0;
+		margin-right: 0;
+		margin-top: 7px;
+		margin-bottom: 7px;
+	}
+
+	h1 { font-size: 36px; }
+	h2 { font-size: 30px; }
+	h3 { font-size: 24px; }
+	h4 { font-size: 18px; }
+	h5 { font-size: 14px; }
+
+	div.dp-spacer {
+		font-size:1px;
+		padding: 6px;
+		height: 6px;
+		overflow:hidden;
+	}
+
+	div.dp-author-row {
+		color: #ABABAB;
+		padding-bottom: 2px;
+		span {
+			color: #ABABAB;
+		}
+	}
+
+	div.dp-quoted-message {
+		border-left: 1px solid #00174B;
+		color: #00174B;
+		line-height:125%;
+		padding-left: 8px;
+		margin-left: 2px;
+	}
+
+	blockquote {
+		margin: 15px 0 15px 0 !important;
+		border-left: 2px solid #777 !important;
+		color: #777 !important;
+		font-style: normal !important;
+	}
+
+	pre {
+		background: #f8f8f8;
+		border: 1px solid #ddd;
+		padding: 6px;
+		white-space: pre;
+		margin: 15px 0 15px 0;
+	}
+
+	.plaintext-email {
+		font-family: monospace;
+		font-size: 90%;
+	}
 }

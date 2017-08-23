@@ -73,6 +73,16 @@ class TicketMacro extends DomainObject
     protected $person = null;
 
     /**
+     * Department which can use the macro.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    protected $department;
+
+    /**
      * Title of the macro.
      *
      * @JMS\Expose()
@@ -126,11 +136,63 @@ class TicketMacro extends DomainObject
     }
 
     /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
+    }
+
+    /**
      * @return Person
      */
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @return Department
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment(Department $department = null)
+    {
+        $this->setModelField('department', $department);
+
+        return $this;
     }
 
     /**
@@ -151,6 +213,14 @@ class TicketMacro extends DomainObject
     public function getIsGlobal()
     {
         return $this->is_global;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
     }
 
     /**
@@ -376,12 +446,28 @@ class TicketMacro extends DomainObject
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([
             'fieldName'    => 'person',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'targetEntity' => Person::class,
             'mappedBy'     => null,
             'inversedBy'   => null,
             'joinColumns'  => [
                 0 => [
                     'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => null,
+                ],
+            ],
+            'dpApi' => true,
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'department',
+            'targetEntity' => Department::class,
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'department_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'set null',

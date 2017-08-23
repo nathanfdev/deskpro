@@ -107,7 +107,7 @@ class EmailAccount extends DomainObject
     /**
      * @var array
      */
-    protected $other_addresses;
+    protected $other_addresses = [];
 
     /**
      * Misc options or flags that can be used by whatever uses this account.
@@ -160,11 +160,34 @@ class EmailAccount extends DomainObject
     /**
      * @param string $account_type
      */
-    public function __construct($account_type)
+    public function __construct($account_type = null)
     {
-        $this->setAccountType($account_type);
+        if ($account_type) {
+            $this->setAccountType($account_type);
+        }
+
         $this->date_created    = new \DateTime();
         $this->date_read_start = new \DateTime();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     *
+     * @return $this
+     */
+    public function setAddress($address)
+    {
+        $this->setModelField('address', $address);
+
+        return $this;
     }
 
     /**

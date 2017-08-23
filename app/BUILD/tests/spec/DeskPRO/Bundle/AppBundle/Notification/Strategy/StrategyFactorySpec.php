@@ -30,13 +30,14 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification\Strategy;
 
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\EventListener\CliStrategyListener;
 use DeskPRO\Bundle\AppBundle\EventListener\ImmediateStrategyListener;
 use DeskPRO\Bundle\AppBundle\Notification\ActionAlertHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\NotifyHandlerInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistanceAdapterInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Persistance\PersistenceAdapterInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
 use DeskPRO\Bundle\AppBundle\Notification\UserNotificationHandler;
 use PhpSpec\ObjectBehavior;
@@ -54,7 +55,7 @@ class StrategyFactorySpec extends ObjectBehavior
         ContainerInterface $container,
         DbDeliveryHandler $dbHandler,
         PusherDeliveryHandler $pusherHandler,
-        PersistanceAdapterInterface $adapterInterface
+        PersistenceAdapterInterface $adapterInterface
 
         ) {
         $this->configureContainer($container, $settings_resolver, $dbHandler, $pusherHandler, $adapterInterface);
@@ -94,7 +95,7 @@ class StrategyFactorySpec extends ObjectBehavior
         SettingsResolver $settings_resolver,
         DbDeliveryHandler $dbHandler,
         PusherDeliveryHandler $pusherHandler,
-        PersistanceAdapterInterface $adapterInterface)
+        PersistenceAdapterInterface $adapterInterface)
     {
         $container->get('settings_resolver')->willReturn($settings_resolver);
         $container->getParameter('notification.settings')->willReturn([]);
@@ -113,6 +114,9 @@ class StrategyFactorySpec extends ObjectBehavior
 
         $container->has('deskpro.notification.immediate_listener')->willReturn(true);
         $container->get('deskpro.notification.immediate_listener')->willReturn(new ImmediateStrategyListener());
+
+        $container->has('deskpro.notification.cli_listener')->willReturn(true);
+        $container->get('deskpro.notification.cli_listener')->willReturn(new CliStrategyListener());
     }
 
     private function configureSettingsResolver(SettingsResolver $settings_resolver, SettingsBag $settings)

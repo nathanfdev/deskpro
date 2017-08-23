@@ -32,9 +32,9 @@
 
 namespace Application\DeskPRO\Notifications;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 class NewFeedbackNotification extends AbstractAgentNotification
 {
@@ -76,13 +76,11 @@ class NewFeedbackNotification extends AbstractAgentNotification
         $this->sendBrowserNotifications('AgentBundle:Feedback:alert-new-feedback.html.twig', ['feedback' => $this->feedback, 'notify_data' => ['notify_type' => 'new_feedback']]);
         $this->sendEmailNotifications('DeskPRO:emails_agent:new-feedback.html.twig', ['feedback' => $this->feedback]);
 
-        $cm = new ClientMessage();
-        $cm->fromArray([
-            'channel'           => 'agent.ui.new-feedback',
-            'feedback_id'       => $this->feedback->getId(),
-            'created_by_client' => 'sys',
-        ]);
-        $this->em->persist($cm);
-        $this->em->flush();
+        $this->eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.ui.new-feedback',
+            [
+                'feedback_id' => $this->feedback->getId(),
+            ]
+        ));
     }
 }

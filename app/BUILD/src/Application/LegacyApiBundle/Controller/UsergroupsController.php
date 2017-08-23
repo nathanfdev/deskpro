@@ -80,7 +80,6 @@ class UsergroupsController extends AbstractController implements ProtectedContro
                 WHERE ug.is_agent_group = false
                 ORDER BY ug.title ASC
             ')->execute();
-
             $data['groups'] = $this->getApiData($ugs);
         }
 
@@ -95,10 +94,15 @@ class UsergroupsController extends AbstractController implements ProtectedContro
     {
         $usergroups = $this->container->getUserGroups();
 
-        if (Numbers::isInteger($id)) {
-            $usergroup = $usergroups->getGroup($id);
-        } else {
-            $usergroup = $usergroups->getSysGroup($id);
+        try {
+            if (Numbers::isInteger($id)) {
+                $usergroup = $usergroups->getGroup($id);
+            } else {
+                $usergroup = $usergroups->getSysGroup($id);
+            }
+        } catch (\Exception $e) {
+            // handle not found
+            $usergroup = null;
         }
 
         if (!$usergroup || $usergroup->is_agent_group) {
@@ -172,6 +176,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
 
         $formData = ['group' => $this->in->getArrayValue('group')];
         unset($formData['group']['perms']);
+        unset($formData['group']['dep_perms']);
 
         $form = $this->createForm(new UsergroupType(), $usergroup_edit, ['cascade_validation' => true]);
         $form->submit($formData, true);
@@ -194,14 +199,42 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         $db_persister->savePerms($usergroup, $perms);
 
         //------------------------------
+        // Save department perms
+        //------------------------------
+
+        if ($this->in->checkIsset('group.dep_perms')) {
+            $ticketDeps = $this->container->getTicketDepartments();
+            $chatDeps   = $this->container->getChatDepartments();
+
+            $setPerms = [];
+            foreach ($this->in->getArrayValue('group.dep_perms.tickets') as $did => $p) {
+                if (!$ticketDeps->getById($did)) {
+                    continue;
+                }
+                if ($p['full']) {
+                    $setPerms[] = ['department_id' => $did, 'usergroup_id' => $usergroup->id, 'app' => 'tickets', 'name' => 'full', 'value' => 1, 'is_active' => 1];
+                }
+            }
+            foreach ($this->in->getArrayValue('group.dep_perms.chat') as $did => $p) {
+                if (!$chatDeps->getById($did)) {
+                    continue;
+                }
+                if ($p['full']) {
+                    $setPerms[] = ['department_id' => $did, 'usergroup_id' => $usergroup->id, 'app' => 'chat', 'name' => 'full', 'value' => 1, 'is_active' => 1];
+                }
+            }
+
+            $this->db->executeUpdate('DELETE FROM department_permissions WHERE usergroup_id = ?', [$usergroup->id]);
+            if ($setPerms) {
+                $this->db->batchInsert('department_permissions', $setPerms, true);
+            }
+        }
+
+        //------------------------------
         // Clear permission cache
         //------------------------------
 
         $this->db->executeUpdate('DELETE FROM permissions_cache');
-
-        //------------------------------
-        // Result
-        //------------------------------
 
         if (!$id) {
             return $this->createApiCreateResponse(

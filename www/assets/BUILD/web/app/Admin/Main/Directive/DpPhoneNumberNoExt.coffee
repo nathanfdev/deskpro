@@ -43,7 +43,11 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"], ($, intlTelInput, u
           autoFormat: true,
           nationalMode: true
         })
-        element.intlTelInput("setNumber", element.val())
+
+        $timeout(() ->
+          element.intlTelInput("setNumber", element.val())
+        , 1)
+
         element.intlTelInput('utilsLoaded')
         element.bind('blur keyup change input', () ->
           scope.$apply(() ->

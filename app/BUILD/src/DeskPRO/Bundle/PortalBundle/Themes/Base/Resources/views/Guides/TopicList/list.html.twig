@@ -20,7 +20,7 @@
 
 {% if topics|length > 0 %}
     <script>
-        var topicList = '{{ topics|json_encode|raw }}';
+        var topicList = '{{ topics|json_encode|escape('js')|raw }}';
     </script>
     <ul>
         {% for topic in topics %}

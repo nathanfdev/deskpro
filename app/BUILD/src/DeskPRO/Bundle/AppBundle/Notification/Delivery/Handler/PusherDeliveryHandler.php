@@ -28,9 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use DpSys\LowError\SystemErrorHandler;
 use Pusher;
 
 /**
@@ -46,7 +49,17 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     /**
      * @var Pusher
      */
-    protected $pusher;
+    private $pusher;
+
+    /**
+     * @var Connection
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $channelPrefix = '';
 
     /**
      * @var array
@@ -54,11 +67,24 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     private $messages = [];
 
     /**
-     * @param Pusher $pusher
+     * @var array
      */
-    public function __construct(Pusher $pusher)
-    {
-        $this->pusher = $pusher;
+    private $postponeMessages = [];
+
+    /**
+     * @param Pusher           $pusher
+     * @param SettingsResolver $resolver
+     * @param Connection       $connection
+     */
+    public function __construct(
+        Pusher $pusher,
+        SettingsResolver $resolver,
+        Connection $connection
+    ) {
+        $this->pusher        = $pusher;
+        $this->channelPrefix = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
+        $this->connection    = $connection;
+        \DpShutdown::add([$this, 'doDeliverSoon'], null, 'db_done_trans_commit');
     }
 
     /**
@@ -75,16 +101,80 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                 'type'   => $message->getType(),
             ] + $message->getData();
 
+        $channelParts = ['private', $message->getTarget()];
+        if ($this->channelPrefix) {
+            array_splice($channelParts, 1, 0, [$this->channelPrefix]);
+        }
+
         $this->messages[] = [
-            'channel' => 'private-channel-'.$message->getTarget(),
+            'channel' => implode('-', $channelParts),
             'name'    => $this->getChannel($message),
             'data'    => $data,
         ];
     }
 
+    public function deliverSoon()
+    {
+        if ($this->connection->getTransactionNestingLevel() > 1) {
+            $this->postponeMessages = array_merge($this->postponeMessages, $this->messages);
+            $this->messages         = [];
+        } else {
+            $this->deliver();
+        }
+    }
+
+    public function doDeliverSoon()
+    {
+        $this->messages         = array_merge($this->messages, $this->postponeMessages);
+        $this->postponeMessages = [];
+        $this->deliver();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function deliver()
     {
-        $this->pusher->triggerBatch($this->messages);
+        if (!empty($this->messages)) {
+            foreach ($this->messages as &$message) {
+                $message['data'] = json_encode($message['data']);
+            }
+
+            foreach (array_chunk($this->messages, 10) as $chunk) {
+                $encodedDataLength = strlen(json_encode($chunk)); // we're interesting actual bytes, not chars
+
+                if ($encodedDataLength > static::MAX_MESSAGE_SIZE) {
+                    $this->deliverDivided($chunk);
+                } else {
+                    $this->innerDeliver($chunk);
+                }
+            }
+        }
+        $this->messages = [];
+    }
+
+    /**
+     * @param $chunk
+     */
+    protected function innerDeliver($chunk)
+    {
+        $tries     = 3;
+        $exception = null;
+        do {
+            $response = $this->pusher->triggerBatch($chunk, true, true);
+
+            if ($response['status'] !== 200) {
+                if (!$exception) {
+                    $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
+                }
+            } else {
+                $exception = null;
+            }
+        } while ($response['status'] !== 200 && $tries-- > 0);
+
+        if ($exception) {
+            SystemErrorHandler::logException($exception);
+        }
     }
 
     /**
@@ -101,5 +191,60 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
         }
 
         throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
+    }
+
+    /**
+     * @param $chunk
+     */
+    protected function deliverDivided($chunk)
+    {
+        $channelGroupedMessages = [];
+        foreach ($chunk as $message) {
+            $messageChannel = $message['channel'];
+            if (!isset($channelGroupedMessages[$messageChannel])) {
+                $channelGroupedMessages[$messageChannel] = [];
+            }
+            $channelGroupedMessages[$messageChannel][] = $message;
+        }
+        foreach ($channelGroupedMessages as $channel => $channelMessages) {
+            $encodedMessages     = json_encode($channelMessages);
+            $channelMessagesSize = strlen($encodedMessages);
+
+            if ($channelMessagesSize > static::MAX_MESSAGE_SIZE) {
+                $this->deliverMultiplex($channel, $encodedMessages);
+            } else {
+                $this->innerDeliver($channelMessages);
+            }
+        }
+    }
+
+    /**
+     * @param $channel
+     * @param $encodedMessages
+     */
+    protected function deliverMultiplex($channel, $encodedMessages)
+    {
+        // 1Kb of overhead is more than anyone will ever need :)
+        $encodedMessagesParts = str_split(base64_encode($encodedMessages), intval(0.9 * static::MAX_MESSAGE_SIZE));
+        $i                    = 0;
+        $allParts             = count($encodedMessagesParts);
+        $multiplexId          = time().'-'.hash('crc32b', $encodedMessages); // crc32b just much faster than md5 or sha1
+        foreach (array_chunk($encodedMessagesParts, 10) as $encodedMessagesPartsChunk) {
+            $chunk = [];
+            foreach ($encodedMessagesPartsChunk as $part) {
+                $chunk[] = [
+                    'channel' => $channel,
+                    'name'    => self::CHANNEL_ACTION_ALERT,
+                    'data'    => json_encode([
+                        'type'        => 'multiplex_message',
+                        'part'        => ++$i,
+                        'parts'       => $allParts,
+                        'data'        => $part,
+                        'multiplexId' => $multiplexId,
+                    ]),
+                ];
+            }
+            $this->innerDeliver($chunk);
+        }
     }
 }

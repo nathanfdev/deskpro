@@ -47,9 +47,10 @@ class BlobStorageException extends \Exception
     const FAILED_BLOB_STORE = 300;
 
     /**#@+ Various write ops */
-    const FAILED_RESOURCE_READ   = 1000;
-    const FAILED_RESOURCE_WRITE  = 1100;
-    const FAILED_RESOURCE_DELETE = 1200;
+    const FAILED_RESOURCE_READ        = 1000;
+    const FAILED_RESOURCE_WRITE       = 1100;
+    const FAILED_RESOURCE_DELETE      = 1200;
+    const CUMULATIVE_TIMEOUT_EXCEEDED = 1300;
     /**#@-*/
 
     /**

@@ -51,5 +51,11 @@ DeskPRO.TextExpander = new Orb.Class({
 				self.comboString = self.comboString.substring(0, self.comboString.length-1);
 			}
 		});
+	},
+
+	destroy: function() {
+    this.options = null;
+		this.$txt = null;
+		this.destroyEvents();
 	}
 });

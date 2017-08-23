@@ -77,6 +77,10 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
      */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {
+        if ($object instanceof Download && $object->getFileurl()) {
+            return $object->getFileurl();
+        }
+
         /* @var \Application\DeskPRO\Entity\ArticleAttachment|\Application\DeskPRO\Entity\Download $object */
         $blob = $object->getBlob();
 

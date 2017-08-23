@@ -148,6 +148,26 @@ class ObjectTranslatableListener implements EventSubscriber
             $objectLang->setObject($entity);
             $em->persist($objectLang);
 
+            if (!$objectLang->getId()) {
+                // check there is no unique constraint errors
+                // remove outdated not mapped translations
+                $qb = $em->createQueryBuilder();
+                $qb
+                    ->delete()
+                    ->from(ObjectLang::class, 'o')
+                    ->where(
+                        'o.ref = :ref',
+                        'o.prop_name = :prop_name',
+                        'o.language = :language'
+                    )
+                    ->setParameter('ref', $objectLang->getRef())
+                    ->setParameter('prop_name', $objectLang->getPropName())
+                    ->setParameter('language', $objectLang->getLanguage())
+                    ->getQuery()
+                    ->execute()
+                ;
+            }
+
             $uow = $em->getUnitOfWork();
             $uow->computeChangeSet($em->getClassMetadata(get_class($objectLang)), $objectLang);
         }

@@ -18,6 +18,14 @@ services:
       - { name: doctrine.event_listener, event: postPersist }
       - { name: doctrine.event_listener, event: postRemove }
 
+  dp.api.event_listeners.snippet_entity:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\SnippetListener
+    arguments: ["@service_container"]
+    tags:
+      - { name: doctrine.event_listener, event: postPersist }
+      - { name: doctrine.event_listener, event: postUpdate }
+      - { name: doctrine.event_listener, event: preRemove }
+
   event_listener.object_translatable:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ObjectTranslatableListener
     tags:
@@ -53,7 +61,7 @@ services:
 
   event_listener.voice_worker:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
-    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager"]
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@event_dispatcher"]
     tags:
       - { name: doctrine.entity_listener }
 
@@ -65,7 +73,9 @@ services:
 
   event_listener.voice_settings:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
     tags:
       - { name: doctrine.entity_listener }
 
@@ -78,6 +88,12 @@ services:
   event_listener.zapier:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ZapierListener
     arguments: ["@doctrine.orm.default_entity_manager", "@jms_serializer.serializer"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.person_email:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonEmailListener
+    arguments: ["@email.email_account_manager", "@validator"]
     tags:
       - { name: doctrine.entity_listener }
 

@@ -36,7 +36,6 @@ use DeskPRO\Bundle\AppBundle\Form\Hierarchy\HierarchyGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\FieldRendererInterface;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\AbstractFieldResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -48,11 +47,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TicketWithLayoutsType extends AbstractType
 {
-    /**
-     * @var EntityManager
-     */
-    private $em;
-
     /**
      * @var HierarchyGenerator
      */
@@ -66,13 +60,11 @@ class TicketWithLayoutsType extends AbstractType
     /**
      * Constructor.
      *
-     * @param EntityManager      $em
      * @param HierarchyGenerator $hierarchyGenerator
      * @param BrandFormHelper    $brandHelper
      */
-    public function __construct(EntityManager $em, HierarchyGenerator $hierarchyGenerator, BrandFormHelper $brandHelper)
+    public function __construct(HierarchyGenerator $hierarchyGenerator, BrandFormHelper $brandHelper)
     {
-        $this->em                 = $em;
         $this->hierarchyGenerator = $hierarchyGenerator;
         $this->brandHelper        = $brandHelper;
     }

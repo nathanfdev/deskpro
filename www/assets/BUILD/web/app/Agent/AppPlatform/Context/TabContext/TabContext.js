@@ -50,7 +50,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @returns {HTMLElement}
      */
     getFragmentElement: function() {
-      return this._fragment.fragmentElement;
+      return this._fragment.wrapper;
     },
 
 

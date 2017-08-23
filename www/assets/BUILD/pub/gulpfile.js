@@ -35,6 +35,12 @@ gulp.task('default', ['clean'], (cb) => {
   runSeq(['bundle'], cb);
 });
 
+// used in init-project-dev, builds to filesystem but without any optimisations
+// so its quicker during a new project checkout
+gulp.task('default-dev', ['clean'], (cb) => {
+  runSeq(['bundle:dev'], cb);
+});
+
 gulp.task('prod', ['clean', 'priv:start-prod'], (cb) => {
   runSeq(['bundle'], cb);
 });
@@ -160,7 +166,8 @@ function getWebpackConfig(mode, isProd) {
         path.join(__dirname, 'src/DeskPRO/Component'),
         path.join(__dirname, 'src/DeskPRO/Dev'),
         path.join(__dirname, 'built-tools'),
-        path.join(__dirname, 'vendor')
+        path.join(__dirname, 'vendor'),
+        //path.join(__dirname, 'node_modules')
       ],
 
       alias: {
@@ -232,7 +239,16 @@ function getWebpackConfig(mode, isProd) {
         {
           test:   /\.json/,
           loader: 'json-loader'
-        }
+        },
+        {
+          test:    /\.(ttf|eot|woff|woff2)$/,
+          loader:  'file-loader',
+          options: {
+            name: 'fonts/[name].[ext]',
+          },
+        },
+        { test: require.resolve('react'), loader: 'expose-loader?React' },
+        { test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM' },
       ],
       noParse: [/(^(froala|jquery\.mark))\.min\.js/]
     },
@@ -246,12 +262,16 @@ function getWebpackConfig(mode, isProd) {
       }),
       new webpack.ProvidePlugin({
         $:      'jquery',
-        jQuery: 'jquery'
+        jQuery: 'jquery',
+        // React: 'react',
+        // ReactDOM: 'react-dom'
       }),
       new CopyWebpackPlugin([
         { from: path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle'), to: 'DeskPRO/Bundle/PortalBundle' }
       ])
-    ]
+    ],
+
+    node: { fs: 'empty' }
   };
 
   if (mode === 'all' || mode === 'portal') {
@@ -427,6 +447,19 @@ gulp.task('bundle', (callback) => {
   refreshWidgetLoader('embed_loader');
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', true), callback);
+});
+
+gulp.task('bundle:dev', (callback) => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
+  reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
+  reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
+  refreshWidgetLoader('widget_loader');
+  refreshWidgetLoader('hit_recorder');
+  refreshWidgetLoader('embed_loader');
+  refreshPortalDesignerVariables();
+  runWebpackBundle(getWebpackConfig('all', false), callback);
 });
 
 gulp.task('bundle:agent', (callback) => {

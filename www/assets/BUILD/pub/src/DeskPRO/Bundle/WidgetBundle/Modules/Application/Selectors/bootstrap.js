@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 
 const stateSelector = state => state.Application.bootstrap;
 
@@ -13,11 +14,6 @@ export const widgetSessionSelector = createSelector(
   state => state.get('session')
 );
 
-export const widgetSessionCodeSelector = createSelector(
-  widgetSessionSelector,
-  session => session.get('session_code')
-);
-
 export const widgetSessionPersonSelector = createSelector(
   widgetSessionSelector,
   session => session.get('person')
@@ -25,7 +21,7 @@ export const widgetSessionPersonSelector = createSelector(
 
 export const widgetSessionChatIdSelector = createSelector(
   widgetSessionSelector,
-  session => Number(session.get('chat_id'))
+  session => session.get('chat_id') || (storageAvailable('sessionStorage') && sessionStorage['dpWidget.chat.id'])
 );
 
 export const widgetSessionIsLoginSelector = createSelector(
@@ -43,16 +39,6 @@ export const widgetSettingsSelector = createSelector(
 export const widgetChatSettingsSelector = createSelector(
   widgetSettingsSelector,
   settings => settings.get('chat')
-);
-
-export const requireChatEmailValidationSelector = createSelector(
-  widgetChatSettingsSelector,
-  settings => settings.get('email_validation') || false
-);
-
-export const requireChatLoginSelector = createSelector(
-  widgetChatSettingsSelector,
-  settings => settings.get('require_login') || false
 );
 
 export const widgetHasChatSelector = createSelector(
@@ -81,7 +67,6 @@ export const companyLogoSelector = createSelector(
   companyOptionsSelector,
   settings => settings.get('logo')
 );
-
 
 export const buildNumSelector = createSelector(
   widgetSessionSelector,

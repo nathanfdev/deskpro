@@ -44,6 +44,14 @@ class DiscoverSettings
     private $isDeskpro = true;
 
     /**
+     * @var bool
+     *
+     * @JMS\Type("boolean")
+     * @JMS\Groups({"discover"})
+     */
+    private $isCloud = false;
+
+    /**
      * @var string
      *
      * @JMS\Type("string")
@@ -68,6 +76,22 @@ class DiscoverSettings
     private $build;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
+     */
+    private $appsOauthProxyUrl = '';
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
+     */
+    private $appsHttpProxyUrl = '';
+
+    /**
      * @return bool
      */
     public function isDeskpro()
@@ -83,6 +107,26 @@ class DiscoverSettings
     public function setIsDeskpro($isDeskpro)
     {
         $this->isDeskpro = $isDeskpro;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCloud()
+    {
+        return $this->isCloud;
+    }
+
+    /**
+     * @param bool $isCloud
+     *
+     * @return $this
+     */
+    public function setIsCloud($isCloud)
+    {
+        $this->isCloud = $isCloud;
 
         return $this;
     }
@@ -144,6 +188,42 @@ class DiscoverSettings
     {
         $this->build = $build;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppsOauthProxyUrl()
+    {
+        return $this->appsOauthProxyUrl;
+    }
+
+    /**
+     * @param string $appsOauthProxyUrl
+     * @return DiscoverSettings
+     */
+    public function setAppsOauthProxyUrl($appsOauthProxyUrl)
+    {
+        $this->appsOauthProxyUrl = $appsOauthProxyUrl;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppsHttpProxyUrl()
+    {
+        return $this->appsHttpProxyUrl;
+    }
+
+    /**
+     * @param string $appsHttpProxyUrl
+     * @return DiscoverSettings
+     */
+    public function setAppsHttpProxyUrl($appsHttpProxyUrl)
+    {
+        $this->appsHttpProxyUrl = $appsHttpProxyUrl;
         return $this;
     }
 }

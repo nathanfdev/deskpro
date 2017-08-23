@@ -28,13 +28,12 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -69,19 +68,15 @@ class PasswordResetRequestType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('email', EmailType::class, [
-            'label'       => $this->languageManager->phrase('portal.forms.label_email'),
-            'constraints' => [
-                new Assert\NotBlank(),
-                new Assert\Email(['strict' => true]),
-            ],
-        ]);
-
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $form = $event->getForm();
-            if ($this->captchaDecider->shouldRequireForgotPasswordCaptchaForCurrentPerson()) {
-                $form->add('captcha', DpCaptchaType::class);
-            }
-        });
+        $builder
+            ->add('email', EmailType::class, [
+                'label'       => $this->languageManager->phrase('portal.forms.label_email'),
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Email(['strict' => true]),
+                ],
+            ])
+            ->add('captcha', DpCaptchaType::class)
+        ;
     }
 }

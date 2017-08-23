@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitLockoutGroup;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -40,11 +40,11 @@ class PortalAccountRateLimit
     /**
      * Limits for registration.
      *
-     * @var RateLimitGroup
+     * @var RateLimitLockoutGroup
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitLockoutGroup")
      */
     private $registrationSettings;
 
@@ -53,9 +53,9 @@ class PortalAccountRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitLockoutGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitLockoutGroup
      */
     private $resetPasswordSettings;
 
@@ -64,12 +64,12 @@ class PortalAccountRateLimit
      */
     public function __construct()
     {
-        $this->registrationSettings  = new RateLimitGroup();
-        $this->resetPasswordSettings = new RateLimitGroup();
+        $this->registrationSettings  = new RateLimitLockoutGroup();
+        $this->resetPasswordSettings = new RateLimitLockoutGroup();
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitLockoutGroup
      */
     public function getRegistrationSettings()
     {
@@ -77,7 +77,7 @@ class PortalAccountRateLimit
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitLockoutGroup
      */
     public function getResetPasswordSettings()
     {

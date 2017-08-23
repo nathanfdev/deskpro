@@ -1,0 +1,71 @@
+{% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
+
+{% block fullpane_content %}
+
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>{{ phrase('admin.server_jobs.list') }}</h3>
+		</header>
+
+		<article class="padd">
+			<table class="table table-bordered" ng-if="JobsListCtrl.jobs.length">
+				<thead>
+				<tr>
+					<th nowrap="nowrap">
+                        {{ phrase('admin.server_jobs.id') }}
+					</th>
+					<th nowrap="nowrap">
+                        {{ phrase('admin.server_jobs.type') }}
+					</th>
+					<th nowrap="nowrap">
+                        {{ phrase('admin.server_jobs.status') }}
+					</th>
+					<th nowrap="nowrap">
+                        {{ phrase('admin.server_jobs.status_code') }}
+					</th>
+					<th nowrap="nowrap">
+                        {{ phrase('admin.server_jobs.date_created') }}
+					</th>
+					<th nowrap="nowrap" style="width: 155px;">
+                        {{ phrase('admin.server_jobs.date_last_try') }}
+					</th>
+					<th nowrap="nowrap" style="width: 155px;">
+                        {{ phrase('admin.server_jobs.date_next_try') }}
+					</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr ng-repeat="job in JobsListCtrl.jobs">
+					<td class="alt dp-id-col">
+						<a ng-href="{{ ng_href('server.jobs.view', '{id: job.id}') }}">{{ ng_var('job.id') }}</a>
+						<span ng-if="job.original_job_id" style="color: #888; font-size: 11px; padding-right: 3px;">
+							<br/>Original job: <a ng-href="{{ ng_href('server.jobs.view', '{id: job.original_job_id}') }}">{{ ng_var('job.original_job_id') }}</a>
+						</span>
+					</td>
+					<td>
+                        {{ ng_var('job.type') }}
+					</td>
+					<td>
+                        {{ ng_var('job.status') }}
+					</td>
+					<td>
+                        {{ ng_var('job.status_code') }}
+					</td>
+					<td>
+                        {{ ng_var('job.date_created | date : "yyyy-MM-d H:mm:ss"') }}
+					</td>
+					<td>
+                        {{ ng_var('job.date_last_try| date : "yyyy-MM-d H:mm:ss"') }}
+					</td>
+					<td>
+                        {{ ng_var('job.date_next_try| date : "yyyy-MM-d H:mm:ss"') }}
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</article>
+
+
+	</section>
+
+{% endblock %}

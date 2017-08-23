@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import Loader from 'react-loader';
 import classNames from 'classnames';
+import debounce from 'lodash/debounce';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
@@ -63,11 +64,14 @@ export default class IMOverlay extends React.Component {
   componentWillMount() {
     const { dispatch } = this.props;
     window.addEventListener('keyup', this.onEscape);
-    dispatch(loadActiveTabs());
+
+    const debouncedDispatchLoadActiveTabs = debounce(() => dispatch(loadActiveTabs()), 1000);
+
+    debouncedDispatchLoadActiveTabs();
     if (window.DeskPRO_Window && window.DeskPRO_Window.TabBar) {
-      window.DeskPRO_Window.TabBar.addEvent('addTab', () => dispatch(loadActiveTabs()));
-      window.DeskPRO_Window.TabBar.addEvent('closeTab', () => dispatch(loadActiveTabs()));
-      window.DeskPRO_Window.TabBar.addEvent('removeTab', () => dispatch(loadActiveTabs()));
+      window.DeskPRO_Window.TabBar.addEvent('addTab', () => debouncedDispatchLoadActiveTabs());
+      window.DeskPRO_Window.TabBar.addEvent('closeTab', () => debouncedDispatchLoadActiveTabs());
+      window.DeskPRO_Window.TabBar.addEvent('removeTab', () => debouncedDispatchLoadActiveTabs());
     }
   }
 

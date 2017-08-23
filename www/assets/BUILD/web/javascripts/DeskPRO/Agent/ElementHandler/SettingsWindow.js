@@ -93,6 +93,7 @@ DeskPRO.Agent.ElementHandler.SettingsWindow = new Orb.Class({
 		var page = target.data('page-fragment');
 		if (page) {
 			page.fireEvent('destroy');
+			page.destroyEvents();
 		}
 
 		target.empty();

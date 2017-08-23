@@ -27,7 +27,21 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       self.initScope();
     }]);
 
+    this.addEvent('immediateDestroy', function() {
+      if (self.queuedChangeEvents_timeout) {
+        self.$timeout.cancel(self.queuedChangeEvents_timeout);
+        self.queuedChangeEvents_timeout = null;
+      }
+      if (self.$scope) {
+        self.$scope.$destroy();
+        self.$scope = null;
+      }
+    });
+
     this.addEvent('destroy', function() {
+      if (self.massActions) {
+        self.massActions.destroy();
+      }
       if (self.queuedChangeEvents_timeout) {
         self.$timeout.cancel(self.queuedChangeEvents_timeout);
         self.queuedChangeEvents_timeout = null;
@@ -165,7 +179,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
     $scope.checkedTickets = {};
     $scope.checkedTicketsCount = 0;
     $scope.checkedTicketsToggle = false;
-    $scope.changedTickets = {};
     $scope.display_fields = this.meta.display_fields || [];
     $scope.openTickets = {};
     $scope.listType = 'list';
@@ -990,57 +1003,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
     return def.promise;
   },
 
-
-  /**
-   * Loads ticket rows with change data to preview changes.
-   *
-   * @param ticketIds
-   * @param changes
-   * @returns {promise}
-   */
-  getTicketChangePreviewRows: function(ticketIds, changes, runSingle) {
-    var def = this.$q.defer(),
-      formData = [];
-
-    if (runSingle && this.runningChangePreviewAjax) {
-      this.runningChangePreviewAjax.abort();
-      this.runningChangePreviewAjax = null;
-    }
-
-    if (!ticketIds || !ticketIds.length || !changes || !changes.length) {
-      def.resolve([]);
-      return def.promise;
-    }
-
-    ticketIds.forEach(function(tid) {
-      formData.push({ name: 'ticket_ids[]', value: tid });
-    });
-
-    changes.forEach(function(c) {
-      formData.push(c);
-    });
-
-    this.runningChangePreviewAjax = $.ajax({
-      url:             BASE_URL + "agent/ticket-search/ticket-rows.json",
-      type:            'POST',
-      dataType:        'json',
-      data:            formData,
-      noErrorOverride: true,
-      complete:        function() {
-        this.runningChangePreviewAjax = null;
-      },
-      success:         function(data) {
-        def.resolve(data);
-      },
-      error:           function() {
-        def.reject();
-      }
-    });
-
-    return def.promise;
-  },
-
-
   /**
    * Updates grouping bubble with some info about what happened.
    * This is called automatically when a ticket is updated. If we know how to handle
@@ -1173,42 +1135,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
       }
     };
 
-    $scope.addTicketChanges = function(changedTicket) {
-      var ticket = $scope.ticketsMap[changedTicket.id];
-      if (!ticket) return;
-      $scope.changedTickets[changedTicket.id] = true;
-      ticket.preview_changes = changedTicket;
-
-      if (!ticket.version_id) {
-        ticket.version_id = 0;
-      }
-      ticket.version_id++;
-    };
-
-    $scope.removeTicketChanges = function(id) {
-      var ticket = $scope.ticketsMap[id];
-      if (!ticket || !$scope.changedTickets[id]) return;
-
-      delete ticket.preview_changes;
-      delete $scope.changedTickets[id];
-      if (!ticket.version_id) {
-        ticket.version_id = 0;
-      }
-      ticket.version_id++;
-    };
-
-    $scope.removeAllTicketsChanges = function() {
-      for (var id in $scope.changedTickets) {
-        $scope.removeTicketChanges(id);
-      }
-    };
-
     $scope.onToggleTicket = function(id) {
       if ($scope.checkedTickets[id]) {
         $scope.checkedTicketsCount++;
       } else {
         $scope.checkedTicketsCount--;
-        $scope.removeTicketChanges(id);
       }
 
       $scope.checkedTicketsToggle = ($scope.checkedTicketsCount === $scope.tickets.length);
@@ -1226,7 +1157,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         if ($scope.checkedTicketsCount !== $scope.tickets.length) return;
         $scope.checkedTickets = {};
         $scope.checkedTicketsCount = 0;
-        $scope.removeAllTicketsChanges();
       }
     });
 
@@ -1253,7 +1183,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
               $scope.$safeApply(function() {
                 $scope.checkedTickets = {};
                 $scope.checkedTicketsCount = 0;
-                $scope.removeAllTicketsChanges();
 
                 if (data.ticket_data) {
                   self.applyTicketData(data.ticket_data);
@@ -1274,50 +1203,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
               $scope.$safeApply(function() {
                 $scope.checkedTickets = {};
                 $scope.checkedTicketsCount = 0;
-                $scope.removeAllTicketsChanges();
               });
               self.refreshCursor(null, true);
-            },
-            onFormUpdated: function(changes) {
-              self.updateMassActionPreviews(changes);
             }
           });
         }
         self.massActions.open();
-
-        self.updateMassActionPreviewsDebounced = _.debounce(self.updateMassActionPreviews, 500);
       }, 0);
     };
-  },
-
-
-  updateMassActionPreviews: function(changes) {
-    var $scope = this.$scope,
-      ids = [],
-      self = this;
-
-    for (var i in $scope.checkedTickets) {
-      if ($scope.checkedTickets[i] === true) {
-        ids.push(parseInt(i));
-      }
-    }
-
-    if (!ids.length || !changes.length) {
-      $scope.$safeApply(function() {
-        $scope.removeAllTicketsChanges();
-      });
-      return;
-    }
-
-    // Clear all previews except for ones we want
-    $scope.removeAllTicketsChanges();
-
-    // Load preview data for selected tickets
-    this.getTicketChangePreviewRows(ids, changes, true).then(function(data) {
-      $scope.$safeApply(function() {
-        (data || []).forEach(self.$scope.addTicketChanges);
-      });
-    });
   },
 
   //#########################################################################
@@ -1504,14 +1397,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         var url = self.meta.refreshUrl;
         url = Orb.appendQueryData(url, 'group_by', prop);
 
-        if (self.meta.viewType === 'list') {
-          self.loadNewListviewUrl(url + '&view_type=list');
-        } else {
-          self.wrapper.find('header.list-grouping-bar').hide();
-          self.getEl('grouping_loading').show();
-          self.getEl('grouping_bar').hide();
-          DeskPRO_Window.loadListPane(url);
-        }
+        self.wrapper.find('header.list-grouping-bar').hide();
+        self.getEl('grouping_loading').show();
+        self.getEl('grouping_bar').hide();
+        DeskPRO_Window.loadListPane(url);
       }
     });
     this.ownObject(groupingMenu);

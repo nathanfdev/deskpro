@@ -58,6 +58,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             ->addOption('job', 'j', InputOption::VALUE_REQUIRED, 'Run only specific job')
             ->addOption('group', 'g', InputOption::VALUE_REQUIRED, 'Run only a specific group of jobs')
             ->addOption('ignore-interval', 'f', InputOption::VALUE_NONE, 'Always run job(s) even if the job interval has not ellapsed since last run')
+            ->addOption('no-croncheck', null, InputOption::VALUE_NONE, 'Skip the cron checker (used when cron is run with another process manager)')
             ->addOption('options', 'o', InputOption::VALUE_REQUIRED, 'Specify a JSON-encoded array of options to pass to worker jobs')
             ->addOption('no-auto-updater', null, InputOption::VALUE_NONE, 'Do NOT start any auto-update process')
             ->addOption('auto-updater', null, InputOption::VALUE_NONE, 'Start the auto-update process if it is scheduled. This will block/wait if another cron instance is still running and start the update after it finishes.')
@@ -113,7 +114,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         }
 
         if ($is_verbose && defined('DP_START_TIME')) {
-            $output->writeln(sprintf('(Time to enter execute: %.4f)', $time_cron_start - DP_START_TIME));
+            $output->writeln(sprintf('[%s] Time to enter execute: %.4f', date('Y-m-d H:i:s'), $time_cron_start - DP_START_TIME));
         }
 
         if ($input->getOption('info')) {
@@ -197,7 +198,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.updater']);
             if ($check && $check > (time() - 3600)) {
                 if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
-                    $output->writeln('core.croncheck.updater already running');
+                    $output->writeln(sprintf('[%] core.croncheck.updater already running', date('Y-m-d H:i:s')));
                 }
 
                 return 0;
@@ -335,7 +336,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         $GLOBALS['DP_CRON_ID'] = $cron_id;
 
-        if (!$input->getOption('ignore-interval')) {
+        if (!$input->getOption('ignore-interval') && !$input->getOption('no-croncheck')) {
             $check = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name = ?', ['core.croncheck.'.$cron_id]);
             if ($check) {
                 $date     = (int) $check;
@@ -344,7 +345,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
                 if ($date_cut < $date) {
                     if ($input->getOption('verbose')) {
-                        $output->writeln("$cron_id is still active. Running for {$diff} (since ".date('Y-m-d H:i:s', $date).')');
+                        $output->writeln(sprintf("[%s] $cron_id is still active. Running for {$diff} (since ".date('Y-m-d H:i:s', $date).')', date('Y-m-d H:i:s')));
                     }
                     App::getDb()->insert('log_items', [
                         'log_name'      => 'worker_job.cron_runner',
@@ -418,6 +419,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
                 App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']]);
             } catch (\Exception $e) {
+                \DpSys\LowError\SystemErrorHandler::logException($e, false);
             }
         });
 
@@ -451,7 +453,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         unset($GLOBALS['DP_CRON_ID']);
 
         if ($is_verbose) {
-            $output->writeln(sprintf('(Time until execute end: %.4f)', microtime(true) - $time_cron_start));
+            $output->writeln(sprintf('[%s] Time until execute end: %.4f', date('Y-m-d H:i:s'), microtime(true) - $time_cron_start));
         }
 
         return $ret;

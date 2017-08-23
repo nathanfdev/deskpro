@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
@@ -175,8 +176,7 @@ class NewTicketController extends AbstractController
             }
         }
 
-        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'              => $person,
+        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
             'action'              => $this->generateUrl('portal_new_ticket'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,

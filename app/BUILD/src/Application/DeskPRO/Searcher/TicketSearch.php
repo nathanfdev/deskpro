@@ -1075,6 +1075,7 @@ class TicketSearch extends SearcherAbstract
                 ($sql)
                 UNION
                 ($sql2)
+                $order_by
             ";
         } else {
             $select_query = $sql;
@@ -1118,7 +1119,7 @@ class TicketSearch extends SearcherAbstract
         }
 
         $order_by = '';
-        $tr       = App::getTranslator();
+        $tr       = App::get('language_manager');
 
         switch ($type) {
             case 'ticket.urgency':
@@ -1349,6 +1350,7 @@ class TicketSearch extends SearcherAbstract
                 switch ($term) {
                     case self::TERM_ID:
                         $this->enableArchiveSearch();
+                        $set_status = true;
 
                         $choice = is_array($choice) && isset($choice['ticket_id']) ? $choice['ticket_id'] : $choice;
                         if (!is_array($choice)) {
@@ -1368,6 +1370,8 @@ class TicketSearch extends SearcherAbstract
 
                     case self::TERM_REF:
                         $this->enableArchiveSearch();
+                        $set_status = true;
+
                         $wheres[] = $this->_stringMatch("$tickets_table.ref", $op, $choice, true);
                         break;
 
@@ -2141,9 +2145,10 @@ class TicketSearch extends SearcherAbstract
                                         break;
                                     case self::OP_CONTAINS:
                                     case self::OP_NOTCONTAINS:
-                                        $op = 'LIKE';
-                                        if ($op == self::OP_NOTCONTAINS) {
+                                        if ($op === self::OP_NOTCONTAINS) {
                                             $op = 'NOT LIKE';
+                                        } else {
+                                            $op = 'LIKE';
                                         }
                                         $w = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
 

@@ -153,7 +153,7 @@
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_article_total') }}</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_article_done') }}</td>
 						</tr>
-						{% if app.hasFeature('guides') %}
+						{% if app.hasBeta('guides') %}
 						<tr ng-class="{'success': indexer_status.deskpro_news_done >= indexer_status.deskpro_news_total}">
 							<td>Topics</td>
 							<td style="text-align: center;">{{ ng_var('indexer_status.deskpro_topic_total') }}</td>
@@ -301,7 +301,7 @@
 							<td>{{ ng_var('info.num_download') }}</td>
 							<td>{{ ng_var('info.realnum_download') }}</td>
 						</tr>
-						{% if app.hasFeature('guides') %}
+						{% if app.hasBeta('guides') %}
 						<tr>
 							<td>Topics</td>
 							<td>{{ ng_var('info.num_topic') }}</td>

@@ -62,6 +62,7 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
         $document->set('title', implode(' ', $titles));
         $document->set('content', implode(' ', $content));
         $document->set('status', $object->getStatus());
+        $document->set('hidden_status', $object->getHiddenStatus());
 
         $cat_ids = [];
         foreach ($object->getCategories() as $c) {
@@ -75,7 +76,7 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
             $labels = Arrays::map(function ($l) {
                 return $l->label;
             }, $object->getLabels());
-            $document->set('labels', $labels);
+            $document->set('labels', array_values($labels));
         }
 
         $sticky_words = App::$container->getDb()->fetchAllCol('

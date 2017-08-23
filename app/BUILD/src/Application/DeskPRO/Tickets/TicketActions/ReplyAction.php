@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
@@ -37,24 +33,42 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 
-class ReplyAction extends AbstractAction implements PersonContextInterface, PermissionableAction
+/**
+ * Class ReplyAction.
+ */
+class ReplyAction extends AbstractReplyAction
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $reply_text;
-    /** @var string|null */
-    protected $reply_pos;
-    /** @var array */
+
+    /**
+     * @var array
+     */
     protected $attach_ids = [];
-    /** @var Person */
-    protected $person_context;
-    /** @var bool */
+
+    /**
+     * @var bool
+     */
     protected $is_html = false;
-    /** @var int|null */
+
+    /**
+     * @var int|null
+     */
     protected $person_id = null;
 
+    /**
+     * Constructor.
+     *
+     * @param string $reply_text
+     * @param array  $attach_ids
+     * @param null   $reply_pos
+     * @param bool   $is_html
+     * @param null   $person_id
+     */
     public function __construct($reply_text, array $attach_ids = [], $reply_pos = null, $is_html = false, $person_id = null)
     {
         $this->reply_text = $reply_text;
@@ -89,53 +103,16 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
      */
     public function apply(Ticket $ticket)
     {
-        $person = null;
-
-        if ($this->person_id) {
-            $person = App::getDataService('Agent')->get($this->person_id);
-        }
-
+        $person = $this->getTicketPerson($ticket);
         if (!$person) {
-            if ($this->person_context && $this->person_context->getId()) {
-                $person = $this->person_context;
-            } else {
-                if ($ticket->agent) {
-                    $person = $ticket->agent;
-                } else {
-                    // Try to find last agent to replied in tikcet
-                    $agent_id = App::getDb()->fetchColumn('
-                        SELECT tickets_messages.person_id
-                        FROM tickets_messages
-                        LEFT JOIN people ON (people.id = tickets_messages.person_id)
-                        WHERE tickets_messages.ticket_id = 1 AND people.is_agent = 1
-                        ORDER BY tickets_messages.id DESC
-                    ');
-
-                    if ($agent_id) {
-                        $person = App::getDataService('Agent')->get($agent_id);
-                    }
-                }
-            }
-        }
-
-        if (!$person || !$person->getId()) {
             return;
         }
 
-        $message               = new TicketMessage();
-        $message->person       = $person;
-        $message->date_created = new \DateTime('+1 second');
+        $message = new TicketMessage();
+        $message->setPerson($person);
+        $message->setDateCreated(new \DateTime('+1 second'));
+        $message->setMessageHtml($this->getMessageContent($ticket));
 
-        if ($this->is_html) {
-            $message->message_text = $this->reply_text;
-        } else {
-            $reply_text = $this->reply_text;
-
-            $formatter  = new SnippetFormatter(App::getContainer()->get('twig'));
-            $reply_text = $formatter->formatText($reply_text, $ticket);
-
-            $message->setMessageHtml($reply_text);
-        }
         $ticket->addMessage($message);
 
         if ($this->attach_ids) {
@@ -191,14 +168,6 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
     }
 
     /**
-     * @return string
-     */
-    public function getReplyPos()
-    {
-        return $this->reply_pos;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function merge(ActionInterface $other_action)
@@ -222,9 +191,9 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
             $desc = '<span class="highlight-description">'.htmlspecialchars($flat).'</span>';
 
             if (isset($_GET['macro_reply_context'])) {
-                if ($this->reply_pos == 'overwrite') {
+                if ($this->reply_pos == self::REPLY_POS_OVERWRITE) {
                     $ret = 'Set reply text';
-                } elseif ($this->reply_pos == 'append') {
+                } elseif ($this->reply_pos == self::REPLY_POS_APPEND) {
                     $ret = 'Append reply text';
                 } else {
                     $ret = 'Prepend reply text';
@@ -245,5 +214,35 @@ class ReplyAction extends AbstractAction implements PersonContextInterface, Perm
         }
 
         return $tr->phrase('agent.tickets.add_reply_action');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTicketPerson(Ticket $ticket)
+    {
+        $person = null;
+
+        if ($this->person_id) {
+            $person = App::getDataService('Agent')->get($this->person_id);
+        }
+        if (!$person) {
+            $person = parent::getTicketPerson($ticket);
+        }
+
+        return $person;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessageContent(Ticket $ticket)
+    {
+        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+
+        $replyText = $this->reply_text;
+        $replyText = $formatter->formatText($replyText, $ticket);
+
+        return $replyText;
     }
 }

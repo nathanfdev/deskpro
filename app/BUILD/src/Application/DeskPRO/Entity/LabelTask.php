@@ -51,6 +51,13 @@ class LabelTask extends LabelAssocAbstract
      */
     protected $task;
 
+    public function setTask($task = null)
+    {
+        $this->setModelField('task', $task);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

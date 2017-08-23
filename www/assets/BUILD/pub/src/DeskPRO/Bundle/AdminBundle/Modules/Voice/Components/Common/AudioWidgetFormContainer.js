@@ -11,9 +11,11 @@ import { createVoiceAsset } from '../../Actions/assetActions';
 class AudioWidgetFormContainer extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.object,
-    onChange: PropTypes.func,
-    dispatch: PropTypes.func
+    value:           PropTypes.object,
+    onChange:        PropTypes.func,
+    dispatch:        PropTypes.func,
+    hasAutoSpeech:   PropTypes.bool,
+    autoSpeechLabel: PropTypes.string
   };
 
   onSubmit = (data) => {
@@ -51,7 +53,7 @@ class AudioWidgetFormContainer extends React.Component {
   };
 
   render() {
-    const { value } = this.props;
+    const { value, hasAutoSpeech, autoSpeechLabel } = this.props;
 
     return (
       <AudioWidgetForm
@@ -61,6 +63,8 @@ class AudioWidgetFormContainer extends React.Component {
         addButtonComponent={AddAudioAsset}
         editButtonComponent={EditAudioAsset}
         onSubmit={this.onSubmit}
+        hasAutoSpeech={hasAutoSpeech}
+        autoSpeechLabel={autoSpeechLabel}
       />
     );
   }

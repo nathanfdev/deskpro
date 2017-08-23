@@ -33,6 +33,14 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\ArticleRevision;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\DownloadRevision;
+use Application\DeskPRO\Entity\FeedbackRevision;
+use Application\DeskPRO\Entity\NewsRevision;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketLog;
 use Doctrine\ORM\EntityManager;
 
 class AgentActivity
@@ -68,7 +76,7 @@ class AgentActivity
      */
     public function getAllAgents()
     {
-        return $this->em->getRepository('DeskPRO:Person')->getAgents();
+        return $this->em->getRepository(Person::class)->getAgents();
     }
 
     /**
@@ -76,7 +84,7 @@ class AgentActivity
      */
     public function getAllAgentTeams()
     {
-        return $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
+        return $this->em->getRepository(AgentTeam::class)->getTeams();
     }
 
     /**
@@ -97,16 +105,16 @@ class AgentActivity
             'hide_unknown' => 1,
         ];
         $date       = $this->createDateFromParamString($date);
-        $all_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $all_agents = $this->em->getRepository(Person::class)->getAgents();
 
         $agent_id = null;
         $team_id  = null;
         if (preg_match('/^team-(\d+)$/', $agent_or_team_id, $match)) {
             $team_id    = $match[1];
-            $agent_list = $this->em->getRepository('DeskPRO:AgentTeam')->getMembers($match[1]);
+            $agent_list = $this->em->getRepository(AgentTeam::class)->getMembers($match[1]);
         } elseif ($agent_or_team_id && ctype_digit($agent_or_team_id)) {
             $agent_id   = $agent_or_team_id;
-            $agent_list = [$this->em->getRepository('DeskPRO:Person')->find($agent_or_team_id)];
+            $agent_list = [$this->em->getRepository(Person::class)->find($agent_or_team_id)];
         } else {
             $agent_list = false;
         }
@@ -234,7 +242,7 @@ class AgentActivity
             $counts[$hour] = [];
 
             foreach ($stats as $convo_id => $stat) {
-                $convo  = $this->em->getRepository('DeskPRO:ChatConversation')->find($convo_id);
+                $convo  = $this->em->getRepository(ChatConversation::class)->find($convo_id);
                 $minute = '_'.$stat['last'];
 
                 if (!isset($counts[$hour][$minute])) {
@@ -261,7 +269,7 @@ class AgentActivity
     private function getTicketLogForAgent($agent, $date)
     {
         $counts_hourly = [];
-        $logs          = $this->em->getRepository('DeskPRO:TicketLog')->getLogsForAgent(
+        $logs          = $this->em->getRepository(TicketLog::class)->getLogsForAgent(
             $agent,
             ['date_range' => $this->createMysqlDateRangeForUser($date), 'types' => self::$ticket_log_types]
         );
@@ -293,35 +301,38 @@ class AgentActivity
      */
     private function getRevisionsForAgent($agent, $date)
     {
-        $items         = ['News', 'Article', 'Download', 'Feedback'];
-        $counts_hourly = [];
+        $items = [
+            'news'     => NewsRevision::class,
+            'article'  => ArticleRevision::class,
+            'download' => DownloadRevision::class,
+            'feedback' => FeedbackRevision::class,
+        ];
+        $countsHourly = [];
 
-        foreach ($items as $item) {
-            $item_lc = strtolower($item);
-
-            $revisions = $this->em->getRepository('DeskPRO:'.$item.'Revision')->getRevisionsForAgent(
+        foreach ($items as $itemLc => $item) {
+            $revisions = $this->em->getRepository($item)->getRevisionsForAgent(
                 $agent,
                 ['date_range' => $this->createMysqlDateRangeForUser($date)]
             );
 
             foreach ($revisions as $revision) {
-                $date_created = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
-                $hour         = $date_created->format('G');
-                $minute       = (int) $date_created->format('i');
+                $dateCreated = $this->mysqlDateToPhpDate($revision['date_created']->format('Y-m-d H:i:s'));
+                $hour        = $dateCreated->format('G');
+                $minute      = (int) $dateCreated->format('i');
 
-                if (!isset($counts_hourly[$item_lc])) {
-                    $counts_hourly[$item_lc] = [];
+                if (!isset($countsHourly[$itemLc])) {
+                    $countsHourly[$itemLc] = [];
                 }
 
-                if (!isset($counts_hourly['_'.$hour]['_'.$minute])) {
-                    $counts_hourly['_'.$hour]['_'.$minute] = [];
+                if (!isset($countsHourly['_'.$hour]['_'.$minute])) {
+                    $countsHourly['_'.$hour]['_'.$minute] = [];
                 }
 
-                $counts_hourly['_'.$hour]['_'.$minute][] = ['type' => $item_lc, 'data' => $revision];
+                $countsHourly['_'.$hour]['_'.$minute][] = ['type' => $itemLc, 'data' => $revision];
             }
         }
 
-        return $counts_hourly;
+        return $countsHourly;
     }
 
     /**

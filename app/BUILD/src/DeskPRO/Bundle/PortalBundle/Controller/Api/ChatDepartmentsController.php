@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\PortalBundle\Annotation\Dpsid;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -44,7 +43,6 @@ class ChatDepartmentsController extends AbstractApiController
 {
     /**
      * @Rest\Get("")
-     * @Dpsid()
      *
      * @param Request $request
      *

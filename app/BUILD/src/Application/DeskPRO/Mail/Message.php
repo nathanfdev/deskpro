@@ -82,6 +82,11 @@ class Message extends \Orb\Mail\Message
     protected $embed_only = [];
 
     /**
+     * @var callable
+     */
+    protected $body_filter;
+
+    /**
      * Set a context about this message. The mailer might treat it differently.
      */
     public function setContextId($context_id)
@@ -154,7 +159,7 @@ class Message extends \Orb\Mail\Message
                 }
             }
 
-            if (!$this->set_to_person && $this->template_vars['to_email']) {
+            if (!$this->set_to_person && !empty($this->template_vars['to_email'])) {
                 $this->set_to_person = App::getOrm()->getRepository(Person::class)->findOneByEmail(
                     $this->template_vars['to_email']
                 )
@@ -194,6 +199,9 @@ class Message extends \Orb\Mail\Message
             }
 
             $body = $this->replaceEmbeds($body);
+            if ($this->body_filter) {
+                $body = call_user_func($this->body_filter, $body, $this, $this->template_vars, 'text/html');
+            }
             $this->setBody($body, 'text/html');
 
             if (
@@ -424,6 +432,18 @@ class Message extends \Orb\Mail\Message
         }
 
         return parent::setTo($addresses, $name);
+    }
+
+    /**
+     * Set a body filter to run the body content through during prepare.
+     *
+     * Params: string $body, Message $email, array $vars, string $contentType
+     *
+     * @param callable $fn
+     */
+    public function setBodyFilter($fn)
+    {
+        $this->body_filter = $fn;
     }
 
     /**

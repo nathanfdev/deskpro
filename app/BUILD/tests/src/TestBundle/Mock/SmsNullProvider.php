@@ -34,9 +34,9 @@ use Orb\Sms\SmsResult;
 
 class SmsNullProvider implements SmsProviderInterface
 {
-    public function sendMessage($toPhoneNumber, SmsMessageChunk $textMessage, $fromPhoneNumber)
+    public function sendMessage($toNumber, SmsMessageChunk $textMessage, $fromNumber)
     {
-        return new SmsResult(SmsResult::SMS_SENT, $fromPhoneNumber, $toPhoneNumber, $textMessage, $this, []);
+        return new SmsResult(SmsResult::SMS_SENT, $fromNumber, $toNumber, $textMessage, $this, []);
     }
 
     public function getName()

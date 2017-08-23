@@ -29,13 +29,16 @@
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatCustomField;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\WidgetGlobalSettings;
@@ -57,11 +60,9 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
-    const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
-    const CHAT_ENABLED          = 'core.apps_chat';
-    const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
-    const ENABLED               = 'widget.enabled';
+    const CHAT_ENABLED      = 'core.apps_chat';
+    const ENABLED_ON_PORTAL = 'portal.widget.enabled';
+    const ENABLED           = 'widget.enabled';
 
     /**
      * @var EntityManager
@@ -145,27 +146,13 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return bool
      */
-    public function isChatEnabled()
+    public function isChatEnabled(Brand $brand = null)
     {
-        return (bool) $this->getSetting(self::CHAT_ENABLED);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isChatEmailValidation()
-    {
-        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isChatRequireLogin()
-    {
-        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
+        return (bool) $this->getSetting(self::CHAT_ENABLED, $brand);
     }
 
     /**
@@ -251,7 +238,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $model = new WidgetOptions();
         $model
-            ->setGlobal($this->getWidgetGlobalOptions())
+            ->setGlobal($this->getWidgetGlobalOptions($brand))
             ->setBrand($this->getWidgetBrandOptions($brand))
         ;
 
@@ -259,17 +246,15 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return WidgetGlobalSettings
      */
-    public function getWidgetGlobalOptions()
+    public function getWidgetGlobalOptions(Brand $brand = null)
     {
         $model = new WidgetGlobalSettings();
         $chat  = $model->getChat();
-        $chat
-            ->setEnabled($this->isChatEnabled())
-            ->setEmailValidation($this->isChatEmailValidation())
-            ->setRequireLogin($this->isChatRequireLogin())
-        ;
+        $chat->setEnabled($this->isChatEnabled($brand));
 
         $company = $model->getCompany();
         $company->setName($this->getSetting('core.site_name'));
@@ -362,6 +347,46 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         $buttonSettings->setTranslations(new ArrayCollection($buttonSettings->getTranslations()->getValues()));
         $popupSettings->setTranslations(new ArrayCollection($popupSettings->getTranslations()->getValues()));
+
+        // custom fields
+        $chatSettings = $model->getChat();
+        $chatFields   = $this->em->getRepository(CustomDefChat::class)->findAll();
+        $chatFieldIds = [];
+
+        // add missing chat fields
+        if (!$chatSettings->getCustomFields() instanceof ArrayCollection) {
+            $chatSettings->setCustomFields(new ArrayCollection());
+        }
+        foreach ($chatFields as $chatField) {
+            $chatFieldIds[] = $chatField->getId();
+
+            if (!$chatSettings->getCustomField($chatField->getId())) {
+                $brandCustomField = new WidgetBrandChatCustomField();
+                $brandCustomField->setId($chatField->getId());
+                $brandCustomField->setIsEnabled($chatField->isEnabled());
+                $brandCustomField->setDisplayOrder($chatField->getDisplayOrder());
+
+                $chatSettings->addCustomField($brandCustomField);
+            }
+        }
+
+        // remove deleted fields
+        foreach ($chatSettings->getCustomFields() as $brandCustomField) {
+            if (!in_array($brandCustomField->getId(), $chatFieldIds)) {
+                $chatSettings->removeCustomField($brandCustomField);
+            }
+        }
+
+        // usergroups
+        if (!$chatSettings->getUserGroups() instanceof ArrayCollection) {
+            $userGroups   = $this->em->getRepository(Usergroup::class)->findAll();
+            $userGroupIds = new ArrayCollection();
+            foreach ($userGroups as $userGroup) {
+                $userGroupIds->add($userGroup->getId());
+            }
+
+            $chatSettings->setUserGroups($userGroupIds);
+        }
 
         return $model;
     }

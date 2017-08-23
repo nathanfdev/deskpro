@@ -51,7 +51,7 @@ class TicketSlas extends AbstractJob
         $proc = new SlaProcessor(
             App::$container->getEm(),
             new ActionApplicator(App::$container),
-            new SlaClientMessageSender(App::$container->getDb())
+            new SlaClientMessageSender(App::$container->getDb(), App::$container->get('event_dispatcher'))
         );
 
         $context_factory = function () {

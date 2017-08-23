@@ -541,6 +541,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.isDestroyed = true;
 		if (this.page) {
 			this.page.fireEvent('destroy');
+      this.page.destroyEvents();
 			this.page = null;
 		}
 
@@ -566,5 +567,6 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.OBJ_ID];
 
 		this.fireEvent('destroy', [this]);
+    this.destroyEvents();
 	}
 });

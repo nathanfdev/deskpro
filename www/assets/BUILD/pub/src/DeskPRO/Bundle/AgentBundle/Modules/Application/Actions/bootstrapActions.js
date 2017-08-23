@@ -1,26 +1,28 @@
 import lscache from 'lscache';
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { flattenBatchResponses, getLinkedData } from 'DeskPRO/Component/Util/Api';
-import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { flattenBatchResponses, getLinkedData, replaceIds } from 'DeskPRO/Component/Util/Api';
+import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { setVoiceTokens, setVoiceActivities } from '../../Voice/Actions/clientActions';
+import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproAppStore/DeskproAppStore';
+import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
   () => () => new Promise((resolve) => {
     const language = window.DESKPRO_PERSON_LANG_ID;
+    const buildNum = window.DP_VERSION_NUMBER;
 
     const setPhrases = (data) => {
       agentPhrases.setPhrases(data);
       resolve();
     };
 
-    const cacheKey = `dpAgent.phrases.${language}`;
+    const cacheKey = `dpAgent.phrases.${language}.${buildNum}`;
     const cachedData = lscache.get(cacheKey);
     if (cachedData) {
       setPhrases(cachedData);
@@ -40,79 +42,144 @@ export const preloadData    = createAction(
   () => (dispatch, getState) => new Promise(
     (resolve) => {
       const batchComponents = {
-        agents:                { endpoint: 'agents' },
-        languages:             { endpoint: 'languages' },
-        user_groups:           { endpoint: 'user_groups' },
-        settings:              { endpoint: 'helpdesk/agent-client/settings' },
-        me:                    { endpoint: 'me' },
-        agent_teams:           { endpoint: 'agent_teams' },
-        my_agent_teams:        { endpoint: 'agent_teams', query: 'my=true' },
-        ticket_departments:    { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
-        my_ticket_departments: { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
-        chat_departments:      { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
-        onboardings:           { endpoint: 'people/onboarding/pending' }
+        agents:                  { endpoint: 'agents' },
+        languages:               { endpoint: 'languages', query: 'count=100' },
+        user_groups:             { endpoint: 'user_groups' },
+        settings:                { endpoint: 'helpdesk/agent-client/settings' },
+        me:                      { endpoint: 'me' },
+        agent_teams:             { endpoint: 'agent_teams' },
+        my_agent_teams:          { endpoint: 'agent_teams', query: 'my=true' },
+        ticket_departments:      { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
+        my_ticket_departments:   { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
+        chat_departments:        { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
+        onboardings:             { endpoint: 'people/onboarding/pending' },
+        alerts:                  { endpoint: 'notify/setup/action-alerts' },
+        user_chat_custom_fields: { endpoint: 'user_chat_custom_fields' },
+        person_custom_fields:    { endpoint: 'person_custom_fields' },
+        ticket_custom_fields:    { endpoint: 'ticket_custom_fields' },
+        discover:                { endpoint: 'helpdesk/discover' }
       };
 
       if (window.DP_HAS_VOICE) {
         batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
         batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
+        batchComponents.voice_settings   = { endpoint: 'voice_settings' };
         batchComponents.voice_numbers    = { endpoint: 'voice_numbers' };
       }
 
       if (window.DP_HAS_NEW_IM) {
-        batchComponents.alerts = { endpoint: 'notify/setup/action-alerts' };
         batchComponents.defaultBrand  = { endpoint: 'brands/default' };
+      }
+
+      if (window.DP_HAS_NEW_SNIPPETS) {
+        batchComponents.snippets  = {
+          endpoint: 'snippets',
+          query:    'count=200&inline_sideloads=true&include=snippet_translation,blob'
+        };
+        batchComponents.snippet_labels  = { endpoint: 'snippets/labels' };
       }
 
       dispatch(loadAgentPhraseTranslations());
 
-      api.sendGet(api.prepareParams(batchComponents))
-        .success(({ responses }) => {
-          const data = flattenBatchResponses(responses);
+      const onBatchComponentsSuccess = ({ responses }) => {
+        const data = flattenBatchResponses(responses);
 
-          dispatch(setCollection('Department', 'all_chat', data.chat_departments));
-          dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
-          dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
-          dispatch(setCollection('Person', 'agents', data.agents));
-          dispatch(setCollection('AgentTeam', 'all', data.agent_teams));
-          dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
-          dispatch(setCollection('Language', 'all', data.languages));
-          dispatch(setCollection('UserGroup', 'all', data.user_groups));
+        dispatch(setCollection('Department', 'all_chat', data.chat_departments));
+        dispatch(setCollection('Department', 'all_tickets', data.ticket_departments));
+        dispatch(setCollection('Department', 'my_tickets', data.my_ticket_departments));
+        dispatch(setCollection('Person', 'agents', data.agents));
+        dispatch(setCollection('AgentTeam', 'all', data.agent_teams));
+        dispatch(setCollection('AgentTeam', 'my', data.my_agent_teams));
+        dispatch(setCollection('Language', 'all', data.languages));
+        dispatch(setCollection('UserGroup', 'all', data.user_groups));
+        dispatch(setCollection('UserChatCustomFields', 'all', data.user_chat_custom_fields));
+        dispatch(setCollection('PersonCustomFields', 'all', data.person_custom_fields));
+        dispatch(setCollection('TicketCustomFields', 'all', data.ticket_custom_fields));
+        dispatch(setupActionAlerts(data.alerts));
 
-          if (data.onboardings) {
-            dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
-          }
+        if (data.onboardings) {
+          dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));
+        }
 
-          // group agents by departments
-          const agents = agentsSelector(getState());
+        // group agents by departments
+        const agents = agentsSelector(getState());
 
-          ['chat_departments', 'ticket_departments'].forEach((depType) => {
-            const linked = getLinkedData(responses, depType, 'department_agent_ids');
-            for (const dep of data[depType]) {
-              const agentIds = linked[dep.id];
-              if (agentIds) {
-                const depAgents = agentIds.map(id => agents.get(id)).filter(agent => !!agent);
-                dispatch(setCollection('Person', `department_${dep.id}`, depAgents));
-              }
+        ['chat_departments', 'ticket_departments'].forEach((depType) => {
+          const linked = getLinkedData(responses, depType, 'department_agent_ids');
+          for (const dep of data[depType]) {
+            const agentIds = linked[dep.id];
+            if (agentIds) {
+              const depAgents = agentIds.map(id => agents.get(id)).filter(agent => !!agent);
+              dispatch(setCollection('Person', `department_${dep.id}`, depAgents));
             }
-          });
-
-          dispatch(setAgentSettings(data.settings));
-          dispatch(setCollection('Person', 'me', [data.me.person]));
-
-          if (window.DP_HAS_NEW_IM) {
-            dispatch(setImMe(data.me.person));
-            dispatch(setupActionAlerts(data.alerts));
-            dispatch(loadDrafts());
-            dispatch(setCollection('Brand', 'default', [data.defaultBrand]));
-            // a simple way to subscribe TabBars events
           }
-          if (window.DP_HAS_VOICE) {
-            dispatch(setVoiceTokens(data.voice_tokens));
-            dispatch(setVoiceActivities(data.voice_activities));
-            dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
-          }
+        });
 
+        dispatch(setAgentSettings(data.settings));
+        dispatch(setCollection('Person', 'me', [data.me.person]));
+
+        if (window.DP_HAS_NEW_IM) {
+          dispatch(setImMe(data.me.person));
+          dispatch(loadDrafts());
+          dispatch(setCollection('Brand', 'default', [data.defaultBrand]));
+        }
+        if (window.DP_HAS_VOICE) {
+          dispatch(setVoiceTokens(data.voice_tokens));
+          dispatch(setVoiceActivities(data.voice_activities));
+          dispatch(setVoiceSettings(data.voice_settings));
+          dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
+        }
+
+        if (window.DP_HAS_NEW_SNIPPETS) {
+          dispatch(setCollection('Snippets', 'all', data.snippets));
+          dispatch(setCollection('SnippetLabels', 'all', data.snippet_labels));
+          let blobs = [];
+          if (responses.snippets.linked.blob) {
+            blobs = responses.snippets.linked.blob;
+          }
+          dispatch(setCollection('SnippetsBlobs', 'all', replaceIds(blobs, 'blob_id')));
+          const pagination = responses.snippets.meta.pagination;
+          let currentPage = pagination.current_page;
+          while (currentPage < pagination.total_pages) {
+            currentPage += 1;
+            const extraSnippets = {
+              endpoint: 'snippets',
+              query:    `count=${pagination.count}&page=${currentPage}&inline_sideloads=true&include=snippet_translation,blob`
+            };
+            api.sendGet(api.prepareParams({ snippets: extraSnippets }))
+              .success((response) => {
+                dispatch(addToCollection('Snippets', 'all', response.responses.snippets.data));
+                if (response.responses.snippets.linked.blob) {
+                  dispatch(addToCollection('SnippetsBlobs', 'all', replaceIds(response.responses.snippets.linked.blob, 'blob_id')));
+                }
+              })
+            ;
+          }
+        }
+
+        return data;
+      };
+
+      api.sendGet(api.prepareParams(batchComponents))
+        .success(onBatchComponentsSuccess)
+        .then((responses) => {
+          const { discover } = responses.data.responses;
+          // create appstore configuration
+          const builder = DeskproAppStore.configureWithWindowParams(window);
+
+          if (discover && discover.data) {
+            builder.addHelpdeskDiscoverySettings(discover.data);
+          }
+          const appStoreConfig = builder.build();
+
+          // bootstrap appstore
+          return DeskproAppStore.bootstrap(dispatch, api, appStoreConfig)
+            .then(() => api.sendGet(api.prepareParams(batchComponents)).success(onBatchComponentsSuccess))
+            .then(() => {
+              dispatch(donePreloading());
+            });
+        })
+        .then(() => {
           dispatch(donePreloading());
         })
       ;
@@ -122,3 +189,11 @@ export const preloadData    = createAction(
   )
 );
 
+export const closeIframes = () => {
+  for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
+    const iframe = window.DP_FRAME_OVERLAYS[key];
+    if (iframe.opened) {
+      iframe.close();
+    }
+  }
+};

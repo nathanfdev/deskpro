@@ -37,8 +37,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\People\PersonContextInterface;
-use Orb\Util\DpStrings;
-use Orb\Util\Strings;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class SlaClientMessageSender implements PersonContextInterface
 {
@@ -60,11 +60,18 @@ class SlaClientMessageSender implements PersonContextInterface
     private $queue = [];
 
     /**
-     * @param Connection $db
+     * @var EventDispatcherInterface
      */
-    public function __construct(Connection $db)
+    private $eventDispatcher;
+
+    /**
+     * @param Connection               $db
+     * @param EventDispatcherInterface $eventDispatcher
+     */
+    public function __construct(Connection $db, EventDispatcherInterface $eventDispatcher)
     {
-        $this->db = $db;
+        $this->db              = $db;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -83,12 +90,10 @@ class SlaClientMessageSender implements PersonContextInterface
      */
     public function sendMessage(Ticket $ticket, TicketSla $ticket_sla, $orig_status, $orig_completed)
     {
-        $this->queue[] = [
-            'channel'      => self::CHANNEL,
-            'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-            'date_created' => date('Y-m-d H:i:s'),
-            'data'         => serialize([
-                'ticket_id'             => $ticket->id,
+        $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
+            self::CHANNEL,
+            $ticket->getId(),
+            [
                 'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
                 'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
                 'sla_id'                => $ticket_sla->sla->id,
@@ -100,26 +105,7 @@ class SlaClientMessageSender implements PersonContextInterface
                 'original_is_completed' => $orig_completed,
                 'removed'               => $ticket->hasSla($ticket_sla->sla) ? false : true,
                 'via_person'            => $this->person ? $this->person->id : null,
-            ]),
-        ];
-    }
-
-    /**
-     * Send all messages.
-     *
-     * @return int How many messages were sent
-     */
-    public function sendQueue()
-    {
-        if (!$this->queue) {
-            return 0;
-        }
-
-        $q           = $this->queue;
-        $this->queue = [];
-
-        $this->db->batchInsert('client_messages', $q);
-
-        return count($q);
+            ]
+        ));
     }
 }

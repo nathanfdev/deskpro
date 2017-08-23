@@ -179,8 +179,10 @@ td { vertical-align: top; }
 
 .showmac { display: none; }
 .osmac .showmac { display: block; }
+.osmac kbd.showmac { display: inline; }
 
 .noshowmac { display: block; }
+kbd.noshowmac { display: inline; }
 .osmac .noshowmac { display: none; }
 
 select, .ui-widget select {
@@ -889,6 +891,10 @@ select.dpe_select, select.with-select2 {
 	bottom: 0;
 	right: 0;
 	z-index: 10001;
+}
+
+.deskpro-overlay-overlay.refresh-alert {
+	background: rgba(0, 0, 0, 0.3);
 }
 
 .deskpro-overlay-overlay.error {
@@ -4876,6 +4882,21 @@ ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
 	bottom: 0;
 	width: 52px;
 	position: absolute;
+}
+#react_dp_left_drawer_container .left-drawer {
+	position: absolute;
+	top: 0;
+	left: 52px;
+	bottom: 0;
+	width: 0;
+	z-index: 1001;
+	visibility: hidden;
+	overflow: hidden;
+	//transition: visibility 0s, width 0.2s ease-out;
+	&.active {
+		width: 600px;
+		visibility: visible;
+	}
 }
 
 //https://css-tricks.com/snippets/css/prevent-long-urls-from-breaking-out-of-container/

@@ -65,7 +65,7 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
     /**
      * @param SystemEventInterface $event
      *
-     * @return MessageInterface
+     * @return MessageInterface[]
      */
     public function createMessages(SystemEventInterface $event)
     {

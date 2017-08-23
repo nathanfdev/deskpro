@@ -1,8 +1,8 @@
 import Immutable from 'immutable';
-import isPlainObject from 'lodash/lang/isPlainObject';
+import isPlainObject from 'lodash/isPlainObject';
 
 function verifyImmutable(...args) {
-  args.forEach(val => {
+  args.forEach((val) => {
     if (!Immutable.Iterable.isIterable(val)) {
       throw new TypeError('Expected an Immutable');
     }
@@ -44,7 +44,7 @@ function getStatePath(statePropKey) {
  * @return {Function} Action handler function
  */
 export function setValueOnError(statePropKey, value) {
-  return state => {
+  return (state) => {
     verifyImmutable(state);
     const immutableValue = Immutable.fromJS(value);
 
@@ -171,7 +171,7 @@ export function pushPayloadToCollection(statePropKey, checkUnique = false) {
     verifyImmutable(collection);
 
     const values = Array.isArray(payload) ? payload : [payload];
-    values.forEach(value => {
+    values.forEach((value) => {
       const immutableValue = Immutable.fromJS(value);
 
       if (!checkUnique || !collection.includes(immutableValue)) {
@@ -381,7 +381,7 @@ function _resolveProps(rawProps, state, payload, action) {
 
   let key;
   for (key in props) {
-    if (!props.hasOwnProperty(key)) {
+    if (!Object.hasOwnProperty.call(props, key)) {
       continue;
     }
     if (typeof props[key] === 'function') {

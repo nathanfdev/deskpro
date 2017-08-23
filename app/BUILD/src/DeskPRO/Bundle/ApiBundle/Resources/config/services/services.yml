@@ -1,3 +1,7 @@
+parameters:
+  json_body_listener.ignore_content_type_names:
+    - zip
+
 services:
 
   deskpro.api.request_auth:
@@ -21,6 +25,7 @@ services:
 
   content_type_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ContentTypeListener
+    arguments: ["%json_body_listener.ignore_content_type_names%"]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -65,3 +70,13 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo
     factory: [DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo, createFromRequestStack]
     arguments: ["@request_stack"]
+
+  api_proxy_request_factory:
+    class: DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestFactory
+    arguments:
+      - "@doctrine.orm.entity_manager"
+
+  api_proxy_validator:
+    class: DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestValidator
+    arguments:
+      - "@validator"

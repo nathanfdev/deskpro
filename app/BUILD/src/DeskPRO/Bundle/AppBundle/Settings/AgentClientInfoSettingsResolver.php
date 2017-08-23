@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
@@ -44,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields\T
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\TicketsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments\AttachmentsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\CoreSettings;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\DateSettings;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -117,6 +119,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setBrands($this->em->getRepository(Brand::class)->countAll() > 1)
             ->setHelpdeskName($this->getSetting('core.deskpro_name'))
             ->setAttachments($this->getAttachmentsSettings())
+            ->setDate($this->getDateSettings())
         ;
 
         return $model;
@@ -137,6 +140,24 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setMaxSize($this->getSetting('core.attach_agent_maxsize'))
             ->setWhitelist($whiteList)
             ->setBlacklist($blackList)
+        ;
+
+        return $model;
+    }
+
+    /**
+     * @return DateSettings
+     */
+    public function getDateSettings()
+    {
+        $model = new DateSettings();
+        $model
+            ->setFullTime($this->getSetting('core.date_fulltime'))
+            ->setFull($this->getSetting('core.date_full'))
+            ->setDay($this->getSetting('core.date_day'))
+            ->setDayShort($this->getSetting('core.date_day_short'))
+            ->setTime($this->getSetting('core.date_time'))
+            ->setDisableRelativeTimes((bool) $this->getSetting('core.disable_relative_times'))
         ;
 
         return $model;
@@ -393,9 +414,17 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $user          = $this->getUser();
         $signatureHtml = $user->getHelper('Agent')->getSignatureHtml();
-        $accountInfo   = new AccountInfo();
+
+        $language = $user->getLanguage();
+        if (!$language) {
+            $language = $this->em->getRepository(Language::class)->findOneBy([
+                'sys_name' => 'default',
+            ]);
+        }
+
+        $accountInfo = new AccountInfo();
         $accountInfo
-            ->setLanguage($user->getLanguage())
+            ->setLanguage($language)
             ->setTimezone($user->getTimezone())
             ->setSignatureHtml($signatureHtml);
 

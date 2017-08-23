@@ -1,0 +1,13 @@
+services:
+
+   api_param_converter.ticket_layout_departmnet:
+     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\TicketLayoutDepartmentConverter
+     arguments: ["@doctrine.orm.default_entity_manager"]
+     tags:
+       - { name: request.param_converter, priority: -1, converter: ticket_layout_department }
+
+   api_param_converter.feature:
+     class: DeskPRO\Bundle\ApiBundle\Request\ParamConverter\FeatureConverter
+     arguments: ["@deskpro.features_collection"]
+     tags:
+       - { name: request.param_converter, priority: -1, converter: feature }

@@ -236,7 +236,11 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 
 	_mergeTriggerClick: function() {
 		var mergeId = 0, otherMergeId = 0, self = this;
-
+		var wrapper = this.overlay.getWrapper();
+		var data = {
+			ticket_force:       wrapper.find('#ticket_force').attr('checked') || 0,
+			other_ticket_force: wrapper.find('#other_ticket_force').attr('checked') || 0
+		};
 		this.mergeButtons.each(function() {
 			var $this = $(this);
 			if ($this.data('keep')) {
@@ -256,6 +260,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			url: this._getMergeUrl(mergeId, otherMergeId),
 			type: 'POST',
 			dataType: 'json',
+			data: data,
 			complete: function() {
 				footerEl.removeClass('loading');
 			},
@@ -274,10 +279,14 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 				self.overlay.close();
 			},
 			error: function(xhr, textStatus, errorThrown) {
-				self.overlay.close();
 
-				var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
-				DeskPRO_Window._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+				if (xhr.status === 400 && xhr.responseJSON && xhr.responseJSON.success === false) {
+					self.resetOverlay(xhr.responseJSON.html);
+				} else {
+					self.overlay.close();
+					var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+					DeskPRO_Window._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+				}
 			}
 		});
 	},

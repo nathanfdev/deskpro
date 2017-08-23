@@ -25,6 +25,7 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 			var page = $(this).data('page-fragment');
 			if (page) {
 				page.fireEvent('destroy');
+				page.destroyEvents();
 			}
 			$(this).data('page-fragment', null);
 
@@ -109,6 +110,7 @@ DeskPRO.Agent.ElementHandler.MediaManagerWindow = new Orb.Class({
 		if (page) {
 			page.fireEvent('destroy');
 			page.destroy();
+			page.destroyEvents();
 		}
 
 		target.empty();

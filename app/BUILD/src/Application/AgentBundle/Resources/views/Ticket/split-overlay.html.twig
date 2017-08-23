@@ -12,7 +12,11 @@
 				{% else %}<h4>{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
 				{% endif %}
 				<time class="full-time">{{message.date_created|date('fulltime')}}</time>
-				<time class="timeago" datetime="{{message.date_created|date('c', 'UTC')}}">{{message.date_created|date('fulltime')}}</time>
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					datetime="{{message.date_created|date('c', 'UTC')}}">
+					{{message.date_created|date('fulltime')}}
+				</time>
 			</header>
 			<div class="body-text" style="cursor: pointer">
 				<div class="body-text-message unreset" style="max-height: 70px; overflow: hidden" {% if ticket.language and ticket.language.is_rtl %}dir="rtl"{% endif %}>

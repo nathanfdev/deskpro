@@ -104,7 +104,7 @@ class WebhookHandler
             $state   = $issue->ticket->getStateChangeRecorder();
             $context = $manager->createAppExecutorContext($app, 'issue_update');
 
-            if (isset($data['comment']) && $meta->getApiUsername() !== $data['comment']['author']['name']) {
+            if (isset($data['comment']) && $meta->getApiUsername() === $data['comment']['author']['name']) {
                 $state->recordData('jira.comment', $data['comment']);
                 $context->getUserVars()->set('jira.comment', $data['comment']['body']);
             }
@@ -126,7 +126,7 @@ class WebhookHandler
                 }
             }
 
-            if (!$state->isTrivialChangeSet()) {
+            if (!$state->isTrivialChangeSet() || isset($data['comment'])) {
                 $manager->markAsManaged($issue->ticket);
                 $manager->saveTicket($issue->ticket, $context);
             }

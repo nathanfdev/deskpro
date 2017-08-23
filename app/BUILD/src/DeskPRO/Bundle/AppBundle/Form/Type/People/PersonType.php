@@ -38,11 +38,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonEmail\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PhoneNumberType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -58,25 +56,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class PersonType extends AbstractType
 {
     /**
-     * @var EntityManager
-     */
-    private $em;
-
-    /**
      * @var CustomFieldManager
      */
-    private $field_manager;
+    private $fieldManager;
 
     /**
      * PersonType constructor.
      *
-     * @param EntityManager      $em
-     * @param CustomFieldManager $field_manager
+     * @param CustomFieldManager $fieldManager
      */
-    public function __construct(EntityManager $em, CustomFieldManager $field_manager)
+    public function __construct(CustomFieldManager $fieldManager)
     {
-        $this->em            = $em;
-        $this->field_manager = $field_manager;
+        $this->fieldManager = $fieldManager;
     }
 
     /**
@@ -85,7 +76,6 @@ class PersonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class)
             ->add('password', TextType::class)
             ->add('title_prefix', TextType::class)
             ->add('first_name', TextType::class)
@@ -104,15 +94,6 @@ class PersonType extends AbstractType
                 'labels_class'   => LabelPerson::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',
-            ])
-            ->add('primary_email', new PersonEmailType($builder->getData(), $this->em))
-            ->add('emails', CollectionType::class, [
-                'type'           => new PersonEmailType($builder->getData(), $this->em),
-                'allow_add'      => true,
-                'allow_delete'   => true,
-                'delete_empty'   => true,
-                'by_reference'   => false,
-                'error_bubbling' => false,
             ])
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
@@ -156,7 +137,6 @@ class PersonType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncEmails']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUnsetAgentData'], 100);
     }
@@ -168,41 +148,17 @@ class PersonType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class'      => Person::class,
                 'agent_interface' => false,
             ])
         ;
     }
 
     /**
-     * Sync `emails` and `primary email` props.
-     *
-     * @internal
-     *
-     * @param FormEvent $event
+     * {@inheritdoc}
      */
-    public function onSyncEmails(FormEvent $event)
+    public function getParent()
     {
-        /** @var Person $person */
-        $person = $event->getForm()->getData();
-        $data   = $event->getData();
-
-        if (!empty($data['primary_email'])) {
-            if (!isset($data['emails'])) {
-                $data['emails'] = $person->getEmailAddresses();
-            }
-            if (!in_array($data['primary_email'], $data['emails'])) {
-                $data['emails'][] = $data['primary_email'];
-            }
-        } else {
-            if (!empty($data['emails'])) {
-                $data['primary_email'] = $data['emails'][0];
-            } elseif (isset($data['emails'])) {
-                $data['primary_email'] = '';
-            }
-        }
-
-        $event->setData($data);
+        return BasePersonType::class;
     }
 
     /**
@@ -251,7 +207,7 @@ class PersonType extends AbstractType
      */
     private function getCustomDataFields(array $options)
     {
-        $defs   = $this->field_manager->getAvailablePersonDefs();
+        $defs   = $this->fieldManager->getAvailablePersonDefs();
         $fields = [];
 
         foreach ($defs as $def) {

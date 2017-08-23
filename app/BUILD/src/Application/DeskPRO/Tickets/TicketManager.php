@@ -48,6 +48,7 @@ use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -97,16 +98,23 @@ class TicketManager
     private $auto_vars = [];
 
     /**
+     * @var NotificationEventManager
+     */
+    private $notificationEventManager;
+
+    /**
      * Constructor.
      *
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container    = $container;
-        $this->em           = $container->getEm();
-        $this->db           = $container->getDb();
-        $this->blob_storage = $container->getBlobStorage();
+        $this->container                = $container;
+        $this->em                       = $container->getEm();
+        $this->db                       = $container->getDb();
+        $this->blob_storage             = $container->getBlobStorage();
+        $this->eventDispatcher          = $container->get('event_dispatcher');
+        $this->notificationEventManager = $container->get('deskpro.notification.event_manager');
 
         /** @var \Application\DeskPRO\EntityRepository\Organization $organizationRepo */
         $organizationRepo = $this->em->getRepository(Organization::class);
@@ -141,8 +149,16 @@ class TicketManager
             $container->get('brand_form_helper')
         );
         $this->post_save_actions[] = new TicketSaveActions\SetActionTimes();
-        $this->post_save_actions[] = new TicketSaveActions\ApplySlas($this->em->getRepository(Sla::class)->getAutoSlas(), $this->em, new SlaClientMessageSender($this->db));
-        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas($this->em, new ActionApplicator($container));
+        $this->post_save_actions[] = new TicketSaveActions\ApplySlas(
+            $this->em->getRepository(Sla::class)->getAutoSlas(),
+            $this->em,
+            new SlaClientMessageSender($this->db, $this->eventDispatcher)
+        );
+        $this->post_save_actions[] = new TicketSaveActions\RecalculateSlas(
+            $this->em,
+            new ActionApplicator($container),
+            $this->eventDispatcher
+        );
         $this->post_save_actions[] = new TicketSaveActions\SaveTicketLogs($this->em);
         $this->post_save_actions[] = new TicketSaveActions\RunFilterUpdates($container);
         $this->post_save_actions[] = new TicketSaveActions\RecalculateTicketStats($this->db);
@@ -286,6 +302,8 @@ class TicketManager
             $this->em->persist($ticket);
             $this->em->flush();
 
+            $this->notificationEventManager->deliver();
+
             return;
         }
 
@@ -296,8 +314,11 @@ class TicketManager
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();
+            $this->notificationEventManager->deliver(true);
             throw $e;
         }
+
+        $this->notificationEventManager->deliver(true);
 
         return $ret;
     }
@@ -396,39 +417,29 @@ class TicketManager
         }
 
         if (!$is_trivial_change) {
-            $data = [
-                'ticket_id'      => $ticket->getId(),
-                'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
-                'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-            ];
-
-            $this->container->get('event_dispatcher')->dispatch(
-                TicketUpdatedEvent::EVENT_NAME,
-                new TicketUpdatedEvent($ticket->getId(), $data)
-            );
-
-            $this->db->insert('client_messages', [
-                'channel'      => 'agent.ticket-updated',
-                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize($data),
-            ]);
+            $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
+                'agent.ticket-updated',
+                $ticket->getId(),
+                [
+                    'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
+                    'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
+                ]
+            ));
         }
 
         if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
             $lockedByAgent = $ticket->getLockedByAgent();
-            $this->db->insert('client_messages', [
-                'channel'      => 'agent-notification.tickets.locked-status',
-                'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
-                'date_created' => date('Y-m-d H:i:s'),
-                'data'         => serialize([
-                    'ticket_id'      => $ticket->getId(),
+
+            $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
+                'agent-notification.tickets.locked-status',
+                $ticket->getId(),
+                [
                     'is_locked'      => (bool) $lockedByAgent,
                     'locked_by'      => $lockedByAgent ? $lockedByAgent->getId() : null,
                     'locked_by_name' => $lockedByAgent ? $lockedByAgent->getDisplayName() : null,
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
-                ]),
-            ]);
+                ]
+            ));
         }
 
         if (!$is_noop) {
@@ -460,7 +471,7 @@ class TicketManager
                         $log_text,
                         'ticket-manager.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
                         'plain/text',
-                        ['tag' => 'logs.ticket_proc_log']
+                        ['tag' => 'logs.ticket_proc_log', 'prefer_gzipped' => true]
                     );
                 } catch (\Exception $e) {
                     $blob = null;

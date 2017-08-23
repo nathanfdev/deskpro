@@ -45,6 +45,9 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('departments');
         $this->clearTable('tickets');
         $this->clearTable('ticket_categories');
+        $this->clearTable('ticket_workflows');
+        $this->clearTable('ticket_priorities');
+        $this->clearTable('products');
         $this->clearTable('people');
         $this->clearTable('organizations');
 
@@ -95,6 +98,9 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $model->setPerson('new_user@deskpro.dev');
         $model->setDepartment('New department');
         $model->setCategory('New category');
+        $model->setProduct('New product > Sub product');
+        $model->setWorkflow('New workflow');
+        $model->setPriority('New priority');
         $model->setStatus('awaiting_user');
         $model->setLanguage('eng');
         $model->setDateCreated(new \DateTime('2016-07-01'));
@@ -114,6 +120,10 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('new_user@deskpro.dev', $entity->getPerson()->getPrimaryEmailAddress());
         $this->assertEquals('New department', $entity->getDepartment()->getTitle());
         $this->assertEquals('New category', $entity->getCategory()->getTitle());
+        $this->assertEquals('Sub product', $entity->getProduct()->getTitle());
+        $this->assertEquals('New product', $entity->getProduct()->getParent()->getTitle());
+        $this->assertEquals('New workflow', $entity->getWorkflow()->getTitle());
+        $this->assertEquals('New priority', $entity->getPriority()->getTitle());
         $this->assertEquals('awaiting_user', $entity->getStatus());
         $this->assertEquals('eng', $entity->getLanguage()->getLangCode());
         $this->assertEquals('2016-07-01', $entity->getDateCreated()->format('Y-m-d'));
@@ -260,19 +270,19 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
     {
         $brand = $this->getRepository(Entity\Brand::class)->findOneBy(['name' => 'default']);
 
-        $department = new Entity\Department();
+        $department = Entity\Department::createTicketDepartment();
         $department->setRealTitle('d');
         $department->addBrand($brand);
 
-        $department1 = new Entity\Department();
+        $department1 = Entity\Department::createTicketDepartment();
         $department1->setRealTitle('d1');
         $department1->addBrand($brand);
 
-        $department1a = new Entity\Department();
+        $department1a = Entity\Department::createTicketDepartment();
         $department1a->setRealTitle('d1a');
         $department1a->addBrand($brand);
 
-        $department2 = new Entity\Department();
+        $department2 = Entity\Department::createTicketDepartment();
         $department2->setRealTitle('d2');
         $department2->addBrand($brand);
 
@@ -304,7 +314,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->em()->persist($customBrand);
         $this->em()->flush();
 
-        $department = new Entity\Department();
+        $department = Entity\Department::createTicketDepartment();
         $department->setRealTitle('custom department');
         $department->addBrand($customBrand);
 
@@ -320,6 +330,80 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $entity = $this->getBaseEntity();
         $this->assertEquals('custom department', $entity->getDepartment()->getRealTitle());
         $this->assertEquals('custom brand', $entity->getBrand()->getName());
+    }
+
+    public function test_set_urgency()
+    {
+        $model = $this->createBaseModel();
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals(1, $entity->getUrgency());
+
+        $model->setUrgency(5);
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals(5, $entity->getUrgency());
+    }
+
+    public function test_existing_workflow()
+    {
+        $workflow = new Entity\TicketWorkflow();
+        $workflow->setTitle('my workflow');
+
+        $this->em()->persist($workflow);
+        $this->em()->flush();
+        $this->em()->clear();
+
+        $model = $this->createBaseModel();
+        $model->setWorkflow('my workflow');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals($workflow->getId(), $entity->getWorkflow()->getId());
+    }
+
+    public function test_existing_priority()
+    {
+        $priority = new Entity\TicketPriority();
+        $priority->setTitle('my priority');
+
+        $this->em()->persist($priority);
+        $this->em()->flush();
+        $this->em()->clear();
+
+        $model = $this->createBaseModel();
+        $model->setPriority('my priority');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals($priority->getId(), $entity->getPriority()->getId());
+    }
+
+    public function test_archived_status()
+    {
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('message');
+        $message1->setPerson(1);
+
+        $model = $this->createBaseModel();
+        $model->setStatus(Entity\Ticket::STATUS_ARCHIVED);
+        $model->addMessage($message1);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isArchived());
     }
 
     /**

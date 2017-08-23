@@ -84,6 +84,8 @@ class ApplyCommand extends AbstractImporterCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkDbCredentials();
+
         $GLOBALS['DP_IS_IMPORTING'] = true;
         $GLOBALS['DP_NOSQL_LOG']    = true;
 

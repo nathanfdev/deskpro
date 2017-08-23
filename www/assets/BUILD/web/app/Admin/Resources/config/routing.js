@@ -2319,6 +2319,13 @@ define(function() {
   });
 
   routes.push({
+    id: 'apps.apps.instance_v2',
+    url: '/{id:v2_\\d+}',
+    templateName: 'Apps/instance_v2.html',
+    controller: 'Admin_Apps_Ctrl_EditInstanceV2'
+  });
+
+  routes.push({
     id: 'apps.apps.custom_instance',
     url: '/{custom_id:custom_\\d+}',
     templateName: 'Apps/custom-instance.html',
@@ -2450,6 +2457,16 @@ define(function() {
     url: '/settings_elastic_search',
     templateName: 'ElasticSearch/setup.html',
     controller: 'Admin_Settings_Ctrl_ElasticSearch'
+  });
+
+  //###
+  //# Pusher app
+  //###
+  routes.push({
+    id: 'server.notifications',
+    url: '/settings/notifications',
+    templateName: 'Notifications/list.html',
+    controller: 'Admin_Settings_Ctrl_Notifications'
   });
 
   //###
@@ -2611,13 +2628,33 @@ define(function() {
 		target: "appbody@server"
 	});
 
-	// routes.push({
-	// 	id: 'server.incidents.view',
-	// 	url: '/view/{id}',
-	// 	templateName: 'Server/server-incidents-view.html',
-	// 	controller: 'Admin_ServerIncidents_Ctrl_View',
-	// 	target: "appbody@server"
-	// });
+  // routes.push({
+  // 	id: 'server.incidents.view',
+  // 	url: '/view/{id}',
+  // 	templateName: 'Server/server-incidents-view.html',
+  // 	controller: 'Admin_ServerIncidents_Ctrl_View',
+  // 	target: "appbody@server"
+  // });
+
+  //###
+  //# Jobs
+  //###
+  routes.push({
+    id: 'server.jobs',
+    url: '/jobs',
+    templateName: 'Server/server-jobs-list.html',
+    controller: 'Admin_ServerJobs_Ctrl_List',
+    target: "appbody@server"
+  });
+
+  routes.push({
+    id: 'server.jobs.view',
+    url: '/{id}',
+    templateName: 'Server/server-jobs-view.html',
+    controller: 'Admin_ServerJobs_Ctrl_View',
+    target: "appbody@server"
+  });
+
 
   //###
   //# Sendmail Queue

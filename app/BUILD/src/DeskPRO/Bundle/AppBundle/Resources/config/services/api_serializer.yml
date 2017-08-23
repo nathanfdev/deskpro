@@ -86,6 +86,14 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.language:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\LanguageHandler
+    arguments:
+      - "@brand_aware_settings_resolver"
+      - "@templating.helper.assets"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.feedback:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\FeedbackHandler
     arguments: ["@doctrine.orm.default_entity_manager"]
@@ -179,38 +187,6 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.task_project:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.task_project_member:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskProjectMemberHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.task_linked_article:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedArticleHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.task_linked_chat:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedChatHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.task_linked_ticket:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\LinkedItems\TaskLinkedTicketHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
-  api_serializer.handler.task:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tasks\TaskHandler
-    arguments:
-      - "@doctrine.dbal.default_connection"
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
   api_serializer.handler.ticket_participant:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketParticipantHandler
     arguments:
@@ -239,6 +215,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@form.factory"
       - "@form_error.form_errors_generator.api"
+      - "@data.ticket_excerpt"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -270,6 +247,11 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\BrandHandler
     arguments:
           - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.snippet:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\SnippetHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -330,8 +312,13 @@ services:
     tags:
       - { name: "jms_serializer.event_subscriber" }
 
-  api_serializer.layout_field_required_listener:
-    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\LayoutFieldRequiredListener
+  api_serializer.ticket_layout_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\TicketLayoutListener
+    tags:
+      - { name: "jms_serializer.event_subscriber" }
+
+  api_serializer.layout_field_listener:
+    class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\LayoutFieldListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@ticket_field_settings"

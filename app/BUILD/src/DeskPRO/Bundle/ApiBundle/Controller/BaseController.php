@@ -75,17 +75,17 @@ class BaseController extends FOSRestController
      * @param $status
      * @param $code
      * @param $message
-     * @param array|FormInterface $errors_data
+     * @param array|FormInterface $errorsData
      *
      * @return array
      */
-    protected function createErrorRepresentation($status, $code, $message, $errors_data = [])
+    protected function createErrorRepresentation($status, $code, $message, $errorsData = [])
     {
         return $this->get('api_view_representation_factory')->createErrorRepresentation(
             $status,
             $code,
             $message,
-            $errors_data
+            $errorsData
         );
     }
 
@@ -119,8 +119,7 @@ class BaseController extends FOSRestController
     protected function findOr404($class, $id, $message = null)
     {
         if (!$entity = $this->getManager()->getRepository($class)->find($id)) {
-            $message or $message = "#{$id} Not Found";
-            throw $this->createNotFoundException($message);
+            throw $this->createNotFoundException($message ?: "#{$id} Not Found");
         }
 
         return $entity;

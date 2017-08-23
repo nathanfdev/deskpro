@@ -23,12 +23,14 @@ Feature: Registration form custom fields
       | #          | Type | Title      |
       | text_field | text | Text field |
     And I go to "/register"
+    And I get captcha code from the form field "captcha"
 
     When I fill in "Name" with "Entering an Existing Email"
     And I fill in "person_registration_primary_email_email" with "user@deskpro.dev"
     And I fill in "Password" with "password"
     And I fill in "Confirm" with "password"
     And I fill in "person_registration[{text_field}][data]" with "12345"
+    And I fill in "person_registration[captcha][captcha]" with "{captchaCode}"
     And I press "Register"
     Then I should not see a form error with the phrase "This value should have"
 

@@ -15,7 +15,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsBox  = $('.person-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
 		this.lastUpdate  = (new Date()).getTime();
-		this.runningAjax = []
+		this.runningAjax = [];
 		this.loadingEl   = $('<div class="loading-el"><i class="spinner-flat"></i></div>')
 
 		this.loadingEl.appendTo(this.resultsBox);
@@ -45,7 +45,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		// Update caller schedules the update requests
 		//------------------------------
 
-		var touchCaller = new DeskPRO.TouchCaller({
+		this.touchCaller = new DeskPRO.TouchCaller({
 			timeout: 500,
 			callback: this.updateResults,
 			context: this
@@ -55,7 +55,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			if (self.runningAjax.length == 0) {
 				self.updateResults();
 			} else {
-				touchCaller.touch(null);
+				self.touchCaller.touch(null);
 			}
 		};
 		var updateCaller = this.updateCaller;
@@ -128,13 +128,15 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
 		this.resultsBox.on('click', function(ev) { ev.stopPropagation(); });
 
-		$(document).on('click', this.close.bind(this));
-		$(document).on('mousedown contextmenu', function(e) {
-			if (e.target && !($(e.target).closest('.person-search-box')[0])) {
-				self.close();
-			}
-		});
-		$(this.termInput).closest('.doc-layer').on('click mousedown contextmenu', this.close.bind(this));
+    this.closeFunction = this.close.bind(this);
+		$(document).on('click', this.closeFunction);
+		this.closeFunction2 = function(e) {
+      if (e.target && !($(e.target).closest('.person-search-box')[0])) {
+        self.close();
+      }
+    };
+		$(document).on('mousedown contextmenu', this.closeFunction2);
+		$(this.termInput).closest('.doc-layer').on('click mousedown contextmenu', this.closeFunction);
 
 		//------------------------------
 		// Clicking on an item fires an event that
@@ -188,15 +190,15 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 * Reset the box back to empty
 	 */
 	reset: function() {
-		if (this.runningAjax.length) {
+		if (this.runningAjax && this.runningAjax.length) {
 			this.runningAjax.forEach(function(x) {
 				try {x.abort();} catch (e) {};
 			});
 			this.runningAjax.length = 0;
 		}
-		this.resultsBox.removeClass('loading');
-		this.termInput.val('');
-		this.resultsList.empty();
+    this.resultsBox && this.resultsBox.removeClass('loading');
+    this.termInput && this.termInput.val('');
+    this.resultsList && this.resultsList.empty();
 	},
 
 
@@ -374,11 +376,32 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	destroy: function() {
 		if (this._hasInitResultsBox) {
 			this.reset();
-			this.resultsBox.remove();
+      this.resultsBox && this.resultsBox.remove();
 		}
 
-		this.resultsBox = null;
-		this.idInput = null;
-		this.resultsBox = null;
+    if (this.closeFunction) {
+      $(document).off('click', this.closeFunction);
+
+      if (this.termInput) {
+        $(this.termInput).closest('.doc-layer').on('click mousedown contextmenu', this.closeFunction);
+      }
+      this.closeFunction = null;
+    }
+
+    if (this.closeFunction2) {
+      $(document).off('mousedown contextmenu', this.closeFunction2);
+		}
+
+    this.resultsBox = null;
+    this.termInput = null;
+    this.idInput = null;
+    this.resultsList = null;
+    this.boundEl = null;
+
+    this.updateCaller = null;
+    this.touchCaller && this.touchCaller.destroy();
+    this.touchCaller = null;
+
+		this.destroyEl();
 	}
 });

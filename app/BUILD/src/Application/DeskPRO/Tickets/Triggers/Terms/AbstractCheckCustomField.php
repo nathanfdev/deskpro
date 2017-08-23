@@ -277,9 +277,17 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
         $value       = $this->getTicketFieldValueJs($id);
 
         if ($op === AbstractTriggerTerm::OP_ISSET) {
-            return "function (ticket) { return !!($value ? ($value).length : $value); }";
+            if ($type === 'toggle') {
+                return "function (ticket) { return !!$value; }";
+            } else {
+                return "function (ticket) { return !!($value ? ($value).length : $value); }";
+            }
         } elseif ($op === AbstractTriggerTerm::OP_NOTISSET) {
-            return "function (ticket) { return !$value || 0 === ($value).length; }";
+            if ($type === 'toggle') {
+                return "function (ticket) { return !$value; }";
+            } else {
+                return "function (ticket) { return !$value || 0 === ($value).length; }";
+            }
         }
 
         $op_is          = AbstractTriggerTerm::OP_IS;
@@ -309,11 +317,15 @@ function (ticket) {
   var check_value = $check_value;
   var value = $value || null;
   var op = '$op';
-  if (!value || undefined === value.length) value = [value + ''];
+  if (!value) {
+    value = [];
+  } else if (typeof value === 'string') {
+    value = (value+'').split(',');
+  }
   
   var has = false; 
   for (var i = 0; i < check_value.length; i++) {
-    if (value.indexOf(check_value[i] + '') !== -1) has = true;
+    if ((Array.isArray(value) && value.indexOf(check_value[i] + '') !== -1) || value + '' === check_value[i] + '') has = true;
   }
   
   if (op === '$op_is' && has) return true;

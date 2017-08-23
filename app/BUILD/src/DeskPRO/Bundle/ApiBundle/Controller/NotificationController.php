@@ -28,64 +28,35 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\Limits\Annotation\ApiDisableLimits;
-use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\DeskproClientType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\PusherType;
+use DeskPRO\Bundle\AppBundle\Model\DeskproClientModel;
+use DeskPRO\Bundle\AppBundle\Model\PusherModel;
+use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\RequestOptions;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Logger;
+use Orb\Logger\Handler\ArrayHandler;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class NotificationController.
  *
  * @ApiModes("all")
+ * @ApiUserContext("agent", admin={"savePusherCredentialsAction", "getPusherCredentialsAction", "testPusherCredentialsAction"})
  */
 class NotificationController extends BaseController
 {
-    /**
-     * Fetch list of alerts was rised after last check.
-     *
-     * @ApiDoc(
-     *     section="Notifications and alerts",
-     *     resourceDescription="Operations about action alerts",
-     *     requirements={
-     *          {
-     *              "name"="last",
-     *              "requirement"="\d+",
-     *              "description"="last alert timestamp",
-     *              "dataType"="integer"
-     *          }
-     *      },
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Entity\ActionAlert>"
-     * )
-     *
-     * @param string  $last
-     * @param Request $request
-     *
-     * @throws NotFoundHttpException
-     * @throws AccessDeniedHttpException
-     *
-     * @return View
-     * @Rest\Get("/notify/action-alerts/{last}", name="action_alerts_last")
-     */
-    public function getLastActionAlertsAction($last, Request $request)
-    {
-        $service = $this->get('deskpro.notification.service');
-        $this->doHeartbeat($request);
-
-        $alerts = $service->getLastActionAlerts($last, $this->getUser());
-
-        return View::create($this->wrap($alerts));
-    }
-
     /**
      * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
      *
@@ -99,56 +70,11 @@ class NotificationController extends BaseController
      * )
      *
      * @return View
-     * @Rest\Get("/notify/setup/action-alerts", name="action_alerts_setup")
+     * @Rest\Get("/notify/setup/action-alerts")
      */
     public function setupActionAlertsAction()
     {
         return View::create($this->wrap($this->get('deskpro.notification.service')->getClientsSetup()));
-    }
-
-    /**
-     * Used for internal purposes to update online status.
-     *
-     * @ApiDoc(
-     *     section="Notifications and alerts",
-     *     resourceDescription="Operations about action alerts",
-     *     statusCodes={
-     *         204="Returned if everything is ok"
-     *     },
-     *     noInput=true
-     * )
-     *
-     * @param Request $request
-     *
-     * @ApiDisableLimits()
-     * @Rest\Put("/notify/heartbeat", name="online_heartbeat")
-     * @SerializerView(serializeNull=true)
-     *
-     * @return View
-     */
-    public function heartbeatAction(Request $request)
-    {
-        $this->doHeartbeat($request);
-
-        return View::create(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @param Request $request
-     */
-    protected function doHeartbeat(Request $request)
-    {
-        $session_code = $request->cookies->get('dpsid-agent');
-        /** @var \Application\DeskPRO\EntityRepository\Session $repository */
-        $repository = $this->getDoctrine()->getRepository(Session::class);
-        $session    = $repository->getSessionFromCode($session_code);
-
-        if ($session) {
-            $session->updateLastTime();
-            $em = $this->get('doctrine.orm.default_entity_manager');
-            $em->persist($session);
-            $em->flush();
-        }
     }
 
     /**
@@ -168,7 +94,7 @@ class NotificationController extends BaseController
      *     output="array"
      * )
      *
-     * @Rest\Post("/pusher/auth", name="pusher_auth")
+     * @Rest\Post("/pusher/auth")
      *
      * @param Request $request
      *
@@ -189,5 +115,223 @@ class NotificationController extends BaseController
         }
 
         return View::create($data, $status);
+    }
+
+    /**
+     * This endpoint provide you an ability to get pusher credentials you are using (admin only).
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *         {"name"="user_id", "description"="", "dataType"="integer", "required"=true},
+     *         {"name"="channel_name", "description"="", "dataType"="string", "required"=true},
+     *         {"name"="socket_id", "description"="", "dataType"="string", "required"=true}
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Model\PusherModel>"
+     * )
+     *
+     * @return View
+     *
+     * @todo move it to standalone controller
+     * @Rest\Get("/notify/setup/action-alerts/clients")
+     */
+    public function getClientCredentialsAction()
+    {
+        $config = $this->get('deskpro.notification.service')->getClientsSetup();
+
+        $pusherEnabled  = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'pusher';
+        $deskproEnabled = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'deskpro';
+        $bag            = $this->get('settings_resolver')->getGlobalSettings();
+        $pusherModel    = new PusherModel();
+
+        $deskproClientModel = new DeskproClientModel();
+
+        return View::create($this->wrap(
+            [
+                'pusher' => $pusherModel
+                    ->setPusherEnabled($pusherEnabled)
+                    ->setId($bag->get('notification.settings.pusher_client.appId', ''))
+                    ->setSecret($bag->get('notification.settings.pusher_client.secret', ''))
+                    ->setKey($bag->get('notification.settings.pusher_client.appKey', ''))
+                    ->setCluster($bag->get('notification.settings.pusher_client.cluster', PusherModel::PUSHER_CLASTER_US_WEST_1)),
+
+                'deskpro' => $deskproClientModel
+                    ->setDeskproClientEnabled($deskproEnabled)
+                    ->setSecret($bag->get('notification.settings.deskpro_client.secret', ''))
+                    ->setHost($bag->get('notification.settings.deskpro_client.host', ''))
+                    ->setPort($bag->get('notification.settings.deskpro_client.port', '')),
+            ]
+        ));
+    }
+
+    /**
+     * Save pusher credentials and enable/disable it.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *      parameters={
+     *         {"name"="id", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="key", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="secret", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="host", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="port", "description"="", "dataType"="string", "required"=false},
+     *         {"name"="mode", "description"="", "dataType"="string", "required"=false}
+     *     }
+     * )
+     *
+     * @Rest\Put("/notify/setup/action-alerts/clients")
+     *
+     * @todo this is quick method, consider it hack
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function saveClientsCredentialsAction(Request $request)
+    {
+        $data = $request->request->all();
+        /** @var \Application\DeskPRO\EntityRepository\Setting $settingRepo */
+        $settingRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(Setting::class);
+
+        switch ($data['mode']) {
+            case 'pusher':
+                $form = $this->createForm(PusherType::class);
+                $form->submit($request->request->all());
+
+                if ($form->isValid()) {
+                    /** @var PusherModel $pusherModel */
+                    $pusherModel = $form->getData();
+                    $settingRepo->updateSetting('notification.settings.pusher_client.appId', $pusherModel->getId());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.secret', $pusherModel->getSecret());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.appKey', $pusherModel->getKey());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.cluster', $pusherModel->getCluster());
+                }
+                break;
+            case 'deskpro':
+                $form = $this->createForm(DeskproClientType::class);
+                $form->submit($request->request->all());
+
+                if ($form->isValid()) {
+                    /** @var DeskproClientModel $deskproClientModel */
+                    $deskproClientModel = $form->getData();
+                    $settingRepo->updateSetting('notification.settings.deskpro_client.host', $deskproClientModel->getHost());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.secret', $deskproClientModel->getSecret());
+                    $settingRepo->updateSetting('notification.settings.pusher_client.port', $deskproClientModel->getPort());
+                }
+                break;
+        }
+
+        $config = [
+            'strategy' => 'immediate',
+            'delivery' => [
+                $data['mode'],
+            ],
+        ];
+        $settingRepo->updateSetting('notification.settings.default_strategy', serialize($config));
+
+        // this should work for immediate only, cause notification handlers already has been built
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload',
+                [
+                    'type'        => 'admin',
+                    'person_id'   => 0,
+                    'person_name' => 'System',
+                ])
+        );
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Post("/notify/setup/action-alerts/pusher/test")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function testPusherCredentialsAction(Request $request)
+    {
+        $form = $this->createForm(PusherType::class);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            return View::create([
+                'success' => false,
+                'message' => 'Invalid settings were supplied. Make sure you have filled in all form fields.',
+            ]);
+        }
+
+        /** @var PusherModel $pusherModel */
+        $pusherModel = $form->getData();
+
+        $auth_key = $pusherModel->getKey();
+        $secret   = $pusherModel->getSecret();
+        $app_id   = $pusherModel->getId();
+
+        $p = new \Pusher($auth_key, $secret, $app_id, ['cluster' => $pusherModel->getCluster()]);
+
+        $handler = new ArrayHandler();
+        $handler->setFormatter(new LineFormatter('[%datetime%] %message%'));
+        $logger = new Logger('PusherTest', [$handler]);
+        $p->set_logger(new PusherLogger($logger));
+
+        $success = $p->trigger(['private-channel-test'], 'test', 'test');
+        $message = $handler->getMessagesAsString();
+
+        return View::create(['success' => $success, 'message' => $message]);
+    }
+
+    /**
+     * @Rest\Post("/notify/setup/action-alerts/deskpro/test")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function testDeskproCredentialsAction(Request $request)
+    {
+        $form = $this->createForm(DeskproClientType::class);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            return View::create([
+                'success' => false,
+                'message' => 'Invalid settings were supplied. Make sure you have filled in all form fields.',
+            ]);
+        }
+
+        /** @var DeskproClientModel $deskproClientModel */
+        $deskproClientModel = $form->getData();
+
+        $client = new HttpClient(
+            [
+                'base_uri' => sprintf('%s:%d',
+                    $deskproClientModel->getHost(),
+                    $deskproClientModel->getPort()),
+            ]
+        );
+
+        $testData = ['test' => true];
+        try {
+            $response = $client->post(
+                '/test',
+                [
+                    RequestOptions::JSON => ['jwt' => \JWT::encode($testData, $deskproClientModel->getSecret())],
+                ]
+            );
+        } catch (ClientException $e) {
+            $response = $e->getResponse();
+        }
+
+        $message = $response->getBody()->getContents() ?: 'Can\'t connect to server';
+
+        return View::create(['success' => $response->getStatusCode() === 200, 'message' => $message]);
     }
 }

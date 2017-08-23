@@ -231,6 +231,19 @@ class Generic implements ForwardDef, QuoteDef
         // Try to read the email address from the fwd headers
         //------------------------------
 
+        foreach ($this->translate_map as $set) {
+            $patterns     = [];
+            $replacements = [];
+            foreach ($set as $replacement => $pattern) {
+                $patterns[]                          = "#^($pattern)(?=:\s+)#mi";
+                $replacements[]                      = trim($replacement, '%');
+                $forward_data['fwd_message_headers'] = preg_replace(
+                    $patterns,
+                    $replacements,
+                    $forward_data['fwd_message_headers']
+                );
+            }
+        }
         $pos = stripos($forward_data['fwd_message_headers'], 'from');
         if ($pos === false) {
             return $forward_data;

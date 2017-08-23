@@ -45,7 +45,8 @@
 						<div class="pull-right">
 							<em class="tag"style="margin-left: 6px;">
 								<span ng-if="macro.is_global">Global</span>
-								<span ng-if="!macro.is_global && macro.person_id">{{ ng_var('macro.person.display_name') }}</span>
+								<span ng-if="!macro.is_global && macro.person">{{ ng_var('macro.person.display_name') }}</span>
+								<span ng-if="!macro.is_global && macro.department">{{ ng_var('macro.department.title') }}</span>
 							</em>
 							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
 						</div>
@@ -112,7 +113,7 @@
 			<h2><span>Related Content</span></h2>
 			<ul>
 
-				<li><i class="fa fa-book"></i> <a href="https://manuals.deskpro.com/html/admin/automating-the-helpdesk/macros.html" target="_blank">Macros</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/377" target="_blank">Macros</a></li>
 				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
 
 			</ul>

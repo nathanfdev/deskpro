@@ -358,8 +358,8 @@ abstract class AbstractBuild
             $params = [
                 '{tool}'          => $tool,
                 '{query}'         => escapeshellarg($alter),
-                '{critical_load}' => escapeshellarg($env->getConsolePhpCommand('upgrader.online_schema_upgrade_critical_load') ?: 'Threads_running=50'),
-                '{max_load}'      => escapeshellarg($env->getConsolePhpCommand('upgrader.online_schema_upgrade_max_load') ?: 'Threads_running=25'),
+                '{critical_load}' => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_critical_load') ?: 'Threads_running=50'),
+                '{max_load}'      => escapeshellarg($env->getConfig('upgrader.online_schema_upgrade_max_load') ?: 'Threads_running=25'),
                 '{db_host}'       => escapeshellarg($dbhost),
                 '{db_port}'       => escapeshellarg($port ?: 3306),
                 '{db_name}'       => escapeshellarg($dbname),
@@ -480,11 +480,11 @@ abstract class AbstractBuild
     {
         $db = $this->container->getDb();
 
-        return $db->fetchAllKeyValue('
+        return array_merge(array_fill_keys($names, null), $db->fetchAllKeyValue('
             SELECT name, value
             FROM settings
             WHERE name IN (?)
-        ', [$names], [Connection::PARAM_STR_ARRAY]);
+        ', [$names], [Connection::PARAM_STR_ARRAY]));
     }
 
     /**

@@ -70,7 +70,7 @@ return [
     /*
      * Are agent teams enabled?
      */
-    'core.use_agent_team' => false,
+    'core.use_agent_team' => true,
 
     /*
      * Are products enabled?
@@ -992,17 +992,15 @@ return [
     'rate_limit.login.guest.lockout_time' => 15 * 60, // 15 min
     'rate_limit.login.guest.response'     => 'captcha',
 
-    'rate_limit.registration.enabled'      => true,
+    'rate_limit.registration.enabled'      => false,
     'rate_limit.registration.limit'        => 3,
     'rate_limit.registration.time'         => 15 * 60, // 15 min
     'rate_limit.registration.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.registration.response'     => 'captcha',
 
-    'rate_limit.reset_password.enabled'      => true,
+    'rate_limit.reset_password.enabled'      => false,
     'rate_limit.reset_password.limit'        => 3,
     'rate_limit.reset_password.time'         => 15 * 60, // 15 min
     'rate_limit.reset_password.lockout_time' => 15 * 60, // 15 min
-    'rate_limit.reset_password.response'     => 'captcha',
 
     'rate_limit.token_exchange.enabled'      => true,
     'rate_limit.token_exchange.limit'        => 50,
@@ -1070,12 +1068,12 @@ return [
      * because it could be unstable just right now.
      */
     'notification.settings.strategies' => [
-        'notification.agent_chat.new_message' => [
-            'strategy' => 'immediate',
-            'delivery' => [
-                'db',
-            ],
-        ],
+        //'notification.agent_chat.new_message' => [
+        //    'strategy' => 'immediate',
+        //    'delivery' => [
+        //        'db',
+        //    ],
+        //],
         //        'notification.yet.another.system.event' => [
         //            'strategy' => 'deferred',
         //            'delivery' => [
@@ -1089,6 +1087,7 @@ return [
     'notification.settings.default_strategy' => [
         'strategy' => 'immediate',
         'delivery' => [
+            // 'db' or 'pusher'
             'db',
         ],
     ],
@@ -1098,8 +1097,8 @@ return [
     'notification.settings.pusher_client.appKey'  => '',
     'notification.settings.pusher_client.secret'  => '',
     'notification.settings.pusher_client.appId'   => '',
-    'notification.settings.pusher_client.options' => [],
-    'notification.settings.pusher_client.debug'   => true,
+    'notification.settings.pusher_client.cluster' => 'mt1',
+    'notification.settings.pusher_client.debug'   => false,
 
     // Simple delivery handler with polling
     'notification.settings.polling_client.polling_interval' => 5000,

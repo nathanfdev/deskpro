@@ -62,6 +62,8 @@ class VerifyCommand extends AbstractImporterCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkDbCredentials();
+
         // set an input path
         $context = new ImporterContext();
 

@@ -1,394 +1,458 @@
 <style>
-	.editable-visible  {
-		display: none;
-	}
+    .editable-visible {
+        display: none;
+    }
 
-	.editable .editable-visible {
-		display: inline-block;
-	}
+    .editable .editable-visible {
+        display: inline-block;
+    }
 
-	.editable .editable-hidden {
-		display: none;
-	}
+    .editable .editable-hidden {
+        display: none;
+    }
 </style>
 {{ dp_app_loc(baseId, 'left_col.top') }}
+<div data-deskproapp="org-content-before"></div>
 
 {# Box Summary #}
 {{ dp_app_loc(baseId, 'summary.before') }}
+<div data-deskproapp="org-summary-before"></div>
 {% if org.summary|length or app.user.hasPerm('agent_org.edit') %}
-	<div class="profile-box-container dp-simpletab-container summary"
-		data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
-		data-form-save-url="{{ path('agent_org_ajaxsave', {'organization_id': org.id}) }}"
-	>
-		<header>
-			{% if app.user.hasPerm('agent_org.edit') %}
-			<div class="controls">
-				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
-				<div class="saved" style="display: none">{{ phrase('agent.general.saved') }}</div>
-				<div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
-			</div>
-			{% endif %}
-			<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
-				<ul>
-					<li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
-				</ul>
-			</nav>
-		</header>
-		<section>
-			<div id="{{baseId}}_summary_body">
-				<input type="hidden" name="action" value="set-summary" />
-				<div class="textarea-section"><textarea class="integrated" id="{{baseId}}_summary" name="summary" {% if not app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea></div>
-			</div>
-			{{ dp_app_loc(baseId, 'summary.tab') }}
-		</section>
-	</div>
+    <div class="profile-box-container dp-simpletab-container summary"
+         data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+         data-form-save-url="{{ path('agent_org_ajaxsave', {'organization_id': org.id}) }}"
+    >
+        <header>
+            {% if app.user.hasPerm('agent_org.edit') %}
+                <div class="controls">
+                    <div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+                    <div class="saved" style="display: none">{{ phrase('agent.general.saved') }}</div>
+                    <div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
+                </div>
+            {% endif %}
+            <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+                <ul>
+                    <li data-tab-for="#{{ baseId }}_summary_body">{{ phrase('agent.general.summary') }}</li>
+                    <div data-deskproapp="org-summary-new-tab"></div>
+                </ul>
+            </nav>
+        </header>
+        <section>
+            <div id="{{ baseId }}_summary_body">
+                <input type="hidden" name="action" value="set-summary" />
+                <div class="textarea-section"><textarea class="integrated" id="{{ baseId }}_summary" name="summary"
+                                                        {% if not app.user.hasPerm('agent_org.edit') %}onkeydown="return false;"{% endif %}>{{ org.summary }}</textarea>
+                </div>
+            </div>
+            {{ dp_app_loc(baseId, 'summary.tab') }}
+        </section>
+    </div>
 {% endif %}
 {{ dp_app_loc(baseId, 'summary.after') }}
+<div data-deskproapp="org-summary-after"></div>
 {# /Box Summary #}
 
 {{ dp_app_loc(baseId, 'members.before') }}
 <div class="profile-box-container tabbed">
-	<header>
-		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
-			<ul>
-				<li data-tab-for="#{{ baseId }}_members_tab">{{ phrase('agent.general.members') }} <span class="count" data-tag="org-members-count-{{ org.id }}" id="{{ baseId }}_members_count">{{ members_count|default(0) }}</span></li>
-				{% if org_tickets_count %}<li data-tab-for="#{{ baseId }}_tickets_tab">{{ phrase('agent.general.tickets') }} <span class="count" id="{{ baseId }}_tickets_count">{{ org_tickets_count|default(0) }}</span></li>{% endif %}
-				{% if org_chats_count %}<li data-tab-for="#{{ baseId }}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count" id="{{ baseId }}_chats_count">{{ org_chats_count|default(0) }}</span></li>{% endif %}
-				{% if org_charges %}<li data-tab-for="#{{ baseId }}_billing_tab">Billing <span class="count">{{ org_charge_totals.count }}</span></li>{% endif %}
-			</ul>
-		</nav>
-	</header>
-	<section>
-		{# Members Tab #}
-		<article id="{{baseId}}_members_tab" class="on">
-			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-				<tbody id="{{baseId}}_members_list">
-					{% if app.user.hasPerm('agent_people.edit') %}
-						<tr class="add-new-member" id="{{baseId}}_newmember_row">
-							<td colspan="4" class="textarea-section">
-								<div
-									id="{{baseId}}_add_searchbox"
-									data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
-									data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'exclude_org': org.id}) }}"
-									data-highlight-term="1"
-									data-touch-focus="1"
-									data-search-param="term"
-									data-position-bound="@parent(td)"
-								>
-									<script type="text/x-deskpro-tmpl" class="user-row-tpl">
+    <header>
+        <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+            <ul>
+                <li data-tab-for="#{{ baseId }}_members_tab">{{ phrase('agent.general.members') }} <span class="count"
+                                                                                                         data-tag="org-members-count-{{ org.id }}"
+                                                                                                         id="{{ baseId }}_members_count">{{ members_count|default(0) }}</span>
+                </li>
+                {% if org_tickets_count %}
+                    <li data-tab-for="#{{ baseId }}_tickets_tab">{{ phrase('agent.general.tickets') }} <span
+                      class="count" id="{{ baseId }}_tickets_count">{{ org_tickets_count|default(0) }}</span>
+                    </li>{% endif %}
+                {% if org_chats_count %}
+                    <li data-tab-for="#{{ baseId }}_chats_tab">{{ phrase('agent.general.chats') }} <span class="count"
+                                                                                                         id="{{ baseId }}_chats_count">{{ org_chats_count|default(0) }}</span>
+                    </li>{% endif %}
+                {% if org_charges %}
+                    <li data-tab-for="#{{ baseId }}_billing_tab">Billing <span
+                          class="count">{{ org_charge_totals.count }}</span></li>{% endif %}
+                <div data-deskproapp="org-content-box-new-tab"></div>
+            </ul>
+        </nav>
+    </header>
+    <section>
+        {# Members Tab #}
+        <article id="{{ baseId }}_members_tab" class="on">
+            <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tbody id="{{ baseId }}_members_list">
+                    {% if app.user.hasPerm('agent_people.edit') %}
+                        <tr class="add-new-member" id="{{ baseId }}_newmember_row">
+                            <td colspan="4" class="textarea-section">
+                                <div
+                                      id="{{ baseId }}_add_searchbox"
+                                      data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+                                      data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'exclude_org': org.id}) }}"
+                                      data-highlight-term="1"
+                                      data-touch-focus="1"
+                                      data-search-param="term"
+                                      data-position-bound="@parent(td)"
+                                >
+                                    <script type="text/x-deskpro-tmpl" class="user-row-tpl">
 										<li>
 											<a>
 											<span class="user-name"></span>
 											<address>&lt;<span class="user-email"></span>&gt;</address>
 											<div class="bound-fade"></div>
 										</a></li>
-									</script>
-									<div class="input-wrapper">
-										<input type="text" id="{{baseId}}_add_searchbox_txt" style="width: 98%" class="term integrated" placeholder="{{ phrase('agent.organizations.add_person') }}" class="user-input" />
-									</div>
-									<input type="hidden" name="person_id" class="person-id" value="" />
-									<div class="person-search-box" style="display: none">
-										<section>
-											<ul class="results-list">
 
-											</ul>
-											<footer>
-												<span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
-											</footer>
-										</section>
-									</div>
-								</div>
-							</td>
-						</tr>
-						<tr class="add-new-member-named" style="display: none" id="{{baseId}}_newmember_row_named">
-							<td>
-								<div class="user-name" id="{{baseId}}_newmember_person_name"></div>
-								<div class="user-email" id="{{baseId}}_newmember_person_email"></div>
-							</td>
-							<td colspan="2">
-								<div class="position-input">
-									<input type="text" class="role" placeholder="{{ phrase('agent.organizations.enter_position') }}" id="{{baseId}}_newmember_position" value="" />
-								</div>
-								<div class="controls">
-									<input type="hidden" id="{{baseId}}_newmember_person_id" value="" />
-									<button class="clean-white small" id="{{baseId}}_newmember_btn">{{ phrase('agent.general.add') }}</button>
-									<button class="clean-white small" id="{{baseId}}_newmember_cancel_btn">{{ phrase('agent.general.cancel') }}</button>
-								</div>
-							</td>
-						</tr>
-					{% endif %}
-					{% for person in org_members %}
-						{% include 'AgentBundle:Organization:view-members-row.html.twig' %}
-					{% else %}
-						{% if not app.user.hasPerm('agent_people.edit') %}
-							<tr><td colspan="3">{{ phrase('agent.organizations.is_empty') }}</td></tr>
-						{% endif %}
-					{% endfor %}
-					{% if members_count > 50 %}
-						<tr class="more">
-							<td colspan="3">
-								<a class="clean-white" data-route="listpane:{{ path('agent_peoplesearch_organization', {id: org.id}) }}">{{ phrase('agent.organizations.browse_all_members') }}</a>
-							</td>
-						</tr>
-					{% endif %}
-				</tbody>
-			</table>
-		</article>
-		{# /Members Tab #}
+                                    </script>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="{{ baseId }}_add_searchbox_txt" style="width: 98%"
+                                               class="term integrated"
+                                               placeholder="{{ phrase('agent.organizations.add_person') }}"
+                                               class="user-input" />
+                                    </div>
+                                    <input type="hidden" name="person_id" class="person-id" value="" />
+                                    <div class="person-search-box" style="display: none">
+                                        <section>
+                                            <ul class="results-list">
 
-		{# Tickets Tab #}
-		{% if org_tickets_count %}
-		<article id="{{baseId}}_tickets_tab">
-			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-				<tbody id="{{baseId}}_tickets_initial">
-					{% for ticket in org_tickets %}
-						<tr>
-							<td>
-								<div class="fade-container">
-									<div class="line" style="height: 21px;">
-										<a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}" data-route-title="@text"><span class="id-number">#{{ ticket.id }}</span> {{ticket.subject}}</a>
-									</div>
-									<div class="line">
-										<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}" style="background: url('{{ ticket.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{ticket.person.display_name}}</a>
-									</div>
-									<div class="bound-fade"></div>
-								</div>
-							</td>
-							<td {% if not ticket.agent %}colspan="2"{% endif %} valign="bottom" style="vertical-align: bottom">
-								<div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }}" style="float: right; position: relative; top: 0px;">
-									<label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
-									{% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
-								</div>
-							</td>
-							{% if ticket.agent %}
-								<td width="16" style="width: 16px; padding:0; padding-right: 4px; padding-bottom: 5px; vertical-align: bottom;" valign="bottom">
+                                            </ul>
+                                            <footer>
+                                                <span class="create-user">{{ phrase('agent.general.create_a_new_person') }}</span>
+                                            </footer>
+                                        </section>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="add-new-member-named" style="display: none" id="{{ baseId }}_newmember_row_named">
+                            <td>
+                                <div class="user-name" id="{{ baseId }}_newmember_person_name"></div>
+                                <div class="user-email" id="{{ baseId }}_newmember_person_email"></div>
+                            </td>
+                            <td colspan="2">
+                                <div class="position-input">
+                                    <input type="text" class="role"
+                                           placeholder="{{ phrase('agent.organizations.enter_position') }}"
+                                           id="{{ baseId }}_newmember_position" value="" />
+                                </div>
+                                <div class="controls">
+                                    <input type="hidden" id="{{ baseId }}_newmember_person_id" value="" />
+                                    <button class="clean-white small"
+                                            id="{{ baseId }}_newmember_btn">{{ phrase('agent.general.add') }}</button>
+                                    <button class="clean-white small"
+                                            id="{{ baseId }}_newmember_cancel_btn">{{ phrase('agent.general.cancel') }}</button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% for person in org_members %}
+                        {% include 'AgentBundle:Organization:view-members-row.html.twig' %}
+                    {% else %}
+                        {% if not app.user.hasPerm('agent_people.edit') %}
+                            <tr>
+                                <td colspan="3">{{ phrase('agent.organizations.is_empty') }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    {% if members_count > 50 %}
+                        <tr class="more">
+                            <td colspan="3">
+                                <a class="clean-white"
+                                   data-route="listpane:{{ path('agent_peoplesearch_organization', {id: org.id}) }}">{{ phrase('agent.organizations.browse_all_members') }}</a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </article>
+        {# /Members Tab #}
+
+        {# Tickets Tab #}
+        {% if org_tickets_count %}
+            <article id="{{ baseId }}_tickets_tab">
+                <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tbody id="{{ baseId }}_tickets_initial">
+                        {% for ticket in org_tickets %}
+                            <tr>
+                                <td>
+                                    <div class="fade-container">
+                                        <div class="line" style="height: 21px;">
+                                            <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
+                                               data-route-title="@text"><span
+                                                      class="id-number">#{{ ticket.id }}</span> {{ ticket.subject }}</a>
+                                        </div>
+                                        <div class="line">
+                                            <a class="as-popover"
+                                               data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}"
+                                               style="background: url('{{ ticket.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{ ticket.person.display_name }}</a>
+                                        </div>
+                                        <div class="bound-fade"></div>
+                                    </div>
+                                </td>
+                                <td {% if not ticket.agent %}colspan="2"{% endif %} valign="bottom"
+                                    style="vertical-align: bottom">
+                                    <div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }}"
+                                         style="float: right; position: relative; top: 0px;">
+                                        <label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
+                                        {% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency"
+                                                                                     data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
+                                    </div>
+                                </td>
+                                {% if ticket.agent %}
+                                    <td width="16"
+                                        style="width: 16px; padding:0; padding-right: 4px; padding-bottom: 5px; vertical-align: bottom;"
+                                        valign="bottom">
 									<span
-										class="tipped"
-										title="{{ ticket.agent.display_name }}"
-										style="background: url('{{ ticket.agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; width: 16px; overflow: hidden; display: block;"
-									></span>
-								</td>
-							{% endif %}
-						</tr>
-					{% endfor %}
-					{% if org_tickets|length < org_tickets_count %}
-						<tr class="more">
-							<td colspan="100">
-								<button class="clean-white" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter', {'set_term[organization]': org.id}) }}">
-									{{ phrase('agent.general.view_all_x_tickets', {'count':org_tickets_count}) }}
-								</button>
-							</td>
-						</tr>
-					{% endif %}
-				</tbody>
-			</table>
-		</article>
-		{% endif %}
-		{# /Tickets Tab #}
+                                          class="tipped"
+                                          title="{{ ticket.agent.display_name }}"
+                                          style="background: url('{{ ticket.agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; width: 16px; overflow: hidden; display: block;"
+                                    ></span>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        {% if org_tickets|length < org_tickets_count %}
+                            <tr class="more">
+                                <td colspan="100">
+                                    <button class="clean-white"
+                                            data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter', {'set_term[organization]': org.id}) }}">
+                                        {{ phrase('agent.general.view_all_x_tickets', {'count':org_tickets_count}) }}
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </article>
+        {% endif %}
+        {# /Tickets Tab #}
 
-		{# Chats Tab #}
-		{% if org_chats_count %}
-		<article id="{{baseId}}_chats_tab">
-			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-				<tbody id="{{baseId}}_chats_initial">
-					{% for chat in org_chats %}
-						<tr>
-							<td>
-								<div class="fade-container">
-									<div class="line">
-										<a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}" data-route-title="@text">{{chat.subject_line}}</a>
-									</div>
-									<div class="line">
-										{% if not chat.person %}
-											{{ phrase('agent.general.anonymous') }}
-										{% else %}
-											<a class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': chat.person.id}) }}" style="background: url('{{ chat.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{chat.person.display_name}}</a>
-										{% endif %}
-									</div>
-									<div class="bound-fade"></div>
-								</div>
-							</td>
-						</tr>
-					{% endfor %}
-					{% if org_chats|length < org_chats_count %}
-						<tr class="more">
-							<td colspan="100">
-								<button class="clean-white" id="{{baseId}}_tickets_viewall">
-									{{ phrase('agent.general.view_all_x_chats', {'count':org_chats_count}) }}
-								</button>
-							</td>
-						</tr>
-					{% endif %}
-				</tbody>
-			</table>
-		</article>
-		{% endif %}
-		{# /Chats Tab #}
+        {# Chats Tab #}
+        {% if org_chats_count %}
+            <article id="{{ baseId }}_chats_tab">
+                <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tbody id="{{ baseId }}_chats_initial">
+                        {% for chat in org_chats %}
+                            <tr>
+                                <td>
+                                    <div class="fade-container">
+                                        <div class="line">
+                                            <a data-route="page:{{ path('agent_userchat_view', {'conversation_id': chat.id}) }}"
+                                               data-route-title="@text">{{ chat.subject_line }}</a>
+                                        </div>
+                                        <div class="line">
+                                            {% if not chat.person %}
+                                                {{ phrase('agent.general.anonymous') }}
+                                            {% else %}
+                                                <a class="as-popover"
+                                                   data-route="person:{{ path('agent_people_view', {'person_id': chat.person.id}) }}"
+                                                   style="background: url('{{ chat.person.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 18px;">{{ chat.person.display_name }}</a>
+                                            {% endif %}
+                                        </div>
+                                        <div class="bound-fade"></div>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% if org_chats|length < org_chats_count %}
+                            <tr class="more">
+                                <td colspan="100">
+                                    <button class="clean-white" id="{{ baseId }}_tickets_viewall">
+                                        {{ phrase('agent.general.view_all_x_chats', {'count':org_chats_count}) }}
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </article>
+        {% endif %}
+        {# /Chats Tab #}
 
-		{% if org_charges %}
-			<article id="{{baseId}}_billing_tab">
-				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-				{% for charge in org_charges %}
-					{% include 'AgentBundle:Common:billing-row-simple.html.twig' %}
-				{% endfor %}
-				<tr>
-					<th colspan="2">
-						{{ phrase('agent.general.total') }}:
-						{{ phrase('agent.tickets.count_charges', {count: org_charge_totals.count}) }}
-						{% if org_charge_totals.charge_time %}{{ org_charge_totals.charge_time|time_length }}{% if org_charge_totals.charge %} &bull; {% endif %}{% endif %}
-						{% if org_charge_totals.charge %}{{ org_charge_totals.charge|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}{% endif %}
-					</th>
-				</tr>
-				</table>
-			</article>
-		{% endif %}
+        {% if org_charges %}
+            <article id="{{ baseId }}_billing_tab">
+                <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    {% for charge in org_charges %}
+                        {% include 'AgentBundle:Common:billing-row-simple.html.twig' %}
+                    {% endfor %}
+                    <tr>
+                        <th colspan="2">
+                            {{ phrase('agent.general.total') }}:
+                            {{ phrase('agent.tickets.count_charges', {count: org_charge_totals.count}) }}
+                            {% if org_charge_totals.charge_time %}{{ org_charge_totals.charge_time|time_length }}{% if org_charge_totals.charge %} &bull; {% endif %}{% endif %}
+                            {% if org_charge_totals.charge %}{{ org_charge_totals.charge|number_format(2) }} {{ app.getSetting('core_tickets.billing_currency') }}{% endif %}
+                        </th>
+                    </tr>
+                </table>
+            </article>
+        {% endif %}
 
-		{{ dp_widget_tabs(baseId, 'organization', 'members', 'article', org_api) }}
-	</section>
+        {{ dp_widget_tabs(baseId, 'organization', 'members', 'article', org_api) }}
+    </section>
 </div>
 {{ dp_app_loc(baseId, 'members.after') }}
 
 {# Files Tabs #}
 {{ dp_app_loc(baseId, 'files.before') }}
-<div class="profile-box-container dp-simpletab-container tabbed" id="{{baseId}}_files_box">
-	<header>
-		<nav>
-			<ul>
-				<li data-tab-for="#{{baseId}}_files_tab" class="on">{{ phrase('agent.general.files') }} <span class="count">{{ org_files_count }}</span></li>
-				<li data-tab-for="#{{baseId}}_add_file_tab" class="off">Add File</li>
-			</ul>
-		</nav>
-	</header>
-	<section>
-		{# Files Tab #}
-		<article id="{{baseId}}_files_tab" class="on">
-			<div class="notes-wrap profile-files-wrap">
-				<ul id="{{baseId}}_files_initial">
-					{% for file in org_files %}
-						{% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
-					{% else %}
-						<li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>
-					{% endfor %}
-				</ul>
-			</div>
-		</article>
-		{# /Files Tab #}
-		{# Add File Tab #}
-		<article id="{{baseId}}_add_file_tab" class="off">
-			<form id="{{baseId}}_add_file_form" method="POST" action="{{ path('agent_org_ajaxsave_file', {organization_id: org.id}) }}">
-				<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-					<tbody id="{{baseId}}_add_file_initial">
-					<tr>
-						<td colspan="2"><textarea style="width: 97%" placeholder="comment" id="input_note"></textarea>
-					</tr>
-					<tr>
-						<td style="width: 70%;"><h4 style="float:left;">{{ phrase('agent.general.file') }}</h4>
-							<br class="clear" />
-							<div id="{{baseId}}_file_section_up">
-								<input type="file" name="file-upload" multiple="multiple" />
-							</div>
-							{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'blob_id' } %}
-							<ul class="files file-list"></ul>
-						</td>
-						<td style="width: 30%"><input type="submit" class="save-trigger" value="save"/></td>
-					</tr>
-					</tbody>
-				</table>
-			</form>
-		</article>
-		{# /Add file Tab #}
-		{{ dp_app_loc(baseId, 'files.tab') }}
-	</section>
+<div class="profile-box-container dp-simpletab-container tabbed" id="{{ baseId }}_files_box">
+    <header>
+        <nav>
+            <ul>
+                <li data-tab-for="#{{ baseId }}_files_tab" class="on">{{ phrase('agent.general.files') }} <span
+                          class="count">{{ org_files_count }}</span></li>
+                <li data-tab-for="#{{ baseId }}_add_file_tab" class="off">Add File</li>
+            </ul>
+        </nav>
+    </header>
+    <section>
+        {# Files Tab #}
+        <article id="{{ baseId }}_files_tab" class="on">
+            <div class="notes-wrap profile-files-wrap">
+                <ul id="{{ baseId }}_files_initial">
+                    {% for file in org_files %}
+                        {% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
+                    {% else %}
+                        <li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </article>
+        {# /Files Tab #}
+        {# Add File Tab #}
+        <article id="{{ baseId }}_add_file_tab" class="off">
+            <form id="{{ baseId }}_add_file_form" method="POST"
+                  action="{{ path('agent_org_ajaxsave_file', {organization_id: org.id}) }}">
+                <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tbody id="{{ baseId }}_add_file_initial">
+                        <tr>
+                            <td colspan="2"><textarea style="width: 97%" placeholder="comment"
+                                                      id="input_note"></textarea>
+                        </tr>
+                        <tr>
+                            <td style="width: 70%;"><h4 style="float:left;">{{ phrase('agent.general.file') }}</h4>
+                                <br class="clear" />
+                                <div id="{{ baseId }}_file_section_up">
+                                    <input type="file" name="file-upload" multiple="multiple" />
+                                </div>
+                                {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'blob_id' } %}
+                                <ul class="files file-list"></ul>
+                            </td>
+                            <td style="width: 30%"><input type="submit" class="save-trigger" value="save" /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </article>
+        {# /Add file Tab #}
+        {{ dp_app_loc(baseId, 'files.tab') }}
+    </section>
 </div>
 {{ dp_app_loc(baseId, 'files.after') }}
 {# /Files Tabs #}
 
 {% if notes|length or activity_stream|length or app.user.hasPerm('agent_org.notes') %}
-{{ dp_app_loc(baseId, 'notes.before') }}
-<div class="profile-box-container dp-simpletab-container tabbed">
-	<header>
-		<nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
-			<ul>
-				{% if notes|length or app.user.hasPerm('agent_org.notes') %}<li data-tab-for="#{{baseId}}_notes_tab">{{ phrase('agent.general.notes') }} <span class="count" id="{{ baseId }}_notes_count">{{ notes|length }}</span></li>{% endif %}
-				{% if activity_stream|length %}<li data-tab-for="#{{baseId}}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
-			</ul>
-		</nav>
-	</header>
-	<section>
-		{# {{ phrase('agent.general.notes') }} Tab #}
-		{% if notes|length or app.user.hasPerm('agent_org.notes') %}
-			<article id="{{baseId}}_notes_tab" class="on">
-				<div class="notes-wrap">
-					<ul>
-						{% for note in notes|reverse %}
-							{% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
-						{% endfor %}
-						<li class="new-note"
-							data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
-							data-form-list-selector="ul"
-							data-form-result-html-key="note_li_html"
-							data-form-save-url="{{ path('agent_org_ajaxsave_note', {'organization_id': org.id}) }}"
-							data-form-count-el="#{{baseId}}_notes_count"
-						>
-							<header>
-								<div class="controls">
-									<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
-									<div class="saved" style="display: none">{{ phrase('agent.general.saved') }}</div>
-									<div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
-								</div>
-								<h3>{{ phrase('agent.general.new_note') }}</h3>
-							</header>
-							<div class="textarea-section"><textarea class="integrated" name="note" placeholder=""></textarea></div>
-						</li>
-					</ul>
-				</div>
-			</article>
-		{% endif %}
-		{# /{{ phrase('agent.general.notes') }} Tab #}
+    {{ dp_app_loc(baseId, 'notes.before') }}
+    <div data-deskproapp="org-notes-before"></div>
 
-		{# Activity Tab #}
-		{% if activity_stream|length %}
-		<article id="{{baseId}}_activity_tab">
-			<table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
-				{% for action in activity_stream %}
-					<tr>
-						<td>
-							<div class="fade-container">
-								<div class="line">
+    <div class="profile-box-container dp-simpletab-container tabbed">
+        <header>
+            <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+                <ul>
+                    {% if notes|length or app.user.hasPerm('agent_org.notes') %}
+                        <li data-tab-for="#{{ baseId }}_notes_tab">{{ phrase('agent.general.notes') }} <span
+                          class="count" id="{{ baseId }}_notes_count">{{ notes|length }}</span></li>{% endif %}
+                    {% if activity_stream|length %}
+                        <li
+                        data-tab-for="#{{ baseId }}_activity_tab">{{ phrase('agent.general.activity_stream') }}</li>{% endif %}
+                    <div data-deskproapp="org-notes-new-tab"></div>
+                </ul>
+            </nav>
+        </header>
+        <section>
+            {# {{ phrase('agent.general.notes') }} Tab #}
+            {% if notes|length or app.user.hasPerm('agent_org.notes') %}
+                <article id="{{ baseId }}_notes_tab" class="on">
+                    <div class="notes-wrap">
+                        <ul>
+                            {% for note in notes|reverse %}
+                                {% include 'AgentBundle:Organization:note-li.html.twig' with {'note': note} %}
+                            {% endfor %}
+                            <li class="new-note"
+                                data-element-handler="DeskPRO.Agent.ElementHandler.FormSaver"
+                                data-form-list-selector="ul"
+                                data-form-result-html-key="note_li_html"
+                                data-form-save-url="{{ path('agent_org_ajaxsave_note', {'organization_id': org.id}) }}"
+                                data-form-count-el="#{{ baseId }}_notes_count"
+                            >
+                                <header>
+                                    <div class="controls">
+                                        <div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+                                        <div class="saved"
+                                             style="display: none">{{ phrase('agent.general.saved') }}</div>
+                                        <div class="save" style="display: none">{{ phrase('agent.general.save') }}</div>
+                                    </div>
+                                    <h3>{{ phrase('agent.general.new_note') }}</h3>
+                                </header>
+                                <div class="textarea-section"><textarea class="integrated" name="note"
+                                                                        placeholder=""></textarea></div>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+            {% endif %}
+            {# /{{ phrase('agent.general.notes') }} Tab #}
+
+            {# Activity Tab #}
+            {% if activity_stream|length %}
+                <article id="{{ baseId }}_activity_tab">
+                    <table class="tickets-simple" width="100%" border="0" cellpadding="0" cellspacing="0">
+                        {% for action in activity_stream %}
+                            <tr>
+                                <td>
+                                    <div class="fade-container">
+                                        <div class="line">
 									<span class="what">
-										<a class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': action.person.id|default('0') }) }}">
+										<a class="with-route"
+                                           data-route="page:{{ path('agent_people_view', {'person_id': action.person.id|default('0') }) }}">
 											{{ action.person.display_name }}
 										</a>
-										{% if action.action_type == 'registered' %}
-											{{ phrase('agent.people.act_reg') }}
-										{% elseif action.action_type == 'new_ticket' %}
-											{{ phrase('agent.people.act_submitted_ticket') }}
-											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id|default('0') }) }}">
+                                        {% if action.action_type == 'registered' %}
+                                            {{ phrase('agent.people.act_reg') }}
+                                        {% elseif action.action_type == 'new_ticket' %}
+                                            {{ phrase('agent.people.act_submitted_ticket') }}
+                                            <a class="with-route"
+                                               data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id|default('0') }) }}">
 												{{ action.details.subject }}
 											</a>
-										{% elseif action.action_type == 'new_ticket_reply' %}
-											{{ phrase('agent.people.act_replied_ticket') }}
-											<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id|default('0') }) }}">
+                                        {% elseif action.action_type == 'new_ticket_reply' %}
+                                            {{ phrase('agent.people.act_replied_ticket') }}
+                                            <a class="with-route"
+                                               data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id|default('0') }) }}">
 												{{ action.details.subject }}
 											</a>
-										{% endif %}
+                                        {% endif %}
 									</span>
-								</div>
-								<div class="bound-fade"></div>
-							</div>
-							<time class="timeago" datetime="{{ action.date_created|date('c', 'UTC') }}">{{ action.date_created|date('day') }}</time>
-						</td>
-					</tr>
-				{% endfor %}
-			</table>
-		</article>
-		{% endif %}
-		{# /Activity Tab #}
+                                        </div>
+                                        <div class="bound-fade"></div>
+                                    </div>
+                                    <time
+                                        {% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+                                        datetime="{{ action.date_created|date('c', 'UTC') }}"
+                                    >
+                                        {{ action.date_created|date('fulltime') }}
+                                    </time>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </article>
+            {% endif %}
+            {# /Activity Tab #}
 
-		{{ dp_app_loc(baseId, 'notes.tab') }}
-	</section>
-</div>
-{{ dp_app_loc(baseId, 'notes.after') }}
+            {{ dp_app_loc(baseId, 'notes.tab') }}
+        </section>
+    </div>
+    {{ dp_app_loc(baseId, 'notes.after') }}
+    <div data-deskproapp="org-notes-after"></div>
 {% endif %}
 
 {{ dp_app_loc(baseId, 'left_col.bottom') }}
+<div data-deskproapp="org-content-after"></div>

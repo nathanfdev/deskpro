@@ -21,21 +21,25 @@ export class ApiRepository {
   /**
    * @param {integer} id Identity to load model
    * @param {string} include Include string for sideloading
+   * @param {bool} inlineSideload Include sideloads inline
    *
    * @returns {Promise} promise
    */
-  load(id, include) {
-    const params = include ? `?${compileParams({ include })}` : '';
+  load(id, include, inlineSideload) {
+    const params = include ? `?${compileParams({ include })}${inlineSideload ? '&inline_sideloads=true' : ''}` : '';
     return this.api.sendGet(`DP_API/${this.url}/${id}${params}`);
   }
 
   /**
-   * @param {integer} ids Identities to load model
+   * @param {array} ids Identities to load model
+   * @param {string} include Include string for sideloading
+   * @param {bool} inlineSideload Include sideloads inline
    *
    * @returns {Promise} promise
    */
-  loadBatch(ids) {
-    return this.api.sendGet(`DP_API/${this.url}?ids=${ids.join(',')}`);
+  loadBatch(ids, include, inlineSideload) {
+    const params = include ? `&${compileParams({ include })}${inlineSideload ? '&inline_sideloads=true' : ''}` : '';
+    return this.api.sendGet(`DP_API/${this.url}?ids=${ids.join(',')}&count=${ids.length}${params}`);
   }
 
   /**

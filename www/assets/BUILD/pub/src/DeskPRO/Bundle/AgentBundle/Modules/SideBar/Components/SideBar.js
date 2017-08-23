@@ -6,6 +6,7 @@ import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
 import * as onboardingActions from '../../Onboarding/Actions/onboardingActions';
+import { closeIframes } from '../../Application/Actions/bootstrapActions';
 
 @connect(state => ({
   currentSection: state.SideBar.sections.get('current'),
@@ -68,7 +69,7 @@ export class SideBarContainer extends SeparateComponent {
       this.changeSection();
     });
     window.document.addEventListener('dpHashChange', (e) => {
-      SideBarContainer.closeIframes();
+      closeIframes();
       setTimeout(() => {
         window.DeskPRO_Window.loadHashPath(e.detail.hash);
       }, 5);
@@ -122,27 +123,18 @@ export class SideBarContainer extends SeparateComponent {
     return true;
   }
 
-  static closeIframes() {
-    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
-      const iframe = window.DP_FRAME_OVERLAYS[key];
-      if (iframe.opened) {
-        iframe.close();
-      }
-    }
-  }
-
   openAdmin = () => {
-    SideBarContainer.closeIframes();
+    closeIframes();
     window.DP_FRAME_OVERLAYS.admin.open();
   };
 
   openReports = () => {
-    SideBarContainer.closeIframes();
+    closeIframes();
     window.DP_FRAME_OVERLAYS.reports.open();
   };
 
   openBilling = () => {
-    SideBarContainer.closeIframes();
+    closeIframes();
     window.DP_FRAME_OVERLAYS.admin.open('/license');
   };
 
@@ -151,21 +143,25 @@ export class SideBarContainer extends SeparateComponent {
     const reportsFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports;
     const adminFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.admin;
 
-    if (reportsFrame && reportsFrame.opened) {
-      dispatch(actions.changeSection({ section: 'menu_reports' }));
-    } else if (adminFrame && adminFrame.opened) {
-      if (adminFrame.getFrameWindow().location.hash === '#/license') {
-        dispatch(actions.changeSection({ section: 'menu_billing' }));
+    try {
+      if (reportsFrame && reportsFrame.opened) {
+        dispatch(actions.changeSection({ section: 'menu_reports' }));
+      } else if (adminFrame && adminFrame.opened) {
+        if (adminFrame.getFrameWindow().location.hash === '#/license') {
+          dispatch(actions.changeSection({ section: 'menu_billing' }));
+        } else {
+          dispatch(actions.changeSection({ section: 'menu_admin' }));
+        }
       } else {
-        dispatch(actions.changeSection({ section: 'menu_admin' }));
-      }
-    } else {
-      const section = window.DeskPRO_Window.getOpenSection();
-      if (section && section.section_id) {
-        const sectionId = section.section_id.replace(/_section/, '');
+        const section = window.DeskPRO_Window.getOpenSection();
+        if (section && section.section_id) {
+          const sectionId = section.section_id.replace(/_section/, '');
 
-        dispatch(actions.changeSection({ section: `menu_${sectionId}` }));
+          dispatch(actions.changeSection({ section: `menu_${sectionId}` }));
+        }
       }
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -185,7 +181,6 @@ export class SideBarContainer extends SeparateComponent {
       canUseAdmin:      SideBarContainer.canUseAdmin,
       canUseBilling:    SideBarContainer.canUseBilling,
       canUsePortal:     SideBarContainer.canUsePortal,
-      closeIframes:     SideBarContainer.closeIframes,
       openAdmin:        this.openAdmin,
       openReports:      this.openReports,
       openBilling:      this.openBilling,
@@ -197,7 +192,7 @@ export class SideBarContainer extends SeparateComponent {
   }
 }
 
-export class SideBar extends React.Component {
+export class SideBar extends React.PureComponent {
   static propTypes = {
     canUseTicket:     PropTypes.func.isRequired,
     canUseChat:       PropTypes.func.isRequired,
@@ -209,7 +204,6 @@ export class SideBar extends React.Component {
     canUseAdmin:      PropTypes.func.isRequired,
     canUseBilling:    PropTypes.func.isRequired,
     canUsePortal:     PropTypes.func.isRequired,
-    closeIframes:     PropTypes.func.isRequired,
     openAdmin:        PropTypes.func.isRequired,
     openReports:      PropTypes.func.isRequired,
     openBilling:      PropTypes.func.isRequired,
@@ -242,7 +236,7 @@ export class SideBar extends React.Component {
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tickets_section');
-          this.props.closeIframes();
+          closeIframes();
         }
       });
     }
@@ -254,7 +248,7 @@ export class SideBar extends React.Component {
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('chat_section');
-          this.props.closeIframes();
+          closeIframes();
         }
       });
     }
@@ -266,7 +260,7 @@ export class SideBar extends React.Component {
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('people_section');
-          this.props.closeIframes();
+          closeIframes();
         }
       });
     }
@@ -278,7 +272,7 @@ export class SideBar extends React.Component {
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('feedback_section');
-          this.props.closeIframes();
+          closeIframes();
         }
       });
     }
@@ -290,7 +284,7 @@ export class SideBar extends React.Component {
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('publish_section');
-          this.props.closeIframes();
+          closeIframes();
         }
       });
     }
@@ -302,7 +296,7 @@ export class SideBar extends React.Component {
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg`,
         callback:  () => {
           window.DeskPRO_Window.switchToSection('tasks_section');
-          this.props.closeIframes();
+          closeIframes();
         }
       });
     }
@@ -400,7 +394,8 @@ export class SideBar extends React.Component {
     return (
       <div
         className={classNames('sidebar-menu ui vertical menu', { ready: this.state.ready })}
-        onMouseMove={() => { this.setState({ ready: true }); }}
+        onMouseEnter={() => { this.setState({ ready: true }); }}
+        onMouseLeave={() => { this.setState({ ready: false }); }}
       >
         <div className={classNames('logo', { active: logoActive })} onClick={this.clickLogo}>
           <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logo.svg`} />

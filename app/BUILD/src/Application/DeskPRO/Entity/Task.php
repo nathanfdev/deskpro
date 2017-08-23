@@ -29,7 +29,7 @@
 /**
  * DeskPRO.
  *
- * @category Entities
+ * @category  Entities
  *
  * @copyright Copyright (c) 2011 DeskPRO (http://www.deskpro.com/)
  */
@@ -37,14 +37,16 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Dates;
 
 /**
  * Task entity definition.
  *
- * SWG\Model
+ * @JMS\ExclusionPolicy("all")
  */
 class Task extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -65,91 +67,128 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * The unique ID.
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
-     *          SWG\Property(name="id",type="integer")
      */
     protected $id = null;
 
     /**
      * Whether this task is completed.
      *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
-     *           SWG\Property(name="is_completed",type="boolean")
      */
     protected $is_completed = false;
 
     /**
      * The task's title.
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
-     *             SWG\Property(name="title",type="string")
      */
     protected $title = '';
 
     /**
-     * The task's visibility. On of: self::PRIVATE_VISIBILITY or self::PUBLIC_VISIBILITY.
+     * The task's visibility. On of: self::PRIVATE_VISIBILITY(0) or self::PUBLIC_VISIBILITY(1).
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
-     *          SWG\Property(name="visibility", type="integer")
      */
-    protected $visibility = 1;
+    protected $visibility = self::PUBLIC_VISIBILITY;
 
     /**
      * The task's optional due date.
      *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_due",type="integer")
      */
     protected $date_due = null;
 
     /**
      * The date the task was inserted into the system.
      *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_created",type="integer")
      */
     protected $date_created;
 
     /**
      * The date the task was completed.
      *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
      * @var \DateTime
-     *                SWG\Property(name="date_completed", type="integer")
      */
     protected $date_completed;
 
     /**
+     * The person created this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
-     *                                         SWG\Property(name="person",type="Person")
      */
     protected $person;
 
     /**
+     * The person assigned to complete this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
-     *                                         SWG\Property(name="assigned_agent",type="Person")
      */
     protected $assigned_agent;
 
     /**
+     * The department assigned to complete this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    protected $assigned_department;
+
+    /**
+     * The agent team assigned to complete this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
      * @var \Application\DeskPRO\Entity\AgentTeam
-     *                                            SWG\Property(name="assigned_agent_team",type="AgentTeam")
      */
     protected $assigned_agent_team;
 
     /**
-     * SWG\Property(name="labels",type="array").
+     * Labels associated with this task.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\LabelTask>>")
      */
     protected $labels;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="comments",type="array", items="$ref:TaskComment")
      */
     protected $comments;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
-     *                                                   SWG\Property(name="comments",type="array", items="$ref:TaskAssociation")
      */
     protected $task_associations;
 
@@ -165,12 +204,12 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct()
     {
-        $this->labels            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->comments          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels            = new ArrayCollection();
+        $this->comments          = new ArrayCollection();
+        $this->task_associations = new ArrayCollection();
 
-        $this['date_created'] = new \DateTime();
-        $this['visibility']   = self::PUBLIC_VISIBILITY;
+        $this->date_created = new \DateTime();
+        $this->visibility   = self::PUBLIC_VISIBILITY;
     }
 
     /**
@@ -247,7 +286,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
             throw new \InvalidArgumentException('Invalid visibility');
         }
 
-        $this->setModelField('visibility', $visibility);
+        $this->setModelField('visibility', (int) $visibility);
     }
 
     /**
@@ -304,7 +343,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's person id.
      *
-     * @param int id The agent's id
+     * @param int $id The agent's id
      *
      * @throws \InvalidArgumentException Thrown when there's no preson with that
      *                                   id or the person is not an agent
@@ -399,7 +438,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Sets the task's assigned agent team's id.
      *
-     * @param int id The agent team's id
+     * @param int $id The agent team's id
      *
      * @throws \InvalidArgumentException Thrown when there's no team with that id
      */
@@ -418,21 +457,45 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return Department
+     */
+    public function getAssignedDepartment()
+    {
+        return $this->assigned_department;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setAssignedDepartment(Department $department = null)
+    {
+        $this->setModelField('assigned_department', $department);
+
+        return $this;
+    }
+
+    /**
      * Adds a label.
      *
-     * @param \Application\DeskPRO\Entity\LabelTask $label
+     * @param LabelTask $label
+     *
+     * @return $this
      */
     public function addLabel(LabelTask $label)
     {
-        $label['task'] = $this;
+        $label->setTask($this);
         $this->labels->add($label);
+
+        return $this;
     }
 
     /**
      * Adds a comment to the task.
      *
-     * @param \Application\DeskPRO\Entity\Person $author          The comment's author
-     * @param string                             $comment_content The comment's content
+     * @param Person $author          The comment's author
+     * @param string $comment_content The comment's content
      */
     public function addComment(Person $author, $comment_content)
     {
@@ -474,163 +537,6 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $this->date_due->format('i') !== '59';
-    }
-
-    //###########################################################################
-    // Doctrine Metadata
-    //###########################################################################
-
-    public static function loadMetadata(ClassMetadata $metadata)
-    {
-        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Task';
-        $metadata->setPrimaryTable(['name' => 'tasks']);
-        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(
-            [
-                'fieldName'  => 'id',
-                'type'       => 'integer',
-                'columnName' => 'id',
-                'id'         => true,
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'is_completed',
-                'type'       => 'boolean',
-                'columnName' => 'is_completed',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'title',
-                'type'       => 'text',
-                'columnName' => 'title',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'visibility',
-                'type'       => 'integer',
-                'columnName' => 'visibility',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'date_due',
-                'type'       => 'datetime',
-                'nullable'   => true,
-                'columnName' => 'date_due',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'date_created',
-                'type'       => 'datetime',
-                'columnName' => 'date_created',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'date_completed',
-                'type'       => 'datetime',
-                'nullable'   => true,
-                'columnName' => 'date_completed',
-            ]
-        );
-        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(
-            [
-                'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'mappedBy'     => null,
-                'inversedBy'   => null,
-                'joinColumns'  => [
-                    0 => [
-                        'name'                 => 'person_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => true,
-                        'onDelete'             => 'set null',
-                        'columnDefinition'     => null,
-                    ],
-                ],
-                'dpApi' => true,
-            ]
-        );
-        $metadata->mapManyToOne(
-            [
-                'fieldName'    => 'assigned_agent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'mappedBy'     => null,
-                'inversedBy'   => 'assigned_tasks',
-                'joinColumns'  => [
-                    0 => [
-                        'name'                 => 'assigned_agent_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => true,
-                        'onDelete'             => 'set null',
-                        'columnDefinition'     => null,
-                    ],
-                ],
-                'dpApi' => true,
-            ]
-        );
-        $metadata->mapManyToOne(
-            [
-                'fieldName'    => 'assigned_agent_team',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
-                'mappedBy'     => null,
-                'inversedBy'   => 'assigned_tasks',
-                'joinColumns'  => [
-                    0 => [
-                        'name'                 => 'assigned_agent_team_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => true,
-                        'onDelete'             => 'cascade',
-                        'columnDefinition'     => null,
-                    ],
-                ],
-                'dpApi' => true,
-            ]
-        );
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'labels',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelTask',
-                'cascade'      => [
-                    0 => 'remove',
-                    1 => 'persist',
-                    3 => 'merge',
-                ],
-                'mappedBy'      => 'task',
-                'orphanRemoval' => true,
-            ]
-        );
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'comments',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TaskComment',
-                'mappedBy'     => 'task',
-                'dpApi'        => true,
-                'dpApiDeep'    => true,
-                'dpApiPrimary' => true,
-            ]
-        );
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'task_associations',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\TaskAssociation',
-                'cascade'      => [
-                    0 => 'remove',
-                    1 => 'persist',
-                    3 => 'merge',
-                ],
-                'mappedBy'      => 'task',
-                'orphanRemoval' => true,
-                'dpApi'         => true,
-                'dpApiDeep'     => true,
-            ]
-        );
     }
 
     /**
@@ -893,5 +799,199 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
     public function getTaskAssociations()
     {
         return $this->task_associations;
+    }
+
+    /**
+     * @JMS\VirtualProperty()
+     * @JMS\SerializedName("tickets")
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Ticket>>")
+     *
+     * @return Ticket[]
+     */
+    public function getTickets()
+    {
+        return $this->task_associations
+            ->filter(function ($assoc) {
+                return $assoc instanceof TaskAssociatedTicket;
+            })
+            ->map(function ($assoc) {
+                return $assoc->getTicket();
+            });
+    }
+
+    //###########################################################################
+    // Doctrine Metadata
+    //###########################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Task';
+        $metadata->setPrimaryTable(['name' => 'tasks']);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            [
+                'fieldName'  => 'id',
+                'type'       => 'integer',
+                'columnName' => 'id',
+                'id'         => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_completed',
+                'type'       => 'boolean',
+                'columnName' => 'is_completed',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'title',
+                'type'       => 'text',
+                'columnName' => 'title',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'visibility',
+                'type'       => 'integer',
+                'columnName' => 'visibility',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_due',
+                'type'       => 'datetime',
+                'nullable'   => true,
+                'columnName' => 'date_due',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'columnName' => 'date_created',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_completed',
+                'type'       => 'datetime',
+                'nullable'   => true,
+                'columnName' => 'date_completed',
+            ]
+        );
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => Person::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'assigned_agent',
+                'targetEntity' => Person::class,
+                'mappedBy'     => null,
+                'inversedBy'   => 'assigned_tasks',
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'assigned_agent_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'assigned_department',
+                'targetEntity' => Department::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'assigned_department_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'assigned_agent_team',
+                'targetEntity' => AgentTeam::class,
+                'mappedBy'     => null,
+                'inversedBy'   => 'assigned_tasks',
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'assigned_agent_team_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'cascade',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'labels',
+                'targetEntity' => LabelTask::class,
+                'cascade'      => [
+                    0 => 'remove',
+                    1 => 'persist',
+                    3 => 'merge',
+                ],
+                'mappedBy'      => 'task',
+                'orderBy'       => ['label' => 'ASC'],
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'comments',
+                'targetEntity' => TaskComment::class,
+                'mappedBy'     => 'task',
+                'dpApi'        => true,
+                'dpApiDeep'    => true,
+                'dpApiPrimary' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'task_associations',
+                'targetEntity' => TaskAssociation::class,
+                'cascade'      => [
+                    0 => 'remove',
+                    1 => 'persist',
+                    3 => 'merge',
+                ],
+                'mappedBy'      => 'task',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
+                'dpApiDeep'     => true,
+            ]
+        );
     }
 }

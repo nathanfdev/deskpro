@@ -72,8 +72,10 @@ define [
         return modelValue
       )
 
-      @_initTab('user', @els.user_tab)
-      @_initTab('agent', @els.agent_tab)
+      $timeout(=>
+        @_initTab('user', @els.user_tab)
+        @_initTab('agent', @els.agent_tab)
+      , 1)
 
       @ngModel.$parsers.push( (viewModel) =>
         return viewModel
@@ -106,7 +108,7 @@ define [
         parent = el.closest('ul')
         el.detach().appendTo(parent)
       )
-      tab.find('.form-elements').find('li').not('.disabled').not('.done-init').draggable({
+      tab.find('.form-elements').find('li').not('.disabled').draggable({
         appendTo: 'body',
         helper: 'clone',
         connectToSortable: tab.find('.form-worksheet').find('ul')

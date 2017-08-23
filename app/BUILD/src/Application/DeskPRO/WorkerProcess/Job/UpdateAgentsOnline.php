@@ -39,7 +39,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
  */
 class UpdateAgentsOnline extends AbstractJob
 {
-    const DEFAULT_INTERVAL = 120; // 2 minutes
+    const DEFAULT_INTERVAL = 300; // 5 minutes
 
     public function run()
     {

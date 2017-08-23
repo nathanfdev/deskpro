@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 /**
@@ -46,6 +42,7 @@ final class ErrorsCodes
     /** General purpose error codes */
     const INTERNAL_ERROR            = 'internal_error';
     const BAD_REQUEST               = 'bad_request';
+    const RATE_LIMITS               = 'rate_limits';
     const INVALID_INPUT             = 'invalid_input';
     const FORBIDDEN                 = 'unauthorized';
     const UNAUTHORIZED              = 'unauthorized';
@@ -63,6 +60,7 @@ final class ErrorsCodes
     const INVALID_AUTHORIZATION_HEADER   = 'invalid_authorization_header';
     const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
     const BAD_CREDENTIALS                = 'bad_credentials';
+    const CAPTCHA_REQUIRED               = 'captcha_required';
     const CSRF                           = 'csrf';
 
     /** Validator/Constraint specific error codes */

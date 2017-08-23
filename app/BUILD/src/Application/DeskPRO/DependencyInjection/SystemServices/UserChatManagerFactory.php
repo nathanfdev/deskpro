@@ -46,7 +46,8 @@ class UserChatManagerFactory
             $options->session,
             $container->get('doctrine.orm.entity_manager'),
             $container->get('deskpro.core.translate'),
-            $container->getPersonActivityLogger()
+            $container->getPersonActivityLogger(),
+            $container->get('event_dispatcher')
         );
 
         return $o;

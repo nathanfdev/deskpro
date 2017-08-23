@@ -286,16 +286,6 @@ SQL;
         $php .= implode("\n", $php_fks);
         $php .= "\n\n\n\n\nreturn \$queries;\n";
 
-        $pos = strpos($php, 'CREATE TABLE client_messages');
-        if ($pos) {
-            $pos = strpos($php, 'ENGINE = InnoDB', $pos);
-            if ($pos) {
-                $php = str_split($php, $pos);
-                $php[0] .= ' AUTO_INCREMENT=2 ';
-                $php = implode('', $php);
-            }
-        }
-
         $this->php_file = $php;
 
         $this->count = count($this->creates) + count($this->alters) + count($this->triggers);

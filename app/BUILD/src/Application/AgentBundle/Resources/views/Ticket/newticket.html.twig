@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = '{{ phrase('agent.general.new_ticket') }}';
 pageMeta.ticket_id = 0;
+pageMeta.linked_ticket = {{ ticket.id|default(0) }};
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
@@ -341,7 +342,7 @@ pageMeta.baseId = '{{ baseId }}';
                                             type="hidden"
                                             id="{{baseId}}_labels_input"
                                             class="dpe_select dpe_select_noborder"
-                                            data-placeholder="Add a label"
+                                            data-placeholder="{{ phrase('agent.general.add_a_label') }}"
                                             name="labels"
                                             value="{% for label in ticket.labels %}{{ label.label }},{% endfor %}"
 											data-allow-new="{% if app.user.hasPerm('agent_tickets.create_labels') %}1{% endif %}"
@@ -385,7 +386,7 @@ pageMeta.baseId = '{{ baseId }}';
 										<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
 									{% endif %}
 									<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" /><span class="billing-seconds-input">:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" /></span>
+						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="minutes" size="2" placeholder="M" maxlength="2" /><span class="billing-seconds-input">:<input type="text" id="{{ baseId }}_billing_seconds" name="seconds" size="2" placeholder="S" maxlength="2" /></span>
 					</span>
 					<span class="billing-form-buttons">
 						<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>

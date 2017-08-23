@@ -149,7 +149,7 @@ class SmsSender
      * This allows subclasses to reuse this sending logic, if they want, and wrap it with other functionality.
      *
      * @param string               $to_number
-     * @param string               $message
+     * @param SmsMessage           $message
      * @param string|null          $from_number
      * @param SmsProviderInterface $provider
      *

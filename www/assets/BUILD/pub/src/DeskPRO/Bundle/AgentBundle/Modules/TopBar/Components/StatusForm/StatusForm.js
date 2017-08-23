@@ -15,8 +15,9 @@ const statusChoices = [
 class StatusForm extends React.Component {
 
   static propTypes = {
-    voiceEnabled: PropTypes.bool,
-    onChange:     PropTypes.func
+    voiceAvailable: PropTypes.bool,
+    voiceEnabled:   PropTypes.bool,
+    onChange:       PropTypes.func
   };
 
   constructor(props) {
@@ -71,7 +72,7 @@ class StatusForm extends React.Component {
   );
 
   render() {
-    const { voiceEnabled } = this.props;
+    const { voiceAvailable, voiceEnabled } = this.props;
     const { formData } = this.state;
 
     return (
@@ -89,20 +90,28 @@ class StatusForm extends React.Component {
           {formData.value.status === 'offline'
             ? <div className="voice-profile-status-empty-checkboxes" />
             : <div className="voice-profile-status-checkboxes">
-              <div className="voice-profile-status-checkbox">
-                <Field select="chats">
-                  <Checkbox />
-                </Field>
-                <Isvg src={`${assetPath}/topbar/chat.svg`} />
-                <span className="voice-profile-status-checkbox-title">Chats</span>
-              </div>
-              {voiceEnabled &&
+              {window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use'] &&
+                <div className="voice-profile-status-checkbox">
+                  <Field select="chats">
+                    <Checkbox />
+                  </Field>
+                  <Isvg src={`${assetPath}/topbar/chat.svg`} />
+                  <span className="voice-profile-status-checkbox-title">Chats</span>
+                </div>}
+              {voiceAvailable &&
                 <div className="voice-profile-status-checkbox">
                   <Field select="calls">
                     <Checkbox />
                   </Field>
                   <Isvg src={`${assetPath}/topbar/IM.svg`} />
-                  <span className="voice-profile-status-checkbox-title">Calls</span>
+                  <span className="voice-profile-status-checkbox-title">
+                    Calls
+                    {!voiceEnabled &&
+                      <span className="voice-profile-status-checkbox-title-disabled">
+                        (Use HTTPS for calls)
+                      </span>
+                    }
+                  </span>
                 </div>}
             </div>}
         </div>

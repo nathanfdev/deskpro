@@ -173,6 +173,9 @@ class ReplyActionsApplicator implements Loggable
                     $fm->saveFormToObject($custom_field_data, $ticket, true);
                 }
                 break;
+            case 'is_reply':
+                // should be noop
+                break;
 
             default:
                 $e = new \InvalidArgumentException("Unknown reply action {$id}");

@@ -1,0 +1,117 @@
+<div ng-if="all_locked_perms" class="alert alert-danger" style="margin: 10px;">
+	<p>
+		Department permissions are fixed and uneditable for built-in permission groups like this one.
+	</p>
+	<p>
+		If you want to use custom permissions, you must <a href="{{ ng_href('agents.groups.create') }}">create a custom permission group</a> instead.
+	</p>
+</div>
+
+<div class="panel panel-innertable">
+
+	<nav class="dp-tabletabs">
+		<ul>
+			<li class="active" dp-tab-btn="main.deps.tickets"><a href="#"><i class="fa fa-envelope"></i> Tickets</a></li>
+			<li dp-tab-btn="main.deps.chat"><a href="#"><i class="fa fa-comment"></i> Chat</a></li>
+		</ul>
+	</nav>
+
+	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.deps.tickets">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Department</th>
+					<th width="120" class="text-center">Use</th>
+				</tr>
+			</thead>
+			<tbody>
+
+                <tr ng-if="!all_locked_perms">
+                    <td>
+                        &nbsp;
+                        {{ phrase('adm.agents.perm_toggle_all') }}
+                    </td>
+                    <td class="text-center">
+                        <input
+                                dp-slider-switch
+                                ng-model="EditCtrl.all_perms.deps_perms.tickets.full"
+                                ng-change="EditCtrl.changeAllPerms('deps_perms_tickets', 'full')"
+                                is-on="EditCtrl.all_perms.deps_perms.tickets.full"
+								is-locked="EditCtrl.all_perms.all_tickets_locked"
+								locked-tip="All these departments are enabled for Registered or Everyone usergroups"
+                                />
+                    </td>
+                </tr>
+
+				<tr ng-repeat="dep in EditCtrl.ticketDeps">
+					<td>
+						&nbsp;
+						<span ng-if="dep.depth > 0">- - - </span>
+						{{ ng_var('dep.title') }}
+					</td>
+					<td class="text-center">
+						<div ng-if="!dep.has_children">
+							<input
+								dp-slider-switch
+								ng-model="EditCtrl.group.deps_perms.tickets[dep.id].full"
+								is-on="EditCtrl.group.deps_perms.tickets[dep.id].full"
+								locked-tip="This permission is locked because the permission is granted through Everyone or Registered group"
+								is-locked="EditCtrl.isLocked(dep.id, 'tickets')"
+                                ng-change="EditCtrl.updateAllPermsState()"
+							/>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="dp-tabletabs-contentwrap" dp-tab-body="main.deps.chat">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Department</th>
+					<th width="120" class="text-center">Use</th>
+				</tr>
+			</thead>
+			<tbody>
+
+                <tr>
+                    <td>
+                        &nbsp;
+                        {{ phrase('adm.agents.perm_toggle_all') }}
+                    </td>
+                    <td class="text-center">
+                        <input
+                            dp-slider-switch
+                            ng-model="EditCtrl.all_perms.deps_perms.chat.full"
+                            ng-change="EditCtrl.changeAllPerms('deps_perms_chat', 'full')"
+							is-locked="EditCtrl.all_perms.all_chat_locked"
+							locked-tip="All these departments are enabled for Registered or Everyone usergroups"
+                            />
+                    </td>
+                </tr>
+
+				<tr ng-repeat="dep in EditCtrl.chatDeps">
+					<td>
+						&nbsp;
+						<span ng-if="dep.depth > 0">- - - </span>
+						{{ ng_var('dep.title') }}
+					</td>
+					<td class="text-center">
+						<div ng-if="!dep.has_children">
+							<input
+								dp-slider-switch
+								ng-model="EditCtrl.group.deps_perms.chat[dep.id].full"
+								is-on="EditCtrl.group.deps_perms.chat[dep.id].full"
+								is-locked="EditCtrl.everyoneGroup.deps_perms.chat[dep.id].full || EditCtrl.registeredGroup.deps_perms.chat[dep.id].full"
+								locked-tip="This permission is locked because the permission is granted through Everyone or Registered group"
+                                ng-change="EditCtrl.updateAllPermsState()"
+							/>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

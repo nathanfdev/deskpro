@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
  * Goes through queued messages.
@@ -69,25 +70,20 @@ class EnsureSearchTables extends AbstractJob
         }
 
         if ($do_refill) {
-            App::getContainer()->getSettingsHandler()->setSetting('core.last_searchtables_refill', time());
-            App::getContainer()->getSettingsHandler()->setSetting('core.do_searchtables_refill', 0);
+            $settings = App::getContainer()->getSettingsHandler();
+            $settings->setSetting('core.last_searchtables_refill', time());
+            $settings->setSetting('core.do_searchtables_refill', 0);
 
             App::getEntityRepository('DeskPRO:Ticket')->fillSearchTable();
             $this->logStatus('Filled tickets_search_active table');
 
-            // Broadcast a refresh event to all agents
-            $cm = new \Application\DeskPRO\Entity\ClientMessage();
-            $cm->fromArray([
-                'channel' => 'agent.ui.reload',
-                'data'    => [
+            App::get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.ui.reload', [
                     'type'        => 'admin',
                     'person_id'   => 0,
                     'person_name' => 'System',
-                ],
-            ]);
-
-            App::getOrm()->persist($cm);
-            App::getOrm()->flush();
+                ]));
         }
     }
 }

@@ -29,7 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Task;
+use Application\DeskPRO\Entity\Task;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
@@ -44,7 +44,6 @@ class TasksVoter implements PermissionGroupEntityVoterInterface
     {
         return Task::class;
     }
-
     /**
      * {@inheritdoc}
      */
@@ -52,7 +51,6 @@ class TasksVoter implements PermissionGroupEntityVoterInterface
     {
         return $user->hasPerm('agent_tasks.use');
     }
-
     /**
      * {@inheritdoc}
      */

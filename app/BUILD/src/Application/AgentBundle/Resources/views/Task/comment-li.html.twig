@@ -5,7 +5,12 @@
 		</div>
 		<div class="message-body">
 			<div class="message-meta">
-				<time class="timeago" title="{{comment.date_created|date('c', 'UTC')}}">{{comment.date_created|date('day')}}</time>
+				<time
+					{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+					title="{{comment.date_created|date('c', 'UTC')}}"
+				>
+					{{comment.date_created|date('fulltime')}}
+				</time>
 				<h4>{{comment.person.name}}:</h4>
 			</div>
 			<div class="message-text{% if comment.person.id == app.user.id %} editable{% endif %}">

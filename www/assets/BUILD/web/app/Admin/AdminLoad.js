@@ -4,6 +4,7 @@ define([
 
   'Admin/Apps/Ctrl/List',
   'Admin/Apps/Ctrl/EditInstance',
+  'Admin/Apps/Ctrl/EditInstanceV2',
   'Admin/Apps/Ctrl/EditCustomInstance',
   'Admin/Apps/Ctrl/InstallProgress',
   'Admin/Apps/Ctrl/PackageInfo',
@@ -136,6 +137,8 @@ define([
   'Admin/Server/Ctrl/ServerFileUploads',
   'Admin/Server/Ctrl/ServerFileCheck',
   'Admin/Server/Ctrl/ServerReportFile',
+  'Admin/Server/Ctrl/ServerJobsList',
+  'Admin/Server/Ctrl/ServerJobsView',
   'Admin/Settings/Ctrl/AdvancedSettings',
   'Admin/Settings/Ctrl/ElasticSearch',
   'Admin/Settings/Ctrl/GeneralSettings',
@@ -184,6 +187,7 @@ define([
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
   'Admin/VoiceChannel/Ctrl/ReactComponent',
   'Admin/Main/Ctrl/Features',
+  'Admin/Settings/Ctrl/Notifications/List',
 
   'CloudAdminLoad',
   window.DP_ADMIN_BUNDLE_PATH

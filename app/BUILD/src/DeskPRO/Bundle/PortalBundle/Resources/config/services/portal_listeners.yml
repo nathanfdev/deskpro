@@ -116,19 +116,13 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  dpsid_login.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\DpsidLoginListener
-    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage", "@?portal_mode_storage"]
-    tags:
-      - { name: kernel.event_subscriber }
-
-  dpsid.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\DpsidListener
-    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage", "@annotation_reader", "@portal_mode_storage", "@language_stack"]
-    tags:
-      - { name: kernel.event_subscriber }
-
 # Not kernel listeners, but tagged to be called by other listeners
+  param_converter.portal_api_chat_conversation:
+    class: DeskPRO\Bundle\PortalBundle\Request\ApiChatConversationConverter
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: request.param_converter, priority: -1, converter: portal_api_chat }
+
   param_converter.deskpro_slug:
     class: DeskPRO\Bundle\PortalBundle\Request\DeskproSlugConverter
     arguments: ["@doctrine.orm.default_entity_manager", "@content_slug_manager"]
@@ -147,8 +141,8 @@ services:
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }
 
-  start_agent_session.listener:
-    class: DeskPRO\Bundle\PortalBundle\EventListener\StartAgentSessionListener
+  start_session.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\StartSessionListener
     arguments: ["@session"]
     tags:
       - { name: kernel.event_subscriber }

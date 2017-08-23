@@ -10,6 +10,7 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 }
 
 const initialState = {
+  micEnabled:     false,
   tokens:         {},
   activities:     {},
   incomingCalls:  [],
@@ -20,12 +21,14 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
+  [actions.setMicEnabled]:      setFullPayload('micEnabled'),
   [actions.setVoiceTokens]:     setFullPayload('tokens'),
   [actions.setVoiceActivities]: setFullPayload('activities'),
+  [actions.setVoiceSettings]:   setFullPayload('settings'),
   [actions.addIncomingCall]:    pushPayloadToCollection('incomingCalls'),
   [actions.updateIncomigCall]:  (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
-    if (payload.sid) {
+    if (payload && payload.sid) {
       const existingCall = incomingCalls.filter(incomingCall => incomingCall.sid === payload.sid).first();
       if (existingCall) {
         incomingCalls = incomingCalls.set(incomingCalls.indexOf(existingCall), payload);
@@ -36,7 +39,7 @@ export default createReducer(initialState, {
   },
   [actions.removeIncomingCall]: (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
-    if (payload.sid) {
+    if (payload && payload.sid) {
       incomingCalls = incomingCalls.filter(incomingCall => incomingCall.sid !== payload.sid);
     } else {
       incomingCalls = incomingCalls.filter(incomingCall =>

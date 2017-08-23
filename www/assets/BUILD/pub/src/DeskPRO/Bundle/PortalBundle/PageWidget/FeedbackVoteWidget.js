@@ -1,6 +1,5 @@
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import $ from 'jquery';
-import _ from 'lodash';
 
 export class FeedbackVoteWidget extends PageWidget {
 
@@ -22,7 +21,7 @@ export class FeedbackVoteWidget extends PageWidget {
       const voteDownUrl = $iAgreeBox.data('vote-down-url');
       const $counter = $iAgreeBox.find('span.counter');
       const onFail = () => {
-        $counter.text(_.parseInt($counter.text()) - (agreed ? -1 : 1));
+        $counter.text(parseInt($counter.text(), 10) - (agreed ? -1 : 1));
         if (agreed) {
           $iAgreeBox.addClass('agreed');
         } else {
@@ -30,7 +29,7 @@ export class FeedbackVoteWidget extends PageWidget {
         }
       };
 
-      $counter.text(_.parseInt($counter.text()) + (agreed ? -1 : 1));
+      $counter.text(parseInt($counter.text(), 10) + (agreed ? -1 : 1));
       if (agreed) {
         $iAgreeBox.removeClass('agreed');
       } else {

@@ -34,8 +34,11 @@ namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobsCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobStorageCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\ExportBlobCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RecompileTemplatesCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\RefreshAgentInterfaceCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
@@ -102,7 +105,10 @@ class AppBundle extends Bundle
         $application->add(new WebServerInfoCommand());
         $application->add(new ConfigElasticCommand());
         $application->add(new RecompileTemplatesCommand());
+        $application->add(new RefreshAgentInterfaceCommand());
         $application->add(new ExportBlobCommand());
+        $application->add(new DanglingBlobsCommand());
+        $application->add(new DanglingBlobStorageCommand());
     }
 
     /**

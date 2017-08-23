@@ -788,7 +788,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			filterOps = {ticketId: ticketId, op: 'add'};
 
 			if (page && ticketId) {
-				page.addTicketResults([ticketId]);
+        page.queueChangeEvent('addTicketResults', [ticketId]);
 			}
 
 		} else if (data.op == 'del') {
@@ -804,7 +804,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			filterOps = {ticketId: ticketId, op: 'del'};
 
 			if (page && ticketId) {
-				page.removeTicketResults([ticketId]);
+        page.queueChangeEvent('removeTicketResults', [ticketId]);
 			}
 		}
 

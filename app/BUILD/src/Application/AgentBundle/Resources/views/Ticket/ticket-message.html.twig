@@ -3,6 +3,9 @@
 <article
 	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %} {% if isVoiceMessage %}react-voice-component{% endif %}"
 	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call']) }}"{% endif %}
+	data-message-ts="{{message.date_created.getTimestamp()}}"
+	data-message-author-name="{{message.person.getDisplayName()}}"
+	data-message-author-email="{{message.person.getEmailAddress()}}"
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="Agent note: This message will NOT appear to end-users."><i>Note</i></div>{% endif %}
 	<div class="avatar"><img
@@ -15,7 +18,7 @@
 			{% endif %}
 		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
-		<header>
+		<header class="dp-message-header">
 			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
 			<div class="message-header-extra-controls">
 				{% if app.isAppInstalled('deskpro_ms_translator') %}
@@ -79,7 +82,17 @@
 			{% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
 			{% set elid = el_uid() %}
-			<time class="timeago with-stickytip" datetime="{{message.date_created|date('c', 'UTC')}}" data-stickytip-target="#{{ elid }}">{{message.date_created|date('fulltime')}}</time>
+			<time
+				{% if not app.isRelativeTimesDisabled() %}
+					class="timeago with-stickytip"
+					datetime="{{message.date_created|date('c', 'UTC')}}"
+				{% else %}
+					class="with-stickytip"
+				{% endif %}
+				data-stickytip-target="#{{ elid }}"
+			>
+				{{message.date_created|date('fulltime')}}
+			</time>
 			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>
@@ -215,14 +228,35 @@
 								draggable="true"
 								data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}"
 								data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}"
+                                data-blob-auth="{{ blob.getAuthcode() }}"
 								data-deskpro-url="{{ blob.getDownloadUrl(false, false) }}"
-								target="_blank">
+							    data-blob-id="{{ blob.getId() }}"
+							    data-filename="{{ blob.getFilename() }}"
+							    data-filesize-readable="{{ blob.getFilesizeReadable() }}"
+							    data-is-image="{{ blob.isImage() }}"
+								target="_blank"
+                            >
 								<img src="{{ blob.getThumbnailUrl(50, 1, true) }}"
 									 alt=""
 									 class="preview" />
 							</a>
 						{% endif %}
-						<a class="dragout" draggable="true" data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}" data-blob-authid="{{ blob.getAuthId() }}" href="{{ blob.download_url }}" target="_blank">{{blob.filename}}</a>
+						<a
+							class="dragout"
+                            draggable="true"
+                            data-downloadurl="{{blob.content_type}}:{{blob.filename}}:{{ blob.getDownloadUrl(true) }}"
+                            data-blob-authid="{{ blob.getAuthId() }}"
+                            data-blob-auth="{{ blob.getAuthcode() }}"
+                            href="{{ blob.download_url }}"
+                            data-deskpro-url="{{ blob.getDownloadUrl(false, false) }}"
+                            data-blob-id="{{ blob.getId() }}"
+                            data-filename="{{ blob.getFilename() }}"
+                            data-filesize-readable="{{ blob.getFilesizeReadable() }}"
+                            data-is-image="{{ blob.isImage() }}"
+                            target="_blank"
+                        >
+                            {{blob.filename}}
+                        </a>
 						<span class="size">({{ blob.readable_filesize }})</span>
 						{% if blob.isArchive() and blob.hasZipArchiveClass() %}
 							<span class="view-archive-files"/>

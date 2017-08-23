@@ -71,7 +71,7 @@ export class WaitingFormat extends React.Component {
   render() {
     const { value } = this.props;
 
-    const seconds = value % 60;
+    const seconds = parseInt(value % 60, 10);
     const minutes = parseInt(value / 60, 10) % 60;
     const hours = parseInt(value / 60 / 60, 10);
 
@@ -94,7 +94,7 @@ export class TimerFormat extends React.Component {
   render() {
     const { value } = this.props;
 
-    let seconds = value % 60;
+    let seconds = parseInt(value % 60, 10);
     let minutes = parseInt(value / 60, 10) % 60;
     let hours = parseInt(value / 60 / 60, 10);
 

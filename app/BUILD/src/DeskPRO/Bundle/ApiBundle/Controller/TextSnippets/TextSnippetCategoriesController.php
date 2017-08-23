@@ -30,8 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippetCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\TextSnippets\ContextTypeTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetCategoryType;
 use Doctrine\ORM\QueryBuilder;
@@ -62,10 +60,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     }
  * )
  */
-class TextSnippetCategoriesController extends CrudController
+class TextSnippetCategoriesController extends AbstractTextSnippetsController
 {
-    use ContextTypeTrait;
-
     public static $entity = TextSnippetCategory::class;
     public static $type   = TextSnippetCategoryType::class;
 
@@ -121,26 +117,20 @@ class TextSnippetCategoriesController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb
-            ->andWhere('e.typename = :typename')
-            ->setParameter('typename', $this->getSnippetTypeName($request))
-        ;
+        $qb->andWhere('e.typename = :typename');
+        $qb->setParameter('typename', $this->getSnippetTypeName($request));
 
         if ($request->get('my')) {
-            $qb
-                ->andWhere('e.person = :user_id')
-                ->setParameter('user_id', $this->getUser()->getId())
-            ;
+            $qb->andWhere('e.person = :user_id');
+            $qb->setParameter('user_id', $this->getUser()->getId());
         } elseif ($request->get('global')) {
             $qb->andWhere('e.is_global = true');
         } else {
-            $qb
-                ->andWhere('e.person = :user_id OR e.is_global = true')
-                ->setParameter('user_id', $this->getUser()->getId())
-            ;
+            $qb->andWhere('e.person = :user_id OR e.is_global = true');
+            $qb->setParameter('user_id', $this->getUser()->getId());
         }
 
-        $this->applyFilterByLanguage($request, $qb, 'text_snippet_categories');
+        $this->applyFilterByLanguageAndQueryString($request, $qb, 'text_snippet_categories');
     }
 
     /**

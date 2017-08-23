@@ -255,13 +255,30 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	setListPageFragment: function(page, noswitch) {
 
 		if (this.listPage) {
-			this.listPage.fireEvent('destroy');
+			var oldListPage = this.listPage;
+			var oldListEl = this.listEl;
+			if (oldListEl) {
+        oldListEl.detach();
+			}
+
+      oldListPage.fireEvent('immediateDestroy');
+			var cleanup = function() {
+        oldListPage.fireEvent('destroy');
+        oldListPage.destroyEvents();
+        oldListEl.remove();
+        oldListPage = null;
+        oldListEl = null;
+			};
+
+			window.requestIdleCallback ?
+				window.requestIdleCallback(cleanup, {timeout: 5000}) :
+				window.setTimeout(cleanup, 1000);
+
 			this.listPage = null;
+      this.listEl = null;
 		}
 
 		this.listPage = page;
-
-		this.getListElement().remove();
 		this.listEl = null;
 		this.listContentEl = null;
 
@@ -278,6 +295,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 				hideEvent: 'hide'
 			});
 		}
+
+		page.addEvent('activate', function() {
+      DeskPRO.Agent.ScrollerHandler.updateListPane();
+		});
 
 		$('#dp_list_loading').removeClass('on');
 

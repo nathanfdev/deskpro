@@ -2,6 +2,7 @@
  * wrapper for pusher-app client
  */
 import Pusher from 'pusher-js';
+import Immutable from 'immutable';
 import { AbstractClient } from './AbstractClient';
 
 export default class PusherClient extends AbstractClient {
@@ -9,6 +10,7 @@ export default class PusherClient extends AbstractClient {
   constructor(props) {
     super(props);
     const that = this;
+    this.multiplexStore = Immutable.fromJS({});
 
     if (this.options.debug) {
       Pusher.log = (message) => {
@@ -20,6 +22,7 @@ export default class PusherClient extends AbstractClient {
 
     this.client = new Pusher(that.options.appKey, {
       encrypted:     true,
+      cluster:       that.options.cluster,
       authEndpoint:  that.options.authEndpoint,
       authTransport: that.options.authTransport
     });
@@ -30,12 +33,21 @@ export default class PusherClient extends AbstractClient {
       authEndpoint:  '/api/v2/pusher/auth',
       authTransport: 'rest',
       appKey:        '',
+      channelPrefix: '',
+      cluster:       'mt1',
       me:            0
     };
   }
 
   bind(channelName, eventName) {
     const that = this;
+
+    const channelParts = channelName.split('-');
+    if (this.options.channelPrefix) {
+      channelParts.splice(1, 0, this.options.channelPrefix);
+    }
+
+    const prefixedChannelName = channelParts.join('-');
 
     Pusher.authorizers.rest = (socketId, callback) => {
       let xhr;
@@ -74,15 +86,43 @@ export default class PusherClient extends AbstractClient {
         }
       };
 
-      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: channelName, user_id: that.options.me }));
+      xhr.send(JSON.stringify({ socket_id: socketId, channel_name: prefixedChannelName, user_id: that.options.me }));
       return xhr;
     };
 
-    const channel = this.client.subscribe(channelName);
-    channel.bind(eventName, (data) => {
-      if (data.target === that.options.me) {
-        that.options.dispatcher(eventName, data);
+    const channel = this.client.subscribe(prefixedChannelName);
+
+    channel.bind(eventName, data => that.handle(eventName, data));
+  }
+
+  handle(eventName, data) {
+    if (data.type === 'multiplex_message') {
+      this.handleMultiplexMessage(eventName, data);
+    } else if (parseInt(data.target, 10) === this.options.me) {
+      this.options.dispatcher(eventName, data);
+    }
+  }
+
+  handleMultiplexMessage(eventName, payload) {
+    const multiplexId = payload.data.multiplexID;
+    this.multiplexStore = this.multiplexStore.setIn([multiplexId, payload.part], payload);
+    if (this.multiplexStore.get(multiplexId).size === parseInt(payload.parts, 10)) {
+      let demultiplexData = '';
+      this.multiplexStore.get(multiplexId).sort((a, b) => a.part - b.part).map((item) => {
+        demultiplexData += item.data;
+        return demultiplexData;
+      });
+      demultiplexData = JSON.parse(atob(demultiplexData));
+      if (Array.isArray(demultiplexData)) {
+        demultiplexData.map((message) => {
+          message.data = JSON.parse(message.data);
+          if (parseInt(message.data.target, 10) === this.options.me && eventName === message.name) {
+            this.options.dispatcher(eventName, message.data);
+          }
+          return null;
+        });
       }
-    });
+      this.multiplexStore = this.multiplexStore.delete(multiplexId);
+    }
   }
 }

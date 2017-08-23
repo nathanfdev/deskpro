@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitGroupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\Settings\AntiAbuse\RateLimitLockoutGroupType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal\PortalAccountRateLimit;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,8 +45,12 @@ class PortalAccountRateLimitType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('registration_settings', RateLimitGroupType::class)
-            ->add('reset_password_settings', RateLimitGroupType::class)
+            ->add('registration_settings', RateLimitLockoutGroupType::class, [
+                'property_path' => 'registrationSettings',
+            ])
+            ->add('reset_password_settings', RateLimitLockoutGroupType::class, [
+                'property_path' => 'resetPasswordSettings',
+            ])
         ;
     }
 

@@ -288,7 +288,7 @@ img.emojione, svg.emojione {
     padding-right: 0;
     height: 40px;
 
-    .dp-button.group.add {
+    .button.group.add {
       margin-left: 5px;
       cursor: pointer;
       display: inline-block;
@@ -307,7 +307,7 @@ img.emojione, svg.emojione {
         overflow: hidden;
       }
 
-      .dp-button {
+      .button {
         &.search, &.close-im {
           float: right;
           cursor: pointer;

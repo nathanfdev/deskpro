@@ -28,6 +28,9 @@
 
 namespace spec\DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 
+use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\NewSettings\SettingsBag;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use PhpSpec\ObjectBehavior;
@@ -39,9 +42,12 @@ use Pusher;
  */
 class PusherDeliveryHandlerSpec extends ObjectBehavior
 {
-    public function let(Pusher $pusher)
+    public function let(Pusher $pusher, SettingsResolver $resolver, SettingsBag $bag, Connection $connection)
     {
-        $this->beConstructedWith($pusher);
+        $this->beConstructedWith($pusher, $resolver, $connection);
+        $resolver->getGlobalSettings()->willReturn($bag);
+        $connection->getTransactionNestingLevel()->willReturn(1);
+        $bag->get('notification.settings.pusher_client.channel_prefix', '')->willReturn('');
     }
 
     public function it_can_deliver_message(ActionAlert $actionAlert, Pusher $pusher)
@@ -57,8 +63,28 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
 
-        $pusher->triggerBatch(Argument::type('array'))->shouldBeCalled();
+        $pusher->triggerBatch(Argument::type('array'), true, true)->shouldBeCalled();
         $this->schedule($actionAlert);
         $this->deliver();
+    }
+
+    public function it_will_deliver_as_soon_as_possible(ActionAlert $actionAlert, Pusher $pusher)
+    {
+        $actionAlert->getTarget()->willReturn(1);
+        $actionAlert->getData()->willReturn([]);
+        $actionAlert->getDate()->willReturn(new \DateTime());
+        $actionAlert->getType()->willReturn('test.action.alert');
+
+        $actionAlert->getTarget()->shouldBeCalled();
+        $actionAlert->getDate()->shouldBeCalled();
+        $actionAlert->getId()->shouldBeCalled();
+        $actionAlert->getType()->shouldBeCalled();
+        $actionAlert->getData()->shouldBeCalled();
+
+        $this->schedule($actionAlert);
+        $this->deliverSoon();
+        $pusher->triggerBatch(Argument::type('array'), true, true)->shouldNotBeCalled();
+        $this->doDeliverSoon();
+        $pusher->triggerBatch(Argument::type('array'), true, true)->shouldBeCalled();
     }
 }

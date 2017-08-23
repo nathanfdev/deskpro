@@ -430,6 +430,10 @@ class Runner
         if ($source->log_blob) {
             try {
                 $previousLogText = App::$container->getBlobStorage()->copyBlobRecordToString($source->log_blob);
+
+                if ($source->log_blob->content_type === 'application/gzip') {
+                    $previousLogText = @gzdecode($previousLogText) ?: '';
+                }
             } catch (\Exception $e) {
             }
         }
@@ -643,7 +647,7 @@ BODY;
                 $logMessages,
                 'email-process.log',
                 'plain/text',
-                ['tag' => 'logs.email_source_log']
+                ['tag' => 'logs.email_source_log', 'prefer_gzipped' => true]
             );
             $sourceLogger->logInfo("Log blob {$logBlobRow['id']}");
 

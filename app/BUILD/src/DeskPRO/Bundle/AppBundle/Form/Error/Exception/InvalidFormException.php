@@ -48,15 +48,11 @@ class InvalidFormException extends BadRequestHttpException implements FormExcept
     protected $form;
 
     /**
-     * Constructor.
-     *
-     * @param FormInterface $invalid_form the invalid form
-     * @param \Exception    $previous     The previous exception, if any exist
-     * @param int           $code         The internal exception code
+     * {@inheritdoc}
      */
-    public function __construct(FormInterface $invalid_form, \Exception $previous = null, $code = 0)
+    public function __construct(FormInterface $form, \Exception $previous = null, $code = 0)
     {
-        $this->form = $invalid_form;
+        $this->form = $form;
 
         parent::__construct(ErrorsCodes::INVALID_INPUT, $previous, $code);
     }

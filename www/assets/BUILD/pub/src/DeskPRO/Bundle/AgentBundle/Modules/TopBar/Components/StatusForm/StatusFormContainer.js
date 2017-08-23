@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import StatusForm from './StatusForm';
 import { toggleUserChat, editAgentProfile } from '../../../Agent/Actions/agentActions';
-import { isVoiceEnabledSelector } from '../../../Voice/Selectors/client';
+import { isVoiceEnabledSelector, isVoiceAvailableSelector } from '../../../Voice/Selectors/client';
 import { userChatEnabledSelector } from '../../../Agent/Selectors/agents';
 
 @connect(state => ({
   me:              meSelector(state),
+  voiceAvailable:  isVoiceAvailableSelector(state),
   voiceEnabled:    isVoiceEnabledSelector(state),
   userChatEnabled: userChatEnabledSelector(state)
 }))

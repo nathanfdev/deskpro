@@ -91,5 +91,9 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		}
 
 		return visible;
+	},
+
+	destroy: function() {
+		this.ticketReader = null;
 	}
 });

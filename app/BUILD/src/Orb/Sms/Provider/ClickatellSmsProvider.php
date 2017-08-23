@@ -26,91 +26,68 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Orb.
- */
-
 namespace Orb\Sms\Provider;
 
-use Bdt\Clickatell\ClickatellClient;
+use Clickatell\Rest;
 use Orb\Sms\SmsMessageChunk;
 use Orb\Sms\SmsProviderInterface;
 use Orb\Sms\SmsResult;
 
+/**
+ * Class ClickatellSmsProvider.
+ */
 class ClickatellSmsProvider implements SmsProviderInterface
 {
     /**
-     * @var ClickatellClient
+     * @var Rest
      */
     private $client;
 
     /**
      * @var string
      */
-    private $user;
+    private $authToken;
 
     /**
-     * @var string
+     * @param string $authToken
      */
-    private $apiId;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    /**
-     * @param $user The Clickatell User
-     * @param $apiId The Clickatell API ID
-     * @param $password The Clickatell password
-     */
-    public function __construct($user, $password, $apiId)
+    public function __construct($authToken)
     {
-        $this->client = ClickatellClient::factory(['api_id'         => $apiId, 'user' => $user,
-                                                         'password' => $password, ]);
-        $this->user     = $user;
-        $this->apiId    = $apiId;
-        $this->password = $password;
+        $this->client    = new Rest($authToken);
+        $this->authToken = $authToken;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function sendMessage($toPhoneNumber, SmsMessageChunk $chunk, $fromPhoneNumber)
+    public function sendMessage($toNumber, SmsMessageChunk $chunk, $fromNumber)
     {
-        $textMessage = $chunk->getText();
+        $text = $chunk->getText();
 
         try {
-            $result = $this->client->getCommand('SendMsg',
-                ['to' => $toPhoneNumber, 'text' => $textMessage])->execute();
+            $result = $this->client->sendMessage([
+                'to'      => [$toNumber],
+                'content' => $text,
+            ]);
+
+            if (isset($result[0])) {
+                $message = $result[0];
+                if ($message['accepted']) {
+                    return new SmsResult(SmsResult::SMS_SENT, $fromNumber, $toNumber, $text, $this->getName(), [$message['apiMessageId']]);
+                } else {
+                    return new SmsResult(SmsResult::SMS_FAIL, $fromNumber, $toNumber, $text, $this->getName(), [$message['apiMessageId']]);
+                }
+            } else {
+                return new SmsResult(SmsResult::SMS_FAIL, $fromNumber, $toNumber, $text, $this->getName(), [
+                    'status' => 'empty_response',
+                ]);
+            }
         } catch (\Exception $e) {
-            $smsResult = new SmsResult(SmsResult::SMS_FAIL,
-                $fromPhoneNumber,
-                $toPhoneNumber,
-                $textMessage,
-                $this->getName(),
-                ['status' => $e->getCode(), 'message' => $e->getMessage()]);
-
-            return $smsResult;
+            return new SmsResult(SmsResult::SMS_FAIL, $fromNumber, $toNumber, $text, $this->getName(), [
+                'status'  => $e->getCode(),
+                'message' => $e->getMessage(),
+            ]);
         }
-
-        if ($result->isSuccessful()) {
-            $smsResult = new SmsResult(SmsResult::SMS_SENT,
-                $fromPhoneNumber,
-                $toPhoneNumber,
-                $textMessage,
-                $this->getName(),
-                $result->getMessageIds());
-        } else {
-            $smsResult = new SmsResult(SmsResult::SMS_FAIL,
-                $fromPhoneNumber,
-                $toPhoneNumber,
-                $textMessage,
-                $this->getName(),
-                $result->getMessageIds());
-        }
-
-        return $smsResult;
     }
 
     /**
@@ -127,9 +104,7 @@ class ClickatellSmsProvider implements SmsProviderInterface
     public function getParams()
     {
         return [
-            'user'     => $this->user,
-            'password' => $this->password,
-            'api_id'   => $this->apiId,
+            'auth_token' => $this->authToken,
         ];
     }
 }

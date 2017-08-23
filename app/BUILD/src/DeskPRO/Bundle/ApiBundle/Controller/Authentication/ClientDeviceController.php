@@ -39,6 +39,7 @@ use DeskPRO\Component\Util\TypeUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -92,7 +93,14 @@ class ClientDeviceController extends CrudController
     public function registerAction($id, Request $request)
     {
         try {
-            return $this->putAction($this->findEntity($id, $request)->getId(), $request);
+            $entity   = $this->findEntity($id, $request);
+            $response = $this->putAction($entity->getId(), $request);
+
+            if ($response->getStatusCode() === Response::HTTP_NO_CONTENT) {
+                return $this->wrap($entity);
+            } else {
+                return $response;
+            }
         } catch (NotFoundHttpException $e) {
             return $this->postAction($request);
         }

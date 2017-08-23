@@ -12,7 +12,12 @@ pageMeta.conversation_id = {{convo.id}};
 				{% if loop.last %} and {% endif %}{{ p.display_name }}{% if not loop.last and convo.participants|length > 2 %},{% endif %}
 			{% endfor %}
 		</h1>
-		<time class="timeago" datetime="{{ convo.date_created|date('c', 'UTC') }}">{{ convo.date_created|date('day_short') }}</time>
+		<time
+			{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
+			datetime="{{ convo.date_created|date('c', 'UTC') }}"
+		>
+			{{ convo.date_created|date('fulltime') }}
+		</time>
 	</header>
 
 	<div class="profile-box-container">

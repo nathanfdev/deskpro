@@ -180,7 +180,7 @@ class Container extends React.Component {
         <ReactTooltip delayShow={1000} id={tooltipId} effect="solid" place="top" className="im-tooltip" />
         <CloseChat onClick={() => { this.closeContainer(); }} />
         <i
-          className={classNames('search icon dp-button', { enabled: this.state.searching })}
+          className={classNames('search icon button', { enabled: this.state.searching })}
           onClick={() => { this.toggleSearch(); }}
         />
       </span>
@@ -522,7 +522,7 @@ class Container extends React.Component {
 
 function CloseChat(props) {
   return (
-    <span className="dp-button close-im" onClick={props.onClick}>
+    <span className="button close-im" onClick={props.onClick}>
       <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/im/close-open-im.svg`} />
     </span>
   );

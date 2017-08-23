@@ -291,7 +291,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $last_subject = $subject_orig;
         $ticket_ids   = [];
         while (true) {
-            $subject_re = preg_replace('#^.*?:\s*#i', '', trim($last_subject));
+            $subject_re = preg_replace('#^[^[:punct:]\s]{2,4}:\s*#i', '', trim($last_subject));
             $subject_re = trim($subject_re);
 
             if ($subject_re == $last_subject || !$subject_re) {

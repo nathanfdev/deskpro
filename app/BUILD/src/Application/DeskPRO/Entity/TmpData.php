@@ -144,6 +144,26 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
      * Set the type.
      *
      * @param string $type
@@ -204,6 +224,14 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateExpire()
+    {
+        return $this->date_expire;
+    }
+
+    /**
      * Splits a code into its id and auth.
      *
      * @param  $code
@@ -223,6 +251,14 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
             'id'   => $parts[0],
             'auth' => $parts[1],
         ];
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     //###########################################################################

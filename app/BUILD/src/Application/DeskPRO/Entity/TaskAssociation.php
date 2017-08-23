@@ -64,6 +64,26 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @return Task
+     */
+    public function getTask()
+    {
+        return $this->task;
+    }
+
+    /**
+     * @param Task $task
+     *
+     * @return $this
+     */
+    public function setTask($task)
+    {
+        $this->setModelField('task', $task);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

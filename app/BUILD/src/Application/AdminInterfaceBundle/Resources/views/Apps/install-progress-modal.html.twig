@@ -16,8 +16,11 @@
 				<div style="text-align: center; color: #50a24f;">
 					<i class="fa fa-check-circle fa-6" style="font-size: 18em;"></i>
 				</div>
-				<div style="text-align: center; font-size: 16pt; margin: 10px 0;">
+				<div ng-hide="pack.is_single && pack.is_installed" style="text-align: center; font-size: 16pt; margin: 10px 0;">
 					{{ ng_var('pack.title') }} has been installed successfully.
+				</div>
+				<div ng-show="pack.is_single && pack.is_installed" style="text-align: center; font-size: 16pt; margin: 10px 0;">
+					{{ ng_var('pack.title') }} has been updated successfully.
 				</div>
 			</div>
 		</div>

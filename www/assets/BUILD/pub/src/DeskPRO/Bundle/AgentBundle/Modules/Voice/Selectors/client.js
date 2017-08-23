@@ -10,6 +10,21 @@ export const tokensSelector = createSelector(
   state => state.get('tokens')
 );
 
+export const isVoiceMicEnabled = createSelector(
+  stateSelector,
+  state => state.get('micEnabled')
+);
+
+export const voiceSettingsSelector = createSelector(
+  stateSelector,
+  state => state.get('settings')
+);
+
+export const agentVoicemailTimeoutSelector = createSelector(
+  voiceSettingsSelector,
+  settings => settings && settings.get('agent_voicemail_timeout')
+);
+
 export const phoneTokenSelector = createSelector(
   tokensSelector,
   tokens => tokens && tokens.get('phone_token')
@@ -77,17 +92,21 @@ export const outgoingCallSelector = createSelector(
   state => state.get('outgoingCall')
 );
 
-export const isVoiceEnabledSelector = createSelector(
+export const isVoiceAvailableSelector = createSelector(
   meSelector,
   idleActivitySidSelector,
   phoneTokenSelector,
   workerTokenSelector,
   (me, idleSid, phoneToken, workerToken) =>
-    isSecure
-    && me.getIn(['agent_data', 'is_voice_enabled'])
-    && idleSid
-    && phoneToken
-    && workerToken
+      me.getIn(['agent_data', 'is_voice_enabled'])
+      && !!idleSid
+      && !!phoneToken
+      && !!workerToken
+);
+
+export const isVoiceEnabledSelector = createSelector(
+  isVoiceAvailableSelector,
+  voiceAvailable => voiceAvailable && isSecure
 );
 
 // settings

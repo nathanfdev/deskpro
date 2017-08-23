@@ -139,7 +139,15 @@
 							instead.
 						</p>
 						<div style="padding-top: 10px;">
-							Default account: <select ui-select2 ng-model="settings.default_from_email">
+							Brand: <select ui-select2 ng-model="currentBrand">
+								<option
+										ng-selected="currentBrand === brand.id"
+										ng-repeat="brand in brands" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}
+								</option>
+							</select>
+						</div>
+						<div style="padding-top: 10px;">
+							Default account: <select ui-select2 ng-model="settings.default_from_email[currentBrand]">
 								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
 							</select>
 						</div>
@@ -209,6 +217,12 @@
 						</label>
 						<input type="text" name="date_time" class="form-control" ng-model="settings.date_time"
                                style="width: 210px;" required autofocus />
+					</div>
+					<div class="inner-group">
+						<label style="width: 200px;">
+							<h4>Disable relative times</h4>
+						</label>
+						<button dp-toggle-switch ng-model="settings.disable_relative_times"></button>
 					</div>
 				</div>
 			</div>

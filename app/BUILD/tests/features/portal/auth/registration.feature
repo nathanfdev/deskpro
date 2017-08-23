@@ -15,10 +15,12 @@ Feature: Registration
 
   Scenario: Submitting valid registration and verifying email
     Given I go to "/register"
-    And I fill in "Name" with "Test User"
+    And I get captcha code from the form field "captcha"
+    When I fill in "Name" with "Test User"
     And I fill in "person_registration_primary_email_email" with "testuser@deskpro.com"
     And I fill in "Password" with "password"
     And I fill in "Confirm" with "password"
+    And I fill in "person_registration[captcha][captcha]" with "{captchaCode}"
     And I press "Register"
     Then I should be on "/"
     And I should see a success flash message with the phrase "portal.flashes.user_registered_must_verify"

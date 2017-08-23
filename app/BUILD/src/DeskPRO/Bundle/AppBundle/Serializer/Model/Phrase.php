@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
-use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Language as LanguageEntity;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -55,10 +55,10 @@ class Phrase
     /**
      * Constructor.
      *
-     * @param Language $language
-     * @param string   $value
+     * @param LanguageEntity $language
+     * @param string         $value
      */
-    public function __construct(Language $language, $value)
+    public function __construct(LanguageEntity $language, $value)
     {
         $this->language = $language;
         $this->value    = $value;

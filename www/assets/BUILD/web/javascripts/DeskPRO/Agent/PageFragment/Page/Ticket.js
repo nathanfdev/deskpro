@@ -65,6 +65,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	initPage: function(el) {
+
+    var boundHandleReplySave = this.handleReplySave.bind(this);
+
+    var onActivateScope = this;
+    var onActivate = function () { return { ticket_id: onActivateScope.meta.ticket_id, meta: onActivateScope.meta } };
+    onActivate.bind(this);
+
+    var onResponse = function (handlerTrap, widget, message) {
+      var response = message.body;
+      var release = response.allowReply;
+      var reason = null;
+      if (!response.allowReply) {
+        reason = response.reason ? response.reason : 'Reply is disabled';
+      }
+
+      if (reason) { DeskPRO_Window.showAlert(reason); }
+      handlerTrap(release);
+    };
+
+		if (window.DeskPRO_APPSTORE) {
+			this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
+				'context.ticket.reply',
+				onResponse,
+				onActivate,
+				boundHandleReplySave
+			);
+		} else {
+			this.handleReplySaveInterceptor = boundHandleReplySave;
+		}
+
 		this.wrapper = el;
 
 		var self = this;
@@ -138,12 +168,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       }
 		});
 
-		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this, {
-			loadUrl: BASE_URL + "agent/people/" + this.meta.person_id + "/change-picture-overlay",
-			saveUrl: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
-		});
-		this.ownObject(this.changePic);
-
 		this.ticketFields = new DeskPRO.Agent.PageHelper.TicketFields(this);
 
 		this._initMessage(this.wrapper.find('.messages-wrap'));
@@ -171,6 +195,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initSlas();
     this._initProblems();
 		this._initVoice();
+		this._initForward();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -215,7 +240,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-change-email.json',
 							data: { email_id : emailId },
 							dataType: 'json',
-							type: 'POST'
+							type: 'POST',
+              withActionAlerts: true
 						});
 					});
 				}
@@ -232,8 +258,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		}
 
+		this.billingRollbackCharges = {};
 		this.billing = new DeskPRO.Agent.PageHelper.TicketBilling(this.getEl('billing_wrap'), this.meta.baseId, {
-			auto_start_bill: this.meta.auto_start_bill
+			auto_start_bill: this.meta.auto_start_bill,
+      onBeforeBillingChange: this.onBeforeBillingChange.bind(this),
+      onAfterBillingChange: this.onAfterBillingChange.bind(this),
 		});
 
 		this.addEvent('deactivate', function() {
@@ -247,6 +276,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (self.meta.unlockOnClose && self.getEl('locked_message').data('locked-self')) {
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/release-lock.json',
+          withActionAlerts: true,
 					type: 'POST'
 				});
 			}
@@ -315,6 +345,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.addEvent('shortcutOpenSnippets', function(ev) {
 			ev.preventDefault();
+			ev.stopPropagation();
 			self.shortcutOpenSnippets();
 		});
 		this.addEvent('shortcutSendReply', function(ev) {
@@ -365,6 +396,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							url: merge._getOverlayUrl(merge.options.metaId, ticketId),
 							type: 'get',
 							dataType: 'html',
+              withActionAlerts: true,
 							success: function(html) {
 								merge.resetOverlay(html);
 							}
@@ -454,6 +486,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							person_id: self.meta.person_id
 						},
 						dataType: 'json',
+            withActionAlerts: true,
 						success: function(data) {
 							var append = [];
 							Array.each(data, function(t) {
@@ -620,6 +653,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + "agent/tickets/" + self.meta.ticket_id + "/unlink-ticket",
 				type: 'POST',
+        withActionAlerts: true,
 				data: {
 					ticket_id: self.meta.ticket_id,
 					link_type: linkType,
@@ -640,7 +674,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -782,6 +816,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-attach-list',
 					data: postData,
+          withActionAlerts: true,
 					complete: function() {
 						logsNav.removeClass('dp-loading-on');
 					},
@@ -795,6 +830,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
 					data: postData,
+          withActionAlerts: true,
 					complete: function() {
 						logsNav.removeClass('dp-loading-on');
 					},
@@ -828,6 +864,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
 				data: postData,
+        withActionAlerts: true,
 				complete: function() {
 					logsNav.removeClass('dp-loading-on');
 					btn.remove();
@@ -887,6 +924,98 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this.initDeferred && this.initDeferred.resolve();
 	},
 
+  onAfterBillingChange: function (status, changeType, charge, chargeFormData)
+  {
+    // revert ticket metadata in case of error or clear any billing charge objects stored in the rollback buffer
+    if (status === 'failure' && this.billingRollbackCharges) {
+      this.meta.api_data.charges = this.billingRollbackCharges;
+    }
+    this.billingRollbackCharges = null;
+  },
+
+  /**
+   * @param {'add'|'delete'|'udpdate'} changeType
+   * @param {{ id }}  charge
+   * @param {{ billing_type:String, custom_fields:Array, hours:String, minutes:String, seconds:String }} chargeFormData
+   */
+  onBeforeBillingChange: function (changeType, charge, chargeFormData) {
+    /**
+     * @param {{ billing_type:String, custom_fields:Array, hours:String, minutes:String, seconds:String }} formData
+     * @param {{ chargeTime:Number }} chargeObject
+     * @return {boolean}
+     */
+	  var setChargeTime = function (formData, chargeObject) {
+        var chargeAmounts = [
+          parseInt(formData.hours) * 3600,
+          parseInt(formData.minutes) * 60,
+          parseInt(formData.seconds),
+        ].filter(function(amount) { return !isNaN(amount) && amount > 0; });
+
+        var chargeTime = null;
+        if (chargeAmounts.length) {
+          chargeTime = 0;
+          chargeAmounts.forEach(function (amount) {
+            chargeTime = chargeTime + amount;
+          });
+        }
+
+        if (chargeTime !== null) {
+          chargeObject.chargeTime = chargeTime;
+          return true;
+        }
+
+        return false;
+    };
+
+	  // update ticket metadata before saving the new billing charge
+    var charges = this.meta.api_data.charges;
+    var newCharges = null;
+
+    if (changeType === 'add') {
+      var newCharge = { id: charge.id, chargeTime: null, amount: null, custom_data: [] };
+
+      if (chargeFormData.billing_type === 'time') {
+        setChargeTime(chargeFormData, newCharge);
+      }
+      newCharges = charges ? charges.concat([newCharge]) : [newCharge];
+      this.billingRollbackCharges = charges ? charges : [];
+    } else if (changeType === 'delete') {
+      if (charges) {
+        newCharges = charges.filter(function (aCharge) {
+          return aCharge.id !== charge.id;
+        });
+        this.billingRollbackCharges = charges;
+      }
+    } else if (changeType === 'update') {
+      var updatedCharge = null;
+      if (charges) {
+        updatedCharge = charges.filter(function (aCharge) {
+          return aCharge.id === charge.id;
+        }).pop();
+      }
+
+      if (updatedCharge) {
+        // exclude the charge and replace with clone
+        newCharges = charges.filter(function (aCharge) {
+          return aCharge.id !== charge.id;
+        }).pop();
+
+        // clone the charge
+        var newUpdatedCharge = JSON.parse(JSON.stringify(updatedCharge));
+        if (chargeFormData.billing_type === 'time') {
+          setChargeTime(chargeFormData, updatedCharge);
+        }
+
+        newCharges.push(newUpdatedCharge);
+        this.billingRollbackCharges = changes;
+      }
+    }
+
+    if (newCharges !== null) {
+      this.meta.api_data.charges = newCharges;
+    }
+  },
+
 	setTicketReplyBox: function(rb) {
 		var isFirst = this.ticketReplyBox ? false : true;
 
@@ -928,6 +1057,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'GET',
 			dataType: 'html',
 			context: this,
+      withActionAlerts: true,
 			success: function(html) {
 				if (loadDiv) {
 					loadDiv.remove();
@@ -1004,6 +1134,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/load-logs',
 			data: postData,
+      withActionAlerts: true,
 			success: function(html) {
 				logsWrap.html(html);
 				DeskPRO_Window.initInterfaceServices(logsWrap);
@@ -1144,6 +1275,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			context: this,
 			noErrorOverride: true,
+      withActionAlerts: true,
 			complete: function() {
 				this.replySaveAjax = null;
 				DeskPRO_Window.getMessageChanneler().poller.unpause();
@@ -1270,10 +1402,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.merge.destroy();
       this.merge = null;
 		}
-		if (this.statusMenu) {
-			this.statusMenu.destroy();
-			this.statusMenu = null;
-		}
 		if (this.removeMenu) {
 			this.removeMenu.destroy();
 			this.removeMenu = null;
@@ -1289,10 +1417,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.changeManager) {
 			this.changeManager.destroy();
 			this.changeManager = null;
-		}
-		if (this.changePic) {
-      this.changePic.destroy();
-      this.changePic = null;
 		}
 		if (this.linkExistingTicket) {
       this.linkExistingTicket.destroy();
@@ -1331,6 +1455,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
+
+  updateTicketApiDataFragment: function(key, data) {
+    if (!data) {
+      return;
+    }
+
+    this.meta.api_data[key] = data;
+  },
 
 	updateTicketApiData: function(data) {
 		if (!data) {
@@ -1421,7 +1553,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
-				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
+				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
 				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}
@@ -1672,6 +1804,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						$.ajax({
 							url: BASE_URL + 'agent/tickets/messages/'+message_id+'/get-full-message.json',
 							type: 'GET',
+              withActionAlerts: true,
+							dataType: 'json',
 							success: function(data) {
 								row.find('.full-message-content').html(data.message_full)
 								self._initTicketMessageClipped(article);
@@ -1798,6 +1932,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: formData,
 			type: 'POST',
 			dataType: 'json',
+      withActionAlerts: true,
 			complete: function() {
 				trans.removeClass('dp-loading-on');
 			},
@@ -1911,11 +2046,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 	},
 
-	addAttachToList: function(attachInfo) {
+	addAttachToList: function(attachInfo, fakeUpload) {
 		var $form = this.getEl('replybox_wrap').children('.ticket-reply-form:first'),
 			fileupload = $form.data('fileupload');
 
-		if (!$form.length || !fileupload) return;
+		if ((!$form.length || !fileupload) && !fakeUpload) return;
 		$form.trigger('fileuploaddone');
 		fileupload.options.done.apply($form[0], [null, { result: [attachInfo]}]);
 	},
@@ -1966,7 +2101,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'json'
+			dataType: 'json',
+      withActionAlerts: true
 		});
 	},
 
@@ -1987,9 +2123,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/unlock-ticket.json',
 				type: 'POST',
 				dataType: 'json',
-				complete: function() {
-
-				}
+        withActionAlerts: true
 			});
 		});
 
@@ -2006,6 +2140,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/lock-ticket.json',
 				type: 'POST',
 				dataType: 'json',
+        withActionAlerts: true,
 				success: function(data) {
 					if (data.error) {
 						DeskPRO_Window.showAlert('Someone else has already locked the ticket');
@@ -2125,6 +2260,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 									type: 'POST',
 									data: formData,
 									dataType: 'json',
+                  withActionAlerts: true,
 									complete: function() {
 										el.removeClass('loading');
 									},
@@ -2232,6 +2368,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   },
 
 	_initVoice: function() {
+		if (!window.DP_HAS_VOICE) {
+			return;
+		}
+
     var onEndCall = (function() {
       console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
       DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
@@ -2282,6 +2422,69 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}, this);
 	},
 
+	_initForward: function() {
+
+	},
+
+	handleFwd: function(info) {
+		var self = this, messages, messageData = [];
+		if (!this.ticketReplyBox) return;
+		this.ticketReplyBox.clearFwd();
+		this.ticketReplyBox.setFwdMode(info);
+    switch (info.mode) {
+      case 'all':
+				messages = this.wrapper.find('.content-message').not('.note-message');
+        (this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
+          messageData.push(self._getFwdMsgData($(element)));
+        });
+        break;
+			case 'single':
+				this.ticketReplyBox.dontDispatch = true;
+				this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+        messages = this.wrapper.find('.content-message.message-'+info.messageId).first();
+        messageData.push(self._getFwdMsgData(messages.first()));
+        break;
+			case 'from':
+        this.ticketReplyBox.dontDispatch = true;
+        this.ticketReplyBox.getElById('replybox_fwdtab_btn').click();
+        messages = this.wrapper.find('.content-message').not('.note-message');
+				(this.meta.ticket_reverse_order ? messages.get().reverse() : messages.get()).map(function(element) {
+        	if ($(element).data('message-id') <= info.messageId) {
+        		messageData.push(self._getFwdMsgData($(element)));
+					}
+        });
+        break;
+      default:
+        break;
+    }
+
+    if (this.meta.ticket_reverse_order) {
+    	messageData.reverse();
+		}
+
+    self.ticketReplyBox.appendFwdCollection(messageData);
+
+    // attachments from last message
+    this.wrapper.find('.content-message.message-'+messageData[0].messageId).find('.attachment-list a').map(function () {
+      self.ticketReplyBox.appendFwdAttach($(this), self);
+    });
+
+    // focus reply box
+    self.ticketReplyBox.focusReplyBox();
+  },
+
+	_getFwdMsgData: function(messageRow) {
+		return {
+			messageId: messageRow.data('message-id'),
+			author: {
+				name: messageRow.data('message-author-name'),
+				email: messageRow.data('message-author-email')
+			},
+			date: new Date(parseInt(messageRow.data('message-ts'), 10) * 1000),
+			bodyHtml: messageRow.find('.body-text-message').first().html()
+		};
+	},
+
 	showDeleteOverlay: function(doBan) {
 		this._initDeleteOverlay();
 		this.deleteOverlay.doBan = doBan;
@@ -2320,7 +2523,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data.push({
 				name: 'ban',
 				value: 1
-			})
+			});
 		}
 
 		var self = this;
@@ -2330,6 +2533,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			type: 'POST',
 			data: data,
 			dataType: 'json',
+      withActionAlerts: true,
 			success: function(data) {
 				self.deleteOverlay.closeOverlay();
 				self.getEl('remove_menu_trigger').hide();
@@ -2354,6 +2558,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/close_problem',
       type:     'POST',
       context:  this,
+      withActionAlerts: true,
       complete: function () {
         self.closeProblemOverlay.closeOverlay();
         DeskPRO_Window.removePage(self);
@@ -2372,6 +2577,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       url:      BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/reopen_problem',
       type:     'POST',
       context:  this,
+      withActionAlerts: true,
       complete: function () {
         self.reopenProblemOverlay.closeOverlay();
         DeskPRO_Window.removePage(self);
@@ -2392,6 +2598,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			data: {
 				ban: doBan ? 1 : 0
 			},
+      withActionAlerts: true,
 			success: function(data) {
 				self.getEl('actions_loading').hide();
 				self.getEl('remove_menu_trigger').hide();
@@ -2533,6 +2740,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							$.ajax({
 								url: BASE_URL + 'agent/tickets/messages/' + messageId + '/attachments/' + attachmentId + '/delete',
 								type: 'POST',
+                withActionAlerts: true,
 								dataType: 'json'
 							}).always(function() {
 								row.removeClass('loading');
@@ -2565,6 +2773,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					data: {
 						is_note: is_note
 					},
+          withActionAlerts: true,
+					dataType: 'json',
 					complete: function() {
 						row.removeClass('gear-loading');
 					},
@@ -2587,9 +2797,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
 				break;
 
-			case 'fwd':
+			case 'fwd_legacy':
 				this.showFwdOverlay(messageId);
 				break;
+
+			case 'fwd':
+				this.handleFwd({ mode: 'single', messageId: messageId });
+				break;
+
+      case 'fwd-from-here':
+        this.handleFwd({ mode: 'from', messageId: messageId });
+        break;
 
 			case 'edit':
 				this.showMessageEditor(messageId);
@@ -2652,6 +2870,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			url: BASE_URL + 'agent/tickets/messages/' + messageId + '/delete',
 			type: 'POST',
 			dataType: 'json',
+      withActionAlerts: true,
 			success: function(data) {
 				self.deleteMessageOverlay.closeOverlay();
 
@@ -2725,6 +2944,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						url: form.attr('action'),
 						type: 'POST',
 						data: postData,
+            withActionAlerts: true,
 						dataType: 'json'
 					}).always(function() {
 						form.removeClass('loading');
@@ -2824,6 +3044,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						type: 'POST',
 						data: formData,
 						dataType: 'json',
+            withActionAlerts: true,
 						success: function(data) {
 							if (data.error && data.error == 'invalid_to') {
 								DeskPRO_Window.showAlert('Please enter a valid To address');
@@ -2867,6 +3088,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					type: 'POST',
 					data: postData,
 					dataType: 'json',
+          withActionAlerts: true,
 					complete: function() {
 						overlayEl.find('.save-text-loading').hide();
 						overlayEl.find('.save-text-trigger').show();
@@ -2905,6 +3127,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					$.ajax({
 						url: BASE_URL + 'agent/tickets/messages/'+self.currentOpenMessageId+'/get-message-text.json',
 						dataType: 'json',
+            withActionAlerts: true,
 						success: function(data) {
 							//overlayEl.find('textarea.message_text').html(data.message_html);
 							overlayEl.find('textarea.message_text').setCode(data.message_html);
@@ -2985,6 +3208,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/update-views.json',
 			type: 'POST',
 			dataType: 'json',
+      withActionAlerts: true,
 			data: formData,
 			context: this,
 			success: function(result) {
@@ -3007,15 +3231,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var openForEl = null;
 
 		var menuVis2  = this.getEl('task_menu_vis').clone().appendTo(this.wrapper);
-
-		this.statusMenu = new DeskPRO.UI.Menu({
-			menuElement: this.getEl('task_menu_vis'),
-			onItemClicked: function(info) {
-				$('input.input-vis', openForEl).val($(info.itemEl).data('vis'));
-				$('.opt-trigger.visibility label', openForEl).text($(info.itemEl).text());
-				sendUpdate(openForEl, 'visibility', $(info.itemEl).data('vis'));
-			}
-		});
 
 		var sendUpdate = function(rowEl, prop, val, callback) {
 			var taskId = rowEl.data('task-id');
@@ -3041,6 +3256,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'POST',
 				data: postData,
 				dataType: 'json',
+        withActionAlerts: true,
 				success: callback || function() {}
 			});
 		};
@@ -3054,6 +3270,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				row.slideUp();
 				$.ajax({
 					url: BASE_URL + 'agent/tasks/' + row.data('task-id') + '/delete',
+          withActionAlerts: true,
 					error: function() {
 						row.show();
 					},
@@ -3066,10 +3283,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			}
 		});
-		rowContainer.on('click', '.opt-trigger.visibility', function(ev) {
-			openForEl = $(this).closest('.row-item');
-			statusMenu.open(ev);
-		});
 		rowContainer.find('li.assigned_agent select.agents_sel').each(function() {
 			$(this).addClass('has-init');
 			var row = $(this).closest('.row-item');
@@ -3081,7 +3294,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				if (!val) {
 					val = '';
-					label = 'Me';
+					label = '';
 				}
 
 				row.find('.assigned_agent').find('label').text(label);
@@ -3092,6 +3305,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				});
 			});
 		});
+		rowContainer.find('li.visibility select.visibility_sel').each(function() {
+			$(this).addClass('has-init');
+			var row = $(this).closest('.row-item');
+			DP.select($(this));
+
+			$(this).on('change', function() {
+				var val = $(this).val();
+				var label = $(this).find(':selected').text().trim();
+
+				if (!val) {
+					val = '';
+					label = '';
+				}
+
+				row.find('.visibility').find('label').text(label);
+				$('input.input-vis', row).val(val);
+
+				sendUpdate(row, 'visibility', val, function() {
+					DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+				});
+			});
+		});
+
 		rowContainer.on('click', '.opt-trigger.time_due', function(ev) {
 
 			var row = $(this).closest('.task-row');
@@ -3243,6 +3479,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				data: postData,
 				type: 'POST',
 				dataType: 'json',
+        withActionAlerts: true,
 				complete: function() {
 					self.getEl('task_save').removeClass('saving').text('Add');
 				},
@@ -3274,6 +3511,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 							row.find('.assigned_agent').find('label').text(label);
 							$('input.input-agent', row).val(val);
+
+							sendUpdate(row, 'assigned', val, function() {
+								DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+							});
+						});
+					});
+					row.find('li.visibility select.visibility_sel').each(function() {
+						$(this).addClass('has-init');
+						var row = $(this).closest('.row-item');
+						DP.select($(this));
+
+						$(this).on('change', function() {
+							var val = $(this).val();
+							var label = $(this).find(':selected').text().trim();
+
+							if (!val) {
+								val = '';
+								label = '';
+							}
+
+							row.find('.visibility').find('label').text(label);
+							$('input.input-vis', row).val(val);
+
+							sendUpdate(row, 'visibility', val, function() {
+								DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tasks.refresh-task-list');
+							});
 						});
 					});
 
@@ -3295,7 +3558,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.taskListControl.addEvent('updateUi', function() {
 			self.updateUi();
-			updateTaskPane();
 		});
 		this.taskListControl.addEvent('updateCount', function() {
 			updateTaskPane();
@@ -3372,6 +3634,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.util.ajaxWithClientMessages({
 					url: $this.attr('href'),
 					type: 'POST',
+          withActionAlerts: true,
 					dataType: 'json'
 				}).done(function (json) {
 					if (json.success) {
@@ -3411,6 +3674,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						url: form.data('submit-url'),
 						data: form.find('input, textarea, select').serializeArray(),
 						type: 'POST',
+            withActionAlerts: true,
 						dataType: 'json'
 					}).done(function(json) {
 						if (json.inserted) {
@@ -3520,11 +3784,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-save-subject.json',
 				type: 'POST',
 				data: postData,
-                success: function(){
-                    if (DeskPRO_Window.$scope) {
-                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
-                    }
-                }
+        withActionAlerts: true,
+				success: function(){
+					if (DeskPRO_Window.$scope) {
+							DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {id: self.meta.ticket_id, subject: setName});
+					}
+				}
 			});
 
 			self.meta.title = setName;
@@ -3545,15 +3810,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	shortcutOpenSnippets: function() {
-		if (!this.ticketReplyBox) {
-			return;
-		}
+		if (window.DP_HAS_NEW_SNIPPETS) {
+      this.ticketReplyBox.openNewSnippets();
+    } else {
+			if (!this.ticketReplyBox) {
+				return;
+			}
 
-		if (!this.meta.ticket_reverse_order) {
-			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
-		}
-		this.focusOnReply();
-		this.ticketReplyBox.snippetsViewer.open();
+			if (!this.meta.ticket_reverse_order) {
+				this.wrapper.find('div.layout-content').trigger('goscrollbottom');
+			}
+			this.focusOnReply();
+      this.ticketReplyBox.snippetsViewer.open();
+    }
 	},
 
 	shortcutSendReply: function() {

@@ -90,7 +90,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }
@@ -117,7 +117,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }
@@ -142,7 +142,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }
@@ -160,7 +160,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }
@@ -204,7 +204,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }
@@ -232,7 +232,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }
@@ -261,7 +261,7 @@ class JiraController extends AbstractController
             if ($e instanceof ApiErrorsException) {
                 return $this->createJsonResponse(['errors' => $e->errors], 400);
             } else {
-                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], $e->getCode());
+                return $this->createJsonResponse(['errors' => (array) $e->getMessage()], 400);
             }
         }
     }

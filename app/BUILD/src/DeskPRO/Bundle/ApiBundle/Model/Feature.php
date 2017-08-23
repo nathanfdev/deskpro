@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\ApiBundle\Model;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
 use JMS\Serializer\Annotation as JMS;
 
+/**
+ * Class Feature.
+ */
 class Feature
 {
     /**
@@ -79,6 +82,15 @@ class Feature
     private $disableDescription;
 
     /**
+     * Redirect to the url.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $routePath;
+
+    /**
      * Is this feature enabled?
      *
      * @JMS\Type("boolean")
@@ -96,6 +108,12 @@ class Feature
      */
     private $processing;
 
+    /**
+     * Constructor.
+     *
+     * @param BetaFeatureInterface $betaFeature
+     * @param bool                 $processing
+     */
     public function __construct(BetaFeatureInterface $betaFeature, $processing = false)
     {
         $this->id                 = $betaFeature->getId();
@@ -103,6 +121,7 @@ class Feature
         $this->shortDescription   = $betaFeature->getShortDescription();
         $this->enableDescription  = $betaFeature->getEnableDescription();
         $this->disableDescription = $betaFeature->getDisableDescription();
+        $this->routePath          = $betaFeature->getRoutePath();
         $this->enabled            = $betaFeature->isEnabled();
         $this->processing         = $processing;
     }

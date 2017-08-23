@@ -1,0 +1,36 @@
+{
+  "appVersion": "0.1.0",
+  "author": {
+    "name": "DeskPRO Apps",
+    "email": "apps@deskpro.com",
+    "url": "https://www.deskpro.com"
+  },
+  "description": "A foundation to get you started developing React DeskPro Apps with the best developer experience ",
+  "name": "@deskproapps/app-boilerplate-react",
+  "version": "2.0.0",
+  "title": "Your app title",
+  "is_single": true,
+  "scope": "agent",
+  "targets": [
+    {
+      "target": "ticket-sidebar",
+      "url": "html/index.html"
+    }
+  ],
+  "settings": [
+    {
+      "name": "my_setting",
+      "type": "text/textarea/select/hidden",
+      "defaultValue": "foo",
+      "isPrivate": false,
+
+      "options": [
+        {"name": "example_option", "value": "foo"}
+      ]
+    }
+  ],
+  "deskpro_api_tags": ["tickets.*"],
+  "external_apis": [
+    "/^https?://([^.]+\\.)*mailchimp.com/?.*$/"
+  ]
+}

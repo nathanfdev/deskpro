@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Organization;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -48,6 +49,7 @@ class OrganizationSearch extends SearcherAbstract
     const TERM_CONTACT_ADDRESS    = 'org_contact_address';
     const TERM_CONTACT_IM         = 'org_contact_im';
     const TERM_EMAIL_DOMAIN       = 'org_email_domain';
+    const TERM_USERGROUP          = 'org_usergroup';
 
     /**
      * Summary of terms in phrases.
@@ -380,6 +382,40 @@ class OrganizationSearch extends SearcherAbstract
                         }
                         break;
 
+                    case self::TERM_USERGROUP:
+                        if (isset($choice['usergroup_ids'])) {
+                            $choice = $choice['usergroup_ids'];
+                        } elseif (isset($choice['usergroup'])) {
+                            $choice = $choice['usergroup'];
+                        }
+                        $choice = array_map('intval', (array) $choice);
+                        if (!$choice) {
+                            $choice = [0];
+                        }
+                        $org_ids = App::getDbRead('search.filter.people')->fetchAllCol('
+                            SELECT organization_id
+                            FROM organization2usergroups
+                            WHERE usergroup_id IN (?)
+                            LIMIT 1001
+                        ', [$choice], [Connection::PARAM_INT_ARRAY]);
+                        if (!$org_ids) {
+                            $org_ids = [0];
+                        }
+
+                        if (count($org_ids) == 1001) {
+                            // too many, need to do the join method
+                            $joins[] = [
+                                'organization2usergroups',
+                                "LEFT JOIN organization2usergroups AS $join_name ON ($join_name.organization_id = organizations.id)",
+                            ];
+
+                            $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
+                        } else {
+                            $wheres[] = 'organizations.id IN ('.implode(',', $org_ids).')';
+                        }
+
+                        break;
+
                     case self::TERM_ORGANIZATION_FIELD:
 
                         $field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($term_id);
@@ -429,10 +465,12 @@ class OrganizationSearch extends SearcherAbstract
                                         break;
                                     case self::OP_CONTAINS:
                                     case self::OP_NOTCONTAINS:
-                                        $op = 'LIKE';
-                                        if ($op == self::OP_NOTCONTAINS) {
+                                        if ($op === self::OP_NOTCONTAINS) {
                                             $op = 'NOT LIKE';
+                                        } else {
+                                            $op = 'LIKE';
                                         }
+
                                         $w = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
 
                                         if ($op == self::OP_NOTCONTAINS) {

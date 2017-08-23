@@ -70,12 +70,12 @@ $collection->create('proxy', [
 
 $collection->create('serve_root', [
     'path'       => '/',
-    'controller' => '(not a real route)',
+    'controller' => '', // not a real route
 ]);
 
 $collection->create('sys_serverinfo', [
     'path'         => '/__serverinfo/{path}',
-    'controller'   => '(not a real route)',
+    'controller'   => '', // not a real route
     'requirements' => [
         'path' => '.*+',
     ],
@@ -83,27 +83,27 @@ $collection->create('sys_serverinfo', [
 
 $collection->create('serve_file_root', [
     'path'       => '/file.php',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_blob', [
     'path'       => '/file.php/{blob_auth_id}/{filename}',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_dp_asset', [
     'path'       => '/file.php/dp-asset/{filename}',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_blob_size', [
     'path'       => '/file.php/size/{s}/{blob_auth_id}/{filename}',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_blob_sizefit', [
     'path'       => '/file.php/size/{s}/size-fit/{blob_auth_id}/{filename}',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_blob_app_asset', [
@@ -113,19 +113,19 @@ $collection->create('serve_blob_app_asset', [
         'type'     => '(app|js|css|html|res)',
         'path'     => '.*+',
     ],
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_person_picture', [
     'path'         => '/file.php/avatar/{person_id}',
-    'controller'   => '(see: serve_file.php)',
+    'controller'   => '', // see: serve_file.php
     'defaults'     => ['size' => 0],
     'requirements' => ['person_id' => '\\d+'],
 ]);
 
 $collection->create('serve_person_picture_size', [
     'path'         => '/file.php/avatar/{person_id}',
-    'controller'   => '(see: serve_file.php)',
+    'controller'   => '', // see: serve_file.php
     'requirements' => [
         'person_id' => '\\d+',
         'size'      => '\\d+',
@@ -134,7 +134,7 @@ $collection->create('serve_person_picture_size', [
 
 $collection->create('serve_default_picture', [
     'path'       => '/file.php/avatar/{s}/default.jpg',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
     'defaults'   => [
         'name' => 'default_picture',
         's'    => '0',
@@ -143,12 +143,12 @@ $collection->create('serve_default_picture', [
 
 $collection->create('serve_org_picture_default', [
     'path'       => '/file.php/o-avatar/default',
-    'controller' => '(see: serve_file.php)',
+    'controller' => '', // see: serve_file.php
 ]);
 
 $collection->create('serve_org_picture', [
     'path'         => '/file.php/o-avatar/{org_id}',
-    'controller'   => '(see: serve_file.php)',
+    'controller'   => '', // see: serve_file.php
     'requirements' => ['person_id' => '\\d+'],
 ]);
 

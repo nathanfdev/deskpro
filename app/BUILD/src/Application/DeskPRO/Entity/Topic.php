@@ -34,7 +34,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -60,18 +59,12 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
     /**
      * Display order.
      *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     * @JMS\Groups("product")
-     *
      * @var int
      */
     protected $display_order = 0;
 
     /**
      * Topic's parent.
-     *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Topic>")
      *
      * @var Topic
      */
@@ -80,16 +73,12 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
     /**
      * Topic's children.
      *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Topic>>")
-     *
      * @var Topic[]|ArrayCollection
      */
     protected $children;
 
     /**
      * Topic without content used for structure.
-     *
-     * @JMS\Type("boolean")
      *
      * @var bool
      */
@@ -641,5 +630,7 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
+
+        $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }
 }

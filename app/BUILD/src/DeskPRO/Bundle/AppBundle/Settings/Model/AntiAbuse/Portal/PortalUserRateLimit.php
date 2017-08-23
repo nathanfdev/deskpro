@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\Portal;
 
-use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup;
+use DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -42,9 +42,9 @@ class PortalUserRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $loginSettings;
 
@@ -53,9 +53,9 @@ class PortalUserRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $submitTicket;
 
@@ -64,9 +64,9 @@ class PortalUserRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $submitFeedback;
 
@@ -75,9 +75,9 @@ class PortalUserRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $submitComment;
 
@@ -86,9 +86,9 @@ class PortalUserRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $uploadAttachment;
 
@@ -97,9 +97,9 @@ class PortalUserRateLimit
      *
      * @Assert\Valid
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitGroup")
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AntiAbuse\RateLimitOptionsGroup")
      *
-     * @var RateLimitGroup
+     * @var RateLimitOptionsGroup
      */
     private $shareContent;
 
@@ -108,16 +108,16 @@ class PortalUserRateLimit
      */
     public function __construct()
     {
-        $this->loginSettings    = new RateLimitGroup();
-        $this->submitTicket     = new RateLimitGroup();
-        $this->submitFeedback   = new RateLimitGroup();
-        $this->submitComment    = new RateLimitGroup();
-        $this->uploadAttachment = new RateLimitGroup();
-        $this->shareContent     = new RateLimitGroup();
+        $this->loginSettings    = new RateLimitOptionsGroup();
+        $this->submitTicket     = new RateLimitOptionsGroup();
+        $this->submitFeedback   = new RateLimitOptionsGroup();
+        $this->submitComment    = new RateLimitOptionsGroup();
+        $this->uploadAttachment = new RateLimitOptionsGroup();
+        $this->shareContent     = new RateLimitOptionsGroup();
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getLoginSettings()
     {
@@ -125,7 +125,7 @@ class PortalUserRateLimit
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getSubmitTicket()
     {
@@ -133,7 +133,7 @@ class PortalUserRateLimit
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getSubmitFeedback()
     {
@@ -141,7 +141,7 @@ class PortalUserRateLimit
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getSubmitComment()
     {
@@ -149,7 +149,7 @@ class PortalUserRateLimit
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getUploadAttachment()
     {
@@ -157,7 +157,7 @@ class PortalUserRateLimit
     }
 
     /**
-     * @return RateLimitGroup
+     * @return RateLimitOptionsGroup
      */
     public function getShareContent()
     {

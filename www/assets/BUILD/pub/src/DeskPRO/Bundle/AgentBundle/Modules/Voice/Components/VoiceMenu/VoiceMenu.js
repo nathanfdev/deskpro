@@ -9,17 +9,18 @@ import VoicemailListContainer from './Voicemail/VoicemailListContainer';
 class VoiceMenu extends React.Component {
 
   static propTypes = {
-    me:                   PropTypes.object,
-    agents:               PropTypes.object,
-    people:               PropTypes.object,
-    incomingCall:         PropTypes.object,
-    onAcceptCall:         PropTypes.func,
-    onDeclineCall:        PropTypes.func,
-    onHangup:             PropTypes.func,
-    outboundCallsEnabled: PropTypes.bool,
-    outboundNumber:       PropTypes.string,
-    outgoingCall:         PropTypes.object,
-    ringingVolume:        PropTypes.number
+    me:                    PropTypes.object,
+    agents:                PropTypes.object,
+    people:                PropTypes.object,
+    incomingCall:          PropTypes.object,
+    onAcceptCall:          PropTypes.func,
+    onDeclineCall:         PropTypes.func,
+    onHangup:              PropTypes.func,
+    outboundCallsEnabled:  PropTypes.bool,
+    outboundNumber:        PropTypes.string,
+    outgoingCall:          PropTypes.object,
+    ringingVolume:         PropTypes.number,
+    agentVoicemailTimeout: PropTypes.number
   };
 
   constructor(props) {
@@ -62,7 +63,7 @@ class VoiceMenu extends React.Component {
   }
 
   renderPhoneTab() {
-    const { me, agents, people, incomingCall, ringingVolume } = this.props;
+    const { me, agents, people, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
     const { outgoingCall, onAcceptCall, onDeclineCall, onHangup } = this.props;
 
     if (incomingCall) {
@@ -73,6 +74,7 @@ class VoiceMenu extends React.Component {
           people={people}
           incomingCall={incomingCall}
           ringingVolume={ringingVolume}
+          agentVoicemailTimeout={agentVoicemailTimeout}
           onAccept={onAcceptCall}
           onDecline={onDeclineCall}
         />

@@ -65,17 +65,17 @@ class PortalValidation
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
      * @var UrlGeneratorInterface
      */
-    private $url_generator;
+    private $urlGenerator;
 
     /**
      * @var PersonDataService
      */
-    private $person_data_service;
+    private $personDataService;
 
     public function __construct(
         PortalEmailSender $mailer,
@@ -83,33 +83,33 @@ class PortalValidation
         UrlGeneratorInterface $url_generator,
         PersonDataService $person_data_service
     ) {
-        $this->mailer              = $mailer;
-        $this->brand_stack         = $brand_stack;
-        $this->url_generator       = $url_generator;
-        $this->person_data_service = $person_data_service;
+        $this->mailer            = $mailer;
+        $this->brandStack        = $brand_stack;
+        $this->urlGenerator      = $url_generator;
+        $this->personDataService = $person_data_service;
     }
 
     public function sendTicketVerificationEmail(Ticket $ticket, SavedForm $saved_form)
     {
         // because we need to support an old verify route created with the ticket's "access_code"
         $ticket->forceSetAccessCode($saved_form->getAuthCode());
-        $verify_url = $this->makeValidationUrl(self::NEW_TICKET, $saved_form);
+        $verifyUrl = $this->makeValidationUrl(self::NEW_TICKET, $saved_form);
 
          // find out who we are emailing to
         if ($person = $saved_form->getPerson()) {
-            $email_to = new EmailTo($person);
+            $emailTo = new EmailTo($person);
         } else {
             if (!$email = $saved_form->getMetaDataValue('email')) {
                 throw new \InvalidArgumentException(
                     'trying to send a verification email, but no email provided. saved form must have a Person, or its metadata must have an "email" key.'
                 );
             }
-            $name     = $saved_form->getMetaDataValue('name');
-            $email_to = new EmailTo();
-            $email_to->setTo($email, $name);
+            $name    = $saved_form->getMetaDataValue('name');
+            $emailTo = new EmailTo();
+            $emailTo->setTo($email, $name);
         }
 
-        $this->mailer->sendNewTicketValidationEmail($email_to, $verify_url, $ticket);
+        $this->mailer->sendNewTicketValidationEmail($emailTo, $verifyUrl, $ticket);
     }
 
     public function sendTicketByEmailVerificationEmail(Person $person, AbstractReader $reader, $authcode)
@@ -118,11 +118,11 @@ class PortalValidation
         $ticket->subject = $reader->getSubject()->getSubjectUtf8();
         $ticket->person  = $person;
 
-        $email_to = new EmailTo($person);
+        $emailTo = new EmailTo($person);
 
-        $verify_url = $this->url_generator->generate('user_validate_ticketemail', ['auth_code' => $authcode], UrlGeneratorInterface::ABSOLUTE_URL);
+        $verifyUrl = $this->urlGenerator->generate('user_validate_ticketemail', ['auth_code' => $authcode], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->mailer->sendNewTicketValidationEmail($email_to, $verify_url, $ticket);
+        $this->mailer->sendNewTicketValidationEmail($emailTo, $verifyUrl, $ticket);
     }
 
     public function sendVerificationEmail($type, SavedForm $saved_form, $prefer_person_email = true)
@@ -131,29 +131,29 @@ class PortalValidation
 
         // find out who we are emailing to
         if ($prefer_person_email && $person = $saved_form->getPerson()) {
-            $email_to = new EmailTo($person);
+            $emailTo = new EmailTo($person);
         } else {
             if (!$email = $saved_form->getMetaDataValue('email')) {
                 throw new \InvalidArgumentException(
                     'trying to send a verification email, but no email provided. saved form must have a Person, or its metadata must have an "email" key.'
                 );
             }
-            $name     = $saved_form->getMetaDataValue('name');
-            $email_to = new EmailTo();
-            $email_to->setTo($email, $name);
+            $name    = $saved_form->getMetaDataValue('name');
+            $emailTo = new EmailTo();
+            $emailTo->setTo($email, $name);
         }
 
         // get the verify URL
-        $verify_url = $this->makeValidationUrl($type, $saved_form);
+        $verifyUrl = $this->makeValidationUrl($type, $saved_form);
 
         switch ($type) {
             case self::REGISTRATION:
             case self::COMMENT:
             case self::NEW_FEEDBACK:
-                $this->mailer->sendEmailValidation($email_to, $verify_url);
+                $this->mailer->sendEmailValidation($emailTo, $verifyUrl);
                 break;
             case self::ADD_EMAIL:
-                $this->mailer->sendNewEmailValidate($email_to, $verify_url, $saved_form->getPerson());
+                $this->mailer->sendNewEmailValidate($emailTo, $verifyUrl, $saved_form->getPerson());
                 break;
             case self::NEW_TICKET:
                 throw new \Exception('use sendTicketVerificationEmail instead of sendVerificationEmail for a ticket.');
@@ -163,9 +163,9 @@ class PortalValidation
 
     public function sendUsersourceEmailValidation($email, $verify_url)
     {
-        $email_to = new EmailTo();
-        $email_to->setTo($email, $email);
-        $this->mailer->sendEmailValidation($email_to, $verify_url);
+        $emailTo = new EmailTo();
+        $emailTo->setTo($email, $email);
+        $this->mailer->sendEmailValidation($emailTo, $verify_url);
     }
 
     public function getPasswordRedirectIfRequired(Person $person, Request $request, $redirect_to_after_password_set = null)
@@ -173,9 +173,9 @@ class PortalValidation
         // if the guest is a confirmed user that can't login, send them to a page that will let them set a pw
         if (!$person->isUser() && $person->isConfirmed()) {
             // act as if we generated a "set password" token for this user and they clicked the link
-            $expire_time    = $this->brand_stack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);
-            $password_reset = $this->person_data_service->createPasswordReset($person, $expire_time);
-            $code           = $password_reset['code'];
+            $expireTime    = $this->brandStack->getActive()->getSetting('user.password_reset_code_time_limit', 18000);
+            $passwordReset = $this->personDataService->createPasswordReset($person, $expireTime);
+            $code          = $passwordReset['code'];
 
             $session = $request->getSession();
             if ($redirect_to_after_password_set) {
@@ -188,7 +188,7 @@ class PortalValidation
             $session->set(PasswordController::SET_PASSWORD_REDIRECT, $redirect_to_after_password_set);
 
             return new RedirectResponse(
-                $this->url_generator->generate('portal_set_password_process',
+                $this->urlGenerator->generate('portal_set_password_process',
                     [
                         'code'       => $code,
                         'from-saved' => true,
@@ -196,11 +196,13 @@ class PortalValidation
                 )
             );
         }
+
+        return false;
     }
 
     protected function makeValidationUrl($type, SavedForm $saved_form)
     {
-        return $this->url_generator->generate(
+        return $this->urlGenerator->generate(
             'portal_validation',
             [
                 'type'      => $type,

@@ -16,7 +16,7 @@ import {
   chatRequiredEmailSelector,
   primaryColorSelector
 } from '../../../../Application/Selectors/dpWindow';
-import { requireChatEmailValidationSelector, requireChatLoginSelector, widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
+import { widgetSessionIsLoginSelector } from '../../../../Application/Selectors/bootstrap';
 import { customChatFieldsOrderedSelector } from '../../../../Application/Selectors/customFields';
 import { history } from '../../../../../Services/history';
 import { ChatBeginLoadingSpinner } from './ChatBeginLoadingSpinner';
@@ -24,8 +24,6 @@ import { ChatBeginSimple } from './ChatBeginSimple';
 
 @connect(state => ({
   liveDemo:                 liveDemoSelector(state),
-  requireEmailValidation:   requireChatEmailValidationSelector(state),
-  requireLogin:             requireChatLoginSelector(state),
   customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
   customFields:             customChatFieldsOrderedSelector(state),
   allChatDepartments:       collectionSelectorFactory('ChatDepartment', 'all')(state),
@@ -44,8 +42,6 @@ import { ChatBeginSimple } from './ChatBeginSimple';
 export class ChatBeginContainer extends React.Component {
 
   static propTypes = {
-    requireEmailValidation:   PropTypes.bool,
-    requireLogin:             PropTypes.bool,
     dispatch:                 PropTypes.func.isRequired,
     children:                 PropTypes.node,
     liveDemo:                 PropTypes.bool,
@@ -168,7 +164,7 @@ export class ChatBeginContainer extends React.Component {
       event.preventDefault();
     }
 
-    const { liveDemo, requireEmailValidation, requireLogin, dispatch } = this.props;
+    const { liveDemo, dispatch } = this.props;
 
     // Disabled in live demo mode
     if (liveDemo) {
@@ -176,17 +172,14 @@ export class ChatBeginContainer extends React.Component {
     }
 
     this.setState({
-      submit: true
+      submit: true,
+      banned: false
     });
 
     const promise = dispatch(createChat(this.state.formData.value));
     promise.then(
       () => {
-        if (requireEmailValidation && !requireLogin) {
-          history.replace('/chat/validation/email');
-        } else {
-          history.replace('/chat/active');
-        }
+        history.replace('/chat/active');
 
         if (this.mounted) {
           this.setState({
@@ -196,10 +189,17 @@ export class ChatBeginContainer extends React.Component {
       },
       (result) => {
         if (this.mounted) {
-          this.setState({
+          const data = result.getData();
+          const newState = {
             submit: false,
-            errors: result.getData()
-          });
+            errors: data
+          };
+
+          if (data.message === 'banned') {
+            newState.banned = true;
+          }
+
+          this.setState(newState);
         }
       }
     );
@@ -214,6 +214,7 @@ export class ChatBeginContainer extends React.Component {
       fields: {}
     };
 
+    // set default chat department
     if (chatSelectDepartmentType === 'default' && chatDefaultDepartment) {
       if (chatDepartments.has(chatDefaultDepartment)) {
         formData.chat_department = chatDefaultDepartment;
@@ -232,6 +233,21 @@ export class ChatBeginContainer extends React.Component {
       formData.chat_department = defaultValues.get('department');
     }
 
+    // validate if it's a leaf department
+    const leafDepartment = (depId) => {
+      const childrenDepartments = chatDepartments.filter(department => department.get('parent') === depId);
+      if (childrenDepartments.size > 0) {
+        return leafDepartment(childrenDepartments.first().get('id'));
+      }
+
+      return depId;
+    };
+
+    if (formData.chat_department) {
+      formData.chat_department = leafDepartment(formData.chat_department);
+    }
+
+    // custom field default values
     customFields.forEach((customField) => {
       const fieldId = customField.get('id');
       const optionsDefaultValue = defaultValues && defaultValues.getIn(['fields', String(fieldId)]);

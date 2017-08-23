@@ -1,4 +1,6 @@
-import _ from 'lodash';
+import defaults from 'lodash/defaults';
+import union from 'lodash/union';
+import uniq from 'lodash/uniq';
 import $ from 'jquery';
 import EventEmitter from 'eventemitter2';
 
@@ -19,7 +21,7 @@ import EventEmitter from 'eventemitter2';
  */
 export class DynamicForm {
   constructor(customOptions) {
-    const options = _.defaults(customOptions, {
+    const options = defaults(customOptions, {
       widgetClassName: 'deskpro-form-widget',
       runInitUpdate:   true,
       alwaysFields:    []
@@ -158,6 +160,7 @@ export class DynamicForm {
         const $el = this.fields.get(name);
         if (!$el) {
           console.warn('Unknown field: %s', name);
+          return;
         }
         $el.detach().appendTo(insertPoint);
       }
@@ -172,6 +175,7 @@ export class DynamicForm {
       const $el = this.fields.get(name);
       if (!$el) {
         console.warn('Unknown field: %s', name);
+        return;
       }
 
       $el.find('input, textarea, select').each((i, field) => {
@@ -197,10 +201,10 @@ export class DynamicForm {
   resolveFields(fields) {
     let newFields = fields;
     if (this.alwaysFields.length) {
-      newFields = _.union(newFields, this.alwaysFields);
+      newFields = union(newFields, this.alwaysFields);
     }
 
-    newFields = _.uniq(newFields);
+    newFields = uniq(newFields);
 
     return newFields;
   }

@@ -36,6 +36,7 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 
 			if (this.page) {
 				this.page.fireEvent('destroy');
+				this.page.destroyEvents();
 				this.page = null;
 				this.wrapper.empty();
 			}
@@ -162,6 +163,7 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 
 		if (this.page) {
 			this.page.fireEvent('destroy');
+			this.page.destroyEvents();
 			this.page = null;
 		}
 
@@ -174,5 +176,6 @@ DeskPRO.Agent.PageHelper.FragmentOverlay = new Orb.Class({
 		this.backdropEl = null;
 
 		this.fireEvent('destroy', [this]);
+    this.destroyEvents();
 	}
 });

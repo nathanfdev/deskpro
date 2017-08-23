@@ -13,6 +13,18 @@ export function flattenBatchResponses(responses) {
 
   return result;
 }
+export function replaceIds(records, field) {
+  if (Array.isArray(records)) {
+    return records.map((record) => {
+      record.id = record[field];
+      return record;
+    });
+  }
+  Object.keys(records).forEach((key) => {
+    records[key].id = records[key][field];
+  });
+  return records;
+}
 
 export function getLinkedData(responses, key, linkedKey) {
   return responses[key].linked[linkedKey];

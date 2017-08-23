@@ -1,5 +1,5 @@
+import uniqueId from 'lodash/uniqueId';
 import { isDSA } from '../actions/actionUtils';
-import uniqueId from 'lodash/utility/uniqueId';
 
 /**
  * Given an action, fetch the promise from it if it exists.
@@ -8,17 +8,18 @@ import uniqueId from 'lodash/utility/uniqueId';
  * @return {Promise|null} A promise if found, or null;
  */
 function getPromise(action) {
-  let payload;
   // The whole action is itself a promise
   if (typeof action.then === 'function') {
     return action;
   }
 
-  if (typeof action.payload === 'undefined' || !action.payload || (action.meta && action.meta.sequenceType && action.meta.sequenceType === 'promise')) {
+  if (typeof action.payload === 'undefined'
+    || !action.payload
+    || (action.meta && action.meta.sequenceType && action.meta.sequenceType === 'promise')) {
     return null;
   }
 
-  payload = action.payload;
+  const payload = action.payload;
 
   if (typeof payload.then === 'function') {
     return payload;
@@ -41,7 +42,7 @@ function getPromise(action) {
  * @return {Function} middleware
  */
 export function promiseMiddleware({ dispatch }) {
-  return next => action => {
+  return next => (action) => {
     if (!action) {
       return next(action);
     }
@@ -55,11 +56,11 @@ export function promiseMiddleware({ dispatch }) {
 
     if (!isDSA(action)) {
       // It's just a lonely action so we will just wait on it resolving
-      promise.then(result => {
+      promise.then((result) => {
         if (result) {
           dispatch(result);
         }
-      }).catch(result => {
+      }).catch((result) => {
         if (result) {
           dispatch(result);
         }
@@ -84,11 +85,11 @@ export function promiseMiddleware({ dispatch }) {
       dispatch(createSeqAction('start', action.payload));
 
       promise
-        .then(result => {
+        .then((result) => {
           dispatch(createSeqAction('success', result));
           dispatch(createSeqAction('done', result));
         })
-        .catch(error => {
+        .catch((error) => {
           dispatch(createSeqAction('error', error, true));
           dispatch(createSeqAction('done', error, true));
         });

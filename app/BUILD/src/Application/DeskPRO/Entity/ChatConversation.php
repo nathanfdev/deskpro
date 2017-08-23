@@ -392,6 +392,14 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @return null|string
+     */
+    public function getAuthId()
+    {
+        return $this->getSession() ? $this->getId().':'.$this->getSession()->getAuth() : null;
+    }
+
+    /**
      * Backward compatibility alias for id.
      *
      * @return int

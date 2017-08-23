@@ -179,7 +179,7 @@
                                                             id="{{ baseId }}_labels_input"
                                                             class="labels-input dpe_select dpe_select_noborder"
                                                             data-select-width="auto"
-                                                            data-placeholder="Add a label"
+                                                            data-placeholder="{{ phrase('agent.general.add_a_label') }}"
                                                             value="{% for label in state.newperson.labels %}{{ label }},{% endfor %}"
                                                             data-allow-new="{% if app.user.hasPerm('agent_people.create_labels') %}1{% endif %}"
                                                             />
@@ -190,11 +190,11 @@
                                                     <th>{{ phrase('agent.general.usergroups') }}</th>
                                                     <td>
                                                         <div id="{{ baseId }}_ug_container">
-                                                            <select name="newperson[usergroup_ids][]" class="dpe_select">
-                                                                {% for id,name in usergroup_names %}
-                                                                    <option value="{{ id }}">{{ name }}</option>
-                                                                {% endfor %}
-                                                            </select>
+                                                            {% for id,name in usergroup_names %}
+                                                                <div>
+                                                                    <label><input type="checkbox" value="{{ id }}" name="newperson[usergroup_ids][]" class="ug-check ug-check-{{ id }}" /> {{ name }}</label>
+                                                                </div>
+                                                            {% endfor %}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -240,7 +240,7 @@
                     <footer class="pop-footer">
                         <div class="is-not-loading">
                             <button class="submit-trigger clean-white">{{ phrase('agent.people.create_person') }}
-                                <kbd>{{ phrase('agent.general.altc') }}</kbd></button>
+                                <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
                         </div>
                         <div class="is-loading" style="padding-top: 9px;">
                             <img src="{{ asset('images/spinners/loading-small.gif') }}"/>

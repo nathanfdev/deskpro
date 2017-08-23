@@ -206,6 +206,11 @@ export const chatBeginModeSelector = createSelector(
   options => (options.get('request_user_info') ? options.get('begin_mode') : 'simple')
 );
 
+export const chatBrandCustomFieldsSelector = createSelector(
+  chatOptionsSelector,
+  options => options.get('custom_fields')
+);
+
 export const helpPopupSelector = createSelector(
   chatOptionsSelector,
   options => options.get('popup') || Immutable.fromJS({})
@@ -265,15 +270,6 @@ export const agentAcceptTimeoutSelector = createSelector(
 export const chatFormDefaultValuesSelector = createSelector(
   chatOptionsSelector,
   options => options.get('default_values')
-);
-
-export const chatEnabledCustomFieldsSelector = createSelector(
-  chatOptionsSelector,
-  options => (
-    options.get('enabled_custom_fields') instanceof Immutable.List
-      ? options.get('enabled_custom_fields').map(id => parseInt(id, 10))
-      : null
-  )
 );
 
 export const chatDefaultDepartmentSelector = createSelector(

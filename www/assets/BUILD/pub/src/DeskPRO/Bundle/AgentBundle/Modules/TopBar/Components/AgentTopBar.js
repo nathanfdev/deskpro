@@ -21,9 +21,10 @@ import Chat from './Chat';
 import User from './User';
 import VoiceMenu from '../../Voice/Components/VoiceMenu/VoiceMenuContainer';
 import AvatarHelper from '../../IM/Components/New/IMTabs/AvatarHelper';
-import { isVoiceEnabledSelector } from '../../Voice/Selectors/client';
+import { isVoiceAvailableSelector } from '../../Voice/Selectors/client';
 import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
 import { toggleUserChat } from '../../Agent/Actions/agentActions';
+import { closeIframes } from '../../Application/Actions/bootstrapActions';
 
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),
@@ -54,7 +55,7 @@ import { toggleUserChat } from '../../Agent/Actions/agentActions';
   myTeamsLoaded:       isLoadedCollectionSelectorFactory('AgentTeam', 'my')(state),
   myDepartmentsLoaded: isLoadedCollectionSelectorFactory('Department', 'my_tickets')(state),
   agentsLoaded:        isLoadedCollectionSelectorFactory('Person', 'agents')(state),
-  voiceEnabled:        isVoiceEnabledSelector(state),
+  voiceAvailable:      isVoiceAvailableSelector(state),
   userChatEnabled:     userChatEnabledSelector(state),
   onlineAgents:        onlineUserChatAgentsSelector(state)
 }))
@@ -246,15 +247,6 @@ export class AgentTopBarContainer extends SeparateComponent {
     }
   }
 
-  static closeIframes() {
-    for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
-      const iframe = window.DP_FRAME_OVERLAYS[key];
-      if (iframe.opened) {
-        iframe.close();
-      }
-    }
-  }
-
   onToggleChat = (enabled) => {
     this.props.dispatch(toggleUserChat(enabled));
   };
@@ -360,7 +352,6 @@ export class AgentTopBarContainer extends SeparateComponent {
       toggleViewMode:       AgentTopBarContainer.toggleViewMode,
       onRecent:             AgentTopBarContainer.onRecent,
       onNotification:       AgentTopBarContainer.onNotification,
-      closeIframes:         AgentTopBarContainer.closeIframes,
       onClearSearchInput:   AgentTopBarContainer.onClearSearchInput,
       notificationCount:    this.state.notificationCount,
       toggleImOverlay:      this.toggleImOverlay,
@@ -407,7 +398,6 @@ export class AgentTopBar extends React.Component {
     onSearchBlur:         PropTypes.func,
     onRecent:             PropTypes.func,
     onNotification:       PropTypes.func,
-    closeIframes:         PropTypes.func,
     toggleViewMode:       PropTypes.func,
     toggleImOverlay:      PropTypes.func,
     openGroupDrawer:      PropTypes.func,
@@ -443,7 +433,7 @@ export class AgentTopBar extends React.Component {
     myDepartmentsLoaded:  PropTypes.bool.isRequired,
     agentsLoaded:         PropTypes.bool.isRequired,
     onClearSearchInput:   PropTypes.func,
-    voiceEnabled:         PropTypes.bool,
+    voiceAvailable:       PropTypes.bool,
     userChatEnabled:      PropTypes.bool,
     onlineAgents:         PropTypes.object,
     onToggleChat:         PropTypes.func,
@@ -577,9 +567,9 @@ export class AgentTopBar extends React.Component {
   }
 
   render() {
-    const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceEnabled } = this.props;
+    const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceAvailable } = this.props;
     const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent } = this.props;
-    const { closeIframes, toggleViewMode, onNotification, onToggleChat } = this.props;
+    const { toggleViewMode, onNotification, onToggleChat } = this.props;
 
     return (<TopBar>
       <TopBarItem className="search-box legacy-omnibox">
@@ -590,6 +580,7 @@ export class AgentTopBar extends React.Component {
           onClearInput={onClearSearchInput}
           placeholder={`${agentPhrases.get('agent.chrome.nav_search')} ...`}
           ref={(c) => { this.searchBox = c; }}
+          icon={<Isvg className="search" src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`} />}
         />
       </TopBarItem>
       <TopBarItem
@@ -631,7 +622,7 @@ export class AgentTopBar extends React.Component {
             volume={8}
             onToggleChat={onToggleChat}
           />
-          {window.DP_HAS_VOICE && voiceEnabled && <VoiceMenu />}
+          {window.DP_HAS_VOICE && voiceAvailable && <VoiceMenu />}
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>

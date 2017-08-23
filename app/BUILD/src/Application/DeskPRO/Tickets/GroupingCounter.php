@@ -366,6 +366,9 @@ class GroupingCounter
 
         $parts = [];
         foreach ($times as $t) {
+            if ($t === 0) {
+                continue;
+            }
             if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
                 // total time is stored in seconds, so we're not doing a date compare
                 $from    = $ranges[$t];
@@ -380,7 +383,7 @@ class GroupingCounter
             }
         }
 
-        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts)." ELSE 0 END AS $select_name";
 
         return $sql;
     }
@@ -720,6 +723,7 @@ class GroupingCounter
     public static function getTimeTitles()
     {
         $times = [
+            0                      => 'agent.time.group_not_waiting',
             300                    => 'agent.time.group_lt_5_mins',
             900                    => 'agent.time.group_5_to_15_mins',
             1800                   => 'agent.time.group_15_to_30_mins',
@@ -836,10 +840,7 @@ class GroupingCounter
                 $key   = array_search($groupchoice, $times);
 
                 if ($key == 0) {
-                    $date1 = new \DateTime('-5 minutes');
-                    $date2 = new \DateTime('now');
-
-                    return ['type' => $groupvar, 'op' => 'between', 'options' => ['date1' => $date1, 'date2' => $date2]];
+                    return ['type' => $groupvar, 'op' => 'is', 'options' => [null]];
                 } elseif ($key == (count($times) - 1)) {
                     $date = new \DateTime('@'.(time() - 14515201));
 

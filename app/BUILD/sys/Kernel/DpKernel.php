@@ -143,6 +143,8 @@ class DpKernel extends BaseKernel
 
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
             new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
+
+            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle()
         ];
 
         if (defined('DPC_IS_CLOUD')) {

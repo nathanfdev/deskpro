@@ -43,8 +43,6 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
-use DeskPRO\Bundle\AppBundle\Entity\ProjectMember;
-use DeskPRO\Bundle\AppBundle\Entity\TaskAssignment;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -592,16 +590,6 @@ class Person extends DomainObject implements
     protected $report_dashboard_permissions;
 
     /**
-     * @var TaskAssignment[]|ArrayCollection
-     */
-    protected $assigned_tasks;
-
-    /**
-     * @var ProjectMember[]|ArrayCollection
-     */
-    protected $project_members;
-
-    /**
      * @var TicketParticipant[]|ArrayCollection
      */
     protected $tickets;
@@ -706,8 +694,6 @@ class Person extends DomainObject implements
         $this->department_permissions = new ArrayCollection();
         $this->teams                  = new ArrayCollection();
         $this->notes                  = new ArrayCollection();
-        $this->assigned_tasks         = new ArrayCollection();
-        $this->project_members        = new ArrayCollection();
         $this->tickets                = new ArrayCollection();
         $this->chats                  = new ArrayCollection();
         $this->voiceQueues            = new ArrayCollection();
@@ -939,11 +925,6 @@ class Person extends DomainObject implements
         return $this;
     }
 
-    public function getProjectMembers()
-    {
-        return $this->project_members;
-    }
-
     /**
      * Is agent.
      *
@@ -1134,6 +1115,9 @@ class Person extends DomainObject implements
      */
     public function getHelper($name)
     {
+        // force load helper if was not loaded
+        $this->loadHelper($name);
+
         return $this->getHelperManager()->getHelper($name);
     }
 
@@ -2364,17 +2348,18 @@ class Person extends DomainObject implements
 
     /**
      * @param bool $skipPrimary
+     * @param bool $validatedOnly
      *
      * @return array
      */
-    public function getEmailAddresses($skipPrimary = false)
+    public function getEmailAddresses($skipPrimary = false, $validatedOnly = true)
     {
         $arr = [];
         foreach ($this->emails as $email) {
             if ($skipPrimary && $email->getEmail() === $this->primary_email->getEmail()) {
                 continue;
             }
-            if ($email->isValidated()) {
+            if ($email->isValidated() || !$validatedOnly) {
                 $arr[] = $email->getEmail();
             }
         }
@@ -3648,6 +3633,10 @@ class Person extends DomainObject implements
             }
         }
 
+        if ($this->language) {
+            $data['language'] = $this->language->toApiData();
+        }
+
         foreach ([
                      'id',
                      'first_name',
@@ -3781,23 +3770,6 @@ class Person extends DomainObject implements
                 return;
             }
         }
-    }
-
-    /**
-     * @return \DeskPRO\Bundle\AppBundle\Entity\TaskAssignment[]|ArrayCollection
-     */
-    public function getAssignedTasks()
-    {
-        return $this->assigned_tasks;
-    }
-
-    /**
-     * @param TaskAssignment $assignment
-     */
-    public function addAssignedTask(TaskAssignment $assignment)
-    {
-        $this->assigned_tasks->add($assignment);
-        $this->setModelField('assigned_tasks', $assignment);
     }
 
     /**
@@ -4524,15 +4496,6 @@ class Person extends DomainObject implements
                 'mappedBy'     => 'person',
             ]
         );
-        $metadata->mapOneToMany(
-            [
-                'fieldName'     => 'assigned_tasks',
-                'targetEntity'  => TaskAssignment::class,
-                'mappedBy'      => 'person',
-                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
-                'orphanRemoval' => true,
-            ]
-        );
 
         $metadata->mapOneToMany(
             [
@@ -4588,14 +4551,6 @@ class Person extends DomainObject implements
                         'onDelete'             => 'set null',
                     ],
                 ],
-            ]
-        );
-
-        $metadata->mapOneToMany(
-            [
-                'fieldName'    => 'project_members',
-                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\ProjectMember',
-                'mappedBy'     => 'person',
             ]
         );
 

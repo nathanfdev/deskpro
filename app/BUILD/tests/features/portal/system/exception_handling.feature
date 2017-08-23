@@ -8,12 +8,20 @@ Feature: Portal handles exceptions
       | default |
 
   Scenario: I check portal api access denied exception
-    When I send a POST request to "/portal/api/chats/create?dpsid=AAAAAAAAAAAAAAA"
+    Given a user with "user@deskpro.dev" email exists
+    And only the following Session records exist:
+      | #  | Auth            |
+      | s1 | AAAAAAAAAAAAAAA |
+    And only the following Chat records exist:
+      | #  | Person             | Session |
+      | c1 | {user@deskpro.dev} | {s1}    |
+
+    When I send a GET request to "/portal/api/chats/{c1}:BBBBBBBBBBBBBBB/polling"
     Then the response status code should be 403
     And the JSON node "code" should be equal to 403
 
   Scenario: I check portal api bad request denied exception
-    When I send a POST request to "/portal/api/chats/polling?dpsid=AAAAAAAAAAAAAAA"
+    When I send a POST request to "/portal/api/chats/polling"
     Then the response status code should be 404
     And the JSON node "code" should be equal to 404
 

@@ -485,5 +485,6 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid] = null;
 		delete DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid];
 		this.fireEvent('destroy', [this]);
+    this.destroyEvents();
 	}
 });

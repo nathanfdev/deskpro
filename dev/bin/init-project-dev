@@ -37,6 +37,6 @@ echo
 
 echo ">> Building new web assets"
 cd $DIR_ROOT/www/assets/BUILD/pub
-npm run gulp
+npm run gulp-dev
 echo ".. done"
 echo

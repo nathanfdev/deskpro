@@ -15,16 +15,28 @@
  */
 
 if (!function_exists('twig_template_get_attributes')) {
+
+    // This is defined because Deskpro warms twig caches with expectation that twig_template_get_attributes is defined (from c ext)
+    // but it might not be if customer doesnt have it.
+    // So this is a wrapper around getAttribute (which is what is used when c ext isnt installed).
+
     function twig_template_get_attributes($tpl, $object, $item, array $arguments = array(), $type = 'any', $isDefinedTest = false, $ignoreStrictCheck = false)
     {
         static $refl = [];
+
+        // From this build onwards, Template have public getAttribute so we
+        // don't need to use slow reflection
+        if (defined('DP_ACTIVE_BUILD') && DP_ACTIVE_BUILD >= 27928) {
+            if ($tpl instanceof \Application\DeskPRO\Twig\Template || $tpl instanceof DeskPRO\Bundle\PortalBundle\Twig\Template) {
+                return $tpl->getAttribute($object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
+            }
+        }
 
         $className = get_class($tpl);
         if (!isset($refl[$className])) {
             $refl[$className] = new \ReflectionMethod($className, 'getAttribute');
             $refl[$className]->setAccessible(true);
         }
-
         return $refl[$className]->invoke($tpl, $object, $item, $arguments, $type, $isDefinedTest, $ignoreStrictCheck);
     }
 }

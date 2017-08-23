@@ -6,14 +6,15 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 export const loadAdmintPhraseTranslations = createAction(
   'ADMIN_LOAD_PHRASE_TRANSLATIONS',
   () => () => new Promise((resolve) => {
-    const language = window.DESKPRO_PERSON_LANG_ID;
+    const language = window.DP_PERSON_LANG_ID;
+    const buildNum = window.DP_VERSION_NUMBER;
 
     const setPhrases = (data) => {
       agentPhrases.setPhrases(data);
       resolve();
     };
 
-    const cacheKey = `dpAdmin.phrases.${language}`;
+    const cacheKey = `dpAdmin.phrases.${language}.${buildNum}`;
     const cachedData = lscache.get(cacheKey);
     if (cachedData) {
       setPhrases(cachedData);

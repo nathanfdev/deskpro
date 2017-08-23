@@ -111,7 +111,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @recompiling = true
       request.then(
         () => @recompiling = false; @values = angular.copy(@$scope.values),
-        () => @serverError(); @recompiling = false
+        (message) => @recompiling = false; @serverError(message)
       )
       return request
 
@@ -123,13 +123,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             promises = [@saveValues(), @editWelcomeBox()]
           else
             promises = [true]
+
           all = @$q.all(promises)
-          all.then (
-            () =>
-              @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/commit').then(
-                () => @success('Changes were applied to the portal'); @commiting = false,
-                () => @serverError(); @commiting = false
-              )
+          all.then(
+            () => @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/commit').then(
+              () => @success('Changes were applied to the portal'); @commiting = false,
+              () => @serverError(); @commiting = false),
+            () => @commiting = false
           )
       )
 
@@ -441,6 +441,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     error: (message) => @showAlert(message, 'Changes were not applied')
     success: (message) => @Growl.success(message)
-    serverError: (message) => @error('Server error occurred. Unable to save data (' + message.message + ').')
+    serverError: (message) =>
+      if message and message.message
+        @error('Server error occurred. Unable to save data (' + message.message + ').')
+      else
+        @error('Server error occurred. Unable to save data.')
 
   AdminPortalCtrlPortalEditor.EXPORT_CTRL()

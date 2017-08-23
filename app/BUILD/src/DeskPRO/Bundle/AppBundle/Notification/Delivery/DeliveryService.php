@@ -44,12 +44,29 @@ class DeliveryService
     /**
      * @var bool
      */
-    protected $immediateDelivery;
+    protected $cliProcess;
 
-    public function __construct($immediateDeliver = false)
+    /**
+     * @var bool
+     */
+    protected $batchMode = false;
+
+    /**
+     * @var bool
+     */
+    protected $defaultBatchMode = true;
+
+    /**
+     * DeliveryService constructor.
+     *
+     * @param bool $cliProcess
+     */
+    public function __construct($cliProcess = false)
     {
-        $this->immediateDelivery = $immediateDeliver;
-        $this->collection        = new DeliveryHandlerCollection();
+        $this->cliProcess       = $cliProcess;
+        $this->batchMode        = !$cliProcess; // if cli then should be no batch until set manually
+        $this->defaultBatchMode = !$cliProcess;
+        $this->collection       = new DeliveryHandlerCollection();
     }
 
     /**
@@ -61,17 +78,53 @@ class DeliveryService
             /* @var DeliveryHandlerInterface $handler */
             $handler->schedule($message);
         }
-        if ($this->immediateDelivery) {
+        if ($this->cliProcess && !$this->batchMode) {
             $this->deliver();
         }
     }
 
-    public function deliver()
+    public function deliver($postpone = false)
     {
         foreach ($this->collection as $handler) {
             /* @var DeliveryHandlerInterface $handler */
-            $handler->deliver();
+            if ($postpone) {
+                $handler->deliverSoon();
+            } else {
+                $handler->deliver();
+            }
         }
+    }
+
+    /**
+     * @return $this
+     */
+    public function startBatch()
+    {
+        $this->batchMode = true;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function stopBatch()
+    {
+        $this->deliver();
+        $this->batchMode = false;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetBatch()
+    {
+        $this->batchMode = $this->defaultBatchMode;
+        $this->deliver();
+
+        return $this;
     }
 
     /**

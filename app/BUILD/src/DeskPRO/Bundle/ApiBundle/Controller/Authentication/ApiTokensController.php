@@ -40,12 +40,12 @@ use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
-use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\AbuseCaptchaFormException;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiTokenLoginType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiTokens\MagicLinkEmailType;
-use DeskPRO\Bundle\AppBundle\Form\Type\AuthenticationRequestType;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Util\ListUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -68,6 +68,31 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class ApiTokensController extends BaseController
 {
+    /**
+     * @ApiDoc(
+     *      description="creates a new api token based on the authenticated user's session",
+     *      output="token",
+     *      statusCodes={
+     *          201="Created token",
+     *          401="Invalid credentials",
+     *      }
+     * )
+     * @Rest\Get("/session")
+     * @Rest\View(serializerGroups={"token"})
+     *
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function newSessionTokenAction(Request $request) {
+        $person = $this->getUser();
+        if (!$person) {
+            $this->throwUnauthorized();
+        }
+
+        return View::create($this->wrap($this->createToken($person)), Response::HTTP_CREATED);
+    }
+
     /**
      * @ApiDoc(
      *      description="create a new api token",
@@ -95,33 +120,34 @@ class ApiTokensController extends BaseController
      */
     public function newTokenAction(Request $request)
     {
-        $form = $this->createForm(AuthenticationRequestType::class);
+        $form = $this->createForm(ApiTokenLoginType::class);
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        $data     = $form->getData();
-        $email    = $data['email'];
-        $password = $data['password'];
+        $email    = $form->get('email')->getData();
+        $password = $form->get('password')->getData();
 
-        $check = new LoginAbuseCheck($email, $request->getClientIp());
-        try {
-            $this->container->get('anti_abuse')->check($check);
-        } catch (AntiAbuseException $e) {
-        }
+        // abuse checks
+        $abuseCheck  = new LoginAbuseCheck($email, $request->getClientIp());
+        $abuseResult = $this->container->get('anti_abuse')->check($abuseCheck);
 
-        if ($check->isLockoutRecommended() || $check->isCaptchaRecommended()) {
+        if ($abuseResult->isLockoutRecommended()) {
             throw new TooManyRequestsHttpException();
         }
+        if (!$form->has('captcha') && $abuseResult->isCaptchaRecommended()) {
+            throw new AbuseCaptchaFormException($form);
+        }
 
+        // authenticate user
         $authResult = $this->get('dp_authentication_manager.agent')->authenticateFormLogin($email, $password);
 
         if (!$authResult->isValid()) {
             // failed on agent usersources, revert to user
             $authResult = $this->get('dp_authentication_manager.user')->authenticateFormLogin($email, $password);
-            $this->container->get('anti_abuse')->saveRateLimit($check);
             if (!$authResult->isValid()) {
+                $this->container->get('anti_abuse')->saveRateLimit($abuseResult);
                 $this->throwUnauthorized();
             }
         }

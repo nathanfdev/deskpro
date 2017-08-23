@@ -50,6 +50,7 @@ class EmailBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $commands = [
+            'Application\\EmailBundle\\Command\\CleanSendmailSourcesCommand',
             'Application\\EmailBundle\\Command\\SendSourceCommand',
             'Application\\EmailBundle\\Command\\GenTestEmailCommand',
             'Application\\EmailBundle\\Command\\ProcessQueueCommand',

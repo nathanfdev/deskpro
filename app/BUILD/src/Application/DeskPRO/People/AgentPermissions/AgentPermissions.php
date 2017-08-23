@@ -41,6 +41,7 @@ use Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PermissionValueInterface;
 use Application\DeskPRO\People\AgentPermissions\Value\ProblemsPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions;
+use Application\DeskPRO\People\AgentPermissions\Value\SnippetsPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
 use Application\DeskPRO\People\PermissionsSetInterface;
@@ -48,44 +49,49 @@ use Application\DeskPRO\People\PermissionsSetInterface;
 class AgentPermissions implements PermissionsSetInterface
 {
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\ChatPermissions
+     * @var ChatPermissions
      */
     public $chat;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\GeneralPermissions
+     * @var GeneralPermissions
      */
     public $general;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\OrgPermissions
+     * @var OrgPermissions
      */
     public $org;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\PeoplePermissions
+     * @var PeoplePermissions
      */
     public $people;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\PublishPermissions
+     * @var PublishPermissions
      */
     public $publish;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions
+     * @var TicketPermissions
      */
     public $ticket;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions
+     * @var TasksPermissions
      */
     public $tasks;
 
     /**
-     * @var \Application\DeskPRO\People\AgentPermissions\Value\ProblemsPermissions
+     * @var ProblemsPermissions
      */
     public $problems;
+
+    /**
+     * @var SnippetsPermissions
+     */
+    public $snippet;
 
     /**
      * @var array
@@ -99,6 +105,7 @@ class AgentPermissions implements PermissionsSetInterface
         'agent_general'  => 'general',
         'agent_tasks'    => 'tasks',
         'agent_problems' => 'problems',
+        'agent_snippets' => 'snippet',
     ];
 
     public function __construct()
@@ -111,6 +118,7 @@ class AgentPermissions implements PermissionsSetInterface
         $this->ticket   = new TicketPermissions();
         $this->tasks    = new TasksPermissions();
         $this->problems = new ProblemsPermissions();
+        $this->snippet  = new SnippetsPermissions();
     }
 
     /**
@@ -127,6 +135,7 @@ class AgentPermissions implements PermissionsSetInterface
             $this->ticket,
             $this->tasks,
             $this->problems,
+            $this->snippet,
         ];
     }
 

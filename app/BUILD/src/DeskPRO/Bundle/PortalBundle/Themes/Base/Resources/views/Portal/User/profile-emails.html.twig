@@ -52,18 +52,16 @@
                             <td nowrap>{{ email.email }}</td>
                             {% if person.emails|length > 1 %}
                                 {% if email.isPrimary %}
-                                    <td nowrap style="white-space: nowrap;" colspan="2">
+                                    <td>
                                         {{ phrase('portal.account.email-primary-description') }}
                                     </td>
                                 {% else %}
-                                    <td nowrap style="white-space: nowrap;">
+                                    <td>
                                         <a class="button button-secondary button-small"
                                            id="{{ email.email }}"
                                            href="{{ path('portal_user_profile_emails', { new_primary: email.id }) }}">
                                             {{ phrase('portal.account.email-btn-make-primary') }}
                                         </a>
-                                    </td>
-                                    <td nowrap style="white-space: nowrap;">
                                         <a class="button button-small cancel"
                                            href="{{ path('portal_user_profile_emails', { remove_email: email.id }) }}">
                                             {{ phrase('portal.account.email-btn-remove') }}

@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import map from 'lodash/map';
+import flatten from 'lodash/flatten';
+import throttle from 'lodash/throttle';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
@@ -182,7 +184,7 @@ export default class TicketForm extends PageWidget {
           newFields = newFields.filter(filterFn);
         }
 
-        newFields = _.map(layout.getMatchingFields(ticketReader), (v) => {
+        newFields = map(layout.getMatchingFields(ticketReader), (v) => {
           const id = v.id;
           switch (id) {
             case 'subject': return 'subject';
@@ -191,7 +193,7 @@ export default class TicketForm extends PageWidget {
           }
         });
 
-        return _.flatten(newFields);
+        return flatten(newFields);
       },
       onFieldsUpdated: (event) => {
         const $df = $formEl.find("[data-field='displayed_fields']").find('input[type="hidden"]');
@@ -213,7 +215,7 @@ export default class TicketForm extends PageWidget {
       });
     }
 
-    const updateHitter = _.throttle(() => this.dynamicForm.update(), 250);
+    const updateHitter = throttle(() => this.dynamicForm.update(), 250);
     allFormFields.on('change', () => setTimeout(() => updateHitter(), 0));
   }
 }

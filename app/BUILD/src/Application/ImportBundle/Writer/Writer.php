@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Writer;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
@@ -64,6 +65,11 @@ class Writer implements WriterInterface
     private $serializer;
 
     /**
+     * @var
+     */
+    private $appEnv;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -75,6 +81,7 @@ class Writer implements WriterInterface
      * @param EntityManager         $em
      * @param EntityWatcher         $entityWatcher
      * @param Serializer            $serializer
+     * @param AppEnvInterface       $appEnv
      * @param LoggerInterface       $logger
      */
     public function __construct(
@@ -82,12 +89,14 @@ class Writer implements WriterInterface
         EntityManager         $em,
         EntityWatcher         $entityWatcher,
         Serializer            $serializer,
+        AppEnvInterface       $appEnv,
         LoggerInterface       $logger
     ) {
         $this->entityHandlers = $entityHandlers;
         $this->em             = $em;
         $this->entityWatcher  = $entityWatcher;
         $this->serializer     = $serializer;
+        $this->appEnv         = $appEnv;
         $this->logger         = $logger;
     }
 
@@ -96,11 +105,13 @@ class Writer implements WriterInterface
      */
     public function writeData(PrimaryImportModelInterface $model, $dryRun = false)
     {
-        $handler = $this->entityHandlers->getHandler($model);
         $this->em->beginTransaction();
+        $this->appEnv->setRuntimeVar('dp.is_importing', true);
 
         try {
+            $handler = $this->entityHandlers->getHandler($model);
             $handler->writeModel($model);
+
             $this->em->flush();
             $this->entityWatcher->flushUpdatesQuiet();
 
@@ -125,6 +136,7 @@ class Writer implements WriterInterface
             $this->em->rollback();
         } finally {
             $this->em->clear();
+            $this->appEnv->unsetRuntimeVar('dp.is_importing');
         }
     }
 }

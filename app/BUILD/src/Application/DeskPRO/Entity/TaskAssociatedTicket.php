@@ -44,9 +44,29 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 class TaskAssociatedTicket extends TaskAssociation
 {
     /**
-   * @var Application\DeskPRO\Entity\Ticket
+   * @var \Application\DeskPRO\Entity\Ticket
    */
   protected $ticket;
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket($ticket)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
 
     //###########################################################################
     // Doctrine Metadata

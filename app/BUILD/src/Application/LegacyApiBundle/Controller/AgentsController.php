@@ -32,6 +32,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
@@ -46,6 +48,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 use Application\DeskPRO\People\Agents\AgentDelete;
 use Application\DeskPRO\People\Agents\EditAgent;
 use Application\DeskPRO\People\Agents\Type\EditAgentType;
+use Application\DeskPRO\People\PasswordPolicyValidator;
 use Application\DeskPRO\People\PermissionUtil;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -123,7 +126,7 @@ class AgentsController extends AbstractController implements ProtectedController
     {
         $data = ['agents' => []];
 
-        $online_agents_userchat = $this->em->getRepository('DeskPRO:Person')->getActiveAgentIdsForUserChat();
+        $online_agents_userchat = $this->em->getRepository(Person::class)->getActiveAgentIdsForUserChat();
         $online_agents_userchat = array_fill_keys($online_agents_userchat, true);
 
         $mode = 'normal';
@@ -182,7 +185,7 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     public function listDeletedAgentsAction()
     {
-        $deleted_agents = $this->em->getRepository('DeskPRO:Person')->getDeletedAgents();
+        $deleted_agents = $this->em->getRepository(Person::class)->getDeletedAgents();
 
         $data = ['agents' => []];
 
@@ -299,7 +302,7 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     public function getDeletedAgentAction($id)
     {
-        $agent = $this->em->find('DeskPRO:Person', $id);
+        $agent = $this->em->find(Person::class, $id);
 
         if (!$agent || !$agent->is_agent || !$agent->is_deleted) {
             throw $this->createNotFoundException();
@@ -587,7 +590,7 @@ class AgentsController extends AbstractController implements ProtectedController
             return $email_validator->isValidUserEmail($e);
         });
 
-        $existPersons = $this->em->getRepository('DeskPRO:Person')->findByEmails($set_emails);
+        $existPersons = $this->em->getRepository(Person::class)->findByEmails($set_emails);
         $agent        = reset($existPersons);
 
         // we have a dupe email error
@@ -612,7 +615,7 @@ class AgentsController extends AbstractController implements ProtectedController
                     'person_id'   => $person->getId(),
                     'person_name' => $person->getDisplayName(),
                     'is_deleted'  => $person->isDeleted(),
-                    'email'       => implode(', ', $person->getEmailAddresses()),
+                    'email'       => implode(', ', $person->getEmailAddresses(false, false)),
                 ];
             }
 
@@ -635,7 +638,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 if (!defined('DPC_IS_CLOUD')) {
                     $max_agents = License::getLicense()->getMaxAgents();
                     if ($max_agents) {
-                        $active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
+                        $active_agents = $this->em->getRepository(Person::class)->getActiveAgentsCount();
 
                         if ($active_agents >= $max_agents) {
                             return $this->createApiErrorInfoResponse(
@@ -976,7 +979,7 @@ class AgentsController extends AbstractController implements ProtectedController
                 $this->em->persist($person);
             }
 
-            $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($data['set_picture_blob']);
+            $blob = $this->em->getRepository(Blob::class)->getByAuthCode($data['set_picture_blob']);
             if ($blob && $blob->isImage()) {
                 $person->picture_blob = $blob;
                 $this->em->persist($person);
@@ -989,7 +992,7 @@ class AgentsController extends AbstractController implements ProtectedController
     /**
      * @param $id
      *
-     * @return JsonResponse
+     * @return JsonResponse|Response
      *
      * SWG\Api(
      * 	path="/agents/{id}/reset-password",
@@ -1019,10 +1022,10 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $password = $this->in->getString('set_password');
         if ($password) {
-            /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
-            $password_validator = $this->container->getSystemService('password_policy_validator');
-            $error              = '';
-            if (!$password_validator->checkPassword($password, $agent, $error)) {
+            /** @var PasswordPolicyValidator $passwordValidator */
+            $passwordValidator = $this->container->getSystemService('password_policy_validator');
+            $error             = '';
+            if (!$passwordValidator->checkPassword($password, $agent, $error)) {
                 return $this->createApiErrorInfoResponse('invalid_password', 'Password does not adhere to agent password policy.', ['error_code' => $error]);
             }
         }
@@ -1045,10 +1048,10 @@ class AgentsController extends AbstractController implements ProtectedController
         // Clear possible active sessions
         $this->db->delete('sessions', ['person_id' => $agent->id]);
 
-        $did_email = false;
+        $didEmail = false;
         if (!$this->in->getBool('skip_email')) {
-            $did_email = $agent->getPrimaryEmailAddress();
-            $message   = $this->container->getMailer()->createMessage();
+            $didEmail = $agent->getPrimaryEmailAddress();
+            $message  = $this->container->getMailer()->createMessage();
             $message->setToPerson($agent);
             $message->setTemplate('DeskPRO:emails_agent:password-reset-alert.html.twig', [
                 'agent'        => $agent,
@@ -1059,7 +1062,7 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         return $this->createSuccessResponse([
-            'emailed' => $did_email,
+            'emailed' => $didEmail,
         ]);
     }
 
@@ -1176,7 +1179,7 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     public function undeleteAgentAction($id)
     {
-        $agent = $this->em->find('DeskPRO:Person', $id);
+        $agent = $this->em->find(Person::class, $id);
 
         if (!$agent || !$agent->is_agent || !$agent->is_deleted) {
             throw $this->createNotFoundException();
@@ -1185,7 +1188,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $max_agents = License::getLicense()->getMaxAgents();
 
         if ($max_agents) {
-            $active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
+            $active_agents = $this->em->getRepository(Person::class)->getActiveAgentsCount();
 
             if ($active_agents >= $max_agents) {
                 return $this->createApiErrorInfoResponse(
@@ -1290,11 +1293,11 @@ class AgentsController extends AbstractController implements ProtectedController
 
             $loader  = new AgentNotifPrefsLoader($agent, $this->em);
             $prefs   = $loader->getPrefs();
-            $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($agent);
+            $filters = $this->em->getRepository(LegacyTicketFilter::class)->getFiltersForPerson($agent);
         } else {
             $agent   = null;
             $prefs   = new AgentNotifPrefs();
-            $filters = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
+            $filters = $this->em->getRepository(LegacyTicketFilter::class)->getFiltersForPerson($this->person);
         }
 
         $table_gen = new AgentNotifPrefsTable($prefs, $this->container->getTranslator());
@@ -1393,7 +1396,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $agent_emails = [];
 
         if ($filename = $this->in->getString('filename')) {
-            if (!$blob = $this->em->find('DeskPRO:Blob', $filename)) {
+            if (!$blob = $this->em->find(Blob::class, $filename)) {
                 return $this->createApiErrorResponse('file_not_found', 'File not found');
             }
 
@@ -1490,7 +1493,7 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     protected function bulkCreateAgentsFromFile($blobId)
     {
-        if (!$blob = $this->em->find('DeskPRO:Blob', $blobId)) {
+        if (!$blob = $this->em->find(Blob::class, $blobId)) {
             return $this->createApiErrorResponse('file_not_found', 'File not found');
         }
 
@@ -1509,7 +1512,7 @@ class AgentsController extends AbstractController implements ProtectedController
         }
 
         $prefs             = new AgentNotifPrefs();
-        $filters           = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person);
+        $filters           = $this->em->getRepository(LegacyTicketFilter::class)->getFiltersForPerson($this->person);
         $defaultFilterSubs = [];
         $defaultOtherSubs  = [];
         foreach ($filters as $filter) {

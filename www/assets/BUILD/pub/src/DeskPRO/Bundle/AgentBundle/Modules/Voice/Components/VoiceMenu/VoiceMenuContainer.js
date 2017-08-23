@@ -5,19 +5,22 @@ import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore
 import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
-import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector } from '../../Selectors/client';
+import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector } from '../../Selectors/client';
 
 @connect(state => ({
-  me:                   meSelector(state),
-  agents:               voiceAgentsSelector(state),
-  onlineAgents:         voiceOnlineAgentsSelector(state),
-  people:               allPeopleSelector(state),
-  incomingCall:         incomingCallSelector(state),
-  outboundCallsEnabled: outboundCallsEnabledSelector(state),
-  outboundNumber:       outboundNumberSelector(state),
-  voiceEnabled:         callsEnabledSelector(state),
-  outgoingCall:         outgoingCallSelector(state),
-  ringingVolume:        ringingVolumeSelector(state)
+  me:                    meSelector(state),
+  agents:                voiceAgentsSelector(state),
+  onlineAgents:          voiceOnlineAgentsSelector(state),
+  people:                allPeopleSelector(state),
+  incomingCall:          incomingCallSelector(state),
+  outboundCallsEnabled:  outboundCallsEnabledSelector(state),
+  outboundNumber:        outboundNumberSelector(state),
+  voiceEnabled:          isVoiceEnabledSelector(state),
+  callsEnabled:          callsEnabledSelector(state),
+  outgoingCall:          outgoingCallSelector(state),
+  ringingVolume:         ringingVolumeSelector(state),
+  agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
+  micEnabled:            isVoiceMicEnabled(state)
 }))
 class VoiceMenuContainer extends React.Component {
 

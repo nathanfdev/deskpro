@@ -33,10 +33,10 @@
 					<input type="text" name="user_name" ng-model="form_vals.user_name" class="form-control" required />
 					<p class="help-block" ng-show="has_submit && form.user_name.$error.required">Please enter your name</p>
 				</div>
-				<div class="form-group" ng-class="{'has-warning': has_submit && (form.email_address.$error.required || form.email_address.$error.email) }">
+				<div class="form-group" ng-class="{'has-warning': (has_submit || manual_requested) && (form.email_address.$error.required || form.email_address.$error.email) }">
 					<label>Your Email Address</label>
 					<input type="email" name="email_address" ng-model="form_vals.email_address" class="form-control" required />
-					<p class="help-block" ng-show="has_submit && (form.email_address.$error.required || form.email_address.$error.email)">Please enter a valid email address</p>
+					<p class="help-block" ng-show="(has_submit || manual_requested) && (form.email_address.$error.required || form.email_address.$error.email)">Please enter a valid email address</p>
 				</div>
 
 				<div class="form-group" ng-class="{'has-warning': has_submit && form.org_name.$error.required}">

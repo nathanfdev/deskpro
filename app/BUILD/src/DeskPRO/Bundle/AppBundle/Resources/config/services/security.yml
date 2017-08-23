@@ -1,5 +1,6 @@
 parameters:
  security.authentication.switchuser_listener.class: DeskPRO\Bundle\AppBundle\Security\SwitchUserListener
+ security.http_utils.class: DeskPRO\Bundle\AppBundle\Security\Http\HttpUtils
 
 services:
 
@@ -221,6 +222,11 @@ services:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PersonOnboardingVoter
     tags:
       - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.snippet:
+      class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\SnippetVoter
+      tags:
+        - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.tasks:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter

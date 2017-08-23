@@ -179,7 +179,7 @@
                         {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings', '{brandId: brandId}'), 'portal.news_settings', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings', '{brandId: brandId}'), 'portal.downloads_settings', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings', '{brandId: brandId}'), 'portal.feedback_settings', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
-                        {% if app.hasFeature('guides') %}
+                        {% if app.hasBeta('guides') %}
                             {{ nav.list_subitem_regex_statemark('Guides', ng_href('portal.guides_settings', '{brandId: brandId}'), 'portal.guides_settings', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_guides || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {%  endif  %}
                     </div>
@@ -196,7 +196,7 @@
                     {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
                 {{ nav.list_item_group_end() }}
                 {% if app.hasVoice() %}
-                    {{ nav.list_item_group(phrase('adm.general.voice_channel'), 'fa-comments-o', '', 'voice-channel') }}
+                    {{ nav.list_item_group(phrase('adm.general.voice_channel'), 'fa-phone', '', 'voice-channel') }}
                         {{ nav.list_subitem('General Settings', ng_href('voice-channel.accounts'), 'voice-channel.accounts', 'fa-cog') }}
                         {{ nav.list_subitem('Numbers', ng_href('voice-channel.numbers'), 'voice-channel.numbers', 'fa-th') }}
                         {{ nav.list_subitem('Extensions', ng_href('voice-channel.extensions'), 'voice-channel.extensions', 'fa-bullseye') }}
@@ -218,6 +218,7 @@
                     {{ nav.list_item_group(phrase('adm.general.apps_server'), 'fa-database', '', 'server') }}
                         {{ nav.list_subitem('Server Settings', ng_href('server.server_settings'), 'server.server_settings', 'fa-cog') }}
                         {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'server.settings_elastic_search', 'fa-search') }}
+                        {{ nav.list_subitem('Realtime events (notifications)', ng_href('server.notifications'), 'server.notifications', 'fa-rss') }}
                         {{ nav.list_subitem('Report File', ng_href('server.report_file'), 'server.report_file', 'fa-download') }}
                         {{ nav.list_subitem('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'fa-check-square-o') }}
                         {{ nav.list_subitem('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield') }}
@@ -227,6 +228,7 @@
                         {{ nav.list_subitem('MySQL Info', ng_href('server.mysql_info'), 'server.mysql_info', 'fa-hdd-o') }}
                         {{ nav.list_subitem('Error Logs', ng_href('server.error_logs'), 'server.error_logs', 'fa-exclamation') }}
                         {{ nav.list_subitem('Incidents', ng_href('server.incidents'), 'server.incidents', 'fa-exclamation') }}
+                        {{ nav.list_subitem('Jobs', ng_href('server.jobs'), 'server.jobs', 'fa-clock-o') }}
                     {{ nav.list_item_group_end() }}
                 {% endif %}
 
@@ -317,6 +319,7 @@
         window.DP_IS_DEV_ENV        = {% if app.isDevEnv() %}true{% else %}false{% endif %};
         window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};
         window.DP_HAS_DEV           = {% if app.hasFeature('dev') %}true{% else %}false{% endif %};
+        window.DP_VERSION_NUMBER    = '{{ app.getVersionName() }}';
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         {% if app.isCloud() %}
         window.DPC_SITE_DOMAIN = '{{ constant('DPC_SITE_DOMAIN') }}';
@@ -335,6 +338,7 @@
 
         window.DP_ZEROCLIPBOARD_PATH = '{{ asset('bower_components/zeroclipboard/dist/ZeroClipboard.swf') }}';
         window.DP_ADMIN_BUNDLE_PATH = '{{ asset('DeskPRO_AdminBundle.js', 'app_assets') }}';
+        window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
     </script>
     {{ js_error_tracking('admin_interface') }}
     <script type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>

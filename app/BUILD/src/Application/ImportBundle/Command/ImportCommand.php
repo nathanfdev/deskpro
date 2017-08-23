@@ -57,6 +57,7 @@ class ImportCommand extends AbstractImporterCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->checkDbCredentials();
         $this->setLoggerHandlers($input, $output);
 
         $appEnv   = $this->getContainer()->get('deskpro.app_env');

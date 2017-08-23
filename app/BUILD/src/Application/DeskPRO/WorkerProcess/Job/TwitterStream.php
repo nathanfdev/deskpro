@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\TwitterAccountFollower;
 use Application\DeskPRO\Entity\TwitterAccountFriend;
 use Application\DeskPRO\Entity\TwitterAccountStatus;
 use Application\DeskPRO\Entity\TwitterUser;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
  * Processes Twitter stream events.
@@ -365,6 +366,7 @@ class TwitterStream extends AbstractJob
                 }
             }
         } else {
+            $eventDispatcher = App::getContainer()->get('event_dispatcher');
             switch ($eventType) {
                 case 'follow':
                     if ($sourceUser->id == $account->getUserId()) {
@@ -374,13 +376,13 @@ class TwitterStream extends AbstractJob
                             $friend->account = $account;
                             $friend->user    = $targetUser;
                             $this->em->persist($friend);
-
-                            App::getDb()->insert('client_messages', [
-                                'channel'      => 'agent.twitter-friend',
-                                'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                                'date_created' => date('Y-m-d H:i:s'),
-                                'data'         => serialize(['action' => 'new', 'account_id' => $account->id]),
-                            ]);
+                            $eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                                'agent.twitter-friend',
+                                [
+                                    'action'     => 'new',
+                                    'account_id' => $account->getId(),
+                                ]
+                            ));
                         }
                     } elseif ($targetUser->id == $account->getUserId()) {
                         // being followed
@@ -393,12 +395,13 @@ class TwitterStream extends AbstractJob
                             $follower->is_archived = $friend ? true : false;
                             $this->em->persist($follower);
 
-                            App::getDb()->insert('client_messages', [
-                                'channel'      => 'agent.twitter-follower',
-                                'auth'         => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                                'date_created' => date('Y-m-d H:i:s'),
-                                'data'         => serialize(['action' => ($friend ? 'new-archived' : 'new'), 'account_id' => $account->id]),
-                            ]);
+                            $eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                                'agent.twitter-follower',
+                                [
+                                    'action'     => ($friend ? 'new-archived' : 'new'),
+                                    'account_id' => $account->getId(),
+                                ]
+                            ));
                         }
                     }
                     break;
@@ -411,13 +414,13 @@ class TwitterStream extends AbstractJob
                             $this->em->remove($friend);
                             $friend = null;
 
-                            App::getDb()->insert('client_messages', [
-                                'channel'       => 'agent.twitter-friend',
-                                'auth'          => \Orb\Util\DpStrings::random(15, \Orb\Util\Strings::CHARS_KEY),
-                                'date_created'  => date('Y-m-d H:i:s'),
-                                'data'          => serialize(['action' => 'removed', 'account_id' => $account->id]),
-                                'handler_class' => 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray',
-                            ]);
+                            $eventDispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                                'agent.twitter-friend',
+                                [
+                                    'action'     => 'removed',
+                                    'account_id' => $account->getId(),
+                                ]
+                            ));
                         }
                     }
                     break;

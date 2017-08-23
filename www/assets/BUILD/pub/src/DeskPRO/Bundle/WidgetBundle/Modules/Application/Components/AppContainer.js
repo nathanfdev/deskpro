@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import { Trigger } from './Trigger/Trigger';
 import Widget from './Widget/Widget';
 import { windowResize } from '../Actions/dpWindowActions';

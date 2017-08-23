@@ -22,3 +22,24 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.guides:
+    class: DeskPRO\Bundle\AppBundle\Features\GuidesFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
+
+  deskpro.features.new_snippets:
+    class: DeskPRO\Bundle\AppBundle\Features\NewSnippetsFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
+
+  deskpro.features.new_forward:
+      class: DeskPRO\Bundle\AppBundle\Features\NewForwardFeature
+      arguments:
+        - "@settings_resolver"
+      tags:
+        - { name: deskpro.feature }

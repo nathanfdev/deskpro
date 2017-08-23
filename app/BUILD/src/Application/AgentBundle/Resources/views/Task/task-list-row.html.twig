@@ -38,21 +38,45 @@
 			<ul>
 					<li class="noval opt-trigger date_due"><label>{% if not task.date_due %}{{ phrase('agent.tasks.no_due_date') }}{% else %}{{ task.date_due|date('day') }}{% endif %}</label><span class="drop-icon"></span></li>
 					<li class="noval opt-trigger time_due" style="{% if not task.date_due %}display: none;"{% endif %}"><label>{% if not task.hasDueTime() %}{{ phrase('agent.tasks.no_due_time') }}{% else %}{{ task.date_due|date('H:i') }}{% endif %}</label><span class="drop-icon"></span></li>
-					<li class="noval opt-trigger visibility"><label>{% if task.visibility %}{{ phrase('agent.general.public') }}{% else %}{{ phrase('agent.general.private') }}{% endif %}</label><span class="drop-icon"></span></li>
+					<li class="noval opt-trigger visibility" style="overflow:hidden; height: 18px; position: relative;">
+						<label>
+							{% if task.assigned_department %}{{ task.assigned_department.title }}
+							{% elseif task.visibility and task.assigned_agent.id == app.user.id %}{{ phrase('agent.general.public') }}
+							{% else %} {{ phrase('agent.general.private') }} {% endif %}
+						</label><span class="drop-icon"></span>
+						<select class="visibility_sel dpe_select" data-invisible-trigger="1">
+							<option value="0">{{ phrase('agent.general.private') }}</option>
+							<option value="1">{{ phrase('agent.general.public') }}</option>
+							<optgroup label="{{ phrase('agent.general.department') }}">
+								{% for department in app.departments.getPersonDepartments(app.user, 'tickets', [], 'assign') %}
+									{% if department.children %}
+										<option disabled="disabled">{{ department.title }}</option>
+										{% for subDepartment in department.children %}
+											<option value="department:{{ subDepartment.id }}" {% if task.assigned_department and task.assigned_department.id == subDepartment.id %}selected="selected"{% endif %}>--{{ subDepartment.title }}</option>
+										{% endfor %}
+									{% else %}
+										<option value="department:{{ department.id }}" {% if task.assigned_department and task.assigned_department.id == department.id %}selected="selected"{% endif %}>{{ department.title }}</option>
+									{% endif %}
+								{% endfor %}
+							</optgroup>
+						</select>
+					</li>
+
 					<li class="noval opt-trigger assigned_agent" style="overflow:hidden; height: 18px; position: relative;">
 						<label>
 							{% if task.assigned_agent and task.assigned_agent.id != app.user.id %}{{ task.assigned_agent.display_name }}
+							{% elseif task.assigned_agent and task.assigned_agent.id == app.user.id %}{{ phrase('agent.general.me') }}
 							{% elseif task.assigned_agent_team %}{{ task.assigned_agent_team.name }}
-							{% else %}{{ phrase('agent.general.me') }}{% endif %}
+							{% else %} Unassigned {% endif %}
 						</label><span class="drop-icon"></span>
 						<select class="agents_sel dpe_select"  style="min-width: 170px;" data-invisible-trigger="1">
-							<optgroup label="Agents">
+							<optgroup label="{{ phrase('agent.general.agents') }}">
 								{% for agent in app.agents.getAgents() %}
-									<option {% if (task.assigned_agent and agent.id == task.assigned_agent.id) or (not task.assigned_agent and not task.assigned_agent_team and agent.id == app.user.id) %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
+									<option {% if task.assigned_agent and agent.id == task.assigned_agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="agent:{{ agent.id }}">{{ agent.display_name }}</option>
 								{% endfor %}
 							</optgroup>
 							{% if app.agent_teams.getTeams()|length %}
-								<optgroup label="Teams">
+								<optgroup label="{{ phrase('agent.general.teams') }}">
 									{% for team in app.agent_teams.getTeams() %}
 										<option value="agent_team:{{ team.id }}" {% if task.assigned_agent_team and task.assigned_agent_team.id == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 									{% endfor %}

@@ -67,8 +67,10 @@ class CsvUploadController extends AbstractController implements ProtectedControl
         $csv_upload = $this->container->getSystemService('csv_upload');
         $options    = $this->in->getArrayValue('options');
 
-        $result                  = $csv_upload->upload($file, $options);
-        $result['custom_fields'] = $this->getApiData($result['custom_fields']);
+        $result = $csv_upload->upload($file, $options);
+        if (isset($result['custom_fields'])) {
+            $result['custom_fields'] = $this->getApiData($result['custom_fields']);
+        }
 
         return $this->createApiResponse($result);
     }

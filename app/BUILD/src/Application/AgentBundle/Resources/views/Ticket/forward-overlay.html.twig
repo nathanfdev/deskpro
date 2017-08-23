@@ -4,7 +4,7 @@
 	</div>
 
 	<div class="overlay-content" style="overflow: hidden;">
-		<form action="{{ path('agent_ticket_fwd_send', {ticket_id: ticket.id, message_id: message.id}) }}" method="post">
+		<form action="{{ path('agent_ticket_fwd_send_legacy', {ticket_id: ticket.id, message_id: message.id}) }}" method="post">
 			<div class="forward-wrapper">
 				<div class="header-line">
 					<div class="label">

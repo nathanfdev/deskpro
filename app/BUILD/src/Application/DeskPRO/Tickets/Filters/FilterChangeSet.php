@@ -34,8 +34,10 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class FilterChangeSet.
@@ -68,21 +70,42 @@ class FilterChangeSet
     private $field_versions = [];
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+
+    /**
+     * @var NotificationEventManager
+     */
+    private $eventManager;
+
+    /**
      * Constructor.
      *
-     * @param Ticket $ticket
-     * @param int    $state_id
-     * @param array  $affected_filters
-     * @param array  $changed_filters
-     * @param array  $field_versions
+     * @param Ticket                   $ticket
+     * @param int                      $state_id
+     * @param array                    $affected_filters
+     * @param array                    $changed_filters
+     * @param array                    $field_versions
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param NotificationEventManager $eventManager
      */
-    public function __construct(Ticket $ticket, $state_id, array $affected_filters, array $changed_filters, array $field_versions)
-    {
+    public function __construct(
+        Ticket $ticket,
+        $state_id,
+        array $affected_filters,
+        array $changed_filters,
+        array $field_versions,
+        EventDispatcherInterface $eventDispatcher,
+        NotificationEventManager $eventManager
+    ) {
         $this->ticket           = $ticket;
         $this->state_id         = $state_id;
         $this->affected_filters = $affected_filters;
         $this->changed_filters  = $changed_filters;
         $this->field_versions   = $field_versions;
+        $this->eventDispatcher  = $eventDispatcher;
+        $this->eventManager     = $eventManager;
     }
 
     /**
@@ -129,17 +152,9 @@ class FilterChangeSet
      * Get an array of client messages to send to clients about lists updating.
      *
      * @param array $onlineAgentsIds
-     *
-     * @return \Application\DeskPRO\Entity\ClientMessage[]
      */
     public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
-        $messages = [];
-
-        //------------------------------
-        // CMs for filters
-        //------------------------------
-
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
@@ -151,17 +166,18 @@ class FilterChangeSet
                     continue;
                 }
 
-                $cm = new ClientMessage();
-                $cm->setChannel('agent.filter-update');
-                $cm->setData([
-                    'ticket_id' => $ticketId,
-                    'filter_id' => $filterId,
-                    'op'        => 'add',
-                ]);
-                $cm->setForPerson($agent);
-                $cm->setCreatedByClient('sys');
-
-                $messages[] = $cm;
+                $this->eventDispatcher->dispatch(
+                    TicketUpdatedEvent::EVENT_NAME,
+                    new TicketUpdatedEvent(
+                        'agent.filter-update',
+                        $ticketId,
+                        [
+                            'op'        => 'add',
+                            'filter_id' => $filterId,
+                            'target'    => $agent,
+                        ]
+                    )
+                );
             }
 
             foreach ($filter_change->getAgentsRemoved() as $agent) {
@@ -169,20 +185,20 @@ class FilterChangeSet
                     continue;
                 }
 
-                $cm = new ClientMessage();
-                $cm->setChannel('agent.filter-update');
-                $cm->setData([
-                    'ticket_id' => $ticketId,
-                    'filter_id' => $filterId,
-                    'op'        => 'del',
-                ]);
-                $cm->setForPerson($agent);
-                $cm->setCreatedByClient('sys');
-
-                $messages[] = $cm;
+                $this->eventDispatcher->dispatch(
+                    TicketUpdatedEvent::EVENT_NAME,
+                    new TicketUpdatedEvent(
+                        'agent.filter-update',
+                        $ticketId,
+                        [
+                            'op'        => 'del',
+                            'filter_id' => $filterId,
+                            'target'    => $agent,
+                        ]
+                    )
+                );
             }
         }
-
-        return $messages;
+        $this->eventManager->deliver(true);
     }
 }

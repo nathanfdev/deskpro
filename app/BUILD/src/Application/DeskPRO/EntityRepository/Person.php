@@ -166,6 +166,25 @@ class Person extends AbstractEntityRepository
             ->execute();
     }
 
+    /**
+     * @param \Application\DeskPRO\Entity\AgentTeam[] $teams
+     *
+     * @return PersonEntity[]
+     */
+    public function getAgentsInTeams($teams)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT p
+            FROM DeskPRO:Person p
+            JOIN p.teams t
+            WHERE p.is_agent = true
+            AND p.is_deleted = false
+            AND t.id IN (:teams)
+        ')
+            ->setParameter('teams', $teams)
+            ->execute();
+    }
+
     public function findAgentByName($name)
     {
         try {
@@ -742,7 +761,6 @@ class Person extends AbstractEntityRepository
             if (!$person) {
                 $person = new PersonEntity();
                 $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
-                $person->setEmail('incoming.call.'.$phoneNumber.'@example.com');
 
                 $this->_em->persist($person);
                 $this->_em->flush();

@@ -10,9 +10,12 @@ import { callsEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allNumbersSelector } from '../Selectors/numbers';
+import { closeIframes } from '../../Application/Actions/bootstrapActions';
 
+export const setMicEnabled = createAction('VOICE_AGENT_SET_MIC_ENABLED');
 export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
 export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
+export const setVoiceSettings = createAction('VOICE_AGENT_SET_SETTINGS');
 export const addIncomingCall = createAction('VOICE_AGENT_ADD_RESERVATION');
 export const updateIncomigCall = createAction('VOICE_AGENT_UPDATE_RESERVATION');
 export const removeIncomingCall = createAction('VOICE_AGENT_REMOVE_RESERVATION');
@@ -52,164 +55,180 @@ export const voiceBootstrap = createAction(
       return;
     }
 
-    worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid, offlineSid);
-    worker.on('ready', () => {
-      console.log('worker ready');
-    });
-    worker.on('reservation.created', (reservation) => {
-      const personId = reservation.task.attributes.deskpro_person_id;
-      if (personId) {
-        dispatch(loadBatch('Person', personId, 'all'));
-      }
+    // check if mic is enabled
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+        // mark the mic as enabled
+        stream.stop();
+        dispatch(setMicEnabled(true));
 
-      dispatch(addIncomingCall(reservation));
-    });
-    worker.on('reservation.accepted', () => {
-      console.log('reservation.accepted');
-      window.DeskPRO_Window.getMessageChanneler().poller.setInterval(2000);
-    });
-    worker.on('reservation.canceled', (reservation) => {
-      console.log('reservation.canceled');
-      dispatch(removeIncomingCall(reservation));
-      worker.update('ActivitySid', idleSid);
-    });
-    worker.on('reservation.timeout', (reservation) => {
-      console.log('reservation.timeout');
-      dispatch(removeIncomingCall(reservation));
-      worker.update('ActivitySid', idleSid);
-    });
-    worker.on('reservation.rescinded', (reservation) => {
-      console.log('reservation.rescinded');
-      worker.update('ActivitySid', idleSid);
+        // init twilio worker
+        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid, offlineSid);
+        worker.on('ready', () => {
+          console.log('worker ready');
+        });
+        worker.on('reservation.created', (reservation) => {
+          const personId = reservation.task.attributes.deskpro_person_id;
+          if (personId) {
+            dispatch(loadBatch('Person', personId, 'all'));
+          }
 
-      // another agent have already accepted the call
-      if (reservation.task.assignmentStatus === 'assigned') {
-        console.log('reservation.workerSid');
-        dispatch(updateIncomigCall(reservation));
-
-        // fetch the ticket info to get assigned agent
-        const callId = reservation.task.attributes.deskpro_call_id;
-        const fetchTimeout = setInterval(() => {
-          api.sendGet(`DP_API/voice_client/phone_call/${callId}/ticket`).success(({ data }) => {
-            if (data.agent) {
-              clearInterval(fetchTimeout);
-
-              reservation.task.attributes.deskpro_assigned_agent = data.agent;
-              dispatch(updateIncomigCall(reservation));
-
-              // remove the reservation by timeout to show that another agent accepted the call
-              setTimeout(() => dispatch(removeIncomingCall(reservation)), 5000);
-            }
-          });
-        }, 500);
-      } else {
-        dispatch(removeIncomingCall(reservation));
-      }
-    });
-    worker.on('connected', (data) => {
-      console.log('worker connected');
-      console.log(data);
-    });
-    worker.on('disconnected', (data) => {
-      console.log('worker disconnected');
-      console.log(data);
-    });
-    worker.on('error', (data) => {
-      console.log('worker error');
-      console.log(data);
-    });
-
-    try {
-      window.Twilio.Device.setup(phoneToken, { debug: true });
-      window.Twilio.Device.ready(() => {
-        console.log('phone ready');
-      });
-      window.Twilio.Device.error((error) => {
-        console.log('device error');
-        console.log(error);
-      });
-      window.Twilio.Device.connect((connection) => {
-        // if we have call id on device connect then it means we get an incoming phone call
-        // assign agent to the phone call's ticket
-        if (!connection.message.Outbound) {
-          // create and open a ticket
-          api
-            .sendPut(`DP_API/voice_client/phone_call/${connection.message.CallId}/assign_agent`)
-            .success(({ data }) => {
-              connection.message.TicketId = data.id;
-              window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
-            });
-        }
-
-        dispatch(addConnection(connection));
-        connection.disconnect(() => {
-          // call has ended
-          // unset incoming and outgoing calls and set worker activity to idle
-          dispatch(removeConnection(connection));
-          dispatch(resetOutgoingCall());
-
+          dispatch(addIncomingCall(reservation));
+        });
+        worker.on('reservation.accepted', () => {
+          console.log('reservation.accepted');
+          window.DeskPRO_Window.getMessageChanneler().poller.setInterval(2000);
+        });
+        worker.on('reservation.canceled', (reservation) => {
+          console.log('reservation.canceled');
+          dispatch(removeIncomingCall(reservation));
           worker.update('ActivitySid', idleSid);
         });
+        worker.on('reservation.timeout', (reservation) => {
+          console.log('reservation.timeout');
+          dispatch(removeIncomingCall(reservation));
+          worker.update('ActivitySid', idleSid);
+        });
+        worker.on('reservation.rescinded', (reservation) => {
+          console.log('reservation.rescinded');
+          worker.update('ActivitySid', idleSid);
+
+          // another agent have already accepted the call
+          if (reservation.task.assignmentStatus === 'assigned') {
+            console.log('reservation.workerSid');
+            dispatch(updateIncomigCall(reservation));
+
+            // fetch the ticket info to get assigned agent
+            const callId = reservation.task.attributes.deskpro_call_id;
+            const fetchTimeout = setInterval(() => {
+              api.sendGet(`DP_API/voice_client/phone_call/${callId}/ticket`).success(({ data }) => {
+                if (data.agent) {
+                  clearInterval(fetchTimeout);
+
+                  reservation.task.attributes.deskpro_assigned_agent = data.agent;
+                  dispatch(updateIncomigCall(reservation));
+
+                  // remove the reservation by timeout to show that another agent accepted the call
+                  setTimeout(() => dispatch(removeIncomingCall(reservation)), 5000);
+                }
+              });
+            }, 500);
+          } else {
+            dispatch(removeIncomingCall(reservation));
+          }
+        });
+        worker.on('connected', (data) => {
+          console.log('worker connected');
+          console.log(data);
+        });
+        worker.on('disconnected', (data) => {
+          console.log('worker disconnected');
+          console.log(data);
+        });
+        worker.on('error', (data) => {
+          console.log('worker error');
+          console.log(data);
+        });
+
+        try {
+          window.Twilio.Device.setup(phoneToken, { debug: true });
+          window.Twilio.Device.ready(() => {
+            console.log('phone ready');
+          });
+          window.Twilio.Device.error((error) => {
+            console.log('device error');
+            console.log(error);
+          });
+          window.Twilio.Device.connect((connection) => {
+            // if we have call id on device connect then it means we get an incoming phone call
+            // assign agent to the phone call's ticket
+            if (!connection.message.Outbound) {
+              // create and open a ticket
+              api
+                .sendPut(`DP_API/voice_client/phone_call/${connection.message.CallId}/assign_agent`)
+                .success(({ data }) => {
+                  closeIframes();
+
+                  connection.message.TicketId = data.id;
+                  window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
+                });
+            }
+
+            dispatch(addConnection(connection));
+            connection.disconnect(() => {
+              // call has ended
+              // unset incoming and outgoing calls and set worker activity to idle
+              dispatch(removeConnection(connection));
+              dispatch(resetOutgoingCall());
+
+              worker.update('ActivitySid', idleSid);
+            });
+          });
+        } catch (e) {
+          console.error(e.message);
+        }
+
+        const messageBroker = window.DeskPRO_Window.getMessageBroker();
+        messageBroker.addMessageListener('agent.voice.calls_enabled', (data) => {
+          const state  = getState();
+          const agents = agentsSelector(state);
+
+          let agent  = agents.get(data.person_id);
+          if (!agent) {
+            return;
+          }
+
+          agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
+          dispatch(updateCollection('Person', Immutable.List([agent]), 'replace'));
+        });
+        messageBroker.addMessageListener('agent.voice.conference.participant-invite', (data) => {
+          if (data.caller_person_id) {
+            dispatch(loadBatch('Person', data.caller_person_id, 'all'));
+          }
+
+          dispatch(addIncomingCall(data));
+        });
+        messageBroker.addMessageListener('agent.voice.conference.participant-cancel', (data) => {
+          dispatch(removeIncomingCall(data));
+        });
+        messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
+          const eventName = event.StatusCallbackEvent;
+          const phoneCall = Immutable.fromJS(event.phone_call);
+
+          // realtime phone call updates
+          const state = getState();
+          const phoneCalls = allPhoneCallsSelector(state);
+
+          if (phoneCalls.get(phoneCall.get('id'))) {
+            dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+          } else {
+            dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+          }
+
+          // change worker status to idle on conference end
+          if (eventName === 'conference-end') {
+            dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
+            worker.update('ActivitySid', idleSid);
+          }
+        });
+        messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+          const data = event.data;
+
+          dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
+
+          if (data.linked.voice_phone_call) {
+            dispatch(addToCollection('VoicePhoneCall', 'all',  Object.values(data.linked.voice_phone_call)));
+          }
+          if (data.linked.person) {
+            dispatch(addToCollection('Person', 'all',  Object.values(data.linked.person)));
+          }
+        });
+      })
+      .catch(() => {
+        // catch mic disabled exception
+        // nothing to do
       });
-    } catch (e) {
-      console.error(e.message);
     }
-
-    const messageBroker = window.DeskPRO_Window.getMessageBroker();
-    messageBroker.addMessageListener('agent.voice.calls_enabled', (data) => {
-      const state  = getState();
-      const agents = agentsSelector(state);
-
-      let agent  = agents.get(data.person_id);
-      if (!agent) {
-        return;
-      }
-
-      agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
-      dispatch(updateCollection('Person', Immutable.List([agent]), 'replace'));
-    });
-    messageBroker.addMessageListener('agent.voice.conference.participant-invite', (data) => {
-      if (data.caller_person_id) {
-        dispatch(loadBatch('Person', data.caller_person_id, 'all'));
-      }
-
-      dispatch(addIncomingCall(data));
-    });
-    messageBroker.addMessageListener('agent.voice.conference.participant-cancel', (data) => {
-      dispatch(removeIncomingCall(data));
-    });
-    messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
-      const eventName = event.StatusCallbackEvent;
-      const phoneCall = Immutable.fromJS(event.phone_call);
-
-      // realtime phone call updates
-      const state = getState();
-      const phoneCalls = allPhoneCallsSelector(state);
-
-      if (phoneCalls.get(phoneCall.get('id'))) {
-        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
-      } else {
-        dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
-      }
-
-      // change worker status to idle on conference end
-      if (eventName === 'conference-end') {
-        dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
-        worker.update('ActivitySid', idleSid);
-      }
-    });
-    messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
-      const data = event.data;
-
-      dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
-
-      if (data.linked.voice_phone_call) {
-        dispatch(addToCollection('VoicePhoneCall', 'all',  Object.values(data.linked.voice_phone_call)));
-      }
-      if (data.linked.person) {
-        dispatch(addToCollection('Person', 'all',  Object.values(data.linked.person)));
-      }
-    });
   }
 );
 
@@ -288,6 +307,10 @@ export const declinePhoneCall = createAction(
   incomingCall => (dispatch, getState) => {
     const state = getState();
     const me = meSelector(state);
+
+    if (!incomingCall) {
+      return;
+    }
 
     dispatch(removeIncomingCall(incomingCall));
 

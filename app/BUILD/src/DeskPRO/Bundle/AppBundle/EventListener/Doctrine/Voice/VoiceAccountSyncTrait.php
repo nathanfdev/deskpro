@@ -39,10 +39,27 @@ use Doctrine\ORM\EntityManager;
 trait VoiceAccountSyncTrait
 {
     /**
+     * @var bool
+     */
+    protected $allowSync = true;
+
+    /**
+     * @param bool $allowSync
+     */
+    public function setAllowSync($allowSync)
+    {
+        $this->allowSync = $allowSync;
+    }
+
+    /**
      * @param VoiceAccount $account
      */
     protected function updateAccountDateSync(VoiceAccount $account)
     {
+        if (!$this->allowSync) {
+            return;
+        }
+
         $this->em->getConnection()->update(
             'voice_accounts',
             [

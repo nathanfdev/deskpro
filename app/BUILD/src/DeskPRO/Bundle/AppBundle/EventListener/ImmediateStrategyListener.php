@@ -58,7 +58,7 @@ class ImmediateStrategyListener implements EventSubscriberInterface
     }
 
     /**
-     * Deliver sheduled messages in immediate strategy.
+     * Deliver scheduled messages in immediate strategy.
      */
     public function onFinishRequest()
     {

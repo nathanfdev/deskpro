@@ -1,5 +1,6 @@
 imports:
     - { resource: ../config.shared.php }
+    - { resource: ../config.captcha.yml }
     - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
 # Keeping all parameter changes here rather than in various bundles
 parameters:
@@ -109,7 +110,7 @@ security:
                 remember_me: true
                 default_target_path: /
                 target_path_parameter: _destination
-                use_referer: true
+                use_referer: false
             anonymous:
                 key:    "irrelevant - compiler pass will override this"
             logout:
@@ -139,6 +140,7 @@ twig:
     exception_controller:  PortalBundle:Error:showException
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    base_template_class: DeskPRO\Bundle\PortalBundle\Twig\Template
     form:
         resources:
             - Theme::form_theme.html.twig
@@ -156,10 +158,6 @@ white_october_pagerfanta:
 jms_serializer:
     metadata:
         cache: none
-
-gregwar_captcha:
-    reload: true
-    expiration: 120
 
 fos_rest:
     routing_loader:
@@ -212,4 +210,5 @@ nelmio_cors:
             allow_origin: ['*']
             allow_headers: ['X-Agent-Request', 'Content-Type', 'Cache-Control', 'X-Requested-With']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+            allow_credentials: true
             max_age: 3600

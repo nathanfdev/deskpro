@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomPerFieldType;
@@ -45,7 +46,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsWebType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -94,13 +94,10 @@ class WebFieldResolver extends AbstractFieldResolver
         // NOTE: you may want to view TicketLayoutFactory.
         // In TicketLayoutFactory we can, at times, add a CAPTCHA to the ticket
         // layout under certain circumstances (when anti-abuse is violated, for example).
-
-        $options = [
+        return new FormField(DpCaptchaType::class, [
             'mapped'         => false,
             'error_bubbling' => false,
-        ];
-
-        return new FormField(DpCaptchaType::class, $options);
+        ]);
     }
 
     /**
@@ -237,19 +234,25 @@ class WebFieldResolver extends AbstractFieldResolver
      */
     private function createUserNameOptions(TicketWithLayoutsContext $context)
     {
+        $options = [
+            'property_path' => 'person.name',
+            'label'         => $context->isWidgetType()
+                ? $this->phrase('portal.widget.label_name')
+                : $this->phrase('portal.forms.label_name'),
+            'empty_data'  => $context->getPerson()->getDisplayName(false),
+            'constraints' => [
+                new Assert\NotBlank(),
+            ],
+        ];
+
+        if ($context->isFullLayout()) {
+            $options['disabled'] = true;
+        }
+
         return [
             'name'    => FormFields::USER_NAME,
             'type'    => TextType::class,
-            'options' => [
-                'property_path' => 'person.name',
-                'label'         => $context->isWidgetType()
-                    ? $this->phrase('portal.widget.label_name')
-                    : $this->phrase('portal.forms.label_name'),
-                'empty_data'  => $context->getPerson()->getDisplayName(false),
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ],
+            'options' => $options,
         ];
     }
 
@@ -262,30 +265,44 @@ class WebFieldResolver extends AbstractFieldResolver
     {
         $person = $context->getPerson();
         if ($person->isUser()) {
+            $options = [
+                'property_path' => 'ticket_person_email',
+                'label'         => $this->phrase('portal.forms.label_email'),
+                'person'        => $person,
+            ];
+
+            if ($context->isFullLayout()) {
+                $options['disabled'] = true;
+            }
+
             return [
                 'name'    => FormFields::USER_EMAIL,
                 'type'    => PersonEmailChoiceType::class,
-                'options' => [
-                    'property_path' => 'ticket_person_email',
-                    'label'         => $this->phrase('portal.forms.label_email'),
-                    'person'        => $person,
-                ],
+                'options' => $options,
             ];
-        }
-
-        return [
-            'name'    => FormFields::USER_EMAIL,
-            'type'    => PersonEmailType::class,
-            'options' => [
+        } else {
+            $options = [
                 'property_path' => 'person.primary_email',
                 'label'         => $context->isWidgetType()
                     ? $this->phrase('portal.widget.label_email')
                     : $this->phrase('portal.forms.label_email'),
 
                 // ignore the "unique entity" constraint here
-                'constraints' => [],
-            ],
-        ];
+                'constraints' => [
+                    new AppAssert\Person\Email\NotSystemEmail(),
+                ],
+            ];
+
+            if ($context->isFullLayout()) {
+                $options['disabled'] = true;
+            }
+
+            return [
+                'name'    => FormFields::USER_EMAIL,
+                'type'    => PersonEmailType::class,
+                'options' => $options,
+            ];
+        }
     }
 
     /**

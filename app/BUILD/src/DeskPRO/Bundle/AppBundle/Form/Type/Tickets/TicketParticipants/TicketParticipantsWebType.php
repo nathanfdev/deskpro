@@ -84,7 +84,9 @@ class TicketParticipantsWebType extends AbstractType
         $resolver->setDefaults([
             'inline'      => true,
             'constraints' => new Assert\All([
-                'constraints' => new Assert\Email(),
+                'constraints' => new Assert\Email([
+                    'strict' => true,
+                ]),
             ]),
         ]);
     }

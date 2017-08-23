@@ -26,14 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpBehat\Portal\Api;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Application\DeskPRO\Entity\Person;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 
@@ -42,39 +38,6 @@ use DpBehat\Data\DataContext;
  */
 class ChatContext extends BaseContext
 {
-    /**
-     * @var AuthContext
-     */
-    protected $auth_context;
-
-    /**
-     * @BeforeScenario
-     *
-     * @param BeforeScenarioScope $scope
-     */
-    public function gatherContexts(BeforeScenarioScope $scope)
-    {
-        $environment        = $scope->getEnvironment();
-        $this->auth_context = $environment->getContext('DpBehat\Portal\Api\AuthContext');
-    }
-
-    /**
-     * @Given I set chat email validation code :code for chat :chatId
-     *
-     * @param int    $chatId
-     * @param string $code
-     */
-    public function iSetChatEmailValidationCode($chatId, $code)
-    {
-        $chatId = DataContext::replace($chatId);
-
-        $conversation = $this->findConversation($chatId);
-        $conversation->setEmailValidationCode($code);
-
-        $this->em()->persist($conversation);
-        $this->em()->flush();
-    }
-
     /**
      * @Given I reset chat user info for chat :chatId
      *
@@ -103,7 +66,7 @@ class ChatContext extends BaseContext
         $conversation = $this->findConversation($chatId);
 
         try {
-            $conversation->setPerson($this->auth_context->findPerson($email));
+            $conversation->setPerson($this->findPerson($email));
         } catch (\RuntimeException $e) {
             $conversation->setPersonEmail($email);
         }
@@ -207,5 +170,23 @@ class ChatContext extends BaseContext
         }
 
         return $conversation;
+    }
+
+    /**
+     * @param string $email
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    protected function findPerson($email)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $repository */
+        $repository = $this->repository(Person::class);
+        $person     = $repository->findOneByEmail($email);
+
+        if (!$person) {
+            throw new \RuntimeException(sprintf('Person with email `%s` not found', $email));
+        }
+
+        return $person;
     }
 }

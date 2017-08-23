@@ -176,7 +176,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getAllowExtension()
     {
@@ -196,7 +196,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
     public function getAllowRepeatMenu()
     {
@@ -221,6 +221,19 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     public function getDialNumbers()
     {
         return $this->dialNumbers;
+    }
+
+    /**
+     * @return VoiceAutoAttendantDialNumber[]|ArrayCollection
+     */
+    public function getOrderedDialNumbers()
+    {
+        $values = $this->dialNumbers->getValues();
+        usort($values, function (VoiceAutoAttendantDialNumber $a, VoiceAutoAttendantDialNumber $b) {
+            return $a->getDialNum() - $b->getDialNum();
+        });
+
+        return new ArrayCollection($values);
     }
 
     /**

@@ -30,10 +30,11 @@ namespace Application\DeskPRO\AgentAlert;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\AgentAlert;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -64,15 +65,20 @@ class AlertSender
     /**
      * Constructor.
      *
-     * @param EntityManager  $em
-     * @param AvatarResolver $avatarResolver
+     * @param EntityManager            $em
+     * @param AvatarResolver           $avatarResolver
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(EntityManager $em, AvatarResolver $avatarResolver)
-    {
-        $this->em             = $em;
-        $this->db             = $em->getConnection();
-        $this->resolver       = new OptionsResolver();
-        $this->avatarResolver = $avatarResolver;
+    public function __construct(
+        EntityManager $em,
+        AvatarResolver $avatarResolver,
+        EventDispatcherInterface $eventDispatcher
+    ) {
+        $this->em              = $em;
+        $this->db              = $em->getConnection();
+        $this->resolver        = new OptionsResolver();
+        $this->avatarResolver  = $avatarResolver;
+        $this->eventDispatcher = $eventDispatcher;
         $this->configureOptions();
     }
 
@@ -95,22 +101,16 @@ class AlertSender
         if (isset($data['browser_rendered'])) {
             $tplLine = $data['browser_rendered'];
 
-            $cm = new ClientMessage();
-            $cm->fromArray(
-                [
-                    'channel' => 'agent-notify.tickets',
-                    'data'    => [
-                        'type'     => $type,
-                        'alert_id' => $alert->getId(),
-                        'row'      => $tplLine,
-                        'icon'     => $this->avatarResolver->getAvatar($agent, 48),
-                    ],
-                    'for_person'        => $agent,
-                    'created_by_client' => 'sys',
+            $this->eventDispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent-notify.tickets', [
+                    'target'   => $agent,
+                    'type'     => $type,
+                    'alert_id' => $alert->getId(),
+                    'row'      => $tplLine,
+                    'icon'     => $this->avatarResolver->getAvatar($agent, 48),
                 ]
-            );
-            $this->em->persist($cm);
-            $this->em->flush($cm);
+            ));
         }
 
         return $alert;

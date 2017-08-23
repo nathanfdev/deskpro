@@ -34,6 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use Orb\Util\Dates;
 
 /**
@@ -132,19 +133,18 @@ class TaskReminders extends AbstractJob
                         'person' => $agent,
                     ]);
 
-                    $cm = new \Application\DeskPRO\Entity\ClientMessage();
-                    $cm->fromArray([
-                        'channel'           => 'agent-notify.tasks',
-                        'data'              => ['row' => $tpl_line],
-                        'for_person'        => $agent,
-                        'created_by_client' => 'sys',
-                    ]);
-                    App::getOrm()->persist($cm);
-                    App::getOrm()->flush();
+                    App::get('event_dispatcher')->dispatch(
+                        LegacySystemEvent::EVENT_NAME,
+                        new LegacySystemEvent('agent-notify.tasks', [
+                            'row'    => $tpl_line,
+                            'target' => $agent->getId(),
+
+                        ]));
 
                     ++$alerts;
                 }
 
+                // task is the thing that only agents see - so no matter which brand to use, pick default one
                 $email_accounts = App::$container->getEmailAccountManager();
                 $out            = $email_accounts->getDefaultOutAccountWithFallback();
                 $from_email     = $out->getUseEmailAddress();

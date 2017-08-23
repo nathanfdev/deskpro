@@ -55,7 +55,7 @@ services:
   #
 
   form.csrf_double_submit_extension:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\CsrfDoubleSubmitExtension
+    class: DeskPRO\Bundle\PortalBundle\Form\Form\Extension\CsrfDoubleSubmitExtension
     arguments: ["@request_stack", "%kernel.environment%"]
     tags:
       - { name: form.type_extension, extended_type: 'Symfony\Component\Form\Extension\Core\Type\FormType', order: 1000 }
@@ -104,13 +104,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\PersonChangePasswordType
     arguments:
       - "@captcha_decider"
-      - "@deskpro.core.translate"
-    tags:
-      - { name: form.type }
-
-  form.captcha:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\DpCaptchaType
-    arguments: ["@brand_stack", "@language_manager", "%gregwar_captcha.config%"]
+      - "@language_manager"
     tags:
       - { name: form.type }
 

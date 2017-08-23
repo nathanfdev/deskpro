@@ -47,7 +47,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value');
-        $options->addValidNames('op');
+        $options->addValidNames(['op', 'with_formatter']);
 
         return $options;
     }
@@ -80,12 +80,19 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
             return;
         }
 
-        $field_id = $this->getActionOption('field_id');
-        $value    = $this->getActionOption('value');
+        $fieldId = $this->getActionOption('field_id');
+        $value   = $this->getActionOption('value');
+
         if ('unset' === $this->getActionOption('op')) {
             $value = null;
         }
-        $form_array = ["field_{$field_id}" => $value];
+
+        if (is_string($value) && $this->getActionOption('with_formatter')) {
+            $renderer = $this->getContainer()->get('twig_template_renderer');
+            $value    = $renderer->renderTicketTemplate($value, $ticket, $context);
+        }
+
+        $form_array = ["field_{$fieldId}" => $value];
 
         $fm->saveFormToObject($form_array, $obj, true);
     }

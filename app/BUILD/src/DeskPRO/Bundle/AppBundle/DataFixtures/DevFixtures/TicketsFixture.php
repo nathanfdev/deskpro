@@ -151,6 +151,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
         $this->loadTicketProps();
         $this->loadTicketSlas();
         $this->setParentTicket();
+        $this->setTicketOrganizations();
     }
 
     private function initIds()
@@ -568,5 +569,14 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 }
             }
         }
+    }
+
+    private function setTicketOrganizations()
+    {
+        $this->db->executeUpdate('
+            UPDATE tickets
+            JOIN people ON people.id = tickets.person_id
+            SET tickets.organization_id = people.organization_id
+        ');
     }
 }

@@ -28,6 +28,7 @@
 
 namespace Application\ImportBundle\Command;
 
+use Doctrine\DBAL\Exception\ConnectionException;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Processor\MemoryUsageProcessor;
@@ -117,5 +118,14 @@ abstract class AbstractImporterCommand extends ContainerAwareCommand
     protected function getImporterDefaultOutputPath()
     {
         return rtrim($this->getContainer()->get('deskpro.app_env')->getUserTmpDir(), '/').'/importer';
+    }
+
+    protected function checkDbCredentials()
+    {
+        try {
+            $this->getContainer()->get('doctrine.orm.entity_manager')->getConnection()->connect();
+        } catch (ConnectionException $e) {
+            throw new \Exception('Unable to connect to DeskPRO database. Check DeskPRO connection credentials.');
+        }
     }
 }

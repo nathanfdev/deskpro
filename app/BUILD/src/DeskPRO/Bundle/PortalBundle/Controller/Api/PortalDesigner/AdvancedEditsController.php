@@ -30,8 +30,10 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use DeskPRO\Bundle\PortalBundle\Controller\Api\AbstractApiController;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
+use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Leafo\ScssPhp\Exception\CompilerException;
 use Leafo\ScssPhp\Exception\ParserException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -86,6 +88,14 @@ class AdvancedEditsController extends AbstractApiController
         } catch (ParserException $e) {
             $this->getManager()->rollback();
             throw new BadRequestHttpException(PortalStylesCompiler::parseExceptionMessage($e));
+        } catch (CompilerException $e) {
+            $this->getManager()->rollback();
+            throw new BadRequestHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            $this->getManager()->rollback();
+            SystemErrorHandler::logException($e, false, null, true);
+
+            throw new BadRequestHttpException($e->getMessage());
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);

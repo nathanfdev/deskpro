@@ -15,7 +15,7 @@
 					The exact format of the CSV file does not matter. You will map CSV columns to DeskPRO fields in the next step.
 				</p>
 				<p> Each user must have a primary email address to be imported. If the email address matches an existing user record, no data will be imported for that user.</p>
-				<p> See <a href="https://manuals.deskpro.com/html/admin/importing-data/csv-user-import.html" target="_blank">more details about supported import fields and CSV file format</a>.
+				<p> See <a href="https://support.deskpro.com/guides/topic/332" target="_blank">more details about supported import fields and CSV file format</a>.
 				</p>
 				<br />
 				<form id="fileupload"
@@ -317,6 +317,12 @@
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
 				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
+
+			</div>
+			<div class="well danger-message upload-message"
+				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'mailformed_data'">
+				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
+				The uploaded file has mailformed data. Check the file's encoding.
 
 			</div>
 

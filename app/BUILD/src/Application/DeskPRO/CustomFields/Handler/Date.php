@@ -77,13 +77,16 @@ class Date extends HandlerAbstract
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function renderHtml($data = null, array $template_vars = [])
     {
         if ($data === null) {
             return '';
         }
 
-        if (!ctype_digit($data['value'])) {
+        if (!is_numeric($data['value'])) {
             $data['value'] = time();
         }
 
@@ -99,13 +102,16 @@ class Date extends HandlerAbstract
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function renderText($data = null, array $template_vars = [])
     {
         if ($data === null) {
             return '';
         }
 
-        if (!ctype_digit($data['value'])) {
+        if (!is_numeric($data['value'])) {
             $data['value'] = time();
         }
 
@@ -114,6 +120,9 @@ class Date extends HandlerAbstract
         return  parent::renderText($data, $template_vars);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDataFromForm(array $form_data)
     {
         $name = $this->getFormFieldName();
@@ -157,11 +166,14 @@ class Date extends HandlerAbstract
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFormField($data = null)
     {
         if ($data and !empty($data['value'])) {
             try {
-                if (ctype_digit($data['value'])) {
+                if (is_numeric($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                 } else {
                     $date = \DateTime::createFromFormat($this->getFormat(), $data['value']);
@@ -186,17 +198,23 @@ class Date extends HandlerAbstract
         return parent::getFormField($data);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getFormat()
     {
         return 'Y-m-d';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchCriteriaForm($data = null)
     {
         $setData = null;
         if ($data and !empty($data['value'])) {
             try {
-                if (ctype_digit($data['value'])) {
+                if (is_numeric($data['value'])) {
                     $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
@@ -222,17 +240,15 @@ class Date extends HandlerAbstract
         )->getForm();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
         $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
 
         if ($data && !is_scalar($data)) {
             return $this->makeErrorArray(['date_invalid']);
-        }
-
-        // Timestamp value
-        if (ctype_digit($data) && in_array(strlen($data), [9, 10])) {
-            $data = date($this->getFormat(), $data);
         }
 
         //------------------------------
@@ -256,27 +272,32 @@ class Date extends HandlerAbstract
         }
 
         if ($data && $this->isDefaultCalendar()) {
-            $date = \DateTime::createFromFormat($this->getFormat(), $data);
-            if (!$date) {
+            try {
+                $date = new \DateTime('@'.$data);
+            } catch (\Exception $e) {
+                try {
+                    $date = new \DateTime($data);
+                } catch (\Exception $e) {
+                    $date = null;
+                }
+            }
+
+            if ($date) {
+                try {
+                    $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
+                } catch (\Exception $e) {
+                    $adminTz = App::getCurrentPerson()->getDateTimezone();
+                }
+
+                $date->setTimezone($adminTz);
+            } else {
                 return $this->makeErrorArray(['date_invalid']);
             }
-        }
 
-        //------------------------------
-        // Validate ranges
-        //------------------------------
-
-        if ($data && $this->isDefaultCalendar()) {
-            try {
-                $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
-            } catch (\Exception $e) {
-                $adminTz = App::getCurrentPerson()->getDateTimezone();
-            }
-            $date      = \DateTime::createFromFormat($this->getFormat(), $data, App::getCurrentPerson()->getDateTimezone());
-            $dateAdmin = clone $date;
-            $dateAdmin->setTimezone($adminTz);
-
-            $dow = intval($dateAdmin->format('N')) - 1;
+            //------------------------------
+            // Validate ranges
+            //------------------------------
+            $dow = intval($date->format('N')) - 1;
 
             // Days of week
             if ($validDow = $this->field_def->getOption('date_valid_dow')) {
@@ -294,7 +315,7 @@ class Date extends HandlerAbstract
                     $d1 = \DateTime::createFromFormat($this->getFormat(), $d1, $adminTz);
                     $d1->setTime(0, 0, 0);
 
-                    if ($dateAdmin < $d1) {
+                    if ($date < $d1) {
                         return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
@@ -302,7 +323,7 @@ class Date extends HandlerAbstract
                     $d2 = \DateTime::createFromFormat($this->getFormat(), $d2, $adminTz);
                     $d2->setTime(23, 59, 59);
 
-                    if ($dateAdmin > $d2) {
+                    if ($date > $d2) {
                         return $this->makeErrorArray(['date_invalid_range']);
                     }
                 }
@@ -327,7 +348,7 @@ class Date extends HandlerAbstract
                 $d2->modify("+{$days2} days");
                 $d2->setTime(23, 59, 59);
 
-                if ($dateAdmin < $d1 || $dateAdmin > $d2) {
+                if ($date < $d1 || $date > $d2) {
                     return $this->makeErrorArray(['date_invalid_range']);
                 }
             }
@@ -336,11 +357,17 @@ class Date extends HandlerAbstract
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchCapabilities()
     {
         return ['lte', 'gte', 'between'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchType()
     {
         return 'value';

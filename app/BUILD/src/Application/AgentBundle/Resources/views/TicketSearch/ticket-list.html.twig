@@ -1,6 +1,6 @@
 <div class="list-pane-instance ng-hide" ng-show="true">
 	<div class="list-pane-header">
-		<h1><div><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} Tickets</div></h1>
+		<h1><div><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} {{ phrase('agent.general.tickets') }}</div></h1>
 	</div>
 	<div class="list-pane-content list-pane-view with-header with-subheader with-footer" ng-class="{'with-alert-subheader': hasUnloadedUpdates}">
 		<header class="view-header">
@@ -117,7 +117,13 @@
 		</article>
 		<footer class="view-footer results-nav">
 			<div class="cursor">
-				Showing {{ ng_bind('pageCursorStart') }} to {{ ng_bind('pageCursorEnd') }} of {{ ng_bind('ticketCount') }}
+				{% set phrase_part1 %}
+					{{ ng_bind('pageCursorStart') }} - {{ ng_bind('pageCursorEnd') }}
+				{% endset %}
+				{% set phrase_part2 %}
+					{{ ng_bind('ticketCount') }}
+				{% endset %}
+				{{ phrase('agent.general.showing_results_x_of_y', {'display_count':phrase_part1,'size':phrase_part2}, true) }}
                 {% if filter %}
                     {% set refresh_url %}{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?set_group_term={{ set_group_term }}&set_group_option={{ set_group_option }}&view_name={{ view_name }}{% endset %}
                 {% elseif sla_id %}

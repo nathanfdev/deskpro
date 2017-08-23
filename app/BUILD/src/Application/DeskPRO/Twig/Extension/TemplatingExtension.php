@@ -106,7 +106,6 @@ class TemplatingExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction('constant', [$this, 'getConstant'], []),
-            new \Twig_SimpleFunction('phrase', [$this, 'getPhrase'], ['is_safe' => ['html'], 'needs_context' => true]),
             new \Twig_SimpleFunction('phrase_code', [$this, 'getPhraseText'], []),
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('phrase_object', [$this, 'getPhraseObject']),
@@ -1146,23 +1145,6 @@ class TemplatingExtension extends \Twig_Extension
         $p = $this->container->get('deskpro.core.translate')->getPhraseText($phrase_name);
 
         return $p;
-    }
-
-    public function getPhrase($context, $phrase_name, $vars = null, $raw = false)
-    {
-        if (!$vars || !is_array($vars)) {
-            $vars = [];
-        }
-
-        if (!$raw) {
-            foreach ($vars as &$v) {
-                $v = htmlspecialchars($v, \ENT_QUOTES, 'UTF-8');
-            }
-        }
-
-        $vars['_context'] = $context;
-
-        return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
     }
 
     public function getPhraseObject($phrase_name, $property = null)

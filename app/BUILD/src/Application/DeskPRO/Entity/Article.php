@@ -40,7 +40,6 @@ use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
-use DeskPRO\Bundle\AppBundle\Entity\TaskLinkedItem\TaskLinkedArticle;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -112,11 +111,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $labels;
 
     /**
-     * @var TaskLinkedArticle[]|ArrayCollection
-     */
-    protected $task_links;
-
-    /**
      * The search result highlights.
      *
      * @var array
@@ -139,7 +133,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $this->attachments        = new ArrayCollection();
         $this->custom_data        = new ArrayCollection();
         $this->labels             = new ArrayCollection();
-        $this->task_links         = new ArrayCollection();
         $this->props_translations = new ArrayCollection();
     }
 
@@ -776,7 +769,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             [
                 'fieldName'    => 'categories',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'cascade'      => ['persist', 'merge'],
                 'inversedBy'   => 'articles',
                 'joinTable'    => [
                     'name'        => 'article_to_categories',
@@ -885,14 +878,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
         $metadata->mapOneToMany(
             [
-                'fieldName'    => 'task_links',
-                'targetEntity' => TaskLinkedArticle::class,
-                'mappedBy'     => 'article',
-            ]
-        );
-
-        $metadata->mapOneToMany(
-            [
                 'fieldName'    => 'comments',
                 'targetEntity' => ArticleComment::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
@@ -902,6 +887,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         );
 
         ObjectTranslatable::loadEntityMetadata($metadata);
+        $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }
 
     /**

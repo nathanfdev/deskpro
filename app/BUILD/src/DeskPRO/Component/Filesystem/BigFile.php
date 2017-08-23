@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Component\Filesystem;
 
+use DeskPRO\Bundle\UpdateBundle\DbBackup\DbBackupException;
+
 /**
  * Class BigFile.
  */
@@ -42,6 +44,8 @@ class BigFile
      *
      * @param string $filename
      *
+     * @throws DbBackupException if can't open file
+     *
      * @return int|float|false File size on success or (bool) FALSE on error
      */
     public static function getFileSize($filename)
@@ -49,6 +53,9 @@ class BigFile
         $return = false;
 
         $fp = @fopen($filename, 'r');
+        if (!$fp && $error = error_get_last()) {
+            throw new DbBackupException($error['message'], DbBackupException::DUMP_ERROR_OPEN_FAILED);
+        }
         if (is_resource($fp)) {
             if (PHP_INT_SIZE < 8) {
                 // 32bit

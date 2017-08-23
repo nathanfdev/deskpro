@@ -579,5 +579,7 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
+
+        $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }
 }

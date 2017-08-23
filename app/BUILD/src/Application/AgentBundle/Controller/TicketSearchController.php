@@ -39,7 +39,6 @@ use Application\DeskPRO\CustomFields\PeopleFields;
 use Application\DeskPRO\CustomFields\TicketFields;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Brand;
-use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Organization;
@@ -60,6 +59,7 @@ use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\RegexUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -393,7 +393,7 @@ class TicketSearchController extends AbstractController
         $ticket_ids = Arrays::removeFalsey($ticket_ids);
         $ticket_ids = array_unique($ticket_ids);
 
-        $tickets = $this->em->getRepository(Ticket::class)->getTicketsResultsFromIds($ticket_ids, $this->person);
+        $tickets = $this->em->getRepository(Ticket::class)->getTicketsResultsFromIds($ticket_ids);
         $tickets = Arrays::orderIdArray($ticket_ids, $tickets);
 
         $display_fields = $this->in->getCleanValueArray('display_fields', 'string', 'discard');
@@ -1522,7 +1522,6 @@ class TicketSearchController extends AbstractController
                     $row[] = $display_field;
                     $row[] = preg_replace('/id$/', 'title', $display_field);
                     break;
-                case 'person_email_id':
                 case 'person_id':
                 case 'agent_id':
                 case 'agent_team_id':
@@ -1955,6 +1954,12 @@ class TicketSearchController extends AbstractController
                 foreach ($tickets as $ticket) {
                     $actions_collection = $macro->getActionsCollection($ticket);
 
+                    if ($actions_collection->hasActionType('Reply') || $actions_collection->hasActionType('ReplySnippet')) {
+                        $contextType = 'newreply';
+                    } else {
+                        $contextType = 'update';
+                    }
+
                     $this->db->beginTransaction();
                     try {
                         if (!$actions_collection->applyCheckPermission($ticket, $this->person)) {
@@ -1996,6 +2001,8 @@ class TicketSearchController extends AbstractController
                         $new_message = isset($opt['reply_text']) ? $this->cleaner->clean($opt['reply_text'], 'html') : '';
                         $new_message = Strings::trimHtml($new_message);
                         $new_message = Strings::prepareWysiwygHtml($new_message);
+                        $new_message = RegexUtils::safePregReplace('#<img[^>]+class="dp-signature-image" alt="([^"]+)"[^>]*>#i', '$1', $new_message);
+
                         if ($new_message) {
                             $opt['reply_text'] = $new_message;
                             $contextType       = 'newreply';
@@ -2062,15 +2069,6 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $client_messages = false;
-        if ($this->in->getUInt('client_messages_since') > 0) {
-            $client_messages = $this->em->getRepository(ClientMessage::class)->getMessageData(
-                $this->person,
-                $this->session,
-                $this->in->getUInt('client_messages_since')
-            );
-        }
-
         $ticket_data = null;
         if ($this->in->getBool('return_data')) {
             $ticket_display = new \Application\DeskPRO\Tickets\TicketResultsDisplay($tickets);
@@ -2085,7 +2083,7 @@ class TicketSearchController extends AbstractController
             'success_tickets'           => $success,
             'failed_tickets'            => $permission_errors,
             'validation_failed_tickets' => $validation_errors,
-            'client_messages'           => $client_messages,
+            'client_messages'           => false,
             'ticket_data'               => $ticket_data,
         ]);
     }

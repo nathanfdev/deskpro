@@ -32,7 +32,6 @@ Feature: /organizations/{id}/members endpoint
     Then the response should be in JSON
     And the response status code should be 400
     And the JSON node "errors.fields.person.errors[0].code" should be equal to "required"
-    And the JSON node "errors.fields.person.errors[0].message" should be equal to "This value should not be blank."
 
   Scenario: I try to add not existing person
     When I send a POST request to "/api/v2/organizations/{organization}/members" with body:
@@ -45,7 +44,6 @@ Feature: /organizations/{id}/members endpoint
     Then the response status code should be 400
     And the response should be in JSON
     And the JSON node "errors.fields.person.errors[0].code" should be equal to "bad_choice"
-    And the JSON node "errors.fields.person.errors[0].message" should be equal to "One or more of the given values is invalid."
 
   Scenario: I try add a member who is already in organization
     Given the "user" is in "organization" organization
@@ -56,10 +54,7 @@ Feature: /organizations/{id}/members endpoint
   "position": "some text"
 }
     """
-    Then the response status code should be 400
-    And the response should be in JSON
-    And the JSON node "errors.fields.person.errors[0].code" should be equal to "already_in_organization"
-    And the JSON node "errors.fields.person.errors[0].message" should be equal to "That user is already in an organization."
+    Then the response status code should be 204
 
   Scenario: I remove person organization and re try to add
     When I send a PUT request to "/api/v2/people/{user}" with body:
@@ -99,7 +94,7 @@ Feature: /organizations/{id}/members endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data.id" should be equal to "{user}"
-    And the JSON node "data.organization" should be equal to "{organization2}"
+    And the JSON node "data.organization" should be equal to "{organization}"
     And the JSON node "data.organization_position" should be equal to 0
 
   Scenario: I try to remove person from another organization

@@ -69,12 +69,15 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
 
         $assigned_filter = new Query\BoolQuery();
         $assigned_filter->addShould(new Query\Term(['agent' => $this->person->getId()]));
-        $team_ids = $this->person->getHelper('Agent')->getTeamIds();
-        if ($team_ids) {
-            $assigned_filter->addShould(new Query\Terms('agent_team', $team_ids));
+
+        $this->person->loadHelper('Agent');
+        $teamIds = $this->person->getHelper('Agent')->getTeamIds();
+        if ($teamIds) {
+            $assigned_filter->addShould(new Query\Terms('agent_team', $teamIds));
         }
 
         $main_filter->addShould($assigned_filter);
+        $this->person->loadHelper('AgentPermissions');
 
         if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
             // cant see anything else
@@ -82,7 +85,7 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
             $sub_filter = new Query\BoolQuery();
             $any        = false;
 
-            $dis_dep_ids = $this->person->getHelper('AgentPermissions')->getDisallowedDepartments();
+            $dis_dep_ids = $this->person->getDisallowedDepartments();
             if ($dis_dep_ids) {
                 $sub_filter->addMustNot(new Query\Terms('department', $dis_dep_ids));
                 $any = true;

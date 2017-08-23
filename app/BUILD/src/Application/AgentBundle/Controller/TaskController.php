@@ -34,6 +34,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\TaskComment;
@@ -139,14 +140,14 @@ class TaskController extends AbstractController
         $tasks       = [];
 
         foreach ($allTaskData as $taskData) {
-            $task               = new Task();
-            $form               = $this->createForm(new TaskType(), $task);
-            $taskData['person'] = $this->person['id'];
+            $task = new Task();
+            $form = $this->createForm(new TaskType(), $task, [
+                'person' => $this->person,
+            ]);
 
             if (!empty($taskData['ticket_id'])) {
                 $taskData['ticket'] = $taskData['ticket_id'];
             }
-
             if (!empty($taskData['date_due'])) {
                 if (!empty($taskData['time_due'])) {
                     $taskData['date_due'] .= ' '.$taskData['time_due'];
@@ -258,15 +259,19 @@ class TaskController extends AbstractController
         if ($groupBy == 'assigned') {
             $tasksGrouped = [];
             foreach ($tasks as $t) {
-                if ($t->assigned_agent) {
-                    $key   = 'agent:'.$t->assigned_agent->id;
-                    $title = $t->assigned_agent->getDisplayName();
-                } elseif ($t->assigned_agent_team) {
-                    $key   = 'agent_team:'.$t->assigned_agent_team->id;
-                    $title = $t->assigned_agent_team->getName();
+                /** @var Task $t */
+                if ($t->getAssignedAgent()) {
+                    $key   = 'agent:'.$t->getAssignedAgent()->getId();
+                    $title = $t->getAssignedAgent()->getDisplayName();
+                } elseif ($t->getAssignedAgentTeam()) {
+                    $key   = 'agent_team:'.$t->getAssignedAgentTeam()->getId();
+                    $title = $t->getAssignedAgentTeam()->getName();
+                } elseif ($t->getPerson()) {
+                    $key   = 'agent:'.$t->getPerson()->getId();
+                    $title = $t->getPerson()->getDisplayName();
                 } else {
-                    $key   = 'agent:'.$t->person->id;
-                    $title = $t->person->getDisplayName();
+                    $key   = '';
+                    $title = 'Unassigned';
                 }
 
                 if (!isset($tasksGrouped[$key])) {
@@ -286,8 +291,14 @@ class TaskController extends AbstractController
         } elseif ($groupBy == 'creator') {
             $tasksGrouped = [];
             foreach ($tasks as $t) {
-                $key   = 'agent:'.$t->person->id;
-                $title = $t->person->getDisplayName();
+                /** @var Task $t */
+                if ($t->getPerson()) {
+                    $key   = 'agent:'.$t->getPerson()->getId();
+                    $title = $t->getPerson()->getDisplayName();
+                } else {
+                    $key   = '';
+                    $title = 'Unassigned';
+                }
 
                 if (!isset($tasksGrouped[$key])) {
                     $tasksGrouped[$key] = ['title' => $title, 'tasks' => []];
@@ -536,7 +547,21 @@ class TaskController extends AbstractController
                 break;
 
             case 'visibility':
-                $task->setVisibility($this->in->getString('value'));
+                $val = $this->in->getString('value');
+
+                $task->setAssignedDepartment(null);
+                $task->setVisibility(Task::PRIVATE_VISIBILITY);
+
+                if ($val && is_string($val) && strpos($val, ':') !== false) {
+                    list($type, $id) = explode(':', $val);
+                    if ($type === 'department') {
+                        $department = $this->getDoctrine()->getManager()->getRepository(Department::class)->find($id);
+                        $task->setAssignedDepartment($department);
+                    }
+                } else {
+                    $task->setVisibility($val);
+                }
+
                 break;
 
             case 'completed':
@@ -553,12 +578,13 @@ class TaskController extends AbstractController
 
                 $task->setAssignedAgent(null);
                 $task->setAssignedAgentTeam(null);
+                $task->setAssignedDepartment(null);
 
-                if ($val) {
+                if ($val && is_string($val) && strpos($val, ':') !== false) {
                     list($type, $id) = explode(':', $val);
                     if ($type == 'agent') {
                         $task->setAsignedAgentId($id);
-                    } else {
+                    } elseif ($type === 'agent_team') {
                         $task->setAsignedAgentTeamId($id);
                     }
                 }

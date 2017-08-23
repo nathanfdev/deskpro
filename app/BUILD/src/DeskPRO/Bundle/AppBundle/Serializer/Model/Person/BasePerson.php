@@ -95,6 +95,8 @@ class BasePerson
     /**
      * True if person is agent.
      *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $isAgent;

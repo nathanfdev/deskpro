@@ -65,11 +65,19 @@ class CoreSettings
     private $attachments;
 
     /**
+     * @var DateSettings
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\DateSettings")
+     */
+    private $date;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
         $this->attachments = new AttachmentsSettings();
+        $this->date        = new DateSettings();
     }
 
     /**
@@ -142,9 +150,33 @@ class CoreSettings
 
     /**
      * @param AttachmentsSettings $attachments
+     *
+     * @return $this
      */
     public function setAttachments(AttachmentsSettings $attachments)
     {
         $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
+     * @return DateSettings
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /**
+     * @param DateSettings $date
+     *
+     * @return $this
+     */
+    public function setDate(DateSettings $date)
+    {
+        $this->date = $date;
+
+        return $this;
     }
 }

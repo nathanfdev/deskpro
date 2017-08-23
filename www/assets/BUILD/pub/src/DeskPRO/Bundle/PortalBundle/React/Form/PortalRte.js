@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import uniqueId from 'lodash/utility/uniqueId';
+import uniqueId from 'lodash/uniqueId';
 import $ from 'jquery';
 import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';

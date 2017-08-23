@@ -657,7 +657,7 @@ class Ticket
         $this->agentTeam            = $ticket->getAgentTeam();
         $this->organization         = $ticket->getOrganization();
         $this->linkedChat           = $ticket->getLinkedChat();
-        $this->sentToAddress        = $ticket->getSentToAddresses();
+        $this->sentToAddress        = array_values($ticket->getSentToAddresses());
         $this->emailAccount         = $ticket->getEmailAccount();
         $this->emailAccountAddress  = $ticket->getEmailAccountAddress();
         $this->creationSystem       = $ticket->getCreationSystem();

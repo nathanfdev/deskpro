@@ -5,9 +5,10 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@settings_resolver"
+      - "@security.token_storage"
 
   #
-  # Strategis
+  # Strategies
   #
   deskpro.notification.strategy_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory
@@ -19,8 +20,13 @@ services:
     tags:
       - { name: kernel.event_subscriber, priority: -10 }
 
+  deskpro.notification.cli_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\CliStrategyListener
+    tags:
+      - { name: kernel.event_subscriber, priority: -10 }
+
   deskpro.notification.event_manager:
-    class: DeskPRO\Bundle\AppBundle\Notification\EventManager
+    class: DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager
     arguments:
       - "@deskpro.notification.strategy_factory"
     tags:
@@ -54,6 +60,22 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler
     arguments:
       - "@deskpro.notification.pusher"
+      - "@settings_resolver"
+      - "@database_connection"
+
+  deskpro.notification.delivery.handler.deskpro:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeskproDeliveryHandler
+    arguments:
+      - "@settings_resolver"
+      - "@deskpro.notification.deskpro_client"
+
+  deskpro.notification.deskpro_client_factory:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeskproClientFactory
+  deskpro.notification.deskpro_client:
+    class: DeskPRO\Bundle\AppBundle\Util\HttpClient
+    factory: ["@deskpro.notification.deskpro_client_factory", createClient]
+    arguments:
+      - "@settings_resolver"
 
   deskpro.notification.pusher_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherFactory
@@ -85,6 +107,19 @@ services:
       - { name: deskpro.notification.user_notify.generator }
 
   #
+  # UserNotification message generators
+  #
+  deskpro.notification.generator.user_notify.new_user_chat:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification\NewUserChatMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@data.agent"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.user_notify.generator }
+
+  #
   # ActionAlert message generators
   #
   deskpro.notification.generator.action_alert.agent_chat_new_message:
@@ -93,6 +128,14 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@jms_serializer.serializer"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.helpdesk:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\HelpdeskAlertGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
@@ -127,3 +170,49 @@ services:
       - "@security.token_storage"
     tags:
       - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\TicketMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@data.agent"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.system_event:
+      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator
+      arguments:
+        - "@doctrine.orm.default_entity_manager"
+        - "@security.token_storage"
+        - "@data.agent"
+      tags:
+        - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.organization:
+      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\OrganizationMessageGenerator
+      arguments:
+        - "@doctrine.orm.default_entity_manager"
+        - "@security.token_storage"
+        - "@data.agent"
+      tags:
+        - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.person:
+      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\PersonMessageGenerator
+      arguments:
+        - "@doctrine.orm.default_entity_manager"
+        - "@security.token_storage"
+        - "@data.agent"
+      tags:
+        - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.user_chat:
+      class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\UserChatMessageGenerator
+      arguments:
+        - "@doctrine.orm.default_entity_manager"
+        - "@security.token_storage"
+        - "@data.agent"
+        - "@templating"
+      tags:
+        - { name: deskpro.notification.action_alert.generator }
