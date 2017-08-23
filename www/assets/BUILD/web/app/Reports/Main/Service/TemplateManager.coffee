@@ -52,7 +52,7 @@ define ->
 
       preloadTpls = @$http({
         method: 'GET',
-        url: DP_BASE_REPORTS_URL + '/load-view/multi?' + qs
+        url: window.DP_BASE_URL + 'agent/viewer/load-views?' + qs
       })
 
       for own k, v of @sendPending

@@ -5,7 +5,7 @@ define -> (States) ->
 
   States.add('reports')
     .setUrl('')
-    .setTpl('InterfaceBundle:Interface:main-frame.html')
+    .setTpl('AgentBundle:ReportsInterface:main-frame.html')
     .setAbstract();
 
   States.when('', '/dashboards/')

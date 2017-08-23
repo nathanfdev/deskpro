@@ -132,7 +132,6 @@ class DpKernel extends BaseKernel
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
-            new \Application\InterfaceBundle\InterfaceBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \Application\ImportBundle\ImportBundle(),
@@ -144,7 +143,7 @@ class DpKernel extends BaseKernel
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
             new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
-            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle()
+            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {

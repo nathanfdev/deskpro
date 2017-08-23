@@ -60,7 +60,6 @@ define [
     'ngTable',
   ])
 
- 
   SetupDeskPROService(InterfaceApp)
   SetupServices(InterfaceApp)
   SetupControllers(InterfaceApp)

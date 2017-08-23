@@ -22,6 +22,7 @@
 	window.DP_HAS_VOICE        = {% if app.hasVoice() %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_IM       = {% if app.hasBeta('agent_chat') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_SNIPPETS = {% if app.hasBeta('new_snippets') %}true{% else %}false{% endif %};
+	window.DP_HAS_NEW_REPORTS  = {% if app.hasBeta('new_reports') %}true{% else %}false{% endif %};
 	window.DP_VERSION_NUMBER   = '{{ app.getVersionName() }}';
 
     // Temporary hack to fix images not served

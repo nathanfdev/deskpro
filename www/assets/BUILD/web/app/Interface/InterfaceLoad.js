@@ -51,6 +51,7 @@ define([
     bootReady: function() {
       if (this.isDocReady && this.isAppReady && !this.isDoneBoot) {
         this.boot();
+        $('#dp_loading').remove();
       }
     },
 

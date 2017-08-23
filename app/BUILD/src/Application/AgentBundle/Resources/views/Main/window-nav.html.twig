@@ -40,6 +40,13 @@
 			data-frame-id="reports"
 			data-win-title="DeskPRO Reports Interface"
 	></script>
+	<script
+			id="reports2_interface_trigger"
+			data-frame-url="{{ app.request.getBaseUrl() }}/agent/reports-interface#/"
+			data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+			data-frame-id="reports2"
+			data-win-title="DeskPRO Reports Interface"
+	></script>
 {% endif %}
 {% if app.user.can_admin %}
 	<script

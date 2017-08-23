@@ -58,25 +58,25 @@ a {
 //    A(pp-bar) + sidebar = content padding-left
 //
 
-$app-width: 55px;
+$app-nav-width: 230px;
 $sidebar-width: 220px;
 $report-list-width: 555px;
-$content-width: $app-width + $sidebar-width;
-$header-height: 44px;
+$content-width: $app-nav-width + $sidebar-width;
 
-.app-bar-wrapper {
+.app-nav-wrapper {
   position: absolute;
-  top: $header-height;
+  top: 0;
   bottom: 0;
   left: 0;
-  width: $app-width;
-  background: #2b2f34;
+  width: $app-nav-width;
+  background: #f4f5f5;
+  border-right: 1px solid #d4d7d8;
 }
 
 .app-container {
   position: absolute;
-  top: $header-height;
-  left: $app-width;
+  top: 0;
+  left: $app-nav-width;
   right: 0;
   bottom: 0;
   overflow: auto;
@@ -298,4 +298,58 @@ ul.scroll-menu {
   -ms-box-shadow: none;
   -o-box-shadow: none;
   box-shadow: none;
+}
+
+
+
+.app-nav-wrapper {
+  .app-nav-header {
+    border-bottom: 1px solid #d4d7d8;
+    h1 {
+      font-size: 14pt;
+      padding: 12px;
+      font-weight: bold;
+
+      i {
+        color: #4696dc;
+        font-weight: normal;
+      }
+    }
+  }
+
+  .nav-section {
+    border-bottom: 1px solid #d4d7d8;
+  }
+
+  .nav-title {
+    font-size: 11pt;
+    font-weight: bold;
+    padding: 9px 12px;
+    display: block;
+    text-decoration: none;
+  }
+
+  a.nav-title {
+    &:hover, &.active {
+      background: #fff;
+    }
+  }
+
+  .nav-link-list {
+    margin: 0 0 10px 0;
+    padding: 0;
+    list-style: none;
+    a {
+      color: #707576;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+    li {
+      padding: 5px 0 5px 13px;
+    }
+    li li { padding-left: 16px; }
+    li li li { padding-left: 21px; }
+  }
 }

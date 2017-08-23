@@ -37,7 +37,7 @@ define [
     Module.service('AppConfig', -> return new AppConfig)
 
     Module.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
-      window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'reports/viewer/load-views', $http, $q)
+      window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q)
       return window.DP_TEMPLATE_LOADER
     ])
 
@@ -50,7 +50,7 @@ define [
     ])
     Module.factory('HttpTemplateInterceptor', [->
       isTemplateUrl = (url) ->
-        return !!url.replace(/^\//, '').match(/^(InterfaceBundle|ReportsInterfaceBundle):/)
+        return !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/)
       getViewName = (url) ->
         return url.replace(/^\//, '')
       getLoadUrl = (view) ->

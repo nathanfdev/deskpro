@@ -47,10 +47,6 @@ $col = $loader->import(
 $col->addPrefix('/reports');
 $collection->addCollection($col);
 
-$col = $loader->import(DP_ROOT.'/src/Application/InterfaceBundle/Resources/config/interface-routing.php');
-$col->addPrefix('/reports');
-$collection->addCollection($col);
-
 $col = $loader->import(DP_ROOT.'/src/Application/AgentBundle/Resources/config/agent-routing.php');
 $col->addPrefix('/agent');
 $collection->addCollection($col);
