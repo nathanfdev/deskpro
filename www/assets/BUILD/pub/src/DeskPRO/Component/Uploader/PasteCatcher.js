@@ -17,6 +17,20 @@ export const clipboardHasImages = (clipboardData) => {
 
   return false;
 };
+export const clipboardIEHasImages = (clipboardData) => {
+  if (!clipboardData || !clipboardData.files) {
+    return false;
+  }
+
+  for (let i = 0; i < clipboardData.files.length; i += 1) {
+    const file = clipboardData.files[i];
+
+    if (file.type.indexOf('image') !== -1) {
+      return true;
+    }
+  }
+  return false;
+};
 
 export const getBlobsFromItems = (items, onPasteImage) => {
   if (!items) {
@@ -32,6 +46,28 @@ export const getBlobsFromItems = (items, onPasteImage) => {
       const imgUrl = urlObj.createObjectURL(blob);
 
       onPasteImage(blob, imgUrl, item.type);
+    }
+  }
+};
+
+export const getBlobsFromIEItems = (files, event, onPasteImage) => {
+  if (!files) {
+    return;
+  }
+
+  for (let i = 0; i < files.length; i += 1) {
+    const file = files[i];
+
+    if (file.type.indexOf('image') !== -1) {
+      const type = file.type;
+      const url = URL.createObjectURL(file);
+      if (event.convertURL) { // Use standard if available.
+        event.convertURL(file, 'specified', url);
+      } else {
+        event.msConvertURL(file, 'specified', url);
+      }
+
+      onPasteImage(file, url, type);
     }
   }
 };
