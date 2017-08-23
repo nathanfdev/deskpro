@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\Avatar\AvatarOwner;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -51,28 +52,22 @@ class AvatarResolver
     private $em;
 
     /**
-     * @var bool
+     * @var SettingsResolver
      */
-    private $use_gravatar;
+    private $settingsResolver;
 
     /**
-     * @param RouterInterface $router
-     * @param EntityManager   $em
-     * @param bool            $use_gravatar
+     * Constructor.
+     *
+     * @param RouterInterface  $router
+     * @param EntityManager    $em
+     * @param SettingsResolver $settingsResolver
      */
-    public function __construct(RouterInterface $router, EntityManager $em, $use_gravatar = true)
+    public function __construct(RouterInterface $router, EntityManager $em, SettingsResolver $settingsResolver)
     {
-        $this->router       = $router;
-        $this->em           = $em;
-        $this->use_gravatar = $use_gravatar;
-    }
-
-    /**
-     * @param bool $use_gravatar
-     */
-    public function setUseGravatar($use_gravatar)
-    {
-        $this->use_gravatar = $use_gravatar;
+        $this->router           = $router;
+        $this->em               = $em;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -130,7 +125,7 @@ class AvatarResolver
             if ($blobUrl && $blob['has_person_picture']) {
                 // person picture
                 $url = $blobUrl;
-            } elseif ($this->use_gravatar && $blob['email']) {
+            } elseif ($this->settingsResolver->getGlobalSettings()->get('core.use_gravatar') && $blob['email']) {
                 // gravatar
                 if (!$blobUrl) {
                     $blobUrl = 'mm';
@@ -201,7 +196,7 @@ class AvatarResolver
             if ($obj->picture_blob) {
                 $url_pattern = $this->getPersonAvatar($obj, $safeSizePlaceholder);
             }
-            if ($this->use_gravatar) {
+            if ($this->settingsResolver->getGlobalSettings()->get('core.use_gravatar')) {
                 $gravatar = $obj->getRawGravatarUrl();
             }
             $default_pattern = $this->getDefaultPersonAvatar($safeSizePlaceholder);
@@ -260,17 +255,17 @@ class AvatarResolver
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-        } elseif ($this->use_gravatar && $person->getPrimaryEmail()) {
+        } elseif ($this->settingsResolver->getGlobalSettings()->get('core.use_gravatar') && $person->getPrimaryEmail()) {
             $url = $person->getPrimaryEmail()->getGravatarUrl(true).'&s='.$size;
 
-            if ($person->organization) {
-                $org_url = $this->getCommonAvatar($person->organization, $size);
+            if ($person->getOrganization()) {
+                $org_url = $this->getCommonAvatar($person->getOrganization(), $size);
                 if ($org_url) {
                     $url .= '&d='.urlencode($org_url);
                 }
             }
-        } elseif ($person->organization) {
-            $url = $this->getCommonAvatar($person->organization, $size);
+        } elseif ($person->getOrganization()) {
+            $url = $this->getCommonAvatar($person->getOrganization(), $size);
         }
 
         return $url;
