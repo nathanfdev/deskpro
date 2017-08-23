@@ -339,6 +339,19 @@ return [
         'is_managed' => true,
     ],
 
+    'vietnamese' => [
+        'id'         => 'vietnamese',
+        'lang_code'  => 'vie',
+        'title'      => 'Vietnamese',
+        'locale'     => 'vi',
+        'flag_image' => 'vn.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => false,
+        'has_admin'  => false,
+        'is_managed' => true,
+    ],
+
     // ensure an appropriate flag_image has been specified when adding a language
     // ensure that /app/languages/default/user/lang.php includes the language name
 
