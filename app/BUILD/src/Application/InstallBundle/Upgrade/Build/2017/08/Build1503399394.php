@@ -33,7 +33,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 // Please remove these NOTE comments after you have checked the code.
 
-class Build1503067534 extends AbstractBuild implements BlockingBuildInterface
+class Build1503399394 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
