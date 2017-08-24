@@ -241,6 +241,9 @@ var DP = {
 					return name;
 				};
 			}
+      options.escapeMarkup = function(result) {
+        return result.replace(/&amp;/, '&').replace(/&quot;/, '"');
+      };
 		}
 
 		if (el.data('select-nogrouptitle')) {
