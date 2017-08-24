@@ -145,4 +145,15 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAlias
 
         return $qualifiers;
     }
+
+    /**
+     * @return mixed
+     */
+    abstract public function getObject();
+
+    /**
+     * @param mixed $object
+     * @return boolean
+     */
+    abstract public function tryAndSetObject($object);
 }

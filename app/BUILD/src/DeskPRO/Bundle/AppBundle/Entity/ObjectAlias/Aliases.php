@@ -28,16 +28,58 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
+use DeskPRO\Bundle\AppBundle\ObjectAlias\Converters;
 use Doctrine\ORM;
 
-class Types
+class Aliases
 {
+    /**
+     * @param string $objectType
+     * @param ORM\EntityManager $entityManager
+     * @return bool
+     */
+    public static function canHaveAlias($objectType, ORM\EntityManager $entityManager)
+    {
+        $metadata = $entityManager->getClassMetadata(AbstractAlias::class);
+        if (empty($metadata->subClasses)) {
+            return false;
+        }
+
+        foreach ($metadata->subClasses as $className) {
+            if (Aliases::isAliasFor($className, $objectType)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param {string} $aliasName
+     * @param {mixed} $object
+     * @param Builder $builder
+     * @return AbstractAlias
+     */
+    public static function createAlias($aliasName, $object, Builder $builder)
+    {
+        $builder->setObject($object);
+        $name = Converters::toNameFromString($aliasName);
+
+        $builder->setName($name->getIdentifier());
+        $appQualifier = AppQualifier::fromName($name);
+        if ($appQualifier) {
+            $builder->setApp($appQualifier);
+        }
+
+        return $builder->build();
+    }
+
     /**
      * @param {string} $objectType the fully qualified class name for the desired object
      * @param ORM\EntityManager $entityManager
      * @return string
      */
-    public static function aliasTypeForObjectType($objectType, ORM\EntityManager $entityManager)
+    public static function resolveAliasType($objectType, ORM\EntityManager $entityManager)
     {
         $metadata = $entityManager->getClassMetadata(AbstractAlias::class);
         if (empty($metadata->subClasses)) {
@@ -46,7 +88,7 @@ class Types
 
         $resolution = [];
         foreach ($metadata->subClasses as $className) {
-            if (Types::isAliasFor($className, $objectType)) {
+            if (Aliases::isAliasFor($className, $objectType)) {
                 $resolution[] = $className;
             }
         }
@@ -62,8 +104,15 @@ class Types
         throw new \DomainException('Ambiguous alias resolution');
     }
 
-    private static function isAliasFor($aliasType, $objectType)
+    /**
+     * @param $aliasType
+     * @param string|object $object
+     * @return bool
+     */
+    private static function isAliasFor($aliasType, $object)
     {
+        $objectType = is_string($object) ? $object : get_class($object);
+
         /** @var \ReflectionMethod $setObjectMethod */
         $setObjectMethod = null;
 

@@ -28,50 +28,53 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-use DeskPRO\Bundle\AppBundle\ObjectAlias;
-
-class Converters
+class Name
 {
-    /**
-     * @param string $alias
-     * @return Name
-     */
-    public static function toNameFromString($alias)
-    {
-        $parts = Converters::toNamePartsFromString($alias);
-        if (empty($parts)) {
-            return null;
-        }
+    /** @var string */
+    private $value;
 
-        return new Name(array_pop($parts), $parts);
-    }
-
+    /** @var array  */
+    private $qualifiers;
 
     /**
-     * @param $alias
-     * @return array
+     * @param string $name
+     * @return bool
      */
-    public static function toNamePartsFromString( $alias)
+    public static function isValidIdentifier($name)
     {
-        return explode(":", $alias);
+        $pattern = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
+        return 1 === preg_match($pattern, $name);
     }
 
     /**
-     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $mapping
+     * @param string $value
+     * @param array $qualifiers
+     */
+    public function __construct($value, array $qualifiers)
+    {
+        $this->value = $value;
+        $this->qualifiers = $qualifiers;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->value;
+    }
+
+    /**
      * @return array|string[]
      */
-    public static function toList( ObjectAlias\ObjectAlias $mapping)
+    public function getQualifiers()
     {
-        $aliases = [
-            $mapping->getObjectId(),
-            $mapping->getAlias()
-        ];
-
-        foreach ($mapping->getQualifiers() as $qualifier) {
-            $aliases[] = implode(':', $qualifier) . ':' . $mapping->getAlias();
-        }
-
-        return array_values(array_filter($aliases, 'is_string'));
+        return array_merge([], $this->qualifiers);
     }
 
+    public function isQualified()
+    {
+        return !empty($this->qualifiers);
+    }
 }
+

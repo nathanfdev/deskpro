@@ -34,11 +34,17 @@ namespace Application\LegacyApiBundle\Form\CustomField\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
+use DeskPRO\Bundle\AppBundle\ObjectAlias\Comparators;
 
 abstract class CustomFieldAbstract
 {
     /** @var string */
     public $title;
+
+    /** @var string */
+    public $alias;
+
     /** @var string */
     public $description = '';
     /** @var string */
@@ -119,6 +125,13 @@ abstract class CustomFieldAbstract
             $this->title = 'Untitled';
         }
 
+        $alias = null;
+        $canHaveAlias = ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
+        if ($this->alias && $canHaveAlias) {
+            $aliasBuilder = new ObjectAlias\Builder($this->_em);
+            $alias = ObjectAlias\Aliases::createAlias($this->alias, $this->_field, $aliasBuilder);
+        }
+
         $field->title          = $this->title;
         $field->description    = $this->description ?: '';
         $field->is_enabled     = $this->is_enabled;
@@ -142,6 +155,10 @@ abstract class CustomFieldAbstract
             $this->_em->persist($field);
             $this->_em->flush();
 
+            if ($canHaveAlias) {
+                $this->saveAlias($alias);
+            }
+
             $this->saveAdditional();
             $this->_em->flush();
 
@@ -150,6 +167,35 @@ abstract class CustomFieldAbstract
             $this->_em->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * @param ObjectAlias\AbstractAlias $alias
+     */
+    protected function saveAlias(ObjectAlias\AbstractAlias $alias = null)
+    {
+        if (is_null($alias)) {
+            if (!$this->isNewField()) { // we are removing all existing aliases
+                $existingAliasList = $this->_field->getAliases();
+                foreach ($existingAliasList as $existingAlias) {
+                    $this->_em->remove($existingAlias);
+                }
+            }
+            return ;
+        }
+
+        // if the new one is already attached to the field we don't need to do anything
+        $existingAliasList = $this->_field->getAliases();
+        if ($existingAliasList) {
+            foreach ($existingAliasList as $existingAlias) {
+                if (Comparators::equal($alias, $existingAlias)) { return ; }
+            }
+            foreach ($existingAliasList as $existingAlias) {
+                $this->_em->remove($existingAlias);
+            }
+        }
+
+        $this->_em->persist($alias);
     }
 
     protected function setFieldProperties()

@@ -26,52 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
+namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-class Converters
+class AppQualifier
 {
     /**
-     * @param string $alias
-     * @return Name
-     */
-    public static function toNameFromString($alias)
-    {
-        $parts = Converters::toNamePartsFromString($alias);
-        if (empty($parts)) {
-            return null;
-        }
-
-        return new Name(array_pop($parts), $parts);
-    }
-
-
-    /**
-     * @param $alias
+     * @param AppQualifier $qualifier
      * @return array
      */
-    public static function toNamePartsFromString( $alias)
+    public static function toArray(AppQualifier $qualifier)
     {
-        return explode(":", $alias);
+        return ['app', $qualifier->getId()];
     }
 
     /**
-     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $mapping
-     * @return array|string[]
+     * @param array $qualifier
+     * @return AppQualifier|null
      */
-    public static function toList( ObjectAlias\ObjectAlias $mapping)
+    public static function fromArray(array $qualifier)
     {
-        $aliases = [
-            $mapping->getObjectId(),
-            $mapping->getAlias()
-        ];
-
-        foreach ($mapping->getQualifiers() as $qualifier) {
-            $aliases[] = implode(':', $qualifier) . ':' . $mapping->getAlias();
+        if (count($qualifier) === 2 && $qualifier[0] === 'app') {
+            $id = (integer) $qualifier[1];
+            if ($qualifier[1] === (string) $id) {
+                return new AppQualifier($qualifier[1]);
+            }
         }
 
-        return array_values(array_filter($aliases, 'is_string'));
+        return null;
     }
 
+    /**
+     * @param ObjectAlias\Name $name
+     * @return AppQualifier|null
+     */
+    public static function fromName(ObjectAlias\Name $name)
+    {
+        if ($name->isQualified()) {
+            return AppQualifier::fromArray($name->getQualifiers());
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function __construct($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId() {
+        return $this->id;
+    }
 }

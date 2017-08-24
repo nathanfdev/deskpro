@@ -9,11 +9,14 @@ class FieldAliasResolvingStrategy implements FieldNameResolvingStrategy
     /**
      * @var ObjectAlias\ObjectIdResolver
      */
-    private $idFinder;
+    private $objectIdResolver;
 
+    /**
+     * @param ObjectAlias\ObjectIdResolver $finder
+     */
     public function __construct(ObjectAlias\ObjectIdResolver $finder)
     {
-        $this->idFinder = $finder;
+        $this->objectIdResolver = $finder;
     }
 
     /**
@@ -38,17 +41,11 @@ class FieldAliasResolvingStrategy implements FieldNameResolvingStrategy
             }
         }
 
-        $qualified = ObjectAlias\Converters::toQualifiedListFromString($alias);
-        $unQualified = end($qualified);
-
-        $pattern = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
-        if (1 !== preg_match($pattern, $unQualified, $matches)) {
+        $name = ObjectAlias\Converters::toNameFromString($alias);
+        if (empty($name) || ! ObjectAlias\Name::isValidIdentifier($name)) {
             return null;
         }
 
-        if (1 === count($qualified)) {
-            return $this->idFinder->resolveAlias($unQualified);
-        }
-        return $this->idFinder->resolveQualifiedAlias($qualified);
+        return $this->objectIdResolver->resolveAlias($name);
     }
 }

@@ -81,4 +81,18 @@ class TicketTriggerAlias extends AbstractAlias
             return (string) $this->object->getId();
         }
     }
+
+    /**
+     * @param mixed $object
+     * @return boolean
+     */
+    public function tryAndSetObject( $object )
+    {
+        try {
+            $this->setObject($object);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

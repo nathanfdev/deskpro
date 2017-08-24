@@ -66,6 +66,20 @@ class CustomTicketFieldDefinitionAlias extends AbstractAlias
     }
 
     /**
+     * @param mixed $object
+     * @return boolean
+     */
+    public function tryAndSetObject( $object )
+    {
+        try {
+            $this->setObject($object);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * @return string
      */
     public function getObjectType()

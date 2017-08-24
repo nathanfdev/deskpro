@@ -74,7 +74,7 @@ class CustomFieldManager
     {
         try {
             $aliasFieldNameStrategy = null;
-            $aliasType = ObjectAlias\Types::aliasTypeForObjectType($customFieldType, $this->em);
+            $aliasType = ObjectAlias\Aliases::resolveAliasType($customFieldType, $this->em);
             if (empty($aliasType)) {
                 throw new \DomainException('no alias type found');
             }

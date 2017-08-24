@@ -38,20 +38,11 @@ interface ObjectIdResolver
     public function getObjectType();
 
     /**
-     * Returns the id of the object referenced by the qualified $qualifiedAlias.
-     *
-     * @param string[]|array $qualifiedAlias
-     *
-     * @return null|int
-     */
-    public function resolveQualifiedAlias($qualifiedAlias);
-
-    /**
      * Returns the id of the object referenced by the unqualified $alias.
      *
-     * @param $alias
+     * @param Name $name
      *
-     * @return null|int
+     * @return int|null
      */
-    public function resolveAlias($alias);
+    public function resolveAlias(Name $name);
 }

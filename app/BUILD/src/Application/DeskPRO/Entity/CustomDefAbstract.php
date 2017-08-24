@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -219,7 +219,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return ObjectAlias[]|null
+     * @return ObjectAlias\ObjectAlias[]|null
      */
     public function getAliases()
     {

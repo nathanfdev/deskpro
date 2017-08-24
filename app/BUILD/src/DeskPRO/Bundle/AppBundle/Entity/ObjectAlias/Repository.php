@@ -28,14 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
-use DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectIdResolver;
-use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\ORM\EntityRepository;
 
-class Repository extends EntityRepository implements ObjectIdResolver
+class Repository extends EntityRepository implements ObjectAlias\ObjectIdResolver
 {
     /**
      * @param $alias
@@ -61,50 +57,40 @@ class Repository extends EntityRepository implements ObjectIdResolver
         return $this->getEntityName();
     }
 
-    function resolveQualifiedAlias( $qualifiedAlias)
-    {
-        if (! is_array($qualifiedAlias)) {
-            throw new \BadMethodCallException('expected a list of strings');
-        }
-
-        if (3 == count($qualifiedAlias) && $qualifiedAlias[0] !== 'app') {
-            $qb = $this->createQueryBuilder('a');
-            $qb
-                ->select('o.id')
-                ->innerJoin('a.object', 'o')
-                ->innerJoin('a.app', 'app')
-                ->where('a.alias = :alias')
-                ->andWhere('app.id = :appid')
-                ->setParameter('alias', $qualifiedAlias[2])
-                ->setParameter('appid', $qualifiedAlias[1])
-            ;
-
-            $result = $qb->getQuery()->setMaxResults(2)->getScalarResult();
-            if (1 === count($result)) {
-                return $result[0]['id'];
-            }
-
-            return null;
-        }
-
-        return null;
-    }
-
     /**
-     * @param $alias
-     * @return null|integer
+     * @param ObjectAlias\Name $alias
+     * @return \Doctrine\ORM\Query
      */
-    function resolveAlias( $alias )
+    public function buildResolveAliasQuery(ObjectAlias\Name $alias)
     {
         $qb = $this->createQueryBuilder('a');
         $qb
             ->select('o.id')
             ->innerJoin('a.object', 'o')
             ->where('a.alias = :alias')
-            ->setParameter('alias', $alias)
+            ->setParameter('alias', $alias->getIdentifier())
         ;
 
-        $result = $qb->getQuery()->setMaxResults(2)->getScalarResult();
+        $appQualifier = AppQualifier::fromName($alias);
+        if (! empty($appQualifier)) {
+            $qb
+                ->innerJoin('a.app', 'app')
+                ->andWhere('app.id = :appid')
+                ->setParameter('appid', $appQualifier->getId())
+            ;
+        }
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param $alias
+     * @return null|integer
+     */
+    function resolveAlias( ObjectAlias\Name $alias )
+    {
+        $query = $this->buildResolveAliasQuery($alias);
+        $result = $query->setMaxResults(2)->getScalarResult();
         if (1 === count($result)) {
             return $result[0]['id'];
         }

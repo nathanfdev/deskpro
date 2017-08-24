@@ -30,48 +30,38 @@ namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-class Converters
+class Comparators
 {
     /**
-     * @param string $alias
-     * @return Name
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $a
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $b
+     * @return bool
      */
-    public static function toNameFromString($alias)
+    public static function equal(ObjectAlias\ObjectAlias $a, ObjectAlias\ObjectAlias $b)
     {
-        $parts = Converters::toNamePartsFromString($alias);
-        if (empty($parts)) {
-            return null;
+        if ($a->getObjectId() !== $b->getObjectId()) {
+            return false;
         }
 
-        return new Name(array_pop($parts), $parts);
-    }
-
-
-    /**
-     * @param $alias
-     * @return array
-     */
-    public static function toNamePartsFromString( $alias)
-    {
-        return explode(":", $alias);
-    }
-
-    /**
-     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $mapping
-     * @return array|string[]
-     */
-    public static function toList( ObjectAlias\ObjectAlias $mapping)
-    {
-        $aliases = [
-            $mapping->getObjectId(),
-            $mapping->getAlias()
-        ];
-
-        foreach ($mapping->getQualifiers() as $qualifier) {
-            $aliases[] = implode(':', $qualifier) . ':' . $mapping->getAlias();
+        if ($a->getObjectType() !== $b->getObjectType()) {
+            return false;
         }
 
-        return array_values(array_filter($aliases, 'is_string'));
+        if ($a->getAlias() !== $b->getAlias()) {
+            return false;
+        }
+
+        $aQualifiers = $a->getQualifiers();
+        $bQualifiers = $b->getQualifiers();
+
+        if (count($aQualifiers) !== count($bQualifiers)) {
+            return false;
+        }
+
+        $aQualifiers = array_map('implode', $aQualifiers);
+        $bQualifiers = array_map('implode', $bQualifiers);
+
+        return array_diff($aQualifiers, $bQualifiers) === array_diff($bQualifiers, $aQualifiers);
     }
 
 }
