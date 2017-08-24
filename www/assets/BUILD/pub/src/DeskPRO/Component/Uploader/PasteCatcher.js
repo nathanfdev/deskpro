@@ -59,15 +59,16 @@ export const getBlobsFromIEItems = (files, event, onPasteImage) => {
     const file = files[i];
 
     if (file.type.indexOf('image') !== -1) {
-      const type = file.type;
       const url = URL.createObjectURL(file);
-      if (event.convertURL) { // Use standard if available.
-        event.convertURL(file, 'specified', url);
-      } else {
-        event.msConvertURL(file, 'specified', url);
-      }
+      const reader = new window.FileReader();
 
-      onPasteImage(file, url, type);
+      reader.onloadend = function () {
+        const base64Image = reader.result;
+        const blob = dataUrlToBlob(base64Image);
+        onPasteImage(blob, url, file.type);
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 };
