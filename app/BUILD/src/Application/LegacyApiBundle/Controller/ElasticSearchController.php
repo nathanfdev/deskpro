@@ -80,10 +80,17 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
     public function saveSettingsAction()
     {
-        $was_enabled = $this->settings->get('elastic_settings.enabled');
+        $wasEnabled = $this->settings->get('elastic_settings.enabled');
+
+        $url = $this->in->getString('elastic_settings.url');
+
+        // A missing trailing slash causes errors
+        if (!preg_match('|/$|', $url)) {
+            $url .= '/';
+        }
 
         $this->settings->setSetting('elastica.enabled', $this->in->getBoolInt('elastic_settings.enabled'));
-        $this->settings->setSetting('elastica.clients.default.url', $this->in->getString('elastic_settings.url') ?: '');
+        $this->settings->setSetting('elastica.clients.default.url', $url ?: '');
         $this->settings->setSetting('elastica.tika.enabled', $this->in->getBoolInt('elastic_settings.tika_enabled') ?: '');
         $this->settings->setSetting('elastica.tika.ip_address', $this->in->getString('elastic_settings.tika_ip') ?: '');
         $this->settings->setSetting('elastica.tika.port', $this->in->getInt('elastic_settings.tika_port') ?: '9998');
@@ -99,11 +106,11 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         }
 
         // Just turned on, we need to toggle the requires_reset flag
-        if ((!$was_enabled || $this->in->getBool('reindex')) && $this->in->getBool('elastic_settings.enabled')) {
+        if ((!$wasEnabled || $this->in->getBool('reindex')) && $this->in->getBool('elastic_settings.enabled')) {
             $this->settings->setSetting('elastica.requires_reset', 1);
-            $es_status = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
-            if ($es_status) {
-                $this->em->remove($es_status);
+            $esStatus = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
+            if ($esStatus) {
+                $this->em->remove($esStatus);
                 $this->em->flush();
             }
         } else {
@@ -217,40 +224,40 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
 
     public function indexStatusAction()
     {
-        $es_status = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
+        $esStatus = $this->em->getRepository(DataStore::class)->getByName('sys.es_indexer', false);
 
-        $status_data = $es_status ? $es_status->data : [];
+        $statusData = $esStatus ? $esStatus->data : [];
 
-        $log_path = dp_get_log_dir().'/es-indexer.log';
-        $log      = null;
-        if (file_exists($log_path)) {
-            $log = @file_get_contents($log_path);
+        $logPath = dp_get_log_dir().'/es-indexer.log';
+        $log     = null;
+        if (file_exists($logPath)) {
+            $log = @file_get_contents($logPath);
         }
 
-        $is_indexing = ($this->getContainer()->getSetting('elastica.requires_reset') || ($es_status && $es_status->getData('status') == 'running'));
+        $isIndexing = ($this->getContainer()->getSetting('elastica.requires_reset') || ($esStatus && $esStatus->getData('status') == 'running'));
 
-        if (($es_status && $es_status->getData('status') == 'running') && isset($status_data['date_last'])) {
-            if ($status_data['date_last']->getTimestamp() < (time() - 1200)) {
-                $status_data['status'] = 'crashed';
+        if (($esStatus && $esStatus->getData('status') == 'running') && isset($statusData['date_last'])) {
+            if ($statusData['date_last']->getTimestamp() < (time() - 1200)) {
+                $statusData['status'] = 'crashed';
             }
         }
 
         $info = null;
-        if (!$is_indexing) {
+        if (!$isIndexing) {
             try {
                 /** @var \Elastica\Index $index */
-                $index      = $this->getContainer()->get('fos_elastica.index.deskpro');
-                $index_name = $index->getName();
+                $index     = $this->getContainer()->get('fos_elastica.index.deskpro');
+                $indexName = $index->getName();
 
                 $stats = $index->request('_stats', 'GET')->getData();
 
-                if (!isset($stats['indices'][$index_name])) {
+                if (!isset($stats['indices'][$indexName])) {
                     $info = ['error' => 'no_index'];
                 } else {
                     $info = [
-                        'size'          => @$stats['indices'][$index_name]['total']['store']['size_in_bytes'],
-                        'size_readable' => Numbers::filesizeDisplay(@$stats['indices'][$index_name]['total']['store']['size_in_bytes']),
-                        'num_docs'      => @$stats['indices'][$index_name]['total']['docs']['count'],
+                        'size'          => @$stats['indices'][$indexName]['total']['store']['size_in_bytes'],
+                        'size_readable' => Numbers::filesizeDisplay(@$stats['indices'][$indexName]['total']['store']['size_in_bytes']),
+                        'num_docs'      => @$stats['indices'][$indexName]['total']['docs']['count'],
                     ];
                 }
             } catch (\Exception $e) {
@@ -258,7 +265,7 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
             }
         }
 
-        if (empty($info['error']) && isset($index) && isset($index_name)) {
+        if (empty($info['error']) && isset($index) && isset($indexName)) {
             $types = [
                 'feedback'          => 'feedback',
                 'organization'      => 'organizations',
@@ -284,8 +291,8 @@ class ElasticSearchController extends AbstractController implements ProtectedCon
         }
 
         return $this->createJsonResponse([
-            'is_indexing'    => $is_indexing,
-            'indexer_status' => $status_data ? $status_data : null,
+            'is_indexing'    => $isIndexing,
+            'indexer_status' => $statusData ? $statusData : null,
             'indexer_log'    => $log ?: null,
             'info'           => $info,
         ]);

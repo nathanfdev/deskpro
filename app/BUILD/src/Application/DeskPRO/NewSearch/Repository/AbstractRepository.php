@@ -145,6 +145,9 @@ abstract class AbstractRepository extends Repository
                 'post_filter' => $this->getFilters($options),
             ]);
         }
+        if ($this->getSource()) {
+            $query->setSource($this->getSource());
+        }
 
         return $query;
     }
@@ -211,6 +214,11 @@ abstract class AbstractRepository extends Repository
     protected function getFilters(array $options = [])
     {
         return [];
+    }
+
+    protected function getSource()
+    {
+        return false;
     }
 
     /**
