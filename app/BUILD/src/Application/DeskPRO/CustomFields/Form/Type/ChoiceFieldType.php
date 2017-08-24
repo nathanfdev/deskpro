@@ -30,23 +30,41 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
-class HiddenFieldType extends CustomFieldTypeAbstract
+class ChoiceFieldType extends CustomFieldTypeAbstract
 {
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('default_value', 'text', ['required' => false]);
-        $builder->add('cookie_name', 'text', ['required' => false]);
-        $builder->add('param_name', 'text', ['required' => false]);
+        $builder->add('field_type', 'choice', ['choices' => [
+            'select'       => 'Select box (single selection)',
+            'multi_select' => 'Mutli-Select box (multiple selection)',
+            'radio'        => 'Radio buttons (single selection)',
+            'checkbox'     => 'Checkboxes (multiple selection)',
+        ]]);
+
+        $builder->add('min_length', 'text', ['required' => false]);
+        $builder->add('max_length', 'text', ['required' => false]);
+
+        $builder->add('agent_min_length', 'text', ['required' => false]);
+        $builder->add('agent_max_length', 'text', ['required' => false]);
+
+        $builder->get('default_value')->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+            $data = $event->getData();
+            if (is_array($data)) {
+                $event->setData(implode(',', $data));
+            }
+        });
     }
 
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\HiddenField',
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ChoiceField',
         ];
     }
 }

@@ -30,31 +30,22 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
-class ToggleField extends CustomFieldAbstract
+class DisplayField extends TextField
 {
     /** @var string */
-    public $default_value = '';
-    /** @var string */
-    public $label_text = '';
+    public $html = '';
 
     public function init()
     {
-        $this->default_value = $this->_field->default_value == '1' ? true : false;
-        $this->label_text    = $this->_field->getOption('label_text') ?: '';
+        $this->html = $this->_field->getOption('html');
     }
 
     protected function setFieldProperties()
     {
         $field = $this->_field;
 
-        $field->default_value = $this->default_value;
-
-        if ($this->label_text) {
-            $field->setOption('label_text', $this->label_text);
-        } else {
-            $field->setOption('label_text', null);
-        }
+        $field->setOption('html', $this->html);
     }
 }

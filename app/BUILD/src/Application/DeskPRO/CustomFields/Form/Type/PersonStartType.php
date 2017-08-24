@@ -26,25 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
-
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class DisplayFieldType extends CustomFieldTypeAbstract
+class PersonStartType extends AbstractType
 {
-    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('html', 'textarea', ['required' => true]);
+        $builder
+            ->add('first_name')
+            ->add('last_name')
+            ->add('email', 'email')
+            ->add(
+                'password',
+                'repeated',
+                [
+                    'type'            => 'password',
+                    'required'        => true,
+                    'invalid_message' => 'The password fields must match.',
+                    'first_options'   => ['label' => 'Password'],
+                    'second_options'  => ['label' => 'Repeat Password'],
+                ]
+            );
     }
 
-    public function getDefaultOptions(array $options)
+    public function getName()
     {
-        return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DisplayField',
-        ];
+        return 'person_start';
     }
 }

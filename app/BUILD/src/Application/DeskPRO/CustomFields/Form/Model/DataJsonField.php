@@ -26,34 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
+/**
+ * DeskPRO.
+ */
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
-class PersonStartType extends AbstractType
+class DataJsonField extends CustomFieldAbstract
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /** @var string */
+    public $usersource_id;
+    /** @var string */
+    public $field_name;
+
+    public function init()
     {
-        $builder
-            ->add('first_name')
-            ->add('last_name')
-            ->add('email', 'email')
-            ->add(
-                'password',
-                'repeated',
-                [
-                    'type'            => 'password',
-                    'required'        => true,
-                    'invalid_message' => 'The password fields must match.',
-                    'first_options'   => ['label' => 'Password'],
-                    'second_options'  => ['label' => 'Repeat Password'],
-                ]
-            );
+        $this->usersource_id = $this->_field->getOption('usersource_id');
+        $this->field_name    = $this->_field->getOption('field_name');
     }
 
-    public function getName()
+    protected function setFieldProperties()
     {
-        return 'person_start';
+        $field = $this->_field;
+
+        if ($this->usersource_id) {
+            $field->setOption('usersource_id', $this->usersource_id);
+        } else {
+            $field->setOption('usersource_id', null);
+        }
+        if ($this->field_name) {
+            $field->setOption('field_name', $this->field_name);
+        } else {
+            $field->setOption('field_name', null);
+        }
     }
 }

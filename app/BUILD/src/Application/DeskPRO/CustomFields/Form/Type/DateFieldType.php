@@ -26,41 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
+/**
+ * DeskPRO.
+ */
 
-use Application\LegacyApiBundle\Form\CustomField\Model\TextField;
+namespace Application\DeskPRO\CustomFields\Form\Type;
+
+use Application\LegacyApiBundle\Form\CustomField\Model\DateField;
 use Symfony\Component\Form\FormBuilderInterface;
 
-/**
- * Class TextFieldType.
- */
-class TextFieldType extends CustomFieldTypeAbstract
+class DateFieldType extends CustomFieldTypeAbstract
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('default_value', 'text', ['required' => false]);
-        $builder->add('clickable_links', 'text', ['required' => false]);
-        $builder->add('min_length', 'text', ['required' => false]);
-        $builder->add('max_length', 'text', ['required' => false]);
-        $builder->add('regex', 'text', ['required' => false]);
-        $builder->add('regex_required', 'checkbox', ['required' => false]);
+        $builder->add('default_mode', 'text', ['required' => true]);
+        $builder->add('required', 'checkbox', ['required' => false]);
+        $builder->add('agent_required', 'checkbox', ['required' => false]);
 
-        $builder->add('agent_min_length', 'text', ['required' => false]);
-        $builder->add('agent_max_length', 'text', ['required' => false]);
-        $builder->add('agent_regex', 'text', ['required' => false]);
-        $builder->add('agent_regex_required', 'checkbox', ['required' => false]);
+        $builder->add('date_valid_type', 'hidden');
+        $builder->add('date_valid_date1', 'text', ['required' => false]);
+        $builder->add('date_valid_date2', 'text', ['required' => false]);
+        $builder->add('date_valid_range1', 'text', ['required' => false]);
+        $builder->add('date_valid_range2', 'text', ['required' => false]);
+        $builder->add('date_valid_dow', 'choice', [
+            'multiple' => true,
+            'expanded' => true,
+            'required' => false,
+            'choices'  => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        ]);
+        $builder->add('calendar', 'choice', [
+            'required'          => false,
+            'choices'           => ['gregorian', 'hijri'],
+            'choices_as_values' => true,
+        ]);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => TextField::class,
+            'data_class' => DateField::class,
         ];
     }
 }

@@ -101,6 +101,7 @@ class RestContext extends BaseContext
         $url = DataContext::replace($url);
         DataContext::setPlaceholder('lastRequestUrl', $url);
 
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
         $client = $this->getSession()->getDriver()->getClient();
 
         // intercept redirection

@@ -30,7 +30,7 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Orb\Util\Arrays;
 

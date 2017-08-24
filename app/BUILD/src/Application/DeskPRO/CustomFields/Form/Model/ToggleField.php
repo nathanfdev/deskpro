@@ -30,22 +30,32 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
-use Symfony\Component\Form\FormBuilderInterface;
 
-class DataFieldType extends CustomFieldTypeAbstract
+class ToggleField extends CustomFieldAbstract
 {
-    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    /** @var string */
+    public $default_value = '';
+    /** @var string */
+    public $label_text = '';
+
+    public function init()
     {
-        $builder->add('usersource_id', 'text', ['required' => false]);
-        $builder->add('field_name', 'text', ['required' => false]);
+        $this->default_value = $this->_field->default_value == '1' ? true : false;
+        $this->label_text    = $this->_field->getOption('label_text') ?: '';
     }
 
-    public function getDefaultOptions(array $options)
+    protected function setFieldProperties()
     {
-        return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DataField',
-        ];
+        $field = $this->_field;
+
+        $field->default_value = $this->default_value;
+
+        if ($this->label_text) {
+            $field->setOption('label_text', $this->label_text);
+        } else {
+            $field->setOption('label_text', null);
+        }
     }
 }

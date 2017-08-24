@@ -26,22 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
-
-use Application\LegacyApiBundle\Form\CustomField\Model\TextareaField;
-
 /**
- * Class TextareaFieldType.
+ * DeskPRO.
  */
-class TextareaFieldType extends TextFieldType
+
+namespace Application\DeskPRO\CustomFields\Form\Type;
+
+use Symfony\Component\Form\FormBuilderInterface;
+
+class HiddenFieldType extends CustomFieldTypeAbstract
 {
-    /**
-     * {@inheritdoc}
-     */
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('cookie_name', 'text', ['required' => false]);
+        $builder->add('param_name', 'text', ['required' => false]);
+    }
+
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => TextareaField::class,
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\HiddenField',
         ];
     }
 }

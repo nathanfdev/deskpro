@@ -30,22 +30,23 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
+use Application\LegacyApiBundle\Form\CustomField\Model\DateTimeField;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ToggleFieldType extends CustomFieldTypeAbstract
+class DateTimeFieldType extends DateFieldType
 {
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('default_value', 'checkbox', ['required' => false]);
-        $builder->add('label_text', 'text', ['required' => false]);
+        parent::buildCustomFieldForm($builder, $options);
+        $builder->remove('calendar');
     }
 
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ToggleField',
+            'data_class' => DateTimeField::class,
         ];
     }
 }

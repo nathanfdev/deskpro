@@ -30,34 +30,31 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
-class DataField extends CustomFieldAbstract
+class HiddenField extends CustomFieldAbstract
 {
     /** @var string */
-    public $usersource_id;
-    /** @var string */
-    public $field_name;
+    public $default_value = '';
+    /** @var null */
+    public $cookie_name = null;
+    /** @var null */
+    public $param_name = null;
 
     public function init()
     {
-        $this->usersource_id = $this->_field->getOption('usersource_id');
-        $this->field_name    = $this->_field->getOption('field_name');
+        $this->default_value = $this->_field->default_value;
+        $this->cookie_name   = $this->_field->getOption('cookie_name') ?: '';
+        $this->param_name    = $this->_field->getOption('param_name') ?: '';
     }
 
     protected function setFieldProperties()
     {
         $field = $this->_field;
 
-        if ($this->usersource_id) {
-            $field->setOption('usersource_id', $this->usersource_id);
-        } else {
-            $field->setOption('usersource_id', null);
-        }
-        if ($this->field_name) {
-            $field->setOption('field_name', $this->field_name);
-        } else {
-            $field->setOption('field_name', null);
-        }
+        $field->default_value = $this->default_value;
+
+        $field->setOption('cookie_name', $this->cookie_name ?: null);
+        $field->setOption('param_name', $this->param_name ?: null);
     }
 }

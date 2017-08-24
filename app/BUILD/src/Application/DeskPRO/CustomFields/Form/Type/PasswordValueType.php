@@ -30,22 +30,59 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-class DisplayField extends TextField
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
+
+/**
+ * A password field, that actually retains it's value as instructed.
+ */
+class PasswordValueType extends AbstractType
 {
-    /** @var string */
-    public $html = '';
-
-    public function init()
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $this->html = $this->_field->getOption('html');
+        $builder->setAttribute('always_empty', $options['always_empty']);
     }
 
-    protected function setFieldProperties()
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $field = $this->_field;
+        if ($form->getAttribute('always_empty')) {
+            $view->set('value', '');
+        }
+    }
 
-        $field->setOption('html', $this->html);
+    /**
+     * {@inheritdoc}
+     */
+    public function getDefaultOptions(array $options)
+    {
+        return [
+            'always_empty' => true,
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return 'text';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'password';
     }
 }

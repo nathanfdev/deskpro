@@ -32,28 +32,29 @@
  * @category Entities
  */
 
-namespace Application\LegacyApiBundle\Controller\Helper;
+namespace Application\DeskPRO\CustomFields\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
-use Application\LegacyApiBundle\Controller\AbstractController;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
+use Symfony\Component\Form\FormFactoryInterface;
 
-class CustomFieldHelper
+class FormHelper
 {
     /**
-     * @var \Application\LegacyApiBundle\Controller\AbstractController
+     * @var FormFactoryInterface
      */
-    private $controller;
+    private $formFactory;
 
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
-    public function __construct(AbstractController $controller)
+    public function __construct(EntityManager $em, FormFactoryInterface $formFactory)
     {
-        $this->controller = $controller;
-        $this->em         = $controller->getContainer()->getEm();
+        $this->em         = $em;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -64,9 +65,9 @@ class CustomFieldHelper
      */
     public function saveFormToField(CustomDefAbstract $field, array $formData)
     {
-        $baseType    = Util::getBaseClassname($field['handler_class']);
-        $modelClass = 'Application\\LegacyApiBundle\\Form\\CustomField\\Model\\'.$baseType.'Field';
-        $typeClass  = 'Application\\LegacyApiBundle\\Form\\CustomField\\Type\\'.$baseType.'FieldType';
+        $baseType    = Util::getBaseClassname($formData['handler_class']);
+        $modelClass = 'Application\\DeskPRO\\CustomFields\\Form\\Model\\'.$baseType.'Field';
+        $typeClass  = 'Application\\DeskPRO\\CustomFields\\Form\\Type\\'.$baseType.'FieldType';
 
         if (!isset($formData['choices_structure'])) {
             $formData['choices_structure'] = [];
@@ -74,7 +75,7 @@ class CustomFieldHelper
 
         $editField = new $modelClass($field);
         $formType  = new $typeClass();
-        $form      = $this->controller->getContainer()->get('form.factory')->create($formType, $editField);
+        $form      = $this->formFactory->create($formType, $editField);
 
         $this->em->getConnection()->beginTransaction();
         try {

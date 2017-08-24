@@ -30,23 +30,34 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
-use Application\LegacyApiBundle\Form\CustomField\Model;
-use Symfony\Component\Form\FormBuilderInterface;
-
-class DataListFieldType extends CustomFieldTypeAbstract
+class DataField extends CustomFieldAbstract
 {
-    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    /** @var string */
+    public $usersource_id;
+    /** @var string */
+    public $field_name;
+
+    public function init()
     {
-        $builder->add('usersource_id', 'text', ['required' => false]);
-        $builder->add('field_name', 'text', ['required' => false]);
+        $this->usersource_id = $this->_field->getOption('usersource_id');
+        $this->field_name    = $this->_field->getOption('field_name');
     }
 
-    public function getDefaultOptions(array $options)
+    protected function setFieldProperties()
     {
-        return [
-            'data_class' => Model\DataListField::class
-        ];
+        $field = $this->_field;
+
+        if ($this->usersource_id) {
+            $field->setOption('usersource_id', $this->usersource_id);
+        } else {
+            $field->setOption('usersource_id', null);
+        }
+        if ($this->field_name) {
+            $field->setOption('field_name', $this->field_name);
+        } else {
+            $field->setOption('field_name', null);
+        }
     }
 }

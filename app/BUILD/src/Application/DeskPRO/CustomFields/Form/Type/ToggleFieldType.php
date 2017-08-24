@@ -30,8 +30,22 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-class TextareaField extends TextField
+use Symfony\Component\Form\FormBuilderInterface;
+
+class ToggleFieldType extends CustomFieldTypeAbstract
 {
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('default_value', 'checkbox', ['required' => false]);
+        $builder->add('label_text', 'text', ['required' => false]);
+    }
+
+    public function getDefaultOptions(array $options)
+    {
+        return [
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ToggleField',
+        ];
+    }
 }

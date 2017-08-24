@@ -30,31 +30,23 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-class HiddenField extends CustomFieldAbstract
+use Application\LegacyApiBundle\Form\CustomField\Model;
+use Symfony\Component\Form\FormBuilderInterface;
+
+class DataJsonFieldType extends CustomFieldTypeAbstract
 {
-    /** @var string */
-    public $default_value = '';
-    /** @var null */
-    public $cookie_name = null;
-    /** @var null */
-    public $param_name = null;
-
-    public function init()
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $this->default_value = $this->_field->default_value;
-        $this->cookie_name   = $this->_field->getOption('cookie_name') ?: '';
-        $this->param_name    = $this->_field->getOption('param_name') ?: '';
+        $builder->add('usersource_id', 'text', ['required' => false]);
+        $builder->add('field_name', 'text', ['required' => false]);
     }
 
-    protected function setFieldProperties()
+    public function getDefaultOptions(array $options)
     {
-        $field = $this->_field;
-
-        $field->default_value = $this->default_value;
-
-        $field->setOption('cookie_name', $this->cookie_name ?: null);
-        $field->setOption('param_name', $this->param_name ?: null);
+        return [
+            'data_class' => Model\DataJsonField::class
+        ];
     }
 }

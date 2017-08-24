@@ -26,45 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
-
+use Application\LegacyApiBundle\Form\CustomField\Model\TextField;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 
-class ChoiceFieldType extends CustomFieldTypeAbstract
+/**
+ * Class TextFieldType.
+ */
+class TextFieldType extends CustomFieldTypeAbstract
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('field_type', 'choice', ['choices' => [
-            'select'       => 'Select box (single selection)',
-            'multi_select' => 'Mutli-Select box (multiple selection)',
-            'radio'        => 'Radio buttons (single selection)',
-            'checkbox'     => 'Checkboxes (multiple selection)',
-        ]]);
-
+        $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('clickable_links', 'text', ['required' => false]);
         $builder->add('min_length', 'text', ['required' => false]);
         $builder->add('max_length', 'text', ['required' => false]);
+        $builder->add('regex', 'text', ['required' => false]);
+        $builder->add('regex_required', 'checkbox', ['required' => false]);
 
         $builder->add('agent_min_length', 'text', ['required' => false]);
         $builder->add('agent_max_length', 'text', ['required' => false]);
-
-        $builder->get('default_value')->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-            $data = $event->getData();
-            if (is_array($data)) {
-                $event->setData(implode(',', $data));
-            }
-        });
+        $builder->add('agent_regex', 'text', ['required' => false]);
+        $builder->add('agent_regex_required', 'checkbox', ['required' => false]);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ChoiceField',
+            'data_class' => TextField::class,
         ];
     }
 }

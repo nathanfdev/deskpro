@@ -26,63 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-namespace Application\LegacyApiBundle\Form\CustomField\Type;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\FormView;
+use Application\LegacyApiBundle\Form\CustomField\Model\TextareaField;
 
 /**
- * A password field, that actually retains it's value as instructed.
+ * Class TextareaFieldType.
  */
-class PasswordValueType extends AbstractType
+class TextareaFieldType extends TextFieldType
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->setAttribute('always_empty', $options['always_empty']);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function buildView(FormView $view, FormInterface $form, array $options)
-    {
-        if ($form->getAttribute('always_empty')) {
-            $view->set('value', '');
-        }
-    }
-
     /**
      * {@inheritdoc}
      */
     public function getDefaultOptions(array $options)
     {
         return [
-            'always_empty' => true,
+            'data_class' => TextareaField::class,
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return 'text';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
-    {
-        return 'password';
     }
 }

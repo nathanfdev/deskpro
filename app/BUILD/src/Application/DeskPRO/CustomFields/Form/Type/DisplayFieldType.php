@@ -30,34 +30,21 @@
  * DeskPRO.
  */
 
-namespace Application\LegacyApiBundle\Form\CustomField\Model;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-class DataJsonField extends CustomFieldAbstract
+use Symfony\Component\Form\FormBuilderInterface;
+
+class DisplayFieldType extends CustomFieldTypeAbstract
 {
-    /** @var string */
-    public $usersource_id;
-    /** @var string */
-    public $field_name;
-
-    public function init()
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $this->usersource_id = $this->_field->getOption('usersource_id');
-        $this->field_name    = $this->_field->getOption('field_name');
+        $builder->add('html', 'textarea', ['required' => true]);
     }
 
-    protected function setFieldProperties()
+    public function getDefaultOptions(array $options)
     {
-        $field = $this->_field;
-
-        if ($this->usersource_id) {
-            $field->setOption('usersource_id', $this->usersource_id);
-        } else {
-            $field->setOption('usersource_id', null);
-        }
-        if ($this->field_name) {
-            $field->setOption('field_name', $this->field_name);
-        } else {
-            $field->setOption('field_name', null);
-        }
+        return [
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DisplayField',
+        ];
     }
 }
