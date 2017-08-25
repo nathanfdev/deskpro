@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
-use Application\LegacyApiBundle\Form\CustomField\Model\TextField;
+use Application\DeskPRO\CustomFields\Form\Model\TextField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 /**

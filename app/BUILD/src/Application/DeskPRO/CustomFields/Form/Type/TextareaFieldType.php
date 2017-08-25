@@ -28,7 +28,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
-use Application\LegacyApiBundle\Form\CustomField\Model\TextareaField;
+use Application\DeskPRO\CustomFields\Form\Model\TextareaField;
 
 /**
  * Class TextareaFieldType.

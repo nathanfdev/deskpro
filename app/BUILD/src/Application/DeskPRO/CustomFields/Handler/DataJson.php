@@ -32,8 +32,6 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Orb\Util\Strings;
-
 /**
  * Handles the data json value custom field.
  */

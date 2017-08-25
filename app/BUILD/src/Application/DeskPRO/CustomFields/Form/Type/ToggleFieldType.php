@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
+use Application\DeskPRO\CustomFields\Form\Model\ToggleField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class ToggleFieldType extends CustomFieldTypeAbstract
@@ -45,7 +46,7 @@ class ToggleFieldType extends CustomFieldTypeAbstract
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ToggleField',
+            'data_class' => ToggleField::class,
         ];
     }
 }

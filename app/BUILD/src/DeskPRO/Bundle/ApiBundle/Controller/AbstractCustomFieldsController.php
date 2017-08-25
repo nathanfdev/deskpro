@@ -77,6 +77,14 @@ abstract class AbstractCustomFieldsController extends CrudController
         $isModify = $model && $model->getId();
         $status   = $isModify ? Response::HTTP_NO_CONTENT : Response::HTTP_CREATED;
 
+        // empty put requests
+        $formData = $request->request->all();
+        if ($isModify && empty($formData)) {
+            $view = View::create(null, $status);
+            $view->setLocation($this->getLocationUrl($model, $request));
+            return $view;
+        }
+
         $container = $this->getContainer();
         $helper = new CustomFields\Form\FormHelper($container->getEm(), $container->getFormFactory());
         $helper->saveFormToField($model, $request->request->all());

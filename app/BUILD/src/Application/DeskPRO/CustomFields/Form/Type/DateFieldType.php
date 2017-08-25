@@ -32,7 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
-use Application\LegacyApiBundle\Form\CustomField\Model\DateField;
+use Application\DeskPRO\CustomFields\Form\Model\DateField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DateFieldType extends CustomFieldTypeAbstract

@@ -46,7 +46,7 @@ class HiddenFieldType extends CustomFieldTypeAbstract
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\HiddenField',
+            'data_class' => HiddenFieldType::class,
         ];
     }
 }

@@ -37,13 +37,15 @@ class Name
     private $qualifiers;
 
     /**
-     * @param string $name
+     * @param string|Name $name
      * @return bool
      */
     public static function isValidIdentifier($name)
     {
+        $identifier = $name instanceof Name ? $name->getIdentifier() : $name;
+
         $pattern = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
-        return 1 === preg_match($pattern, $name);
+        return 1 === preg_match($pattern, $identifier);
     }
 
     /**

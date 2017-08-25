@@ -79,7 +79,7 @@ class FormHelper
 
         $this->em->getConnection()->beginTransaction();
         try {
-            if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
+            if ($formData['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
                 $editField->choices_structure = $formData['choices_structure'];
                 $editField->default_option    = @$formData['default_option'];
             }

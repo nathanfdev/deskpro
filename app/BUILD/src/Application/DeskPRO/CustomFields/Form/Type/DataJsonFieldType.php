@@ -32,7 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
-use Application\LegacyApiBundle\Form\CustomField\Model;
+use Application\DeskPRO\CustomFields\Form\Model;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DataJsonFieldType extends CustomFieldTypeAbstract

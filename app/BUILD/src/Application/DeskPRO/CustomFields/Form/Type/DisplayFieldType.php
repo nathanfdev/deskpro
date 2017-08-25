@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
+use Application\DeskPRO\CustomFields\Form\Model\DisplayField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DisplayFieldType extends CustomFieldTypeAbstract
@@ -44,7 +45,7 @@ class DisplayFieldType extends CustomFieldTypeAbstract
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DisplayField',
+            'data_class' => DisplayField::class,
         ];
     }
 }

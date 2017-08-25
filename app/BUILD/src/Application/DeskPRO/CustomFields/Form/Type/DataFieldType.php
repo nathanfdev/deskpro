@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
+use Application\DeskPRO\CustomFields\Form\Model\DataField;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DataFieldType extends CustomFieldTypeAbstract
@@ -45,7 +46,7 @@ class DataFieldType extends CustomFieldTypeAbstract
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DataField',
+            'data_class' => DataField::class,
         ];
     }
 }

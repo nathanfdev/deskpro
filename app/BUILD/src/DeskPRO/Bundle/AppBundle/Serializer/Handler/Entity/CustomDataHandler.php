@@ -54,6 +54,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
         foreach ($def->getAliases() as $alias) {
             $aliases = array_merge($aliases,  CustomFieldManager\FieldAliasConverter::toList($alias));
         }
+        sort($aliases);
         return array_unique($aliases);
     }
 

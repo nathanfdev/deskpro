@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
+use Application\DeskPRO\CustomFields\Form\Model\ChoiceField;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -64,7 +65,7 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ChoiceField',
+            'data_class' => ChoiceField::class,
         ];
     }
 }
