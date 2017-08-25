@@ -51,12 +51,21 @@ class DashboardData extends AbstractDefaultData
         [
             'title'   => 'Ticket insights',
             'reports' => [
+                [
+                    'title'      => 'Overview',
+                    'columns'    => 24,
+                    'sort_order' => 1,
+                ],
             ],
         ],
         [
             'title'   => 'Chat insights',
             'reports' => [
-
+                [
+                    'title'      => 'Overview',
+                    'columns'    => 24,
+                    'sort_order' => 1,
+                ],
             ],
         ],
     ];
