@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,125 +51,12 @@ class DashboardData extends AbstractDefaultData
         [
             'title'   => 'Ticket insights',
             'reports' => [
-                [
-                    'title'      => 'Overview',
-                    'columns'    => 24,
-                    'sort_order' => 1,
-                    'widgets'    => [
-                        [
-                            'title'    => 'Tickets status',
-                            'position' => '0:0',
-                            'size'     => '12:4',
-                            'hc_data'  => 'overview:tickets-status',
-                        ],
-                        [
-                            'title'    => 'Resolved tickets',
-                            'position' => '0:12',
-                            'size'     => '12:5',
-                            'hc_data'  => 'overview:tickets-resolved',
-                        ],
-                        [
-                            'title'    => 'Tickets was "Awaiting agent"',
-                            'position' => '4:0',
-                            'size'     => '12:11',
-                            'hc_data'  => 'overview:tickets-user-waiting-time',
-                        ],
-                        [
-                            'title'    => 'Tickets awaiting agents',
-                            'position' => '5:12',
-                            'size'     => '12:5',
-                            'hc_data'  => 'overview:tickets-awaiting-agent',
-                        ],
-                        [
-                            'title'    => 'Tickets opened hour',
-                            'position' => '10:12',
-                            'size'     => '12:5',
-                            'hc_data'  => 'overview:tickets-opened-hour',
-                        ],
-                        [
-                            'title'    => 'Tickets sla status',
-                            'position' => '15:0',
-                            'size'     => '12:4',
-                            'hc_data'  => 'overview:tickets-sla-status',
-                        ],
-                        [
-                            'title'    => 'Average first response time',
-                            'position' => '15:12',
-                            'size'     => '12:4',
-                            'hc_data'  => 'overview:tickets-response-time',
-                        ],
-                    ],
-                ],
-                [
-                    'title'      => 'Agent Performance',
-                    'columns'    => 24,
-                    'sort_order' => 2,
-                    'widgets'    => [
-                        [
-                            'title'    => 'Agent Activity',
-                            'position' => '0:0',
-                            'size'     => '24:15',
-                            'hc_data'  => 'performance:agent_activity',
-                        ],
-                        [
-                            'title'    => 'Agent Hours',
-                            'position' => '15:0',
-                            'size'     => '24:4',
-                            'hc_data'  => 'performance:agent_hours',
-                        ],
-                    ],
-                ],
-                [
-                    'title'      => 'Ticket Satisfaction',
-                    'columns'    => 24,
-                    'sort_order' => 3,
-                    'widgets'    => [
-                        [
-                            'title'    => 'Feedback',
-                            'position' => '0:0',
-                            'size'     => '24:8',
-                            'hc_data'  => 'ticket_satisfaction:feed',
-                        ],
-                        [
-                            'title'    => 'Summary',
-                            'position' => '8:0',
-                            'size'     => '24:8',
-                            'hc_data'  => 'ticket_satisfaction:summary',
-                        ],
-                    ],
-                ],
-                [
-                    'title'      => 'Billing',
-                    'columns'    => 24,
-                    'sort_order' => 3,
-                    'widgets'    => [
-                    ],
-                ],
             ],
         ],
         [
             'title'   => 'Chat insights',
             'reports' => [
-                [
-                    'title'      => 'Overview',
-                    'columns'    => 24,
-                    'sort_order' => 1,
-                    'widgets'    => [
-                        [
-                            'title'    => 'Chats created',
-                            'position' => '0:0',
-                            'size'     => '12:4',
-                            'hc_data'  => 'overview:chats-created',
-                        ],
-                    ],
-                ],
-                [
-                    'title'      => 'Chat Satisfaction',
-                    'columns'    => 24,
-                    'sort_order' => 2,
-                    'widgets'    => [
-                    ],
-                ],
+
             ],
         ],
     ];
