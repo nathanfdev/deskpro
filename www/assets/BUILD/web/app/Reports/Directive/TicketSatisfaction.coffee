@@ -17,9 +17,6 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
         when 'summary'
           TicketSatisfactionService.loadSummaryResults()
       templateUrl = "ReportsInterfaceBundle:TicketSatisfaction:#{scope.innerType}-wrapper.html"
-#      loadMethod = "load#{Strings.ucFirst(scope.innerType)}Results"
-#      loadMethod = TicketSatisfactionService[loadMethod]
-#      loadMethod()
       $http.get(templateUrl).then (response) ->
         tpl = $sce.trustAsHtml response.data
         template = $sce.getTrustedHtml tpl

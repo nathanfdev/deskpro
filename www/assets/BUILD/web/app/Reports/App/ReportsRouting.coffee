@@ -95,7 +95,7 @@ define -> (States) ->
 
   States.add('reports.agent_activity')
     .setUrl('/agent_activity')
-    .setCtrl('Reports.AgentActivity.AgentActivity')
+    .setCtrl('Reports.AgentActivity')
     .setTpl('ReportsInterfaceBundle:AgentActivity:index.html')
 
   #----------------------------------------
@@ -104,7 +104,7 @@ define -> (States) ->
 
   States.add('reports.agent_hours')
     .setUrl('/agent_hours')
-    .setCtrl('Reports.AgentHours.AgentHours')
+    .setCtrl('Reports.AgentHours')
     .setTpl('ReportsInterfaceBundle:AgentHours:index.html')
 
   #----------------------------------------
@@ -113,5 +113,5 @@ define -> (States) ->
 
   States.add('reports.ticket_satisfaction')
     .setUrl('/ticket_satisfaction')
-    .setCtrl('Reports.TicketSatisfaction.TicketSatisfaction')
+    .setCtrl('Reports.TicketSatisfaction')
     .setTpl('ReportsInterfaceBundle:TicketSatisfaction:index.html')

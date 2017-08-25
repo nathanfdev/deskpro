@@ -36,7 +36,11 @@ define [
     Module.controller('Reports.Dashboards.Modals.ChooseWidget',  Reports_Dashboards_ModalCtrl_ChooseWidget)
     Module.controller('Reports.Dashboards.Modals.AddWidget',     Reports_Dashboards_ModalCtrl_AddWidget)
     Module.controller('Reports.Dashboards.Modals.EditWidget',    Reports_Dashboards_ModalCtrl_EditWidget)
-  
+
+    Module.controller('Reports.TicketSatisfaction', () -> )
+    Module.controller('Reports.AgentActivity', () -> )
+    Module.controller('Reports.AgentHours', () -> )
+
     Module.controller('Reports.Stats.StatsMain',                 Reports_Stats_Ctrl_StatsMain)
     Module.controller('Reports.Stats.StatsHome',                 Reports_Stats_Ctrl_StatsHome)
     Module.controller('Reports.Stats.WidgetView',                Reports_Stats_Ctrl_WidgetView)
