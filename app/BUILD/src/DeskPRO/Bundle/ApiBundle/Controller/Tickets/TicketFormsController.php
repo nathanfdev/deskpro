@@ -130,15 +130,8 @@ class TicketFormsController extends AbstractTicketsController
     {
         $ticket = $this->findEntity($id, $request);
         $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, new PermissionGroupContext($ticket));
+
         return $this->handleForm($ticket, $request);
-//        try {
-//            return $this->handleForm($ticket, $request);
-//        } catch (\Exception $e) {
-//            echo ($e->getMessage() . PHP_EOL . PHP_EOL);
-//            die ($e->getTraceAsString());
-//        }
-
-
     }
 
     /**

@@ -112,7 +112,7 @@ Feature: Ticket custom fields
     And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v3_field}" should not exist
 
   Scenario: I try to modify a custom field via API
-    Given I send a PUT request to "/api/v2/ticket_custom_fields"
+    Given I send a PUT request to "/api/v2/ticket_custom_fields/{text_field}"
     Then the response status code should be 204
 
   Scenario: I try to delete a custom field via API
