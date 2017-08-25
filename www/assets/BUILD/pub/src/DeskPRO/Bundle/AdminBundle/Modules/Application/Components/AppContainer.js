@@ -8,7 +8,7 @@ import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
-import { loadAdmintPhraseTranslations } from '../Actions/bootstrapActions';
+import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 
 class AppContainer extends React.Component {
 
@@ -23,7 +23,7 @@ class AppContainer extends React.Component {
     setApi(api);
     loadRepositoriesConfig(repositoriesConfig);
 
-    store.dispatch(loadAdmintPhraseTranslations());
+    store.dispatch(loadAdminPhraseTranslations());
   }
 
   componentWillMount() {
