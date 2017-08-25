@@ -33,11 +33,11 @@ use DeskPRO\Bundle\AppBundle\ObjectAlias;
 class Comparators
 {
     /**
-     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $a
-     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $b
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $a
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $b
      * @return bool
      */
-    public static function equal(ObjectAlias\ObjectAlias $a, ObjectAlias\ObjectAlias $b)
+    public static function equal( ObjectAlias\ObjectAliasInterface $a, ObjectAlias\ObjectAliasInterface $b)
     {
         if ($a->getObjectId() !== $b->getObjectId()) {
             return false;

@@ -219,7 +219,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * @return ObjectAlias\ObjectAlias[]|null
+     * @return ObjectAlias\ObjectAliasInterface[]|null
      */
     public function getAliases()
     {

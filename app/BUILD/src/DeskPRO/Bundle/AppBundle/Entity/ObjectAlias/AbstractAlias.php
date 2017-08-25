@@ -49,7 +49,7 @@ use JMS\Serializer\Annotation as JMS;
  * })
  * @JMS\ExclusionPolicy("all")
  */
-abstract class AbstractAlias implements ObjectAlias\ObjectAlias
+abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
 {
     /**
      * @ORM\Id()

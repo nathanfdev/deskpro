@@ -198,7 +198,6 @@ Feature: Custom fields
       | Entity Endopoint      | Endpoint                            | Title     | Alias           |
       | /api/v2/tickets       | /api/v2/ticket_custom_fields        | Data json  | james_vagabond |
 
-  @radu
   Scenario Outline: I try to modify the value of an organization ticket custom field using its alias
     Given there are no "CustomDefOrganization" records
     And I send a POST request to "<Endpoint>" with a json body:

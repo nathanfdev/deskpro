@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-use DeskPRO\Bundle\AppBundle\ObjectAlias;
 
 class Converters
 {
@@ -57,10 +56,10 @@ class Converters
     }
 
     /**
-     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAlias $mapping
+     * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $mapping
      * @return array|string[]
      */
-    public static function toList( ObjectAlias\ObjectAlias $mapping)
+    public static function toList( ObjectAliasInterface $mapping)
     {
         $aliases = [
             $mapping->getObjectId(),

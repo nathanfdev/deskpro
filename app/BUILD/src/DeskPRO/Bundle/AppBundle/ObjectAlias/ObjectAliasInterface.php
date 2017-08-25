@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-interface ObjectAlias
+interface ObjectAliasInterface
 {
     /**
      * Returns the type of object referenced by this alias.
