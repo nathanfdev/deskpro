@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonContactData;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
@@ -79,6 +80,11 @@ class PersonHandler extends AbstractEntityHandler
      * @var array
      */
     private $customData;
+
+    /**
+     * @var array
+     */
+    private $contactData;
 
     /**
      * @var array
@@ -152,12 +158,13 @@ class PersonHandler extends AbstractEntityHandler
      */
     private function createPerson(Person $entity)
     {
+        $this->personIds[$entity->getId()] = true;
+
         $model = new PersonModel($entity, $this->avatarResolver->getAvatarModel($entity));
         $model->setOnline($this->agentDataService->isAgentOnline($entity));
-
-        $this->personIds[$entity->getId()] = true;
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
         $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
+        $model->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]));
         $model->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]));
 
         return $model;
@@ -226,7 +233,7 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return array
+     * @return CustomDataPerson[]
      */
     public function getCustomData(Person $entity)
     {
@@ -279,5 +286,30 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         return;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return PersonContactData[]
+     */
+    public function getContactData(Person $entity)
+    {
+        if (null === $this->contactData) {
+            $result = $this->em->getRepository(PersonContactData::class)->findBy([
+                'person' => $this->personIds,
+            ]);
+
+            $this->contactData = [];
+            foreach ($result as $value) {
+                $this->contactData[$value->getPersonId()][] = $value;
+            }
+        }
+
+        if (isset($this->contactData[$entity->getId()])) {
+            return new ArrayCollection($this->contactData[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
     }
 }

@@ -340,7 +340,7 @@ class Person extends BasePerson
     /**
      * Contacts for this user.
      *
-     * @JMS\Type("collection")
+     * @JMS\Type("deferred<collection>")
      *
      * @var \Application\DeskPRO\Entity\PersonContactData[]
      */
@@ -404,7 +404,6 @@ class Person extends BasePerson
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
         $this->phoneNumbers            = $person->getPhoneNumbers();
-        $this->contactData             = $person->getContactData();
         $this->emails                  = $person->getEmails();
         $this->teams                   = $person->getTeams();
         $this->primaryTeam             = $person->getPrimaryTeam();
@@ -416,5 +415,13 @@ class Person extends BasePerson
     public function setCustomData($customData = null)
     {
         $this->fields = $customData;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $contactData
+     */
+    public function setContactData($contactData = null)
+    {
+        $this->contactData = $contactData;
     }
 }
