@@ -26,22 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 
-interface ApplicationStateFinder
+class AccessPermission
 {
-    /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
-     *
-     * @return ApplicationState
-     */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
+    /** @var string */
+    private $accessLevel;
+
+    /** @var string */
+    private $permission;
 
     /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
+     * @param string $accessLevel
+     * @param string $permission
      */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public function __construct($accessLevel, $permission)
+    {
+        if (empty($accessLevel) || empty($permission)) {
+            throw new \DomainException('both access level and permission must be specified');
+        }
+
+        $this->accessLevel = $accessLevel;
+        $this->permission = $permission;
+    }
+
+    /**
+     * @param $level
+     * @return bool
+     */
+    public function hasAccessLevel($level)
+    {
+        return $level === $this->getAccessLevel();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccessLevel()
+    {
+        return $this->accessLevel;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
+
+
 }

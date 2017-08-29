@@ -109,6 +109,74 @@ class EntityQueryBuilders
 
     /**
      * @param ORM\EntityManager $em
+     * @param Domain\ApplicationStateSearchFilter $searchFilter
+     * @return ORM\Query
+     */
+    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\ApplicationStateSearchFilter $searchFilter) {
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppState::class, 'a')
+            ->select('a')
+            ->innerJoin('a.appInstance', 'i')
+            ->where('a.appInstance = :application')
+            ->andWhere('a.owner IS NULL')
+            ->setParameter('application', $searchFilter->getApplicationInstanceId())
+        ;
+
+        $this->applySearchStateFilter($qb, $searchFilter);
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param ORM\EntityManager $em
+     * @param null $stateOwnerId
+     * @param Domain\ApplicationStateSearchFilter $searchFilter
+     * @return ORM\Query
+     */
+    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\ApplicationStateSearchFilter $searchFilter) {
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppState::class, 'a')
+            ->select('a')
+            ->innerJoin('a.appInstance', 'i')
+            ->where('a.appInstance = :application')
+            ->andWhere('(a.owner = :ownerId')
+            ->setParameter('ownerId', $stateOwnerId)
+            ->setParameter('application', $searchFilter->getApplicationInstanceId())
+        ;
+
+        $this->applySearchStateFilter($qb, $searchFilter);
+
+        return $qb->getQuery();
+    }
+
+    public function buildFindOwnedByOtherStateQuery(
+        ORM\EntityManager $em,
+        $stateOwnerId,
+        Domain\ApplicationStateSearchFilter $searchFilter
+    ) {
+
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppState::class, 'a')
+            ->select('a')
+            ->innerJoin('a.appInstance', 'i')
+            ->where('a.appInstance = :application')
+            ->andWhere('(a.owner IS NOT NULL AND a.owner <> :ownerId)')
+            ->setParameter('ownerId', $stateOwnerId)
+            ->setParameter('application', $searchFilter->getApplicationInstanceId())
+        ;
+
+        $this->applySearchStateFilter($qb, $searchFilter);
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param ORM\EntityManager $em
      * @param Domain\ApplicationStateId $id
      * @param null|string $stateOwnerId
      * @return ORM\Query
@@ -147,7 +215,6 @@ class EntityQueryBuilders
         ORM\EntityManager $em,
         Domain\ApplicationStateSearchFilter $searchFilter
     ) {
-        //TODO do not assume the application state id is the same as the persistence id
         $qb = $em->createQueryBuilder();
         $qb
             ->from(Entity\AppStore\AppState::class, 'a')
@@ -165,12 +232,25 @@ class EntityQueryBuilders
     {
         $filterField = $assetFilter->getName();
         if (! empty($filterField)) {
-            $qb->andWhere('a.name = :name')->setParameter('name', $filterField);
+            $qb->andWhere('a.name IN (:name)')->setParameter('name', $filterField);
         }
 
         $filterField = $assetFilter->getEntityId();
         if (! empty($filterField)) {
             $qb->andWhere('a.entityId = :entityId')->setParameter('entityId', $filterField);
+        }
+
+        $accessPermission = $assetFilter->getAccessPermision();
+        if (! is_null($accessPermission)) {
+            $permission = $accessPermission->getPermission();
+            if ($accessPermission->hasAccessLevel(Domain\Constants::ACCESS_LEVEL_READ)) {
+                $qb->andWhere('a.permRead = :permRead')->setParameter('permRead', $permission);
+            } elseif ($accessPermission->hasAccessLevel(Domain\Constants::ACCESS_LEVEL_WRITE)) {
+                $qb->andWhere('a.permWrite = :permWrite')->setParameter('permWrite', $permission);
+            } else {
+                $msg = sprintf('Unknown access permission:  level: %s and permission: %s ', $accessPermission->getAccessLevel(), $permission);
+                throw new \DomainException($msg);
+            }
         }
     }
 }

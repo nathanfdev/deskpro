@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
+
 class AccessOptions
 {
     /** @var string */
@@ -49,6 +51,13 @@ class AccessOptions
         $this->readPermission = $readPermission;
         $this->writePermission = $writePermission;
         $this->isBackendOnly = $isBackendOnly;
+    }
+
+    public function isWorldAccessible()
+    {
+        return $this->getWritePermission() === $this->getReadPermission()
+            && $this->getReadPermission() === Constants::PERMISSION_EVERYONE
+        ;
     }
 
     /**
