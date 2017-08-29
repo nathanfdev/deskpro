@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson as BasePersonModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as PersonModel;
@@ -42,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * Class PersonHandler.
@@ -77,6 +79,11 @@ class PersonHandler extends AbstractEntityHandler
      * @var array
      */
     private $customData;
+
+    /**
+     * @var array
+     */
+    private $agentData;
 
     /**
      * Constructor.
@@ -133,6 +140,7 @@ class PersonHandler extends AbstractEntityHandler
 
         $this->personIds[$entity->getId()] = true;
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
+        $model->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]));
 
         return $model;
     }
@@ -150,6 +158,7 @@ class PersonHandler extends AbstractEntityHandler
         $this->personIds[$entity->getId()] = true;
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
         $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
+        $model->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]));
 
         return $model;
     }
@@ -222,11 +231,12 @@ class PersonHandler extends AbstractEntityHandler
     public function getCustomData(Person $entity)
     {
         if (null === $this->customData) {
-            $customData = $this->em->getRepository(CustomDataPerson::class)->findBy([
+            $result = $this->em->getRepository(CustomDataPerson::class)->findBy([
                 'person' => $this->personIds,
             ]);
 
-            foreach ($customData as $value) {
+            $this->customData = [];
+            foreach ($result as $value) {
                 $this->customData[$value->getPersonId()][] = $value;
             }
         }
@@ -236,5 +246,38 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         return new ArrayCollection([]);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return AgentData|null
+     */
+    public function getAgentData(Person $entity)
+    {
+        if (null === $this->agentData) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('a')
+                ->from(AgentData::class, 'a')
+                ->join(Person::class, 'p', Join::WITH, 'a.id = p.agentData')
+                ->where('p.id IN (:people_ids)')
+                ->setParameter('people_ids', $this->personIds)
+            ;
+
+            /** @var AgentData[] $result */
+            $result = $qb->getQuery()->getResult();
+
+            $this->agentData = [];
+            foreach ($result as $value) {
+                $this->agentData[$value->getPerson()->getId()] = $value;
+            }
+        }
+
+        if (isset($this->agentData[$entity->getId()])) {
+            return $this->agentData[$entity->getId()];
+        }
+
+        return;
     }
 }
