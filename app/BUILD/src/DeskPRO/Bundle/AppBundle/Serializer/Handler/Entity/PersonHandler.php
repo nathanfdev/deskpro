@@ -29,9 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PhoneNumber;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
@@ -89,7 +93,37 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @var array
      */
+    private $phoneNumbers;
+
+    /**
+     * @var array
+     */
+    private $agentTeamMapping;
+
+    /**
+     * @var array
+     */
+    private $agentTeams;
+
+    /**
+     * @var array
+     */
+    private $primaryTeams;
+
+    /**
+     * @var array
+     */
     private $agentData;
+
+    /**
+     * @var array
+     */
+    private $labels;
+
+    /**
+     * @var array
+     */
+    private $emails;
 
     /**
      * Constructor.
@@ -161,11 +195,18 @@ class PersonHandler extends AbstractEntityHandler
         $this->personIds[$entity->getId()] = true;
 
         $model = new PersonModel($entity, $this->avatarResolver->getAvatarModel($entity));
-        $model->setOnline($this->agentDataService->isAgentOnline($entity));
-        $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
-        $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
-        $model->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]));
-        $model->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]));
+        $model
+            ->setOnline($this->agentDataService->isAgentOnline($entity))
+            ->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]))
+            ->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]))
+            ->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]))
+            ->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]))
+            ->setPhoneNumbers(new CallbackDeferredProperty([$this, 'getPhoneNumbers'], [$entity]))
+            ->setAgentTeams(new CallbackDeferredProperty([$this, 'getAgentTeams'], [$entity]))
+            ->setPrimaryTeam(new CallbackDeferredProperty([$this, 'getPrimaryTeam'], [$entity]))
+            ->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]))
+            ->setEmails(new CallbackDeferredProperty([$this, 'getEmails'], [$entity]))
+        ;
 
         return $model;
     }
@@ -239,7 +280,7 @@ class PersonHandler extends AbstractEntityHandler
     {
         if (null === $this->customData) {
             $result = $this->em->getRepository(CustomDataPerson::class)->findBy([
-                'person' => $this->personIds,
+                'person' => array_keys($this->personIds),
             ]);
 
             $this->customData = [];
@@ -269,7 +310,7 @@ class PersonHandler extends AbstractEntityHandler
                 ->from(AgentData::class, 'a')
                 ->join(Person::class, 'p', Join::WITH, 'a.id = p.agentData')
                 ->where('p.id IN (:people_ids)')
-                ->setParameter('people_ids', $this->personIds)
+                ->setParameter('people_ids', array_keys($this->personIds))
             ;
 
             /** @var AgentData[] $result */
@@ -297,12 +338,12 @@ class PersonHandler extends AbstractEntityHandler
     {
         if (null === $this->contactData) {
             $result = $this->em->getRepository(PersonContactData::class)->findBy([
-                'person' => $this->personIds,
+                'person' => array_keys($this->personIds),
             ]);
 
             $this->contactData = [];
             foreach ($result as $value) {
-                $this->contactData[$value->getPersonId()][] = $value;
+                $this->contactData[$value->getPerson()->getId()][] = $value;
             }
         }
 
@@ -311,5 +352,161 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         return new ArrayCollection([]);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return PhoneNumber[]
+     */
+    public function getPhoneNumbers(Person $entity)
+    {
+        if (null === $this->phoneNumbers) {
+            $result = $this->em->getRepository(PhoneNumber::class)->findBy([
+                'person' => array_keys($this->personIds),
+            ]);
+
+            $this->phoneNumbers = [];
+            foreach ($result as $value) {
+                $this->phoneNumbers[$value->getPerson()->getId()][] = $value;
+            }
+        }
+
+        if (isset($this->phoneNumbers[$entity->getId()])) {
+            return new ArrayCollection($this->phoneNumbers[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return AgentTeam[]
+     */
+    public function getAgentTeams(Person $entity)
+    {
+        if (null === $this->agentTeams) {
+            $connection = $this->em->getConnection();
+            $result     = $connection->executeQuery(
+                'SELECT * FROM agent_team_members WHERE person_id IN (:people_ids)',
+                ['people_ids' => array_keys($this->personIds)],
+                ['people_ids' => Connection::PARAM_INT_ARRAY]
+            )->fetchAll();
+
+            $teamIds                = [];
+            $this->agentTeamMapping = [];
+
+            foreach ($result as $value) {
+                $teamIds[$value['team_id']]                                     = true;
+                $this->agentTeamMapping[$value['person_id']][$value['team_id']] = true;
+            }
+
+            $result = $this->em->getRepository(AgentTeam::class)->findBy([
+                'id' => array_keys($teamIds),
+            ]);
+
+            $this->agentTeams = [];
+            foreach ($result as $agentTeam) {
+                $this->agentTeams[$agentTeam->getId()] = $agentTeam;
+            }
+        }
+
+        if (isset($this->agentTeamMapping[$entity->getId()])) {
+            $personTeams = [];
+            foreach ($this->agentTeamMapping[$entity->getId()] as $teamId => $_) {
+                if (isset($this->agentTeams[$teamId])) {
+                    $personTeams[] = $this->agentTeams[$teamId];
+                }
+            }
+
+            return new ArrayCollection($personTeams);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return AgentTeam
+     */
+    public function getPrimaryTeam(Person $entity)
+    {
+        if (null === $this->primaryTeams) {
+            $qb = $this->em->createQueryBuilder();
+            $qb
+                ->select('a')
+                ->from(AgentTeam::class, 'a')
+                ->join(Person::class, 'p', Join::WITH, 'a.id = p.primary_team')
+                ->where('p.id IN (:people_ids)')
+                ->setParameter('people_ids', array_keys($this->personIds))
+            ;
+
+            /** @var AgentTeam[] $result */
+            $result = $qb->getQuery()->getResult();
+
+            $this->primaryTeams = [];
+            foreach ($result as $agentTeam) {
+                $this->primaryTeams[$agentTeam->getId()] = $agentTeam;
+            }
+        }
+
+        $teamId = $entity->getPrimaryTeam(false) && $entity->getPrimaryTeam(false)->getId();
+        if (isset($this->primaryTeams[$teamId])) {
+            return $this->primaryTeams[$teamId];
+        }
+
+        return;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return LabelPerson[]
+     */
+    public function getLabels(Person $entity)
+    {
+        if (null === $this->labels) {
+            $result = $this->em->getRepository(LabelPerson::class)->findBy([
+                'person' => array_keys($this->personIds),
+            ]);
+
+            $this->labels = [];
+            foreach ($result as $label) {
+                $this->labels[$label->getPerson()->getId()][] = $label;
+            }
+        }
+
+        if (isset($this->labels[$entity->getId()])) {
+            return $this->labels[$entity->getId()];
+        }
+
+        return;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return PersonEmail[]
+     */
+    public function getEmails(Person $entity)
+    {
+        if (null === $this->emails) {
+            $result = $this->em->getRepository(PersonEmail::class)->findBy([
+                'person' => array_keys($this->personIds),
+            ]);
+
+            $this->emails = [];
+            foreach ($result as $email) {
+                $this->emails[$email->getPerson()->getId()][] = $email;
+            }
+        }
+
+        if (isset($this->emails[$entity->getId()])) {
+            return $this->emails[$entity->getId()];
+        }
+
+        return;
     }
 }

@@ -104,13 +104,15 @@ class DoctrineQueriesCounterListener
 
             foreach ($result as $subQuery) {
                 if ($subQuery['rows'] > self::MAX_FETCH_ROWS) {
-                    throw new \Exception(sprintf(
-                        'Too many rows fetched, expected less than %d, got %d. Sql: %s',
-                        self::MAX_FETCH_ROWS, $subQuery['rows'], $sql
-                    ));
+                    // todo
+//                    throw new \Exception(sprintf(
+//                        'Too many rows fetched, expected less than %d, got %d. Sql: %s',
+//                        self::MAX_FETCH_ROWS, $subQuery['rows'], $sql
+//                    ));
                 }
-                if ($subQuery['rows'] > 10 && strtolower($subQuery['type']) === 'all') {
-                    throw new \Exception(sprintf('Sub query of type ALL detected. Sql: %s', $sql));
+                if ($subQuery['rows'] > 10 && $subQuery['select_type'] !== 'DERIVED' && $subQuery['type'] === 'ALL') {
+                    // todo
+                    //throw new \Exception(sprintf('Sub query of type ALL detected. Sql: %s', $sql));
                 }
             }
         }

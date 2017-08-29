@@ -112,6 +112,14 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         $this->members = new ArrayCollection();
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getMembers()
+    {
+        return $this->members;
+    }
+
     public function addPerson(Entity\Person $person)
     {
         if ($this->members->contains($person)) {
