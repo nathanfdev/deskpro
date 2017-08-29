@@ -29,16 +29,18 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as SerializedPerson;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson as BasePersonModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as PersonModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile as PersonProfileModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\ProfileAvatar;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -69,7 +71,12 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @var array
      */
-    private $lastSeen = [];
+    private $lastSeen;
+
+    /**
+     * @var array
+     */
+    private $customData;
 
     /**
      * Constructor.
@@ -103,11 +110,11 @@ class PersonHandler extends AbstractEntityHandler
         $serializerClass = $context->getMappedClass(Person::class);
 
         switch ($serializerClass) {
-            case PersonProfile::class:
+            case PersonProfileModel::class:
                 return $this->createPersonProfile($entity);
             case WidgetPerson::class:
                 return $this->createWidgetPerson($entity);
-            case BasePerson::class:
+            case BasePersonModel::class:
                 return $this->createBasePerson($entity);
             default:
                 return $this->createPerson($entity);
@@ -117,11 +124,11 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return BasePerson
+     * @return BasePersonModel
      */
     private function createBasePerson(Person $entity)
     {
-        $model = new BasePerson($entity, $this->avatarResolver->getAvatarModel($entity));
+        $model = new BasePersonModel($entity, $this->avatarResolver->getAvatarModel($entity));
         $model->setOnline($this->agentDataService->isAgentOnline($entity));
 
         $this->personIds[$entity->getId()] = true;
@@ -133,17 +140,48 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return SerializedPerson
+     * @return PersonModel
      */
     private function createPerson(Person $entity)
     {
-        $model = new SerializedPerson($entity, $this->avatarResolver->getAvatarModel($entity));
+        $model = new PersonModel($entity, $this->avatarResolver->getAvatarModel($entity));
         $model->setOnline($this->agentDataService->isAgentOnline($entity));
 
         $this->personIds[$entity->getId()] = true;
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
+        $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
 
         return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return PersonProfileModel
+     */
+    private function createPersonProfile(Person $entity)
+    {
+        $avatar = null;
+        if ($blob = $entity->getPictureBlob()) {
+            $avatar = new ProfileAvatar(
+                $blob->getAuthId(),
+                $this->avatarResolver->getAvatarModel($entity)->getUrl(200)
+            );
+        }
+
+        $model = new PersonProfileModel($entity, $avatar);
+
+        return $model;
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return WidgetPerson
+     */
+    private function createWidgetPerson(Person $entity)
+    {
+        return new WidgetPerson($entity, $this->avatarResolver->getAvatarModel($entity));
     }
 
     /**
@@ -153,7 +191,7 @@ class PersonHandler extends AbstractEntityHandler
      */
     public function getLastSeen(Person $entity)
     {
-        if (!$this->lastSeen) {
+        if (null === $this->lastSeen) {
             /** @var \Application\DeskPRO\DBAL\Connection $connection */
             $connection     = $this->em->getConnection();
             $this->lastSeen = $connection->fetchAllKeyValue(
@@ -179,30 +217,24 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return \DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile
+     * @return array
      */
-    private function createPersonProfile(Person $entity)
+    public function getCustomData(Person $entity)
     {
-        $avatar = null;
-        if ($blob = $entity->getPictureBlob()) {
-            $avatar = new ProfileAvatar(
-                $blob->getAuthId(),
-                $this->avatarResolver->getAvatarModel($entity)->getUrl(200)
-            );
+        if (null === $this->customData) {
+            $customData = $this->em->getRepository(CustomDataPerson::class)->findBy([
+                'person' => $this->personIds,
+            ]);
+
+            foreach ($customData as $value) {
+                $this->customData[$value->getPersonId()][] = $value;
+            }
         }
 
-        $model = new PersonProfile($entity, $avatar);
+        if (isset($this->customData[$entity->getId()])) {
+            return new ArrayCollection($this->customData[$entity->getId()]);
+        }
 
-        return $model;
-    }
-
-    /**
-     * @param Person $entity
-     *
-     * @return WidgetPerson
-     */
-    private function createWidgetPerson(Person $entity)
-    {
-        return new WidgetPerson($entity, $this->avatarResolver->getAvatarModel($entity));
+        return new ArrayCollection([]);
     }
 }

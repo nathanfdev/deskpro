@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -330,7 +331,7 @@ class Person extends BasePerson
     /**
      * Custom persons data.
      *
-     * @JMS\Type("custom_data<array>")
+     * @JMS\Type("deferred<custom_data<array>>")
      *
      * @var CustomDataPerson[]
      */
@@ -365,6 +366,8 @@ class Person extends BasePerson
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $customData
      */
     public function __construct(PersonEntity $person, Avatar $avatar)
     {
@@ -401,10 +404,17 @@ class Person extends BasePerson
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
         $this->phoneNumbers            = $person->getPhoneNumbers();
-        $this->fields                  = $person->getCustomData();
         $this->contactData             = $person->getContactData();
         $this->emails                  = $person->getEmails();
         $this->teams                   = $person->getTeams();
         $this->primaryTeam             = $person->getPrimaryTeam();
+    }
+
+    /**
+     * @param CallbackDeferredProperty $customData
+     */
+    public function setCustomData($customData = null)
+    {
+        $this->fields = $customData;
     }
 }
