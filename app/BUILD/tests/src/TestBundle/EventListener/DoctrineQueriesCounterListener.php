@@ -26,52 +26,93 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpTestSrc\TestBundle\EventListener;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Logging\DebugStack;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 
+/**
+ * Class DoctrineQueriesCounterListener.
+ */
 class DoctrineQueriesCounterListener
 {
+    const MAX_QUERIES_COUNT = 50;
+    const MAX_FETCH_ROWS    = 1000;
+
+    /**
+     * @var Connection
+     */
     private $connection;
 
-    private $stack;
-
+    /**
+     * Constructor.
+     *
+     * @param Connection $connection
+     */
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
     }
 
+    /**
+     * @param FilterControllerEvent $event
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         $controller = $event->getController();
 
-        /*
-         * $controller passed can be either a class or a Closure.
-         * This is not usual in Symfony but it may happen.
-         * If it is a class, it comes in array format
-         */
+        // $controller passed can be either a class or a Closure.
+        // This is not usual in Symfony but it may happen.
+        // If it is a class, it comes in array format
         if (!is_array($controller)) {
             return;
         }
 
-        $this->stack = new DebugStack();
-        $this->connection
-            ->getConfiguration()
-            ->setSQLLogger($this->stack);
+        $this->connection->getConfiguration()->setSQLLogger(new DebugStack());
     }
 
-    public function onKernelResponse(FilterResponseEvent $event)
+    public function onKernelResponse()
     {
-        if (null !== $this->stack) {
-            $response = $event->getResponse();
-            $response->headers->set('DB-QUERIES-COUNT', count($this->stack->queries));
+        $logger = $this->connection->getConfiguration()->getSQLLogger();
+        if (!$logger instanceof DebugStack) {
+            return;
+        }
+
+        $this->connection->getConfiguration()->setSQLLogger(null);
+
+        $queries = [];
+        foreach ($logger->queries as $query) {
+            if (strpos($query['sql'], 'SELECT') === 0) {
+                $queries[] = $query;
+            }
+        }
+
+        // check max queries count
+        if (count($queries) > self::MAX_QUERIES_COUNT) {
+            throw new \Exception(sprintf(
+                'Too many db queries, expected less than %d, got %d',
+                self::MAX_QUERIES_COUNT, count($queries)
+            ));
+        }
+
+        // run EXPLAIN on all SELECT queries
+        foreach ($queries as $query) {
+            $sql       = $query['sql'];
+            $statement = $this->connection->executeQuery('EXPLAIN '.$sql, $query['params'], $query['types']);
+            $result    = $statement->fetchAll();
+
+            foreach ($result as $subQuery) {
+                if ($subQuery['rows'] > self::MAX_FETCH_ROWS) {
+                    throw new \Exception(sprintf(
+                        'Too many rows fetched, expected less than %d, got %d. Sql: %s',
+                        self::MAX_FETCH_ROWS, $subQuery['rows'], $sql
+                    ));
+                }
+                if ($subQuery['rows'] > 10 && strtolower($subQuery['type']) === 'all') {
+                    throw new \Exception(sprintf('Sub query of type ALL detected. Sql: %s', $sql));
+                }
+            }
         }
     }
 }
