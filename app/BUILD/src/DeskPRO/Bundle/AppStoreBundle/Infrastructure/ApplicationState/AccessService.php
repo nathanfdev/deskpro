@@ -86,7 +86,6 @@ class AccessService
             && $state->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_READ)
         ;
 
-
         if (! $allowsPersonAccess) {
             return false;
         }

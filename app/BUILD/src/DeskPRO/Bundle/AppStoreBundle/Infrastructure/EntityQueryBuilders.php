@@ -143,7 +143,7 @@ class EntityQueryBuilders
             ->select('a')
             ->innerJoin('a.appInstance', 'i')
             ->where('a.appInstance = :application')
-            ->andWhere('(a.owner = :ownerId')
+            ->andWhere('a.owner = :ownerId')
             ->setParameter('ownerId', $stateOwnerId)
             ->setParameter('application', $searchFilter->getApplicationInstanceId())
         ;

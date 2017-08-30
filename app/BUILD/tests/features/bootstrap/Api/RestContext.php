@@ -211,9 +211,6 @@ class RestContext extends BaseContext
             $this->saveLastCreatedId($page->getContent());
         }
 
-        $response = $client->getResponse();
-        echo($response->getContent());
-
         return $page;
     }
 
@@ -375,6 +372,17 @@ class RestContext extends BaseContext
             $text .= $name.': '.$this->getHttpHeader($name)."\n";
         }
         echo $text;
+    }
+
+    /**
+     * @Then print last response body
+     */
+    public function printLastResponseBody()
+    {
+        $page = $this->getSession()->getPage();
+        if ($page) {
+            echo $page->getContent();
+        }
     }
 
     /**
