@@ -83,6 +83,7 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1818,32 +1819,35 @@ class TicketController extends AbstractController
         '
         )->setParameter(1, $ticket)->execute();
 
-        $participant_ids = [];
-        $agent_parts     = [];
-        $user_parts      = [];
+        $participantIds = [];
+        $agentParts     = [];
+        $userParts      = [];
 
         foreach ($participants as $p) {
-            $participant_ids[] = $p->person->id;
+            $participantIds[] = $p->person->id;
             if ($p->person->is_agent) {
-                $agent_parts[] = $p;
+                $agentParts[] = $p;
             } else {
-                $user_parts[] = $p;
+                $userParts[] = $p;
             }
         }
 
-        $agents      = $this->em->getRepository(Person::class)->getAgents();
-        $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
+        $agents     = $this->em->getRepository(Person::class)->getAgents();
+        $agentTeams = $this->em->getRepository(AgentTeam::class)->findAll();
+
+        $activeDrafts = [$this->em->getRepository(Draft::class)->getDraft('ticket', $ticket->getId())];
+        $activeDrafts = $this->get('serializer')->toArray($activeDrafts, new SideloadSerializationContext());
 
         $replybox = $this->renderView(
             'AgentBundle:Ticket:replybox.html.twig',
             [
                 'agents'               => $agents,
-                'agent_teams'          => $agent_teams,
+                'agent_teams'          => $agentTeams,
                 'ticket'               => $ticket,
                 'participants'         => $participants,
-                'participant_ids'      => $participant_ids,
-                'agent_parts'          => $agent_parts,
-                'user_parts'           => $user_parts,
+                'participant_ids'      => $participantIds,
+                'agent_parts'          => $agentParts,
+                'user_parts'           => $userParts,
                 'agent_signature'      => $this->person->getSignature(),
                 'agent_signature_html' => $this->person->getSignatureHtml(),
                 'ticket_perms'         => $this->_getTicketPerms($ticket),
@@ -1862,6 +1866,7 @@ class TicketController extends AbstractController
                 'status'                         => $ticket['status'],
                 'close_tab'                      => false,
                 'api_data'                       => $ticket->toApiData(),
+                'active_drafts'                  => $activeDrafts,
             ]
         );
 

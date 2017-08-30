@@ -1149,7 +1149,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleReplySave: function(ev, formData, handler, meta) {
 
-		this.replyHasBillingControl = meta.hasBillingControl;
+  	this.replyHasBillingControl = meta.hasBillingControl;
 
 		if (this.pauseSend) {
 			window.setTimeout((function() {
@@ -1264,7 +1264,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			self.handleTicketUpdate(result);
-		};
+		}
 
 		this.clearAlerts();
 
@@ -1545,7 +1545,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		if (data.replybox_html) {
 			// Only refresh the box if we've not begun writing a message
-			if (!this.getEl('replybox_wrap').find('textarea.touched')[0]) {
+			if (!this.getEl('replybox_wrap').find('textarea.touched')[0] && !data.active_drafts.length) {
 				var chargeCheckboxState = $('input[name="charge_time"]', this.wrapper).prop('checked');
 				var textarea = this.getReplyTextArea();
 				if (textarea.data('redactor')) {
