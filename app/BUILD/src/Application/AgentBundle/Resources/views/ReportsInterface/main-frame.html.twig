@@ -8,6 +8,11 @@
             <li>
                 <a ui-sref="reports.dashboards">Dashboards</a>
             </li>
+            <li ng-repeat="dashboard in dashboards track by dashboard.id">
+                <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
+                    {{ ng_var('dashboard.title') }}
+                </a>
+            </li>
         </ul>
     </section>
     <a class="nav-section nav-title" ui-sref="reports.stats">Stat Builder</a>

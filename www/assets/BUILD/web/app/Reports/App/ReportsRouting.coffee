@@ -6,7 +6,7 @@ define -> (States) ->
   States.add('reports')
     .setUrl('')
     .setTpl('AgentBundle:ReportsInterface:main-frame.html')
-    .setAbstract();
+    .setCtrl('Reports.App.New.Nav');
 
   States.when('', '/dashboards/')
   States.when('/', '/dashboards/')
@@ -24,7 +24,7 @@ define -> (States) ->
 
   States.add('reports.dashboards.index')
     .setUrl('/')
-    .setCtrl('Reports.App.New.Nav');
+    .setCtrl([() ->]);
 
   States.add('reports.dashboards.view')
     .setUrl('/{dashboard_id:[0-9]+}')
