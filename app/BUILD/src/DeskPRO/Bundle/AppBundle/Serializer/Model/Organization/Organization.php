@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Organization;
 
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -78,7 +79,7 @@ class Organization
      *
      * @var CustomDataAbstract[]
      *
-     * @JMS\Type("custom_data<map<Application\DeskPRO\Entity\CustomDataAbstract>>")
+     * @JMS\Type("deferred<custom_data<map<Application\DeskPRO\Entity\CustomDataAbstract>>>")
      */
     protected $fields;
 
@@ -94,7 +95,7 @@ class Organization
     /**
      * Labels associated with this organization.
      *
-     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelOrganization>>")
+     * @JMS\Type("deferred<array<label<Application\DeskPRO\Entity\LabelOrganization>>>")
      *
      * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
@@ -103,7 +104,7 @@ class Organization
     /**
      * Organization contacts.
      *
-     * @JMS\Type("collection")
+     * @JMS\Type("deferred<collection>")
      *
      * @var \Application\DeskPRO\Entity\OrganizationContactData[]
      */
@@ -112,7 +113,7 @@ class Organization
     /**
      * Organization email domains.
      *
-     * @JMS\Type("array<to_string<Application\DeskPRO\Entity\OrganizationEmailDomain>>")
+     * @JMS\Type("deferred<array<to_string<Application\DeskPRO\Entity\OrganizationEmailDomain>>>")
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
@@ -166,14 +167,58 @@ class Organization
         $this->name         = $organization->getName();
         $this->summary      = $organization->getSummary();
         $this->importance   = $organization->getImportance();
-        $this->fields       = $organization->getCustomData();
         $this->userGroups   = $organization->getPublicUsergroups();
-        $this->labels       = $organization->getLabels();
-        $this->contactData  = $organization->getContactData();
-        $this->emailDomains = $organization->getEmailDomains();
         $this->dateCreated  = $organization->getDateCreated();
         $this->parent       = $organization->getParent();
         $this->chatsCount   = $chatsCount;
         $this->ticketsCount = $organization->getTicketsCount();
+    }
+
+    /**
+     * @param CallbackDeferredProperty $customData
+     *
+     * @return $this
+     */
+    public function setCustomData($customData = null)
+    {
+        $this->fields = $customData;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $contactData
+     *
+     * @return $this
+     */
+    public function setContactData($contactData = null)
+    {
+        $this->contactData = $contactData;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $labels
+     *
+     * @return $this
+     */
+    public function setLabels($labels = null)
+    {
+        $this->labels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $emailDomains
+     *
+     * @return $this
+     */
+    public function setEmailDomains($emailDomains = null)
+    {
+        $this->emailDomains = $emailDomains;
+
+        return $this;
     }
 }

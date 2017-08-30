@@ -28,10 +28,17 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
-use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\CustomDataOrganization;
+use Application\DeskPRO\Entity\LabelOrganization;
+use Application\DeskPRO\Entity\Organization as OrganizationEntity;
+use Application\DeskPRO\Entity\OrganizationContactData;
+use Application\DeskPRO\Entity\OrganizationEmailDomain;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization\Organization as SerializedOrganization;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization\Organization as OrganizationModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class OrganizationHandler.
@@ -39,18 +46,50 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 class OrganizationHandler extends AbstractEntityHandler
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var ChatDataService
      */
-    private $chat_data_service;
+    private $chatData;
+
+    /**
+     * @var array
+     */
+    private $organizationIds = [];
+
+    /**
+     * @var array
+     */
+    private $customData;
+
+    /**
+     * @var array
+     */
+    private $contactData;
+
+    /**
+     * @var array
+     */
+    private $labels;
+
+    /**
+     * @var array
+     */
+    private $emailDomains;
 
     /**
      * Constructor.
      *
-     * @param ChatDataService $chat_data_service
+     * @param EntityManager   $em
+     * @param ChatDataService $chatData
      */
-    public function __construct(ChatDataService $chat_data_service)
+    public function __construct(EntityManager $em, ChatDataService $chatData)
     {
-        $this->chat_data_service = $chat_data_service;
+        $this->em       = $em;
+        $this->chatData = $chatData;
     }
 
     /**
@@ -58,19 +97,124 @@ class OrganizationHandler extends AbstractEntityHandler
      */
     public static function getClassNames()
     {
-        return Organization::class;
+        return OrganizationEntity::class;
     }
 
     /**
      * {@inheritdoc}
      *
-     * @param Organization $entity
+     * @param OrganizationEntity $entity
      */
     protected function createModel($entity, SideloadSerializationContext $context)
     {
-        return new SerializedOrganization(
-            $entity,
-            $this->chat_data_service->getChatsCountForOrganization($entity)
-        );
+        $this->organizationIds[] = $entity->getId();
+
+        $model = new OrganizationModel($entity, $this->chatData->getChatsCountForOrganization($entity));
+        $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
+        $model->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]));
+        $model->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]));
+        $model->setEmailDomains(new CallbackDeferredProperty([$this, 'getEmailDomains'], [$entity]));
+
+        return $model;
+    }
+
+    /**
+     * @param OrganizationEntity $entity
+     *
+     * @return CustomDataOrganization[]
+     */
+    public function getCustomData(OrganizationEntity $entity)
+    {
+        if (null === $this->customData) {
+            $result = $this->em->getRepository(CustomDataOrganization::class)->findBy([
+                'organization' => $this->organizationIds,
+            ]);
+
+            $this->customData = [];
+            foreach ($result as $value) {
+                $this->customData[$value->getOrganizationId()][] = $value;
+            }
+        }
+
+        if (isset($this->customData[$entity->getId()])) {
+            return new ArrayCollection($this->customData[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param OrganizationEntity $entity
+     *
+     * @return OrganizationContactData[]
+     */
+    public function getContactData(OrganizationEntity $entity)
+    {
+        if (null === $this->contactData) {
+            $result = $this->em->getRepository(OrganizationContactData::class)->findBy([
+                'organization' => $this->organizationIds,
+            ]);
+
+            $this->contactData = [];
+            foreach ($result as $value) {
+                $this->contactData[$value->getOrganization()->getId()][] = $value;
+            }
+        }
+
+        if (isset($this->contactData[$entity->getId()])) {
+            return new ArrayCollection($this->contactData[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param OrganizationEntity $entity
+     *
+     * @return LabelOrganization[]
+     */
+    public function getLabels(OrganizationEntity $entity)
+    {
+        if (null === $this->labels) {
+            $result = $this->em->getRepository(LabelOrganization::class)->findBy([
+                'organization' => $this->organizationIds,
+            ]);
+
+            $this->labels = [];
+            foreach ($result as $label) {
+                $this->labels[$label->getOrganization()->getId()][] = $label;
+            }
+        }
+
+        if (isset($this->labels[$entity->getId()])) {
+            return $this->labels[$entity->getId()];
+        }
+
+        return [];
+    }
+
+    /**
+     * @param OrganizationEntity $entity
+     *
+     * @return OrganizationEmailDomain[]
+     */
+    public function getEmailDomains(OrganizationEntity $entity)
+    {
+        if (null === $this->emailDomains) {
+            $result = $this->em->getRepository(OrganizationEmailDomain::class)->findBy([
+                'organization' => $this->organizationIds,
+            ]);
+
+            $this->emailDomains = [];
+            foreach ($result as $emailDomain) {
+                $this->emailDomains[$emailDomain->getOrganization()->getId()][] = $emailDomain;
+            }
+        }
+
+        if (isset($this->emailDomains[$entity->getId()])) {
+            return $this->emailDomains[$entity->getId()];
+        }
+
+        return [];
     }
 }

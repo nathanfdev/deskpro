@@ -108,11 +108,6 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @var array
      */
-    private $primaryTeams;
-
-    /**
-     * @var array
-     */
     private $agentData;
 
     /**
@@ -386,6 +381,52 @@ class PersonHandler extends AbstractEntityHandler
      */
     public function getAgentTeams(Person $entity)
     {
+        $this->loadAgentTeams();
+
+        if (isset($this->agentTeamMapping[$entity->getId()])) {
+            $personTeams = [];
+            foreach ($this->agentTeamMapping[$entity->getId()] as $teamId => $_) {
+                if (isset($this->agentTeams[$teamId])) {
+                    $personTeams[] = $this->agentTeams[$teamId];
+                }
+            }
+
+            return new ArrayCollection($personTeams);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return AgentTeam
+     */
+    public function getPrimaryTeam(Person $entity)
+    {
+        $this->loadAgentTeams();
+
+        $primaryTeam = $entity->getPrimaryTeam(false);
+        if ($primaryTeam) {
+            $teamId = $primaryTeam->getId();
+            if (isset($this->agentTeams[$teamId])) {
+                return $this->agentTeams[$teamId];
+            }
+        }
+
+        if (isset($this->agentTeamMapping[$entity->getId()]) && count($this->agentTeamMapping[$entity->getId()])) {
+            $personTeamIds = array_keys($this->agentTeamMapping[$entity->getId()]);
+
+            if (isset($this->agentTeams[$personTeamIds[0]])) {
+                return $this->agentTeams[$personTeamIds[0]];
+            }
+        }
+
+        return;
+    }
+
+    private function loadAgentTeams()
+    {
         if (null === $this->agentTeams) {
             $connection = $this->em->getConnection();
             $result     = $connection->executeQuery(
@@ -411,53 +452,6 @@ class PersonHandler extends AbstractEntityHandler
                 $this->agentTeams[$agentTeam->getId()] = $agentTeam;
             }
         }
-
-        if (isset($this->agentTeamMapping[$entity->getId()])) {
-            $personTeams = [];
-            foreach ($this->agentTeamMapping[$entity->getId()] as $teamId => $_) {
-                if (isset($this->agentTeams[$teamId])) {
-                    $personTeams[] = $this->agentTeams[$teamId];
-                }
-            }
-
-            return new ArrayCollection($personTeams);
-        }
-
-        return new ArrayCollection([]);
-    }
-
-    /**
-     * @param Person $entity
-     *
-     * @return AgentTeam
-     */
-    public function getPrimaryTeam(Person $entity)
-    {
-        if (null === $this->primaryTeams) {
-            $qb = $this->em->createQueryBuilder();
-            $qb
-                ->select('a')
-                ->from(AgentTeam::class, 'a')
-                ->join(Person::class, 'p', Join::WITH, 'a.id = p.primary_team')
-                ->where('p.id IN (:people_ids)')
-                ->setParameter('people_ids', array_keys($this->personIds))
-            ;
-
-            /** @var AgentTeam[] $result */
-            $result = $qb->getQuery()->getResult();
-
-            $this->primaryTeams = [];
-            foreach ($result as $agentTeam) {
-                $this->primaryTeams[$agentTeam->getId()] = $agentTeam;
-            }
-        }
-
-        $teamId = $entity->getPrimaryTeam(false) && $entity->getPrimaryTeam(false)->getId();
-        if (isset($this->primaryTeams[$teamId])) {
-            return $this->primaryTeams[$teamId];
-        }
-
-        return;
     }
 
     /**
@@ -482,7 +476,7 @@ class PersonHandler extends AbstractEntityHandler
             return $this->labels[$entity->getId()];
         }
 
-        return;
+        return [];
     }
 
     /**
@@ -507,6 +501,6 @@ class PersonHandler extends AbstractEntityHandler
             return $this->emails[$entity->getId()];
         }
 
-        return;
+        return [];
     }
 }

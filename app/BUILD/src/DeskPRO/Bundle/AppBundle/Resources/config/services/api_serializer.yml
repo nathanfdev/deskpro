@@ -82,6 +82,7 @@ services:
   api_serializer.handler.organization:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\OrganizationHandler
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@data.chat"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
