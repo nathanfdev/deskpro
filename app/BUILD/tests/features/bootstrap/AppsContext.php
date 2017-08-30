@@ -39,7 +39,7 @@ use DpBehat\Data\DataContext;
 class AppsContext extends BaseContext
 {
     /**
-     * @Given i package the app from folder :folder
+     * @Given I package the app from folder :folder
      * @param string $folder
      */
     public function iPackageTheApp($folder)

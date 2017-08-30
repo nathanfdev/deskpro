@@ -7,7 +7,7 @@ Feature: Test Apps State API
     Given there are no "App" records
     And I'm authenticated as agent
     And I package the app from folder "resources/apps/state-tests"
-    And I send a POST request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
+    And I send a "POST" request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
     And I save a reference "application" to the JSON node "id"
 
   Scenario Outline: I create and delete state

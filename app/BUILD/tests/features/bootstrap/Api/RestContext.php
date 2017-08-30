@@ -191,8 +191,13 @@ class RestContext extends BaseContext
      * Sends a HTTP request with a file as body body.
      *
      * @Given I send a :method request to :url with content type :contentType and file :filePath as body
+     *
+     * @param $method
+     * @param $url
+     * @param $contentType
+     * @param $filePath
      */
-    public function iSendARequestToWithFileAsBody( $method, $url, $contentType, $filePath)
+    public function iSendARequestToWithFileAsBody($method, $url, $contentType, $filePath)
     {
         $url = DataContext::replace($url);
         $filePath = DataContext::replace($filePath);
