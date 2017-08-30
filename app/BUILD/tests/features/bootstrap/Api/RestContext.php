@@ -36,6 +36,7 @@ use Behat\Mink\Exception\ExpectationException;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class RestContext extends BaseContext
 {
@@ -168,6 +169,7 @@ class RestContext extends BaseContext
         $url = DataContext::replace($url);
         DataContext::setPlaceholder('lastRequestUrl', $url);
 
+
         $client = $this->getSession()->getDriver()->getClient();
 
         // intercept redirection
@@ -181,6 +183,36 @@ class RestContext extends BaseContext
         if (strtoupper($method) === 'POST') {
             $this->saveLastCreatedId($page->getContent());
         }
+
+        return $page;
+    }
+
+    /**
+     * Sends a HTTP request with a file as body body.
+     *
+     * @Given I send a :method request to :url with content type :contentType and file :filePath as body
+     */
+    public function iSendARequestToWithFileAsBody( $method, $url, $contentType, $filePath)
+    {
+        $url = DataContext::replace($url);
+        $filePath = DataContext::replace($filePath);
+
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+
+        // intercept redirection
+        $client->followRedirects(false);
+
+        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE'  => $contentType]);
+        $client->request($method, $this->locatePath($url), [], [], $serverParams, file_get_contents($filePath));
+
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            $this->saveLastCreatedId($page->getContent());
+        }
+
+        $response = $client->getResponse();
+        echo($response->getContent());
 
         return $page;
     }

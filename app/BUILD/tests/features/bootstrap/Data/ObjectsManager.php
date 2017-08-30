@@ -102,6 +102,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
@@ -377,6 +378,7 @@ class ObjectsManager
     private function initTypeLocators()
     {
         $this->typeLocators = [
+            'App'              => [$this, 'find', App::class],
             'AgentTeam'                => [$this, 'find', AgentTeam::class],
             'Person'                   => [$this, 'find', Person::class],
             'PersonEmail'              => [$this, 'find', PersonEmail::class],

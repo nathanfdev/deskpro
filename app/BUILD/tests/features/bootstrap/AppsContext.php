@@ -32,30 +32,25 @@
 
 namespace DpBehat;
 
-use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
-use Sanpi\Behatch\Context\BaseContext as BaseBehatContext;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipBundleBuilder;
+use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
 
-/**
- * Class BaseContext.
- */
-abstract class BaseContext extends BaseBehatContext implements KernelAwareContextInterface
+class AppsContext extends BaseContext
 {
-    use KernelAwareTrait;
-
-    public function resetAllContext()
+    /**
+     * @Given i package the app from folder :folder
+     * @param string $folder
+     */
+    public function iPackageTheApp($folder)
     {
-        $this->kernel()->shutdown();
-        $this->kernel()->boot();
-    }
+        /** @var \DpRun\DpEnv $dpEnv */
+        $dpEnv = $GLOBALS['DP_ENV'];
+        $tmpRoot = $dpEnv->getUserTmpDir();
 
-    public function getTestRootDir()
-    {
-        return realpath(__DIR__ .'/../..');
-    }
-
-    public function getTestDir($relativePath)
-    {
-        $root = $this->getTestRootDir();
-        return realpath($root .'/' . ltrim($relativePath, '/'));
+        $dir = $this->getTestDir($folder);
+        $appArchive = AppZipBundleBuilder::fromTmp($tmpRoot)->addFolder($dir)->build();
+        $lastPackagedApp = $appArchive->getFilePath();
+        DataContext::setPlaceholder('lastPackagedApp', $lastPackagedApp);
     }
 }
