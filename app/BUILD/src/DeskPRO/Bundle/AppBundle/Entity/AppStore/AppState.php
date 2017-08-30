@@ -37,7 +37,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\HasLifecycleCallbacks()
  * @ORM\Table(
  *  name="app2_app_state_v2", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "entity_id", "name"})
+ *     @ORM\UniqueConstraint(name="state_unique", columns={"app_instance_id", "name", "entity_id", "person_id"})
  *  })
  */
 class AppState implements EntityInterface
