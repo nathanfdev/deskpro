@@ -348,6 +348,10 @@ class CleanupDaily extends AbstractJob
         }
         $cacheDir = $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache';
 
+        if (!is_dir($cacheDir)) {
+            return;
+        }
+
         $dirFinder = new Finder();
         $dirFinder->directories()->in([$cacheDir])->depth('== 0');
 

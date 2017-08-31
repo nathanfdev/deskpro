@@ -32,7 +32,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1495136241 extends AbstractBuild implements SkipPostBuildInterface
+class Build1504192418 extends AbstractBuild implements SkipPostBuildInterface
 {
     public function run()
     {

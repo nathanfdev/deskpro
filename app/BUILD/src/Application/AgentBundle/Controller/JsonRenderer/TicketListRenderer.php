@@ -208,7 +208,7 @@ class TicketListRenderer
             isset($data['date_last_agent_reply_ts']) ? $data['date_last_agent_reply_ts'] : 0
         );
         $data['date_last_reply_is_agent_reply'] = isset($data['date_last_agent_reply_ts']) &&
-            $data['date_last_agent_reply_ts'] > isset($data['date_last_user_reply_ts']) ? $data['date_last_user_reply_ts'] : 0
+            $data['date_last_agent_reply_ts'] > (isset($data['date_last_user_reply_ts']) ? $data['date_last_user_reply_ts'] : 0)
             && $data['date_last_agent_reply_ts'] > $data['date_created_ts'];
 
         $data['total_user_waiting']   = $ticket->getTotalUserWaiting();

@@ -85,6 +85,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
         $this->channelPrefix = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
         $this->connection    = $connection;
         \DpShutdown::add([$this, 'doDeliverSoon'], null, 'db_done_trans_commit');
+        \DpShutdown::add([$this, 'doDeliverSoon']);
     }
 
     /**
@@ -125,6 +126,10 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
 
     public function doDeliverSoon()
     {
+        if (empty($this->messages) && empty($this->postponeMessages)) {
+            return;
+        }
+
         $this->messages         = array_merge($this->messages, $this->postponeMessages);
         $this->postponeMessages = [];
         $this->deliver();
@@ -135,19 +140,25 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      */
     public function deliver()
     {
-        if (!empty($this->messages)) {
-            foreach ($this->messages as &$message) {
-                $message['data'] = json_encode($message['data']);
-            }
+        if (empty($this->messages)) {
+            return;
+        }
 
-            foreach (array_chunk($this->messages, 10) as $chunk) {
-                $encodedDataLength = strlen(json_encode($chunk)); // we're interesting actual bytes, not chars
+        foreach ($this->messages as &$message) {
+            $message['data'] = json_encode($message['data']);
+        }
 
+        foreach (array_chunk($this->messages, 10) as $chunk) {
+            $encodedDataLength = strlen(json_encode($chunk)); // we're interesting actual bytes, not chars
+
+            try {
                 if ($encodedDataLength > static::MAX_MESSAGE_SIZE) {
                     $this->deliverDivided($chunk);
                 } else {
                     $this->innerDeliver($chunk);
                 }
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
             }
         }
         $this->messages = [];
