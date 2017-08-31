@@ -35,6 +35,7 @@ namespace Application\DeskPRO\Tickets\Slas;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
+use Application\DeskPRO\EntityRepository\TicketSla as TicketSlaRepository;
 use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -219,7 +220,9 @@ class SlaProcessor
     {
         $count = 0;
 
-        $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
+        /** @var TicketSlaRepository $slasRepository */
+        $slasRepository = $this->em->getRepository(TicketSla::class);
+        $ticket_slas    = $slasRepository->getTicketSlasPastThreshold('fail');
         foreach ($ticket_slas as $ticket_sla) {
             if ($this->limiterCallback) {
                 if (call_user_func($this->limiterCallback, ['type' => 'fail', 'count' => $count]) === true) {

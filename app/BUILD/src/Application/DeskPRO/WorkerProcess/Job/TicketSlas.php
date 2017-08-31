@@ -56,9 +56,7 @@ class TicketSlas extends AbstractJob
 
         $me = $this;
         $proc->setLimiterCallback(function () use ($me) {
-            if ($me->isPastTimeLimit()) {
-                return true;
-            }
+            return $me->isPastTimeLimit();
         });
 
         $context_factory = function () {
