@@ -53,17 +53,6 @@ class Build1504102498 extends AbstractBuild implements BlockingBuildInterface
 
         $fixTrelloCardsSql = $this->getFixTrelloCardsPermissionsSQL();
         $this->execDbQuery('default', $fixTrelloCardsSql);
-
-        $updateManifestSql = <<<'SQL'
-  UPDATE
-  `app2_app`
-  SET `manifest` = ?
-  WHERE `app2_app`.id =  ?;
-SQL;
-        $fixedManifests = $this->fixTrelloCardsPermissionsInManifest();
-        foreach ($fixedManifests as $key => $value) {
-            $this->getDbConnection('default')->executeQuery($updateManifestSql, [$value, $key]);
-        }
     }
 
     public function getFixTrelloAuthSql()
@@ -94,59 +83,4 @@ SQL;
 SQL;
         return $sql;
     }
-
-    public function fixTrelloCardsPermissionsInManifest()
-    {
-        $sql = <<<'SQL'
-SELECT
-  `id`, `manifest` from 
-  `app2_app`    
-  WHERE `app2_app`.name IN ('deskpro-app-trello');
-SQL;
-
-        $fixedManifests = [];
-
-        $entries = $this->getDbConnection()->fetchAll($sql);
-        foreach ($entries as $trelloApp) {
-            $fixedManifest = $this->fixManifest($trelloApp['manifest']);
-            if ($fixedManifest) {
-                $id = $trelloApp['id'];
-                $fixedManifests[$id] = $fixedManifest;
-            }
-        }
-
-        return $fixedManifests;
-    }
-
-    private function fixManifest($manifest) {
-        $parsed = json_decode($manifest, $assoc = true);
-        if (! is_array($parsed)) {
-            return null;
-        }
-
-        $wasFixed = false;
-        if (array_key_exists('state', $parsed) && is_array($parsed['state'])) {
-            foreach ($parsed['state'] as $key => $state) {
-                if (
-                    is_array($state)
-                    && array_key_exists('name', $state)
-                    && is_string($state['name'])
-                    && array_key_exists('permRead', $state)
-                    && is_string($state['permRead'])
-                    && array_key_exists('permWrite', $state)
-                    && is_string($state['permWrite'])
-                    && $state['name'] === 'cards'
-                    && ( $state['permRead'] !== 'EVERYBODY' || $state['permWrite'] !== 'EVERYBODY' )
-                ) {
-                    $parsed['state'][$key]['permRead'] = 'EVERYBODY';
-                    $parsed['state'][$key]['permWrite'] = 'EVERYBODY';
-                    $wasFixed = true;
-                }
-            }
-        }
-
-        return $wasFixed ? json_encode($parsed) : null;
-    }
-
-
 }
