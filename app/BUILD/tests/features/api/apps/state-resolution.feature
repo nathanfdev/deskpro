@@ -1,4 +1,4 @@
-@new
+@new @apps
 Feature: Test Apps State Resolution
   As an API user
   I want to make sure the state security features are working

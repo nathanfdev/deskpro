@@ -36,7 +36,6 @@ use Behat\Mink\Exception\ExpectationException;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
 use Sanpi\Behatch\Context\BaseContext;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class RestContext extends BaseContext
 {
@@ -168,7 +167,6 @@ class RestContext extends BaseContext
     {
         $url = DataContext::replace($url);
         DataContext::setPlaceholder('lastRequestUrl', $url);
-
 
         $client = $this->getSession()->getDriver()->getClient();
 

@@ -1,4 +1,4 @@
-@new
+@new @apps
 Feature: Test Apps State API
   As an API user
   I want to install v2 apps

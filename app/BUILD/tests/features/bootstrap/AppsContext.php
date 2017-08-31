@@ -32,12 +32,27 @@
 
 namespace DpBehat;
 
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipBundleBuilder;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 
 class AppsContext extends BaseContext
 {
+    /**
+     * @AfterFeature @apps
+     */
+    public static function teardownFeature(AfterFeatureScope $scope)
+    {
+        $em = self::getEm();
+        $records = self::getOm()->locate('Apps');
+        foreach ($records as $record) {
+            $em->remove($record);
+        }
+
+        $em->flush();
+    }
+
     /**
      * @Given I package the app from folder :folder
      * @param string $folder

@@ -1,4 +1,4 @@
-@new
+@new @apps
 Feature: install v2 apps
   As an API user
   I want to install v2 apps
