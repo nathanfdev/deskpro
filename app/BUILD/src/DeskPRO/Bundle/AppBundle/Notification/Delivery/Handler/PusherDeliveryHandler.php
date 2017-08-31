@@ -72,6 +72,11 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     private $postponeMessages = [];
 
     /**
+     * @var int
+     */
+    private $tries;
+
+    /**
      * @param Pusher           $pusher
      * @param SettingsResolver $resolver
      * @param Connection       $connection
@@ -83,6 +88,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     ) {
         $this->pusher        = $pusher;
         $this->channelPrefix = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.channel_prefix', '');
+        $this->tries         = $resolver->getGlobalSettings()->get('notification.settings.pusher_client.tries', 2);
         $this->connection    = $connection;
         \DpShutdown::add([$this, 'doDeliverSoon'], null, 'db_done_trans_commit');
         \DpShutdown::add([$this, 'doDeliverSoon']);
@@ -169,7 +175,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      */
     protected function innerDeliver($chunk)
     {
-        $tries     = 3;
+        $tries     = $this->tries;
         $exception = null;
         do {
             $response = $this->pusher->triggerBatch($chunk, true, true);
