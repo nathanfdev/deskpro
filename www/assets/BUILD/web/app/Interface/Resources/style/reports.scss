@@ -124,7 +124,9 @@
   }
 }
 
-
+ul.nav-link-list li.type-heading {
+  font-weight: bold;
+}
 
 // Dashboard title (dropdown)
 // Top left - Current dashboard title
@@ -261,7 +263,9 @@
     border-right: 1px solid rgba(0, 0, 0, 0.1);
     padding: 2px 2px;
 
-    &:last-child { border-right: 0px; }
+    &.dashboard-title { font-size: 16px; padding: 0 4px; margin-top: -2px; }
+
+    &:last-child { border-right: 0; }
   }
 
   i {

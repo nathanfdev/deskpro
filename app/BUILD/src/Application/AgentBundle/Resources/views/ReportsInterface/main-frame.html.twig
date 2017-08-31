@@ -5,13 +5,20 @@
     <section class="nav-section">
         <h1 class="nav-title">Dashboards</h1>
         <ul class="nav-link-list">
-            <li>
-                <a ui-sref="reports.dashboards">Dashboards</a>
-            </li>
-            <li ng-repeat="dashboard in dashboards track by dashboard.id">
+            <li class="type-heading">Built-in dashboards</li>
+            <li ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id">
                 <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
                     {{ ng_var('dashboard.title') }}
                 </a>
+            </li>
+            <li class="type-heading">Custom dashboards</li>
+            <li ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id">
+                <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
+                    {{ ng_var('dashboard.title') }}
+                </a>
+            </li>
+            <li class="type-heading">
+                <a ng-click="openCreate()" class='link-pointer' id="dp-add-dashboard-opener">[<i class="fa fa-plus"></i>Add]</a>
             </li>
         </ul>
     </section>

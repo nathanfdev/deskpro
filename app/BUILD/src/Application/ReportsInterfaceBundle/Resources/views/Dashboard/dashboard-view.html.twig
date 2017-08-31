@@ -14,41 +14,10 @@
     </div>
 
     <div class="left">
-        {#<div class="dashboard-main-list" dp-dropdown="dp-select-dashboard-dropdown" dp-dropdown-opener="dp-select-dashboard-opener">#}
-            {#<a class="link-pointer" id="dp-select-dashboard-opener">#}
-                {#<span>Dashboard:</span>#}
-                {#<span class='logo-deskpro' ng-if="dashboard.is_default"></span>#}
-                {#{{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>#}
-            {#</a>#}
-
-            {#<ul id="dp-select-dashboard-dropdown">#}
-                {#<li class="type-heading">#}
-                    {#<span>Built-in Dashboards</span>#}
-                {#</li>#}
-                {#<li ng-repeat="db in (dashboards|filter:defaultDashboardsFilter) track by db.id">#}
-                    {#<a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">#}
-                        {#<span class='logo-deskpro'></span>#}
-                        {#{{ ng_var('db.title') }}#}
-                    {#</a>#}
-                {#</li>#}
-                {#<li class="type-heading">#}
-                    {#<a ng-click="openCreate()"><i class="fa fa-plus"></i> Create</a>#}
-                    {#<span>Custom Dashboards</span>#}
-                {#</li>#}
-                {#<li ng-repeat="db in (dashboards|filter:customDashboardsFilter) track by db.id">#}
-                    {#<a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">#}
-                        {#{{ ng_var('db.title') }}#}
-                    {#</a>#}
-                {#</li>#}
-            {#</ul>#}
-        {#</div>#}
-
         <nav class="reports-control">
             <ul>
+                <li class="dashboard-title">{{ ng_var('dashboard.title') }}</li>
                 <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="openEdit()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
-                <li>
-                    <a ng-click="openCreate()" class='link-pointer' id="dp-add-dashboard-opener"><i class="fa fa-plus"></i>Create Dashboard</a>
-                </li>
                 <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
             </ul>
         </nav>

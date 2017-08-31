@@ -53,9 +53,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       else
         return false
 
-    $scope.defaultDashboardsFilter = (value) -> value.is_default
-    $scope.customDashboardsFilter  = (value) -> !value.is_default
-
     ####################################################################################################################
     # MODAL HANDLERS
     ####################################################################################################################
@@ -71,15 +68,4 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           }
         }
       })
-
-    $scope.openCreate = ->
-      $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit-dashboard.html',
-        controller: 'Reports.Dashboards.Modals.EditDashboard'
-        resolve:
-          dashboard_id: -> null
-          modal_options: -> {
-            activeTab: 'info'
-          }
-      }
   ]

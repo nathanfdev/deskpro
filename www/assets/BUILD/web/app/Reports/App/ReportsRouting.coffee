@@ -24,7 +24,16 @@ define -> (States) ->
 
   States.add('reports.dashboards.index')
     .setUrl('/')
-    .setCtrl([() ->]);
+    .setCtrl(['$state', 'DashboardsInfo', ($state, DashboardsInfo) ->
+      DashboardsInfo.getDashboardList().then((dbs) ->
+        db = dbs[0]
+
+        if db.reports?.length > 0
+          $state.go('reports.dashboards.view.report', { dashboard_id: db.id, report_id: db.reports[0].id })
+        else
+          $state.go('reports.dashboards.view.index', { dashboard_id: db[0].id })
+      )
+    ]);
 
   States.add('reports.dashboards.view')
     .setUrl('/{dashboard_id:[0-9]+}')
