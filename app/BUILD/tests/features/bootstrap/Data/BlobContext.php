@@ -58,6 +58,7 @@ class BlobContext extends BaseContext
     public function noBlobs()
     {
         $this->em()->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS = 0;');
+        $this->dataContext->noRecordsExist('AppAssetBlob');
         $this->dataContext->noRecordsExist('Blob');
         $this->em()->getConnection()->executeQuery('SET FOREIGN_KEY_CHECKS = 1;');
     }
