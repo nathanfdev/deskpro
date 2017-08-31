@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 /**
  * Class AppsController.
  *
- * @ApiModes("standard")
+ * @ApiModes("all")
  * @Rest\Route("/apps")
  * @ApiUnstable()
  */

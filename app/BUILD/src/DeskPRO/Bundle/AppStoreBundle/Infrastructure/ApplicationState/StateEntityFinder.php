@@ -30,10 +30,12 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
-use Doctrine\ORM;
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState\AccessOptions;
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateSearchFilter;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+use Doctrine\ORM;
 
-class StateEntityFinder implements Domain\ApplicationStateFinder
+class StateEntityFinder
 {
     /** @var ORM\EntityManager */
     private $entityManager;
@@ -65,39 +67,52 @@ class StateEntityFinder implements Domain\ApplicationStateFinder
     }
 
     /**
-     * @param Domain\ApplicationStateId $id
-     * @param string|null $stateOwnerId
-     * @return Domain\ApplicationState
+     * @param Domain\ApplicationStateId $identifier
+     * @param AccessOptions             $accessOptions
+     * @param AccessRequest             $request
+     *
+     * @return Entity\AppStore\AppState|null
      */
-    public function find(Domain\ApplicationStateId $id, $stateOwnerId = null)
+    public function findOne(Domain\ApplicationStateId $identifier, Domain\ApplicationState\AccessOptions $accessOptions, AccessRequest $request)
     {
-        $query = $this->queryBuilder->buildFindStateEntityByIdQuery($this->entityManager, $id, $stateOwnerId);
-        $result = $query->getResult();
-        if (1 != count($result)) { //instance not found or more than one
-            return null;
+        $searchFilter = ApplicationStateSearchFilter::fromIdentifier($identifier);
+        /** @var ORM\Query[] $findStateQueries */
+        $findStateQueries = [];
+        if ($accessOptions->isWorldAccessible()) {
+            $findStateQueries[] = $this->queryBuilder->buildFindOwnedByNobodyStateQuery($this->entityManager, $searchFilter);
+        } else {
+            $ownerId            = $request->getAuthPersonId();
+            $findStateQueries[] = $this->queryBuilder->buildFindOwnedStateQuery(
+                $this->entityManager,
+                $ownerId,
+                $searchFilter
+            );
+
+            $accessLevel      = $request->getAccessLevel();
+            $accessPermission = new Domain\ApplicationState\AccessPermission($accessLevel, Domain\Constants::PERMISSION_EVERYONE);
+            $searchFilter->setAccessPermission($accessPermission);
+
+            $findStateQueries[] = $this->queryBuilder->buildFindOwnedByOtherStateQuery(
+                $this->entityManager,
+                $ownerId,
+                $searchFilter
+            );
         }
 
-        /** @var Entity\AppStore\AppState $instance */
-        $instance = array_pop($result);
-        return $this->entityConverter->toDomainObject($instance);
-    }
+        /** @var Entity\AppStore\AppState $stateEntity */
+        $stateEntity = null;
+        foreach ($findStateQueries as $query) {
+            $result = $query->setMaxResults(2)->getResult();
+            if (1 === count($result)) { //instance not found or more than one
+                $stateEntity = array_pop($result);
+                break;
+            }
 
-    /**
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
-     * @return Domain\ApplicationState[]
-     */
-    public function findByFilter(Domain\ApplicationStateSearchFilter $searchFilter)
-    {
-        $query = $this->queryBuilder->buildFindStateEntityByFilterQuery($this->entityManager, $searchFilter);
-        $result = $query->getResult();
-
-        $mappedResults = [];
-        foreach ($result as $entity) { // ignore
-            $domainObject = $this->entityConverter->toDomainObject($entity);
-            if ($domainObject) {
-                $mappedResults[] = $domainObject;
+            if (2 == count($result)) {
+                break;
             }
         }
-        return $mappedResults;
+
+        return $stateEntity;
     }
 }

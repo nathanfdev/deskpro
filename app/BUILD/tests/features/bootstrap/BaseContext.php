@@ -47,4 +47,16 @@ abstract class BaseContext extends BaseBehatContext implements KernelAwareContex
         $this->kernel()->shutdown();
         $this->kernel()->boot();
     }
+
+    public function getTestRootDir()
+    {
+        return realpath(__DIR__.'/../..');
+    }
+
+    public function getTestDir($relativePath)
+    {
+        $root = $this->getTestRootDir();
+
+        return realpath($root.'/'.ltrim($relativePath, '/'));
+    }
 }

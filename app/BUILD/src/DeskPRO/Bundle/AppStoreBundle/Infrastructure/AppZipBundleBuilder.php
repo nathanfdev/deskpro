@@ -29,26 +29,32 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+
 class AppZipBundleBuilder
 {
     /**
-     * Creates a ZipArchiveBuilder that will create the bundle in a randomly named file from the system temp dir
+     * Creates a ZipArchiveBuilder that will create the bundle in a randomly named file from the system temp dir.
+     *
+     * @param null $dir
      *
      * @return AppZipBundleBuilder
      */
-    static public function fromTmp()
+    public static function fromTmp($dir = null)
     {
-        $file = tempnam(sys_get_temp_dir(), 'foo') ;
-        return AppZipBundleBuilder::fromFile($file);
+        $root = is_null($dir) ? sys_get_temp_dir() : $dir;
+        $file = tempnam($root, 'foo');
+
+        return self::fromFile($file);
     }
 
     /**
-     * Creates a ZipArchiveBuilder that will create the bundle at the specified location
+     * Creates a ZipArchiveBuilder that will create the bundle at the specified location.
      *
      * @param string $file path to a file
+     *
      * @return AppZipBundleBuilder
      */
-    static public function fromFile($file)
+    public static function fromFile($file)
     {
         $fileInfo = new \SplFileInfo($file);
         if (!$fileInfo->isWritable()) {
@@ -56,7 +62,7 @@ class AppZipBundleBuilder
             throw new \RuntimeException($exMsg);
         }
 
-        return new AppZipBundleBuilder($fileInfo);
+        return new self($fileInfo);
     }
 
     /**
@@ -72,7 +78,7 @@ class AppZipBundleBuilder
 
     public function __construct(\SplFileInfo $fileInfo)
     {
-        $path = $fileInfo->getRealPath();
+        $path          = $fileInfo->getRealPath();
         $this->archive = new \ZipArchive();
         $this->archive->open($path, \ZipArchive::CREATE);
 
@@ -83,7 +89,8 @@ class AppZipBundleBuilder
 
     /**
      * @param string $dir
-     * @param int $maxDepth
+     * @param int    $maxDepth
+     *
      * @return AppZipBundleBuilder
      */
     public function addFolder($dir, $maxDepth = -1)
@@ -102,9 +109,13 @@ class AppZipBundleBuilder
             $iterator->setMaxDepth($maxDepth);
         }
         foreach ($iterator as $name => $file) {
-            if (! $file->isDir()) { //only add files
+            if (!$file->isDir()) { //only add files
                 $filePath = $file->getRealPath();
-                $this->archive->addFile($filePath);
+
+                $localName = substr($filePath, strlen($dir));
+                $localName = ltrim($localName, '/');
+
+                $this->archive->addFile($filePath, $localName);
                 $filePathList[] = $filePath;
             }
         }
@@ -114,9 +125,11 @@ class AppZipBundleBuilder
 
     /**
      * @param string|\SplFileInfo $file
+     * @param null                $localName
+     *
      * @return AppZipBundleBuilder
      */
-    public function addFile($file)
+    public function addFile($file, $localName = null)
     {
         if ($this->archiveFileState === 'close') {
             throw new \RuntimeException('archive is closed');
@@ -124,7 +137,12 @@ class AppZipBundleBuilder
 
         $fileInfo = $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
         if ($fileInfo->isFile()) {
-            $this->archive->addFile($file);
+            if (!empty($localName)) {
+                $this->archive->addFile($file, $localName);
+            } else {
+                $this->archive->addFile($file);
+            }
+
             return $this;
         }
 
@@ -134,6 +152,7 @@ class AppZipBundleBuilder
 
     /**
      * @param string $manifest
+     *
      * @return $this
      */
     public function setManifest($manifest)
@@ -158,6 +177,7 @@ class AppZipBundleBuilder
         }
 
         $archive = new \ZipArchive();
+
         return new AppZipArchiveBundle($archive, new \SplFileInfo($this->archivePath));
     }
 }

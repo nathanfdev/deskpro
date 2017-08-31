@@ -28,26 +28,23 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
-use DeskPRO\Bundle\AppStoreBundle\API\AppStateRepresentation;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation as DeskproAnnotations;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle;
 use DeskPRO\Bundle\AppStoreBundle\API\HttpExceptionConverter;
-use DeskPRO\Bundle\AppStoreBundle\Domain\StateScope;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpFoundation\Response;
-
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation as DeskproAnnotations;
-use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Class AppsController
+ * Class AppsController.
  *
- * @DeskproAnnotations\ApiModes("standard")
+ * @DeskproAnnotations\ApiModes("all")
  * @Rest\Route("/apps/{application}/state")
  */
 class AppStateController extends BaseController
@@ -60,6 +57,7 @@ class AppStateController extends BaseController
      *
      * @param Entity\AppStore\AppInstance|null $application
      * @param $entityId
+     *
      * @return View\View
      */
     public function listStateAction(Entity\AppStore\AppInstance $application = null, $entityId)
@@ -79,21 +77,22 @@ class AppStateController extends BaseController
 
         $filter = new AppStoreBundle\Domain\ApplicationStateSearchFilter($instanceId, $entityId);
 
-        $auth = $this->getUser();
+        $auth          = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIReadAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
-        $list = $stateAccessService->readAllValues($filter, $accessRequest);
+        $list               = $stateAccessService->readAllValues($filter, $accessRequest);
 
-        $converter = function(AppStoreBundle\Domain\ApplicationState $state) {
+        $converter = function (AppStoreBundle\Domain\ApplicationState $state) {
             return [
-                "name" => $state->getName(),
+                'name'   => $state->getName(),
                 'app_id' => $state->getIdentifier()->getInstanceId(),
-                "value" => json_decode($state->getValue(), $assoc = true)
+                'value'  => json_decode($state->getValue(), $assoc = true),
             ];
         };
         $mappedValues = array_map($converter, $list);
+
         return View\View::create($mappedValues, Response::HTTP_OK);
     }
 
@@ -108,20 +107,22 @@ class AppStateController extends BaseController
      * @param $entityId
      * @param $stateName
      * @param null $options
+     *
      * @return View\View
+     *
      * @internal param Entity\AppStore\AppState $state
      */
     public function existsStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName, $options = null)
     {
-        $instanceId = null;
+        $instanceId       = null;
         $entityIdentifier = null;
-        $stateIdentifer = null;
+        $stateIdentifer   = null;
 
         if ($application instanceof Entity\AppStore\AppInstance) {
             $instanceId = $application->getId();
         }
 
-        if (! is_null($instanceId)) {
+        if (!is_null($instanceId)) {
             $entityIdentifier = AppStoreBundle\Domain\ApplicationState\EntityId::parse($entityId);
         }
 
@@ -133,16 +134,17 @@ class AppStateController extends BaseController
             return View\View::create([], Response::HTTP_NO_CONTENT);
         }
 
-        $auth = $this->getUser();
+        $auth          = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\PersonAccessRequest::newReadAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
-        $isAvailable = $stateAccessService->allowsAccess($accessRequest, $stateIdentifer);
+        $isAvailable        = $stateAccessService->allowsAccess($accessRequest, $stateIdentifer);
 
         if ($isAvailable) {
             return View\View::create([], Response::HTTP_OK);
         }
+
         return View\View::create([], Response::HTTP_NO_CONTENT);
     }
 
@@ -157,6 +159,7 @@ class AppStateController extends BaseController
      * @param $entityId
      * @param $stateName
      * @param array $options
+     *
      * @return View\View
      */
     public function getStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName, $options)
@@ -175,18 +178,18 @@ class AppStateController extends BaseController
         }
         $stateIdentifer = new AppStoreBundle\Domain\ApplicationStateId($instanceId, $stateName, $entityIdentifier);
 
-        $auth = $this->getUser();
+        $auth          = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIReadAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
         try {
-            $value = $stateAccessService->readValue($stateIdentifer, $accessRequest);
-            $responseBody = [ 'value' => json_decode($value, $assoc = true) ];
+            $value        = $stateAccessService->readValue($stateIdentifer, $accessRequest);
+            $responseBody = ['value' => json_decode($value, $assoc = true)];
 
             return View\View::create($responseBody, Response::HTTP_OK);
         } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
-            $stateNotFound = $e->getCode() === AppStoreBundle\Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND;
+            $stateNotFound       = $e->getCode() === AppStoreBundle\Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND;
             $returnHttpNoContent = array_key_exists('mode', $options) && $options['mode'] === 'find';
 
             if ($stateNotFound && $returnHttpNoContent) {
@@ -206,6 +209,7 @@ class AppStateController extends BaseController
      * @param $entityId
      * @param $stateName
      * @param Request $request
+     *
      * @return View\View
      */
     public function putStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName, Request $request)
@@ -226,22 +230,22 @@ class AppStateController extends BaseController
 
         // extract the state value from the request. somewhere before reaching this controller, JsonToFormDecoder
         // fails to handle a json encoded scalars, so we must wrap the state value in object... sad :(
-        $stateValue = $request->getContent();
+        $stateValue       = $request->getContent();
         $parsedStateValue = json_decode($stateValue, $associative = true);
         if (is_null($parsedStateValue) || !array_key_exists('value', $parsedStateValue)) {
             throw new BadRequestHttpException('could not decode value');
         }
         $value = json_encode($parsedStateValue['value']);
 
-        $auth = $this->getUser();
+        $auth          = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIWriteAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
         try {
             $stateAccessService->writeValue($stateIdentifer, $accessRequest, $value);
-            return View\View::create($parsedStateValue, Response::HTTP_OK);
 
+            return View\View::create($parsedStateValue, Response::HTTP_OK);
         } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
             throw HttpExceptionConverter::fromApplicationStateException($e);
         }
@@ -256,6 +260,7 @@ class AppStateController extends BaseController
      * @param Entity\AppStore\AppInstance $application
      * @param $entityId
      * @param $stateName
+     *
      * @return View\View
      */
     public function deleteStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName)
@@ -274,15 +279,15 @@ class AppStateController extends BaseController
         }
         $stateIdentifer = new AppStoreBundle\Domain\ApplicationStateId($instanceId, $stateName, $entityIdentifier);
 
-        $auth = $this->getUser();
+        $auth          = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\ApplicationState\ServiceAccessRequest::newAPIWriteAccessRequest($auth);
 
         /** @var AppStoreBundle\Infrastructure\ApplicationState\AccessService $stateAccessService */
         $stateAccessService = $this->container->get(AppStoreBundle\Infrastructure\ApplicationState\AccessService::class);
         try {
             $value = $stateAccessService->removeValue($stateIdentifer, $accessRequest);
-            return View\View::create(json_decode($value, $assoc = true), Response::HTTP_OK);
 
+            return View\View::create(json_decode($value, $assoc = true), Response::HTTP_OK);
         } catch (AppStoreBundle\Domain\ApplicationState\Exception $e) {
             throw HttpExceptionConverter::fromApplicationStateException($e);
         }

@@ -28,59 +28,51 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
-
-class AccessOptions
+class AccessPermission
 {
     /** @var string */
-    private $readPermission;
+    private $accessLevel;
 
     /** @var string */
-    private $writePermission;
-
-    /** @var bool */
-    private $isBackendOnly;
+    private $permission;
 
     /**
-     * @param string $readPermission
-     * @param string $writePermission
-     * @param bool   $isBackendOnly
+     * @param string $accessLevel
+     * @param string $permission
      */
-    public function __construct($readPermission = 'OWNER', $writePermission = 'OWNER', $isBackendOnly = false)
+    public function __construct($accessLevel, $permission)
     {
-        $this->readPermission  = $readPermission;
-        $this->writePermission = $writePermission;
-        $this->isBackendOnly   = $isBackendOnly;
-    }
+        if (empty($accessLevel) || empty($permission)) {
+            throw new \DomainException('both access level and permission must be specified');
+        }
 
-    public function isWorldAccessible()
-    {
-        return $this->getWritePermission() === $this->getReadPermission()
-            && $this->getReadPermission() === Constants::PERMISSION_EVERYONE
-        ;
+        $this->accessLevel = $accessLevel;
+        $this->permission  = $permission;
     }
 
     /**
+     * @param $level
+     *
      * @return bool
      */
-    public function isBackendOnly()
+    public function hasAccessLevel($level)
     {
-        return $this->isBackendOnly;
+        return $level === $this->getAccessLevel();
     }
 
     /**
      * @return string
      */
-    public function getReadPermission()
+    public function getAccessLevel()
     {
-        return $this->readPermission;
+        return $this->accessLevel;
     }
 
     /**
      * @return string
      */
-    public function getWritePermission()
+    public function getPermission()
     {
-        return $this->writePermission;
+        return $this->permission;
     }
 }
