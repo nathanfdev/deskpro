@@ -9,8 +9,6 @@ define [], () -> [
     DashboardsInfo,
     $modal
   ) ->
-    console.log('1')
-
     DashboardsInfo.getDashboardList().then((dbs) ->
       $scope.dashboards = dbs
       db = dbs[0]
