@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use Doctrine\Orm\EntityManager;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+use Doctrine\ORM;
 
 class AccessService
 {
@@ -84,7 +85,6 @@ class AccessService
         $allowsPersonAccess = $request->getAccessLevel() === Domain\Constants::ACCESS_LEVEL_READ
             && $state->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_READ)
         ;
-
 
         if (! $allowsPersonAccess) {
             return false;
@@ -210,7 +210,9 @@ class AccessService
 
         $stateEntity = new Entity\AppStore\AppState();
         // relationships
-        $stateEntity->setOwner($request->getAuthPerson());
+        if (!$accessOptions->isWorldAccessible()) {
+            $stateEntity->setOwner($request->getAuthPerson());
+        }
         $stateEntity->setAppInstance($appInstance);
         // identity properties
         $stateEntity->setName($identifier->getName());
@@ -244,14 +246,20 @@ class AccessService
      * @return Domain\ApplicationState
      */
     public function changeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value) {
-        /** @var Entity\AppStore\AppState $stateEntity */
-        $stateEntity = null;
-        $findStateEntityQuery = $this->queryBuilder->buildFindStateEntityByIdQuery($this->entityManager, $identifier);
-        $result = $findStateEntityQuery->getResult();
 
-        if (1 === count($result)) { //state not found or more than one
-            $stateEntity = array_pop($result);
+        if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_WRITE) {
+            $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+            throw $exception;
         }
+
+        $accessOptions = $this->findAccessOptions($identifier);
+        if (!$accessOptions) {
+            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            throw $exception;
+        }
+
+        $finder = new StateEntityFinder($this->entityManager, $this->queryBuilder);
+        $stateEntity = $finder->findOne($identifier, $accessOptions, $request);
 
         if (is_null($stateEntity)) {
             $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
@@ -278,15 +286,22 @@ class AccessService
      * @return string
      */
     public function readValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request) {
-        /** @var Entity\AppStore\AppState $stateEntity */
-        $stateEntity = null;
-        $findStateEntityQuery = $this->queryBuilder->buildFindStateEntityByIdQuery($this->entityManager, $identifier);
-        $result = $findStateEntityQuery->getResult();
-        if (1 === count($result)) { //instance not found or more than one
-            $stateEntity = array_pop($result);
+
+        if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_READ) {
+            $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+            throw $exception;
         }
 
-        if (is_null($stateEntity)) {
+        $accessOptions = $this->findAccessOptions($identifier);
+        if (!$accessOptions) {
+            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            throw $exception;
+        }
+
+        $finder = new StateEntityFinder($this->entityManager, $this->queryBuilder);
+        $stateEntity = $finder->findOne($identifier, $accessOptions, $request);
+
+        if (empty($stateEntity)) {
             $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
             throw $exception;
         }
@@ -308,12 +323,23 @@ class AccessService
      * @return Domain\ApplicationState[]|array
      */
     public function readAllValues(Domain\ApplicationStateSearchFilter $filter, ServiceAccessRequest $request) {
-        $findQuery = $this->queryBuilder->buildFindStateEntityByFilterQuery($this->entityManager, $filter);
-        $entities = $findQuery->getResult();
 
-        if (0 === count($entities)) {
-            return [];
-        }
+        $entities = [];
+
+        $findOwned = $this->queryBuilder->buildFindOwnedStateQuery($this->entityManager, $request->getAuthPerson(), $filter);
+        $newEntities = $findOwned->getResult();
+        $entities = array_merge($entities, $newEntities);
+
+        $accessPermission = new Domain\ApplicationState\AccessPermission(Domain\Constants::ACCESS_LEVEL_READ, Domain\Constants::PERMISSION_EVERYONE);
+        $filter->setAccessPermission($accessPermission);
+
+        $findQuery = $this->queryBuilder->buildFindOwnedByNobodyStateQuery($this->entityManager, $filter);
+        $newEntities = $findQuery->getResult();
+        $entities = array_merge($entities, $newEntities);
+
+        $findQuery = $this->queryBuilder->buildFindOwnedByOtherStateQuery($this->entityManager, $request->getAuthPerson(), $filter);
+        $newEntities = $findQuery->getResult();
+        $entities = array_merge($entities, $newEntities);
 
         $converter = new StateEntityConverter();
         /** @var string[] $allowedValues */
@@ -335,13 +361,19 @@ class AccessService
      */
     public function removeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request)
     {
-        /** @var Entity\AppStore\AppState $stateEntity */
-        $stateEntity = null;
-        $findStateEntityQuery = $this->queryBuilder->buildFindStateEntityByIdQuery($this->entityManager, $identifier);
-        $result = $findStateEntityQuery->getResult();
-        if (1 === count($result)) { //instance not found or more than one
-            $stateEntity = array_pop($result);
+        if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_WRITE) {
+            $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+            throw $exception;
         }
+
+        $accessOptions = $this->findAccessOptions($identifier);
+        if (!$accessOptions) {
+            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            throw $exception;
+        }
+
+        $finder = new StateEntityFinder($this->entityManager, $this->queryBuilder);
+        $stateEntity = $finder->findOne($identifier, $accessOptions, $request);
 
         if (is_null($stateEntity)) {
             $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
@@ -360,4 +392,6 @@ class AccessService
         $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
         throw $exception;
     }
+
+
 };

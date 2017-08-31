@@ -26,36 +26,54 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
 
-namespace DpBehat;
-
-use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
-use Sanpi\Behatch\Context\BaseContext as BaseBehatContext;
-
-/**
- * Class BaseContext.
- */
-abstract class BaseContext extends BaseBehatContext implements KernelAwareContextInterface
+class AccessPermission
 {
-    use KernelAwareTrait;
+    /** @var string */
+    private $accessLevel;
 
-    public function resetAllContext()
+    /** @var string */
+    private $permission;
+
+    /**
+     * @param string $accessLevel
+     * @param string $permission
+     */
+    public function __construct($accessLevel, $permission)
     {
-        $this->kernel()->shutdown();
-        $this->kernel()->boot();
+        if (empty($accessLevel) || empty($permission)) {
+            throw new \DomainException('both access level and permission must be specified');
+        }
+
+        $this->accessLevel = $accessLevel;
+        $this->permission = $permission;
     }
 
-    public function getTestRootDir()
+    /**
+     * @param $level
+     * @return bool
+     */
+    public function hasAccessLevel($level)
     {
-        return realpath(__DIR__ .'/../..');
+        return $level === $this->getAccessLevel();
     }
 
-    public function getTestDir($relativePath)
+    /**
+     * @return string
+     */
+    public function getAccessLevel()
     {
-        $root = $this->getTestRootDir();
-        return realpath($root .'/' . ltrim($relativePath, '/'));
+        return $this->accessLevel;
     }
+
+    /**
+     * @return string
+     */
+    public function getPermission()
+    {
+        return $this->permission;
+    }
+
+
 }

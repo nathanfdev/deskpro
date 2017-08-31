@@ -26,22 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+/**
+ * DeskPRO.
+ */
 
-interface ApplicationStateFinder
+namespace DpBehat;
+
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipBundleBuilder;
+use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
+
+class AppsContext extends BaseContext
 {
     /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
-     *
-     * @return ApplicationState
+     * @AfterFeature @apps
      */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
+    public static function teardownFeature(AfterFeatureScope $scope)
+    {
+        $em = self::getEm();
+        $records = self::getOm()->locate('Apps');
+        foreach ($records as $record) {
+            $em->remove($record);
+        }
+
+        $em->flush();
+    }
 
     /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
+     * @Given I package the app from folder :folder
+     * @param string $folder
      */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public function iPackageTheApp($folder)
+    {
+        /** @var \DpRun\DpEnv $dpEnv */
+        $dpEnv = $GLOBALS['DP_ENV'];
+        $tmpRoot = $dpEnv->getUserTmpDir();
+
+        $dir = $this->getTestDir($folder);
+        $appArchive = AppZipBundleBuilder::fromTmp($tmpRoot)->addFolder($dir)->build();
+        $lastPackagedApp = $appArchive->getFilePath();
+        DataContext::setPlaceholder('lastPackagedApp', $lastPackagedApp);
+    }
 }
