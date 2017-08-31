@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
  */
 class DoctrineQueriesCounterListener
 {
-    const MAX_QUERIES_COUNT = 100;
+    const MAX_QUERIES_COUNT = 60;
     const MAX_FETCH_ROWS    = 1000;
 
     /**
@@ -103,16 +103,11 @@ class DoctrineQueriesCounterListener
             $result    = $statement->fetchAll();
 
             foreach ($result as $subQuery) {
-                if ($subQuery['rows'] > self::MAX_FETCH_ROWS) {
-                    // todo
-//                    throw new \Exception(sprintf(
-//                        'Too many rows fetched, expected less than %d, got %d. Sql: %s',
-//                        self::MAX_FETCH_ROWS, $subQuery['rows'], $sql
-//                    ));
-                }
-                if ($subQuery['rows'] > 10 && $subQuery['select_type'] !== 'DERIVED' && $subQuery['type'] === 'ALL') {
-                    // todo
-                    //throw new \Exception(sprintf('Sub query of type ALL detected. Sql: %s', $sql));
+                if ($subQuery['rows'] > self::MAX_FETCH_ROWS && $subQuery['type'] === 'ALL') {
+                    throw new \Exception(sprintf(
+                        'Too many rows fetched, expected less than %d, got %d. Sql: %s',
+                        self::MAX_FETCH_ROWS, $subQuery['rows'], $sql
+                    ));
                 }
             }
         }
