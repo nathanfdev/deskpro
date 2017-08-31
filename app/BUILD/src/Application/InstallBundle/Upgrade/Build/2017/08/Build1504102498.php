@@ -58,11 +58,10 @@ class Build1504102498 extends AbstractBuild implements BlockingBuildInterface
     public function getFixTrelloAuthSql()
     {
         $sql = <<<'SQL'
-  UPDATE
-  `app2_app_state_v2` 
+  DELETE
+  `app2_app_state_v2` FROM `app2_app_state_v2`  
   INNER JOIN `app2_app_instance` ON `app2_app_state_v2`.app_instance_id = `app2_app_instance`.id
-  INNER JOIN `app2_app` ON `app2_app`.id = `app2_app_instance`.app_id
-  SET `app2_app_state_v2`.entity_id = CONCAT_WS(':', 'app', `app2_app`.id) 
+  INNER JOIN `app2_app` ON `app2_app`.id = `app2_app_instance`.app_id 
   WHERE `app2_app_state_v2`.name = 'auth' AND `app2_app_state_v2`.entity_id  LIKE 'person:%' 
   AND `app2_app`.name IN ('deskpro-app-trello');
 SQL;
