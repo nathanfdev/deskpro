@@ -33,9 +33,9 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
+use Behatch\Context\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
-use Sanpi\Behatch\Context\BaseContext;
 
 class RestContext extends BaseContext
 {
@@ -197,7 +197,7 @@ class RestContext extends BaseContext
      */
     public function iSendARequestToWithFileAsBody($method, $url, $contentType, $filePath)
     {
-        $url = DataContext::replace($url);
+        $url      = DataContext::replace($url);
         $filePath = DataContext::replace($filePath);
 
         /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
@@ -206,7 +206,7 @@ class RestContext extends BaseContext
         // intercept redirection
         $client->followRedirects(false);
 
-        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE'  => $contentType]);
+        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE' => $contentType]);
         $client->request($method, $this->locatePath($url), [], [], $serverParams, file_get_contents($filePath));
 
         $page = $this->getSession()->getPage();
