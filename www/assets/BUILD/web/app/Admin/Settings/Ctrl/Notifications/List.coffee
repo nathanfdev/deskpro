@@ -55,6 +55,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         params = @getDeskproParams()
       else if (@$scope.mode == 'pusher')
         params = @getPusherParams()
+      else
+        params = {}
 
       params.mode = @$scope.mode
 
