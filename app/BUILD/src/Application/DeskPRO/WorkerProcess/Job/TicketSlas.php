@@ -54,6 +54,13 @@ class TicketSlas extends AbstractJob
             new SlaClientMessageSender(App::$container->getDb(), App::$container->get('event_dispatcher'))
         );
 
+        $me = $this;
+        $proc->setLimiterCallback(function () use ($me) {
+            if ($me->isPastTimeLimit()) {
+                return true;
+            }
+        });
+
         $context_factory = function () {
             $context = App::$container->getTicketManager()->createSystemExecutorContext('slas');
 

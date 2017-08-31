@@ -59,11 +59,29 @@ class SlaProcessor
      */
     private $cm_sender;
 
+    /**
+     * @var callable
+     */
+    private $limiterCallback;
+
     public function __construct(EntityManager $em, ActionApplicator $action_applicator, SlaClientMessageSender $cm_sender)
     {
         $this->em                = $em;
         $this->action_applicator = $action_applicator;
         $this->cm_sender         = $cm_sender;
+    }
+
+    /**
+     * Callback called to check if we should stop processing SLAs (e.g. time limit, memory check, whatever).
+     *
+     * The callback recieves: ['type' => 'fail|warning', 'count' => $how_many_so_far]
+     * The callback must return: True means to enact the limit (i.e. stop processing), any other value is ignored (processing continues)
+     *
+     * @param callable $cb
+     */
+    public function setLimiterCallback($cb)
+    {
+        $this->limiterCallback = $cb;
     }
 
     /**
@@ -203,6 +221,12 @@ class SlaProcessor
 
         $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('fail');
         foreach ($ticket_slas as $ticket_sla) {
+            if ($this->limiterCallback) {
+                if (call_user_func($this->limiterCallback, ['type' => 'fail', 'count' => $count]) === true) {
+                    break;
+                }
+            }
+
             /* @var TicketSla $ticket_sla */
 
             // Already complete or not proper status (must currently be ok/warning aka not failed)
@@ -251,6 +275,12 @@ class SlaProcessor
 
         $ticket_slas = $this->em->getRepository('DeskPRO:TicketSla')->getTicketSlasPastThreshold('warning');
         foreach ($ticket_slas as $ticket_sla) {
+            if ($this->limiterCallback) {
+                if (call_user_func($this->limiterCallback, ['type' => 'warning', 'count' => $count]) === true) {
+                    break;
+                }
+            }
+
             /* @var TicketSla $ticket_sla */
 
             // Already complete or not proper status
