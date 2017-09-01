@@ -37,13 +37,23 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
  */
 class DoctrineQueriesCounterListener
 {
-    const MAX_QUERIES_COUNT = 70;
+    const MAX_QUERIES_COUNT = 90;
     const MAX_FETCH_ROWS    = 1000;
 
     /**
      * @var Connection
      */
     private $connection;
+
+    /**
+     * @var int
+     */
+    private $maxQueriesCount = self::MAX_QUERIES_COUNT;
+
+    /**
+     * @var int
+     */
+    private $maxFetchRows = self::MAX_FETCH_ROWS;
 
     /**
      * Constructor.
@@ -53,6 +63,28 @@ class DoctrineQueriesCounterListener
     public function __construct(Connection $connection)
     {
         $this->connection = $connection;
+    }
+
+    /**
+     * @param int $maxQueriesCount
+     */
+    public function setMaxQueriesCount($maxQueriesCount)
+    {
+        $this->maxQueriesCount = $maxQueriesCount;
+    }
+
+    /**
+     * @param int $maxFetchRows
+     */
+    public function setMaxFetchRows($maxFetchRows)
+    {
+        $this->maxFetchRows = $maxFetchRows;
+    }
+
+    public function resetSettings()
+    {
+        $this->maxQueriesCount = self::MAX_QUERIES_COUNT;
+        $this->maxFetchRows    = self::MAX_FETCH_ROWS;
     }
 
     /**
@@ -83,31 +115,34 @@ class DoctrineQueriesCounterListener
 
         $queries = [];
         foreach ($logger->queries as $query) {
-            if (strpos($query['sql'], 'SELECT') === 0) {
+            if (preg_match('/SELECT (?!COUNT\()/i', $query['sql'])) {
                 $queries[] = $query;
             }
         }
 
         // check max queries count
-        if (count($queries) > self::MAX_QUERIES_COUNT) {
+        if (count($queries) > $this->maxQueriesCount) {
             throw new \Exception(sprintf(
                 'Too many db queries, expected less than %d, got %d',
-                self::MAX_QUERIES_COUNT, count($queries)
+                $this->maxQueriesCount, count($queries)
             ));
         }
 
         // run EXPLAIN on all SELECT queries
         foreach ($queries as $query) {
             $sql       = $query['sql'];
-            $statement = $this->connection->executeQuery('EXPLAIN '.$sql, $query['params'], $query['types']);
+            $statement = $this->connection->executeQuery('EXPLAIN '.$sql, $query['params'] ?: [], $query['types'] ?: []);
             $result    = $statement->fetchAll();
 
             foreach ($result as $subQuery) {
-                if ($subQuery['rows'] > self::MAX_FETCH_ROWS && $subQuery['type'] === 'ALL') {
+                if ($subQuery['rows'] > $this->maxFetchRows) {
                     throw new \Exception(sprintf(
                         'Too many rows fetched, expected less than %d, got %d. Sql: %s',
-                        self::MAX_FETCH_ROWS, $subQuery['rows'], $sql
+                        $this->maxFetchRows, $subQuery['rows'], $sql
                     ));
+                }
+                if ($subQuery['rows'] > 100 && $subQuery['select_type'] !== 'DERIVED' && $subQuery['type'] === 'ALL') {
+                    throw new \Exception(sprintf('Sub query of type ALL detected. Sql: %s', $sql));
                 }
             }
         }
