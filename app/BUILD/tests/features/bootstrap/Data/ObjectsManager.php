@@ -121,6 +121,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -476,6 +477,7 @@ class ObjectsManager
             'SnippetTranslation'       => [$this, 'find', SnippetTranslation::class],
             'TextSnippet'              => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
+            'TicketWebhook'            => [$this, 'find', TicketWebhook::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],
             'Phrase'                   => [$this, 'find', Phrase::class],
             'ActionAlert'              => [$this, 'find', ActionAlert::class],

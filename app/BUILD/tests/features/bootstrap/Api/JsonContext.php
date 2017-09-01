@@ -186,16 +186,18 @@ class JsonContext extends \Behatch\Context\JsonContext
             $actual = new Json(json_encode($actual));
         }
         catch (\Exception $e) {
-            throw new \Exception('The actual JSON is not a valid');
+            throw new \Exception('The actual JSON is not valid', 0, $e);
         }
 
         try {
+
             $expected = DataContext::replace($text->getRaw(), false);
             $expected = new Json($expected);
         }
         catch (\Exception $e) {
-            throw new \Exception('The expected JSON is not a valid');
+            throw new \Exception('The expected JSON is not valid', 0, $e);
         }
+
 
         $this->assertSame(
             (string) $expected,
