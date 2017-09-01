@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 
+use DeskPRO\Bundle\AppBundle\Webhooks\IDGenerator;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -63,7 +64,8 @@ class TicketWebhookController extends CrudController
     {
         $isModify = $model && $model->getId();
         if ($model instanceof TicketWebhook && !$isModify) {
-            $model->setAuthId('plutarch');
+            $authID = IDGenerator::newID();
+            $model->setAuthId($authID);
         }
 
         return parent::handleForm($model, $request, $options);
