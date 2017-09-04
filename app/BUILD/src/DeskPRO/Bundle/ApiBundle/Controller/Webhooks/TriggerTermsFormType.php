@@ -28,50 +28,49 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
+use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TicketWebhookFormType extends AbstractType
+class TriggerTermsFormType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('title', TextType::class, [
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('payload_decoder', TextType::class, [
-//                'label'    => $options['label_name'],
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('is_enabled', CheckboxType::class, [
-//                'label'    => $options['label_email'],
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('search_terms', FilterTermsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('actions', TriggerActionsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('terms', TriggerTermsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => false,
-                'mapped'   => true,
-            ])
-        ;
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(['allow_extra_fields' => true]);
+    }
+
+    public function onSubmit(FormEvent $event)
+    {
+        $form      = $event->getForm();
+        $config    = $form->getConfig();
+        $extraData = $form->getExtraData();
+
+        $triggerTerms = new TriggerTerms();
+        foreach ($extraData as $conjunction) {
+            if (is_array($conjunction)) {
+                $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
+                foreach ($conjunction as $term) {
+                    $termObject = $triggerTerms->getTermFromArray($term);
+                    $composite->add($termObject);
+                }
+                if ($composite->count()) {
+                    $triggerTerms->addTerm($composite);
+                }
+            }
+        }
+
+        $event->setData($triggerTerms);
     }
 }

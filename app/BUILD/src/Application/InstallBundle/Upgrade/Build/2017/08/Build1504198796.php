@@ -38,7 +38,7 @@ class Build1504198796 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
-        $this->execDbQuery('default', "CREATE TABLE ticket_webhooks (id INT AUTO_INCREMENT NOT NULL, app_instance_id INT DEFAULT NULL, auth_id VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, payload_decoder VARCHAR(255) NOT NULL, is_enabled TINYINT(1) NOT NULL, search_terms LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', actions LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', INDEX IDX_1CE5B35C63B454A1 (app_instance_id), UNIQUE INDEX auth_id_unique (auth_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
+        $this->execDbQuery('default', "CREATE TABLE ticket_webhooks (id INT AUTO_INCREMENT NOT NULL, app_instance_id INT DEFAULT NULL, auth_id VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, payload_decoder VARCHAR(255) NOT NULL, is_enabled TINYINT(1) NOT NULL, search_terms LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', terms LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:dp_json_obj)\', actions LONGTEXT NOT NULL COMMENT \'(DC2Type:dp_json_obj)\', INDEX IDX_1CE5B35C63B454A1 (app_instance_id), UNIQUE INDEX auth_id_unique (auth_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
         $this->execDbQuery('default', 'ALTER TABLE ticket_webhooks ADD CONSTRAINT FK_1CE5B35C63B454A1 FOREIGN KEY (app_instance_id) REFERENCES app2_app_instance (id) ON DELETE CASCADE');
     }
 

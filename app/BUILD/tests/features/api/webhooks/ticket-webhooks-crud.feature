@@ -1,5 +1,5 @@
-@new @zing
-Feature: /webhooks resource
+@new
+Feature: /webhooks/tickets resource
   To CRUD Webhooks
   As a developer
   I want a REST API Resource
@@ -15,6 +15,18 @@ Feature: /webhooks resource
   "title":"<title>",
   "payload_decoder":"json",
   "is_enabled":true,
+  "terms": [
+    [
+      {
+        "type" : "CheckTicketField",
+        "op": "is",
+        "options" : {
+          "field_id": "field6",
+          "value": "zorba"
+        }
+      }
+    ]
+  ],
   "search_terms": [
       {
         "type" : "FilterLabels",
@@ -55,6 +67,27 @@ Feature: /webhooks resource
         }
       }
     ]
+    """
+
+    And the JSON node "data.terms" should be equal to node:
+    """
+        {
+          "version": 1,
+          "terms": [
+            {
+              "set_terms": [
+                {
+                  "type": "CheckTicketFieldfield6",
+                  "op": "is",
+                  "options": {
+                    "field_id": "field6",
+                    "value": "zorba"
+                  }
+                }
+              ]
+            }
+          ]
+        }
     """
 
     And the JSON node "data.actions" should be equal to node:

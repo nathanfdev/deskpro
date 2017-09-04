@@ -30,12 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Webhooks;
 
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
+use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Application\DeskPRO\EntityRepository\AppInstance;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Webhooks\Repository")
  * @ORM\Table(
  *  name="ticket_webhooks", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="auth_id_unique", columns={"auth_id"})
@@ -95,6 +96,14 @@ class TicketWebhook
      *
      */
     private $searchTerms;
+
+    /**
+     * @ORM\Column(name="terms", type="dp_json_obj", nullable=true)
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerTerms")
+     * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
+     */
+    private $terms;
 
     /**
      * @ORM\Column(name="actions", type="dp_json_obj", nullable=false)
@@ -177,7 +186,25 @@ class TicketWebhook
         } else {
             throw new \BadMethodCallException('invalid parameter type');
         }
+    }
 
+    /**
+     * @return TriggerTerms
+     */
+    public function getTerms()
+    {
+        if (! $this->terms) {
+            return new TriggerTerms();
+        }
+        return $this->terms;
+    }
+
+    /**
+     * @param $terms
+     */
+    public function setTerms(TriggerTerms $terms)
+    {
+        $this->terms = $terms;
     }
 
     /**
