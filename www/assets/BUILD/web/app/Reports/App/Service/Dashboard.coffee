@@ -122,8 +122,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api
         .sendGet "/dashboards/#{dashboard.id}"
         .then (resp) =>
-          data = resp.data
-          reports = []
           @storage.dbs[dashboardIndex] = resp.data
           deferred.resolve(resp.data)
       return deferred.promise
@@ -249,7 +247,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       .then (response) =>
         if(response)
           clonedOne = response.data
-          db_index = @getDbIndexById @storage.dbs, response.data.dashboard_id
           clonedOne.dashboard_id = dashboard_id
           clonedOne.cloned = true
           @storage.reports.push clonedOne

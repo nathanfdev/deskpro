@@ -66,12 +66,12 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
     # @param {Integer} dashboard_id
     # @return {promise}
     ###
-    getDashboardDetail: (dashboard_id) ->
+    getDashboardDetail: (dashboard_id, forceReload = false) ->
       dashboard_id = parseInt(dashboard_id)
 
       d = @$q.defer()
 
-      if @lastDashboardDetail and @lastDashboardDetail.id == dashboard_id
+      if @lastDashboardDetail and @lastDashboardDetail.id == dashboard_id and !forceReload
         d.resolve(@lastDashboardDetail)
         return d.promise
 

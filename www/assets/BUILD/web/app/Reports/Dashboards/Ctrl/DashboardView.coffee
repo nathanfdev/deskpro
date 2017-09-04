@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope', '$state', '$stateParams', '$q', '$modal', 'DashboardsInfo', 'DashboardService'
-  ($scope, $state, $stateParams, $q, $modal, DashboardsInfo) ->
+  ($scope, $state, $stateParams, $q, $modal, DashboardsInfo, DashboardService) ->
 
     dashboard_id = parseInt($stateParams.dashboard_id)
 
@@ -59,7 +59,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.openEdit = (activeTab) ->
       $modal.open({
-        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit-dashboard.html',
+        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit-dashboard.html'
         controller: 'Reports.Dashboards.Modals.EditDashboard'
         resolve: {
           dashboard_id: -> dashboard_id
@@ -68,4 +68,24 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           }
         }
       })
+
+    $scope.openCreateReport = () ->
+      if $scope.dashboard.is_default then return
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:add-report.html"
+        controller: 'Reports.Dashboards.Modals.AddReport'
+        resolve:
+          report: () ->
+            {
+              dashboard_id: $scope.dashboard.id
+              title:        'new report'
+              columns:      24
+            }
+      }
+      modalInstance.result.then (result) ->
+        DashboardService.createReport(result).then (report) ->
+          DashboardsInfo.getDashboardDetail($stateParams.dashboard_id, true).then( (db) ->
+            $scope.dashboard = db
+            $state.go('reports.dashboards.view.report', { report_id: report.id})
+          )
   ]

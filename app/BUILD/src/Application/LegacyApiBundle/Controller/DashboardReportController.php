@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
 use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @ApiModes("all")
@@ -61,19 +62,12 @@ class DashboardReportController extends AbstractController
     }
 
     /**
-     * @SWG\Api(
-     * 	path="/dashboards/reports",
-     * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get all reports available",
-     *		type="array",
-     * 	)
-     * )
+     * @return Response
      */
     public function listAction()
     {
         $data    = [];
-        $reports = $this->em->getRepository('DeskPRO:ReportDashboardReport')->findAll();
+        $reports = $this->em->getRepository(DashboardReport::class)->findAll();
 
         foreach ($reports as $k => $report) {
             /* @var DashboardReport $report */
@@ -83,6 +77,12 @@ class DashboardReportController extends AbstractController
         return $this->createApiResponse($data);
     }
 
+    /**
+     * @param $id
+     * @param $dashboard_id
+     *
+     * @return Response
+     */
     public function cloneAction($id, $dashboard_id)
     {
         $prototype = $this->service->getReport($id);
@@ -101,6 +101,11 @@ class DashboardReportController extends AbstractController
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
     public function saveAction($id)
     {
         $postData = $this->in->getAll('post');
@@ -125,6 +130,11 @@ class DashboardReportController extends AbstractController
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
 
+    /**
+     * @param $dashboard_id
+     *
+     * @return Response
+     */
     public function createAction($dashboard_id)
     {
         $dashboard = $this->service->getDashboard($dashboard_id);
@@ -144,6 +154,11 @@ class DashboardReportController extends AbstractController
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
     public function deleteAction($id)
     {
         $report = $this->service->getReport($id);
@@ -156,6 +171,11 @@ class DashboardReportController extends AbstractController
         return $this->createApiDeleteResponse();
     }
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
     public function getAction($id)
     {
         $report         = $this->service->getReport($id);
