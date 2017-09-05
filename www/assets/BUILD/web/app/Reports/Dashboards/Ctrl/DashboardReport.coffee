@@ -6,6 +6,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$modal',
   'DashboardsInfo',
   'DashboardWidgetService',
+  'DashboardService',
   ($scope,
    $state,
    $stateParams
@@ -13,6 +14,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
    $modal,
    DashboardsInfo,
    DashboardWidgetService,
+   DashboardService,
   ) ->
     $scope.loaded = false
     $scope.report = {
@@ -96,6 +98,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     ####################################################################################################################
 
     $scope.openWidgetChoose = (widget) ->
+      return if $scope.dashboard.is_default
       modalInstance = $modal.open({
         templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:widget-type-choose.html',
         controller: 'Reports.Dashboards.Modals.ChooseWidget'
@@ -129,4 +132,18 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       }
       modalInstance.result.then (result) ->
         DashboardWidgetService.saveWidget result
+
+    $scope.editReportModal = (report) ->
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:add-report.html",
+        controller: 'Reports.Dashboards.Modals.AddReport'
+        resolve:
+          report: () ->
+            report
+      }
+      modalInstance.result.then (result) ->
+        DashboardService.saveReport(result, true).then (savedReport) ->
+          $scope.report = savedReport
+          $state.go('reports.dashboards.view.report', { report_id: savedReport.id})
+
   ]

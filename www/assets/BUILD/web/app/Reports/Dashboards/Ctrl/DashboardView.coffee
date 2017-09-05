@@ -79,7 +79,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             {
               dashboard_id: $scope.dashboard.id
               title:        'new report'
-              columns:      24
+              options:
+                columns:    24
             }
       }
       modalInstance.result.then (result) ->

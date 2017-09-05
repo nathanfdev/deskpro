@@ -215,27 +215,29 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       .sendPost url, newReport
       .then (response) =>
         if(response)
-          newOne = response.data
-          @storage.reports.push newOne
-          deferred.resolve newOne
+          @storage.reports.push response.data
+          deferred.resolve response.data
       , () =>
         console.error 'something goes wrong!'
       deferred.promise
 
     saveReport: (report) ->
+      deferred = @$q.defer()
       url = "/dashboards/reports/#{report.id}/save"
       @Api
       .sendPostJson url, report
       .then (response) =>
         if(response)
-          response
+          index = @findReportIndex(report, @storage.reports)
+          @storage.reports[index] = response.data
+          deferred.resolve response.data
       , () =>
         console.error 'something goes wrong!'
+      deferred.promise
 
     cloneReport: (report, dashboard_id) ->
       deferred = @$q.defer()
       url = "/dashboards/reports/clone/#{report.id}/#{dashboard_id}"
-
       newReport =
         title: report.title
         columns: if report.columns? then report.columns else 0
