@@ -3710,7 +3710,7 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(
                 [
                     'success' => false,
-                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id),
+                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id, 'agent.tickets.error_merge_locked'),
                 ],
                 400
             );
@@ -3720,7 +3720,7 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(
                 [
                     'success' => false,
-                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id),
+                    'html'    => $this->renderMergeOverlay($ticket_id, $other_ticket_id, 'agent.tickets.error_merge_locked'),
                 ],
                 400
             );
@@ -3750,7 +3750,7 @@ class TicketController extends AbstractController
         );
     }
 
-    private function renderMergeOverlay($ticketId, $otherTicketId)
+    private function renderMergeOverlay($ticketId, $otherTicketId, $mergeFailedReason = null)
     {
         $ticket = $this->getTicketOr404($ticketId, 'modify_merge');
 
@@ -3770,6 +3770,7 @@ class TicketController extends AbstractController
         return $this->container->get('twig')->render(
             'AgentBundle:Ticket:merge-overlay.html.twig',
             [
+                'merge_failed_reason' => $mergeFailedReason,
                 'ticket'              => $ticket,
                 'custom_fields'       => $customFields,
                 'other_ticket'        => $otherTicket,
