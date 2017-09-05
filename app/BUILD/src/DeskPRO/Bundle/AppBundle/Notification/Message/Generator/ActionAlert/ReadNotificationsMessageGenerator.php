@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\AbstractMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use Doctrine\ORM\EntityManager;
@@ -83,7 +84,7 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof NewMessageEvent;
+        return $event instanceof NewMessageEvent || $event instanceof UserChatEvent;
     }
 
     /**
