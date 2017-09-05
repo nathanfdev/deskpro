@@ -102,8 +102,7 @@ class TicketWebhookExecutor implements ContainerAwareInterface
                 if ($triggerTerms->isTriggerMatch($ticket, $context)) {
                     $this->executeWebhook($ticket, $webhook, $context);
                 }
-            } catch (\Exception $e) {
-            }
+            } catch (\Exception $e) {}
         }
     }
 
@@ -125,16 +124,16 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     /**
      * @param TicketWebhook  $webhook
      * @param WebhookRequest $request
-     * @param $webhookPayload
+     * @param $payload
      *
      * @return \Application\DeskPRO\Tickets\ExecutorContextInterface
      */
-    private function createExecutionContext(TicketWebhook $webhook, WebhookRequest $request, $webhookPayload)
+    private function createExecutionContext(TicketWebhook $webhook, WebhookRequest $request, $payload)
     {
         $context = $this->ticketManager->createSystemExecutorContext();
-        $context->getVars()->set('webhook', $webhook);
-        $context->getVars()->set('webhook_requests', $request);
-        $context->getVars()->set('webhook_payload', $webhookPayload);
+        WebhookExecutionContextVars::setWebhook($context, $webhook);
+        WebhookExecutionContextVars::setWebhookRequest($context, $request);
+        WebhookExecutionContextVars::setWebhookPayload($context, $payload);
 
         return $context;
     }
