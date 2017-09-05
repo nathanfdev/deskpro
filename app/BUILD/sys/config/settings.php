@@ -1099,6 +1099,8 @@ return [
     'notification.settings.pusher_client.appId'   => '',
     'notification.settings.pusher_client.cluster' => 'mt1',
     'notification.settings.pusher_client.debug'   => false,
+    'notification.settings.pusher_client.timeout' => 5,
+    'notification.settings.pusher_client.tries'   => 2,
 
     // Simple delivery handler with polling
     'notification.settings.polling_client.polling_interval' => 5000,
