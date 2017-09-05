@@ -1934,7 +1934,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				});
 			},
       load: function(backup) {
-				if (!self.wrapper) {
+      	if (!self.wrapper) {
 					return;
 				}
 
@@ -1946,49 +1946,51 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					person = 0,
 					map = {};
 
-        item.form.forEach(function(el, i){
-					map[el.name] = el.value;
-          (function(el){
+      	if (item.form.length) {
+					item.form.forEach(function(el, i){
+						map[el.name] = el.value;
+						(function(el){
 
-            if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
-							return;
-						}
+							if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
+								return;
+							}
 
-            if ('newticket[message]' === el.name) {
-              redactor && self.textarea.setCode(el.value);
-							return;
-            }
+							if ('newticket[message]' === el.name) {
+								redactor && self.textarea.setCode(el.value);
+								return;
+							}
 
-            $('[name="' + el.name + '"]', $form).each(function() {
+							$('[name="' + el.name + '"]', $form).each(function() {
 
-              if ($(this).is(':checkbox') || $(this).is(':radio')) {
-                $(this).val() === el.value && $(this).prop('checked', true);
-              } else if ($(this).is('select')) {
-                $('option[value="' + el.value + '"]', $(this)).prop('selected', true);
-              } else {
-                $(this).val(el.value);
-              }
+								if ($(this).is(':checkbox') || $(this).is(':radio')) {
+									$(this).val() === el.value && $(this).prop('checked', true);
+								} else if ($(this).is('select')) {
+									$('option[value="' + el.value + '"]', $(this)).prop('selected', true);
+								} else {
+									$(this).val(el.value);
+								}
 
-              $(this).trigger('change', true);
-            });
-          })(el);
+								$(this).trigger('change', true);
+							});
+						})(el);
 
-        });
-
-				if (map['newticket[person][id]']) {
-					person = parseInt(map['newticket[person][id]']);
-					self.setUser(person, null, true);
-				} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
-					self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
-						$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
-						$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
 					});
-				}
 
-				var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
-				$attachRow.find('ul.files').empty();
-				$attachRow.find('ul.files:first').append(html);
-				item.attachments.length && $attachRow.removeClass('is-hidden').show();
+					if (map['newticket[person][id]']) {
+						person = parseInt(map['newticket[person][id]']);
+						self.setUser(person, null, true);
+					} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
+						self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
+							$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
+							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
+						});
+					}
+
+					var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
+					$attachRow.find('ul.files').empty();
+					$attachRow.find('ul.files:first').append(html);
+					item.attachments.length && $attachRow.removeClass('is-hidden').show();
+				}
 
         d.isEmpty() || backup ? $discard.hide() : $discard.show();
       },

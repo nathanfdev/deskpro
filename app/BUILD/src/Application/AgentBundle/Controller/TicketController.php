@@ -4495,12 +4495,12 @@ class TicketController extends AbstractController
 
     public function newAction()
     {
-        $ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+        $ticketOptions = App::getApi('tickets')->getTicketOptions($this->person);
 
         /** @var \Application\DeskPRO\EntityRepository\Person $personRep */
-        $personRep   = $this->em->getRepository(Person::class);
-        $agents      = $personRep->getAgents();
-        $agent_teams = $this->em->getRepository(AgentTeam::class)->findAll();
+        $personRep  = $this->em->getRepository(Person::class);
+        $agents     = $personRep->getAgents();
+        $agentTeams = $this->em->getRepository(AgentTeam::class)->findAll();
 
         $brands = $this->getAgentBrands();
 
@@ -4546,38 +4546,39 @@ class TicketController extends AbstractController
             $storage     = $this->container->getBlobStorage();
 
             foreach ($message->attachments as $attach) {
-                $new_blob = $storage->createBlobRecordFromString(
+                $newBlob = $storage->createBlobRecordFromString(
                     $storage->copyBlobRecordToString($attach->blob),
                     $attach->blob['filename'],
                     $attach->blob['content_type']
                 );
+                $this->em->persist($newBlob);
 
-                $attach_data         = [];
-                $attach_data['blob'] = $new_blob->toArray();
-                $attach_data['url']  = $new_blob->getDownloadUrl(true);
-                $attachments[]       = $attach_data;
+                $attachData         = [];
+                $attachData['blob'] = $newBlob->toArray();
+                $attachData['url']  = $newBlob->getDownloadUrl(true);
+                $attachments[]      = $attachData;
             }
         }
 
-        $field_manager = $this->container->getTicketFieldManager();
-        $custom_fields = $field_manager->getDisplayArrayForObject($ticket);
+        $fieldManager = $this->container->getTicketFieldManager();
+        $customFields = $fieldManager->getDisplayArrayForObject($ticket);
 
-        $billing_field_manager = $this->container->getBillingFieldManager();
-        $group                 = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
-        $billing_fields        = $billing_field_manager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
+        $billingFieldManager = $this->container->getBillingFieldManager();
+        $group               = $this->container->get('form.factory')->createNamedBuilder('billing_fields');
+        $billingFields       = $billingFieldManager->getDisplayArrayForObject(new Entity\TicketCharge(), $group);
 
-        $pid                       = (int) $this->request->get('person_id');
-        $person                    = $pid ? $personRep->find($pid) : new Person();
-        $custom_person_fields_form = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
-        $custom_org_fields_form    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
-        $custom_person_fields      = $this->container->getPersonFieldManager()->getDisplayArrayForObject(
+        $pid                    = (int) $this->request->get('person_id');
+        $person                 = $pid ? $personRep->find($pid) : new Person();
+        $customPersonFieldsForm = $this->get('form.factory')->createNamedBuilder('custom_person_fields', 'form');
+        $customOrgFieldsForm    = $this->get('form.factory')->createNamedBuilder('custom_org_fields', 'form');
+        $customPersonFields     = $this->container->getPersonFieldManager()->getDisplayArrayForObject(
             $person,
-            $custom_person_fields_form
+            $customPersonFieldsForm
         );
-        $custom_org_fields = $person->organization
+        $customOrgFields = $person->organization
             ? $this->container->getOrgFieldManager()->getDisplayArrayForObject(
                 $person->organization,
-                $custom_org_fields_form
+                $customOrgFieldsForm
             )
             : [];
 
@@ -4585,13 +4586,13 @@ class TicketController extends AbstractController
         $page    = $layouts->getLayout($ticket->department ? $ticket->department['id'] : 0);
         $layout  = LayoutDisplay::createFromLayout($page, LayoutDisplay::NEW_TICKET);
 
-        $manager           = $this->container->getCustomFieldManager();
-        $new_custom_fields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
+        $manager         = $this->container->getCustomFieldManager();
+        $newCustomFields = $manager->createFormForOwner($ticket, $ticket->person, $layout);
         if ($ticket->person && ($org = $ticket->person->organization)) {
-            $manager->merge($new_custom_fields, $manager->createFormForOwner($ticket, $org, $layout));
+            $manager->merge($newCustomFields, $manager->createFormForOwner($ticket, $org, $layout));
         }
 
-        $open_problems = $this->em->getRepository(Problem::class)->findBy(
+        $openProblems = $this->em->getRepository(Problem::class)->findBy(
             ['is_open' => true],
             ['title' => 'asc']
         );
@@ -4606,14 +4607,14 @@ class TicketController extends AbstractController
                 'agents'               => $agents,
                 'agent_signature'      => $this->person->getSignature(),
                 'agent_signature_html' => $this->person->getSignatureHtml(),
-                'agent_teams'          => $agent_teams,
-                'ticket_options'       => $ticket_options,
-                'custom_fields'        => $custom_fields,
-                'new_custom_fields'    => $new_custom_fields->createView(),
-                'billing_fields'       => $billing_fields,
-                'open_problems'        => $open_problems,
-                'custom_person_fields' => $custom_person_fields,
-                'custom_org_fields'    => $custom_org_fields,
+                'agent_teams'          => $agentTeams,
+                'ticket_options'       => $ticketOptions,
+                'custom_fields'        => $customFields,
+                'new_custom_fields'    => $newCustomFields->createView(),
+                'billing_fields'       => $billingFields,
+                'open_problems'        => $openProblems,
+                'custom_person_fields' => $customPersonFields,
+                'custom_org_fields'    => $customOrgFields,
                 'brands'               => $brands,
             ]
         );
