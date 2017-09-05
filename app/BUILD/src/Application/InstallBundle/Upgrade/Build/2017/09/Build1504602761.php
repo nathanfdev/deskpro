@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1503037403 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1504602761 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
@@ -37,7 +37,6 @@ class Build1503037403 extends AbstractBuild implements OnlineBuildInterface, Ski
     public function runAlters()
     {
         $this->execSlowAlterTable('tickets', 'ADD date_on_hold DATETIME DEFAULT NULL');
-        $this->execSlowAlterTable('tickets_search_active', 'ADD date_on_hold DATETIME DEFAULT NULL');
     }
 
     public function run()
