@@ -52,9 +52,17 @@ class ReportsWidgetController extends AbstractController
         /* @var ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
-        return $this->createApiResponse([
+        $data = [
             'reports' => $reportsWidget->getAll(),
-        ]);
+        ];
+
+        foreach ($data['reports'] as &$report) {
+            foreach ($report['labels'] as &$label) {
+                $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+            }
+        }
+
+        return $this->createApiResponse($data);
     }
 
     /**

@@ -2365,4 +2365,11 @@ return [
     'admin.server_jobs.log_summary'   => 'Log summary',
     'admin.server_jobs.log'           => 'Log',
 
+    'reports.labels.kb'       => 'Knowledgebase',
+    'reports.labels.person'   => 'Person',
+    'reports.labels.feedback' => 'Feedback',
+    'reports.labels.tickets'  => 'Tickets',
+    'reports.labels.agents'   => 'Agents',
+    'reports.labels.chat'     => 'Chat',
+    'reports.labels.resolved' => 'Resolved',
 ];
