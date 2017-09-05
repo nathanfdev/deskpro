@@ -1,4 +1,4 @@
-@new
+@new @zing
 Feature: /webhooks/tickets/{webhook}/invocation resource
   To CRUD Webhooks
   As a developer
@@ -6,33 +6,48 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
 
   Background:
     Given there are no "TicketWebhook" records
+    And there are no "Ticket" records
     And I'm authenticated as admin
-
   Scenario Outline: I create and invoke a webhook
-    Given I send a POST request to "/api/v2/webhooks/tickets" with body:
+    Given I send a POST request to "/api/v2/tickets" with body:
     """
 {
-  "title":"<title>",
+  "subject": "<actual_subject>",
+  "person": ~admin~,
+  "labels": ["webhook-label-1", "webhook-label-2"]
+}
+    """
+    And I save the JSON node "data.id" as placeholder "ticket_id"
+    And I send a POST request to "/api/v2/webhooks/tickets" with body:
+    """
+{
+  "title":"<webhook_title>",
   "payload_decoder":"json",
   "is_enabled":true,
   "search_terms": [
       {
         "type" : "FilterLabels",
         "options" : {
-          "labels": [
-            "gina",
-            "lina"
-          ]
+          "labels": ["webhook-label-1", "webhook-label-2"]
         }
       }
+  ],
+  "terms": [
+    [{
+      "type" : "CheckWebhookVar",
+      "op": "isset",
+      "options" : {
+        "name": "webhook.is_enabled"
+      }
+    }]
   ],
   "actions":{
     "version":1,
     "actions":[
       {
-        "type": "SetHold",
+        "type": "SetSubject",
         "options":{
-          "is_hold": true
+          "subject": "<expected_subject>"
         }
       }
     ]
@@ -41,14 +56,19 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     """
     And the response status code should be 201
     And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+
     When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with body:
     """
 {
-  "title":"<title>",
-  "is_enabled":true
+  "webhook" : {
+    "is_enabled":true
+  }
 }
     """
-    Then the response status code should be 200
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/~ticket_id~"
+    Then the JSON node "data.subject" should be equal to "<expected_subject>"
     Examples:
-      | title |
-      | my title |
+      | webhook_title | expected_subject                  | actual_subject |
+      | my title      | Sample Ticket Modified By Webhook | Sample Ticket  |

@@ -62,7 +62,7 @@ class TicketWebhookInvocationController extends BaseController
         $webhookEntity = $repository->findOneByAuthId($webhook);
 
         if (is_null($webhookEntity)) {
-            throw new NotFoundHttpException('could not find state');
+            throw new NotFoundHttpException('could not find webhook');
         }
         $webhookRequest = Converters::toWebhookRequest($request);
 
@@ -71,6 +71,6 @@ class TicketWebhookInvocationController extends BaseController
         $executor = $container->get(\DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor::class);
         $executor->execute($webhookEntity, $webhookRequest);
 
-        return View::create([], Response::HTTP_OK);
+        return View::create([], Response::HTTP_NO_CONTENT);
     }
 }

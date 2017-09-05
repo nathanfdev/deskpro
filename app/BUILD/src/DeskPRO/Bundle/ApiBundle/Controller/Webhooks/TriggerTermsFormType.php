@@ -62,8 +62,10 @@ class TriggerTermsFormType extends AbstractType
             if (is_array($conjunction)) {
                 $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
                 foreach ($conjunction as $term) {
-                    $termObject = $triggerTerms->getTermFromArray($term);
-                    $composite->add($termObject);
+                    if (is_array($term)) {
+                        $termObject = $triggerTerms->getTermFromArray($term);
+                        $composite->add($termObject);
+                    }
                 }
                 if ($composite->count()) {
                     $triggerTerms->addTerm($composite);

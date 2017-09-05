@@ -4,6 +4,8 @@ services:
     arguments:
       - "@DeskPRO\\Bundle\\AppBundle\\Webhooks\\PayloadConvertersRegistry"
       - "@ticket_manager"
+    calls:
+      - [ setContainer, [ @service_container ] ]
 
   DeskPRO\Bundle\AppBundle\Webhooks\PayloadConvertersRegistry:
     class: DeskPRO\Bundle\AppBundle\Webhooks\PayloadConvertersRegistry

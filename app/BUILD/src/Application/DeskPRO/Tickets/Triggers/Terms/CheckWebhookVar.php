@@ -38,6 +38,9 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutionContextVars;
 use Orb\Util\CheckedOptionsArray;
+use Symfony\Component\PropertyAccess\Exception\ExceptionInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * Checks the value of a user var.
@@ -62,26 +65,37 @@ class CheckWebhookVar extends AbstractTriggerTerm
     public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
     {
         $options = $this->getTermOptions();
-
         $name = $options->get('name');
         if (!$name) {
             return false;
         }
 
-        if (!$context->getUserVars()->has($name)) {
-            if ($this->getTermOperator() == 'not_isset') {
-                return true;
-            }
+        $payload = WebhookExecutionContextVars::getWebhookPayload($context);
+        $valueExists = ! is_null($payload);
+        $value = null;
 
+        if ($payload) {
+            $propertyAccessor = PropertyAccess::createPropertyAccessor();
+            $propertyPath = new PropertyPath($name);
+            try {
+                $value = $propertyAccessor->getValue($payload, $propertyPath);
+            } catch (ExceptionInterface $e) {
+                $valueExists = false;
+            }
+        }
+
+        if ($this->getTermOperator() == 'not_isset') {
+            return !$payload || !$valueExists;
+        }
+
+        if ($this->getTermOperator() == 'isset') {
+            return $payload && $valueExists;
+        }
+
+        if (!$payload || !$valueExists) {
             return false;
         }
-        if ($this->getTermOperator() == 'isset') {
-            return true;
-        }
 
-        $payload = WebhookExecutionContextVars::getWebhookPayload($context);
-        $value = TermValue::createWithValue($payload);
-
-        return $this->isStringMatch($ticket, $context, $value, $options['value']);
+        return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options['value']);
     }
 }
