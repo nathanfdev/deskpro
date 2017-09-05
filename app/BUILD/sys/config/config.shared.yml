@@ -22,6 +22,11 @@ services:
       - "@dp.dynamic_context_router.inner"
       - "@dp.url_request_context_factory"
 
+  doctrine_cache.providers.metadata_cache:
+    class: DeskPRO\Component\Doctrine\Common\Cache\FilesystemCache
+    factory: [DeskPRO\Bundle\AppBundle\Doctrine\DoctrineMetadataCacheFactory, create]
+    arguments: ["@deskpro.app_env"]
+
 monolog:
   channels: # you MUST also update portal_config.yml if you change these
     - "dp.tickets.filters.tengine.dbal.engine"

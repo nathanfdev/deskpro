@@ -256,7 +256,8 @@ $container->loadFromExtension(
             'entity_managers' => [
 
                 'default' => [
-                    'mappings' => [
+                    'metadata_cache_driver' => ['type' => 'service', 'cache_provider' => 'metadata_cache'],
+                    'mappings'              => [
 
                         'DeskPRO' => [
                             'type' => 'staticphp',
@@ -276,15 +277,17 @@ $container->loadFromExtension(
                 ],
 
                 'system' => [
-                    'connection' => 'system',
-                    'mappings'   => [
+                    'metadata_cache_driver' => ['type' => 'service', 'cache_provider' => 'metadata_cache'],
+                    'connection'            => 'system',
+                    'mappings'              => [
                         'SystemBundle' => null,
                     ],
                 ],
 
                 'audit' => [
-                    'connection' => 'audit',
-                    'mappings'   => [
+                    'metadata_cache_driver' => ['type' => 'service', 'cache_provider' => 'metadata_cache'],
+                    'connection'            => 'audit',
+                    'mappings'              => [
                         'AuditBundle' => [
                             'type'      => 'annotation',
                             'is_bundle' => false,
