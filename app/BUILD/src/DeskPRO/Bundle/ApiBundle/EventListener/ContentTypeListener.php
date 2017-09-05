@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class ContentTypeListener implements EventSubscriberInterface
 {
-    /** @var array  */
+    /** @var array */
     private $ignoredContentTypes = [];
 
     /**
@@ -70,7 +70,7 @@ class ContentTypeListener implements EventSubscriberInterface
         $contentType = $request->headers->get('Content-Type');
         if (!empty($contentType)) {
             $requestFormatName = $request->getFormat($contentType);
-            if (! empty($requestFormatName) && in_array($requestFormatName, $this->ignoredContentTypes)) {
+            if (!empty($requestFormatName) && in_array($requestFormatName, $this->ignoredContentTypes)) {
                 return;
             }
         }
@@ -82,6 +82,9 @@ class ContentTypeListener implements EventSubscriberInterface
             return;
         }
         if (preg_match('#^/api/v2/blobs#', $request->getPathInfo())) {
+            return;
+        }
+        if (preg_match('#^/api/v2/api_tokens/user_sources/\d+/callback#', $request->getPathInfo())) {
             return;
         }
 
