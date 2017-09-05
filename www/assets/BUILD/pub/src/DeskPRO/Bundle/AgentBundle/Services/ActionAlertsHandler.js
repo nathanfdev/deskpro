@@ -103,9 +103,9 @@ class ActionAlertsHandler {
     this.options.dispatch(snippetActions.getSnippets([...this.snippetIds])).then((snippets) => {
       const shortcutCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
       snippets.forEach((snippet) => {
-        if (shortcutCodes[snippet.shortcut_code]) {
+        if (shortcutCodes[snippet.shortcut_code] && shortcutCodes[snippet.shortcut_code].indexOf(snippet.id) === -1) {
           shortcutCodes[snippet.shortcut_code] = shortcutCodes[snippet.shortcut_code].concat([snippet.id]);
-        } else {
+        } else if (!shortcutCodes[snippet.shortcut_code]) {
           shortcutCodes[snippet.shortcut_code] = [snippet.id];
         }
       });

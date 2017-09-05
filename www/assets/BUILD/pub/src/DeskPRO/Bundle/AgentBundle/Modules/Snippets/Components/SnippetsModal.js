@@ -176,16 +176,16 @@ export class SnippetsModalContainer extends React.Component {
     }
     dispatch(actions.saveSnippet(snippetData))
       .then((newSnippet) => {
-        const shortcodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
+        const shortCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
         const previousCode = snippet.get('shortcut_code');
-        if (shortcodes[previousCode]
-          && shortcodes[previousCode].indexOf(snippet.get('id') !== -1)) {
-          shortcodes[previousCode] = shortcodes[previousCode].filter(i => i !== snippet.get('id'));
+        if (shortCodes[previousCode]
+          && shortCodes[previousCode].indexOf(snippet.get('id') !== -1)) {
+          shortCodes[previousCode] = shortCodes[previousCode].filter(i => i !== snippet.get('id'));
         }
-        if (shortcodes[newSnippet.shortcut_code]) {
-          shortcodes[newSnippet.shortcut_code] = shortcodes[newSnippet.shortcut_code].concat([newSnippet.id]);
-        } else {
-          shortcodes[newSnippet.shortcut_code] = [newSnippet.id];
+        if (shortCodes[snippet.shortcut_code] && shortCodes[snippet.shortcut_code].indexOf(snippet.id) === -1) {
+          shortCodes[newSnippet.shortcut_code] = shortCodes[newSnippet.shortcut_code].concat([newSnippet.id]);
+        } else if (!shortCodes[snippet.shortcut_code]) {
+          shortCodes[newSnippet.shortcut_code] = [newSnippet.id];
         }
         this.setState({
           saving: false
