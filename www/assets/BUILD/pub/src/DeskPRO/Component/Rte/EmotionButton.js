@@ -1,15 +1,14 @@
 import React, { PropTypes } from 'react';
-import { EmotionsPopup } from './EmotionsPopup';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';
+import { EmotionsPopup } from './EmotionsPopup';
 import { createEmotionImage } from './Emotions';
 
 export class EmotionButton extends React.Component {
 
   static propTypes = {
     getEditor:       PropTypes.func,
-    onSelect:        PropTypes.func,
-    context:         PropTypes.any,
+    context:         PropTypes.any, // eslint-disable-line
     className:       PropTypes.string,
     buttonClassName: PropTypes.string,
     popupPositionAt: PropTypes.string,
@@ -23,7 +22,7 @@ export class EmotionButton extends React.Component {
     };
   }
 
-  onSelectEmoticon = event => {
+  onSelectEmoticon = (event) => {
     event.preventDefault();
 
     const medium = this.props.getEditor().getMediumEditor();
@@ -43,7 +42,7 @@ export class EmotionButton extends React.Component {
     });
   };
 
-  onSelectEmotion = code => {
+  onSelectEmotion = (code) => {
     this.onCloseEmotionsPopup();
 
     const editor = this.props.getEditor();
@@ -68,9 +67,9 @@ export class EmotionButton extends React.Component {
         // Range.createContextualFragment() would be useful here but is
         // only relatively recently standardized and is not supported in
         // some browsers (IE9, for one)
-        const el     = document.createElement('div');
+        const el     = ownerDocument.createElement('div');
         el.innerHTML = html;
-        const frag   = document.createDocumentFragment();
+        const frag   = ownerDocument.createDocumentFragment();
 
         let node;
         let lastNode;
@@ -112,18 +111,16 @@ export class EmotionButton extends React.Component {
     return (
       <span className={className}>
         <a
-          href="#"
           className="dpdesignportal-chat-form-button dpdesignportal-chat-form-button-row-emoticons"
           title="Chat Emoticons"
           onClick={this.onSelectEmoticon}
         >
-
-          <span className={buttonClassName} ref="emotionsButton" />
+          <span className={buttonClassName} ref={(c) => { this.emotionsButton = c; }} />
         </a>
 
         <Simple
           isOpen={this.state.emotionsPopup}
-          positionTarget={this.refs.emotionsButton}
+          positionTarget={this.emotionsButton}
           positionAt={popupPositionAt}
           positionMy={popupPositionMy}
           zIndex={1000}
