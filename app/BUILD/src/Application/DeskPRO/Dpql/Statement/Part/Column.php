@@ -458,7 +458,7 @@ END)
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
 
-                return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
+                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = new FunctionCall('if', [
                     new self(array_merge($this->parts, ['parent', 'id'])),
