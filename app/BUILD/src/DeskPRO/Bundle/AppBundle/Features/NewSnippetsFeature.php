@@ -206,6 +206,18 @@ HTML;
                     WHERE ol_content.value <> \'\'');
             // Set the auto_increment to the minimum value it needs
             $connection->query('ALTER TABLE snippets AUTO_INCREMENT = 1');
+            $connection->query('DROP TABLE IF EXISTS perms');
+            $connection->query('CREATE TEMPORARY TABLE perms (`name` VARCHAR (255))');
+            $connection->query('INSERT INTO perms (`name`) VALUES (\'agent_snippets.edit_by_others\'), (\'agent_snippets.delete_by_others\'), (\'agent_snippets.create_snippet\')');
+            $connection->query(
+                'INSERT INTO permissions
+                    (`usergroup_id`, `name`, `value`, `is_active`)
+                    SELECT u.id, p.name, 1, 1
+                    FROM usergroups u
+                      CROSS JOIN perms p
+                      LEFT JOIN permissions pe ON pe.usergroup_id = u.id AND pe.name = p.name
+                    WHERE is_agent_group = 1 AND sys_name IS NULL AND pe.id IS NULL');
+            $connection->query('DROP TABLE perms');
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();
