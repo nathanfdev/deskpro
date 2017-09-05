@@ -903,6 +903,7 @@ return [
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
     'user.feedback_subscriptions'   => true,
+    'user.kb_categories_with_tree'  => true,
 
     //###################################################################################################################
     // captcha : FALSE (off), 'guests', 'everyone'
