@@ -26,12 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Webhooks;
+namespace DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
+use DeskPRO\Bundle\AppBundle\Webhooks\WebhookInvocation;
+use DeskPRO\Bundle\AppBundle\Webhooks\WebhookRequest;
 
-class WebhookExecutionContextVars
+class ExecutorContextVars
 {
     /**
      * @param ExecutorContextInterface $context
@@ -60,7 +62,7 @@ class WebhookExecutionContextVars
 
     public static function setWebhookRequest(ExecutorContextInterface $context, WebhookRequest $request)
     {
-        $context->getVars()->set('webhook_requests', $request);
+        $context->getVars()->set('webhook_request', $request);
     }
 
     /**
@@ -79,18 +81,25 @@ class WebhookExecutionContextVars
         return $request;
     }
 
-    public static function setWebhookPayload(ExecutorContextInterface $context, $payload)
+    public static function setWebhookPayload(ExecutorContextInterface $context, WebhookInvocation $payload)
     {
         $context->getVars()->set('webhook_payload', $payload);
     }
 
     /**
      * @param ExecutorContextInterface $context
-     * @return mixed
+     * @return WebhookInvocation
      */
     public static function getWebhookPayload(ExecutorContextInterface $context)
     {
-        return $context->getVars()->get('webhook_payload');
+        $varName = 'webhook_payload';
+        $request = $context->getVars()->get($varName);
+        if (!is_null($request) && ! $request instanceof WebhookInvocation) {
+            $msg = sprintf('unexpected type for webhook variable named: %s', $varName);
+            throw new \DomainException($msg);
+        }
+
+        return $request;
     }
 
 }

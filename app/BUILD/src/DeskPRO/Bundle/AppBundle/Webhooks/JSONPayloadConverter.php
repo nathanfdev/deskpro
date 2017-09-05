@@ -47,7 +47,7 @@ class JSONPayloadConverter implements PayloadConverter
      */
     public function decode(WebhookRequest $request)
     {
-        $body    = $request->getBody();
+        $body    = $request->getContent();
         $decoded = json_decode($body);
 
         if (json_last_error() === JSON_ERROR_NONE) {

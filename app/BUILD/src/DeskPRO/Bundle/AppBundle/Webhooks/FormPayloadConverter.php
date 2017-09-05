@@ -28,25 +28,34 @@
 
 namespace DeskPRO\Bundle\AppBundle\Webhooks;
 
-interface WebhookRequest
+class FormPayloadConverter implements PayloadConverter
 {
     /**
      * @return string
      */
-    public function getQueryString();
+    public function getName()
+    {
+        return 'form';
+    }
 
     /**
-     * @return array|string[]
+     * @param WebhookRequest $request
+     *
+     * @throws WebhookException
+     *
+     * @return mixed
      */
-    public function getQuery();
+    public function decode(WebhookRequest $request)
+    {
+        $body    = $request->getContent();
+        $decoded = [];
+        if (mb_parse_str($body, $decoded)) {
+            // we're converting the $decoded array into an \stdObject to use only property dot notation, children[0].firstName
+            // otherwise for arrays we would have to use [children][0][firstName]
+            return json_decode(json_encode($decoded));
+        }
 
-    /**
-     * @return string
-     */
-    public function getContent();
-
-    /**
-     * @return array|string[]
-     */
-    public function getHeaders();
+        throw new WebhookException('can not decode payload');
+    }
 }
+

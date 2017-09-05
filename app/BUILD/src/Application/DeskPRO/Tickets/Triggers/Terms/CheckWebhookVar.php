@@ -36,11 +36,8 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutionContextVars;
+use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor\WebhookVars;
 use Orb\Util\CheckedOptionsArray;
-use Symfony\Component\PropertyAccess\Exception\ExceptionInterface;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * Checks the value of a user var.
@@ -70,32 +67,16 @@ class CheckWebhookVar extends AbstractTriggerTerm
             return false;
         }
 
-        $payload = WebhookExecutionContextVars::getWebhookPayload($context);
-        $valueExists = ! is_null($payload);
-        $value = null;
-
-        if ($payload) {
-            $propertyAccessor = PropertyAccess::createPropertyAccessor();
-            $propertyPath = new PropertyPath($name);
-            try {
-                $value = $propertyAccessor->getValue($payload, $propertyPath);
-            } catch (ExceptionInterface $e) {
-                $valueExists = false;
-            }
-        }
-
+        $valueExists = WebhookVars::exists($context, $name);
         if ($this->getTermOperator() == 'not_isset') {
-            return !$payload || !$valueExists;
-        }
-
-        if ($this->getTermOperator() == 'isset') {
-            return $payload && $valueExists;
-        }
-
-        if (!$payload || !$valueExists) {
+            return !$valueExists;
+        } else if ($this->getTermOperator() == 'isset') {
+            return $valueExists;
+        } else if (!$valueExists) {
             return false;
         }
 
+        $value = WebhookVars::get($context, $name);
         return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options['value']);
     }
 }

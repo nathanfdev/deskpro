@@ -14,3 +14,8 @@ services:
     class: DeskPRO\Bundle\AppBundle\Webhooks\JSONPayloadConverter
     tags:
       - { name: webhooks.payload_converter }
+
+  DeskPRO\Bundle\AppBundle\Webhooks\FormPayloadConverter:
+    class: DeskPRO\Bundle\AppBundle\Webhooks\FormPayloadConverter
+    tags:
+      - { name: webhooks.payload_converter }

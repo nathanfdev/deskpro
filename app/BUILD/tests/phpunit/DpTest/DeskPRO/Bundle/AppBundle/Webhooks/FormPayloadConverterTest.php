@@ -26,26 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Webhooks;
 
-use DeskPRO\Bundle\AppBundle\Webhooks\WebhookRequest;
+use DeskPRO\Bundle\AppBundle\Webhooks\Converters;
+use DeskPRO\Bundle\AppBundle\Webhooks\FormPayloadConverter;
+use DpTest\DeskProTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class Converters
+class FormPayloadConverterTest extends DeskProTestCase
 {
-    /**
-     * @param Request $from
-     *
-     * @return WebhookRequest
-     */
-    public static function toWebhookRequest(Request $from)
+    public function testDecodeReturnsFormValues()
     {
-        $query       = $from->query->all();
-        $queryString = $from->getQueryString();
+        $form = [
+            'text_input' => 'some text',
+            'webhood' => [
+                'isEnabled' => true,
+            ]
+        ];
+        $expected = json_decode(json_encode($form));
 
-        $body    = $from->getContent();
-        $headers = $from->headers->all();
+        $httpRequest = Request::create('http://localhost');
+        $httpRequest->initialize([], $form);
+        $httpRequest->setMethod('POST');
+        $httpRequest->headers->set('CONTENT_TYPE', 'application/x-www-form-urlencoded');
 
-        return new WebhookRequest($query, $queryString, $headers, $body);
+        $webhookRequest = Converters::toWebhookRequest($httpRequest);
+
+        $converter = new FormPayloadConverter();
+        $actual = $converter->decode($webhookRequest);
+        $this->assertEquals($expected, $actual);
     }
 }

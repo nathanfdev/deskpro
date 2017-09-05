@@ -37,6 +37,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
+use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor\ExecutorContextVars;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -71,14 +72,9 @@ class TicketWebhookExecutor implements ContainerAwareInterface
      */
     public function execute(TicketWebhook $webhook, WebhookRequest $request)
     {
-        $converterName = $webhook->getPayloadDecoder();
-        $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
-        if (empty($converter)) {
-            throw new WebhookException('could not find a suitable decoder');
-        }
-        $webhookPayload = $converter->decode($request);
+        $webhookInvocation = $this->createWebhookInvocation($webhook, $request);
 
-        $searchCriteria = $this->buildTicketSearchCriteria($webhook, $webhookPayload);
+        $searchCriteria = $this->buildTicketSearchCriteria($webhook, $webhookInvocation);
         $maxTickets     = 100;
         $searchCriteria->setLimit($maxTickets + 1);
         $ticketIds = $searchCriteria->getMatches();
@@ -98,12 +94,29 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         $triggerTerms = $webhook->getTerms();
         foreach ($tickets as $ticket) {
             try {
-                $context = $this->createExecutionContext($webhook, $request, $webhookPayload);
+                $context = $this->createExecutionContext($webhook, $request, $webhookInvocation);
                 if ($triggerTerms->isTriggerMatch($ticket, $context)) {
                     $this->executeWebhook($ticket, $webhook, $context);
                 }
             } catch (\Exception $e) {}
         }
+    }
+
+    /**
+     * @param TicketWebhook $webhook
+     * @param WebhookRequest $request
+     * @return WebhookInvocation
+     * @throws WebhookException
+     */
+    private function createWebhookInvocation(TicketWebhook $webhook, WebhookRequest $request)
+    {
+        $converterName = $webhook->getPayloadDecoder();
+        $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
+        if (empty($converter)) {
+            throw new WebhookException('could not find a suitable decoder');
+        }
+        $payload = $converter->decode($request);
+        return WebhookInvocation::fromRequestAndData($request, $payload);
     }
 
     private function executeWebhook(Ticket $ticket, TicketWebhook $webhook, ExecutorContextInterface $context)
@@ -124,21 +137,21 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     /**
      * @param TicketWebhook  $webhook
      * @param WebhookRequest $request
-     * @param $payload
+     * @param WebhookInvocation $payload
      *
      * @return \Application\DeskPRO\Tickets\ExecutorContextInterface
      */
-    private function createExecutionContext(TicketWebhook $webhook, WebhookRequest $request, $payload)
+    private function createExecutionContext(TicketWebhook $webhook, WebhookRequest $request, WebhookInvocation $payload)
     {
         $context = $this->ticketManager->createSystemExecutorContext();
-        WebhookExecutionContextVars::setWebhook($context, $webhook);
-        WebhookExecutionContextVars::setWebhookRequest($context, $request);
-        WebhookExecutionContextVars::setWebhookPayload($context, $payload);
+        ExecutorContextVars::setWebhook($context, $webhook);
+        ExecutorContextVars::setWebhookRequest($context, $request);
+        ExecutorContextVars::setWebhookPayload($context, $payload);
 
         return $context;
     }
 
-    private function buildTicketSearchCriteria(TicketWebhook $webhook, $webhookPayload)
+    private function buildTicketSearchCriteria(TicketWebhook $webhook, WebhookInvocation $webhookInvocation)
     {
         $searchTerms = $webhook->getSearchTerms();
 
