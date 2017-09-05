@@ -263,6 +263,8 @@ class TicketSearch extends SearcherAbstract
      * @param  $term
      * @param  $op
      * @param  $data
+     *
+     * @return $this
      */
     public function addTerm($term, $op, $data)
     {
@@ -271,6 +273,8 @@ class TicketSearch extends SearcherAbstract
         if ($this->isArchiveTerm($term, $op, $data)) {
             $this->is_archive = true;
         }
+
+        return $this;
     }
 
     /**
@@ -279,6 +283,8 @@ class TicketSearch extends SearcherAbstract
      * @param  $term
      * @param  $op
      * @param  $data
+     *
+     * @return $this
      */
     public function addAnyTerm($term, $op, $data)
     {
@@ -287,6 +293,8 @@ class TicketSearch extends SearcherAbstract
         if ($this->isArchiveTerm($term, $op, $data)) {
             $this->is_archive = true;
         }
+
+        return $this;
     }
 
     /**

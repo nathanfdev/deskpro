@@ -34,15 +34,31 @@ namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\PeopleResults;
 use Application\AgentBundle\Controller\JsonRenderer\PeopleListRenderer;
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository\BanEmail;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\BanEmail;
+use Application\DeskPRO\Entity\LabelDef;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\Usergroup;
+use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
+use Application\DeskPRO\EntityRepository\BanEmail as BanEmailRepository;
+use Application\DeskPRO\EntityRepository\LabelDef as LabelDefRepository;
+use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use Application\DeskPRO\EntityRepository\Usergroup as UsergroupRepository;
+use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PeopleResultsDisplay;
+use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\UI\RuleBuilder;
+use Application\DeskPRO\UI\TagCloud;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Handles searching for people.
@@ -53,45 +69,54 @@ class PeopleSearchController extends AbstractController
     {
         $data = [];
 
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        /** @var LabelDefRepository $labelDefRepository */
+        $labelDefRepository = $this->em->getRepository(LabelDef::class);
+        /** @var AgentTeamRepository $agentTeamRepository */
+        $agentTeamRepository = $this->em->getRepository(AgentTeam::class);
+        /** @var OrganizationRepository $organizationRepository */
+        $organizationRepository = $this->em->getRepository(Organization::class);
+        /** @var UsergroupRepository $usergroupRepository */
+        $usergroupRepository = $this->em->getRepository(Usergroup::class);
+
         //------------------------------
         // People labels
         //------------------------------
-
         $people_count = $this->settings->get('core_tablecounts.people');
         if ($people_count < 10000) {
-            $people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
+            $people_count = $personRepository->getCount(true);
         }
 
-        $label_counts     = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
-        $cloud_gen        = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts     = $labelDefRepository->getLabelCounts('people', 25);
+        $cloud_gen        = new TagCloud($label_counts);
         $people_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister     = new \Application\DeskPRO\Labels\LabelLister('people');
+        $label_lister     = new LabelLister('people');
         $people_tag_index = $label_lister->getIndexList();
 
         //------------------------------
         // Agents and teams
         //------------------------------
-
-        $team_names  = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamNames();
-        $team_counts = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamCounts();
-        $agent_count = count($this->em->getRepository('DeskPRO:Person')->getAgents());
+        $team_names  = $agentTeamRepository->getTeamNames();
+        $team_counts = $agentTeamRepository->getTeamCounts();
+        $agent_count = count($personRepository->getAgents());
 
         //------------------------------
         // Org labels
         //------------------------------
 
-        $org_count = $this->em->getRepository('DeskPRO:Organization')->getCount();
+        $org_count = $organizationRepository->getCount();
 
-        $label_counts  = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
-        $cloud_gen     = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts  = $labelDefRepository->getLabelCounts('organizations', 25);
+        $cloud_gen     = new TagCloud($label_counts);
         $org_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister  = new \Application\DeskPRO\Labels\LabelLister('organizations');
+        $label_lister  = new LabelLister('organizations');
         $org_tag_index = $label_lister->getIndexList();
 
-        $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-        $usergroup_counts = $this->em->getRepository('DeskPRO:Usergroup')->getCountsFor(array_keys($usergroup_names));
+        $usergroup_names  = $usergroupRepository->getUsergroupNames();
+        $usergroup_counts = $usergroupRepository->getCountsFor(array_keys($usergroup_names));
 
         $data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', [
             'usergroup_names'  => $usergroup_names,
@@ -115,13 +140,18 @@ class PeopleSearchController extends AbstractController
     public function reloadCountsAction()
     {
         $people_count = $this->settings->get('core_tablecounts.people');
+        /** @var UsergroupRepository $usergroupRepository */
+        $usergroupRepository = $this->em->getRepository('DeskPRO:Usergroup');
+
         if ($people_count < 10000) {
-            $people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
+            /** @var PersonRepository $personRepository */
+            $personRepository = $this->em->getRepository(Person::class);
+            $people_count     = $personRepository->getCount(true);
         }
 
         $data = [
             'people_count'     => $people_count,
-            'usergroup_counts' => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
+            'usergroup_counts' => $usergroupRepository->getCountsForAll(),
         ];
 
         return $this->createJsonResponse($data);
@@ -129,20 +159,23 @@ class PeopleSearchController extends AbstractController
 
     public function reloadLabelDataAction()
     {
+        /** @var LabelDefRepository $labelDefRepository */
+        $labelDefRepository = $this->em->getRepository(LabelDef::class);
+
         // People
-        $label_counts     = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
-        $cloud_gen        = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts     = $labelDefRepository->getLabelCounts('people', 25);
+        $cloud_gen        = new TagCloud($label_counts);
         $people_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister     = new \Application\DeskPRO\Labels\LabelLister('people');
+        $label_lister     = new LabelLister('people');
         $people_tag_index = $label_lister->getIndexList();
 
         // Orgs
-        $label_counts  = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
-        $cloud_gen     = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts  = $labelDefRepository->getLabelCounts('organizations', 25);
+        $cloud_gen     = new TagCloud($label_counts);
         $org_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister  = new \Application\DeskPRO\Labels\LabelLister('organizations');
+        $label_lister  = new LabelLister('organizations');
         $org_tag_index = $label_lister->getIndexList();
 
         $data                       = [];
@@ -207,7 +240,7 @@ class PeopleSearchController extends AbstractController
             ];
         }
 
-        $person_display = new PeopleResultsDisplay($people);
+        $person_display = new PeopleResultsDisplay($people, $this->getPerson());
         $renderer       = new PeopleListRenderer($this->container);
 
         $vars = array_merge($vars, [
@@ -240,7 +273,7 @@ class PeopleSearchController extends AbstractController
     /**
      * Render a new pageset.
      *
-     * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
+     * @return Response
      */
     public function getPeoplePageAction()
     {
@@ -248,8 +281,10 @@ class PeopleSearchController extends AbstractController
         $person_ids = Arrays::removeFalsey($person_ids);
         $person_ids = array_unique($person_ids);
 
-        $people = $this->em->getRepository('DeskPRO:Person')->getPeopleResultsFromIds($person_ids);
-        $people = Arrays::orderIdArray($person_ids, $people);
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        $people           = $personRepository->getPeopleResultsFromIds($person_ids);
+        $people           = Arrays::orderIdArray($person_ids, $people);
 
         $display_fields = $this->in->getCleanValueArray('display_fields', 'string', 'discard');
         $display_fields = Arrays::removeFalsey($display_fields);
@@ -263,13 +298,13 @@ class PeopleSearchController extends AbstractController
         if ('list' === $view_type) {
             $tpl = 'list-list-page.html.twig';
         } elseif ('json' === $view_type) {
-            $person_display = new PeopleResultsDisplay($people);
+            $person_display = new PeopleResultsDisplay($people, $this->getPerson());
             $renderer       = new PeopleListRenderer($this->container);
 
             return $this->createJsonResponse($renderer->renderArray($person_display));
         }
 
-        $result_display = new \Application\DeskPRO\People\PeopleResultsDisplay($people);
+        $result_display = new PeopleResultsDisplay($people, $this->getPerson());
 
         return $this->render("AgentBundle:PeopleSearch:$tpl", [
             'people'            => $people,
@@ -287,7 +322,7 @@ class PeopleSearchController extends AbstractController
     {
         $result_cache = false;
         if ($this->in->getUint('cache_id')) {
-            $result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+            $result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUint('cache_id'));
             if (!$result_cache or $result_cache['person_id'] != $this->person['id']) {
                 $result_cache = false;
             }
@@ -302,7 +337,7 @@ class PeopleSearchController extends AbstractController
         if (!$result_cache || $user_letter != $result_cache['criteria']['selected_letter']) {
             $old_result_cache = false;
             if ($this->in->getUint('copy_display_options')) {
-                $old_result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('copy_display_options'));
+                $old_result_cache = $this->em->getRepository(ResultCache::class)->find($this->in->getUint('copy_display_options'));
                 if (!$old_result_cache or $old_result_cache['person_id'] != $this->person['id']) {
                     $old_result_cache = false;
                 }
@@ -365,7 +400,7 @@ class PeopleSearchController extends AbstractController
                 $terms[] = $new_term;
             }
 
-            $searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+            $searcher = new PersonSearch();
 
             $selected_letter = $this->applyLetterToSearcher($user_letter, $searcher);
 
@@ -417,7 +452,7 @@ class PeopleSearchController extends AbstractController
 
             $results = $searcher->getMatches();
 
-            $result_cache                = new Entity\ResultCache();
+            $result_cache                = new ResultCache();
             $result_cache['person']      = $this->person;
             $result_cache['criteria']    = ['terms' => $searcher->getTerms(), 'order_by' => $order_by, 'selected_letter' => $selected_letter];
             $result_cache['results']     = $results;
@@ -444,7 +479,7 @@ class PeopleSearchController extends AbstractController
 
         if (($order_pref && $order_pref != $result_cache['criteria']['order_by'])
         || $user_letter != $result_cache['criteria']['selected_letter']) {
-            $searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+            $searcher = new PersonSearch();
 
             $criteria                    = $result_cache['criteria'];
             $criteria['order_by']        = $order_pref;
@@ -468,7 +503,7 @@ class PeopleSearchController extends AbstractController
         // Serve results
         //------------------------------
 
-        $results_helper = Helper\PeopleResults::newFromResultCache($this, $result_cache);
+        $results_helper = PeopleResults::newFromResultCache($this, $result_cache);
 
         $vars = [
             'cache'           => $result_cache,
@@ -533,7 +568,7 @@ class PeopleSearchController extends AbstractController
     {
         $usergroup = $this->em->find('DeskPRO:Usergroup', $id);
         if (!$usergroup || $usergroup->is_agent_group) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         return $this->searchAction('*', ['person_usergroup' => $id], 'usergroup.'.$id);
@@ -543,7 +578,7 @@ class PeopleSearchController extends AbstractController
     {
         $organization = $this->em->find('DeskPRO:Organization', $id);
         if (!$organization) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         return $this->searchAction('*', ['person_organization' => $id, 'any_mode' => 1], 'organization.'.$id);
@@ -690,10 +725,10 @@ class PeopleSearchController extends AbstractController
 
     public function quickFindSearchAction()
     {
-        $term_rules = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
+        $term_rules = RuleBuilder::newTermsBuilder();
         $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
-        $searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+        $searcher = new PersonSearch();
         foreach ($terms as $term) {
             $searcher->addTerm($term['type'], $term['op'], $term['options']);
         }
@@ -707,7 +742,7 @@ class PeopleSearchController extends AbstractController
         } else {
             $data['num_results'] = count($results);
 
-            $helper = new Helper\PeopleResults($this);
+            $helper = new PeopleResults($this);
             $helper->setPeopleIds($results);
 
             $people = $helper->getPeopleForPage(1, 100);
@@ -771,12 +806,13 @@ class PeopleSearchController extends AbstractController
                 $peopleList = $output;
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
-                /** @var \Application\DeskPRO\EntityRepository\Person $rep */
+                /** @var PersonRepository $rep */
                 $rep        = $this->em->getRepository('DeskPRO:Person');
                 $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
 
                 // If the string is an exact email, we can try and find the user in usersources as well
                 if (StringEmail::isValueValid($q)) {
+                    /** @var Person $person */
                     $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
                     if ($person && !isset($peopleList[$person->getId()])) {
                         $peopleList[$person->getId()] = [
@@ -789,12 +825,13 @@ class PeopleSearchController extends AbstractController
                 }
             }
         } else {
-            /** @var \Application\DeskPRO\EntityRepository\Person $rep */
-            $rep        = $this->em->getRepository('DeskPRO:Person');
+            /** @var PersonRepository $rep */
+            $rep        = $this->em->getRepository(Person::class);
             $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
 
             // If the string is an exact email, we can try and find the user in usersources as well
             if (StringEmail::isValueValid($q)) {
+                /** @var Person $person */
                 $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
                 if ($person && !isset($peopleList[$person->getId()])) {
                     $peopleList[$person->getId()] = [
@@ -819,10 +856,10 @@ class PeopleSearchController extends AbstractController
         }
 
         if ($request->query->get('ignore_banned')) {
-            /** @var BanEmail $banRepo */
-            $banRepo = $this->em->getRepository(Entity\BanEmail::class);
+            /** @var BanEmailRepository $banRepo */
+            $banRepo = $this->em->getRepository(BanEmail::class);
 
-            /** @var Entity\Person $person */
+            /** @var Person $person */
             foreach ($peopleList as $num => $person) {
                 if ($banRepo->isEmailBanned($person['email'])) {
                     unset($peopleList[$num]);
