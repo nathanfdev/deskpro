@@ -342,8 +342,15 @@ class CleanupDaily extends AbstractJob
 
     private function _cleanHttpCache()
     {
-        $env      = App::$container->get('deskpro.app_env');
+        $env = App::$container->get('deskpro.app_env');
+        if ($env->getConfig('settings.disable_portal_http_cache')) {
+            return;
+        }
         $cacheDir = $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache';
+
+        if (!is_dir($cacheDir)) {
+            return;
+        }
 
         $dirFinder = new Finder();
         $dirFinder->directories()->in([$cacheDir])->depth('== 0');

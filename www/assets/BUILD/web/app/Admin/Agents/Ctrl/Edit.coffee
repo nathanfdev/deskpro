@@ -350,6 +350,7 @@ define [
                 (res) =>
                   $scope.is_saving = false
                   $scope.error = res.data.error_message
+                  $scope.error_code = res.data.error_info.error_code
               )
             else
               doReset(false).then(
@@ -573,6 +574,21 @@ define [
         }
       })
 
+    openDupePerson: ($event) ->
+      popover = window.parent.DeskPRO_Window._initInterfacePopover($($event.currentTarget));
+      popover.open()
+
+    mergeDupePerson: (personId) ->
+      merge = new window.parent.DeskPRO.Agent.Widget.Merge({
+        tabType: 'person',
+        metaId: @agentId,
+        metaIdName: 'person_id',
+        overlayUrl: DP_BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
+        mergeUrl: DP_BASE_URL + 'agent/people/{id}/merge/{other}',
+        loadRoute: 'person:' + DP_BASE_URL + 'agent/people/{id}'
+      })
+
+      merge.openWithId(personId)
 
     ###
       # Returns an object hash of the complete form data

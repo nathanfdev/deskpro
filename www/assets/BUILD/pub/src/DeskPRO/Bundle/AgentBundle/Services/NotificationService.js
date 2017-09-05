@@ -1,6 +1,7 @@
 import EventEmitter2 from 'eventemitter2';
 import PusherClient from 'DeskPRO/Component/Notification/Client/PusherClient';
 import LegacyClient from 'DeskPRO/Component/Notification/Client/LegacyClient';
+import DpClient from 'DeskPRO/Component/Notification/Client/DpClient';
 
 export class NotificationService {
 
@@ -28,6 +29,7 @@ export class NotificationService {
   createClients() {
     const me         = this.options.user.get('id');
     const dispatcher = this.eventEmitter.emit.bind(this.eventEmitter);
+    // this.options.clients.push({ type: 'deskpro', options: { debug: true } });
     this.options.clients.map((client) => {
       const editedClient              = client;
       editedClient.options.dispatcher = dispatcher;
@@ -43,6 +45,8 @@ export class NotificationService {
         return new PusherClient(clientConfig.options);
       case 'legacy':
         return new LegacyClient(clientConfig.options);
+      case 'deskpro':
+        return new DpClient(clientConfig.options);
       default:
         throw new Error(`You should provide supported client. Given is ${clientConfig.type}`);
     }

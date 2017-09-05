@@ -26,22 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings;
 
-interface ApplicationStateFinder
+use DeskPRO\Bundle\AppBundle\Model\DeskproClientModel;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+/**
+ * Class DeskproClientType.
+ */
+class DeskproClientType extends AbstractType
 {
     /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
-     *
-     * @return ApplicationState
+     * {@inheritdoc}
      */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('host', TextType::class)
+            ->add('port', TextType::class)
+            ->add('secret', TextType::class)
+        ;
+    }
 
     /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
+     * {@inheritdoc}
      */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => DeskproClientModel::class,
+        ]);
+    }
 }

@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState\AccessPermission;
+
 class ApplicationStateSearchFilter
 {
     /** @var string */
@@ -36,8 +38,24 @@ class ApplicationStateSearchFilter
     /** @var ApplicationState\EntityId */
     private $entityId;
 
-    /** @var string */
+    /** @var string[]|array */
     private $name;
+
+    /** @var AccessPermission */
+    private $accessPermission;
+
+    /**
+     * @param ApplicationStateId $id
+     * @return ApplicationStateSearchFilter
+     */
+    public static function fromIdentifier( ApplicationStateId $id)
+    {
+        return new ApplicationStateSearchFilter(
+            $id->getInstanceId(),
+            $id->getEntityId(),
+            $id->getName()
+        );
+    }
 
     /**
      * @param string $appId
@@ -48,7 +66,20 @@ class ApplicationStateSearchFilter
     {
         $this->appId = $appId;
         $this->entityId = $entityId;
-        $this->name = $name;
+        $this->name = [(string) $name];
+    }
+
+    public function setAccessPermission(AccessPermission $accessPermission)
+    {
+        $this->accessPermission = $accessPermission;
+    }
+
+    /**
+     * @return AccessPermission
+     */
+    public function getAccessPermision()
+    {
+        return $this->accessPermission;
     }
 
     /**
@@ -75,10 +106,20 @@ class ApplicationStateSearchFilter
     }
 
     /**
-     * @return string
+     * @param string[]|array $nameList
+     * @return ApplicationStateSearchFilter
+     */
+    public function setName($nameList)
+    {
+        $this->name = $nameList;
+        return $this;
+    }
+
+    /**
+     * @return string[]|array
      */
     public function getName()
     {
-        return (string) $this->name;
+        return $this->name;
     }
 }

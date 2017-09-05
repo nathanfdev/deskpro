@@ -33,9 +33,9 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
+use Behatch\Context\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
-use Sanpi\Behatch\Context\BaseContext;
 
 class RestContext extends BaseContext
 {
@@ -176,6 +176,38 @@ class RestContext extends BaseContext
         $content = DataContext::replace($body->getRaw(), true);
         $client->request($method, $this->locatePath($url), [], [], $this->server_params, $content);
         $client->followRedirects(true);
+
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            $this->saveLastCreatedId($page->getContent());
+        }
+
+        return $page;
+    }
+
+    /**
+     * Sends a HTTP request with a file as body body.
+     *
+     * @Given I send a :method request to :url with content type :contentType and file :filePath as body
+     *
+     * @param $method
+     * @param $url
+     * @param $contentType
+     * @param $filePath
+     */
+    public function iSendARequestToWithFileAsBody($method, $url, $contentType, $filePath)
+    {
+        $url      = DataContext::replace($url);
+        $filePath = DataContext::replace($filePath);
+
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+
+        // intercept redirection
+        $client->followRedirects(false);
+
+        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE' => $contentType]);
+        $client->request($method, $this->locatePath($url), [], [], $serverParams, file_get_contents($filePath));
 
         $page = $this->getSession()->getPage();
         if (strtoupper($method) === 'POST') {
@@ -343,6 +375,17 @@ class RestContext extends BaseContext
             $text .= $name.': '.$this->getHttpHeader($name)."\n";
         }
         echo $text;
+    }
+
+    /**
+     * @Then print last response body
+     */
+    public function printLastResponseBody()
+    {
+        $page = $this->getSession()->getPage();
+        if ($page) {
+            echo $page->getContent();
+        }
     }
 
     /**

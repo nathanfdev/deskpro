@@ -382,24 +382,27 @@ DeskPRO.Agent.RteEditor = {
 
 			var div = $('<div data-redactor-wrapper="1" />').html(html).css({
 				position: 'absolute',
-				left: '-9999px'
+				left: '-9999px',
 			});
 
-			$(document.body).append(div);
+      $(document.body).append(div);
+      var sel = api.getSelection();
 
-			var sel = api.getSelection();
-			try {
-				sel.selectAllChildren(div.get(0));
-			} catch (e) {
-				if (document.createRange && sel.removeAllRanges && sel.addRange) {
-					var range = document.createRange();
-					range.selectNode(div.get(0));
-					sel.removeAllRanges();
-					sel.addRange(range);
-				}
-			}
+      try {
+        sel.selectAllChildren(div.get(0));
+        document.execCommand('copy');
+      } catch (error) {
+        if (document.createRange && sel.removeAllRanges && sel.addRange) {
+          var range = document.createRange();
+          range.selectNode(div.get(0));
+          sel.removeAllRanges();
+          sel.addRange(range);
+        }
+      }
 
 			setTimeout(function() {
+
+
 				div.remove();
 				api.restoreSelection();
 			}, 0);

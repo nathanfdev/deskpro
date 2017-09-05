@@ -195,15 +195,10 @@ define ['angular', 'moment'], (angular, moment) ->
             n = '0' + n
           $scope.minutes.push n
 
-      getUTCTime = (dt) ->
-        tmp = dt.toDate()
-        tmp = new Date(tmp.getTime() - tmp.getTimezoneOffset() * 60000)
-        tmp
-
       setDatetime = (dt) ->
         dt.locale(defaults.locale)
         return if !isValid(dt)
-        $scope.date = getUTCTime(dt)
+        $scope.date = dt
         $scope.active = dt.clone()
         date = dt
         if modes.day == $scope.minMode

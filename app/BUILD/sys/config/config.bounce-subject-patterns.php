@@ -41,4 +41,5 @@ return [
     '#^Automatic reply: (?P<subject>.*?)$#i',
     '#^Out of Office AutoReply: (?P<subject>.*?)$#i',
     '#^Autosvar:\s*(?P<subject>.*?)$#i',
+    '#^Recall:\s*(?P<subject>.*?)$#i',
 ];

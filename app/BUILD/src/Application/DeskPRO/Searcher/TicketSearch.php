@@ -1079,6 +1079,7 @@ class TicketSearch extends SearcherAbstract
                 ($sql)
                 UNION
                 ($sql2)
+                $order_by
             ";
         } else {
             $select_query = $sql;

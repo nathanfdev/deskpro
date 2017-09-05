@@ -70,7 +70,7 @@ return [
     /*
      * Are agent teams enabled?
      */
-    'core.use_agent_team' => false,
+    'core.use_agent_team' => true,
 
     /*
      * Are products enabled?

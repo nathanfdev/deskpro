@@ -35,7 +35,7 @@ class Constants
 
     const PERMISSION_OWNER = 'OWNER';
 
-    const PERMISSION_EVERYONE = 'EVERYONE';
+    const PERMISSION_EVERYONE = 'EVERYBODY';
 
 
     const ACCESS_LEVEL_READ = 'READ';

@@ -169,4 +169,18 @@ class JsonContext extends \Behatch\Context\JsonContext
     {
         parent::theJsonNodeShouldBeEqualTo($node, $value);
     }
+
+    /**
+     * @Given I save a reference :ref to the JSON node :node
+     *
+     * @param $ref
+     * @param $node
+     */
+    public function iSaveTheJSONPathAsReference($ref, $node)
+    {
+        $json = $this->getJson();
+        $actual = $this->inspector->evaluate($json, $node);
+
+        DataContext::setPlaceholder($ref, $actual);
+    }
 }

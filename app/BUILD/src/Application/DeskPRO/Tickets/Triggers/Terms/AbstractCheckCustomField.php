@@ -325,7 +325,7 @@ function (ticket) {
   
   var has = false; 
   for (var i = 0; i < check_value.length; i++) {
-    if (value.indexOf(check_value[i] + '') !== -1) has = true;
+    if ((Array.isArray(value) && value.indexOf(check_value[i] + '') !== -1) || value + '' === check_value[i] + '') has = true;
   }
   
   if (op === '$op_is' && has) return true;

@@ -414,7 +414,11 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 	destroy: function() {
 		this.el.off();
 		this.el = null;
-		this.statusMenu.destroy();
+
+		if (this.statusMenu) {
+			this.statusMenu.destroy();
+		}
+
 		this.statusMenu = null;
 		this.destroyEvents();
 	}

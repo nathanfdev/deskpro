@@ -121,7 +121,7 @@ class PasswordPolicyValidator
         }
 
         $m = null;
-        if ($policy->require_num_symbol && preg_match_all('#[\-!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password, $m) < $policy->require_num_symbol) {
+        if ($policy->require_num_symbol && preg_match_all('#[\-@£€!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password, $m) < $policy->require_num_symbol) {
             $error = 'require_num_symbol';
 
             return false;
@@ -173,7 +173,7 @@ class PasswordPolicyValidator
 
     public function getPolicy(Person $person)
     {
-        if (false && $person->is_agent) {
+        if ($person->is_agent) {
             return $this->agent_policy;
         } else {
             return $this->user_policy;

@@ -144,7 +144,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var isCtrl = false;
 					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
 						isCtrl = true;
-					} else if (ev.altKey) {
+					} else if (ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) {
 						isCtrl = true;
 					}
 
@@ -765,6 +765,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
               var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
               var blobs = window.LegacyStoreProvider.getSnippetBlobs();
               self.insertSnippet(snippet.toJS(), blobs.toJS());
+              if (self.page) self.page.pauseSend = false;
             } else {
 							$.ajax({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',

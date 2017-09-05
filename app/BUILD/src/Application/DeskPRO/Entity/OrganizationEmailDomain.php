@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Maps known company domains to their company objects.
@@ -47,6 +48,8 @@ class OrganizationEmailDomain extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The email domain.
+     *
+     * @Assert\NotBlank()
      *
      * @var string
      */

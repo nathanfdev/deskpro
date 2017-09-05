@@ -235,13 +235,13 @@
 
 					<% if (field == 'date_last_reply') { %>
 						<span class="prop-title">{{ phrase('agent.general.date_of_last_reply') }}:</span>
-						<% if (ticket_display.date_last_agent_reply && (!ticket_display.date_last_user_reply || ticket_display.date_last_agent_reply_ts > ticket_display.date_last_user_reply_ts)) { %>
+						<% if (ticket_display.date_last_reply_is_agent_reply) { %>
 							<span class="prop-val">
-								<span dp-timeago timestamp="<%= ticket_display.date_last_agent_reply_ts %>" />
+								<span dp-timeago auto-update timestamp="<%= ticket_display.date_last_reply_ts %>" />
 							</span>
 						<% } %>
-						<% if (ticket_display.date_last_user_reply && (!ticket_display.date_last_agent_reply || ticket_display.date_last_user_reply_ts > ticket_display.date_last_agent_reply_ts)) { %>
-							<span dp-timeago timestamp="<%= ticket_display.date_last_user_reply_ts %>" />
+						<% if (!ticket_display.date_last_reply_is_agent_reply) { %>
+							<span dp-timeago auto-update timestamp="<%= ticket_display.date_last_reply_ts %>" />
 						<% } %>
 					<% } %>
 

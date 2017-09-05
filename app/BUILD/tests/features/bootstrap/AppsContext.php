@@ -26,21 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+/**
+ * DeskPRO.
+ */
 
-class Build1501581570 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+namespace DpBehat;
+
+use Behat\Behat\Hook\Scope\AfterFeatureScope;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipBundleBuilder;
+use DpBehat\BaseContext;
+use DpBehat\Data\DataContext;
+
+class AppsContext extends BaseContext
 {
-    public function addNewTables()
+    /**
+     * @AfterFeature @apps
+     */
+    public static function teardownFeature(AfterFeatureScope $scope)
     {
+        $em = self::getEm();
+        $records = self::getOm()->locate('Apps');
+        foreach ($records as $record) {
+            $em->remove($record);
+        }
+
+        $em->flush();
     }
 
-    public function runAlters()
+    /**
+     * @Given I package the app from folder :folder
+     * @param string $folder
+     */
+    public function iPackageTheApp($folder)
     {
-        $this->execDbQuery('default', 'ALTER TABLE snippet_translations ADD type VARCHAR(255) DEFAULT NULL');
-        $this->execDbQuery('default', 'ALTER TABLE snippets ADD is_split TINYINT(1) NOT NULL');
-    }
+        /** @var \DpRun\DpEnv $dpEnv */
+        $dpEnv = $GLOBALS['DP_ENV'];
+        $tmpRoot = $dpEnv->getUserTmpDir();
 
-    public function run()
-    {
+        $dir = $this->getTestDir($folder);
+        $appArchive = AppZipBundleBuilder::fromTmp($tmpRoot)->addFolder($dir)->build();
+        $lastPackagedApp = $appArchive->getFilePath();
+        DataContext::setPlaceholder('lastPackagedApp', $lastPackagedApp);
     }
 }

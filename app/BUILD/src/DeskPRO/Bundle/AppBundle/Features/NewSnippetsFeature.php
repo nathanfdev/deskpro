@@ -153,7 +153,8 @@ HTML;
         $em->beginTransaction();
         try {
             $connection->query(
-                "INSERT INTO snippets 
+                "INSERT INTO snippets
+                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, is_split) 
                       SELECT
                           ts.id,
                           IFNULL(ts.person_id, tcs.person_id) as person_id,
@@ -172,6 +173,10 @@ HTML;
                     GROUP BY ts.id, ol_title.id;");
             $connection->query(
                 "INSERT INTO snippet_labels
+                      (
+                        snippet_id,
+                        label
+                      ) 
                       SELECT 
                         ts.id, 
                         ol_category.value
@@ -184,19 +189,35 @@ HTML;
                     GROUP BY ts.id, ol_category.id");
             $connection->query(
                 'INSERT INTO snippet_translations
+                    (
+                      snippet_id, 
+                      language_id, 
+                      content, 
+                      title
+                    ) 
                     SELECT
-                      NULL as id,
                       ts.id as snippet_id,
                       ol_title.language_id,
                       ol_content.value as content,
-                      ol_title.value as title,
-                      NULL as type
+                      ol_title.value as title
                     FROM text_snippets ts
                       LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_title.prop_name = \'title\'
                       LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT(\'text_snippets.\', ts.id) AND ol_content.prop_name = \'snippet\' AND ol_content.language_id = ol_title.language_id
                     WHERE ol_content.value <> \'\'');
             // Set the auto_increment to the minimum value it needs
             $connection->query('ALTER TABLE snippets AUTO_INCREMENT = 1');
+            $connection->query('DROP TABLE IF EXISTS perms');
+            $connection->query('CREATE TEMPORARY TABLE perms (`name` VARCHAR (255))');
+            $connection->query('INSERT INTO perms (`name`) VALUES (\'agent_snippets.edit_by_others\'), (\'agent_snippets.delete_by_others\'), (\'agent_snippets.create_snippet\')');
+            $connection->query(
+                'INSERT INTO permissions
+                    (`usergroup_id`, `name`, `value`, `is_active`)
+                    SELECT u.id, p.name, 1, 1
+                    FROM usergroups u
+                      CROSS JOIN perms p
+                      LEFT JOIN permissions pe ON pe.usergroup_id = u.id AND pe.name = p.name
+                    WHERE is_agent_group = 1 AND sys_name IS NULL AND pe.id IS NULL');
+            $connection->query('DROP TABLE perms');
             $em->commit();
         } catch (\Exception $e) {
             $em->rollback();

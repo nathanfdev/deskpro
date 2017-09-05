@@ -115,7 +115,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * Flag indicates that content is different for different types.
      *
-     * @ORM\Column(type="boolean", nullable=false, name="is_split")
+     * @ORM\Column(type="boolean", nullable=false, name="is_split", options={"default" : 0})
      *
      * @var bool
      */

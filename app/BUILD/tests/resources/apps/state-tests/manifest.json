@@ -1,0 +1,45 @@
+{
+  "appVersion": "0.1.0",
+  "author": {
+    "name": "DeskPRO Ltd.",
+    "email": "apps@deskpro.com",
+    "url": "https://deskpro.com"
+  },
+  "description": "Testing State Api",
+  "name": "@deskproapps/state-tests",
+  "version": "2.1.0",
+  "title": "State Tests App",
+  "isSingle": true,
+  "scope": "agent",
+  "state": [
+    {
+      "name": "user-only",
+      "isBackendOnly": false,
+      "permRead": "OWNER",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "user-writable",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "world-accessible",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "EVERYBODY"
+    }
+  ],
+  "targets": [
+    {
+      "target": "background",
+      "url": "html/index.html"
+    }
+  ],
+  "settings": [],
+  "deskproApiTags": [
+    "tickets.*"
+  ],
+  "externalApis": []
+}

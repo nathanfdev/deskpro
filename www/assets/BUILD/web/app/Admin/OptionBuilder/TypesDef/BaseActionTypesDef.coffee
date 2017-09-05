@@ -187,7 +187,8 @@ define [
               value.options            = {}
               value.options[prop_name] = val
               value.options.op         = model.op
-              value.options.with_formatter = !!model.with_formatter
+              if options.with_formatter
+                value.options.with_formatter = !!model.with_formatter
               return value
           }
       }
@@ -210,6 +211,7 @@ define [
         return @getStandardSelect(options)
       else
         options.template = 'OptionBuilder/type-actions-custom-input.html'
+        options.with_formatter = true
         return @getStandardInput(options)
 
 

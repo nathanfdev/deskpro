@@ -79,8 +79,6 @@ export const preloadData    = createAction(
         batchComponents.snippet_labels  = { endpoint: 'snippets/labels' };
       }
 
-      dispatch(loadAgentPhraseTranslations());
-
       const onBatchComponentsSuccess = ({ responses }) => {
         const data = flattenBatchResponses(responses);
 
@@ -160,7 +158,8 @@ export const preloadData    = createAction(
         return data;
       };
 
-      api.sendGet(api.prepareParams(batchComponents))
+      const phrasesLoad = dispatch(loadAgentPhraseTranslations());
+      const batchLoad = api.sendGet(api.prepareParams(batchComponents))
         .success(onBatchComponentsSuccess)
         .then((responses) => {
           const { discover } = responses.data.responses;
@@ -184,7 +183,7 @@ export const preloadData    = createAction(
         })
       ;
 
-      return resolve();
+      Promise.all([phrasesLoad, batchLoad]).then(() => resolve());
     }
   )
 );

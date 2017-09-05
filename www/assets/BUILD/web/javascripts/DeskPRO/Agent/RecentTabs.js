@@ -68,7 +68,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 				if ($(this).data('string-match').indexOf(val) !== -1) {
 					$(this).show().addClass('dp-vis');
 				} else {
-					$(this).hide().removeClass('dp-vis');;
+					$(this).hide().removeClass('dp-vis');
 				}
 			});
 		});
