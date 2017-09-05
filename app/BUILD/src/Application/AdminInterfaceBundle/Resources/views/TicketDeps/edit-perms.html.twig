@@ -31,7 +31,7 @@
 				<td>
 					<i class="fa fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
-					<span class="text-middle"><a href="#">{{ ng_var('usergroup.title') }}</a></span>
+					<span class="text-middle"><a href="{{ ng_href('crm.groups.edit', '{id: usergroup.id}') }}">{{ ng_var('usergroup.title') }}</a></span>
 				</td>
 				<td class="text-center">
 					<button dp-toggle-switch ng-model="EditCtrl.form.usergroup_perms[usergroup.id].full" locked-model="usergroups_locked[usergroup.id]"  locked-tip="{{ phrase('adm.departments.perm_assign_locked_priv') }}"></button>
@@ -85,7 +85,7 @@
 				<td>
 					<i class="fa fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
-					<span class="text-middle"><a href="#">{{ ng_var('groupObj.model.title') }}</a></span>
+					<span class="text-middle"><a href="{{ ng_href('agents.groups.edit', '{id: groupObj.model.id}') }}">{{ ng_var('groupObj.model.title') }}</a></span>
 				</td>
 				<td class="text-center">
 					<div ng-if="groupObj.model.sys_name == 'agent_all_perms' || groupObj.model.sys_name == 'agent_all_safe_perms'">

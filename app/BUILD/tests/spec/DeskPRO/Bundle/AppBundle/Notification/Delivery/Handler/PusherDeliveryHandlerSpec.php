@@ -48,6 +48,7 @@ class PusherDeliveryHandlerSpec extends ObjectBehavior
         $resolver->getGlobalSettings()->willReturn($bag);
         $connection->getTransactionNestingLevel()->willReturn(1);
         $bag->get('notification.settings.pusher_client.channel_prefix', '')->willReturn('');
+        $bag->get('notification.settings.pusher_client.tries', 2)->willReturn(2);
     }
 
     public function it_can_deliver_message(ActionAlert $actionAlert, Pusher $pusher)

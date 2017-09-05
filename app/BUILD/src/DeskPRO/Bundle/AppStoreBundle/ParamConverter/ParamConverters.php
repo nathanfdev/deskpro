@@ -42,17 +42,6 @@ class ParamConverters
     }
 
     /**
-     * @param ORM\EntityManager $entityManager
-     * @param TokenStorage $tokenStorage
-     * @return AppStateParamConverter
-     */
-    static public function createAppStateConverter(ORM\EntityManager $entityManager, TokenStorage $tokenStorage)
-    {
-        $finder = new Infrastructure\ApplicationState\StateEntityFinder($entityManager);
-        return new AppStateParamConverter($finder, new Infrastructure\IdentifierParser(), $tokenStorage);
-    }
-
-    /**
      * @return AssetFilterParamConverter
      */
     static public function createAssetFilterConverter()

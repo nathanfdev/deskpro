@@ -83,7 +83,12 @@ class AppZipArchiveBundleTest extends DeskProTestCase
         $iterator->setMaxDepth(2);
         foreach ($iterator as $name => $file) {
             if (! $file->isDir()) { //only add files
-                $filePathList[] = $file->getRealPath();
+
+                $localName = substr($file, strlen($wwwRoot));
+                $localName = ltrim($localName, '/');
+
+//                $filePathList[] = $file->getRealPath();
+                $filePathList[] = $localName;
             }
         }
 

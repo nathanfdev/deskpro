@@ -34,13 +34,15 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * A draft of some sort of message.
  */
-class Draft extends \Application\DeskPRO\Domain\DomainObject
+class Draft extends DomainObject
 {
     /**
      * The unique ID.
@@ -49,15 +51,36 @@ class Draft extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $id = null;
 
-    /** @var Person */
+    /**
+     * @var Person
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     */
     protected $person;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     protected $content_type;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     protected $content_id;
-    /** @var \DateTime */
+
+    /**
+     * @var \DateTime
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     */
     protected $date_created;
-    /** @var string */
+
+    /**
+     * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     */
     protected $message;
     /** @var string */
     protected $message_html;

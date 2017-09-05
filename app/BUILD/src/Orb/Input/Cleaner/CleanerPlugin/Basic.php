@@ -156,7 +156,11 @@ class Basic implements CleanerPlugin
                 if (!is_scalar($value)) {
                     $value = '';
                 }
-                $value = trim($this->cleanString($value));
+
+                $value = str_replace("\xc2\xa0", ' ', $value);
+                $value = $this->cleanString($value);
+                $value = trim($value);
+
                 break;
 
             case 'str_notrim':

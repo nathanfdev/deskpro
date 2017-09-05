@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class AppsController
  *
- * @DeskproAnnotations\ApiModes("standard")
+ * @DeskproAnnotations\ApiModes("all")
  * @Rest\Route("/apps/{application}/state")
  */
 class AppStateController extends BaseController

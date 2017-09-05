@@ -34,11 +34,13 @@ class AppZipBundleBuilder
     /**
      * Creates a ZipArchiveBuilder that will create the bundle in a randomly named file from the system temp dir
      *
+     * @param null $dir
      * @return AppZipBundleBuilder
      */
-    static public function fromTmp()
+    static public function fromTmp($dir = null)
     {
-        $file = tempnam(sys_get_temp_dir(), 'foo') ;
+        $root = is_null($dir) ? sys_get_temp_dir() : $dir;
+        $file = tempnam($root, 'foo') ;
         return AppZipBundleBuilder::fromFile($file);
     }
 
@@ -104,7 +106,11 @@ class AppZipBundleBuilder
         foreach ($iterator as $name => $file) {
             if (! $file->isDir()) { //only add files
                 $filePath = $file->getRealPath();
-                $this->archive->addFile($filePath);
+
+                $localName = substr($filePath, strlen($dir));
+                $localName = ltrim($localName, '/');
+
+                $this->archive->addFile($filePath, $localName);
                 $filePathList[] = $filePath;
             }
         }
@@ -114,9 +120,10 @@ class AppZipBundleBuilder
 
     /**
      * @param string|\SplFileInfo $file
+     * @param null $localName
      * @return AppZipBundleBuilder
      */
-    public function addFile($file)
+    public function addFile($file, $localName = null)
     {
         if ($this->archiveFileState === 'close') {
             throw new \RuntimeException('archive is closed');
@@ -124,7 +131,12 @@ class AppZipBundleBuilder
 
         $fileInfo = $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
         if ($fileInfo->isFile()) {
-            $this->archive->addFile($file);
+            if (! empty($localName)) {
+                $this->archive->addFile($file, $localName);
+            } else {
+                $this->archive->addFile($file);
+            }
+
             return $this;
         }
 

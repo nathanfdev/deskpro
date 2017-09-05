@@ -73,6 +73,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_DATE_LAST_USER_REPLY  = 'date_last_user_reply';
     const TERM_DATE_LAST_AGENT_REPLY = 'date_last_agent_reply';
     const TERM_DATE_LAST_REPLY       = 'date_last_reply';
+    const TERM_DATE_ON_HOLD          = 'date_on_hold';
     const TERM_URGENCY               = 'urgency';
     const TERM_USER_WAITING          = 'user_waiting';
     const TERM_TOTAL_USER_WAITING    = 'total_user_waiting';
@@ -262,6 +263,8 @@ class TicketSearch extends SearcherAbstract
      * @param  $term
      * @param  $op
      * @param  $data
+     *
+     * @return $this
      */
     public function addTerm($term, $op, $data)
     {
@@ -270,6 +273,8 @@ class TicketSearch extends SearcherAbstract
         if ($this->isArchiveTerm($term, $op, $data)) {
             $this->is_archive = true;
         }
+
+        return $this;
     }
 
     /**
@@ -278,6 +283,8 @@ class TicketSearch extends SearcherAbstract
      * @param  $term
      * @param  $op
      * @param  $data
+     *
+     * @return $this
      */
     public function addAnyTerm($term, $op, $data)
     {
@@ -286,6 +293,8 @@ class TicketSearch extends SearcherAbstract
         if ($this->isArchiveTerm($term, $op, $data)) {
             $this->is_archive = true;
         }
+
+        return $this;
     }
 
     /**
@@ -434,6 +443,9 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_DATE_RESOLVED:
                         $this->affected_fields[] = 'ticket.date_resolved';
+                        break;
+                    case self::TERM_DATE_ON_HOLD:
+                        $this->affected_fields[] = 'ticket.date_on_hold';
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->affected_fields[] = 'ticket.date_archived';
@@ -1490,6 +1502,11 @@ class TicketSearch extends SearcherAbstract
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
                         $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['resolved']);
                         $this->is_archive        = false;
+                        break;
+                    case self::TERM_DATE_ON_HOLD:
+                        $this->affected_fields[] = 'ticket.date_on_hold';
+                        $wheres[]                = $this->_dateMatch("$tickets_table.date_on_hold", $op, $choice);
+                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['awaiting_agent']);
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->affected_fields[] = 'ticket.date_archived';
@@ -2825,6 +2842,14 @@ class TicketSearch extends SearcherAbstract
                     return false;
                 }
                 if (!$this->_testDateMatch($ticket->getDateResolved(), $op, $choice)) {
+                    return false;
+                }
+                break;
+            case self::TERM_DATE_ON_HOLD:
+                if (!$ticket->getDateOnHold()) {
+                    return false;
+                }
+                if (!$this->_testDateMatch($ticket->getDateOnHold(), $op, $choice)) {
                     return false;
                 }
                 break;

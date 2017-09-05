@@ -26,22 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace Application\InstallBundle\Upgrade\Build;
 
-interface ApplicationStateFinder
+class Build1504602761 extends AbstractBuild implements BlockingBuildInterface
 {
-    /**
-     * @param ApplicationStateId $id
-     * @param string|null        $stateOwnerId
-     *
-     * @return ApplicationState
-     */
-    public function find(ApplicationStateId $id, $stateOwnerId = null);
+    public function addNewTables()
+    {
+    }
 
-    /**
-     * @param ApplicationStateSearchFilter $searchFilter
-     *
-     * @return ApplicationState[]
-     */
-    public function findByFilter(ApplicationStateSearchFilter $searchFilter);
+    public function runAlters()
+    {
+        $this->execSlowAlterTable('tickets', 'ADD date_on_hold DATETIME DEFAULT NULL');
+    }
+
+    public function run()
+    {
+    }
 }

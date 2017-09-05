@@ -132,6 +132,7 @@ class KbSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::APPS_KB, $model->isEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::TAB_KB, $model->isTabEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_KB, $model->isSubscriptions(), $brand)
+            ->updateSetting(PortalSettingsResolver::KB_WITH_TREE, $model->isKnowledgebaseDeepTree(), $brand)
         ;
     }
 }

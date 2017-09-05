@@ -7,7 +7,7 @@
         <ul>
           <li class="item-home"><a href="{{ path('portal_home') }}"><i class="fa fa-home"></i> {{ brand_setting('core.deskpro_name')|e }}</a></li>
           {% if can_use_articles() %}<li class="item-kb"><a href="{{ path('portal_kb') }}"><i class="fa fa-columns"></i> {{ phrase('portal.general.nav-kb') }}</a></li>{% endif %}
-          {% if can_use_guides() %}<li class="item-news"><a href="{{ path('portal_guides') }}"><i class="fa fa-book"></i> {{ phrase('portal.general.nav-guides') }}</a></li>{% endif %}
+          {% if app.hasBeta('guides') and can_use_guides() %}<li class="item-news"><a href="{{ path('portal_guides') }}"><i class="fa fa-book"></i> {{ phrase('portal.general.nav-guides') }}</a></li>{% endif %}
           {% if can_use_news() %}<li class="item-news"><a href="{{ path('portal_news') }}"><i class="fa fa-file-text-o"></i> {{ phrase('portal.general.nav-news') }}</a></li>{% endif %}
           {% if can_use_downloads() %}<li class="item-downloads"><a href="{{ path('portal_downloads') }}"><i class="fa fa-cloud-download"></i> {{ phrase('portal.general.nav-downloads') }}</a></li>{% endif %}
           {% if can_use_feedback() %}<li class="item-feedback"><a href="{{ path('portal_feedback') }}"><i class="fa fa-list-alt"></i> {{ phrase('portal.general.nav-feedback') }}</a></li>{% endif %}
