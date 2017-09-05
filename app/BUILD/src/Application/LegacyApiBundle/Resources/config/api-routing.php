@@ -5553,6 +5553,15 @@ $collection->create(
 );
 
 $collection->create(
+    'api_server_delete_error_log',
+    [
+        'path'       => '/server/error-log',
+        'controller' => 'LegacyApiBundle:Server:deleteErrorLog',
+        'methods'    => ['DELETE'],
+    ]
+);
+
+$collection->create(
     'api_server_apc_status',
     [
         'path'       => '/server/apc-status',

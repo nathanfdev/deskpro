@@ -386,15 +386,15 @@
     </tbody>
 {% endfor %}
 
-{% if ticket.linked_chat and isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
+{% if linked_chat and isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
     <tbody>
         <tr>
             <th>
                 {{ phrase('agent.general.linked_chat') }}
             </th>
             <td>
-                <a data-route="page:{{ path('agent_userchat_view', { conversation_id: ticket.linked_chat.id }) }}">
-                    {{ ticket.linked_chat.getSubjectLine() }}
+                <a data-route="page:{{ path('agent_userchat_view', { conversation_id: linked_chat.id }) }}">
+                    {{ linked_chat.getSubjectLine() }}
                 </a>
             </td>
         </tr>

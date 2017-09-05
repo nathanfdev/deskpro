@@ -111,6 +111,13 @@ class SystemErrorHandler
 
     private static $noShowErrors = false;
 
+    /**
+     * Max error log file size (512MB).
+     *
+     * @var int
+     */
+    public static $maxErrorLogFileSize = 536870912;
+
     //###################################################################################################################
     // Exceptions
     //###################################################################################################################
@@ -746,7 +753,7 @@ class SystemErrorHandler
         }
 
         if (self::getLogDir()) {
-            $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'/error.log'];
+            $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'error.log'];
         } else {
             // we dont have an env log, so lets try to re-use server error log
             $phpErrLog = ini_get('error_log');
@@ -762,7 +769,11 @@ class SystemErrorHandler
         }
 
         foreach ($logFiles as $errorLogFile) {
-            if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
+            if (
+                $errorLogFile
+                && filesize($errorLogFile) < self::$maxErrorLogFileSize
+                && ($fh = @fopen($errorLogFile, 'a')) !== false
+            ) {
                 @fwrite($fh, $str);
                 @fclose($fh);
                 @chmod($errorLogFile, 0777);

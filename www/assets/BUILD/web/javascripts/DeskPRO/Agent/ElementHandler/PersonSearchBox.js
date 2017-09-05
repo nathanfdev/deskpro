@@ -131,6 +131,10 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
     this.closeFunction = this.close.bind(this);
 		$(document).on('click', this.closeFunction);
 		this.closeFunction2 = function(e) {
+			if (e.target === self.termInput[0]) {
+				return;
+			}
+
       if (e.target && !($(e.target).closest('.person-search-box')[0])) {
         self.close();
       }

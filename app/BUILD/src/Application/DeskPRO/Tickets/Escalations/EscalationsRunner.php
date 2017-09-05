@@ -38,6 +38,9 @@ use Application\DeskPRO\Monolog\NullLogger;
 use DpSys\LowError\SystemErrorHandler;
 use Monolog\Logger;
 
+/**
+ * Class EscalationsRunner.
+ */
 class EscalationsRunner implements \Countable, \IteratorAggregate
 {
     /**
@@ -71,6 +74,8 @@ class EscalationsRunner implements \Countable, \IteratorAggregate
     private $batch_size = 100;
 
     /**
+     * Constructor.
+     *
      * @param \Application\DeskPRO\Entity\TicketEscalation[] $escalations
      * @param EscalationTicketMatcher                        $matcher
      * @param EscalationExecutor                             $executor

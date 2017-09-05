@@ -61,9 +61,18 @@ abstract class AbstractRunner
     protected $job_options;
 
     /**
+     * Soft time limit (jobs that check their own time).
+     *
      * @var int
      */
     protected $job_time_limit = 900;
+
+    /**
+     * Hard time limit (PHP time limit).
+     *
+     * @var int
+     */
+    protected $job_time_hard_limit = 1800;
 
     /**
      * @var callable
@@ -125,8 +134,8 @@ abstract class AbstractRunner
         App::setCurrentPerson(null);
         unset($GLOBALS['DP_CRON_LOGGER']);
 
-        if ($this->job_time_limit) {
-            @set_time_limit($this->job_time_limit);
+        if ($this->job_time_hard_limit) {
+            @set_time_limit($this->job_time_hard_limit);
         }
 
         $job                       = $this->getJob($worker_job);
@@ -174,7 +183,8 @@ abstract class AbstractRunner
 
         $logger->log("Job {$worker_job['id']} done in {$mtime_total}s", Logger::INFO, ['flag' => 'job_end']);
 
-        if ($this->job_time_limit) {
+        // reset back
+        if ($this->job_time_hard_limit) {
             @set_time_limit(0);
         }
 
@@ -201,7 +211,7 @@ abstract class AbstractRunner
         }
 
         $logger                              = $this->getLoggerForWorkerJob($job_worker);
-        $job                                 = $job_worker->createJobObj($logger, $this->job_options);
+        $job                                 = $job_worker->createJobObj($logger, array_merge(['time_limit' => $this->job_time_limit], $this->job_options));
         $this->_job_cache[$job_worker['id']] = $job;
 
         return $job;

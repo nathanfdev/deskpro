@@ -42,6 +42,9 @@ use Application\DeskPRO\Tickets\Actions\ActionApplicatorInterface;
 use Application\DeskPRO\Tickets\TicketManager;
 use Monolog\Logger;
 
+/**
+ * Class EscalationExecutor.
+ */
 class EscalationExecutor
 {
     /**
@@ -64,6 +67,13 @@ class EscalationExecutor
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param Connection                $db
+     * @param TicketManager             $ticket_manager
+     * @param ActionApplicatorInterface $action_applicator
+     */
     public function __construct(Connection $db, TicketManager $ticket_manager, ActionApplicatorInterface $action_applicator)
     {
         $this->db                = $db;

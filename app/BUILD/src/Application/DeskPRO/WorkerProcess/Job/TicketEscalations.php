@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
@@ -48,11 +44,19 @@ class TicketEscalations extends AbstractJob
 {
     const DEFAULT_INTERVAL = 60;
 
-    /** @var int */
+    /**
+     * @var int
+     */
     protected $count_success;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     protected $count_failed;
 
+    /**
+     * {@inheritdoc}
+     */
     public function run()
     {
         $batch_size = 100;

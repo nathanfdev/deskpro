@@ -3,7 +3,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
-export const loadAdmintPhraseTranslations = createAction(
+export const loadAdminPhraseTranslations = createAction(
   'ADMIN_LOAD_PHRASE_TRANSLATIONS',
   () => () => new Promise((resolve) => {
     const language = window.DP_PERSON_LANG_ID;

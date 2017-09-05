@@ -35,9 +35,9 @@ namespace DpBehat\System\AntiAbuse;
 use Application\DeskPRO\Entity\RateLimitLog;
 use Application\DeskPRO\Entity\Setting;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Behatch\Context\BaseContext;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\AntiAbuse;
 use DpBehat\KernelAwareTrait;
-use Sanpi\Behatch\Context\BaseContext;
 
 /**
  * Class EventsContext.

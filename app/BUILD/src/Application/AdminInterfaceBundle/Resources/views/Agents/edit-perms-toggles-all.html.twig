@@ -244,15 +244,17 @@
         {{ macro.perm_row('problems', 'reopen') }}
         </tbody>
     {% endif %}
-    <thead><tr><th>Snippets</th></tr></thead>
-    <tbody>
-    {{ macro.perm_row('snippet', 'create_snippet',        {showToggler: true}) }}
-    {{ macro.perm_row('snippet', 'create_self_snippet',   {toggleName: 'snippet.create_snippet'}) }}
-    {{ macro.perm_row('snippet', 'create_team_snippet',   {toggleName: 'snippet.create_snippet'}) }}
-    {{ macro.perm_row('snippet', 'create_global_snippet', {toggleName: 'snippet.create_snippet'}) }}
-    {{ macro.perm_row('snippet', 'edit_by_others') }}
-    {{ macro.perm_row('snippet', 'delete_by_others', {destructive: true}) }}
-    </tbody>
+    {% if app.hasBeta('new_snippets') %}
+        <thead><tr><th>Snippets</th></tr></thead>
+        <tbody>
+        {{ macro.perm_row('snippet', 'create_snippet',        {showToggler: true}) }}
+        {{ macro.perm_row('snippet', 'create_self_snippet',   {toggleName: 'snippet.create_snippet'}) }}
+        {{ macro.perm_row('snippet', 'create_team_snippet',   {toggleName: 'snippet.create_snippet'}) }}
+        {{ macro.perm_row('snippet', 'create_global_snippet', {toggleName: 'snippet.create_snippet'}) }}
+        {{ macro.perm_row('snippet', 'edit_by_others') }}
+        {{ macro.perm_row('snippet', 'delete_by_others', {destructive: true}) }}
+        </tbody>
+    {% endif %}
 </table>
 {# /OTHER PERMISSIONS #}
 

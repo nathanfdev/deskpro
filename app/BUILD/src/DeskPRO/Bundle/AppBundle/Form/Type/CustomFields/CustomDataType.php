@@ -394,6 +394,11 @@ class CustomDataType extends AbstractType
                     $customDefData->add($defaultCustomData);
                 }
             }
+        } else {
+            // make sure we have no dupes
+            if (!$customDef->isChoiceType()) {
+                $customDefData = new ArrayCollection([$customDefData->first()]);
+            }
         }
 
         return $customDefData;

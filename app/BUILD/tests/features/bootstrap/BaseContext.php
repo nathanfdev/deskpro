@@ -33,7 +33,7 @@
 namespace DpBehat;
 
 use Behat\Symfony2Extension\Context\KernelAwareContext as KernelAwareContextInterface;
-use Sanpi\Behatch\Context\BaseContext as BaseBehatContext;
+use Behatch\Context\BaseContext as BaseBehatContext;
 
 /**
  * Class BaseContext.

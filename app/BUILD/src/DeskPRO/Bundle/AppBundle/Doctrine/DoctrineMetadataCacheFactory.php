@@ -26,44 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
+namespace DeskPRO\Bundle\AppBundle\Doctrine;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Component\Doctrine\Common\Cache\FilesystemCache;
+use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\CacheProvider;
 
 /**
- * Class KbSettingsType.
+ * Class DoctrineMetadataCacheFactory.
  */
-class KbSettingsType extends AbstractType
+class DoctrineMetadataCacheFactory
 {
     /**
-     * {@inheritdoc}
+     * Constructor.
+     *
+     * @param AppEnvInterface $appEnv
+     * @param string          $subDir
+     * @param string          $extension
+     *
+     * @return CacheProvider
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public static function create(AppEnvInterface $appEnv, $subDir = 'doctrine-metadata', $extension = FilesystemCache::EXTENSION)
     {
-        $builder
-            ->add('knowledgebase_deep_tree', ApiBooleanType::class)
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return AppSettingsType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => KbSettings::class,
-        ]);
+        if ($appEnv->getEnvId() === 'dev') {
+            return new ArrayCache();
+        } else {
+            return new FilesystemCache($appEnv->getAppBaseKernelCacheDir().'/'.$appEnv->getEnvId().'/'.$subDir, $extension);
+        }
     }
 }

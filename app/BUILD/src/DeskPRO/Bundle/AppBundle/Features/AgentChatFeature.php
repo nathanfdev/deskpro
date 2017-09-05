@@ -198,6 +198,9 @@ SQL;
         $personIds = $connection->fetchAllCol($sql, [$chatId]);
         $person    = null;
         foreach ($personIds as $personId) {
+            if (!$personId) {
+                continue;
+            }
             if ($person = $em->find(Person::class, $personId)) { // we need actual person to avoid constraint fail
                 break;
             }

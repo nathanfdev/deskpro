@@ -27,8 +27,18 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     setPortalMode: (v) ->
       if v == "publish"
         @settings.portal_mode = "publish"
+        @settings.apps_downloads = true
+        @settings.apps_feedback = true
+        @settings.apps_guides = true
+        @settings.apps_kb = true
+        @settings.apps_news = true
       else
         @settings.portal_mode = "tickets"
+        @settings.apps_downloads = false
+        @settings.apps_feedback = false
+        @settings.apps_guides = false
+        @settings.apps_kb = false
+        @settings.apps_news = false
 
       @portalSettings.updateSettingsTemporary(@settings)
 

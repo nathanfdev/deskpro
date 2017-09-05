@@ -26,44 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\KbSettings;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-
-/**
- * Class KbSettingsType.
- */
-class KbSettingsType extends AbstractType
+class Build1504602761 extends AbstractBuild implements BlockingBuildInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function addNewTables()
     {
-        $builder
-            ->add('knowledgebase_deep_tree', ApiBooleanType::class)
-        ;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
+    public function runAlters()
     {
-        return AppSettingsType::class;
+        $this->execSlowAlterTable('tickets', 'ADD date_on_hold DATETIME DEFAULT NULL');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function run()
     {
-        $resolver->setDefaults([
-            'data_class' => KbSettings::class,
-        ]);
     }
 }
