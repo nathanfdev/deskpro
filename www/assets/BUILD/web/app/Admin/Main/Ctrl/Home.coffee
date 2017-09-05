@@ -71,6 +71,7 @@ define [
         problem_triggers = [
           @cron_status?.is_problem,
           @error_status?.error_count > 0,
+          @error_status?.error_log_size,
           @error_status?.gateway_error_count > 0,
           @error_status?.sendmail_error_count > 0,
           @apc_status?.is_problem
@@ -106,6 +107,20 @@ define [
       )
 
       return promise
+
+    deleteLogFile: (e) =>
+      @Api.sendDelete('/server_error_logs').then( () =>
+        @error_status.error_log_size = false;
+
+        problem_triggers = [
+          @cron_status?.is_problem,
+          @error_status?.error_count > 0,
+          @error_status?.gateway_error_count > 0,
+          @error_status?.sendmail_error_count > 0,
+          @apc_status?.is_problem
+        ]
+        @is_server_problem = problem_triggers.filter((x) -> return !!x).length > 0
+      )
 
 
     pollFeatures: =>
