@@ -1669,9 +1669,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (pageHeaderEl && pageHeaderEl.length) {
 				pos = pageHeaderEl.position();
 				if (pos && pos.top > 20) {
-					this.getEl('layout_sidebar_icons').css('top', pos.top + 10)
+					this.getEl('layout_sidebar_icons').css('top', pos.top + 10);
 				} else {
-					this.getEl('layout_sidebar_icons').css('top', 0)
+					this.getEl('layout_sidebar_icons').css('top', 0);
 				}
 			}
 		}
