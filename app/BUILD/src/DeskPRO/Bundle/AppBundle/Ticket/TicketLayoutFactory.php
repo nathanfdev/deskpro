@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
 use Doctrine\ORM\EntityManager;
@@ -40,13 +41,8 @@ use Doctrine\ORM\EntityManager;
 /**
  * Class TicketLayoutFactory.
  */
-class TicketLayoutFactory
+class TicketLayoutFactory extends AbstractDataService
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
     /**
      * @var CaptchaDecider
      */
@@ -60,7 +56,7 @@ class TicketLayoutFactory
      */
     public function __construct(EntityManager $em, CaptchaDecider $captchaDecider = null)
     {
-        $this->em             = $em;
+        parent::__construct($em);
         $this->captchaDecider = $captchaDecider;
     }
 
@@ -88,22 +84,29 @@ class TicketLayoutFactory
             $department = (int) $department ?: null;
         }
 
-        // TODO: add a quick caching layer here so that we only ever calc this once per department in a request
-        // TODO: do what we do in the DataService's with the in memory hash map.
-        $layout = $this->getLayout($department);
+        return $this->generateAndCache(
+            [
+                'getLayoutForTicketForm',
+                $department,
+                $forApi,
+            ],
+            function () use ($department, $forApi) {
+                $layout = $this->getLayout($department);
 
-        // verify that the user layout has a subject, message, and user email
-        $this->verifyRequiredFields($layout->getUserLayout(), $forApi);
-        $this->verifyRequiredFields($layout->getAgentLayout(), $forApi);
+                // verify that the user layout has a subject, message, and user email
+                $this->verifyRequiredFields($layout->getUserLayout(), $forApi);
+                $this->verifyRequiredFields($layout->getAgentLayout(), $forApi);
 
-        if (!$forApi) {
-            $this->checkAntiAbuseCaptcha($layout->getUserLayout());
-        }
+                if (!$forApi) {
+                    $this->checkAntiAbuseCaptcha($layout->getUserLayout());
+                }
 
-        // sort the layout fields
-        $this->sortTicketLayoutFormFields($layout);
+                // sort the layout fields
+                $this->sortTicketLayoutFormFields($layout);
 
-        return $layout;
+                return $layout;
+            }
+        );
     }
 
     /**

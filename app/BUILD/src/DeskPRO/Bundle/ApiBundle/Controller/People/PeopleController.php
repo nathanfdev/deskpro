@@ -201,9 +201,6 @@ class PeopleController extends CrudController
         LabelHelper::applyLabelFilters($context, static::$entity);
         CustomDataHelper::applyCustomDataFilters($context, 'person', CustomDefPerson::class);
 
-        $qb->leftJoin("$alias.agentData", 'agentData');
-        $qb->addSelect('agentData');
-
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
             $qb->setParameter('is_agent', (int) $request->get('is_agent'));

@@ -25,7 +25,6 @@ Feature: /organizations endpoint
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "data" should have 2 elements
-    And the db queries counter should be equal or less than 25
 
   Scenario: I try to add a new organization with empty request
     When I send a POST request to "/api/v2/organizations"

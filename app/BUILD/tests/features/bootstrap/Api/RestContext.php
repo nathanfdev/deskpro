@@ -271,20 +271,6 @@ class RestContext extends BaseContext
     }
 
     /**
-     * Checks, whether the db queries counter equal or less than value.
-     *
-     * @Then the db queries counter should be equal or less than :value
-     */
-    public function theDbQueriesCounterShouldBeEqualOrLessThan($value)
-    {
-        $actual = $this->getHttpHeader('DB-QUERIES-COUNT');
-        $this->assert(
-            intval($actual) <= intval($value),
-            sprintf('The db queries counter "%s" is greater than "%s"', $actual, $value)
-        );
-    }
-
-    /**
      * Checks, whether the header matches a regular expression.
      *
      * @Then the header :name should match :regex

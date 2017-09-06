@@ -41,10 +41,10 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketCategory;
-use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
@@ -295,7 +295,7 @@ class Ticket
     /**
      * String array of labels.
      *
-     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelTicket>>")
+     * @JMS\Type("deferred<array<label<Application\DeskPRO\Entity\LabelTicket>>>")
      *
      * @var bool
      */
@@ -538,7 +538,7 @@ class Ticket
     /**
      * All ticket slas.
      *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\TicketSla>>")
+     * @JMS\Type("deferred<collection<entity<Application\DeskPRO\Entity\TicketSla>>>")
      *
      * @var TicketSla[]
      */
@@ -547,7 +547,7 @@ class Ticket
     /**
      * Custom ticket fields.
      *
-     * @JMS\Type("custom_data<array<Application\DeskPRO\Entity\CustomDataTicket>>")
+     * @JMS\Type("deferred<custom_data<array<Application\DeskPRO\Entity\CustomDataTicket>>>")
      *
      * @var CustomDataTicket[]
      */
@@ -583,7 +583,7 @@ class Ticket
     /**
      * User should be acknowledged about this ticket.
      *
-     * @JMS\Type("array<entity<Application\DeskPRO\Entity\Person>>")
+     * @JMS\Type("deferred<array<entity<Application\DeskPRO\Entity\Person>>>")
      *
      * @var Person[]
      */
@@ -651,7 +651,6 @@ class Ticket
             $this->personEmail = $ticket->getPerson()->getPrimaryEmail();
         }
 
-        $this->fields               = $ticket->getCustomData();
         $this->contextualFields     = $ticket->getCustomPerData();
         $this->agent                = $ticket->getAgent();
         $this->agentTeam            = $ticket->getAgentTeam();
@@ -667,7 +666,6 @@ class Ticket
         $this->oldStatus            = $ticket->getStatus();
         $this->hiddenStatus         = $ticket->getHiddenStatus();
         $this->isHold               = $ticket->isHold();
-        $this->labels               = $ticket->getLabels();
         $this->urgency              = $ticket->getUrgency();
         $this->feedbackRating       = $ticket->getFeedbackRating();
         $this->dateFeedbackRating   = $ticket->getDateFeedbackRating();
@@ -692,14 +690,9 @@ class Ticket
         $this->problems             = $ticket->getProblems();
         $this->countAgentReplies    = $ticket->getCountAgentReplies();
         $this->countUserReplies     = $ticket->getCountUserReplies();
-        $this->worstSlaStatus       = $ticket->getWorstSlaStatus();
         $this->waitingTimes         = $ticket->getWaitingTimes();
-        $this->ticketSlas           = $ticket->getTicketSlas();
-        $this->cc                   = $ticket->getParticipants()->map(function (TicketParticipant $participant) {
-            return $participant->getPerson();
-        });
-        $this->children = $ticket->getChildrenTickets();
-        $this->siblings = $ticket->getSiblingsTickets();
+        $this->children             = $ticket->getChildrenTickets();
+        $this->siblings             = $ticket->getSiblingsTickets();
     }
 
     /**
@@ -740,5 +733,54 @@ class Ticket
     public function setTicketUserErrors($ticketUserErrors)
     {
         $this->ticketUserErrors = $ticketUserErrors;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $labels
+     *
+     * @return $this
+     */
+    public function setLabels($labels = null)
+    {
+        $this->labels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $customData
+     *
+     * @return $this
+     */
+    public function setCustomData($customData = null)
+    {
+        $this->fields = $customData;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $cc
+     *
+     * @return $this
+     */
+    public function setCc($cc = null)
+    {
+        $this->cc = $cc;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $ticketSlas
+     *
+     * @return $this
+     */
+    public function setTicketSlas($ticketSlas = null)
+    {
+        $this->ticketSlas     = $ticketSlas;
+        $this->worstSlaStatus = TicketEntity::calctWorstSlaStatus($ticketSlas);
+
+        return $this;
     }
 }
