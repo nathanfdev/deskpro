@@ -7,16 +7,13 @@
             {##########################################################################################################}
 
             <div class="big-list-of-stats-filters">
-                <div class="bucket">
-                    <form>
-                        <label>Filter:</label>
-                        <div class="box">
-                            <input type="text" ng-model="searchText" placeholder="Filter stats by name">
-                        </div>
-                    </form>
+                <div class="bucket filter-title">
+                    <div class="box">
+                        <input type="text" ng-model="searchText" placeholder="Filter stats by name">
+                    </div>
                 </div>
 
-                <div class="bucket" style="position: relative;" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener" dp-dropdown-toggle="true">
+                <div class="bucket filter-label" style="position: relative;" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener" dp-dropdown-toggle="true">
                     <a id="dp-select-label-opener" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
 
                     <!-- Needs to be same width as the .select above -->
