@@ -48,7 +48,7 @@ class StateEntityConverter
             return null;
         }
 
-        if (!$stateEntity->getOwner() || !$stateEntity->getPermRead() || !$stateEntity->getPermWrite()) {
+        if (!$stateEntity->getPermRead() || !$stateEntity->getPermWrite()) {
             return null;
         }
 
@@ -62,8 +62,9 @@ class StateEntityConverter
             $entityId
         );
 
+        $ownerId = $stateEntity->getOwner() ? (string) $stateEntity->getOwner()->getId() : null;
         $securityDescriptor =  new Domain\ApplicationState\SecurityDescriptor(
-            (string) $stateEntity->getOwner()->getId(),
+            $ownerId,
             $stateEntity->getPermRead(),
             $stateEntity->getPermWrite(),
             (bool) $stateEntity->getIsBackendOnly()

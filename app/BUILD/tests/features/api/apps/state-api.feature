@@ -5,8 +5,8 @@ Feature: Test Apps State API
 
   Background:
     Given there are no "App" records
-    And I'm authenticated as agent
     And I package the app from folder "resources/apps/state-tests"
+    And I'm authenticated as agent
     And I send a "POST" request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
     And I save a reference "application" to the JSON node "id"
 
@@ -29,8 +29,10 @@ Feature: Test Apps State API
     Then the response status code should be 404
 
     Examples:
-      | name       | value    | entity   |
-      | user-only  | Yahoo    | ticket:1 |
+      | name              | value    | entity   |
+      | user-only         | Yahoo    | ticket:1 |
+      | user-writable     | Yahoo    | ticket:1 |
+      | world-accessible  | Yahoo    | ticket:1 |
 
   Scenario Outline: I update state
     Given I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
@@ -51,5 +53,8 @@ Feature: Test Apps State API
     And the JSON node "value" should be equal to "updated-<value>"
     Then I send a DELETE request to "/api/v2/apps/{application}/state/<entity>/<name>"
     Examples:
-      | name       | value    | entity   |
-      | user-only  | Yahoo    | ticket:1 |
+      | name              | value    | entity   |
+      | user-only         | Yahoo    | ticket:1 |
+      | user-writable     | Yahoo    | ticket:1 |
+      | world-accessible  | Yahoo    | ticket:1 |
+
