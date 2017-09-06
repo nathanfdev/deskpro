@@ -16,7 +16,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     # 2) 'possible-values' (required parameter) - ...
    #
   ###
-  Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', ($state, $compile, $sce, $http) ->
+  Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', 'TemplateManager', ($state, $compile, $sce, $http, TemplateManager) ->
     return {
       restrict: 'AE',
       replace: true,
@@ -147,8 +147,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         )
 
         buildDirectiveVariables(scope.valueToDecorate)
-        $http.get(templateUrl).then (response) ->
-          tpl = $sce.trustAsHtml response.data
+
+        TemplateManager.get(templateUrl).then (response) ->
+          tpl = $sce.trustAsHtml response
           template = $sce.getTrustedHtml tpl
           linkFn = $compile(template)
           content = linkFn(scope)

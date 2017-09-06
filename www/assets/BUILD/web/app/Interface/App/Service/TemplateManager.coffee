@@ -69,6 +69,22 @@ define ->
       view = @commonName(view)
       return @$templateCache.get(view) || null
 
+    ###
+    # an alias
+    ###
+    get: (view) ->
+      @queue view
+
+    ###
+    # Mark a view to be loaded next time we are loading templates
+      #
+      # @param {String} view
+    ###
+    load: (view) ->
+      view = @commonName(view)
+      if not @$templateCache.get(view) and not @pendingNames[view] and not @sendPending[view]
+        @pending.push(view)
+        @pendingNames[view] = true
 
     ###
     # Loads a template source along with any others that are queued.

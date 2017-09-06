@@ -109,7 +109,8 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
         else
           return true for label in value.labels when label.toLocaleLowerCase().indexOf(search) >= 0
           return false
-        $scope.saveWidget = ->
+
+    $scope.saveWidget = ->
       $modalInstance.close({widget: $scope.widget, report: $scope.report})
 
     ####################################################################################################################

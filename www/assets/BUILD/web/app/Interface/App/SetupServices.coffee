@@ -48,6 +48,18 @@ define [
     Module.run(['TemplateLoader', (TemplateLoader) ->
     # this is just so the loader is loaded
     ])
+
+    Module.run(['TemplateManager', (TemplateManager) ->
+      templates = [
+        'ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html',
+      ]
+
+      for t in templates
+        TemplateManager.load(t)
+
+      TemplateManager.loadPending()
+    ])
+
     Module.factory('HttpTemplateInterceptor', [->
       isTemplateUrl = (url) ->
         return !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/)
