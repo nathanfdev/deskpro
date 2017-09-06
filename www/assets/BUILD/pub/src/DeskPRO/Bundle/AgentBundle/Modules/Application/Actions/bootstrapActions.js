@@ -135,7 +135,7 @@ export const preloadData    = createAction(
           if (responses.snippets.linked.blob) {
             blobs = responses.snippets.linked.blob;
           }
-          dispatch(setCollection('SnippetsBlobs', 'all', replaceIds(blobs, 'blob_id')));
+          dispatch(setCollection('SnippetBlobs', 'all', replaceIds(blobs, 'blob_id')));
           const pagination = responses.snippets.meta.pagination;
           let currentPage = pagination.current_page;
           while (currentPage < pagination.total_pages) {
@@ -148,7 +148,7 @@ export const preloadData    = createAction(
               .success((response) => {
                 dispatch(addToCollection('Snippets', 'all', response.responses.snippets.data));
                 if (response.responses.snippets.linked.blob) {
-                  dispatch(addToCollection('SnippetsBlobs', 'all', replaceIds(response.responses.snippets.linked.blob, 'blob_id')));
+                  dispatch(addToCollection('SnippetBlobs', 'all', replaceIds(response.responses.snippets.linked.blob, 'blob_id')));
                 }
               })
             ;

@@ -906,6 +906,9 @@ class SnippetAttachment extends React.Component {
       return null;
     }
     const blob = blobs.find(b => b.get('id') === blobId);
+    if (!blob) {
+      return null;
+    }
     return (
       <div className="snippet-attachment">
         <i className="fa fa-paperclip" />&nbsp;
