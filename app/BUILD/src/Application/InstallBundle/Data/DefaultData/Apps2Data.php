@@ -41,7 +41,7 @@ class Apps2Data extends AbstractDefaultData
     public function runInstall()
     {
         $assetDir      = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
-        $trelloAppPath = $assetDir.'/apps/v2/deskproapps-trello.zip';
+        $trelloAppPath = $assetDir.'/apps/v2/deskpro-app-trello.zip';
 
         $this->getLogger()->info('Installing Trello');
         $instanceCreator = $this->getContainer()->get('apps2.application_manager');
