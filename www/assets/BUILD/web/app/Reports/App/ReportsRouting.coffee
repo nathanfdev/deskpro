@@ -69,15 +69,9 @@ define -> (States) ->
   States.when('/stats', '/stats/')
 
   States.add('reports.stats')
-    .setUrl('/stats')
+    .setUrl('/stats/')
     .setCtrl('Reports.Stats.StatsMain')
     .setTpl('ReportsInterfaceBundle:Stats:main.html')
-    .setAbstract()
-
-  States.add('reports.stats.home')
-    .setUrl('/')
-    .setCtrl('Reports.Stats.StatsHome')
-    .setTpl('ReportsInterfaceBundle:Stats:home.html')
 
   States.add('reports.stats.view')
     .setUrl('/{widget_id:[0-9]+}')
