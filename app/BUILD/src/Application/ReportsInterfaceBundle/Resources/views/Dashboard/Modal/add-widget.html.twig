@@ -16,12 +16,9 @@
             <i class="spinner-circle-32"></i>
         </div>
         <div class="bucket" ng-show="loaded">
-            <form>
-                <label>Filter:</label>
-                <div class="box">
-                    <input type="text" ng-model="searchText" placeholder="Filter stats by name">
-                </div>
-            </form>
+            <div class="box">
+                <input type="text" ng-model="searchText" placeholder="Filter stats by name">
+            </div>
         </div>
 
         <div class="bucket" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener">
@@ -47,7 +44,9 @@
                 <span ng-click="makeChoice(report)" class="mark"></span>
 
                 <h1>
-                    <dp-report-variables change-widget-params="changeWidgetParams(params)" report-id="report.id" value-to-decorate="report.title" possible-values="groupParams"></dp-report-variables>
+                    <dp-report-variables change-widget-params="changeWidgetParams(params)" report-id="report.id"
+                                         value-to-decorate="report.title"
+                                         possible-values="groupParams"></dp-report-variables>
                 </h1>
 
                 <p>
