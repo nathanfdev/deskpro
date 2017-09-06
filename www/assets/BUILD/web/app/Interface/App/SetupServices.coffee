@@ -1,4 +1,8 @@
 define [
+  'Interface/App/Routing/StateCollection',
+  'Interface/App/Routing/StateConfig',
+  'Reports/App/ReportsRouting',
+
   'Interface/App/Service/AppConfig',
   'Interface/App/Service/TemplateLoader',
   'Interface/App/Service/TemplateManager',
@@ -15,6 +19,10 @@ define [
 
   'Reports/Main/Service/SessionPing',
 ], (
+  StateCollection,
+  StateConfig,
+  ReportsRouting
+
   # Services
   AppConfig,
   TemplateLoader,
@@ -31,7 +39,7 @@ define [
   Reports_App_Service_DashboardPermissions,
   Reports_App_Service_DashboardsInfo,
 
-  Reports_Main_Service_SessionPing
+  Reports_Main_Service_SessionPing,
 ) ->
   return (Module) ->
     Module.service('AppConfig', -> return new AppConfig)
@@ -53,6 +61,14 @@ define [
       templates = [
         'ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html',
       ]
+
+      reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.InterfaceApp'))
+      ReportsRouting(reportStates)
+
+      # just copy paste from old-style reports
+      for route in reportStates.routes
+        if route.tpl
+          templates.push(route.tpl)
 
       for t in templates
         TemplateManager.load(t)
