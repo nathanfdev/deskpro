@@ -192,26 +192,6 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     }
 
     /**
-     * @param TicketWebhook $webhook
-     * @param WebhookInvocation $webhookInvocation
-     * @param array $term
-     * @return array|null
-     */
-    private function tryAndEvaluateSearchTerm(TicketWebhook $webhook, WebhookInvocation $webhookInvocation, array $term)
-    {
-        $onlyEvaluatorSoFar = new TwigScriptEvaluator();
-        $script = $term['options'];
-        if ($onlyEvaluatorSoFar->canEvaluate($script)) {
-            $result = $onlyEvaluatorSoFar->evaluate($webhookInvocation, $script);
-            $newTerm = array_merge([], $term);
-            $newTerm['options'] = $result;
-            return $newTerm;
-        }
-
-        return null;
-    }
-
-    /**
      * Sets the container.
      *
      * @param ContainerInterface|null $container A ContainerInterface instance or null

@@ -48,6 +48,7 @@ class SearchTermVars
         $iterator    = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($search));
         while ($iterator->valid() && !$hasTermVars) {
             $value = $iterator->current();
+            $iterator->next();
             for ($evaluator = reset($evaluators); !$hasTermVars && !empty($evaluator); $evaluator = next($evaluators)) {
                 $hasTermVars = $evaluator->canEvaluate($value);
             }
@@ -86,7 +87,7 @@ class SearchTermVars
     {
         foreach ($array as $k => $v) {
             if (is_array($v)) {
-                $array[$k] = self::evaluateOptions($array, $evaluators, $invocation);
+                $array[$k] = self::evaluateOptions($v, $evaluators, $invocation);
             } else {
                 $valueEvaluators = [];
                 foreach ($evaluators as $evaluator) {

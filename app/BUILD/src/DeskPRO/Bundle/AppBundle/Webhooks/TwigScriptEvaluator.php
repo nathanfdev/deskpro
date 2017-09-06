@@ -37,8 +37,8 @@ class TwigScriptEvaluator implements ScriptEvaluator
      */
     private function prepareScript($script)
     {
-        if (substr($script, 0, strlen('twig:')) !== 'twig:') {
-            return substr($script, strlen('twig:') - 1);
+        if (substr($script, 0, strlen('twig:')) === 'twig:') {
+            return substr($script, strlen('twig:'));
         }
 
         return $script;
@@ -70,9 +70,7 @@ class TwigScriptEvaluator implements ScriptEvaluator
             // hold any sandboxing for now
             // $sandbox = new \Twig_Extension_Sandbox($policy, true);
             $context = $invocation->toPropertyMap();
-            $result  = $twig->render('script.html', $context);
-
-            return $result;
+            return $twig->render('script.html', $context);
         } catch (\Twig_Error $e) {
             $msg = 'Error evaluating webhook script';
             throw new WebhookException($msg, 0, $e);
