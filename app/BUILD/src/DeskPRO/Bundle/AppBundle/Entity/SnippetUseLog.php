@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -64,22 +65,33 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
-     * Snippet translated.
+     * Ticket Message where the snippet was used.
      *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketMessage")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\TicketMessage", cascade={"persist"})
      * @ORM\JoinColumn(name="ticket_message_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<Application\DeskPRO\Entity\TicketMessage>")
-     *
-     * @Assert\NotBlank()
      *
      * @var TicketMessage
      */
     protected $ticketMessage;
 
     /**
-     * Snippet translated.
+     * Chat Message where the snippet was used.
+     *
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\ChatMessage", cascade={"persist"})
+     * @ORM\JoinColumn(name="chat_message_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\ChatMessage>")
+     *
+     * @var ChatMessage
+     */
+    protected $chatMessage;
+
+    /**
+     * Snippet used.
      *
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\Snippet")
      * @ORM\JoinColumn(name="snippet_id", referencedColumnName="id", onDelete="CASCADE")
@@ -143,17 +155,16 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      */
     protected $type;
 
-    public static function createSnippetLog(TicketMessage $ticketMessage, Person $person, SnippetTranslation $snippetTranslation)
+    public static function createSnippetTicketLog(TicketMessage $ticketMessage, Person $person, SnippetTranslation $snippetTranslation)
     {
-        return new self($ticketMessage, $person, $snippetTranslation);
-    }
+        $log = new self();
+        $log->setSnippet($snippetTranslation->getSnippet());
+        $log->setLanguage($snippetTranslation->getLanguage());
+        $log->setTicketMessage($ticketMessage);
+        $log->setPerson($person);
+        $log->setType('ticket');
 
-    private function __construct(TicketMessage $ticketMessage, Person $person, SnippetTranslation $snippetTranslation)
-    {
-        $this->setSnippet($snippetTranslation->getSnippet());
-        $this->setLanguage($snippetTranslation->getLanguage());
-        $this->setTicketMessage($ticketMessage);
-        $this->setPerson($person);
+        return $log;
     }
 
     /**
