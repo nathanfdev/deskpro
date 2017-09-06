@@ -62,7 +62,9 @@ class ScssPhpCompiler implements CompilerInterface
 
         if (!$resolver) {
             $resolver = new OptionsResolver();
-            $resolver->setDefault('compiler_options', []);
+            $resolver->setDefault('compiler_options', [
+                'error_load_file' => 'throw',
+            ]);
         }
 
         return $resolver;
