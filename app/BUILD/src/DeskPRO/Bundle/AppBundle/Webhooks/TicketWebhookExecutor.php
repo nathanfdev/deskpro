@@ -37,7 +37,8 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
-use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor\ExecutorContextVars;
+use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars\ExecutorContextEnv;
+use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars\SearchTermVars;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -144,30 +145,40 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     private function createExecutionContext(TicketWebhook $webhook, WebhookRequest $request, WebhookInvocation $payload)
     {
         $context = $this->ticketManager->createSystemExecutorContext();
-        ExecutorContextVars::setWebhook($context, $webhook);
-        ExecutorContextVars::setWebhookRequest($context, $request);
-        ExecutorContextVars::setWebhookPayload($context, $payload);
+        ExecutorContextEnv::setWebhook($context, $webhook);
+        ExecutorContextEnv::setWebhookRequest($context, $request);
+        ExecutorContextEnv::setWebhookPayload($context, $payload);
 
         return $context;
     }
 
     private function buildTicketSearchCriteria(TicketWebhook $webhook, WebhookInvocation $webhookInvocation)
     {
-        $searchTerms = $webhook->getSearchTerms();
-
+        $terms = $webhook->getSearchTerms();
         $trans       = new LegacyTermsTransformer();
-        $legacyTerms = $trans->toLegacyTerms($searchTerms);
+        $termsList = $trans->toLegacyTerms($terms);
+
+        // filter and evaluate search terms
+        $searchTerms = array_filter($termsList, function ($term) {
+            return $term['op'] != 'ignore';
+        });
+
+        $evaluators = [ new TwigScriptEvaluator() ];
+        $searchTerms = array_map(function ($term) use ($evaluators, $webhookInvocation) {
+            if (SearchTermVars::hasVars($term, $evaluators)) {
+                return SearchTermVars::evaluate($term, $evaluators, $webhookInvocation);
+            }
+
+            return $term;
+        }, $searchTerms);
 
         $criteria     = new TicketSearch();
         $hasUserTerms = false;
         $hasOrgTerms  = false;
-
-        foreach ($legacyTerms as $term) {
-            if ($term['op'] != 'ignore') {
-                $criteria->addTerm($term['type'], $term['op'], $term['options']);
-                $hasUserTerms = !$hasUserTerms && strpos($term['type'], 'person_') === 0;
-                $hasOrgTerms  = !$hasOrgTerms && strpos($term['type'], 'org_') === 0;
-            }
+        foreach ($searchTerms as $term) {
+            $criteria->addTerm($term['type'], $term['op'], $term['options']);
+            $hasUserTerms = !$hasUserTerms && strpos($term['type'], 'person_') === 0;
+            $hasOrgTerms  = !$hasOrgTerms && strpos($term['type'], 'org_') === 0;
         }
 
         if ($hasUserTerms) {
@@ -178,6 +189,26 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         }
 
         return $criteria;
+    }
+
+    /**
+     * @param TicketWebhook $webhook
+     * @param WebhookInvocation $webhookInvocation
+     * @param array $term
+     * @return array|null
+     */
+    private function tryAndEvaluateSearchTerm(TicketWebhook $webhook, WebhookInvocation $webhookInvocation, array $term)
+    {
+        $onlyEvaluatorSoFar = new TwigScriptEvaluator();
+        $script = $term['options'];
+        if ($onlyEvaluatorSoFar->canEvaluate($script)) {
+            $result = $onlyEvaluatorSoFar->evaluate($webhookInvocation, $script);
+            $newTerm = array_merge([], $term);
+            $newTerm['options'] = $result;
+            return $newTerm;
+        }
+
+        return null;
     }
 
     /**

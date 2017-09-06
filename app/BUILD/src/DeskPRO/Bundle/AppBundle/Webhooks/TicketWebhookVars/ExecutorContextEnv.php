@@ -26,18 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor;
+namespace DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 use DeskPRO\Bundle\AppBundle\Webhooks\WebhookInvocation;
 use DeskPRO\Bundle\AppBundle\Webhooks\WebhookRequest;
 
-class ExecutorContextVars
+class ExecutorContextEnv
 {
     /**
      * @param ExecutorContextInterface $context
-     * @param TicketWebhook $webhook
+     * @param TicketWebhook            $webhook
      */
     public static function setWebhook(ExecutorContextInterface $context, TicketWebhook $webhook)
     {
@@ -46,13 +46,14 @@ class ExecutorContextVars
 
     /**
      * @param ExecutorContextInterface $context
+     *
      * @return TicketWebhook|null
      */
     public static function getWebhook(ExecutorContextInterface $context)
     {
         $varName = 'webhook';
         $webhook = $context->getVars()->get($varName);
-        if (!is_null($webhook) && ! $webhook instanceof TicketWebhook) {
+        if (!is_null($webhook) && !$webhook instanceof TicketWebhook) {
             $msg = sprintf('unexpected type for webhook variable named: %s', $varName);
             throw new \DomainException($msg);
         }
@@ -67,13 +68,14 @@ class ExecutorContextVars
 
     /**
      * @param ExecutorContextInterface $context
+     *
      * @return TicketWebhook|null
      */
     public static function getWebhookRequest(ExecutorContextInterface $context)
     {
         $varName = 'webhook_request';
         $request = $context->getVars()->get($varName);
-        if (!is_null($request) && ! $request instanceof WebhookRequest) {
+        if (!is_null($request) && !$request instanceof WebhookRequest) {
             $msg = sprintf('unexpected type for webhook variable named: %s', $varName);
             throw new \DomainException($msg);
         }
@@ -88,18 +90,18 @@ class ExecutorContextVars
 
     /**
      * @param ExecutorContextInterface $context
+     *
      * @return WebhookInvocation
      */
     public static function getWebhookPayload(ExecutorContextInterface $context)
     {
         $varName = 'webhook_payload';
         $request = $context->getVars()->get($varName);
-        if (!is_null($request) && ! $request instanceof WebhookInvocation) {
+        if (!is_null($request) && !$request instanceof WebhookInvocation) {
             $msg = sprintf('unexpected type for webhook variable named: %s', $varName);
             throw new \DomainException($msg);
         }
 
         return $request;
     }
-
 }

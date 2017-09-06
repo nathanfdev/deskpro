@@ -26,48 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor;
+namespace DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Webhooks\WebhookException;
 use Symfony\Component\PropertyAccess;
 
-class WebhookVars
+class ExecutorContextVars
 {
     /**
      * @param ExecutorContextInterface $context
-     * @param string $name
+     * @param string                   $name
+     *
      * @return bool
      */
     public static function exists(ExecutorContextInterface $context, $name)
     {
-        $payload = ExecutorContextVars::getWebhookPayload($context);
-        if (! $payload) {
+        $payload = ExecutorContextEnv::getWebhookPayload($context);
+        if (!$payload) {
             return false;
         }
 
         $propertyAccessor = PropertyAccess\PropertyAccess::createPropertyAccessor();
-        $propertyPath = new PropertyAccess\PropertyPath($name);
+        $propertyPath     = new PropertyAccess\PropertyPath($name);
 
         return $propertyAccessor->isReadable($payload, $propertyPath);
     }
 
     /**
      * @param ExecutorContextInterface $context
-     * @param string $name
-     * @return mixed
+     * @param string                   $name
+     *
      * @throws WebhookException
+     *
+     * @return mixed
      */
     public static function get(ExecutorContextInterface $context, $name)
     {
-        $payload = ExecutorContextVars::getWebhookPayload($context);
-        if (! $payload) {
+        $payload = ExecutorContextEnv::getWebhookPayload($context);
+        if (!$payload) {
             $msg = 'can not found webhook payload';
             throw new WebhookException($msg);
         }
 
         $propertyAccessor = PropertyAccess\PropertyAccess::createPropertyAccessor();
-        $propertyPath = new PropertyAccess\PropertyPath($name);
+        $propertyPath     = new PropertyAccess\PropertyPath($name);
         try {
             return $propertyAccessor->getValue($payload, $propertyPath);
         } catch (PropertyAccess\Exception\ExceptionInterface $e) {

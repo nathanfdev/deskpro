@@ -36,7 +36,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
-use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor\WebhookVars;
+use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars\ExecutorContextVars;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -67,7 +67,7 @@ class CheckWebhookVar extends AbstractTriggerTerm
             return false;
         }
 
-        $valueExists = WebhookVars::exists($context, $name);
+        $valueExists = ExecutorContextVars::exists($context, $name);
         if ($this->getTermOperator() == 'not_isset') {
             return !$valueExists;
         } else if ($this->getTermOperator() == 'isset') {
@@ -76,7 +76,7 @@ class CheckWebhookVar extends AbstractTriggerTerm
             return false;
         }
 
-        $value = WebhookVars::get($context, $name);
+        $value = ExecutorContextVars::get($context, $name);
         return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options['value']);
     }
 }

@@ -116,4 +116,18 @@ class WebhookInvocation
     {
         return $this->headers;
     }
+
+    /**
+     * @return array
+     */
+    public function toPropertyMap()
+    {
+        return [
+            'query' => $this->getQuery(),
+            'queryString' => $this->getQueryString(),
+            'request' => $this->getRequest(),
+            'data' => $this->getData(),
+            'headers' => $this->getHeaders(),
+        ];
+    }
 }

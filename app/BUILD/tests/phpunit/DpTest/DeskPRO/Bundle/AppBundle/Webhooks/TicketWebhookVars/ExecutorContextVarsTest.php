@@ -30,7 +30,7 @@ namespace DpTest\DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor;
 
 use Application\DeskPRO\Tickets\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
-use DeskPRO\Bundle\AppBundle\Webhooks\WebhookExecutor\ExecutorContextVars;
+use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars\ExecutorContextEnv;
 use DeskPRO\Bundle\AppBundle\Webhooks\WebhookHttpRequest;
 use DeskPRO\Bundle\AppBundle\Webhooks\WebhookInvocation;
 use DpTest\DeskProTestCase;
@@ -39,31 +39,29 @@ class ExecutorContextVarsTest extends DeskProTestCase
 {
     public function testGetVariables()
     {
-        $webhook = new TicketWebhook();
-        $request = new WebhookHttpRequest('', [], '', []);
-        $payload = new \stdClass();
+        $webhook    = new TicketWebhook();
+        $request    = new WebhookHttpRequest('', [], '', []);
+        $payload    = new \stdClass();
         $invocation = WebhookInvocation::fromRequestAndData($request, $payload);
 
         $context = new ExecutorContext();
 
-        $actualWebhook = ExecutorContextVars::getWebhook($context);
+        $actualWebhook = ExecutorContextEnv::getWebhook($context);
         $this->assertNull($actualWebhook);
-        ExecutorContextVars::setWebhook($context, $webhook);
-        $actualWebhook = ExecutorContextVars::getWebhook($context);
+        ExecutorContextEnv::setWebhook($context, $webhook);
+        $actualWebhook = ExecutorContextEnv::getWebhook($context);
         $this->assertTrue($actualWebhook === $webhook);
 
-
-        $actualRequest = ExecutorContextVars::getWebhookRequest($context);
+        $actualRequest = ExecutorContextEnv::getWebhookRequest($context);
         $this->assertNull($actualRequest);
-        ExecutorContextVars::setWebhookRequest($context, $request);
-        $actualRequest = ExecutorContextVars::getWebhookRequest($context);
+        ExecutorContextEnv::setWebhookRequest($context, $request);
+        $actualRequest = ExecutorContextEnv::getWebhookRequest($context);
         $this->assertTrue($actualRequest === $request);
 
-
-        $actualPayload = ExecutorContextVars::getWebhookPayload($context);
+        $actualPayload = ExecutorContextEnv::getWebhookPayload($context);
         $this->assertNull($actualPayload);
-        ExecutorContextVars::setWebhookPayload($context, $invocation);
-        $actualPayload = ExecutorContextVars::getWebhookPayload($context);
+        ExecutorContextEnv::setWebhookPayload($context, $invocation);
+        $actualPayload = ExecutorContextEnv::getWebhookPayload($context);
         $this->assertTrue($actualPayload === $invocation);
     }
 
@@ -74,7 +72,7 @@ class ExecutorContextVarsTest extends DeskProTestCase
 
         $exception = null;
         try {
-            ExecutorContextVars::getWebhookRequest($context);
+            ExecutorContextEnv::getWebhookRequest($context);
         } catch (\DomainException $e) {
             $exception = $e;
         }
@@ -88,7 +86,7 @@ class ExecutorContextVarsTest extends DeskProTestCase
 
         $exception = null;
         try {
-            ExecutorContextVars::getWebhook($context);
+            ExecutorContextEnv::getWebhook($context);
         } catch (\DomainException $e) {
             $exception = $e;
         }
@@ -102,11 +100,10 @@ class ExecutorContextVarsTest extends DeskProTestCase
 
         $exception = null;
         try {
-            ExecutorContextVars::getWebhookPayload($context);
+            ExecutorContextEnv::getWebhookPayload($context);
         } catch (\DomainException $e) {
             $exception = $e;
         }
         $this->assertNotNull($exception);
     }
-
 }
