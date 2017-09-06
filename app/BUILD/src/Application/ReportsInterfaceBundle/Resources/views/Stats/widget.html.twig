@@ -1,6 +1,11 @@
 <div class="reports-editor-panel full-editor">
     <div class="editor-form full-editor-form">
-        <div class="query-part title"><div ui-ace="editor_conf({minLines: 1, mode: 'xml', fontFamily: 'Lato, \'proxima nova\'', fontSize: '13px'})" ng-model="widget.title"></div></div>
+        <div class="inline-input">
+            <div class="query-part title">
+                <div ui-ace="editor_conf({minLines: 1})"
+                     ng-model="widget.title"></div>
+            </div>
+        </div>
         <div class="inline-input">
             <label>Display:</label>
             <select ui-select2 style="min-width:70px;" ng-model="widget.query_parts.display.0">
