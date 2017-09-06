@@ -2512,6 +2512,9 @@ class Person extends DomainObject implements
     public function getEmail()
     {
         $email = $this->getPrimaryEmail();
+        if (!$email) {
+            $email = $this->emails->first();
+        }
 
         return $email ? $email->getEmail() : null;
     }
