@@ -93,10 +93,10 @@ class PortalPermissionsLoader
             'sys_name' => Usergroup::REGISTERED,
         ]);
 
-        if ($everyoneGroup && !$userGroups->contains($everyoneGroup)) {
+        if ($everyoneGroup && $everyoneGroup->isEnabled() && !$userGroups->contains($everyoneGroup)) {
             $userGroups->add($everyoneGroup);
         }
-        if ($registeredGroup && !$userGroups->contains($registeredGroup)) {
+        if ($registeredGroup && $registeredGroup->isEnabled() && !$userGroups->contains($registeredGroup)) {
             $customGroups = $userGroups->filter(function (Usergroup $userGroup) {
                 return !in_array($userGroup->getSysName(), [Usergroup::EVERYONE, Usergroup::REGISTERED]);
             });
