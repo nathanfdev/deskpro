@@ -83,6 +83,8 @@ use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
@@ -1456,24 +1458,34 @@ class TicketController extends AbstractController
 
         $message->convertEmbeddedImagesToInlineAttach();
 
-        if ($snippet_ids = $this->in->getString('options.snippet_ids')) {
-            $snippet_ids = explode(',', $snippet_ids);
-            $snippet_ids = array_map(
+        if ($snippetIds = $this->in->getString('options.snippet_ids')) {
+            $snippetIds = explode(',', $snippetIds);
+            $snippetIds = array_map(
                 function ($x) {
                     return (int) trim($x);
                 },
-                $snippet_ids
+                $snippetIds
             );
-            $snippet_ids = Arrays::removeFalsey($snippet_ids);
-            $snippet_ids = array_unique($snippet_ids, SORT_NUMERIC);
+            $snippetIds = Arrays::removeFalsey($snippetIds);
+            $snippetIds = array_unique($snippetIds, SORT_NUMERIC);
 
-            foreach ($snippet_ids as $snip_id) {
-                $snippet = $this->em->find(TextSnippet::class, $snip_id);
+            foreach ($snippetIds as $snippetId) {
+                if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+                    $snippetTranslation = $this->em->find(SnippetTranslation::class, $snippetId);
 
-                if ($snippet) {
-                    $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
-                    $this->em->persist($snippetLog);
-                    $this->em->flush();
+                    if ($snippetTranslation) {
+                        $snippetLog = SnippetUseLog::createSnippetLog($message, $this->getPerson(), $snippetTranslation);
+                        $this->em->persist($snippetLog);
+                        $this->em->flush();
+                    }
+                } else {
+                    $snippet = $this->em->find(TextSnippet::class, $snippetId);
+
+                    if ($snippet) {
+                        $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                        $this->em->persist($snippetLog);
+                        $this->em->flush();
+                    }
                 }
             }
         }
