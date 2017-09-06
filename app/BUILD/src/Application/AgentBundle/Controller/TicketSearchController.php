@@ -53,6 +53,7 @@ use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\Tickets\GroupingCounter;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
@@ -549,7 +550,7 @@ class TicketSearchController extends AbstractController
                 continue;
             }
 
-            $grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+            $grouper = new GroupingCounter();
             $grouper->setGrouping($ticket_batch['grouping']);
             $grouper->setMode('specify', $ticket_batch['ticket_ids']);
 
@@ -612,7 +613,7 @@ class TicketSearchController extends AbstractController
                 $set_group_term   = $this->in->getString('set_group_term');
                 $set_group_option = $this->in->getString('set_group_option');
 
-                $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+                $term = GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
                 if ($term) {
                     $type   = $term['type'];
                     $op     = $term['op'];
@@ -675,7 +676,7 @@ class TicketSearchController extends AbstractController
                 $set_group_term   = $this->in->getString('set_group_term');
                 $set_group_option = $this->in->getString('set_group_option');
 
-                $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+                $term = GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
                 if ($term) {
                     $type   = $term['type'];
                     $op     = $term['op'];
@@ -1044,7 +1045,7 @@ class TicketSearchController extends AbstractController
             $set_group_term   = $this->in->getString('set_group_term');
             $set_group_option = $this->in->getString('set_group_option');
 
-            $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+            $term = GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
             if ($term) {
                 $type   = $term['type'];
                 $op     = $term['op'];
@@ -1186,7 +1187,7 @@ class TicketSearchController extends AbstractController
             $set_group_term   = $this->in->getString('set_group_term');
             $set_group_option = $this->in->getString('set_group_option');
 
-            $term = \Application\DeskPRO\Tickets\GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+            $term = GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
             if ($term) {
                 $type   = $term['type'];
                 $op     = $term['op'];
