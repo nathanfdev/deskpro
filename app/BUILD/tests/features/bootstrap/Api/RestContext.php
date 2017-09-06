@@ -36,7 +36,6 @@ use Behat\Mink\Exception\ExpectationException;
 use Behatch\Context\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
-use Sanpi\Behatch\Context\BaseContext;
 use Symfony\Component\HttpFoundation\Request;
 
 class RestContext extends BaseContext

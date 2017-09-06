@@ -1,4 +1,4 @@
-@new
+@new @webhooks
 Feature: /webhooks/tickets resource
   To CRUD Webhooks
   As a developer

@@ -207,20 +207,6 @@ class JsonContext extends \Behatch\Context\JsonContext
     }
 
     /**
-     * @Given I save a reference :ref to the JSON node :node
-     *
-     * @param $ref
-     * @param $node
-     */
-    public function iSaveTheJSONPathAsReference($ref, $node)
-    {
-        $json = $this->getJson();
-        $actual = $this->inspector->evaluate($json, $node);
-
-        DataContext::setPlaceholder($ref, $actual);
-    }
-
-    /**
      *
      * @Given I save the JSON node :node as placeholder :placeholder
      *
