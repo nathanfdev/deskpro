@@ -26,26 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\DependencyInjection;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage;
 
-use DeskPRO\Bundle\AppStoreBundle\TypeMapping;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-
-class DoctrineConfigCompilerPass implements CompilerPassInterface
+interface AccessRequest
 {
-    public function process(ContainerBuilder $container)
-    {
-        // unfortunately we have to add our custom types by directly overriding the doctrine parameter
-        $additions = [
-            TypeMapping\StateScopeDoctrineType::TYPE => [
-                'class' => TypeMapping\StateScopeDoctrineType::class,
-                'commented' => true
-            ]
-        ];
-        $existingTypes = $container->getParameter('doctrine.dbal.connection_factory.types');
-        $newTypes = array_merge($additions, $existingTypes);
+    /**
+     * @return string
+     */
+    public function getAuthPersonId();
 
-        $container->setParameter('doctrine.dbal.connection_factory.types', $newTypes);
-    }
+    /**
+     * @return string
+     */
+    public function getAccessLevel();
 }

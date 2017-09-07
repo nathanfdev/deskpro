@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class ApplicationState
+class AppStorageItem
 {
     private $identifier;
 
@@ -37,8 +37,8 @@ class ApplicationState
     private $value;
 
     /**
-     * @param ApplicationStateId $identifier
-     * @param ApplicationState\SecurityDescriptor $securityDescriptor
+     * @param AppStorageItemIdentifier $identifier
+     * @param AppStorage\SecurityDescriptor $securityDescriptor
      * @param string $value
      */
     public function __construct($identifier, $securityDescriptor, $value)
@@ -49,7 +49,7 @@ class ApplicationState
     }
 
     /**
-     * @return ApplicationStateId
+     * @return AppStorageItemIdentifier
      */
     public function getIdentifier()
     {
@@ -88,16 +88,16 @@ class ApplicationState
     }
 
     /**
-     * @param ApplicationState\SecurityDescriptor $newDescriptor
-     * @return ApplicationState
+     * @param AppStorage\SecurityDescriptor $newDescriptor
+     * @return AppStorageItem
      */
-    public function changeSecurityDescriptor(ApplicationState\SecurityDescriptor $newDescriptor)
+    public function changeSecurityDescriptor( AppStorage\SecurityDescriptor $newDescriptor)
     {
-        return new ApplicationState($this->identifier, $newDescriptor, $this->value);
+        return new AppStorageItem($this->identifier, $newDescriptor, $this->value);
     }
 
     /**
-     * @return ApplicationState\SecurityDescriptor
+     * @return AppStorage\SecurityDescriptor
      */
     public function getSecurityDescriptor()
     {

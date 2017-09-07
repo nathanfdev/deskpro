@@ -26,16 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DpTest\DeskProTestCase;
 
-class ApplicationStateAccessRuleTest extends DeskProTestCase
+class AccessRuleTest extends DeskProTestCase
 {
     public function testMatchesReturnTrueWhenMatchingExact()
     {
-        $accessOption = new Domain\ApplicationState\AccessOptions();
+        $accessOption = new Domain\AppStorage\AccessOptions();
 
         $trials = [
             ['pattern' => 'foo.bar.', 'match' => 'foo.bar.'],
@@ -47,7 +47,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $rule         = new Domain\ApplicationState\AccessRule($pattern, $accessOption);
+            $rule         = new Domain\AppStorage\AccessRule($pattern, $accessOption);
             $actualResult = $rule->matchesStateName($match);
 
             $this->assertTrue($actualResult, sprintf('%s should have matched %s', $pattern, $match));
@@ -56,7 +56,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
 
     public function testMatchesReturnFalseWhenMatchingExact()
     {
-        $accessOption = new Domain\ApplicationState\AccessOptions();
+        $accessOption = new Domain\AppStorage\AccessOptions();
 
         $trials = [
             ['pattern' => 'foo.', 'match' => 'foo.bar.'],
@@ -68,7 +68,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $rule         = new Domain\ApplicationState\AccessRule($pattern, $accessOption);
+            $rule         = new Domain\AppStorage\AccessRule($pattern, $accessOption);
             $actualResult = $rule->matchesStateName($match);
 
             $this->assertFalse($actualResult, sprintf('%s should not have matched %s', $pattern, $match));
@@ -77,7 +77,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
 
     public function testMatchesReturnTrueWhenMatchingWithWildcards()
     {
-        $accessOption = new Domain\ApplicationState\AccessOptions();
+        $accessOption = new Domain\AppStorage\AccessOptions();
 
         $trials = [
             ['pattern' => 'foo.bar.*', 'match' => 'foo.bar.'],
@@ -94,7 +94,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $rule         = new Domain\ApplicationState\AccessRule($pattern, $accessOption);
+            $rule         = new Domain\AppStorage\AccessRule($pattern, $accessOption);
             $actualResult = $rule->matchesStateName($match);
 
             $this->assertTrue($actualResult, sprintf('%s should have matched %s', $pattern, $match));
@@ -103,7 +103,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
 
     public function testMatchesReturnFalseWhenMatchingWithWildcards()
     {
-        $accessOption = new Domain\ApplicationState\AccessOptions();
+        $accessOption = new Domain\AppStorage\AccessOptions();
 
         $trials = [
             ['pattern' => 'foo.bar.*', 'match' => 'foo'],
@@ -116,7 +116,7 @@ class ApplicationStateAccessRuleTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $rule         = new Domain\ApplicationState\AccessRule($pattern, $accessOption);
+            $rule         = new Domain\AppStorage\AccessRule($pattern, $accessOption);
             $actualResult = $rule->matchesStateName($match);
 
             $this->assertFalse($actualResult, sprintf('%s should not have matched %s', $pattern, $match));

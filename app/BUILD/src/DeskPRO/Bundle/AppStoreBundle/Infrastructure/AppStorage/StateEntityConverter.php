@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
@@ -35,7 +35,7 @@ class StateEntityConverter
 {
     /**
      * @param Entity\AppStore\AppState $stateEntity
-     * @return Domain\ApplicationState
+     * @return Domain\AppStorageItem
      */
     public function toDomainObject(Entity\AppStore\AppState $stateEntity)
     {
@@ -43,7 +43,7 @@ class StateEntityConverter
             return null;
         }
 
-        $entityId = Domain\ApplicationState\EntityId::parse($stateEntity->getEntityId());
+        $entityId = Domain\AppStorage\EntityId::parse($stateEntity->getEntityId());
         if (!$entityId) {
             return null;
         }
@@ -56,14 +56,14 @@ class StateEntityConverter
             return null;
         }
 
-        $stateIdentifier =  new Domain\ApplicationStateId(
+        $stateIdentifier =  new Domain\AppStorageItemIdentifier(
             (string) $stateEntity->getAppInstance()->getId(),
             $stateEntity->getName(),
             $entityId
         );
 
         $ownerId = $stateEntity->getOwner() ? (string) $stateEntity->getOwner()->getId() : null;
-        $securityDescriptor =  new Domain\ApplicationState\SecurityDescriptor(
+        $securityDescriptor =  new Domain\AppStorage\SecurityDescriptor(
             $ownerId,
             $stateEntity->getPermRead(),
             $stateEntity->getPermWrite(),
@@ -71,6 +71,6 @@ class StateEntityConverter
         );
 
 
-        return new Domain\ApplicationState($stateIdentifier, $securityDescriptor, $stateEntity->getValue());
+        return new Domain\AppStorageItem($stateIdentifier, $securityDescriptor, $stateEntity->getValue());
     }
 }

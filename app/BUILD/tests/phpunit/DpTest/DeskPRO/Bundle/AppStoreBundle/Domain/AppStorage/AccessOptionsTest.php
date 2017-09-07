@@ -26,16 +26,16 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DpTest\DeskProTestCase;
 
-class ApplicationStateAccessOptionsTest extends DeskProTestCase
+class AccessOptionsTest extends DeskProTestCase
 {
     public function testDefaultAccessOptions()
     {
-        $accessOptions = new Domain\ApplicationState\AccessOptions();
+        $accessOptions = new Domain\AppStorage\AccessOptions();
 
         $this->assertEquals(
             Domain\Constants::PERMISSION_OWNER,

@@ -109,10 +109,10 @@ class EntityQueryBuilders
 
     /**
      * @param ORM\EntityManager $em
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
+     * @param Domain\AppStorageStateSearchFilter $searchFilter
      * @return ORM\Query
      */
-    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\ApplicationStateSearchFilter $searchFilter) {
+    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\AppStorageStateSearchFilter $searchFilter) {
 
         $qb = $em->createQueryBuilder();
         $qb
@@ -132,10 +132,10 @@ class EntityQueryBuilders
     /**
      * @param ORM\EntityManager $em
      * @param null $stateOwnerId
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
+     * @param Domain\AppStorageStateSearchFilter $searchFilter
      * @return ORM\Query
      */
-    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\ApplicationStateSearchFilter $searchFilter) {
+    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\AppStorageStateSearchFilter $searchFilter) {
 
         $qb = $em->createQueryBuilder();
         $qb
@@ -156,7 +156,7 @@ class EntityQueryBuilders
     public function buildFindOwnedByOtherStateQuery(
         ORM\EntityManager $em,
         $stateOwnerId,
-        Domain\ApplicationStateSearchFilter $searchFilter
+        Domain\AppStorageStateSearchFilter $searchFilter
     ) {
 
         $qb = $em->createQueryBuilder();
@@ -177,13 +177,13 @@ class EntityQueryBuilders
 
     /**
      * @param ORM\EntityManager $em
-     * @param Domain\ApplicationStateId $id
+     * @param Domain\AppStorageItemIdentifier $id
      * @param null|string $stateOwnerId
      * @return ORM\Query
      */
     public function buildFindStateEntityByIdQuery(
         ORM\EntityManager $em,
-        Domain\ApplicationStateId $id, $stateOwnerId = null
+        Domain\AppStorageItemIdentifier $id, $stateOwnerId = null
     ) {
         //TODO do not assume the application state id is the same as the persistence id
         $qb = $em->createQueryBuilder();
@@ -208,12 +208,12 @@ class EntityQueryBuilders
 
     /**
      * @param ORM\EntityManager $em
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
+     * @param Domain\AppStorageStateSearchFilter $searchFilter
      * @return ORM\Query
      */
     public function buildFindStateEntityByFilterQuery(
         ORM\EntityManager $em,
-        Domain\ApplicationStateSearchFilter $searchFilter
+        Domain\AppStorageStateSearchFilter $searchFilter
     ) {
         $qb = $em->createQueryBuilder();
         $qb
@@ -228,7 +228,7 @@ class EntityQueryBuilders
         return $qb->getQuery();
     }
 
-    private function applySearchStateFilter(ORM\QueryBuilder $qb, Domain\ApplicationStateSearchFilter $assetFilter)
+    private function applySearchStateFilter(ORM\QueryBuilder $qb, Domain\AppStorageStateSearchFilter $assetFilter)
     {
         $filterField = $assetFilter->getName();
         if (! empty($filterField)) {

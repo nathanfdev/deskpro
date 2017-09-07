@@ -32,7 +32,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class AppStateOptionsConverter implements ParamConverterInterface
+class AppStorageItemOptionsConverter implements ParamConverterInterface
 {
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {

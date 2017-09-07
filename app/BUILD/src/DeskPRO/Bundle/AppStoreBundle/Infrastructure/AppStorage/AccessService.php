@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity;
@@ -62,14 +62,14 @@ class AccessService
 
     /**
      * @param AccessRequest $request
-     * @param Domain\ApplicationState $state
+     * @param Domain\AppStorageItem $item
      * @return bool
      */
-    public function allowWriteAccess(AccessRequest $request, Domain\ApplicationState $state)
+    public function allowWriteAccess(AccessRequest $request, Domain\AppStorageItem $item)
     {
         $allowsPersonAccess =
             $request->getAccessLevel() === Domain\Constants::ACCESS_LEVEL_WRITE
-            && $state->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_WRITE)
+            && $item->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_WRITE)
         ;
 
         return $allowsPersonAccess;
@@ -77,13 +77,13 @@ class AccessService
 
     /**
      * @param AccessRequest $request
-     * @param Domain\ApplicationState $state
+     * @param Domain\AppStorageItem $item
      * @return bool
      */
-    public function allowReadAccess(AccessRequest $request, Domain\ApplicationState $state)
+    public function allowReadAccess(AccessRequest $request, Domain\AppStorageItem $item)
     {
         $allowsPersonAccess = $request->getAccessLevel() === Domain\Constants::ACCESS_LEVEL_READ
-            && $state->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_READ)
+            && $item->confirmAccessLevelForPerson($request->getAuthPersonId(), Domain\Constants::ACCESS_LEVEL_READ)
         ;
 
         if (! $allowsPersonAccess) {
@@ -91,18 +91,18 @@ class AccessService
         }
 
         if ($request instanceof ServiceAccessRequest) {
-            return $state->confirmAccessLevelForService($request->getService(), Domain\Constants::ACCESS_LEVEL_READ);
+            return $item->confirmAccessLevelForService($request->getService(), Domain\Constants::ACCESS_LEVEL_READ);
         }
 
         return true;
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param AccessRequest $request
      * @return bool
      */
-    public function allowsAccess(AccessRequest $request, Domain\ApplicationStateId $identifier)
+    public function allowsAccess(AccessRequest $request, Domain\AppStorageItemIdentifier $identifier)
     {
         /** @var Entity\AppStore\AppState $stateEntity */
         $stateEntity = null;
@@ -123,10 +123,10 @@ class AccessService
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
-     * @return Domain\ApplicationState\AccessOptions|null
+     * @param Domain\AppStorageItemIdentifier $identifier
+     * @return Domain\AppStorage\AccessOptions|null
      */
-    public function findAccessOptions(Domain\ApplicationStateId $identifier)
+    public function findAccessOptions(Domain\AppStorageItemIdentifier $identifier)
     {
         $finder = new Infrastructure\ApplicationDoctrineFinder($this->entityManager, $this->queryBuilder);
         $application = $finder->findByInstanceId($identifier->getInstanceId());
@@ -143,7 +143,7 @@ class AccessService
             return null;
         }
 
-        /** @var Domain\ApplicationState\AccessOptions[] $found */
+        /** @var Domain\AppStorage\AccessOptions[] $found */
         $found = [];
         $stateName = $identifier->getName();
         foreach ($accessRules as $rule) {
@@ -160,12 +160,12 @@ class AccessService
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param ServiceAccessRequest $request
      * @param $value
-     * @return Domain\ApplicationState
+     * @return Domain\AppStorageItem
      */
-    public function writeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value)
+    public function writeValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
     {
         /** @var \Exception $exception */
         $exception = null;
@@ -177,8 +177,8 @@ class AccessService
 
         // update failed because the state was not found, so we'll try to create it
         if (
-            $exception instanceof Domain\ApplicationState\Exception
-            && $exception->getCode() === Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND
+            $exception instanceof Domain\AppStorage\Exception
+            && $exception->getCode() === Domain\AppStorage\Exception::CODE_STATE_NOT_FOUND
         ) {
             return $this->addValue($identifier, $request, $value);
         }
@@ -188,23 +188,23 @@ class AccessService
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param ServiceAccessRequest $request
      * @param $value
-     * @return Domain\ApplicationState
+     * @return Domain\AppStorageItem
      */
-    public function addValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value)
+    public function addValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
     {
         /** @var Entity\AppStore\AppInstance $appInstance */
         $appInstance = $this->entityManager->find(Entity\AppStore\AppInstance::class, $identifier->getInstanceId());
         if (! $appInstance) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException('missing application');
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException('missing application');
             throw $exception;
         }
 
         $accessOptions = $this->findAccessOptions($identifier);
         if (is_null($accessOptions)) {
-            $exception = Domain\ApplicationState\Exception::createAccessRuleNotFoundException();
+            $exception = Domain\AppStorage\Exception::createAccessRuleNotFoundException();
             throw $exception;
         }
 
@@ -238,26 +238,26 @@ class AccessService
             return $stateObject;
         }
 
-        $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+        $exception = Domain\AppStorage\Exception::createAccessDeniedException();
         throw $exception;
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param ServiceAccessRequest $request
      * @param string $value
-     * @return Domain\ApplicationState
+     * @return Domain\AppStorageItem
      */
-    public function changeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request, $value) {
+    public function changeValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value) {
 
         if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_WRITE) {
-            $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+            $exception = Domain\AppStorage\Exception::createAccessDeniedException();
             throw $exception;
         }
 
         $accessOptions = $this->findAccessOptions($identifier);
         if (!$accessOptions) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException();
             throw $exception;
         }
 
@@ -265,7 +265,7 @@ class AccessService
         $stateEntity = $finder->findOne($identifier, $accessOptions, $request);
 
         if (is_null($stateEntity)) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException();
             throw $exception;
         }
 
@@ -279,25 +279,25 @@ class AccessService
             return $converter->toDomainObject($stateEntity);
         }
 
-        $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+        $exception = Domain\AppStorage\Exception::createAccessDeniedException();
         throw $exception;
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param ServiceAccessRequest $request
      * @return string
      */
-    public function readValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request) {
+    public function readValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request) {
 
         if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_READ) {
-            $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+            $exception = Domain\AppStorage\Exception::createAccessDeniedException();
             throw $exception;
         }
 
         $accessOptions = $this->findAccessOptions($identifier);
         if (!$accessOptions) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException();
             throw $exception;
         }
 
@@ -305,7 +305,7 @@ class AccessService
         $stateEntity = $finder->findOne($identifier, $accessOptions, $request);
 
         if (empty($stateEntity)) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException();
             throw $exception;
         }
 
@@ -316,16 +316,16 @@ class AccessService
             return $state->getValue();
         }
 
-        $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+        $exception = Domain\AppStorage\Exception::createAccessDeniedException();
         throw $exception;
     }
 
     /**
-     * @param Domain\ApplicationStateSearchFilter $filter
+     * @param Domain\AppStorageStateSearchFilter $filter
      * @param ServiceAccessRequest $request
-     * @return Domain\ApplicationState[]|array
+     * @return Domain\AppStorageItem[]|array
      */
-    public function readAllValues(Domain\ApplicationStateSearchFilter $filter, ServiceAccessRequest $request) {
+    public function readAllValues( Domain\AppStorageStateSearchFilter $filter, ServiceAccessRequest $request) {
 
         $entities = [];
 
@@ -333,7 +333,7 @@ class AccessService
         $newEntities = $findOwned->getResult();
         $entities = array_merge($entities, $newEntities);
 
-        $accessPermission = new Domain\ApplicationState\AccessPermission(Domain\Constants::ACCESS_LEVEL_READ, Domain\Constants::PERMISSION_EVERYONE);
+        $accessPermission = new Domain\AppStorage\AccessPermission(Domain\Constants::ACCESS_LEVEL_READ, Domain\Constants::PERMISSION_EVERYONE);
         $filter->setAccessPermission($accessPermission);
 
         $findQuery = $this->queryBuilder->buildFindOwnedByNobodyStateQuery($this->entityManager, $filter);
@@ -358,20 +358,20 @@ class AccessService
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param ServiceAccessRequest $request
      * @return string
      */
-    public function removeValue(Domain\ApplicationStateId $identifier, ServiceAccessRequest $request)
+    public function removeValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request)
     {
         if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_WRITE) {
-            $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+            $exception = Domain\AppStorage\Exception::createAccessDeniedException();
             throw $exception;
         }
 
         $accessOptions = $this->findAccessOptions($identifier);
         if (!$accessOptions) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException();
             throw $exception;
         }
 
@@ -379,7 +379,7 @@ class AccessService
         $stateEntity = $finder->findOne($identifier, $accessOptions, $request);
 
         if (is_null($stateEntity)) {
-            $exception = Domain\ApplicationState\Exception::createStateNotFoundException();
+            $exception = Domain\AppStorage\Exception::createStateNotFoundException();
             throw $exception;
         }
 
@@ -392,7 +392,7 @@ class AccessService
             return $state->getValue();
         }
 
-        $exception = Domain\ApplicationState\Exception::createAccessDeniedException();
+        $exception = Domain\AppStorage\Exception::createAccessDeniedException();
         throw $exception;
     }
 

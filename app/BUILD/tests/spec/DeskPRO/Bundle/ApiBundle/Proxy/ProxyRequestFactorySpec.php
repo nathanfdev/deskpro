@@ -34,7 +34,6 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
-use DeskPRO\Bundle\AppStoreBundle\Domain\StateScope;
 use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\ParameterBag;

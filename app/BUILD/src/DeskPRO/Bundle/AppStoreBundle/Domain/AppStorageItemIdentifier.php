@@ -26,62 +26,52 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
-
-class AccessOptions
+class AppStorageItemIdentifier
 {
     /** @var string */
-    private $readPermission;
+    private $instanceId;
 
     /** @var string */
-    private $writePermission;
+    private $name;
 
-    /** @var boolean */
-    private $isBackendOnly;
-
-    /**
-     * @param string $readPermission
-     * @param string $writePermission
-     * @param boolean $isBackendOnly
-     */
-    public function __construct($readPermission = 'OWNER', $writePermission = 'OWNER', $isBackendOnly = false)
-    {
-        $this->readPermission = $readPermission;
-        $this->writePermission = $writePermission;
-        $this->isBackendOnly = $isBackendOnly;
-    }
-
-    public function isWorldAccessible()
-    {
-        return $this->getWritePermission() === $this->getReadPermission()
-            && $this->getReadPermission() === Constants::PERMISSION_EVERYONE
-        ;
-    }
+    /** @var AppStorage\EntityId */
+    private $entityId;
 
     /**
-     * @return boolean
+     * @param string $instanceId
+     * @param string $name
+     * @param AppStorage\EntityId $entityId
      */
-    public function isBackendOnly()
+    public function __construct($instanceId, $name, AppStorage\EntityId $entityId)
     {
-        return $this->isBackendOnly;
+        $this->instanceId = $instanceId;
+        $this->name = $name;
+        $this->entityId = AppStorage\EntityId::convertToString($entityId);
     }
 
     /**
      * @return string
      */
-    public function getReadPermission()
+    public function getInstanceId()
     {
-        return $this->readPermission;
+        return $this->instanceId;
     }
 
     /**
      * @return string
      */
-    public function getWritePermission()
+    public function getName()
     {
-        return $this->writePermission;
+        return $this->name;
     }
 
+    /**
+     * @return string
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
 }

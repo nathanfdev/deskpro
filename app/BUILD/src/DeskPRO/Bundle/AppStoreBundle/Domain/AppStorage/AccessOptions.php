@@ -26,52 +26,62 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage;
 
-class ApplicationStateId
+use DeskPRO\Bundle\AppStoreBundle\Domain\Constants;
+
+class AccessOptions
 {
     /** @var string */
-    private $instanceId;
+    private $readPermission;
 
     /** @var string */
-    private $name;
+    private $writePermission;
 
-    /** @var ApplicationState\EntityId */
-    private $entityId;
+    /** @var boolean */
+    private $isBackendOnly;
 
     /**
-     * @param string $instanceId
-     * @param string $name
-     * @param ApplicationState\EntityId $entityId
+     * @param string $readPermission
+     * @param string $writePermission
+     * @param boolean $isBackendOnly
      */
-    public function __construct($instanceId, $name, ApplicationState\EntityId $entityId)
+    public function __construct($readPermission = 'OWNER', $writePermission = 'OWNER', $isBackendOnly = false)
     {
-        $this->instanceId = $instanceId;
-        $this->name = $name;
-        $this->entityId = ApplicationState\EntityId::convertToString($entityId);
+        $this->readPermission = $readPermission;
+        $this->writePermission = $writePermission;
+        $this->isBackendOnly = $isBackendOnly;
+    }
+
+    public function isWorldAccessible()
+    {
+        return $this->getWritePermission() === $this->getReadPermission()
+            && $this->getReadPermission() === Constants::PERMISSION_EVERYONE
+        ;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isBackendOnly()
+    {
+        return $this->isBackendOnly;
     }
 
     /**
      * @return string
      */
-    public function getInstanceId()
+    public function getReadPermission()
     {
-        return $this->instanceId;
+        return $this->readPermission;
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getWritePermission()
     {
-        return $this->name;
+        return $this->writePermission;
     }
 
-    /**
-     * @return string
-     */
-    public function getEntityId()
-    {
-        return $this->entityId;
-    }
 }

@@ -26,71 +26,74 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage;
 
-use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppStoreBundle\Domain;
-
-class PersonAccessRequest implements AccessRequest
+class EntityId
 {
-    /**
-     * @var Person
-     */
-    private $authPerson;
     /**
      * @var string
      */
-    private $accessLevel;
+    private $entityType;
 
     /**
-     * @param Person $authPerson
-     * @return PersonAccessRequest
+     * @var string
      */
-    public static function newReadAccessRequest(Person $authPerson)
+    private $entityId;
+
+    /**
+     * @param string $idString
+     * @return EntityId|null
+     */
+    public static function parse($idString)
     {
-        return new PersonAccessRequest($authPerson, Domain\Constants::ACCESS_LEVEL_READ);
+        $separator = ':';
+        $pieces = explode($separator, trim($idString));
+
+        if (count($pieces) != 2) {
+            return null;
+        }
+
+        return new EntityId($pieces[0], $pieces[1]);
     }
 
     /**
-     * @param Person $authPerson
-     * @return PersonAccessRequest
-     */
-    public static function newWriteAccessRequest(Person $authPerson)
-    {
-        return new PersonAccessRequest($authPerson, Domain\Constants::ACCESS_LEVEL_WRITE);
-    }
-
-    /**
-     * @param Person $authPerson
-     * @param string $accessLevel
-     */
-    public function __construct(Person $authPerson, $accessLevel) {
-
-        $this->authPerson = $authPerson;
-        $this->accessLevel = $accessLevel;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getAuthPerson()
-    {
-        return $this->authPerson;
-    }
-
-    /**
+     * @param EntityId $entityId
      * @return string
      */
-    public function getAuthPersonId()
+    public static function convertToString(EntityId $entityId)
     {
-        return (string) $this->authPerson->getId();
+        $separator = ':';
+        $pieces = [
+            $entityId->getEntityType(),
+            $entityId->getEntityId(),
+        ];
+        return  implode($separator, $pieces);
     }
 
     /**
-     * @return string
+     * @param string $entityType
+     * @param string $entityId
      */
-    public function getAccessLevel()
+    public function __construct($entityType, $entityId)
     {
-        return $this->accessLevel;
+        $this->entityType = $entityType;
+        $this->entityId = $entityId;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityType()
+    {
+        return $this->entityType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEntityId()
+    {
+        return $this->entityId;
+    }
+
 }

@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppStoreBundle;
 
 use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
-use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\DoctrineConfigCompilerPass;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\InstallAppCommand;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -37,12 +36,6 @@ use Symfony\Component\Console;
 
 class AppStoreBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-        $container->addCompilerPass( new DoctrineConfigCompilerPass());
-    }
-
     public function getContainerExtension()
     {
         return new AppStoreExtension();

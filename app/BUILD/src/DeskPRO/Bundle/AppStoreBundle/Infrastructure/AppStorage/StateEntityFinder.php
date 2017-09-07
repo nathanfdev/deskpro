@@ -26,12 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage;
 
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState\AccessOptions;
-use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateSearchFilter;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage\AccessOptions;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppStorageStateSearchFilter;
 use Doctrine\ORM;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
@@ -67,14 +67,14 @@ class StateEntityFinder
     }
 
     /**
-     * @param Domain\ApplicationStateId $identifier
+     * @param Domain\AppStorageItemIdentifier $identifier
      * @param AccessOptions $accessOptions
      * @param AccessRequest $request
      * @return Entity\AppStore\AppState|null
      */
-    public function findOne(Domain\ApplicationStateId $identifier, Domain\ApplicationState\AccessOptions $accessOptions, AccessRequest $request)
+    public function findOne( Domain\AppStorageItemIdentifier $identifier, Domain\AppStorage\AccessOptions $accessOptions, AccessRequest $request)
     {
-        $searchFilter = ApplicationStateSearchFilter::fromIdentifier($identifier);
+        $searchFilter = AppStorageStateSearchFilter::fromIdentifier($identifier);
         /** @var ORM\Query[] $findStateQueries */
         $findStateQueries = [];
         if ($accessOptions->isWorldAccessible()) {
@@ -89,7 +89,7 @@ class StateEntityFinder
 
 
             $accessLevel = $request->getAccessLevel();
-            $accessPermission = new Domain\ApplicationState\AccessPermission($accessLevel, Domain\Constants::PERMISSION_EVERYONE);
+            $accessPermission = new Domain\AppStorage\AccessPermission($accessLevel, Domain\Constants::PERMISSION_EVERYONE);
             $searchFilter->setAccessPermission($accessPermission);
 
             $findStateQueries[] = $this->queryBuilder->buildFindOwnedByOtherStateQuery(

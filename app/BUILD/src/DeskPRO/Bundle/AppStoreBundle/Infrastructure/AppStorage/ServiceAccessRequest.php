@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppStoreBundle\Domain;

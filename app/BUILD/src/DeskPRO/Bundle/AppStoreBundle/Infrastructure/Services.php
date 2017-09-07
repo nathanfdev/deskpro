@@ -36,11 +36,11 @@ class Services
 {
     /**
      * @param ORM\EntityManager $entityManager
-     * @return ApplicationState\AccessService
+     * @return AppStorage\AccessService
      */
     public static function createApplicationStateAccessService(ORM\EntityManager $entityManager)
     {
-        $service = new ApplicationState\AccessService($entityManager, new EntityQueryBuilders());
+        $service = new AppStorage\AccessService($entityManager, new EntityQueryBuilders());
         return $service;
     }
 
@@ -92,10 +92,10 @@ class Services
     /**
      * @param ORM\EntityManager $entityManager
      *
-     * @return ApplicationState\StateEntityFinder
+     * @return AppStorage\StateEntityFinder
      */
     public static function createApplicationStateFinder(ORM\EntityManager $entityManager)
     {
-        return new ApplicationState\StateEntityFinder($entityManager);
+        return new AppStorage\StateEntityFinder($entityManager);
     }
 }

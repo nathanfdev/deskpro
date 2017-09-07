@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage;
 
 class Exception extends \DomainException
 {

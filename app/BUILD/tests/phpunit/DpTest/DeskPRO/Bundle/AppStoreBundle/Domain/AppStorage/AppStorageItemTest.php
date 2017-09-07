@@ -26,12 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationState;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DpTest\DeskProTestCase;
 
-class ApplicationStateTest extends DeskProTestCase
+class AppStorageItemTest extends DeskProTestCase
 {
     public function testCheckAccessLevelForSystemReturnsTrue()
     {
@@ -40,7 +40,7 @@ class ApplicationStateTest extends DeskProTestCase
         $write = Domain\Constants::PERMISSION_OWNER;
         $owner = 1;
 
-        $identifier = new Domain\ApplicationStateId('1', 'name', Domain\ApplicationState\EntityId::parse('ticket:1'));
+        $identifier = new Domain\AppStorageItemIdentifier('1', 'name', Domain\AppStorage\EntityId::parse('ticket:1'));
         $trials     = [
             [
                 'isBackendOnly' => true,
@@ -86,8 +86,8 @@ class ApplicationStateTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $securityDescriptor = new Domain\ApplicationState\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
-            $state              = new Domain\ApplicationState($identifier, $securityDescriptor, $value);
+            $securityDescriptor = new Domain\AppStorage\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
+            $state              = new Domain\AppStorageItem($identifier, $securityDescriptor, $value);
 
             $actualResult = $state->confirmAccessLevelForService($service, $level);
             $this->assertTrue($actualResult, sprintf('service %s should have %s access', $service, $level));
@@ -101,7 +101,7 @@ class ApplicationStateTest extends DeskProTestCase
         $write = Domain\Constants::PERMISSION_OWNER;
         $owner = 1;
 
-        $identifier = new Domain\ApplicationStateId('1', 'name', Domain\ApplicationState\EntityId::parse('ticket:1'));
+        $identifier = new Domain\AppStorageItemIdentifier('1', 'name', Domain\AppStorage\EntityId::parse('ticket:1'));
         $trials     = [
             [ // random string instead of proper access level
                 'isBackendOnly' => true,
@@ -135,8 +135,8 @@ class ApplicationStateTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $securityDescriptor = new Domain\ApplicationState\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
-            $state              = new Domain\ApplicationState($identifier, $securityDescriptor, $value);
+            $securityDescriptor = new Domain\AppStorage\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
+            $state              = new Domain\AppStorageItem($identifier, $securityDescriptor, $value);
 
             $actualResult = $state->confirmAccessLevelForService($service, $level);
             $this->assertFalse($actualResult, sprintf('service %s should not have %s access', $service, $level));
@@ -147,7 +147,7 @@ class ApplicationStateTest extends DeskProTestCase
     {
         $value         = null;
         $isBackendOnly = true;
-        $identifier    = new Domain\ApplicationStateId('1', 'name', Domain\ApplicationState\EntityId::parse('ticket:1'));
+        $identifier    = new Domain\AppStorageItemIdentifier('1', 'name', Domain\AppStorage\EntityId::parse('ticket:1'));
         $trials        = [
             [
                 'read'  => Domain\Constants::PERMISSION_OWNER,
@@ -191,8 +191,8 @@ class ApplicationStateTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $securityDescriptor = new Domain\ApplicationState\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
-            $state              = new Domain\ApplicationState($identifier, $securityDescriptor, $value);
+            $securityDescriptor = new Domain\AppStorage\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
+            $state              = new Domain\AppStorageItem($identifier, $securityDescriptor, $value);
 
             $actualResult = $state->confirmAccessLevelForPerson($personId, $level);
             $this->assertTrue($actualResult, sprintf('person %s should have access level %s', $personId, $level));
@@ -203,7 +203,7 @@ class ApplicationStateTest extends DeskProTestCase
     {
         $value         = null;
         $isBackendOnly = true;
-        $identifier    = new Domain\ApplicationStateId('1', 'name', Domain\ApplicationState\EntityId::parse('ticket:1'));
+        $identifier    = new Domain\AppStorageItemIdentifier('1', 'name', Domain\AppStorage\EntityId::parse('ticket:1'));
         $trials        = [
             [
                 'read'  => Domain\Constants::PERMISSION_OWNER,
@@ -247,8 +247,8 @@ class ApplicationStateTest extends DeskProTestCase
         foreach ($trials as $trial) {
             extract($trial, EXTR_OVERWRITE);
 
-            $securityDescriptor = new Domain\ApplicationState\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
-            $state              = new Domain\ApplicationState($identifier, $securityDescriptor, $value);
+            $securityDescriptor = new Domain\AppStorage\SecurityDescriptor($owner, $read, $write, $isBackendOnly);
+            $state              = new Domain\AppStorageItem($identifier, $securityDescriptor, $value);
 
             $actualResult = $state->confirmAccessLevelForPerson($personId, $level);
             $this->assertFalse(
