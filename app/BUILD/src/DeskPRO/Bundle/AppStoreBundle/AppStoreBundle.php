@@ -30,9 +30,8 @@ namespace DeskPRO\Bundle\AppStoreBundle;
 
 use DeskPRO\Bundle\AppStoreBundle\DependencyInjection\AppStoreExtension;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\InstallAppCommand;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\Console;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class AppStoreBundle extends Bundle
 {
