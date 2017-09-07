@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketMessage;
+use DateTime;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -41,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class SnippetUseLog.
  *
  * @JMS\ExclusionPolicy("all")
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetUseLogRepository")
  * @ORM\Table(name="snippet_use_log")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
@@ -63,6 +64,16 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      * @var int
      */
     protected $id;
+
+    /**
+     * @ORM\Column(name="date_created", type="datetime")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var DateTime
+     */
+    protected $dateCreated;
 
     /**
      * Ticket Message where the snippet was used.
@@ -163,6 +174,7 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
         $log->setTicketMessage($ticketMessage);
         $log->setPerson($person);
         $log->setType('ticket');
+        $log->setDateCreated(new DateTime());
 
         return $log;
     }
@@ -188,6 +200,26 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param DateTime $dateCreated
+     *
+     * @return SnippetUseLog
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->setModelField('dateCreated', $dateCreated);
+
+        return $this;
+    }
+
+    /**
      * @return TicketMessage
      */
     public function getTicketMessage()
@@ -203,6 +235,26 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
     public function setTicketMessage($ticketMessage)
     {
         $this->setModelField('ticketMessage', $ticketMessage);
+
+        return $this;
+    }
+
+    /**
+     * @return ChatMessage
+     */
+    public function getChatMessage()
+    {
+        return $this->chatMessage;
+    }
+
+    /**
+     * @param ChatMessage $chatMessage
+     *
+     * @return SnippetUseLog
+     */
+    public function setChatMessage($chatMessage)
+    {
+        $this->setModelField('chatMessage', $chatMessage);
 
         return $this;
     }
