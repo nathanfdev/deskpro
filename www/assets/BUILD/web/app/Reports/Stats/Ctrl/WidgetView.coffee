@@ -23,8 +23,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           ed.setShowPrintMargin(false)
 
           if conf.fontFamily
-
-
             ed.setOption('fontFamily', conf.fontFamily)
           if conf.fontSize
             ed.setOption('fontSize', conf.fontSize)

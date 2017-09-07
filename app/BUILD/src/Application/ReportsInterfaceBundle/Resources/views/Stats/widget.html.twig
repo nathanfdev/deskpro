@@ -76,7 +76,7 @@
         </div>
 
         <div class="editor-controls">
-            <a href="#" ng-click="saveWidget($event)" class="button">Save Query <i class="fa fa-save"></i></a>
+            <a ng-if="widget.is_custom" href="#" ng-click="saveWidget($event)" class="button">Save Query <i class="fa fa-save"></i></a>
             <a href="#" class="button button-edit">Test <i class="fa fa-fast-forward"></i></a>
         </div>
     </div>

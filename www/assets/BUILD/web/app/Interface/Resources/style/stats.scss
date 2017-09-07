@@ -248,7 +248,7 @@
     max-height: 900px;
     .stat-list-wrapper {
       overflow: auto;
-      max-height: 674px;
+      max-height: 825px;
       .stat-list {
         li { padding-left: 10px; }
         .mark { display: none; }
@@ -273,11 +273,25 @@
       display: inline-block;
 
       &.filter-title {
-        width: 70%;
+        width: 55%;
       }
 
       &.filter-label {
         width: 29%;
+      }
+
+      &.add.button {
+        width: 14%;
+        display: inline-block;
+        line-height: 1em;
+        background: #4681b2;
+        color: #fff;
+        border-radius: 2px;
+        padding: 12px 20px;
+        text-decoration: none;
+        text-transform: uppercase;
+        font-size: 0.8em;
+        margin-right: 3px;
       }
     }
   }

@@ -66,10 +66,10 @@ define -> (States) ->
   # STATS
   #----------------------------------------
 
-  States.when('/stats', '/stats/')
+  States.when('/stats/', '/stats')
 
   States.add('reports.stats')
-    .setUrl('/stats/')
+    .setUrl('/stats')
     .setCtrl('Reports.Stats.StatsMain')
     .setTpl('ReportsInterfaceBundle:Stats:main.html')
 

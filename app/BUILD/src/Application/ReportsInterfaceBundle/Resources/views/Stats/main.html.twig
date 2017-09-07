@@ -24,6 +24,7 @@
                         </a>
                     </div>
                 </div>
+                <a class="bucket add button" ui-sref="reports.stats.new" ui-sref-active="active"><i class="fa fa-plus"></i> ADD</a>
             </div>
 
             {##########################################################################################################}
@@ -36,6 +37,7 @@
                 </div>
                 <div ng-show="loaded" class="stat-list-wrapper">
                     <ul class="stat-list">
+                        <li>Custom reports:</li>
                         <li ng-repeat="report in custom_data_list_prefiltered | filter:filterBySearchText track by report.id" ui-sref-active="active">
                             <span class="mark"></span>
                             <h1>
@@ -48,6 +50,7 @@
                                 <a href="#" class="stat-label" ng-class="{'active': isActiveLabel(label)}" ng-repeat="label in report.labels"><i class="fa fa-tag"></i> {{ ng_var('label') }}</a>
                             </p>
                         </li>
+                        <li>Built in reports:</li>
                         <li ng-repeat="report in built_in_data_list_prefiltered | filter:filterBySearchText track by report.id" ui-sref-active="active">
                             <span class="mark"></span>
                             <h1>
