@@ -181,6 +181,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var langLocale = DESKPRO_NAME_REGISTRY.lang_data[langId].locale;
 			var langTitle  = $.trim(DESKPRO_NAME_REGISTRY.lang_data[langId].title);
 
+			self.meta.ticket.language = { id: langId, title: langTitle };
+
 			self.getEl('message_page_wrap').find('.translate-from-lang').each(function() {
 				$(this).text(langTitle).data(langLocale);
 			});
