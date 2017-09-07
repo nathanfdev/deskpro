@@ -6,7 +6,6 @@ use Application\DeskPRO\ApacheTika\ClientManager as ApacheTikaManager;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Elastica\Document;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 use Orb\Util\Arrays;
 
 /**
@@ -16,7 +15,7 @@ use Orb\Util\Arrays;
  * field mappings. Need this instead of the standard mapping to handle
  * nested properties (participants, messages) using our preferred format.
  */
-class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
+class TicketToElasticaTransformer extends AbstractToElasticaTransformer
 {
     /**
      * @var ApacheTikaManager
@@ -73,15 +72,6 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             $document->set('person_id', 0);
         }
 
-        if ($object->labels) {
-            $labels = Arrays::map(function ($l) {
-                return $l->label;
-            }, $object->labels);
-            $document->set('labels', array_values($labels));
-        } else {
-            $document->set('labels', []);
-        }
-
         $messages = [];
         foreach ($object->getMessages() as $message) {
             $messages[] = $message->getMessage();
@@ -129,6 +119,9 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
             $document->set('attachments', []);
             $document->set('attachment', []);
         }
+
+        $this->transformCustomData($object, $document);
+        $this->transformLabels($object, $document);
 
         return $document;
     }

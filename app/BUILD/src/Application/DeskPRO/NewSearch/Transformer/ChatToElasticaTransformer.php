@@ -4,14 +4,12 @@ namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Elastica\Document;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 /**
  * Class ChatToElasticaTransformer.
  */
-class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
+class ChatToElasticaTransformer extends AbstractToElasticaTransformer
 {
     /**
      * {@inheritdoc}
@@ -30,13 +28,6 @@ class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('participants', $object->getParticipantIds());
         $document->set('is_agent', $object->isAgentChat());
 
-        if ($object->getLabels()) {
-            $labels = Arrays::map(function ($l) {
-                return $l->label;
-            }, $object->getLabels());
-            $document->set('labels', array_values($labels));
-        }
-
         $messages = [];
         foreach ($object->getMessages() as $message) {
             if (!$message->getIsSys()) {
@@ -52,6 +43,9 @@ class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('messages', $messages);
         $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
         $document->set('date_active', date('Y-m-d H:i:s'));
+
+        $this->transformCustomData($object, $document);
+        $this->transformLabels($object, $document);
 
         return $document;
     }
