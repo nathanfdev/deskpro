@@ -26,10 +26,8 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   liveDemo:                 liveDemoSelector(state),
   customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
   customFields:             customChatFieldsOrderedSelector(state),
-  allChatDepartments:       collectionSelectorFactory('ChatDepartment', 'all')(state),
   chatDepartments:          collectionSelectorFactory('ChatDepartment', 'online')(state),
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'online')(state),
-  allChatDepartmentsLoaded: isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
   chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
   chatRequiredName:         chatRequiredNameSelector(state),
@@ -47,12 +45,10 @@ export class ChatBeginContainer extends React.Component {
     liveDemo:                 PropTypes.bool,
     customFieldsLoaded:       PropTypes.bool,
     chatDepartmentsLoaded:    PropTypes.bool,
-    allChatDepartmentsLoaded: PropTypes.bool,
     chatSelectDepartmentType: PropTypes.string,
     chatDefaultDepartment:    PropTypes.number,
     loggedIn:                 PropTypes.bool,
     chatDepartments:          PropTypes.object,
-    allChatDepartments:       PropTypes.object,
     customFields:             PropTypes.object
   };
 
@@ -269,10 +265,10 @@ export class ChatBeginContainer extends React.Component {
   render() {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
-    const { allChatDepartments, chatDepartmentsLoaded, allChatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
-    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && allChatDepartments.size > 1;
+    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
+    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 1;
 
-    if (!customFieldsLoaded || !chatDepartmentsLoaded || !allChatDepartmentsLoaded) {
+    if (!customFieldsLoaded || !chatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
     }
 
