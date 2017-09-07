@@ -48,6 +48,7 @@ class AppManifestReader
             [ 'toVersion' => '2.1.0', 'fromVersion' => '2.0.0',  'type' => 'changeKey', 'fromKey' => 'external_apis', 'toKey' => 'externalApis' ],
             [ 'toVersion' => '2.1.0', 'fromVersion' => '2.0.0',  'type' => 'changeKey', 'fromKey' => 'is_single', 'toKey' => 'isSingle' ],
             [ 'toVersion' => '2.1.0', 'fromVersion' => '2.0.0',  'type' => 'changeKey', 'fromKey' => 'deskpro_api_tags', 'toKey' => 'deskproApiTags' ],
+            [ 'toVersion' => '2.2.0', 'fromVersion' => '2.1.0',  'type' => 'changeKey', 'fromKey' => 'state', 'toKey' => 'storage' ],
         ];
         $transformedManifest = $actualManifest;
 

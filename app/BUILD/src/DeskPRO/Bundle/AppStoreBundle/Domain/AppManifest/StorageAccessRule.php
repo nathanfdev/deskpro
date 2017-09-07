@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
 use JMS\Serializer\Annotation as JMS;
 
-class StateAccessRule
+class StorageAccessRule
 {
     /**
      * @JMS\Type("string")

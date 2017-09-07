@@ -37,7 +37,7 @@ class Converter
      * @return array|Domain\ApplicationState\AccessRule[]
      */
     public function convertToAccessRuleList(Domain\AppManifest $manifest) {
-        $stateRules = $manifest->getState();
+        $stateRules = $manifest->getStorage();
         if (0 === count($stateRules)) {
             return [];
         }

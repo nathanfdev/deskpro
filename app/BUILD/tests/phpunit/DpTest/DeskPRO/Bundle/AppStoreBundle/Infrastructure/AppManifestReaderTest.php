@@ -46,7 +46,7 @@ class AppManifestReaderTest extends AbstractKernelAwareTestCase
 
         $reader = new Infrastructure\AppManifestReader();
         $latestManifest = $reader->readManifestFromJson($latestManifestContents);
-        $latestManifest->setState(array()); // there is no state key in v2.0.0
+        $latestManifest->setStorage(array()); // there is no state key in v2.0.0
         $manifest = $reader->readManifestFromJson($manifestContents);
 
         $serializer = $this->getContainer()->get('jms_serializer');

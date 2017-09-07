@@ -104,9 +104,9 @@ class AppManifest
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StateAccessRule>")
      * @JMS\Expose()
      *
-     * @var AppManifest\StateAccessRule[]
+     * @var AppManifest\StorageAccessRule[]
      */
-    private $state = [];
+    private $storage = [];
 
     /**
      * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppAuthor")
@@ -360,19 +360,19 @@ class AppManifest
     }
 
     /**
-     * @return AppManifest\StateAccessRule[]
+     * @return AppManifest\StorageAccessRule[]
      */
-    public function getState()
+    public function getStorage()
     {
-        return $this->state;
+        return $this->storage;
     }
 
     /**
-     * @param AppManifest\StateAccessRule[] $state
+     * @param AppManifest\StorageAccessRule[] $state
      */
-    public function setState(array $state)
+    public function setStorage( array $state)
     {
-        $this->state = $state;
+        $this->storage = $state;
     }
 
     /**
