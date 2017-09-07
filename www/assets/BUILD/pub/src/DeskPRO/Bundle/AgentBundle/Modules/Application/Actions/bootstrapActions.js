@@ -155,6 +155,19 @@ export const preloadData    = createAction(
           }
         }
 
+        // set legacy agent notify map
+        window.DeskPRO_Window.notifyAgentMap = {};
+        data.agents.forEach((agent) => {
+          if (data.me.person.id === agent.id) {
+            return;
+          }
+
+          window.DeskPRO_Window.notifyAgentMap[agent.id] = {
+            name:        agent.name,
+            picture_url: (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace(/\{\{IMG_SIZE}}/, '20')
+          };
+        });
+
         return data;
       };
 
