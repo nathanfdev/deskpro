@@ -156,9 +156,9 @@ export class SnippetsListElement extends React.PureComponent {
   getStats() {
     const { snippet } = this.props;
     return (<div className="stats">
-      <span className="stat">Used: <span className="value">{snippet.get('usage_count')}</span></span>
+      <span className="stat">{agentPhrases.get('agent.snippets.used')} <span className="value">{snippet.get('usage_count')}</span></span>
       <span className="stat">
-        Feedback:&nbsp;
+        {agentPhrases.get('agent.snippets.feedback')}&nbsp;
         <span className="rating">
           <Icon name="smile-o" />
           <span className="value">{snippet.get('positive_ratings')}</span>
