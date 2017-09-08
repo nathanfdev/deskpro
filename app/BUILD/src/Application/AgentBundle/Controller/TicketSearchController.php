@@ -2051,6 +2051,7 @@ class TicketSearchController extends AbstractController
                         if ($snippetIds) {
                             foreach ($snippetIds as $snippetId) {
                                 if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+                                    // $snippetId refers here to the SnippetTranslation id
                                     $snippetTranslation = $this->em->find(SnippetTranslation::class, $snippetId);
 
                                     $messages = $ticket->getMessages();
@@ -2059,6 +2060,9 @@ class TicketSearchController extends AbstractController
 
                                     if ($snippetTranslation) {
                                         $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
+                                        $snippet    = $snippetLog->getSnippet();
+                                        $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
+                                        $this->em->persist($snippet);
                                         $this->em->persist($snippetLog);
                                     }
                                 } else {

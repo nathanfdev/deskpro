@@ -428,6 +428,26 @@
         display: none;
       }
     }
+    .stats {
+      span.stat {
+        font-family: $primary-font;
+        font-weight: $pf-light;
+        font-size: $font-size-m;
+        color: $dp-greyscale-850;
+        margin-right: 14px;
+        .value {
+          font-weight: $pf-semi-bold;
+        }
+        .rating {
+          margin-right: 7px;
+        }
+        .dp-icon {
+          font-size: $icon-size-s;
+          color: $dp-greyscale-350;
+          margin-right: 3px;
+        }
+      }
+    }
   }
   &.snippet_list_element_wrapper--mass-actions {
     .dp-input--checkbox {

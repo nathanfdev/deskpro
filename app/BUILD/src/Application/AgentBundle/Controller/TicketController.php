@@ -1471,12 +1471,14 @@ class TicketController extends AbstractController
 
             foreach ($snippetIds as $snippetId) {
                 if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+                    // $snippetId refers here to the SnippetTranslation id
                     $snippetTranslation = $this->em->find(SnippetTranslation::class, $snippetId);
 
                     if ($snippetTranslation) {
                         $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
+                        $snippet    = $snippetLog->getSnippet();
+                        $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
                         $this->em->persist($snippetLog);
-                        $this->em->flush();
                     }
                 } else {
                     $snippet = $this->em->find(TextSnippet::class, $snippetId);
@@ -1484,10 +1486,10 @@ class TicketController extends AbstractController
                     if ($snippet) {
                         $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
                         $this->em->persist($snippetLog);
-                        $this->em->flush();
                     }
                 }
             }
+            $this->em->flush();
         }
 
         if ($macro) {
@@ -5071,10 +5073,14 @@ class TicketController extends AbstractController
 
                     foreach ($snippetIds as $snippetId) {
                         if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+                            // $snippetId refers here to the SnippetTranslation id
                             $snippetTranslation = $this->em->find(SnippetTranslation::class, $snippetId);
 
                             if ($snippetTranslation) {
                                 $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
+                                $snippet    = $snippetLog->getSnippet();
+                                $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
+                                $this->em->persist($snippet);
                                 $this->em->persist($snippetLog);
                                 $this->em->flush();
                             }

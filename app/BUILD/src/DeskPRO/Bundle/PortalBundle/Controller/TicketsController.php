@@ -521,7 +521,38 @@ class TicketsController extends AbstractController
                 $this->updateTicketFeedbackRating($ticket, $message, $feedback);
                 /** @var SnippetUseLog $use */
                 foreach ($uses as $use) {
+                    $snippet = $use->getSnippet();
+                    // Compensate previous answered feedback
+                    if ($use->getRating() !== null) {
+                        switch ($use->getRating()) {
+                            case 1:
+                                $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() - 1);
+                                break;
+                            case 0:
+                                $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() - 1);
+                                break;
+                            case -1:
+                                $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() - 1);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
                     $use->setRating($rating);
+                    switch ($rating) {
+                        case 1:
+                            $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
+                            break;
+                        case 0:
+                            $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() + 1);
+                            break;
+                        case -1:
+                            $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() + 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    $this->getEm()->persist($snippet);
                     $this->getEm()->persist($use);
                 }
 

@@ -43,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @JMS\ExclusionPolicy("all")
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetUseLogRepository")
- * @ORM\Table(name="snippet_use_log")
+ * @ORM\Table(name="snippet_use_log", indexes={@ORM\Index(name="date_created", columns={"date_created"})})
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  */
@@ -145,15 +145,15 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
     protected $person;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="integer", nullable=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("string")
+     * @JMS\Type("integer")
      * @JMS\Groups({"list"})
      *
-     * @var string
+     * @var int
      */
-    protected $rating = 0;
+    protected $rating = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
