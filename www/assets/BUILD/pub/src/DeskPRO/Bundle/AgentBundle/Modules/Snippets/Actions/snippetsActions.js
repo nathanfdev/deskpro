@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { replaceIds } from 'DeskPRO/Component/Util/Api';
 
@@ -102,4 +102,9 @@ export const massActions = createAction(
 export const exportSnippets = createAction(
   'SNIPPETS_EXPORT',
   data => repository('Snippets').exportSnippets(data)
+);
+export const getUsageLog = createAction(
+  'SNIPPETS_USAGE_LOG',
+  snippetId => () =>
+    api.sendGet(`DP_API/snippets_use?inline_sideloads=true&include=ticket_message,ticket,person&snippet_id=${snippetId}`)
 );

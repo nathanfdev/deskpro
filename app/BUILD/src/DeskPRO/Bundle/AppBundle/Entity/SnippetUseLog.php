@@ -36,6 +36,7 @@ use DateTime;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Swagger\Annotations\Property;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -165,6 +166,17 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     protected $type;
+
+    /**
+     * Property manually set to containt ticket feedback message.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     * @JMS\Groups({"list"})
+     *
+     * @var string
+     */
+    protected $message = '';
 
     public static function createSnippetTicketLog(TicketMessage $ticketMessage, Person $person, SnippetTranslation $snippetTranslation)
     {
@@ -355,6 +367,26 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
     public function setType($type)
     {
         $this->setModelField('type', $type);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return SnippetUseLog
+     */
+    public function setMessage($message)
+    {
+        $this->setModelField('message', $message);
 
         return $this;
     }
