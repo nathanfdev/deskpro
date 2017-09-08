@@ -100,7 +100,7 @@ SQL;
             $cc->setPerson($this->person)
                 ->setStatus($status)
                 ->setPersonName($this->person->getDisplayName())
-                ->setPersonEmail($this->person->getEmail())
+                ->setPersonEmail($this->person->getEmail() ?: '')
                 ->setEndedBy(ChatConversation::ENDED_AGENT)
                 ->setAgent($this->agent)
                 ->setDateCreated($this->faker->dateTimeBetween('-2 months', '-10 days'));

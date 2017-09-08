@@ -346,7 +346,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $subChoices = new ArrayCollection();
         if ($this->children->contains($parentChoice)) {
             foreach ($this->children as $child) {
-                if ($child->getOption('parent_id') === $parentChoice->getId()) {
+                if ((int) $child->getOption('parent_id') === $parentChoice->getId()) {
                     $subChoices->add($child);
                 }
             }

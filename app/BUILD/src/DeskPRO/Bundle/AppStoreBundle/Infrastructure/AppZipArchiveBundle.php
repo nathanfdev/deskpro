@@ -46,6 +46,24 @@ class AppZipArchiveBundle implements Domain\AppBundle
     private $fileInfo;
 
     /**
+     * Creates a ZipArchiveBuilder that will create the bundle at the specified location
+     *
+     * @param string $file path to a file
+     * @return AppZipArchiveBundle
+     */
+    static public function fromFile($file)
+    {
+        $fileInfo = new \SplFileInfo($file);
+        if (!$fileInfo->isReadable()) {
+            $exMsg = sprintf('trying to read an application zip bundle from a non-readable location: %s', $file);
+            throw new \RuntimeException($exMsg);
+        }
+
+        $archive = new \ZipArchive();
+        return new AppZipArchiveBundle($archive, $fileInfo);
+    }
+
+    /**
      * Constructor.
      *
      * @param \ZipArchive  $archive
@@ -120,7 +138,9 @@ class AppZipArchiveBundle implements Domain\AppBundle
                 }
             }
         } finally {
-            $this->archive->close();
+            if (true === $resource) {
+                $this->archive->close();
+            }
         }
 
         return $collectedResources;
@@ -140,7 +160,9 @@ class AppZipArchiveBundle implements Domain\AppBundle
                 return $resource === false ? null : $resource;
             }
         } finally {
-            $this->archive->close();
+            if (true === $resource) {
+                $this->archive->close();
+            }
         }
 
         return;
