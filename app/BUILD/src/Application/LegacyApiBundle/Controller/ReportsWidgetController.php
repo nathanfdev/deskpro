@@ -34,7 +34,6 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Exception\ValidationException;
-use Application\DeskPRO\Reports\Form\Type\ReportWidgetType;
 use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Response;
@@ -158,7 +157,7 @@ class ReportsWidgetController extends AbstractController
             return $this->createApiResponse(['error' => $error]);
         } else {
             $postData = $this->in->getAll('req');
-            $form     = $this->createForm(new ReportWidgetType(), $report, ['cascade_validation' => true]);
+            $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
             $form->submit($postData['report'], true);
             if ($form->isValid()) {
                 $this->em->persist($report);

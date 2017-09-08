@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,6 +92,13 @@ class DashboardWidget
     public function getWidgetGraphType($widgetType)
     {
         return isset($this->widgetGraphTypesMapping[$widgetType]) ? $this->widgetGraphTypesMapping[$widgetType] : self::WIDGET_RENDER_TYPE_TABLE;
+    }
+
+    public function getReversedWidgetGraphType($graphType)
+    {
+        $flipped = array_flip($this->widgetGraphTypesMapping);
+
+        return isset($flipped[$graphType]) ? $flipped[$graphType] : 'table';
     }
 
     public function __construct(EntityManager $em)

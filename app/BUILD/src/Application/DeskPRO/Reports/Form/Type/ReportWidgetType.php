@@ -38,10 +38,34 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ReportWidgetType.
+ */
 class ReportWidgetType extends AbstractType
 {
+    /**
+     * @var DashboardWidget
+     */
+    private $dashboardWidget;
+
+    /**
+     * ReportWidgetType constructor.
+     *
+     * @param DashboardWidget $dashboardWidget
+     */
+    public function __construct(DashboardWidget $dashboardWidget)
+    {
+        $this->dashboardWidget = $dashboardWidget;
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -59,14 +83,36 @@ class ReportWidgetType extends AbstractType
                 'choices_as_values' => true,
                 'required'          => true,
             ]);
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'transformDisplayTypes']);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+    public function transformDisplayTypes(FormEvent $event)
     {
-        $resolver->setDefaults(
+        /** @var ReportWidget $data */
+        $data             = $event->getData();
+        $transformedTypes = [];
+        // this is just a stub for now, we need to update our way to determine display types
+        foreach ($data->getDisplayTypes() as $displayType) {
+            $transformedTypes[] = $this->dashboardWidget->getReversedWidgetGraphType($displayType);
+        }
+
+        $data->setDisplayTypes($transformedTypes);
+    }
+
+/**
+ * @param OptionsResolver $resolver
+ */public function configureOptions(OptionsResolver $resolver)
+{
+    $resolver->setDefaults(
             [
                 'data_class' => ReportWidget::class,
             ]
         );
+}
+
+    public function getName()
+    {
+        return 'form_dashboards_report_widget';
     }
 }
