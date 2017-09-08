@@ -2518,6 +2518,9 @@ class Person extends DomainObject implements
     public function getEmail()
     {
         $email = $this->getPrimaryEmail();
+        if (!$email) {
+            $email = $this->emails->first();
+        }
 
         return $email ? $email->getEmail() : null;
     }
@@ -3565,15 +3568,17 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param $checkFirst
+     *
      * @return \Application\DeskPRO\Entity\AgentTeam
      */
-    public function getPrimaryTeam()
+    public function getPrimaryTeam($checkFirst = true)
     {
         if ($this->primary_team) {
             return $this->primary_team;
         }
 
-        if ($first = $this->teams->first()) {
+        if ($checkFirst && $first = $this->teams->first()) {
             return $first;
         }
 

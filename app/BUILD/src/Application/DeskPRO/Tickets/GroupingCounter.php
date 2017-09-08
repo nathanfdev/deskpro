@@ -460,6 +460,16 @@ class GroupingCounter
             $titles2 = $this->getFieldTitles($this->grouping2, $ids2);
         }
 
+        if (in_array($this->grouping1, ['organization', 'person'])) {
+            asort($titles1);
+
+            if (isset($titles1[0])) {
+                $none = $titles1[0];
+                unset($titles1[0]);
+                $titles1 = [0 => $none] + $titles1;
+            }
+        }
+
         return [
             'titles1' => $titles1,
             'titles2' => $titles2,

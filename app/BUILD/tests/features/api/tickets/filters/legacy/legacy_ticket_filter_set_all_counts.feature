@@ -5,21 +5,24 @@ Feature: /ticket_filter_sets/all/counts endpoint
   I want to check endpoint
 
   Background:
-    Given I'm authenticated as admin
-    And "user_1@deskpro.dev" user exists
-    And "user_2@deskpro.dev" user exists
+    Given no Person records exist
+    And I'm authenticated as admin
+    And the following User records exist:
+      | #  | Name   | Email              |
+      | u1 | User 1 | user_1@deskpro.dev |
+      | u2 | User 2 | user_2@deskpro.dev |
     And only the following LegacyTicketFilter records exist:
       | #  | Title           | Is Enabled | Is Global | Sys Name | Terms                                                      | Display Order |
       | f1 | Custom filter 1 | 1          | 1         | NULL     | [{"type":"agent","op":"is","options":{"agent":"-1"}}]      | 1             |
       | f2 | Custom filter 2 | 1          | 1         | NULL     | [{"type":"agent","op":"is","options":{"agent":"~admin~"}}] | 2             |
     And only the following Ticket records exist:
-      | #  | Subject  | Person               | Agent   |
-      | t1 | Ticket 1 | {user_1@deskpro.dev} | NULL    |
-      | t2 | Ticket 2 | {user_1@deskpro.dev} | {admin} |
-      | t3 | Ticket 3 | {user_1@deskpro.dev} | {admin} |
-      | t4 | Ticket 4 | {user_2@deskpro.dev} | NULL    |
-      | t5 | Ticket 5 | {user_2@deskpro.dev} | NULL    |
-      | t6 | Ticket 6 | {user_2@deskpro.dev} | {admin} |
+      | #  | Subject  | Person | Agent   |
+      | t1 | Ticket 1 | {u1}   | NULL    |
+      | t2 | Ticket 2 | {u1}   | {admin} |
+      | t3 | Ticket 3 | {u1}   | {admin} |
+      | t4 | Ticket 4 | {u2}   | NULL    |
+      | t5 | Ticket 5 | {u2}   | NULL    |
+      | t6 | Ticket 6 | {u2}   | {admin} |
     And I re-fill ticket search table
 
   Scenario: I retrieve list of all ticket filter sets counts
@@ -76,6 +79,7 @@ Feature: /ticket_filter_sets/all/counts endpoint
     And the JSON node "data[2].nested[1].nested" should have 2 elements
 
     And the JSON node "data[2].nested[1].nested[0].type" should be equal to "person"
-    And the JSON node "data[2].nested[1].nested[0].title" should be equal to "User User"
+    And the JSON node "data[2].nested[1].nested[0].id" should be equal to "{u1}"
+    And the JSON node "data[2].nested[1].nested[0].title" should be equal to "User 1"
     And the JSON node "data[2].nested[1].nested[0].count" should be equal to 2
     And the JSON node "data[2].nested[1].nested[0].nested" should have 0 element

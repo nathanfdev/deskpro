@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use DeskPRO\Bundle\AppBundle\Content\Avatar;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -285,7 +286,7 @@ class Person extends BasePerson
     /**
      * Labels associated with this user.
      *
-     * @JMS\Type("array<label<Application\DeskPRO\Entity\LabelPerson>>")
+     * @JMS\Type("deferred<array<label<Application\DeskPRO\Entity\LabelPerson>>>")
      *
      * @var \Application\DeskPRO\Entity\Labels\Label[]
      */
@@ -294,7 +295,7 @@ class Person extends BasePerson
     /**
      * Emails belong to user.
      *
-     * @JMS\Type("collection<to_string<Application\DeskPRO\Entity\PersonEmail>>")
+     * @JMS\Type("deferred<collection<to_string<Application\DeskPRO\Entity\PersonEmail>>>")
      *
      * @var array
      */
@@ -303,7 +304,7 @@ class Person extends BasePerson
     /**
      * Phone numbers belong to user.
      *
-     * @JMS\Type("collection<Application\DeskPRO\Entity\PhoneNumber>")
+     * @JMS\Type("deferred<collection<Application\DeskPRO\Entity\PhoneNumber>>")
      *
      * @var array
      */
@@ -330,7 +331,7 @@ class Person extends BasePerson
     /**
      * Custom persons data.
      *
-     * @JMS\Type("custom_data<array>")
+     * @JMS\Type("deferred<custom_data<array>>")
      *
      * @var CustomDataPerson[]
      */
@@ -339,7 +340,7 @@ class Person extends BasePerson
     /**
      * Contacts for this user.
      *
-     * @JMS\Type("collection")
+     * @JMS\Type("deferred<collection>")
      *
      * @var \Application\DeskPRO\Entity\PersonContactData[]
      */
@@ -348,7 +349,7 @@ class Person extends BasePerson
     /**
      * Agent teams.
      *
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\AgentTeam>>")
+     * @JMS\Type("deferred<collection<entity<Application\DeskPRO\Entity\AgentTeam>>>")
      *
      * @var \Application\DeskPRO\Entity\AgentTeam[]
      */
@@ -357,7 +358,7 @@ class Person extends BasePerson
     /**
      * Primary agent team.
      *
-     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     * @JMS\Type("deferred<entity<Application\DeskPRO\Entity\AgentTeam>>")
      *
      * @var \Application\DeskPRO\Entity\AgentTeam
      */
@@ -365,6 +366,8 @@ class Person extends BasePerson
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $customData
      */
     public function __construct(PersonEntity $person, Avatar $avatar)
     {
@@ -397,14 +400,91 @@ class Person extends BasePerson
         $this->browser                 = $person->browser;
         $this->userGroups              = $person->getPublicUsergroups();
         $this->agentGroups             = $person->getPublicAgentgroups();
-        $this->labels                  = $person->getLabels();
         $this->ticketsCount            = $person->getTicketsCount();
         $this->chatsCount              = $person->getChatsCount();
-        $this->phoneNumbers            = $person->getPhoneNumbers();
-        $this->fields                  = $person->getCustomData();
-        $this->contactData             = $person->getContactData();
-        $this->emails                  = $person->getEmails();
-        $this->teams                   = $person->getTeams();
-        $this->primaryTeam             = $person->getPrimaryTeam();
+    }
+
+    /**
+     * @param CallbackDeferredProperty $customData
+     *
+     * @return $this
+     */
+    public function setCustomData($customData = null)
+    {
+        $this->fields = $customData;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $contactData
+     *
+     * @return $this
+     */
+    public function setContactData($contactData = null)
+    {
+        $this->contactData = $contactData;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $phoneNumbers
+     *
+     * @return $this
+     */
+    public function setPhoneNumbers($phoneNumbers = null)
+    {
+        $this->phoneNumbers = $phoneNumbers;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $agentTeams
+     *
+     * @return $this
+     */
+    public function setAgentTeams($agentTeams = null)
+    {
+        $this->teams = $agentTeams;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $primaryTeam
+     *
+     * @return $this
+     */
+    public function setPrimaryTeam($primaryTeam = null)
+    {
+        $this->primaryTeam = $primaryTeam;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $labels
+     *
+     * @return $this
+     */
+    public function setLabels($labels = null)
+    {
+        $this->labels = $labels;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $emails
+     *
+     * @return $this
+     */
+    public function setEmails($emails = null)
+    {
+        $this->emails = $emails;
+
+        return $this;
     }
 }

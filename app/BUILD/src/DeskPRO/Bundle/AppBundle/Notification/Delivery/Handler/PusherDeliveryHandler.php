@@ -67,9 +67,9 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     private $messages = [];
 
     /**
-     * @var array
+     * @var bool
      */
-    private $postponeMessages = [];
+    private $requestSoon = false;
 
     /**
      * @var int
@@ -123,8 +123,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     public function deliverSoon()
     {
         if ($this->connection->getTransactionNestingLevel() > 1) {
-            $this->postponeMessages = array_merge($this->postponeMessages, $this->messages);
-            $this->messages         = [];
+            $this->requestSoon = true;
         } else {
             $this->deliver();
         }
@@ -132,12 +131,16 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
 
     public function doDeliverSoon()
     {
-        if (empty($this->messages) && empty($this->postponeMessages)) {
+        if (!$this->requestSoon) {
             return;
         }
 
-        $this->messages         = array_merge($this->messages, $this->postponeMessages);
-        $this->postponeMessages = [];
+        $this->requestSoon = false;
+
+        if (empty($this->messages)) {
+            return;
+        }
+
         $this->deliver();
     }
 

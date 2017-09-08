@@ -40,12 +40,23 @@ class Apps2Data extends AbstractDefaultData
      */
     public function runInstall()
     {
-        $assetDir      = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
-        $trelloAppPath = $assetDir.'/apps/v2/deskproapps-trello.zip';
+        $assetDir = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
+        $appsDir  = new \DirectoryIterator($assetDir.'/apps/v2');
 
-        $this->getLogger()->info('Installing Trello');
+        foreach ($appsDir as $fileInfo) {
+            if (!$fileInfo->isDot()) {
+                $this->runInstallApp($fileInfo->getPathname());
+            }
+        }
+    }
+
+    private function runInstallApp($bundlePath)
+    {
+        $this->getLogger()->info(sprintf('Installing v2 app from path: %s', $bundlePath));
+
+        $bundle          = AppZipArchiveBundle::fromFile($bundlePath);
         $instanceCreator = $this->getContainer()->get('apps2.application_manager');
-        $instanceCreator->createOrUpdateAppEntity(new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($trelloAppPath)));
+        $instanceCreator->createOrUpdateAppEntity($bundle);
     }
 
     /**

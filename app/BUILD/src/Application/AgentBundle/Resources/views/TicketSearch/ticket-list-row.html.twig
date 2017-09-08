@@ -249,7 +249,7 @@
 						<span class="prop-title">{{ phrase('agent.general.total_time_waiting') }}:</span>
 						<span class="prop-val">
 							<span dp-timeago auto-update seconds="<%= parseInt(
-								(ticket_display.total_user_waiting || 0)
+								(-ticket_display.total_user_waiting || 0)
 								+ (
 									(ticket_display.date_user_waiting_ts || ticket_display.date_created_ts)
 									- ((new Date()).getTime()/1000)

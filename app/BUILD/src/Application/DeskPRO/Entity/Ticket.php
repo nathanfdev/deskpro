@@ -3314,12 +3314,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getWorstSlaStatus()
     {
-        if (!count($this->ticket_slas)) {
+        return self::calctWorstSlaStatus($this->ticket_slas);
+    }
+
+    /**
+     * @param $ticketSlas
+     *
+     * @return string
+     */
+    public static function calctWorstSlaStatus($ticketSlas)
+    {
+        if (!count($ticketSlas)) {
             return;
         }
 
         $status = null;
-        foreach ($this->ticket_slas as $ticket_sla) {
+        foreach ($ticketSlas as $ticket_sla) {
             if ($ticket_sla->is_completed) {
                 continue;
             }

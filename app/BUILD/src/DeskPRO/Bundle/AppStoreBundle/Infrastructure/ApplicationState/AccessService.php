@@ -230,6 +230,9 @@ class AccessService
 
         $converter   = new StateEntityConverter();
         $stateObject = $converter->toDomainObject($stateEntity);
+        if (!$stateObject) {
+            throw new \DomainException('could not convert state entity to a domain object');
+        }
 
         if ($this->allowWriteAccess($request, $stateObject)) {
             $this->entityManager->persist($stateEntity);

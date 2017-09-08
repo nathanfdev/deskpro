@@ -65,14 +65,15 @@ class TicketHandler extends AbstractEntityHandler
             ->setDateArchived($model->getDateArchived())
         ;
 
+        if ($model->getRef()) {
+            $entity->setRef($model->getRef());
+        }
         if ($model->getDepartment()) {
             $entity->setDepartment($this->helpers->getDepartmentHelper()->findOrCreateDepartment('ticket', $model->getDepartment()));
         }
-
         if ($model->getUrgency()) {
             $entity->setUrgency($model->getUrgency());
         }
-
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
         }

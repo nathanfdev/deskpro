@@ -28,8 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
+use Application\DeskPRO\Entity\CustomDataTicket;
+use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketParticipant;
+use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketExcerptDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
@@ -42,6 +46,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketCsv;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketLayout as TicketLayoutModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\FormFactory;
 
@@ -89,6 +94,26 @@ class TicketHandler extends AbstractEntityHandler
      * @var TicketMessage[]
      */
     private $excerpts;
+
+    /**
+     * @var array
+     */
+    private $labels;
+
+    /**
+     * @var array
+     */
+    private $customData;
+
+    /**
+     * @var array
+     */
+    private $ticketParticipants;
+
+    /**
+     * @var array
+     */
+    private $ticketSlas;
 
     /**
      * TicketHandler constructor.
@@ -229,6 +254,10 @@ class TicketHandler extends AbstractEntityHandler
 
         $model = new TicketModel($entity);
         $model->setStar(new CallbackDeferredProperty([$this, 'getStar'], [$entity, $context]));
+        $model->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]));
+        $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
+        $model->setCc(new CallbackDeferredProperty([$this, 'getTicketParticipants'], [$entity]));
+        $model->setTicketSlas(new CallbackDeferredProperty([$this, 'getTicketSlas'], [$entity]));
 
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(
@@ -265,5 +294,109 @@ class TicketHandler extends AbstractEntityHandler
         );
 
         return $model;
+    }
+
+    /**
+     * @param TicketEntity $entity
+     *
+     * @return LabelTicket[]
+     */
+    public function getLabels(TicketEntity $entity)
+    {
+        if (null === $this->labels) {
+            $result = $this->em->getRepository(LabelTicket::class)->findBy([
+                'ticket' => $this->ticketIds,
+            ]);
+
+            $this->labels = [];
+            foreach ($result as $label) {
+                $this->labels[$label->getTicket()->getId()][] = $label;
+            }
+        }
+
+        if (isset($this->labels[$entity->getId()])) {
+            return $this->labels[$entity->getId()];
+        }
+
+        return;
+    }
+
+    /**
+     * @param TicketEntity $entity
+     *
+     * @return CustomDataTicket[]
+     */
+    public function getCustomData(TicketEntity $entity)
+    {
+        if (null === $this->customData) {
+            $result = $this->em->getRepository(CustomDataTicket::class)->findBy([
+                'ticket' => $this->ticketIds,
+            ]);
+
+            $this->customData = [];
+            foreach ($result as $value) {
+                $this->customData[$value->getTicketId()][] = $value;
+            }
+        }
+
+        if (isset($this->customData[$entity->getId()])) {
+            return new ArrayCollection($this->customData[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param TicketEntity $entity
+     *
+     * @return TicketParticipant[]
+     */
+    public function getTicketParticipants(TicketEntity $entity)
+    {
+        if (null === $this->ticketParticipants) {
+            $result = $this->em->getRepository(TicketParticipant::class)->findBy([
+                'ticket' => $this->ticketIds,
+            ]);
+
+            $this->ticketParticipants = [];
+            foreach ($result as $value) {
+                $this->ticketParticipants[$value->getTicket()->getId()][] = $value;
+            }
+        }
+
+        if (isset($this->ticketParticipants[$entity->getId()])) {
+            $participants = new ArrayCollection($this->ticketParticipants[$entity->getId()]);
+
+            return $participants->map(function (TicketParticipant $participant) {
+                return $participant->getPerson();
+            });
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    /**
+     * @param TicketEntity $entity
+     *
+     * @return TicketSla[]
+     */
+    public function getTicketSlas(TicketEntity $entity)
+    {
+        if (null === $this->ticketSlas) {
+            $result = $this->em->getRepository(TicketSla::class)->findBy([
+                'ticket' => $this->ticketIds,
+            ]);
+
+            $this->ticketSlas = [];
+            foreach ($result as $value) {
+                $this->ticketSlas[$value->getTicket()->getId()][] = $value;
+            }
+        }
+
+        if (isset($this->ticketSlas[$entity->getId()])) {
+            return new ArrayCollection($this->ticketSlas[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
     }
 }

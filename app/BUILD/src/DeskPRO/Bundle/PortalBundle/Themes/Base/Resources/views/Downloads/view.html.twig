@@ -19,8 +19,11 @@
             <div class="article-meta">
                 <span class="agent-avatar agent-avatar-mini"><img src="{{ avatar_url(file.person, 20) }}"></span>
                 {{ phrase('portal.articles.by-line', { name: file.person.display_name_user, date: file.date_published | date('day') }) }}
-                <span class="comments"><i class="fa fa-comments"></i> <a
-                            href="#comments">{{ phrase('portal.general.comments-count', {count: file.calc_num_comments}) }}</a></span>
+                {% if brand_setting('user.publish_comments') %}
+                    <hr>
+                    <span class="comments"><i class="fa fa-comments"></i> <a
+                                href="#comments">{{ phrase('portal.general.comments-count', {count: file.calc_num_comments}) }}</a></span>
+                {% endif %}
             </div>
             {% if file.status != 'published' and file.status != 'archived' and app.user.is_agent %}
                 <div class="sub-note">{{ phrase('portal.downloads.view-as-agent') }}</div>
@@ -58,7 +61,7 @@
     {% show download_ratings %}
     {% show related_content %}
 
-    {% if file.calc_num_comments or new_comment_form %}
+    {% if brand_setting('user.publish_comments') and file.calc_num_comments or new_comment_form %}
     <div class="comment-box" id="comments">
         <div class="titled-header">
             <h1>{{ phrase('portal.general.comments-title', {count: file.calc_num_comments}) }}</h1>

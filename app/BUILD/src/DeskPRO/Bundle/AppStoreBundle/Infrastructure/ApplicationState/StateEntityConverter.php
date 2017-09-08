@@ -35,6 +35,7 @@ class StateEntityConverter
 {
     /**
      * @param Entity\AppStore\AppState $stateEntity
+     *
      * @return Domain\ApplicationState
      */
     public function toDomainObject(Entity\AppStore\AppState $stateEntity)
@@ -48,27 +49,27 @@ class StateEntityConverter
             return null;
         }
 
-        if (!$stateEntity->getOwner() || !$stateEntity->getPermRead() || !$stateEntity->getPermWrite()) {
+        if (!$stateEntity->getPermRead() || !$stateEntity->getPermWrite()) {
             return null;
         }
 
-        if (! $stateEntity->getValue()) {
+        if (!$stateEntity->getValue()) {
             return null;
         }
 
-        $stateIdentifier =  new Domain\ApplicationStateId(
+        $stateIdentifier = new Domain\ApplicationStateId(
             (string) $stateEntity->getAppInstance()->getId(),
             $stateEntity->getName(),
             $entityId
         );
 
-        $securityDescriptor =  new Domain\ApplicationState\SecurityDescriptor(
-            (string) $stateEntity->getOwner()->getId(),
+        $ownerId            = $stateEntity->getOwner() ? (string) $stateEntity->getOwner()->getId() : null;
+        $securityDescriptor = new Domain\ApplicationState\SecurityDescriptor(
+            $ownerId,
             $stateEntity->getPermRead(),
             $stateEntity->getPermWrite(),
             (bool) $stateEntity->getIsBackendOnly()
         );
-
 
         return new Domain\ApplicationState($stateIdentifier, $securityDescriptor, $stateEntity->getValue());
     }
