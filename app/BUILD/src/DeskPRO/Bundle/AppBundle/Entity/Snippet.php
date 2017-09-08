@@ -192,28 +192,28 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      *
      * @var int
      */
-    protected $usageCount;
+    protected $usageCount = 0;
 
     /**
      * @ORM\Column(name="positive_ratings", type="integer")
      *
      * @var int
      */
-    protected $positiveRatings;
+    protected $positiveRatings = 0;
 
     /**
      * @ORM\Column(name="neutral_ratings", type="integer")
      *
      * @var int
      */
-    protected $neutralRatings;
+    protected $neutralRatings = 0;
 
     /**
      * @ORM\Column(name="negative_ratings", type="integer")
      *
      * @var int
      */
-    protected $negativeRatings;
+    protected $negativeRatings = 0;
 
     /**
      * Constructor.
