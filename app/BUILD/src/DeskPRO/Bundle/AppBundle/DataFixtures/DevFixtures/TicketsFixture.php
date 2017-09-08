@@ -420,8 +420,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     {
         $batch = [];
 
-        foreach ($this->ticketIds as $ticket_id) {
-            $num  = $this->faker->numberBetween(1, $this->ticketMaxMessages);
+        foreach ($this->ticketIds as $ticketId) {
+            $num  = (int) $ticketId === 100 ? 1500 : $this->faker->numberBetween(1, $this->ticketMaxMessages);
             $date = $this->faker->dateTimeBetween('-2 months', '-2days');
             for ($i = 0; $i < $num; ++$i) {
                 $as_agent = $this->faker->boolean(50);
@@ -445,7 +445,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 $text = implode('<br/><br/>', $text);
 
                 $batch[] = [
-                    'ticket_id' => $ticket_id,
+                    'ticket_id' => $ticketId,
                     'person_id' => $as_agent
                         ? $this->faker->randomElement($this->agentIds)
                         : $this->faker->randomElement($this->peopleIds),
@@ -458,10 +458,17 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                     'message_hash'    => sha1(uniqid('', true)),
                     'message'         => $text,
                 ];
+
+                if (count($batch) > 1000) {
+                    $this->db->batchInsert('tickets_messages', $batch);
+                    $batch = [];
+                }
             }
         }
 
-        $this->db->batchInsert('tickets_messages', $batch);
+        if ($batch) {
+            $this->db->batchInsert('tickets_messages', $batch);
+        }
     }
 
     private function loadTicketProps()
