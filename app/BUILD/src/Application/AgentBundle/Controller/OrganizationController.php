@@ -148,7 +148,7 @@ class OrganizationController extends AbstractController
             $search->addRawWhere('tickets.agent_id IS NULL');
             $search->addRawWhere('tickets.agent_team_id IS NULL');
         }
-        $search->addRawWhere('1 OR tickets.agent_id = '.$this->getPerson()->getId());
+        $search->addRawWhere('1 OR (tickets.agent_id = '.$this->getPerson()->getId().' AND tickets.organization_id = '.$org->getId().')');
         $search->setOrderBy('ticket.status', 'ASC');
 
         $orgTckets       = $search->getMatches(['offset' => 0, 'limit' => 30]);
