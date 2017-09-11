@@ -5,6 +5,7 @@ import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { List } from 'react-virtualized';
 import { Checkbox, Tag } from 'deskpro-components/lib/Components/Forms';
+import Icon from 'deskpro-components/lib/Components/Icon';
 
 export class SnippetsListElement extends React.PureComponent {
   static propTypes = {
@@ -152,6 +153,28 @@ export class SnippetsListElement extends React.PureComponent {
     return null;
   }
 
+  getStats() {
+    const { snippet } = this.props;
+    return (<div className="stats">
+      <span className="stat">{agentPhrases.get('agent.snippets.used')} <span className="value">{snippet.get('usage_count')}</span></span>
+      <span className="stat">
+        {agentPhrases.get('agent.snippets.feedback')}&nbsp;
+        <span className="rating">
+          <Icon name="smile-o" />
+          <span className="value">{snippet.get('positive_ratings')}</span>
+        </span>
+        <span className="rating">
+          <Icon name="meh-o" />
+          <span className="value">{snippet.get('neutral_ratings')}</span>
+        </span>
+        <span className="rating">
+          <Icon name="frown-o" />
+          <span className="value">{snippet.get('negative_ratings')}</span>
+        </span>
+      </span>
+    </div>);
+  }
+
   findLanguage() {
     const { snippet, langPref } = this.props;
     for (let i = 0; i < langPref.length; i++) {
@@ -196,6 +219,7 @@ export class SnippetsListElement extends React.PureComponent {
           {this.getLanguages()}
           {this.getLabels()}
           <span className="content">{this.getContent(langId)}</span>
+          {this.getStats()}
         </div>
         { window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id') ?
           <div onClick={() => editSnippet(snippet, langId)} className="edit-snippet">
@@ -373,7 +397,7 @@ export class SnippetsList extends React.Component {
           height={height}
           width={listWidth}
           rowCount={this.list.length}
-          rowHeight={68}
+          rowHeight={80}
           rowRenderer={this.rowRenderer}
           noRowsRenderer={SnippetsList.noRowsRenderer}
           overscanRowCount={2}

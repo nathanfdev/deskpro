@@ -150,6 +150,34 @@ class Snippet
      */
     private $visibleDepartments;
 
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $usageCount;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $positiveRatings;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $neutralRatings;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $negativeRatings;
+
     public function __construct(SnippetEntity $snippet)
     {
         $this->id                 = $snippet->getId();
@@ -165,5 +193,9 @@ class Snippet
         $this->ownershipTeams     = $snippet->getOwnershipTeams();
         $this->visibleDepartments = $snippet->getVisibleDepartments();
         $this->labels             = $snippet->getLabels();
+        $this->usageCount         = $snippet->getUsageCount();
+        $this->positiveRatings    = $snippet->getPositiveRatings();
+        $this->neutralRatings     = $snippet->getNeutralRatings();
+        $this->negativeRatings    = $snippet->getNegativeRatings();
     }
 }

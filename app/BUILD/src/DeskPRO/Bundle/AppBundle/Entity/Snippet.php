@@ -188,6 +188,34 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $visibleDepartments;
 
     /**
+     * @ORM\Column(name="usage_count", type="integer")
+     *
+     * @var int
+     */
+    protected $usageCount = 0;
+
+    /**
+     * @ORM\Column(name="positive_ratings", type="integer")
+     *
+     * @var int
+     */
+    protected $positiveRatings = 0;
+
+    /**
+     * @ORM\Column(name="neutral_ratings", type="integer")
+     *
+     * @var int
+     */
+    protected $neutralRatings = 0;
+
+    /**
+     * @ORM\Column(name="negative_ratings", type="integer")
+     *
+     * @var int
+     */
+    protected $negativeRatings = 0;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -567,5 +595,85 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function getVisibleDepartments()
     {
         return $this->visibleDepartments;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsageCount()
+    {
+        return $this->usageCount;
+    }
+
+    /**
+     * @param int $usageCount
+     *
+     * @return Snippet
+     */
+    public function setUsageCount($usageCount)
+    {
+        $this->setModelField('usageCount', $usageCount);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPositiveRatings()
+    {
+        return $this->positiveRatings;
+    }
+
+    /**
+     * @param int $positiveRatings
+     *
+     * @return Snippet
+     */
+    public function setPositiveRatings($positiveRatings)
+    {
+        $this->setModelField('positiveRatings', $positiveRatings);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNeutralRatings()
+    {
+        return $this->neutralRatings;
+    }
+
+    /**
+     * @param int $neutralRatings
+     *
+     * @return Snippet
+     */
+    public function setNeutralRatings($neutralRatings)
+    {
+        $this->setModelField('neutralRatings', $neutralRatings);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNegativeRatings()
+    {
+        return $this->negativeRatings;
+    }
+
+    /**
+     * @param int $negativeRatings
+     *
+     * @return Snippet
+     */
+    public function setNegativeRatings($negativeRatings)
+    {
+        $this->setModelField('negativeRatings', $negativeRatings);
+
+        return $this;
     }
 }

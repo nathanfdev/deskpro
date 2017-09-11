@@ -59,6 +59,8 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketResultsDisplay;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\LowError\SystemErrorHandler;
@@ -2048,11 +2050,28 @@ class TicketSearchController extends AbstractController
 
                         if ($snippetIds) {
                             foreach ($snippetIds as $snippetId) {
-                                $snippet = $this->em->find(TextSnippet::class, $snippetId);
+                                if ($this->container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+                                    // $snippetId refers here to the SnippetTranslation id
+                                    $snippetTranslation = $this->em->find(SnippetTranslation::class, $snippetId);
 
-                                if ($snippet) {
-                                    $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
-                                    $this->em->persist($snippetLog);
+                                    $messages = $ticket->getMessages();
+
+                                    $message = $messages->last();
+
+                                    if ($snippetTranslation) {
+                                        $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
+                                        $snippet    = $snippetLog->getSnippet();
+                                        $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
+                                        $this->em->persist($snippet);
+                                        $this->em->persist($snippetLog);
+                                    }
+                                } else {
+                                    $snippet = $this->em->find(TextSnippet::class, $snippetId);
+
+                                    if ($snippet) {
+                                        $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
+                                        $this->em->persist($snippetLog);
+                                    }
                                 }
                             }
                         }

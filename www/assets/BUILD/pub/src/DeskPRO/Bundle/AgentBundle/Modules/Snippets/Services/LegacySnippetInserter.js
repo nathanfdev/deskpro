@@ -38,10 +38,10 @@ class LegacySnippetInserter {
     const isSplit     = snippet.is_split;
     const translations = snippet.translations;
 
-    recordSnippetUse(snippetId);
-
     let result;
     let useText = this.getTranslation(translations, langId, isSplit, type);
+
+    recordSnippetUse(useText.id);
 
     if (useText.blobs.length) {
       attachBlobs(useText.blobs, blobs);
