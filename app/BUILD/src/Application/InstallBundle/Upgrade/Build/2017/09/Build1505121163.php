@@ -28,17 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-// NOTE: I used the OnlineBuildInterface interface because
-//       it looks like your schema changes ARE backwards compatible with the previous version.
-//       You should double-check this yourself though. If there are breaking changes, use BlockingBuildInterface instead.
-
-// NOTE: I have added the SkipPostBuildInterface interface because
-//       it looks like you do not have any changes that require PostBuild to run.
-//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.
-
-// Please remove these NOTE comments after you have checked the code.
-
-class Build1504707791 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1505121163 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
@@ -48,11 +38,11 @@ class Build1504707791 extends AbstractBuild implements OnlineBuildInterface, Ski
         $this->execDbQuery('default', 'ALTER TABLE snippet_use_log ADD CONSTRAINT FK_431900506E34B975 FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE snippet_use_log ADD CONSTRAINT FK_4319005082F1BAF4 FOREIGN KEY (language_id) REFERENCES languages (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE snippet_use_log ADD CONSTRAINT FK_43190050217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'ALTER TABLE snippets ADD `usage_count` INT NOT NULL, ADD positive_ratings INT NOT NULL, ADD neutral_ratings INT NOT NULL, ADD negative_ratings INT NOT NULL');
     }
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE snippets ADD `usage_count` INT NOT NULL, ADD positive_ratings INT NOT NULL, ADD neutral_ratings INT NOT NULL, ADD negative_ratings INT NOT NULL');
     }
 
     public function run()
