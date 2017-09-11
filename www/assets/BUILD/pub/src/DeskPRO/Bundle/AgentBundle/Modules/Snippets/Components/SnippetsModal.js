@@ -236,6 +236,18 @@ export class SnippetsModalContainer extends React.Component {
     });
   };
 
+  removeAttachment = (blobId) => {
+    // Add blob to translation Map
+    const index = this.state.translations.findIndex(t => t.get('language') === this.state.langId);
+
+    const translations = this.state.translations.update(index, translation =>
+      translation.update('blobs', blobs => blobs.filter(blob => blob !== blobId))
+    );
+    this.setState({
+      translations
+    });
+  };
+
   handleChangeDraft = (checked) => {
     this.setState({
       isDraft: checked
@@ -433,6 +445,7 @@ export class SnippetsModalContainer extends React.Component {
         mergeSnippet={this.mergeSnippet}
         updateMergeKeep={this.updateMergeKeep}
         changeType={this.changeType}
+        removeAttachment={this.removeAttachment}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -483,6 +496,7 @@ export class SnippetsModal extends React.Component {
     mergeSnippet:            PropTypes.func,
     updateMergeKeep:         PropTypes.func,
     changeType:              PropTypes.func,
+    removeAttachment:        PropTypes.func,
   };
   static defaultProps = {
     shortcutCode: '',
@@ -695,6 +709,7 @@ export class SnippetsModal extends React.Component {
       updateMergeKeep,
       changeType,
       saving,
+      removeAttachment,
     } = this.props;
     if (!snippet) {
       return null;
@@ -841,7 +856,13 @@ export class SnippetsModal extends React.Component {
                 />
               </div>
               <span className="files">
-                {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}
+                {translation.get('blobs').map((blobId, key) =>
+                  <SnippetAttachment
+                    key={key}
+                    blobId={blobId}
+                    removeAttachment={removeAttachment}
+                  />
+                )}
               </span>
             </div>
             <div className="ownership-field field">
@@ -896,8 +917,13 @@ export class SnippetsModal extends React.Component {
 }))
 class SnippetAttachment extends React.Component {
   static propTypes = {
-    blobs:  PropTypes.object,
-    blobId: PropTypes.number,
+    blobs:            PropTypes.object,
+    blobId:           PropTypes.number,
+    removeAttachment: PropTypes.func,
+  };
+
+  removeAttachment = () => {
+    this.props.removeAttachment(this.props.blobId);
   };
 
   render() {
@@ -914,10 +940,12 @@ class SnippetAttachment extends React.Component {
         <i className="fa fa-paperclip" />&nbsp;
         <strong>Attachment:</strong>&nbsp;
         {blob.get('filename')} ({blob.get('filesize_readable')})
-        <Isvg
-          className="close-icon"
-          src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
-        />
+        <span onClick={this.removeAttachment}>
+          <Isvg
+            className="close-icon"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
+          />
+        </span>
       </div>
     );
   }
