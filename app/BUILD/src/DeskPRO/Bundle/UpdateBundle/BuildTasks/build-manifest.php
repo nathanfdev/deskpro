@@ -684,13 +684,13 @@ return [
     1505121163 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/09/Build1505121163.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1505121163',
-        'skipPostBuild' => true,
-        'isOnlineBuild' => true,
-    ],
-    1504604878 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/09/Build1504604878.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1504604878',
-        'skipPostBuild' => true,
+        'skipPostBuild' => false,
         'isOnlineBuild' => false,
+    ],
+    1505128950 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/09/Build1505128950.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1505128950',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
     ],
 ];
