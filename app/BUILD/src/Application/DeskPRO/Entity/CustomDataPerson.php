@@ -74,6 +74,14 @@ class CustomDataPerson extends CustomDataAbstract
     }
 
     /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
      * @return int
      */
     public function getPersonId()

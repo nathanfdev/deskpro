@@ -59,23 +59,30 @@ class CustomField extends PropertyAbstract
         }
 
         // No children means its a simple field (text input etc)
-        if (!count($this->field->children)) {
+        if (!count($this->field->getChildren())) {
             if ($this->strategy == self::STRATEGY_RIGHT) {
-                $other_exist = $this->other_person->getCustomDataForField($this->field->id);
-                if ($other_exist) {
-                    $this->person->removeCustomDataForField($this->field);
-                    $this->_addCustomData($other_exist);
+                $otherExist = $this->other_person->getCustomDataForField($this->field->getId());
+                if ($otherExist) {
+                    $exist = $this->person->getCustomDataForField($this->field->getId());
+                    if ($exist) {
+                        $exist->setInput($otherExist->getInput());
+                    } else {
+                        $this->_addCustomData($otherExist);
+                    }
                 }
             } elseif ($this->strategy == self::STRATEGY_COMBINE) {
-                $exist = $this->person->getCustomDataForField($this->field->id);
-                if ($exist && $exist->input !== '') {
+                $exist = $this->person->getCustomDataForField($this->field->getId());
+                if ($exist && $exist->getInput() !== '') {
                     return;
                 }
 
-                $other_exist = $this->other_person->getCustomDataForField($this->field->id);
-                if ($other_exist) {
-                    $this->person->removeCustomDataForField($this->field);
-                    $this->_addCustomData($other_exist);
+                $otherExist = $this->other_person->getCustomDataForField($this->field->getId());
+                if ($otherExist) {
+                    if ($exist) {
+                        $exist->setInput($otherExist->getInput());
+                    } else {
+                        $this->_addCustomData($otherExist);
+                    }
                 }
             }
 
@@ -84,7 +91,7 @@ class CustomField extends PropertyAbstract
             $multiple      = $this->field->getOption('multiple');
             $hasValue      = false;
             $hasOtherValue = false;
-            foreach ($this->field->children as $child) {
+            foreach ($this->field->getChildren() as $child) {
                 if ($this->person->getCustomDataForField($child)) {
                     $hasValue = true;
                 }
@@ -94,50 +101,54 @@ class CustomField extends PropertyAbstract
             }
 
             if ($this->strategy == self::STRATEGY_COMBINE) {
-                foreach ($this->field->children as $child) {
+                foreach ($this->field->getChildren() as $child) {
                     // Ignore if left already has a value
-                    $exist       = $this->person->getCustomDataForField($child);
-                    $other_exist = $this->other_person->getCustomDataForField($child);
+                    $exist      = $this->person->getCustomDataForField($child);
+                    $otherExist = $this->other_person->getCustomDataForField($child);
                     if ($exist) {
                         continue;
                     }
 
-                    if ($other_exist) {
+                    if ($otherExist) {
                         if (!$multiple && $hasValue) {
                             // already have a value for this field, so losing the other
                             continue;
                         }
 
-                        $this->_addCustomData($other_exist);
+                        $this->_addCustomData($otherExist);
                     }
                 }
             } elseif ($this->strategy == self::STRATEGY_RIGHT) {
                 // Take right ones over left ones
-                foreach ($this->field->children as $child) {
-                    $exist = $this->person->getCustomDataForField($child);
-                    if ($exist && $hasOtherValue && !$multiple) {
-                        // remove this value as we'll get another
-                        $this->person->removeCustomDataForField($child);
-                    }
-
-                    $other_exist = $this->other_person->getCustomDataForField($child);
-                    if ($other_exist) {
-                        $this->_addCustomData($other_exist);
+                foreach ($this->field->getChildren() as $child) {
+                    $exist      = $this->person->getCustomDataForField($child);
+                    $otherExist = $this->other_person->getCustomDataForField($child);
+                    if ($otherExist) {
+                        if (!$exist) {
+                            $this->_addCustomData($otherExist);
+                        }
+                    } else {
+                        if ($exist && $hasOtherValue) {
+                            $this->person->removeCustomDataForField($child);
+                        }
                     }
                 }
             }
         }
     }
 
+    /**
+     * @param CustomDataPerson $data
+     */
     protected function _addCustomData(CustomDataPerson $data)
     {
-        $new_data             = new CustomDataPerson();
-        $new_data->value      = $data->value;
-        $new_data->input      = $data->input;
-        $new_data->field      = $data->field;
-        $new_data->root_field = $data->root_field;
-        $new_data->person     = $this->person;
+        $newData = new CustomDataPerson();
+        $newData->setValue($data->getValue());
+        $newData->setInput($data->getInput());
+        $newData->setField($data->getField());
+        $newData->setRootField($data->getRootField());
+        $newData->setPerson($this->person);
 
-        $this->person->addCustomData($new_data);
+        $this->person->addCustomData($newData);
     }
 }
