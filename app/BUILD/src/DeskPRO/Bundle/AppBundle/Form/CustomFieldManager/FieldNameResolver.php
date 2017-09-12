@@ -31,7 +31,12 @@ namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
 
+/**
+ * This class iterates through a list of alias resolving strategies until it encounters the first strategy that resolves
+ * the alias. If no such strategy exists it returns the original alias
+ */
 class FieldNameResolver implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
@@ -41,25 +46,11 @@ class FieldNameResolver implements EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param array|FieldNameResolvingStrategy[] $otherStrategies
-     * @return FieldNameResolver
-     */
-    public static function createWitDefaultStrategies(array $otherStrategies)
-    {
-        $defaultStrategies = [
-            new LegacyFieldNameResolvingStrategy()
-        ];
-
-        $strategies = array_merge([], $otherStrategies, $defaultStrategies);
-        return new FieldNameResolver($strategies);
-    }
-
-    /** @var FieldNameResolvingStrategy[] */
+    /** @var ObjectAlias\FieldIdResolvingStrategy[] */
     private $strategies;
 
     /**
-     * @param array|FieldNameResolvingStrategy[] $strategies
+     * @param array|ObjectAlias\FieldIdResolvingStrategy[] $strategies an ordered list of strategies
      */
     public function __construct(array $strategies)
     {
@@ -89,22 +80,19 @@ class FieldNameResolver implements EventSubscriberInterface
 
     private function resolveField($fieldName)
     {
-        $resolvedNames = [];
+        $resolvedName = null;
         foreach($this->strategies as $strategy) {
-            $resolvedNames[] = $strategy->resolve($fieldName);
+            $resolvedName = $strategy->resolve($fieldName);
+            if (!empty($resolvedName)) {
+                break;
+            }
         }
 
-        $resolvedNames = array_values(array_filter($resolvedNames, "is_string"));
-
-        if (count($resolvedNames) === 0) { // identity strategy if no strategy applied
+        // identity strategy if no strategy resolved the alias
+        if (empty($resolvedName)) {
             return $fieldName;
         }
 
-        if (count($resolvedNames) === 1) { // only one strategy resolved the field name
-            return $resolvedNames[0];
-        }
-
-        // more than one strategy resolved the field name, this is a problem
-        throw FieldNameResolverException::ambiguousNameResolution($fieldName, $resolvedNames);
+        return $resolvedName;
     }
 }

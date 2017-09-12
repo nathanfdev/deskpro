@@ -26,42 +26,41 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
+/**
+ * DeskPRO.
+ */
+
+namespace DpTest\DeskPRO\Application\Tickets\Filters;
 
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
-use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use DpTest\DeskProTestCase;
 
-class FilterTermsFormType extends AbstractType
+class FilterTermsTest extends DeskProTestCase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function testAddingAliasField()
     {
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
-    }
+        $aliasTypes = ['FilterTicketField', 'FilterUserField', 'FilterOrgField'];
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(['allow_extra_fields' => true]);
-    }
+        foreach ($aliasTypes as $alias) {
+            $aliasField = [
+                'type' => $alias,
+                'op' => 'is',
+                'options' => [
+                    'field' => "ragnar",
+                    'value' => 'viking'
+                ]
+            ];
 
-    public function onSubmit(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $extraData = $form->getExtraData();
+            $terms = new FilterTerms();
+            $terms->addTermFromArray($aliasField);
+            $actual = $terms->exportToArray();
 
-        $filterTerms = new FilterTerms();
-        foreach($extraData  as $term_info) {
-            $filterTerms->addTermFromArray($term_info);
+            $expected = [
+                "version" => 1,
+                "terms" => [ $aliasField ]
+            ];
+
+            $this->assertEquals($expected, $actual, 'failed to add a filter term with alias');
         }
-
-        $event->setData($filterTerms);
     }
 }

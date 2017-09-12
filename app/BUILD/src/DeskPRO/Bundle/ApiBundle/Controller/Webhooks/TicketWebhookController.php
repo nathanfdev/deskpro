@@ -38,12 +38,11 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @ApiModes("all")
  * @Rest\Route("/webhooks/tickets")
- * @ApiDoc(target="all", section="Webhooks")
+ * @ApiDoc(target="all", section="Webhooks", output="TicketWebhook")
  */
 class TicketWebhookController extends CrudController
 {

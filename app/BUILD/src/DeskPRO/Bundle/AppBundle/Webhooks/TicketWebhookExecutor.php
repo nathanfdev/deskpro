@@ -53,6 +53,9 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     /** @var ContainerInterface */
     private $container;
 
+    /** @var SearchTermsAliasResolver */
+    private $searchTermsAliasResolver;
+
     /**
      * TicketWebhookExecutor constructor.
      *
@@ -63,6 +66,20 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     {
         $this->convertersRegistry = $convertersRegistry;
         $this->ticketManager      = $ticketManager;
+    }
+
+    /**
+     * Sets the container.
+     *
+     * @param ContainerInterface|null $container A ContainerInterface instance or null
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+        if ($container instanceof DeskproContainer) {
+            $entityManager = $container->getEm();
+            $this->searchTermsAliasResolver = SearchTermsAliasResolver::create($entityManager);
+        }
     }
 
     /**
@@ -172,6 +189,10 @@ class TicketWebhookExecutor implements ContainerAwareInterface
             return $term;
         }, $searchTerms);
 
+        if ($this->searchTermsAliasResolver) {
+            $searchTerms = $this->searchTermsAliasResolver->resolveAliasTerms($searchTerms);
+        }
+
         $criteria     = new TicketSearch();
         $hasUserTerms = false;
         $hasOrgTerms  = false;
@@ -189,15 +210,5 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         }
 
         return $criteria;
-    }
-
-    /**
-     * Sets the container.
-     *
-     * @param ContainerInterface|null $container A ContainerInterface instance or null
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }

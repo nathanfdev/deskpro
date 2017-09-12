@@ -26,12 +26,12 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
+namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-interface FieldNameResolvingStrategy
+interface AliasResolvingStrategy
 {
     /**
-     * @param {string} $alias
+     * @param string $alias
      *
      * @return string|null
      */
