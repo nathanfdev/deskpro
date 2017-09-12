@@ -253,8 +253,15 @@
 </div>
 
 {% if show_snippets and app.user.Agent.getGroupedSnippets()|length %}
-	<div class="builder-type" title="Add reply from snippet" data-rule-type="reply_snippet" data-rule-group="Ticket">
+	<div class="builder-type" title="{{ phrase('agent.general.add_reply_from_snippet') }}" data-rule-type="reply_snippet" data-rule-group="Ticket">
 		<div class="builder-options">
+            {% if app.hasBeta('new_snippets') %}
+				<select name="snippet_id" class="select2">
+                    {% for snippet in app.user.Agent.getGroupedSnippets(true) %}
+							<option value="{{ snippet.id }}">{{ snippet.title }}</option>
+                    {% endfor %}
+				</select>
+			{% else %}
 			<select name="snippet_id" class="select2">
 				{% for info in app.user.Agent.getGroupedSnippets(true) if info.snippets %}
 					<optgroup label="{{ info.category.title }}">
@@ -264,6 +271,7 @@
 					</optgroup>
 				{% endfor %}
 			</select>
+			{% endif %}
 			<div style="padding-top: 3px;">
 				When selected from the reply box, where should the snippet text be inserted?<br/>
 				<select name="reply_pos">
