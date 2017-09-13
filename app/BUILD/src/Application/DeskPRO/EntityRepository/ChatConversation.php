@@ -378,7 +378,11 @@ class ChatConversation extends AbstractEntityRepository
             $wheres[] = 'c.department IN (?4)';
         }
 
-        $where = sprintf('AND (%s OR (%s))', $agentPermissionsWhere, implode(' AND ', $wheres));
+        if ($wheres) {
+            $where = sprintf('AND (%s OR (%s))', $agentPermissionsWhere, implode(' AND ', $wheres));
+        } else {
+            $where = sprintf('AND %s', $agentPermissionsWhere);
+        }
 
         $query = $this->getEntityManager()->createQuery("
             SELECT c
