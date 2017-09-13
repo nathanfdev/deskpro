@@ -76,7 +76,6 @@ class PhoneType extends AbstractContactDataItemType
             ])
         ;
 
-        $builder->get('code')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onModifyCountryCode']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetSearchableValue']);
     }
 
@@ -99,24 +98,11 @@ class PhoneType extends AbstractContactDataItemType
      *
      * @param FormEvent $event
      */
-    public function onModifyCountryCode(FormEvent $event)
-    {
-        $data = $event->getData();
-        if (is_scalar($data) && strpos($data, '+') !== 0) {
-            $event->setData('+'.$data);
-        }
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
     public function onSetSearchableValue(FormEvent $event)
     {
         /** @var ContactDataAbstract $data */
         $data   = $event->getData();
-        $number = $data->getField1().' '.$data->getField2();
+        $number = '+'.$data->getField1().' '.$data->getField2();
 
         $data->setField9($number);
         $data->setField10(RegexUtils::safePregReplace('#[^0-9a-zA-Z]#', '', $number));
