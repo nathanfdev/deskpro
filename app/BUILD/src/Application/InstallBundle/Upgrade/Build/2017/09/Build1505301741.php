@@ -42,7 +42,7 @@ class Build1505301741 extends AbstractBuild implements OnlineBuildInterface, Ski
 {
     public function addNewTables()
     {
-        $this->execDbQuery('default', 'CREATE TABLE snippet_changelog (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, snippet_id INT DEFAULT NULL, language_id INT DEFAULT NULL, content LONGTEXT NOT NULL, type VARCHAR(255) DEFAULT NULL, INDEX IDX_1B8B5728217BBB47 (person_id), INDEX IDX_1B8B57286E34B975 (snippet_id), INDEX IDX_1B8B572882F1BAF4 (language_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        $this->execDbQuery('default', 'CREATE TABLE snippet_changelog (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, snippet_id INT DEFAULT NULL, language_id INT DEFAULT NULL, date_created DATETIME NOT NULL, content LONGTEXT NOT NULL, type VARCHAR(255) DEFAULT NULL, INDEX IDX_1B8B5728217BBB47 (person_id), INDEX IDX_1B8B57286E34B975 (snippet_id), INDEX IDX_1B8B572882F1BAF4 (language_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->execDbQuery('default', 'CREATE TABLE snippet_changelog_blob (snippet_changelog_id INT NOT NULL, blob_id INT NOT NULL, INDEX IDX_E67B9F2DF8F4348 (snippet_changelog_id), INDEX IDX_E67B9F2ED3E8EA5 (blob_id), PRIMARY KEY(snippet_changelog_id, blob_id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->execDbQuery('default', 'ALTER TABLE snippet_changelog ADD CONSTRAINT FK_1B8B5728217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL');
         $this->execDbQuery('default', 'ALTER TABLE snippet_changelog ADD CONSTRAINT FK_1B8B57286E34B975 FOREIGN KEY (snippet_id) REFERENCES snippets (id) ON DELETE SET NULL');

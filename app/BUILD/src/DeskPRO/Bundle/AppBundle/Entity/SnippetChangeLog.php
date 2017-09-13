@@ -35,6 +35,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class SnippetChangeLog.
@@ -60,6 +61,20 @@ class SnippetChangeLog implements EntityInterface, NotifyPropertyChanged
      * @var int
      */
     protected $id;
+
+    /**
+     * When action was done.
+     *
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @Assert\NotNull()
+     *
+     * @var \DateTime
+     */
+    protected $dateCreated;
 
     /**
      * Person that sent this message.
@@ -139,6 +154,11 @@ class SnippetChangeLog implements EntityInterface, NotifyPropertyChanged
      */
     protected $blobs;
 
+    public function __construct()
+    {
+        $this->setModelField('dateCreated', new \DateTime());
+    }
+
     /**
      * @return int
      */
@@ -215,6 +235,66 @@ class SnippetChangeLog implements EntityInterface, NotifyPropertyChanged
     public function setLanguage(Language $language)
     {
         $this->setModelField('language', $language);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return SnippetChangeLog
+     */
+    public function setContent($content)
+    {
+        $this->setModelField('content', $content);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return SnippetChangeLog
+     */
+    public function setType($type)
+    {
+        $this->setModelField('type', $type);
+
+        return $this;
+    }
+
+    /**
+     * @return Blob[]|ArrayCollection
+     */
+    public function getBlobs()
+    {
+        return $this->blobs;
+    }
+
+    /**
+     * @param Blob[]|ArrayCollection $blobs
+     *
+     * @return SnippetChangeLog
+     */
+    public function setBlobs($blobs)
+    {
+        $this->setModelField('blobs', $blobs);
 
         return $this;
     }
