@@ -36,6 +36,8 @@ namespace Application\DeskPRO\Search\Searcher\Mysql;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
+use Application\DeskPRO\NewSearch\SearchEngine\UserSearchProxy;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\Searcher\ContentSearcherInterface;
@@ -215,21 +217,36 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
         $label_where = implode(' ', $label_where);
 
         $where = "
-            object_type IN ($limit_types)
-            AND MATCH (content) AGAINST (? IN BOOLEAN MODE)
+            content_search.object_type IN ($limit_types)
+            AND MATCH (content_search.content) AGAINST (? IN BOOLEAN MODE)
         ";
+
+        $contextFactory = new SearchContextFactory(App::$container);
+        $context        = $contextFactory->createUserSearchContext($this->person);
+
+        $searchProxy   = new UserSearchProxy(App::$container);
+        $dbSearch      = $searchProxy->dbs();
+        $contextParams = $dbSearch->buildParams($context);
+
+        $permJoin  = $contextParams['join'];
+        $permWhere = $contextParams['where'];
+        if (!$permWhere) {
+            $permWhere = '1';
+        }
 
         $count_query = "
             SELECT COUNT(*)
             FROM content_search
-            WHERE $where
+            $permJoin
+            WHERE $permWhere AND $where
         ";
 
         $start        = ($page - 1) * $per_page;
         $select_query = "
-            SELECT object_type, object_id, MATCH (content_search.content) AGAINST (?) AS _rel
+            SELECT content_search.object_type, content_search.object_id, MATCH (content_search.content) AGAINST (?) AS _rel
             FROM content_search
-            WHERE $where
+            $permJoin
+            WHERE $permWhere AND $where
             ORDER BY _rel DESC
             LIMIT $start, $per_page
         ";
