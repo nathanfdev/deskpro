@@ -101,7 +101,7 @@ class AppManifest
     private $targets = [];
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StateAccessRule>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StorageAccessRule>")
      * @JMS\Expose()
      *
      * @var AppManifest\StorageAccessRule[]

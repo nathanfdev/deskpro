@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage\AccessOptions;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppStorageStateSearchFilter;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppStorageSearchFilter;
 use Doctrine\ORM;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
@@ -74,7 +74,7 @@ class StateEntityFinder
      */
     public function findOne( Domain\AppStorageItemIdentifier $identifier, Domain\AppStorage\AccessOptions $accessOptions, AccessRequest $request)
     {
-        $searchFilter = AppStorageStateSearchFilter::fromIdentifier($identifier);
+        $searchFilter = AppStorageSearchFilter::fromIdentifier($identifier);
         /** @var ORM\Query[] $findStateQueries */
         $findStateQueries = [];
         if ($accessOptions->isWorldAccessible()) {

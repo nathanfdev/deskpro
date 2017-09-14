@@ -75,7 +75,7 @@ class AppStateController extends BaseController
             throw new BadRequestHttpException('invalid entity identifier');
         }
 
-        $filter = new AppStoreBundle\Domain\AppStorageStateSearchFilter($instanceId, $entityId);
+        $filter = new AppStoreBundle\Domain\AppStorageSearchFilter($instanceId, $entityId);
 
         $auth = $this->getUser();
         $accessRequest = AppStoreBundle\Infrastructure\AppStorage\ServiceAccessRequest::newAPIReadAccessRequest($auth);

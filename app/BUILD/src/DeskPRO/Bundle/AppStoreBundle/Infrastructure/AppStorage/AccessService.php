@@ -44,8 +44,6 @@ class AccessService
     private $queryBuilder;
 
     /**
-     * ApplicationStateAccessService constructor.
-     *
      * @param EntityManager $entityManager
      * @param Infrastructure\EntityQueryBuilders|null $qb
      */
@@ -321,11 +319,11 @@ class AccessService
     }
 
     /**
-     * @param Domain\AppStorageStateSearchFilter $filter
+     * @param Domain\AppStorageSearchFilter $filter
      * @param ServiceAccessRequest $request
      * @return Domain\AppStorageItem[]|array
      */
-    public function readAllValues( Domain\AppStorageStateSearchFilter $filter, ServiceAccessRequest $request) {
+    public function readAllValues( Domain\AppStorageSearchFilter $filter, ServiceAccessRequest $request) {
 
         $entities = [];
 

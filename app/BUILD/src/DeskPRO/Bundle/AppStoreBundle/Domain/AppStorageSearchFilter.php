@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppStorage\AccessPermission;
 
-class AppStorageStateSearchFilter
+class AppStorageSearchFilter
 {
     /** @var string */
     private $appId;
@@ -46,11 +46,11 @@ class AppStorageStateSearchFilter
 
     /**
      * @param AppStorageItemIdentifier $id
-     * @return AppStorageStateSearchFilter
+     * @return AppStorageSearchFilter
      */
     public static function fromIdentifier(AppStorageItemIdentifier $id)
     {
-        return new AppStorageStateSearchFilter(
+        return new AppStorageSearchFilter(
             $id->getInstanceId(),
             $id->getEntityId(),
             $id->getName()
@@ -107,7 +107,7 @@ class AppStorageStateSearchFilter
 
     /**
      * @param string[]|array $nameList
-     * @return AppStorageStateSearchFilter
+     * @return AppStorageSearchFilter
      */
     public function setName($nameList)
     {

@@ -109,10 +109,10 @@ class EntityQueryBuilders
 
     /**
      * @param ORM\EntityManager $em
-     * @param Domain\AppStorageStateSearchFilter $searchFilter
+     * @param Domain\AppStorageSearchFilter $searchFilter
      * @return ORM\Query
      */
-    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\AppStorageStateSearchFilter $searchFilter) {
+    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\AppStorageSearchFilter $searchFilter) {
 
         $qb = $em->createQueryBuilder();
         $qb
@@ -132,10 +132,10 @@ class EntityQueryBuilders
     /**
      * @param ORM\EntityManager $em
      * @param null $stateOwnerId
-     * @param Domain\AppStorageStateSearchFilter $searchFilter
+     * @param Domain\AppStorageSearchFilter $searchFilter
      * @return ORM\Query
      */
-    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\AppStorageStateSearchFilter $searchFilter) {
+    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\AppStorageSearchFilter $searchFilter) {
 
         $qb = $em->createQueryBuilder();
         $qb
@@ -156,7 +156,7 @@ class EntityQueryBuilders
     public function buildFindOwnedByOtherStateQuery(
         ORM\EntityManager $em,
         $stateOwnerId,
-        Domain\AppStorageStateSearchFilter $searchFilter
+        Domain\AppStorageSearchFilter $searchFilter
     ) {
 
         $qb = $em->createQueryBuilder();
@@ -208,12 +208,12 @@ class EntityQueryBuilders
 
     /**
      * @param ORM\EntityManager $em
-     * @param Domain\AppStorageStateSearchFilter $searchFilter
+     * @param Domain\AppStorageSearchFilter $searchFilter
      * @return ORM\Query
      */
     public function buildFindStateEntityByFilterQuery(
         ORM\EntityManager $em,
-        Domain\AppStorageStateSearchFilter $searchFilter
+        Domain\AppStorageSearchFilter $searchFilter
     ) {
         $qb = $em->createQueryBuilder();
         $qb
@@ -228,7 +228,7 @@ class EntityQueryBuilders
         return $qb->getQuery();
     }
 
-    private function applySearchStateFilter(ORM\QueryBuilder $qb, Domain\AppStorageStateSearchFilter $assetFilter)
+    private function applySearchStateFilter(ORM\QueryBuilder $qb, Domain\AppStorageSearchFilter $assetFilter)
     {
         $filterField = $assetFilter->getName();
         if (! empty($filterField)) {

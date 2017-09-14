@@ -38,7 +38,7 @@ class Services
      * @param ORM\EntityManager $entityManager
      * @return AppStorage\AccessService
      */
-    public static function createApplicationStateAccessService(ORM\EntityManager $entityManager)
+    public static function createAppStorageAccessService(ORM\EntityManager $entityManager)
     {
         $service = new AppStorage\AccessService($entityManager, new EntityQueryBuilders());
         return $service;

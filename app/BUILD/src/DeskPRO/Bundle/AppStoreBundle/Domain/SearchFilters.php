@@ -54,7 +54,7 @@ class SearchFilters
     {
         $name = $valueMap->getStateVariableName();
         $entityId = AppStorage\EntityId::parse($valueMap->getEntityId());
-        return new AppStorageStateSearchFilter($valueMap->getApplicationId(), $entityId, $name);
+        return new AppStorageSearchFilter($valueMap->getApplicationId(), $entityId, $name);
     }
 
 }
