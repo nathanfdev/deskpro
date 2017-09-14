@@ -65,7 +65,16 @@ class FormHelper
      */
     public function saveFormToField(CustomDefAbstract $field, array $formData)
     {
-        $baseType    = Util::getBaseClassname($formData['handler_class']);
+        $handlerClass = empty($formData['handler_class']) ? $field['handler_class'] : $formData['handler_class'];
+        if (empty($handlerClass)) {
+            throw new \DomainException('missing handler_class');
+        }
+
+        if (empty($formData['handler_class'])) {
+            $formData['handler_class'] = $handlerClass;
+        }
+
+        $baseType    = Util::getBaseClassname($handlerClass);
         $modelClass = 'Application\\DeskPRO\\CustomFields\\Form\\Model\\'.$baseType.'Field';
         $typeClass  = 'Application\\DeskPRO\\CustomFields\\Form\\Type\\'.$baseType.'FieldType';
 
@@ -84,10 +93,6 @@ class FormHelper
                 $editField->default_option    = @$formData['default_option'];
             }
 
-            // todo
-            if (empty($formData['handler_class'])) {
-                $formData['handler_class'] = $editField->handler_class ?: $field['handler_class'];
-            }
             $property = 'calendar';
             if (property_exists($modelClass, $property) && array_key_exists($property, $formData)) {
                 $editField->calendar = $formData[$property];
