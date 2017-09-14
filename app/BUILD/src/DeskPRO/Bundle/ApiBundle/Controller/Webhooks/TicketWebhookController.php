@@ -42,7 +42,17 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * @ApiModes("all")
  * @Rest\Route("/webhooks/tickets")
- * @ApiDoc(target="all", section="Webhooks", output="TicketWebhook")
+ * @ApiDoc(target="all", section="Webhooks", output="DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook")
+ * @ApiDoc(
+ *     target="postAction",
+ *     input={
+ *      "class"="\DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook",
+ *      "options"={
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook",
+ *          "terms"="Application\DeskPRO\Tickets\Triggers\TriggerTerms"
+ *      }
+ *     }
+ * )
  */
 class TicketWebhookController extends CrudController
 {
