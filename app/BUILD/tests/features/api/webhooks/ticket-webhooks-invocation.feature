@@ -6,8 +6,8 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
 
   Background:
     Given there are no "TicketWebhook" records
-    And there are no "Ticket" records
     And there are no "CustomDefTicket" records
+    And there are no "Ticket" records
     And I'm authenticated as admin
 
   Scenario Outline: I create and invoke a webhook with a json payload
