@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -94,6 +94,11 @@ class ReportWidget extends DomainObject
      * @var array
      */
     protected $display_types;
+
+    /**
+     * @var array
+     */
+    protected $variables;
 
     public function __construct()
     {
@@ -489,6 +494,26 @@ class ReportWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getVariables()
+    {
+        return $this->variables;
+    }
+
+    /**
+     * @param array $variables
+     *
+     * @return $this
+     */
+    public function setVariables(array $variables)
+    {
+        $this->variables = $variables;
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -599,6 +624,14 @@ class ReportWidget extends DomainObject
                 'type'       => 'simple_array',
                 'nullable'   => false,
                 'columnName' => 'display_types',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'variables',
+                'type'       => 'json_array',
+                'nullable'   => true,
+                'columnName' => 'variables',
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

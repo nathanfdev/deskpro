@@ -173,6 +173,7 @@ class ReportsWidgetService
         $report = $this->repository->find($id);
         $params = $this->getParamsInput('params');
 
+        $params['variables'] = $report ? $report->getVariables() : [];
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');
             $query = Display::getQueryStringFromParts($parts);
@@ -278,6 +279,7 @@ class ReportsWidgetService
             $compiler = new Compiler();
             if ($withParams) {
                 $input = $compiler->replacePlaceholders($query, $this->getParamsInput('params'));
+                $input = $compiler->replaceVariables($input, $this->getParamsInput('params'));
             } else {
                 $input = $query;
             }
