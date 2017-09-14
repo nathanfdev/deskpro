@@ -798,6 +798,9 @@
 #change_log_modal {
   font-family: $primary-font;
   color: $dp-greyscale-850;
+  .dp-modal__overlay {
+    background-color: transparent;
+  }
   .change {
     height: 26px;
     padding: 3px;
@@ -834,5 +837,13 @@
     float: right;
     height: $icon-size-l;
     width: $icon-size-l;
+  }
+}
+#comparison_modal {
+  .dp-modal {
+    width: 960px;
+  }
+  .dp-modal__overlay {
+    background-color: transparent;
   }
 }

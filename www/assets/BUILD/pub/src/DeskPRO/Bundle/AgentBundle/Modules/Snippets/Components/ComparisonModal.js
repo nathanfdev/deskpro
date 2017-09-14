@@ -54,8 +54,8 @@ export class ComparisonModal extends React.Component {
   renderDiff(previous, current) {
     const { snippet } = this.props;
     let diff = difflib.unifiedDiff(
-      previous.content.split('\n'),
-      current.content.split('\n'), {
+      previous.content.replace(/<br ?\/?>/g, '\n').split('\n'),
+      current.content.replace(/<br ?\/?>/g, '\n').split('\n'), {
         fromfile:     'Previous',
         tofile:       'Current',
         fromfiledate: previous.date,
