@@ -64,7 +64,7 @@ class GoToController extends AbstractController
             }
         }
 
-        return $this->redirect('/agent/#app.tickets,inbox:agent,t:'.$id);
+        return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$id);
     }
 
     /**
@@ -80,7 +80,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.tickets,inbox:agent,t:'.$ticket->getId());
+        return $this->redirect($this->getBasePath().'#app.tickets,inbox:agent,t:'.$ticket->getId());
     }
 
     /**
@@ -90,7 +90,7 @@ class GoToController extends AbstractController
      */
     public function personIdAction(Person $person)
     {
-        return $this->redirect('/agent/#app.people,people:*,p:'.$person->getId());
+        return $this->redirect($this->getBasePath().'#app.people,people:*,p:'.$person->getId());
     }
 
     /**
@@ -106,7 +106,7 @@ class GoToController extends AbstractController
             $this->createNotFoundException();
         }
 
-        return $this->redirect('/agent/#app.people,people:*,p:'.$person->getId());
+        return $this->redirect($this->getBasePath().'#app.people,people:*,p:'.$person->getId());
     }
 
     /**
@@ -116,7 +116,7 @@ class GoToController extends AbstractController
      */
     public function organizationIdAction(Organization $organization)
     {
-        return $this->redirect('/agent/#app.people,orgs,o:'.$organization->getId());
+        return $this->redirect($this->getBasePath().'#app.people,orgs,o:'.$organization->getId());
     }
 
     /**
@@ -126,7 +126,7 @@ class GoToController extends AbstractController
      */
     public function articleIdAction(Article $article)
     {
-        return $this->redirect('/agent/#app.publish,knowledgebase:1,a:'.$article->getId());
+        return $this->redirect($this->getBasePath().'#app.publish,knowledgebase:1,a:'.$article->getId());
     }
 
     /**
@@ -136,7 +136,7 @@ class GoToController extends AbstractController
      */
     public function downloadIdAction(Download $download)
     {
-        return $this->redirect('/agent/#app.publish,downloads:1,d:'.$download->getId());
+        return $this->redirect($this->getBasePath().'#app.publish,downloads:1,d:'.$download->getId());
     }
 
     /**
@@ -146,7 +146,7 @@ class GoToController extends AbstractController
      */
     public function newsIdAction(News $news)
     {
-        return $this->redirect('/agent/#app.publish,news:1,n:'.$news->getId());
+        return $this->redirect($this->getBasePath().'#app.publish,news:1,n:'.$news->getId());
     }
 
     /**
@@ -156,7 +156,7 @@ class GoToController extends AbstractController
      */
     public function feedbackIdAction(Feedback $feedback)
     {
-        return $this->redirect('/agent/#app.feedback,fb_content,i:'.$feedback->getId());
+        return $this->redirect($this->getBasePath().'#app.feedback,fb_content,i:'.$feedback->getId());
     }
 
     /**
@@ -166,7 +166,7 @@ class GoToController extends AbstractController
      */
     public function chatIdAction(ChatConversation $conversation)
     {
-        return $this->redirect('/agent/#app.userchat,new:-1,c:'.$conversation->getId());
+        return $this->redirect($this->getBasePath().'#app.userchat,new:-1,c:'.$conversation->getId());
     }
 
     /**
@@ -176,6 +176,14 @@ class GoToController extends AbstractController
      */
     public function topicIdAction(Topic $topic)
     {
-        return $this->redirect('/agent/#app.publish,m:'.$topic->getId());
+        return $this->redirect($this->getBasePath().'#app.publish,m:'.$topic->getId());
+    }
+
+    /**
+     * @return string
+     */
+    private function getBasePath()
+    {
+        return $this->get('router')->generate('agent');
     }
 }
