@@ -459,6 +459,7 @@ return [
     'agent.general.comments'                                   => 'Comments',
     'agent.general.compare'                                    => 'Compare',
     'agent.general.comparing_revisions'                        => 'Comparing Revisions',
+    'agent.general.comparison'                                 => 'Comparison',
     'agent.general.confirm'                                    => 'Confirm',
     'agent.general.contact_address'                            => 'Contact Address',
     'agent.general.contact_instant_messaging'                  => 'Contact Instant Messaging',

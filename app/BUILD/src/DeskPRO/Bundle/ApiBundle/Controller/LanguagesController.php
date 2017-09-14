@@ -94,6 +94,7 @@ class LanguagesController extends CrudController
             'agent.general.close_lc',
             'agent.general.cancel',
             'agent.general.changelog',
+            'agent.general.comparison',
             'agent.general.delete',
             'agent.general.department',
             'agent.general.departments',

@@ -1,3 +1,5 @@
+@import "../../../../../../node_modules/diff2html/dist/diff2html.css";
+
 #snippets__menu {
   background-color: $dp-greyscale-00;
   width: 720px;
@@ -801,7 +803,22 @@
     padding: 3px;
     font-size: $font-size-m;
     font-weight: $pf-semi-bold;
-    border-bottom: 1px solid $dp-greyscale-250;
+    border-top: 1px solid $dp-greyscale-250;
+    &:first-child {
+      border-top-color: transparent;
+    }
+    &:last-child {
+      border-bottom: 1px solid $dp-greyscale-250;
+    }
+    &:hover:not(.creation) {
+      cursor: pointer;
+      border-top: 1px solid $dp-sonic-primary;
+      background-color: $dp-morning-sky;
+      border-bottom: 1px solid $dp-sonic-primary;
+      .dp-icon, .date {
+        color: $dp-sonic-primary;
+      }
+    }
   }
   .dp-icon {
     color: $dp-greyscale-450;

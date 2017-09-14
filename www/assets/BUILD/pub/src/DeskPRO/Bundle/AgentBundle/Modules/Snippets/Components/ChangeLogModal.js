@@ -8,6 +8,7 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import * as actions from '../Actions/snippetsActions';
+import { ComparisonModal } from './ComparisonModal';
 
 @connect(state => ({
   me:     meSelector(state),
@@ -15,19 +16,23 @@ import * as actions from '../Actions/snippetsActions';
 }))
 export class ChangeLogModal extends React.Component {
   static propTypes = {
-    me:         PropTypes.object.isRequired,
-    agents:     PropTypes.object.isRequired,
-    snippet:    PropTypes.object,
-    closeModal: PropTypes.func,
-    dispatch:   PropTypes.func,
+    me:          PropTypes.object.isRequired,
+    agents:      PropTypes.object.isRequired,
+    snippet:     PropTypes.object,
+    translation: PropTypes.object,
+    closeModal:  PropTypes.func,
+    dispatch:    PropTypes.func,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      changes: [],
+      loading:             true,
+      comparisonModalOpen: false,
+      changes:             [],
+      version:             0,
     };
+    this.handleChangeClick = this.handleChangeClick.bind(this);
   }
 
   componentWillMount() {
@@ -59,22 +64,51 @@ export class ChangeLogModal extends React.Component {
   }
 
   getChanges = () => this.state.changes
-    .map((change, key) => (<div key={change.id} className="change">
-      <Icon name="file-text" size="s" />
-          Content change (#{this.state.changes.length + 1 - key})
+    .map((change, key) => {
+      const version = this.state.changes.length + 1 - key;
+      return (<div key={change.id} className="change" onClick={() => this.handleChangeClick(version)}>
+        <Icon name="file-text" size="s" />
+          Content change (#{version})
           {this.getAvatar(change.person)}
-      <span className="date"><TimeAgo date={change.date_created} /></span>
-    </div>)
+        <span className="date"><TimeAgo date={change.date_created} /></span>
+      </div>);
+    }
     );
+
+  getComparisonModal = () => {
+    if (!this.state.comparisonModalOpen) {
+      return null;
+    }
+    return (
+      <ComparisonModal
+        snippet={this.props.snippet}
+        changes={this.state.changes}
+        version={this.state.version}
+        translation={this.props.translation}
+        closeModal={this.closeComparisonModal}
+      />
+    );
+  };
+
+  handleChangeClick(version) {
+    this.setState({
+      version,
+      comparisonModalOpen: true,
+    });
+  }
+
+  closeComparisonModal = () => {
+    this.setState({
+      comparisonModalOpen: false,
+    });
+  };
 
   render() {
     const { snippet, closeModal } = this.props;
     return (
       <div id="change_log_modal">
         <Modal
-          title={<div>
-            {agentPhrases.get('agent.general.changelog')}
-          </div>}
+          title={agentPhrases.get('agent.general.changelog')}
           closeModal={closeModal}
         >
           {this.state.loading ?
@@ -83,7 +117,7 @@ export class ChangeLogModal extends React.Component {
             </div>
             : <div>
               {this.getChanges()}
-              <div className="change">
+              <div className="change creation">
                 <Icon name="file-text" size="s" />
                 Snippet created (#1)
                 {this.getAvatar(snippet.get('person'))}
@@ -92,6 +126,7 @@ export class ChangeLogModal extends React.Component {
             </div>
           }
         </Modal>
+        {this.getComparisonModal()}
       </div>
     );
   }

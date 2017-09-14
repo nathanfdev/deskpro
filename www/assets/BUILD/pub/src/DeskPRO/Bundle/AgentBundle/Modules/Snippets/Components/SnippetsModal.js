@@ -661,6 +661,7 @@ export class SnippetsModal extends React.Component {
     return (
       <ChangeLogModal
         snippet={this.props.snippet}
+        translation={this.props.translation}
         closeModal={this.closeChangeLogModal}
       />
     );
