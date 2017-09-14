@@ -19,6 +19,7 @@ import { ModalLanguageSelect } from './Menus/ModalLanguageSelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
 import { UsageHistoryModal } from './UsageHistoryModal';
+import { ChangeLogModal } from './ChangeLogModal';
 
 class VariableValue extends React.Component {
   render() {
@@ -507,6 +508,7 @@ export class SnippetsModal extends React.Component {
     super(props);
     this.state = {
       displayMerge:          false,
+      changeLogModalOpen:    false,
       usageHistoryModalOpen: false,
     };
   }
@@ -635,6 +637,7 @@ export class SnippetsModal extends React.Component {
       <div>
         {snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
         {usage}
+        <a className="change_log" onClick={this.openChangeLogModal}>{agentPhrases.get('agent.general.changelog')}</a>
       </div>
     );
   };
@@ -651,6 +654,18 @@ export class SnippetsModal extends React.Component {
     );
   };
 
+  getChangeLogModal = () => {
+    if (!this.state.changeLogModalOpen) {
+      return null;
+    }
+    return (
+      <ChangeLogModal
+        snippet={this.props.snippet}
+        closeModal={this.closeChangeLogModal}
+      />
+    );
+  };
+
   getUploadUrl = () => '/api/v2/blobs/temp';
 
   openUsageHistoryModal = () => {
@@ -662,6 +677,18 @@ export class SnippetsModal extends React.Component {
   closeUsageHistoryModal = () => {
     this.setState({
       usageHistoryModalOpen: false,
+    });
+  };
+
+  openChangeLogModal = () => {
+    this.setState({
+      changeLogModalOpen: true,
+    });
+  };
+
+  closeChangeLogModal = () => {
+    this.setState({
+      changeLogModalOpen: false,
     });
   };
 
@@ -907,6 +934,7 @@ export class SnippetsModal extends React.Component {
           </form>
         </Modal>
         {this.getUsageHistoryModal()}
+        {this.getChangeLogModal()}
       </div>
     );
   }

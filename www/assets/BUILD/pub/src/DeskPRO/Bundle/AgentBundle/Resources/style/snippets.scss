@@ -523,6 +523,14 @@
     margin-right: 50px;
     color: $dp-greyscale-00;
   }
+  .change_log {
+    float: right;
+    text-decoration: underline;
+    font-weight: $pf-semi-bold;
+    font-size: $font-size-m;
+    margin-right: 5px;
+    color: $dp-greyscale-00;
+  }
   .dp-modal {
     min-height: 492px;
   }
@@ -783,5 +791,31 @@
         font-style: italic;
       }
     }
+  }
+}
+#change_log_modal {
+  font-family: $primary-font;
+  color: $dp-greyscale-850;
+  .change {
+    height: 26px;
+    padding: 3px;
+    font-size: $font-size-m;
+    font-weight: $pf-semi-bold;
+    border-bottom: 1px solid $dp-greyscale-250;
+  }
+  .dp-icon {
+    color: $dp-greyscale-450;
+    margin-right: 5px;
+  }
+  .date {
+    font-size: $font-size-s;
+    color: $dp-greyscale-500;
+    float: right;
+    margin-right: 3px;
+  }
+  .dp-avatar {
+    float: right;
+    height: $icon-size-l;
+    width: $icon-size-l;
   }
 }

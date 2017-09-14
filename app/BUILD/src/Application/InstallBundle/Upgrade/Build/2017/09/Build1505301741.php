@@ -28,16 +28,6 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-// NOTE: I used the OnlineBuildInterface interface because
-//       it looks like your schema changes ARE backwards compatible with the previous version.
-//       You should double-check this yourself though. If there are breaking changes, use BlockingBuildInterface instead.
-
-// NOTE: I have added the SkipPostBuildInterface interface because
-//       it looks like you do not have any changes that require PostBuild to run.
-//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.
-
-// Please remove these NOTE comments after you have checked the code.
-
 class Build1505301741 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
@@ -53,6 +43,7 @@ class Build1505301741 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function runAlters()
     {
+        $this->execDbQuery('default', 'ALTER TABLE snippets ADD date_created DATETIME NOT NULL DEFAULT NOW()');
     }
 
     public function run()

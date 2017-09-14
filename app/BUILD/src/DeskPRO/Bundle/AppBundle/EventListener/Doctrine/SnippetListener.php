@@ -112,8 +112,10 @@ class SnippetListener
         foreach ($uow->getScheduledEntityUpdates() as $keyEntity => $entity) {
             if ($entity instanceof SnippetTranslation) {
                 $changeSet = $uow->getEntityChangeSet($entity);
-                if (isset($changeSet['content'])) {
-                    $changeLog = $this->saveChanges($entity, $changeSet['content'][0]);
+                if (isset($changeSet['content']) || isset($changeSet['type'])) {
+                    $type      = isset($changeSet['type']) ? $changeSet['type'][0] : $entity->getType();
+                    $content   = isset($changeSet['content']) ? $changeSet['content'][0] : $entity->getContent();
+                    $changeLog = $this->saveChanges($entity, $content, $type);
                     // place here all the setters
                     $em->persist($changeLog);
                     $uow->computeChangeSet($em->getClassMetadata(get_class($changeLog)), $changeLog);
@@ -139,15 +141,16 @@ class SnippetListener
     /**
      * @param SnippetTranslation $snippetTranslation
      * @param string             $oldContent
+     * @param $type
      *
      * @return SnippetChangeLog
      */
-    private function saveChanges(SnippetTranslation $snippetTranslation, $oldContent)
+    private function saveChanges(SnippetTranslation $snippetTranslation, $oldContent, $type)
     {
         $changeLog = new SnippetChangeLog();
         $changeLog->setSnippet($snippetTranslation->getSnippet());
         $changeLog->setLanguage($snippetTranslation->getLanguage());
-        $changeLog->setType($snippetTranslation->getType());
+        $changeLog->setType($type);
         $changeLog->setContent($oldContent);
         $changeLog->setPerson($this->getPerson());
 
