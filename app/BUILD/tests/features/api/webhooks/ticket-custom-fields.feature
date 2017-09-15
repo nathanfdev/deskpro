@@ -5,8 +5,8 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   I want a REST API Resource
 
   Background:
-#    Given there are no "TicketWebhook" records
-#    And there are no "CustomDefTicket" records
+    Given there are no "TicketWebhook" records
+    And there are no "CustomDefTicket" records
     And there are no "Ticket" records
     And I'm authenticated as admin
 
