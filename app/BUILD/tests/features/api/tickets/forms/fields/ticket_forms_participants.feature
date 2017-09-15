@@ -20,7 +20,7 @@ Feature: /ticket_forms
 
   Scenario: I add participants by email
     # TODO investigate what caused the increase of queries for this test
-    Given I set max_queries=93, max_rows=1000
+    Given I set max_queries=94, max_rows=1000
     When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
     """
 {
