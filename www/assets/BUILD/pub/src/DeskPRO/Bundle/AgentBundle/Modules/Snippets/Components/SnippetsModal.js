@@ -336,7 +336,7 @@ export class SnippetsModalContainer extends React.Component {
 
   splitSnippet = (e) => {
     e.preventDefault();
-    const { type } = this.state;
+    const { type, types } = this.state;
     let newTranslations = new Immutable.List();
     let translations = this.saveTranslation();
     translations = translations.map((t) => {
@@ -345,8 +345,16 @@ export class SnippetsModalContainer extends React.Component {
       newTranslations = newTranslations.push(newType);
       return t.set('type', type);
     });
+    if (types.length < 2) {
+      if (types[0] === 'ticket') {
+        types.push('chat');
+      } else {
+        types.push('ticket');
+      }
+    }
     translations = translations.concat(newTranslations);
     this.setState({
+      types,
       translations,
       isSplit: true,
     });
@@ -637,7 +645,9 @@ export class SnippetsModal extends React.Component {
       <div>
         {snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
         {usage}
-        <a className="change_log" onClick={this.openChangeLogModal}>{agentPhrases.get('agent.general.changelog')}</a>
+        {snippet.get('id', false) ?
+          <a className="change_log" onClick={this.openChangeLogModal}>{agentPhrases.get('agent.general.changelog')}</a>
+          : null }
       </div>
     );
   };
@@ -915,14 +925,14 @@ export class SnippetsModal extends React.Component {
             <div className="types-field field">
               <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
               <Checkbox
-                checked={this.props.types.find(type => type === 'ticket')}
+                checked={!!this.props.types.find(type => type === 'ticket')}
                 value="ticket"
                 onChange={handleChangeTypes}
               >
                 {agentPhrases.get('agent.general.ticket')}
               </Checkbox>
               <Checkbox
-                checked={this.props.types.find(type => type === 'chat')}
+                checked={!!this.props.types.find(type => type === 'chat')}
                 value="chat"
                 onChange={handleChangeTypes}
               >

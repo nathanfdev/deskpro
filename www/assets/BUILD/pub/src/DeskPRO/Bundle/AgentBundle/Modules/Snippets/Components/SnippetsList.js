@@ -107,7 +107,7 @@ export class SnippetsListElement extends React.PureComponent {
           }
           content = `${matches[1]}${matches[2]}`;
         }
-        content.split(/\n/).forEach((line, key) => {
+        content.substring(0, 300).split(/\n/).forEach((line, key) => {
           lines.push(
             <span className="line" key={key}>
               <Highlighter
@@ -120,7 +120,7 @@ export class SnippetsListElement extends React.PureComponent {
           );
         });
       } else {
-        content.split(/\n/).forEach((line, key) => {
+        content.substring(0, 300).split(/\n/).forEach((line, key) => {
           lines.push(<span className="line" key={key}>{line}<span className="line-break">&#8617; </span></span>);
         });
       }

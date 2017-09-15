@@ -522,15 +522,14 @@
     text-decoration: underline;
     font-weight: $pf-regular;
     font-size: $font-size-m;
-    margin-right: 50px;
     color: $dp-greyscale-00;
+    margin-left: 5px;
   }
   .change_log {
     float: right;
     text-decoration: underline;
     font-weight: $pf-semi-bold;
     font-size: $font-size-m;
-    margin-right: 5px;
     color: $dp-greyscale-00;
   }
   .dp-modal {
@@ -845,5 +844,55 @@
   }
   .dp-modal__overlay {
     background-color: transparent;
+  }
+  .revisions {
+    & > div {
+      display: inline-block;
+      width: 50%;
+    }
+    .revision {
+      font-size: $font-size-m;
+      font-weight: $pf-semi-bold;
+      text-transform: uppercase;
+    }
+    .date {
+      float: none;
+      font-size: $font-size-m;
+    }
+  }
+  .d2h-file-header {
+    display: none;
+  }
+  .d2h-file-side-diff {
+    vertical-align: top;
+  }
+  .d2h-file-wrapper {
+    padding-bottom: 4px;
+    max-height: 500px;
+    overflow: scroll;
+    position: relative;
+  }
+  .d2h-diff-table {
+    font-family: $primary-font;
+    font-size: $font-size-m;
+  }
+  .d2h-code-side-linenumber {
+    width: 30px;
+    position: relative;
+  }
+  .d2h-code-side-line {
+    margin-left: 0;
+    padding: 0 5px;
+  }
+  .d2h-code-line-prefix {
+    vertical-align: top;
+  }
+  .d2h-code-line-ctn {
+    display: inline-block;
+    white-space: normal;
+    width: calc(100% - 6px);
+  }
+  .d2h-diff-tbody > tr:first-child {
+    display: none;
   }
 }

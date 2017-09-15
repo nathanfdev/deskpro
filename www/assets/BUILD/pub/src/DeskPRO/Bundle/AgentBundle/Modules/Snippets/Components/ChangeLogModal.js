@@ -2,22 +2,15 @@ import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { connect } from 'react-redux';
 import Modal from 'deskpro-components/lib/Components/Modal';
-import Avatar from 'deskpro-components/lib/Components/Avatar';
 import Icon from 'deskpro-components/lib/Components/Icon';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import * as actions from '../Actions/snippetsActions';
 import { ComparisonModal } from './ComparisonModal';
 
-@connect(state => ({
-  me:     meSelector(state),
-  agents: agentsSelector(state)
-}))
+@connect()
 export class ChangeLogModal extends React.Component {
   static propTypes = {
-    me:          PropTypes.object.isRequired,
-    agents:      PropTypes.object.isRequired,
     snippet:     PropTypes.object,
     translation: PropTypes.object,
     closeModal:  PropTypes.func,
@@ -45,31 +38,13 @@ export class ChangeLogModal extends React.Component {
       });
   }
 
-  getAvatar(personId) {
-    if (!personId) {
-      return '';
-    }
-
-    const agent = this.props.agents.get(personId);
-
-    let url = agent.getIn(['avatar', 'url_pattern'], false);
-    if (!url) {
-      url = agent.getIn(['avatar', 'default_url_pattern'], false);
-    }
-    let name = agent.get('display_name');
-    if (agent.get('id') === this.props.me.get('id')) {
-      name = agentPhrases.get('agent.general.me');
-    }
-    return <Avatar src={url.replace(/{{IMG_SIZE}}/, 18)} title={name} />;
-  }
-
   getChanges = () => this.state.changes
     .map((change, key) => {
       const version = this.state.changes.length + 1 - key;
       return (<div key={change.id} className="change" onClick={() => this.handleChangeClick(version)}>
         <Icon name="file-text" size="s" />
           Content change (#{version})
-          {this.getAvatar(change.person)}
+        <AgentAvatar agent={change.person} />
         <span className="date"><TimeAgo date={change.date_created} /></span>
       </div>);
     }
@@ -111,6 +86,11 @@ export class ChangeLogModal extends React.Component {
           title={agentPhrases.get('agent.general.changelog')}
           closeModal={closeModal}
         >
+          {snippet.get('translations').size > 1 || snippet.get('is_split', false) ?
+            <div className="display-options">
+              {agentPhrases.get('agent.general.display_options')}:
+          </div>
+          : null }
           {this.state.loading ?
             <div className="ui active inverted dimmer">
               <div className="ui text loader">{agentPhrases.get('agent.general.loading_dot')}</div>
@@ -120,7 +100,7 @@ export class ChangeLogModal extends React.Component {
               <div className="change creation">
                 <Icon name="file-text" size="s" />
                 Snippet created (#1)
-                {this.getAvatar(snippet.get('person'))}
+                <AgentAvatar agent={snippet.get('person')} />
                 <span className="date"><TimeAgo date={snippet.get('date_created')} /></span>
               </div>
             </div>

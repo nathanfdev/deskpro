@@ -4703,9 +4703,9 @@
       "integrity": "sha1-fImR1HpR7ymGzsM30wzUPv96aqg="
     },
     "deskpro-components": {
-      "version": "0.5.13",
-      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.13.tgz",
-      "integrity": "sha512-r2/29EoyvWDIZ7JFTIf1rkbZ89LVUESPt7ImDKO8bBGNnrW9Wxd+rz+Cf4bBRf5jv4D2zgt7Mf3YDDqAqJJabg==",
+      "version": "0.5.15",
+      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.15.tgz",
+      "integrity": "sha512-X0uIX+c9cuXq8pK+SAZ2l0QWVAG8qLGjo6WCZXyTRMGWsWKs/JjORB/WH1+LJeuXHcFIqnrWp9nFYLVpG5zUDw==",
       "requires": {
         "bourbon": "4.3.4",
         "bourbon-neat": "2.0.0",

@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import difflib from 'difflib';
 import diff2html from 'diff2html';
+import Moment from 'moment';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
@@ -18,21 +19,23 @@ export class ComparisonModal extends React.Component {
     let current = {};
     const { version, translation, changes } = this.props;
     const previousKey = changes.length + 1 - version;
-    console.log(previousKey);
     if (version === changes.length + 1) {
       current = {
         content: translation.get('content'),
         date:    changes[previousKey].date_created,
+        number:  version,
       };
     } else {
       current = {
         content: changes[previousKey - 1].content,
         date:    changes[previousKey].date_created,
+        number:  version,
       };
     }
     const previous = {
       content: changes[previousKey].content,
       date:    this.getPreviousDate(previousKey),
+      number:  version - 1,
     };
 
     const render = this.renderDiff(previous, current);
@@ -76,6 +79,27 @@ export class ComparisonModal extends React.Component {
           title={agentPhrases.get('agent.general.comparison')}
           closeModal={closeModal}
         >
+          <div className="revisions">
+            <div className="from">
+              <span className="revision">
+                Revision #{this.state.previous.number}
+              </span>
+              <span className="date">
+                {Moment(this.state.previous.date).format('DD/MM/YYYY')}
+              </span>
+            </div>
+            <div className="to">
+              <span className="revision">
+                {this.state.current.number === this.props.changes.length + 1 ?
+                  'Current'
+                : 'Revision'
+                } #{this.state.current.number}
+              </span>
+              <span className="date">
+                {Moment(this.state.current.date).format('DD/MM/YYYY')}
+              </span>
+            </div>
+          </div>
           <div dangerouslySetInnerHTML={{ __html: this.state.render }} />
         </Modal>
       </div>
