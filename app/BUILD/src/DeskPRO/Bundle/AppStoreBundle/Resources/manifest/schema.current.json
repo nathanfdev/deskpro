@@ -1,6 +1,9 @@
 {
   "type": "object",
   "properties": {
+    "appVersion": {
+      "type": "string"
+    },
     "id": {
       "type": "string"
     },
@@ -56,6 +59,7 @@
     }
   },
   "required": [
+    "appVersion",
     "name",
     "description",
     "author",
@@ -63,7 +67,7 @@
     "targets"
   ],
   "definitions": {
-    "state" : {
+    "storage" : {
       "type": "object",
       "properties": {
         "isBackendOnly" : { "type" : "boolean" },

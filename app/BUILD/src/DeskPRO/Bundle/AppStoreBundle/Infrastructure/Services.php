@@ -56,15 +56,16 @@ class Services
 
     /**
      * @param FileLocator $schemaLocator
+     * @param string $currentManifestVersion
      *
      * @return AppBundleValidator
      */
-    public static function createAppBundleValidator(FileLocator $schemaLocator)
+    public static function createAppBundleValidator(FileLocator $schemaLocator, $currentManifestVersion)
     {
-        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
-        $schemaInfo = new \SplFileInfo($schemaPath);
+        $schemaDir = '@AppStoreBundle/Resources/manifest';
+        $schemaLocator = new ManifestSchemaLocator($schemaLocator, $schemaDir, $currentManifestVersion);
 
-        $service = new AppBundleValidator(new Validator(), $schemaInfo);
+        $service = new AppBundleValidator(new Validator(), $schemaLocator);
 
         return $service;
     }

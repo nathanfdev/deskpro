@@ -39,9 +39,28 @@ class AppManifestReaderTest extends AbstractKernelAwareTestCase
     /**
      * @test
      */
+    public function test_backwords_compatible_transformations_are_applied_for_v210_manifests()
+    {
+        $latestManifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.current.example.json');
+        $manifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.2.1.0.example.json');
+
+        $reader = new Infrastructure\AppManifestReader();
+        $latestManifest = $reader->readManifestFromJson($latestManifestContents);
+        $manifest = $reader->readManifestFromJson($manifestContents);
+
+        $serializer = $this->getContainer()->get('jms_serializer');
+        $expectedManifest = $serializer->serialize($latestManifest, 'json');
+        $actualManifest = $serializer->serialize($manifest, 'json');
+
+        $this->assertEquals($expectedManifest, $actualManifest);
+    }
+
+    /**
+     * @test
+     */
     public function test_backwords_compatible_transformations_are_applied_for_v200_manifests()
     {
-        $latestManifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.example.json');
+        $latestManifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.current.example.json');
         $manifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.2.0.0.example.json');
 
         $reader = new Infrastructure\AppManifestReader();
@@ -60,12 +79,12 @@ class AppManifestReaderTest extends AbstractKernelAwareTestCase
     /**
      * @test
      */
-    public function test_backwords_compatible_transformations_are_not_for_v210_manifests()
+    public function test_backwords_compatible_transformations_are_not_applied_for_current_version()
     {
-        $latestManifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.example.json');
+        $latestManifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.current.example.json');
         $expectedManifest = json_decode($latestManifestContents, true);
 
-        $manifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.example.json');
+        $manifestContents = $this->readFile('@AppStoreBundle/Resources/manifest/app-manifest.current.example.json');
         $reader = new Infrastructure\AppManifestReader();
         $manifest = $reader->readManifestFromJson($manifestContents);
 

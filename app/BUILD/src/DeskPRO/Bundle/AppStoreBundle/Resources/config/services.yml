@@ -1,8 +1,11 @@
+parameters:
+    manifest.current.version: 2.2.0
+
 services:
   DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createAppBundleValidator]
-    arguments: ["@file_locator"]
+    arguments: ["@file_locator", %manifest.current.version%]
 
   apps2.application_manager:
     class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService

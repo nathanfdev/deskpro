@@ -92,6 +92,20 @@ class AppManifestReader
     }
 
     /**
+     * @param $jsonString
+     * @return string|null
+     */
+    public function readVersionFromJson($jsonString)
+    {
+        $decoded = json_decode($jsonString, true);
+        if (is_array($decoded) && array_key_exists('version', $decoded)) {
+            $version = $decoded['version'];
+            return is_string($version) && !empty($version) ? $version : null;
+        }
+        return null;
+    }
+
+    /**
      * @param string $jsonString
      *
      * @return Domain\AppManifest
