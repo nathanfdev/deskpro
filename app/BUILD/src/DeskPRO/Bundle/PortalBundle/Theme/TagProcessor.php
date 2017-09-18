@@ -86,7 +86,7 @@ class TagProcessor
         } catch (HttpException $e) {
             // http errors like 404
             $response = '';
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             // See src/Symfony/Component/HttpKernel/HttpCache/Esi.php
             // A redirect also causes an exception. We should blank these out.
             // In portal they're typically auto-redirections based on permission
@@ -99,16 +99,12 @@ class TagProcessor
 
             $statusCode = $statusCode ? (int) $statusCode : null;
 
-            if ($statusCode && $statusCode >= 300 && $statusCode < 400) {
+            if ($statusCode && $statusCode >= 300 && $statusCode < 500) {
                 $response = '';
             } else {
                 SystemErrorHandler::logException($e);
                 $response = '';
             }
-        } catch (\Exception $e) {
-            // Any other exception is unexpected. Log it.
-            SystemErrorHandler::logException($e);
-            $response = '';
         }
 
         if (!$response || ($response->getStatusCode() >= 300 && $response->getStatusCode() < 400)) {
