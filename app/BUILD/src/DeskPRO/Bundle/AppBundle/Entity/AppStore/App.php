@@ -40,7 +40,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * @ORM\Entity()
  * @ORM\Table(name="app2_app", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="name_unique", columns={"name"})
+ *     @ORM\UniqueConstraint(name="name_unique", columns={"name", "is_dev"})
  * })
  *
  * @JMS\ExclusionPolicy("all")
@@ -66,6 +66,22 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
      * @JMS\Type("string")
      */
     private $name;
+
+    /**
+     * @ORM\Column(name="`is_installed`", type="boolean", options={"default" = 0}, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    private $isInstalled;
+
+    /**
+     * @ORM\Column(name="`is_dev`", type="boolean", options={"default" = 0}, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    private $isDev;
 
     /**
      * @ORM\Column(name="`manifest`", type="json_array", nullable=false)
