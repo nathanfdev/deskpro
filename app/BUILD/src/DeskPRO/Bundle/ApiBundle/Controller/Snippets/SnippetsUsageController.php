@@ -180,6 +180,8 @@ class SnippetsUsageController extends CrudController
             $result = $qb->getQuery()->getResult();
         }
 
+        $ticketMessages = [];
+
         /** @var SnippetUseLog $use */
         foreach ($result as $use) {
             if ($use->getRating() !== null && $use->getType() === 'ticket') {
@@ -187,20 +189,22 @@ class SnippetsUsageController extends CrudController
             }
         }
 
-        $qb = $this->getManager()->createQueryBuilder();
-        $qb->select('tf');
-        $qb->from(TicketFeedback::class, 'tf');
-        $qb->where('tf.ticket_message IN (:ticket_messages)');
-        $qb->setParameter('ticket_messages', $ticketMessages);
+        if (count($ticketMessages)) {
+            $qb = $this->getManager()->createQueryBuilder();
+            $qb->select('tf');
+            $qb->from(TicketFeedback::class, 'tf');
+            $qb->where('tf.ticket_message IN (:ticket_messages)');
+            $qb->setParameter('ticket_messages', $ticketMessages);
 
-        $ticketFeebacks = $qb->getQuery()->getResult();
+            $ticketFeedbacks = $qb->getQuery()->getResult();
 
-        /** @var TicketFeedback $ticketFeeback */
-        foreach ($ticketFeebacks as $ticketFeeback) {
-            /** @var SnippetUseLog $use */
-            foreach ($result as $use) {
-                if ($use->getRating() !== null && $use->getTicketMessage()->getId() === $ticketFeeback->getMessageId()) {
-                    $use->setMessage($ticketFeeback->getMessage());
+            /** @var TicketFeedback $ticketFeedback */
+            foreach ($ticketFeedbacks as $ticketFeedback) {
+                /** @var SnippetUseLog $use */
+                foreach ($result as $use) {
+                    if ($use->getRating() !== null && $use->getTicketMessage()->getId() === $ticketFeedback->getMessageId()) {
+                        $use->setMessage($ticketFeedback->getMessage());
+                    }
                 }
             }
         }
