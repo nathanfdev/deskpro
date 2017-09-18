@@ -48,12 +48,12 @@ class DoctrineQueriesCounterListener
     /**
      * @var int
      */
-    private $maxQueriesCount = self::MAX_QUERIES_COUNT;
+    private static $maxQueriesCount = self::MAX_QUERIES_COUNT;
 
     /**
      * @var int
      */
-    private $maxFetchRows = self::MAX_FETCH_ROWS;
+    private static $maxFetchRows = self::MAX_FETCH_ROWS;
 
     /**
      * Constructor.
@@ -70,7 +70,7 @@ class DoctrineQueriesCounterListener
      */
     public function setMaxQueriesCount($maxQueriesCount)
     {
-        $this->maxQueriesCount = $maxQueriesCount;
+        self::$maxQueriesCount = $maxQueriesCount;
     }
 
     /**
@@ -78,13 +78,13 @@ class DoctrineQueriesCounterListener
      */
     public function setMaxFetchRows($maxFetchRows)
     {
-        $this->maxFetchRows = $maxFetchRows;
+        self::$maxFetchRows = $maxFetchRows;
     }
 
     public function resetSettings()
     {
-        $this->maxQueriesCount = self::MAX_QUERIES_COUNT;
-        $this->maxFetchRows    = self::MAX_FETCH_ROWS;
+        self::$maxQueriesCount = self::MAX_QUERIES_COUNT;
+        self::$maxFetchRows    = self::MAX_FETCH_ROWS;
     }
 
     /**
@@ -121,10 +121,10 @@ class DoctrineQueriesCounterListener
         }
 
         // check max queries count
-        if (count($queries) > $this->maxQueriesCount) {
+        if (count($queries) > self::$maxQueriesCount) {
             throw new \Exception(sprintf(
                 'Too many db queries, expected less than %d, got %d',
-                $this->maxQueriesCount, count($queries)
+                self::$maxQueriesCount, count($queries)
             ));
         }
 
@@ -135,10 +135,10 @@ class DoctrineQueriesCounterListener
             $result    = $statement->fetchAll();
 
             foreach ($result as $subQuery) {
-                if ($subQuery['rows'] > $this->maxFetchRows) {
+                if ($subQuery['rows'] > self::$maxFetchRows) {
                     throw new \Exception(sprintf(
                         'Too many rows fetched, expected less than %d, got %d. Sql: %s',
-                        $this->maxFetchRows, $subQuery['rows'], $sql
+                        self::$maxFetchRows, $subQuery['rows'], $sql
                     ));
                 }
                 if ($subQuery['rows'] > 100 && $subQuery['select_type'] !== 'DERIVED' && $subQuery['type'] === 'ALL') {
