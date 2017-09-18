@@ -79,9 +79,10 @@ export class ChangeLogModal extends React.Component {
   };
 
   getLanguages = () => {
-    const { languages, translations } = this.props;
+    const { languages } = this.props;
     const options = [];
-    if (translations.length < 2) {
+    const translations = this.props.translations.filter(translation => translation.get('type') === this.state.type);
+    if (translations.size < 2) {
       return null;
     }
     translations.forEach((translation) => {
@@ -147,8 +148,10 @@ export class ChangeLogModal extends React.Component {
   };
 
   selectType = (type) => {
+    const translation = this.props.translations.find(t => t.get('type') === type.value);
     this.setState({
-      type: type.value
+      type: type.value,
+      translation,
     });
   };
 
@@ -159,7 +162,8 @@ export class ChangeLogModal extends React.Component {
   };
 
   render() {
-    const { snippet, closeModal, translations } = this.props;
+    const { snippet, closeModal } = this.props;
+    const translations = this.props.translations.filter(translation => translation.get('type') === this.state.type);
     return (
       <div id="change_log_modal">
         <Modal
