@@ -10,6 +10,8 @@ import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 
+import { InstallerContainer } from '../../Apps/Components';
+
 class AppContainer extends React.Component {
 
   static propTypes = {
@@ -70,6 +72,7 @@ class AppContainer extends React.Component {
             <Route path="dev">
               <Route path="notifications" component={Dev.Notifications} />
             </Route> : null}
+          <Route path="app-installer" component={InstallerContainer} />
         </Router>
       </Provider>
     );
