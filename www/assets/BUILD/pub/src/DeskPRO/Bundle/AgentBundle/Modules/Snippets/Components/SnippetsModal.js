@@ -27,7 +27,7 @@ class VariableValue extends React.Component {
       <div className="Select-value">
         <span className="Select-value-label">
           <i className="fa fa-dollar" />&nbsp;
-          Variables
+          {agentPhrases.get('agent.snippets.variables')}
         </span>
       </div>
     );
@@ -671,7 +671,10 @@ export class SnippetsModal extends React.Component {
     return (
       <ChangeLogModal
         snippet={this.props.snippet}
+        langId={this.props.langId}
+        languages={this.props.languages}
         translation={this.props.translation}
+        translations={this.props.translations}
         closeModal={this.closeChangeLogModal}
       />
     );
@@ -824,6 +827,7 @@ export class SnippetsModal extends React.Component {
                 tags={labels}
                 onChange={changeLabels}
                 options={labelsSource}
+                inputProps={{ placeholder: agentPhrases.get('agent.general.add_a_label') }}
                 editable
               />
             </div>
@@ -939,7 +943,9 @@ export class SnippetsModal extends React.Component {
                 {agentPhrases.get('agent.general.chat')}
               </Checkbox>
               {!this.props.isSplit ?
-                <a href="#expand" onClick={splitSnippet}><Icon name="expand" /> Split snippet</a>
+                <a href="#expand" onClick={splitSnippet}><Icon name="expand" />
+                  {agentPhrases.get('agent.snippets.split_snippet')}
+                </a>
               : null}
             </div>
           </form>

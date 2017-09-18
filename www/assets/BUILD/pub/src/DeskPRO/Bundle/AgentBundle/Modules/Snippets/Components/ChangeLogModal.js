@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { connect } from 'react-redux';
+import { Select } from 'deskpro-components/lib/Components/Forms';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import Icon from 'deskpro-components/lib/Components/Icon';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -11,10 +12,13 @@ import { ComparisonModal } from './ComparisonModal';
 @connect()
 export class ChangeLogModal extends React.Component {
   static propTypes = {
-    snippet:     PropTypes.object,
-    translation: PropTypes.object,
-    closeModal:  PropTypes.func,
-    dispatch:    PropTypes.func,
+    snippet:      PropTypes.object,
+    languages:    PropTypes.object,
+    translation:  PropTypes.object,
+    translations: PropTypes.object,
+    closeModal:   PropTypes.func,
+    dispatch:     PropTypes.func,
+    langId:       PropTypes.number,
   };
 
   constructor(props) {
@@ -24,6 +28,7 @@ export class ChangeLogModal extends React.Component {
       comparisonModalOpen: false,
       changes:             [],
       version:             0,
+      langId:              this.props.langId,
     };
     this.handleChangeClick = this.handleChangeClick.bind(this);
   }
@@ -43,7 +48,7 @@ export class ChangeLogModal extends React.Component {
       const version = this.state.changes.length + 1 - key;
       return (<div key={change.id} className="change" onClick={() => this.handleChangeClick(version)}>
         <Icon name="file-text" size="s" />
-          Content change (#{version})
+        {agentPhrases.get('agent.snippets.content_change')} (#{version})
         <AgentAvatar agent={change.person} />
         <span className="date"><TimeAgo date={change.date_created} /></span>
       </div>);
@@ -65,12 +70,49 @@ export class ChangeLogModal extends React.Component {
     );
   };
 
+  getLanguages = () => {
+    const { languages, translations } = this.props;
+    const options = [];
+    if (translations.length < 2) {
+      return null;
+    }
+    translations.forEach((translation) => {
+      const language = languages.find(l => l.get('id') === translation.get('language'));
+      options.push(
+        {
+          value: language.get('id'),
+          label: <span>
+            <img src={language.get('flag_image')} alt={language.get('title')} />
+            {language.get('title')}
+          </span>
+        }
+      );
+    });
+    return (
+      <Select
+        onChange={this.selectLanguage}
+        options={options}
+        searchable={false}
+        clearable={false}
+        value={this.state.langId}
+      />
+    );
+  };
+
+  getTypes = () => null;
+
   handleChangeClick(version) {
     this.setState({
       version,
       comparisonModalOpen: true,
     });
   }
+
+  selectLanguage = (langId) => {
+    this.setState({
+      langId
+    });
+  };
 
   closeComparisonModal = () => {
     this.setState({
@@ -89,7 +131,9 @@ export class ChangeLogModal extends React.Component {
           {snippet.get('translations').size > 1 || snippet.get('is_split', false) ?
             <div className="display-options">
               {agentPhrases.get('agent.general.display_options')}:
-          </div>
+              {this.getLanguages()}
+              {this.getTypes()}
+            </div>
           : null }
           {this.state.loading ?
             <div className="ui active inverted dimmer">
@@ -99,7 +143,7 @@ export class ChangeLogModal extends React.Component {
               {this.getChanges()}
               <div className="change creation">
                 <Icon name="file-text" size="s" />
-                Snippet created (#1)
+                {agentPhrases.get('agent.snippets.snippet_created')} (#1)
                 <AgentAvatar agent={snippet.get('person')} />
                 <span className="date"><TimeAgo date={snippet.get('date_created')} /></span>
               </div>

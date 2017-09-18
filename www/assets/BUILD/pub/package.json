@@ -93,7 +93,7 @@
     "react-sortable-tree": "^0.1.13",
     "react-stylesheet": "^2.0.2",
     "react-textarea-autosize": "4.0.2",
-    "react-timeago": "3.0.0",
+    "react-timeago": "^3.4.3",
     "react-tooltip": "^3.2.7",
     "react-transform-catch-errors": "1.0.1",
     "react-virtualized": "^9.9.0",

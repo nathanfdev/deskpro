@@ -13470,12 +13470,9 @@
       "integrity": "sha1-Z+6weU6SRxloLJe4VTFVVsiDyFg="
     },
     "react-timeago": {
-      "version": "3.0.0",
-      "resolved": "https://registry.npmjs.org/react-timeago/-/react-timeago-3.0.0.tgz",
-      "integrity": "sha1-HQarVC/MUfL3/5ytIUvzwOVryM0=",
-      "requires": {
-        "object-assign": "4.1.1"
-      }
+      "version": "3.4.3",
+      "resolved": "https://registry.npmjs.org/react-timeago/-/react-timeago-3.4.3.tgz",
+      "integrity": "sha1-65Bh7vsETkorCc6MmdNGRbLb+iU="
     },
     "react-tooltip": {
       "version": "3.2.10",
