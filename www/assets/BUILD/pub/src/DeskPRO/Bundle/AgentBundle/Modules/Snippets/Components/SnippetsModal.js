@@ -128,6 +128,11 @@ export class SnippetsModalContainer extends React.Component {
     }
   };
 
+  setContent = (content) => {
+    this.redactor.setCode(content);
+    this.saveTranslation();
+  };
+
   saveTranslation = () => {
     const index = this.state.translations.findIndex(t =>
       t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type)
@@ -442,6 +447,7 @@ export class SnippetsModalContainer extends React.Component {
         saveSnippet={this.saveSnippet}
         deleteSnippet={this.deleteSnippet}
         setLanguage={this.setLanguage}
+        setContent={this.setContent}
         changeLabels={this.changeLabels}
         insertVariable={this.insertVariable}
         handleChangeDraft={this.handleChangeDraft}
@@ -492,6 +498,7 @@ export class SnippetsModal extends React.Component {
     saveSnippet:             PropTypes.func,
     deleteSnippet:           PropTypes.func,
     setLanguage:             PropTypes.func,
+    setContent:              PropTypes.func,
     closeModal:              PropTypes.func,
     changeLabels:            PropTypes.func,
     insertVariable:          PropTypes.func,
@@ -676,6 +683,7 @@ export class SnippetsModal extends React.Component {
         translation={this.props.translation}
         translations={this.props.translations}
         type={this.props.type}
+        revertContent={this.revertContent}
         closeModal={this.closeChangeLogModal}
       />
     );
@@ -705,6 +713,17 @@ export class SnippetsModal extends React.Component {
     this.setState({
       changeLogModalOpen: false,
     });
+  };
+
+  revertContent = (content, langId, type) => {
+    if (type !== null) {
+      this.props.changeType(type);
+    }
+    if (langId !== this.props.langId) {
+      this.props.setLanguage(langId);
+    }
+    this.props.setContent(content);
+    this.closeChangeLogModal();
   };
 
   isValid = () => this.isTitleValid() && this.isShortcutCodeValid();

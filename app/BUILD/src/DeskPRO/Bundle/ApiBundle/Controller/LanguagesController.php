@@ -189,6 +189,7 @@ class LanguagesController extends CrudController
             'agent.snippets.no_comment',
             'agent.snippets.ownership',
             'agent.snippets.please_select',
+            'agent.snippets.revert_content',
             'agent.snippets.save_changes',
             'agent.snippets.set_as_draft',
             'agent.snippets.set_as_published',

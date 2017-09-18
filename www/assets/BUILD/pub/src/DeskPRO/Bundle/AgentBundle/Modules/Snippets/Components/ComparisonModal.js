@@ -3,6 +3,7 @@ import difflib from 'difflib';
 import diff2html from 'diff2html';
 import Moment from 'moment';
 import Modal from 'deskpro-components/lib/Components/Modal';
+import { ConfirmButton } from 'deskpro-components/lib/Components/Buttons';
 import { CustomSelect } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
@@ -10,11 +11,12 @@ import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 export class ComparisonModal extends React.Component {
   static propTypes = {
-    snippet:     PropTypes.object,
-    translation: PropTypes.object,
-    changes:     PropTypes.array,
-    version:     PropTypes.number,
-    closeModal:  PropTypes.func,
+    snippet:       PropTypes.object,
+    translation:   PropTypes.object,
+    changes:       PropTypes.array,
+    version:       PropTypes.number,
+    closeModal:    PropTypes.func,
+    revertContent: PropTypes.func,
   };
 
   constructor(props) {
@@ -150,6 +152,11 @@ export class ComparisonModal extends React.Component {
     }
   };
 
+  revertToVersion = () => {
+    this.props.revertContent(this.state.previous.content);
+    this.props.closeModal();
+  };
+
   renderDiff(previous, current) {
     const { snippet } = this.props;
     let diff = difflib.unifiedDiff(
@@ -217,6 +224,15 @@ export class ComparisonModal extends React.Component {
             </div>
           </div>
           <div ref={(c) => { this.diff2html = c; }} dangerouslySetInnerHTML={{ __html: this.state.render }} />
+          <ConfirmButton
+            type="secondary"
+            size="medium"
+            disabled={current.number < this.props.changes.length + 1}
+            message={agentPhrases.get('agent.general.are_you_sure')}
+            onClick={this.revertToVersion}
+          >
+            {agentPhrases.get('agent.snippets.revert_content')}
+          </ConfirmButton>
         </Modal>
       </div>
     );

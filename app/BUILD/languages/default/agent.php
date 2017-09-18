@@ -1887,6 +1887,7 @@ return [
     'agent.snippets.no_comment'                                => 'No comment',
     'agent.snippets.ownership'                                 => 'Ownership',
     'agent.snippets.please_select'                             => 'Please select',
+    'agent.snippets.revert_content'                            => 'Revert content to this',
     'agent.snippets.save_changes'                              => 'Save changes',
     'agent.snippets.set_as_draft'                              => 'Set as draft',
     'agent.snippets.set_as_published'                          => 'Set as published',

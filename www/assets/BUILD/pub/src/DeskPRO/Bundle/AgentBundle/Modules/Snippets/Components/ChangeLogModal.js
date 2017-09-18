@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import { Select } from 'deskpro-components/lib/Components/Forms';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import Icon from 'deskpro-components/lib/Components/Icon';
@@ -12,14 +13,15 @@ import { ComparisonModal } from './ComparisonModal';
 @connect()
 export class ChangeLogModal extends React.Component {
   static propTypes = {
-    snippet:      PropTypes.object,
-    languages:    PropTypes.object,
-    translation:  PropTypes.object,
-    translations: PropTypes.object,
-    closeModal:   PropTypes.func,
-    dispatch:     PropTypes.func,
-    langId:       PropTypes.number,
-    type:         PropTypes.string,
+    snippet:       PropTypes.object,
+    languages:     PropTypes.object,
+    translation:   PropTypes.object,
+    translations:  PropTypes.object,
+    closeModal:    PropTypes.func,
+    dispatch:      PropTypes.func,
+    revertContent: PropTypes.func,
+    langId:        PropTypes.number,
+    type:          PropTypes.string,
   };
 
   constructor(props) {
@@ -73,15 +75,17 @@ export class ChangeLogModal extends React.Component {
         changes={changes}
         version={this.state.version}
         translation={this.state.translation}
+        revertContent={this.revertContent}
         closeModal={this.closeComparisonModal}
       />
     );
   };
 
   getLanguages = () => {
-    const { languages } = this.props;
+    const { languages, snippet } = this.props;
     const options = [];
-    const translations = this.props.translations.filter(translation => translation.get('type') === this.state.type);
+    const translations = this.props.translations.filter(translation =>
+      !snippet.get('is_split', false) || translation.get('type') === this.state.type);
     if (translations.size < 2) {
       return null;
     }
@@ -155,6 +159,11 @@ export class ChangeLogModal extends React.Component {
     });
   };
 
+  revertContent = (content) => {
+    const type = this.props.snippet.get('is_split', false) ? this.state.type : null;
+    this.props.revertContent(content, this.state.langId, type);
+  };
+
   closeComparisonModal = () => {
     this.setState({
       comparisonModalOpen: false,
@@ -163,7 +172,10 @@ export class ChangeLogModal extends React.Component {
 
   render() {
     const { snippet, closeModal } = this.props;
-    const translations = this.props.translations.filter(translation => translation.get('type') === this.state.type);
+    const translations = this.props.translations.filter(translation =>
+      !snippet.get('is_split', false) || translation.get('type') === this.state.type);
+    const changes = this.state.changes.filter(change =>
+      change.language === this.state.langId && (change.type === null || change.type === this.state.type));
     return (
       <div id="change_log_modal">
         <Modal
@@ -183,7 +195,10 @@ export class ChangeLogModal extends React.Component {
             </div>
             : <div>
               {this.getChanges()}
-              <div className="change creation">
+              <div
+                className={classNames('change', { creation: changes.length === 0 })}
+                onClick={() => changes.length !== 0 && this.handleChangeClick(2)}
+              >
                 <Icon name="file-text" size="s" />
                 {agentPhrases.get('agent.snippets.snippet_created')} (#1)
                 <AgentAvatar agent={snippet.get('person')} />
