@@ -40,7 +40,7 @@ export class ComparisonModal extends React.Component {
   }
 
   getRevisionFromVersion = (version) => {
-    const { translation, changes, snippet } = this.props;
+    const { translation, changes } = this.props;
     const previousKey = changes.length + 1 - version;
     let content = '';
     if (version === changes.length + 1) {
@@ -52,7 +52,7 @@ export class ComparisonModal extends React.Component {
     return {
       content,
       date,
-      agent:  (version > 2) ? changes[previousKey + 1].person : snippet.getIn(['person', 'id']),
+      agent:  this.getAgentFromVersion(version),
       number: version,
     };
   };

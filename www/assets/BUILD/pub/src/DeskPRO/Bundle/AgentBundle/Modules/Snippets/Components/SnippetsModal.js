@@ -675,6 +675,7 @@ export class SnippetsModal extends React.Component {
         languages={this.props.languages}
         translation={this.props.translation}
         translations={this.props.translations}
+        type={this.props.type}
         closeModal={this.closeChangeLogModal}
       />
     );
@@ -944,7 +945,7 @@ export class SnippetsModal extends React.Component {
               </Checkbox>
               {!this.props.isSplit ?
                 <a href="#expand" onClick={splitSnippet}><Icon name="expand" />
-                  {agentPhrases.get('agent.snippets.split_snippet')}
+                  &nbsp;{agentPhrases.get('agent.snippets.split_snippet')}
                 </a>
               : null}
             </div>

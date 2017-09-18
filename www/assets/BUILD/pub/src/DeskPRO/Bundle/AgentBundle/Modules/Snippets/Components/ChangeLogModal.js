@@ -19,6 +19,7 @@ export class ChangeLogModal extends React.Component {
     closeModal:   PropTypes.func,
     dispatch:     PropTypes.func,
     langId:       PropTypes.number,
+    type:         PropTypes.string,
   };
 
   constructor(props) {
@@ -28,7 +29,9 @@ export class ChangeLogModal extends React.Component {
       comparisonModalOpen: false,
       changes:             [],
       version:             0,
+      translation:         this.props.translation,
       langId:              this.props.langId,
+      type:                this.props.type,
     };
     this.handleChangeClick = this.handleChangeClick.bind(this);
   }
@@ -43,28 +46,33 @@ export class ChangeLogModal extends React.Component {
       });
   }
 
-  getChanges = () => this.state.changes
-    .map((change, key) => {
-      const version = this.state.changes.length + 1 - key;
+  getChanges = () => {
+    const changes = this.state.changes.filter(change =>
+      change.language === this.state.langId && (change.type === null || change.type === this.state.type));
+    return changes.map((change, key) => {
+      const version = changes.length + 1 - key;
       return (<div key={change.id} className="change" onClick={() => this.handleChangeClick(version)}>
         <Icon name="file-text" size="s" />
         {agentPhrases.get('agent.snippets.content_change')} (#{version})
-        <AgentAvatar agent={change.person} />
+            <AgentAvatar agent={change.person} />
         <span className="date"><TimeAgo date={change.date_created} /></span>
       </div>);
     }
-    );
+      );
+  };
 
   getComparisonModal = () => {
     if (!this.state.comparisonModalOpen) {
       return null;
     }
+    const changes = this.state.changes.filter(change =>
+      change.language === this.state.langId && (change.type === null || change.type === this.state.type));
     return (
       <ComparisonModal
         snippet={this.props.snippet}
-        changes={this.state.changes}
+        changes={changes}
         version={this.state.version}
-        translation={this.props.translation}
+        translation={this.state.translation}
         closeModal={this.closeComparisonModal}
       />
     );
@@ -82,8 +90,7 @@ export class ChangeLogModal extends React.Component {
         {
           value: language.get('id'),
           label: <span>
-            <img src={language.get('flag_image')} alt={language.get('title')} />
-            {language.get('title')}
+            <img src={language.get('flag_image')} alt={language.get('title')} /> {language.get('title')}
           </span>
         }
       );
@@ -99,7 +106,30 @@ export class ChangeLogModal extends React.Component {
     );
   };
 
-  getTypes = () => null;
+  getTypes = () => {
+    if (!this.props.snippet.get('is_split', false)) {
+      return null;
+    }
+    const options = [
+      {
+        value: 'ticket',
+        label: agentPhrases.get('agent.general.ticket')
+      },
+      {
+        value: 'chat',
+        label: agentPhrases.get('agent.general.chat')
+      },
+    ];
+    return (
+      <Select
+        onChange={this.selectType}
+        options={options}
+        searchable={false}
+        clearable={false}
+        value={this.state.type}
+      />
+    );
+  };
 
   handleChangeClick(version) {
     this.setState({
@@ -108,9 +138,17 @@ export class ChangeLogModal extends React.Component {
     });
   }
 
-  selectLanguage = (langId) => {
+  selectLanguage = (language) => {
+    const translation = this.props.translations.find(t => t.get('language') === language.value);
     this.setState({
-      langId
+      langId: language.value,
+      translation,
+    });
+  };
+
+  selectType = (type) => {
+    this.setState({
+      type: type.value
     });
   };
 
@@ -121,14 +159,14 @@ export class ChangeLogModal extends React.Component {
   };
 
   render() {
-    const { snippet, closeModal } = this.props;
+    const { snippet, closeModal, translations } = this.props;
     return (
       <div id="change_log_modal">
         <Modal
           title={agentPhrases.get('agent.general.changelog')}
           closeModal={closeModal}
         >
-          {snippet.get('translations').size > 1 || snippet.get('is_split', false) ?
+          {translations.size > 1 || snippet.get('is_split', false) ?
             <div className="display-options">
               {agentPhrases.get('agent.general.display_options')}:
               {this.getLanguages()}

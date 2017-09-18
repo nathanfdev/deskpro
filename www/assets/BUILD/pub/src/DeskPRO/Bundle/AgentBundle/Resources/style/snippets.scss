@@ -800,6 +800,14 @@
   .dp-modal__overlay {
     background-color: transparent;
   }
+  .display-options {
+    .dp-select {
+      display: inline-block;
+      width: 100px;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+  }
   .change {
     height: 26px;
     padding: 3px;
@@ -886,6 +894,7 @@
     }
     .dp-avatar {
       float: none;
+      vertical-align: middle;
     }
   }
   .d2h-file-header {
