@@ -516,6 +516,28 @@ class PortalController extends AbstractController
     }
 
     /**
+     * @Route("/.well-known/apple-app-site-association", name="portal_apple_app_site_assoc")
+     *
+     * @return JsonResponse
+     */
+    public function appleAppSiteAssociationAction()
+    {
+        $response = [
+            'applinks' => [
+                'apps'    => [],
+                'details' => [
+                    [
+                        'appID' => 'PR39D6QFRX.com.deskpro.mobile.ios',
+                        'paths' => [$this->get('router')->generate('go_to_ticket_ref', ['ref' => '*'])],
+                    ],
+                ],
+            ],
+        ];
+
+        return new JsonResponse($response);
+    }
+
+    /**
      * If you know the primary ID and the authcode of blob, you can delete that blob.
      *
      * SEND a DELETE request with a CSRF called "file[_dp_csrf_token]" (with a cookie with the
