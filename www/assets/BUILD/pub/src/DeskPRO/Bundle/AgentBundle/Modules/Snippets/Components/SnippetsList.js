@@ -397,7 +397,7 @@ export class SnippetsList extends React.Component {
           height={height}
           width={listWidth}
           rowCount={this.list.length}
-          rowHeight={80}
+          rowHeight={83}
           rowRenderer={this.rowRenderer}
           noRowsRenderer={SnippetsList.noRowsRenderer}
           overscanRowCount={2}

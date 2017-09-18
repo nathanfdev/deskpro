@@ -3,6 +3,9 @@ import difflib from 'difflib';
 import diff2html from 'diff2html';
 import Moment from 'moment';
 import Modal from 'deskpro-components/lib/Components/Modal';
+import { CustomSelect } from 'deskpro-components/lib/Components/Forms';
+import { List, ListElement } from 'deskpro-components/lib/Components/Common';
+import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 export class ComparisonModal extends React.Component {
@@ -16,27 +19,9 @@ export class ComparisonModal extends React.Component {
 
   constructor(props) {
     super(props);
-    let current = {};
-    const { version, translation, changes } = this.props;
-    const previousKey = changes.length + 1 - version;
-    if (version === changes.length + 1) {
-      current = {
-        content: translation.get('content'),
-        date:    changes[previousKey].date_created,
-        number:  version,
-      };
-    } else {
-      current = {
-        content: changes[previousKey - 1].content,
-        date:    changes[previousKey].date_created,
-        number:  version,
-      };
-    }
-    const previous = {
-      content: changes[previousKey].content,
-      date:    this.getPreviousDate(previousKey),
-      number:  version - 1,
-    };
+    const { version } = this.props;
+    const current = this.getRevisionFromVersion(version);
+    const previous = this.getRevisionFromVersion(version - 1);
 
     const render = this.renderDiff(previous, current);
     this.state = {
@@ -46,12 +31,123 @@ export class ComparisonModal extends React.Component {
     };
   }
 
-  getPreviousDate = (previous) => {
-    const { version, changes, snippet } = this.props;
-    if (version > 2) {
-      return changes[previous + 1].date_created;
+  componentDidMount() {
+    this.matchLinesHeight();
+  }
+
+  componentDidUpdate() {
+    this.matchLinesHeight();
+  }
+
+  getRevisionFromVersion = (version) => {
+    const { translation, changes, snippet } = this.props;
+    const previousKey = changes.length + 1 - version;
+    let content = '';
+    if (version === changes.length + 1) {
+      content = translation.get('content');
+    } else {
+      content = changes[previousKey - 1].content;
+    }
+    const date = this.getDateFromVersion(version);
+    return {
+      content,
+      date,
+      agent:  (version > 2) ? changes[previousKey + 1].person : snippet.getIn(['person', 'id']),
+      number: version,
+    };
+  };
+
+  getDateFromVersion = (version) => {
+    const { changes, snippet } = this.props;
+    const previousKey = changes.length + 1 - version;
+    if (version > 1) {
+      return changes[previousKey].date_created;
     }
     return snippet.get('date_created');
+  };
+
+  getAgentFromVersion = (version) => {
+    const { changes, snippet } = this.props;
+    const previousKey = changes.length + 1 - version;
+    if (version > 1) {
+      return changes[previousKey].person;
+    }
+    return snippet.get('person');
+  };
+
+  getRevisions = (side) => {
+    let revisions;
+    if (side === 'left') {
+      revisions = Array.from({ length: this.state.current.number - 1 }, (v, i) => i + 1);
+    } else {
+      revisions = Array.from(
+        { length: this.props.changes.length + 1 - this.state.previous.number },
+        (v, i) => i + this.state.previous.number + 1
+      );
+    }
+    return (
+      <List>
+        {revisions.map((revision) => {
+          const date = this.getDateFromVersion(revision);
+          const agent = this.getAgentFromVersion(revision);
+          return (
+            <ListElement key={revision} onClick={() => this.selectRevision(revision, side)}>
+              #{revision}
+              <span className="date">{Moment(date).format('DD/MM/YYYY')}</span>
+              <AgentAvatar agent={agent} size={16} />
+            </ListElement>
+          );
+        }
+        )}
+      </List>
+    );
+  };
+
+  getVersion = (version) => {
+    let input;
+    if (version === this.props.changes.length + 1) {
+      input = 'Current';
+    } else {
+      input = 'Revision';
+    }
+    input += ` #${version}`;
+    return input;
+  };
+
+  matchLinesHeight() {
+    const sides = this.diff2html.getElementsByClassName('d2h-diff-tbody');
+    for (let i = 0; i < sides[0].children.length; i++) {
+      const left = sides[0].children[i];
+      const right = sides[1].children[i];
+      if (left && right) {
+        if (left.clientHeight > right.clientHeight) {
+          right.setAttribute('style', `height:${left.clientHeight}px`);
+          right.style.height = left.clientHeight;
+        } else {
+          left.setAttribute('style', `height:${right.clientHeight}px`);
+          left.style.height = right.clientHeight;
+        }
+      }
+    }
+  }
+
+  selectRevision = (version, side) => {
+    const newRevision = this.getRevisionFromVersion(version);
+    if (side === 'left') {
+      const render = this.renderDiff(newRevision, this.state.current);
+      this.setState({
+        render,
+        previous: newRevision
+      });
+      this.previousSelect.close();
+    } else {
+      const render = this.renderDiff(this.state.previous, newRevision);
+      this.setState({
+        render,
+        current: newRevision
+      });
+      this.currentSelect.close();
+    }
   };
 
   renderDiff(previous, current) {
@@ -73,6 +169,7 @@ export class ComparisonModal extends React.Component {
 
   render() {
     const { closeModal } = this.props;
+    const { previous, current } = this.state;
     return (
       <div id="comparison_modal">
         <Modal
@@ -81,26 +178,45 @@ export class ComparisonModal extends React.Component {
         >
           <div className="revisions">
             <div className="from">
-              <span className="revision">
-                Revision #{this.state.previous.number}
-              </span>
+              { previous.number > 1
+              || previous.number < current.number - 1 ?
+                <CustomSelect
+                  className="revision"
+                  ref={(c) => { this.previousSelect = c; }}
+                  inputRenderer={() => this.getVersion(previous.number)}
+                >
+                  {this.getRevisions('left')}
+                </CustomSelect>
+                : <span className="revision">
+                  {this.getVersion(previous.number)}
+                </span>
+              }
               <span className="date">
-                {Moment(this.state.previous.date).format('DD/MM/YYYY')}
+                {Moment(previous.date).format('DD/MM/YYYY')}
               </span>
+              | <AgentAvatar agent={previous.agent} />
             </div>
             <div className="to">
-              <span className="revision">
-                {this.state.current.number === this.props.changes.length + 1 ?
-                  'Current'
-                : 'Revision'
-                } #{this.state.current.number}
-              </span>
+              {current.number < this.props.changes.length + 1
+              || current.number > previous.number + 1 ?
+                <CustomSelect
+                  className="revision"
+                  ref={(c) => { this.currentSelect = c; }}
+                  inputRenderer={() => this.getVersion(current.number)}
+                >
+                  {this.getRevisions('right')}
+                </CustomSelect>
+                : <span className="revision">
+                  {this.getVersion(current.number)}
+                </span>
+              }
               <span className="date">
-                {Moment(this.state.current.date).format('DD/MM/YYYY')}
+                {Moment(current.date).format('DD/MM/YYYY')}
               </span>
+              | <AgentAvatar agent={current.agent} />
             </div>
           </div>
-          <div dangerouslySetInnerHTML={{ __html: this.state.render }} />
+          <div ref={(c) => { this.diff2html = c; }} dangerouslySetInnerHTML={{ __html: this.state.render }} />
         </Modal>
       </div>
     );
