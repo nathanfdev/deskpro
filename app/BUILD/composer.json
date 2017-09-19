@@ -33,7 +33,6 @@
     "react/event-loop": "0.4.*",
     "react/child-process": "0.4.*",
     "react/stream": "0.4.*",
-    "zendesk/zendesk_api_client_php": "dev-master",
     "sensio/framework-extra-bundle": "~3.0",
     "pagerfanta/pagerfanta": "~1.0",
     "white-october/pagerfanta-bundle": "~1.0",
