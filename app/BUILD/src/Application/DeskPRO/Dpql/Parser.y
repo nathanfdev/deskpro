@@ -509,6 +509,12 @@ expression(res) ::= PLACEHOLDER(A) .
 	res = new Statement\Part\Placeholder($value);
 }
 
+expression(res) ::= VARIABLE(A) .
+{
+	$value = substr(A, 2, -1);
+	res = new Statement\Part\Variable($value);
+}
+
 expression(res) ::= AT LITERAL(A) .
 {
 	res = new Statement\Part\AliasRef(A);
