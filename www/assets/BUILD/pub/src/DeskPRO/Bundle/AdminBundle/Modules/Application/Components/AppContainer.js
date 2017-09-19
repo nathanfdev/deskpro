@@ -10,7 +10,7 @@ import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 
-import { InstallerContainer } from '../../Apps/Components';
+import { InstallerFactory } from '../../Apps/Components';
 
 class AppContainer extends React.Component {
 
@@ -72,7 +72,10 @@ class AppContainer extends React.Component {
             <Route path="dev">
               <Route path="notifications" component={Dev.Notifications} />
             </Route> : null}
-          <Route path="app-installer" component={InstallerContainer} />
+          <Route
+            path="app-installer/:app"
+            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory(window))}
+          />
         </Router>
       </Provider>
     );

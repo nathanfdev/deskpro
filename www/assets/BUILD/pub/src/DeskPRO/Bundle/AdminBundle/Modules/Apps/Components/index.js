@@ -1,1 +1,2 @@
-export { InstallerContainer } from './InstallerContainer';
+export { InstallerFactory } from './InstallerFactory';
+export { Installer } from './Installer';

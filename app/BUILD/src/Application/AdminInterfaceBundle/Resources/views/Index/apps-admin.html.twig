@@ -365,7 +365,8 @@
         function render()
         {
             if (window.AdminBundle && typeof window.AdminBundle.render === 'function') {
-              window.AdminBundle.render({ routePath: "/app-installer"}, document.getElementById('react_admin_bundle'));
+              var routePath = window.location.hash.substr(1);
+              window.AdminBundle.render({ routePath: routePath }, document.getElementById('react_admin_bundle'));
               return true;
             }
             return false;
