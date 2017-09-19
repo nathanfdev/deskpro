@@ -39,23 +39,6 @@ class HtmlFormatter extends BaseHtmlFormatter
     /**
      * {@inheritdoc}
      */
-    protected function getNewName($name, $data, $parentName = null)
-    {
-        $array   = '';
-        $newName = ($parentName) ? sprintf('%s.%s', $parentName, $name) : $name;
-
-        if (isset($data['actualType']) && $data['actualType'] == DataTypes::COLLECTION
-            && isset($data['subType']) && $data['subType'] !== null
-        ) {
-            $array = '[]';
-        }
-
-        return sprintf('%s%s', $newName, $array);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function processAnnotation($annotation)
     {
         if (isset($annotation['parameters'])) {
