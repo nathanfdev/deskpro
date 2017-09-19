@@ -257,4 +257,27 @@ class AppsController extends BaseController
 
         return $assets;
     }
+
+    /**
+     * @Rest\Get("/{application}/status")
+     *
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     *
+     * @param Entity\AppStore\App $application
+     *
+     * @return array
+     */
+    public function getStatusAction(Entity\AppStore\App $application = null)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        $data = [
+            'is_dev' => $application->getIsDev(),
+            'is_installed' => $application->getIsInstalled()
+        ];
+
+        return $data;
+    }
 }

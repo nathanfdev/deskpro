@@ -237,4 +237,36 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     {
         return $this->instances;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getIsInstalled()
+    {
+        return $this->isInstalled;
+    }
+
+    /**
+     * @param mixed $isInstalled
+     */
+    public function setIsInstalled( $isInstalled )
+    {
+        $this->isInstalled = $isInstalled;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsDev()
+    {
+        return $this->isDev;
+    }
+
+    /**
+     * @param boolean $isDev
+     */
+    public function setIsDev( $isDev )
+    {
+        $this->isDev = $isDev;
+    }
 }

@@ -59,12 +59,9 @@ class AppParamConverter implements ParamConverterInterface
         }
 
         $application = $this->convert($from);
-        if (! empty($application)) {
-            $request->attributes->set($attributeName, $application);
-            return true;
-        }
+        $request->attributes->set($attributeName, $application);
 
-        return false;
+        return true;
     }
 
     /**
