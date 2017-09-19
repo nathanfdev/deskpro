@@ -122,6 +122,7 @@ DeskPRO.TextExpander = new Orb.Class({
             self.shortcutListOpen = false;
             self.shortcutList.hide();
           }
+          break;
         default:
           return;
       }
@@ -151,7 +152,9 @@ DeskPRO.TextExpander = new Orb.Class({
     var re = new RegExp('^' + input);
     var matches = [];
     var extra = [];
-    for (var code of Object.keys(window.DESKPRO_TICKET_SNIPPET_SHORTCODES)) {
+    var shortcuts = Object.keys(window.DESKPRO_TICKET_SNIPPET_SHORTCODES);
+    for (var i = 0; i < shortcuts.length; i++) {
+      var code = shortcuts[i];
       if (code.match(re)) {
         matches.push(code);
       } else if (code.match(input)) {
