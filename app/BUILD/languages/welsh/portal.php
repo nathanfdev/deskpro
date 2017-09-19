@@ -77,4 +77,6 @@ return [
     'portal.account.section-desc-login'             => 'Oes gennych gyfrif yn barod? Mewngofnodwch isod.',
     'portal.account.section-desc-login-external'    => 'Defnyddiwch y cyslltiadau isod os oes gennyf gyfrif â ddarparwr arall.',
     'portal.account.section-desc-register'          => 'Cofrestrwch gyfrif fel y gallwch chi rheoli\'ch cysylltiadau\'n haws.',
+    'portal.account.section-title-emails'           => 'E-bostiau',
+    'portal.account.section-title-login'            => 'Mewngofnodi',
 ];

@@ -5077,6 +5077,10 @@ class TicketController extends AbstractController
                             $snippetTranslation = $this->em->find(SnippetTranslation::class, $snippetId);
 
                             if ($snippetTranslation) {
+                                $messages = $ticket->getMessages();
+
+                                $message = $messages->last();
+
                                 $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
                                 $snippet    = $snippetLog->getSnippet();
                                 $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);

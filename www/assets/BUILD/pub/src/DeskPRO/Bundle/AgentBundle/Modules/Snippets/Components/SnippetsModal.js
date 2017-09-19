@@ -18,6 +18,7 @@ import { allSnippetBlobsSelector } from '../Selectors/snippets';
 import { ModalLanguageSelect } from './Menus/ModalLanguageSelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
+import { UsageHistoryModal } from './UsageHistoryModal';
 
 class VariableValue extends React.Component {
   render() {
@@ -491,7 +492,8 @@ export class SnippetsModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayMerge: false,
+      displayMerge:          false,
+      usageHistoryModalOpen: false,
     };
   }
 
@@ -607,7 +609,47 @@ export class SnippetsModal extends React.Component {
     return departments;
   };
 
+  getModalTitle = () => {
+    const { snippet } = this.props;
+    let usage = null;
+    if (snippet.get('usage_count')) {
+      usage = (<a className="usage_history" onClick={this.openUsageHistoryModal}>
+        {agentPhrases.get('agent.snippets.usage_history')} ({snippet.get('usage_count')})
+      </a>);
+    }
+    return (
+      <div>
+        {snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
+        {usage}
+      </div>
+    );
+  };
+
+  getUsageHistoryModal = () => {
+    if (!this.state.usageHistoryModalOpen) {
+      return null;
+    }
+    return (
+      <UsageHistoryModal
+        snippet={this.props.snippet}
+        closeModal={this.closeUsageHistoryModal}
+      />
+    );
+  };
+
   getUploadUrl = () => '/api/v2/blobs/temp';
+
+  openUsageHistoryModal = () => {
+    this.setState({
+      usageHistoryModalOpen: true,
+    });
+  };
+
+  closeUsageHistoryModal = () => {
+    this.setState({
+      usageHistoryModalOpen: false,
+    });
+  };
 
   isValid = () => this.isTitleValid() && this.isShortcutCodeValid();
 
@@ -668,7 +710,7 @@ export class SnippetsModal extends React.Component {
     return (
       <div id="snippets__modal">
         <Modal
-          title={snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
+          title={this.getModalTitle()}
           closeModal={closeModal}
           buttons={
             <div>
@@ -843,6 +885,7 @@ export class SnippetsModal extends React.Component {
             </div>
           </form>
         </Modal>
+        {this.getUsageHistoryModal()}
       </div>
     );
   }

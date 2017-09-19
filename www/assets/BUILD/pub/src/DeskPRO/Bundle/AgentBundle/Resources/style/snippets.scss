@@ -515,6 +515,14 @@
   }
 }
 #snippets__modal {
+  .usage_history {
+    float: right;
+    text-decoration: underline;
+    font-weight: $pf-regular;
+    font-size: $font-size-m;
+    margin-right: 50px;
+    color: $dp-greyscale-00;
+  }
   .dp-modal {
     min-height: 492px;
   }
@@ -689,5 +697,91 @@
       width: 100%;
     }
     margin-bottom: 5px;
+  }
+}
+#usage_history_modal {
+  font-family: $primary-font;
+  color: $dp-greyscale-850;
+  .dp-modal__overlay {
+    background-color: transparent;
+  }
+  .dp-modal {
+    box-shadow: none;
+  }
+  .dp-modal__body {
+    padding: 0;
+  }
+  .display-options {
+    font-size: $font-size-m;
+    font-weight: $pf-semi-bold;
+    padding: 13px 16px 12px;
+    border-bottom: 1px solid $dp-greyscale-350;
+    .dp-input--checkbox {
+      display: inline-block;
+      margin-left: 5px;
+      font-weight: $pf-regular;
+    }
+  }
+  .use {
+    padding: 5px 16px;
+    border-bottom: 1px solid $dp-greyscale-350;
+    .ticket-id {
+      background-color: $dp-greyscale-200;
+      border-radius: 10px;
+      margin-right: 3px;
+      font-size: $font-size-s;
+      padding: 0 5px;
+    }
+    .subject {
+      font-size: $font-size-m-l;
+      font-weight: $pf-semi-bold;
+      margin-right: 3px;
+    }
+    .separator {
+      color: $dp-greyscale-400;
+    }
+    .person {
+      font-size: $font-size-m;
+      margin-right: 3px;
+    }
+    .email {
+      font-size: $font-size-s;
+      color: $dp-greyscale-500;
+    }
+    .date {
+      font-size: $font-size-s;
+      color: $dp-greyscale-500;
+      float: right;
+      margin-right: 3px;
+    }
+    .dp-avatar {
+      float: right;
+      height: $icon-size-l;
+      width: $icon-size-l;
+    }
+    .rating {
+      margin-top: 3px;
+      .dp-icon {
+        font-size: $icon-size-m;
+        margin-right: 5px;
+        &.positive {
+          color: $dp-emerald-primary
+        }
+        &.neutral {
+          color: $dp-tails-primary;
+        }
+        &.negative {
+          color: $dp-knuckles-primary;
+        }
+      }
+      .comment {
+        font-size: $font-size-m;
+      }
+      .no-comment {
+        font-size: $font-size-m;
+        color: $dp-greyscale-500;
+        font-style: italic;
+      }
+    }
   }
 }
