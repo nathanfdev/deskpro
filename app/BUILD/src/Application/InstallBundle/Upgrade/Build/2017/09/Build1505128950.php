@@ -47,7 +47,6 @@ class Build1505128950 extends AbstractBuild implements OnlineBuildInterface
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'INSERT INTO report_widget (SELECT * FROM report_builder);');
         $this->execDbQuery('default', 'INSERT INTO report_widget_favorite (SELECT * FROM report_builder_favorite);');
         $this->execDbQuery('default', "
 			ALTER TABLE report_widget ADD labels TINYTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', DROP category;
@@ -60,5 +59,173 @@ class Build1505128950 extends AbstractBuild implements OnlineBuildInterface
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_widget ADD CONSTRAINT FK_2F33AF1F4BD2A4C0 FOREIGN KEY (report_id) REFERENCES report_dashboard_report (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_permission ADD CONSTRAINT FK_DED8DEFB9D04D2B FOREIGN KEY (dashboard_id) REFERENCES report_dashboard (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_permission ADD CONSTRAINT FK_DED8DEF217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
+
+        $this->execDbQuery('default', 'INSERT INTO report_widget (SELECT * FROM report_builder);');
+    }
+
+    public function run()
+    {
+        $sql = <<<'SQL'
+SELECT id, query, variables, title, display_types FROM `report_widget` where is_custom = 1
+SQL;
+        $widgets = $this->getDbConnection()->fetchAll($sql);
+        foreach ($widgets as $widget) {
+            $vars        = [];
+            $fetchedVars = isset($widget['variables']) ? json_decode($widget['variables'], true) : [];
+            if ($fetchedVars) {
+                foreach ($fetchedVars as $var) {
+                    $vars[$var['name']] = $var;
+                }
+            }
+            $query        = $widget['query'];
+            $displayTypes = $widget['display_types'] ? explode(',', $widget['display_types']) : [];
+
+            $query = preg_replace_callback(
+                '/%(\d+):DATE_GROUP%/',
+                function ($match) use (&$vars) {
+                    $varName = 'date_'.$match[1];
+                    $vars[$varName] = ['name' => $varName, 'type' => 'date'];
+
+                    return '${date_'.$match[1].'}';
+                },
+                $query
+            );
+            $title = $widget['title'];
+
+            $query = preg_replace_callback('/%(\d+):FIELD_GROUP:([^:%]+)(:([^%]+))?%/',
+                function ($match) use (&$vars) {
+                    $type = $match[2];
+                    $table = isset($match[4]) ? $match[4] : $type;
+
+                    $varName = 'group_by_field_'.$match[1];
+
+                    $vars[$varName] = [
+                        'name'       => $varName,
+                        'type'       => 'field',
+                        'field_type' => $type,
+                        'table'      => $table,
+                    ];
+
+                    return '${'.$varName.'}';
+                },
+                $query);
+
+            $query = preg_replace_callback('/%(\d+):STATUS_GROUP:([^:%]+)(:([^%]+))?%/',
+                function ($match) use (&$vars) {
+                    $type = $match[2];
+                    $table = isset($match[4]) ? $match[4] : $type;
+
+                    $varName = 'status_field_'.$match[1];
+
+                    $vars[$varName] = [
+                        'name'       => $varName,
+                        'type'       => 'status',
+                        'field_type' => $type,
+                        'table'      => $table,
+                    ];
+
+                    return '${'.$varName.'}';
+                },
+                $query);
+
+            $query = preg_replace_callback('/%(\d+):ORDER_GROUP:([^:%]+)(:([^%]+))?%/',
+                function ($match) use (&$vars) {
+                    $type = $match[2];
+                    $table = isset($match[4]) ? $match[4] : $type;
+
+                    $varName = 'order_field_'.$match[1];
+
+                    $vars[$varName] = [
+                        'name'       => $varName,
+                        'type'       => 'order',
+                        'field_type' => $type,
+                        'table'      => $table,
+                    ];
+
+                    return '${'.$varName.'}';
+                },
+                $query);
+
+            $title = preg_replace_callback(
+                '/<(\d+):date group, default: ([a-z_]+)?>/',
+                function ($match) use (&$vars) {
+                    $varName = 'date_'.$match[1];
+                    if (isset($vars[$varName]) && isset($match[3])) {
+                        $vars[$varName]['default'] = strval($match[3]);
+                    }
+
+                    return '<date>';
+                },
+                $title
+            );
+
+            $title = preg_replace_callback(
+                '/<(\d+):(order|status|field) group:([a-z_]+)(, default:( )?([a-z_]+))?>/',
+                function ($match) use (&$vars) {
+                    switch ($match[2]) {
+                        case 'status':
+                            $varName = 'status_field_'.$match[1];
+                            $return = '<'.$match[2].' status>';
+                            break;
+                        case 'order':
+                            $varName = 'order_field_'.$match[1];
+                            $return = '<'.$match[2].' field>';
+                            break;
+                        default:
+                            $varName = 'group_by_field_'.$match[1];
+                            $return = '<'.$match[3].' field>';
+                            break;
+                    }
+                    if (isset($vars[$varName]) && isset($match[6])) {
+                        $vars[$varName]['default'] = strval($match[6]);
+                    }
+
+                    return $return;
+                },
+                $title
+            );
+
+            $title = preg_replace_callback(
+                '/ <chart:([a-z]+)>/',
+                function ($match) use (&$displayTypes) {
+                    $this->out(var_export($match, true));
+                    switch ($match[1]) {
+                        case 'bar':
+                            $addType = 'simple_bars';
+                            break;
+                        case 'area':
+                            $addType = 'simple_area';
+                            break;
+                        case 'pie':
+                            $addType = 'pie';
+                            break;
+                        case 'line':
+                            $addType = 'simple_lines';
+                            break;
+                        default:
+                            $addType = 'table';
+                            break;
+                    }
+                    $displayTypes[] = $addType;
+                    $this->out(var_export($match, true));
+
+                    return '';
+                },
+                $title
+            );
+
+            $vars         = json_encode(array_values($vars));
+            $displayTypes = $displayTypes ? implode(',', array_unique($displayTypes)) : 'table,simple_bars,pie,simple_area,simple_lines';
+            $update       = <<<UPDATE
+UPDATE `report_widget` 
+   SET `query` = "{$query}",
+       `title`  = "{$title}",
+       `display_types` = "{$displayTypes}",
+       `variables` = '{$vars}'
+ WHERE `id` = {$widget['id']}
+UPDATE;
+
+            $this->execDbQuery('default', $update);
+        }
     }
 }
