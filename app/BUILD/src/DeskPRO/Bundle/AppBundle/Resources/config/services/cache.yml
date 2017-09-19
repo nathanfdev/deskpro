@@ -2,7 +2,7 @@ services:
   cache.resolver:
     class: DeskPRO\Bundle\AppBundle\Cache\Resolver\FileResolver
     arguments:
-      - %kernel.cache_dir%
+      - "@deskpro.app_env"
       - "@settings_resolver"
 
   etag_generator:
