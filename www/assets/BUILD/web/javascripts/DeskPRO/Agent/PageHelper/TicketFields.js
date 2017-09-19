@@ -495,6 +495,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	replaceHolders: function(html) {
 		var labels = this.display.find('tbody.labels-row');
 		var last = this.display.find('tbody.controls-row');
+		$('select', this.display).select2('close');
 		this.$scope.$destroy();
 
 		var old = this.display;
