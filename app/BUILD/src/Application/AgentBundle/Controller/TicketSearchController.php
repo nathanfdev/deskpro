@@ -2038,7 +2038,10 @@ class TicketSearchController extends AbstractController
                             continue;
                         }
 
-                        if (count($this->getTicketLayoutErrors($ticket)) && $collection->hasActionType('Status')) {
+                        if (count($this->getTicketLayoutErrors($ticket))
+                            && $collection->hasActionType('Status')
+                            && strpos($collection->getActionType('Status')->getFullStatus(), Ticket::STATUS_HIDDEN) === false
+                        ) {
                             $validationErrors[] = $ticket->getId();
                             continue;
                         } else {
