@@ -59,20 +59,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         buildDirectiveVariables = (value) ->
 
           lastPiece = value
-          regex = /(.*?)(<(\d+:.+?)>)/g
-
-          while match = regex.exec(value)
-            scope.texts.push(match[1])
-            collected = collectSelectOptions(match[3])
-            scope.options.push(collected.options)
-            scope.selected.push(collected.selected)
-            scope.current.push(collected.current)
-            # case when text that continues after last select box
-            lastPiece = lastPiece.replace(match[1], '').replace(match[2], '')
-
-          # finding icon for case we have it
-          lastPiece = lastPiece.replace('[', '').replace(']', '')
-          lastPiece = lastPiece.replace(/<chart:([a-z0-9_-]+)>/gi, '<span class="report-chart-icon report-chart-icon-$1"></span>')
 
           scope.texts.push(lastPiece)
 

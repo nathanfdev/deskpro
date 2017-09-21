@@ -46,7 +46,6 @@ FROM articles
 WHERE articles.views.date_created = ${date_1}
 GROUP BY ALIAS(DATE(articles.views.date_created), \'Date\')',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'average-chat-length-chats-created-group-x' => [
                 'title'         => 'Average chat length for chats created <date> grouped by <chats field>',
@@ -60,7 +59,6 @@ FROM chat_conversations
 WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0 AND chat_conversations.status = \'ended\' AND chat_conversations.total_to_ended > 0
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'average-time-first-re-tickets-created-date-group-x' => [
                 'title'         => 'Average time to first response in tickets created <date> grouped by <tickets field>',
@@ -74,7 +72,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.date_first_agent_reply <> NULL
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'average-time-resolve-tickets-date-group-by-x' => [
                 'title'         => 'Average time to resolve tickets <date> grouped by <tickets field>',
@@ -88,7 +85,6 @@ FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1} AND tickets.date_resolved <> NULL
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'average-total-wait-tickets-resolve-date-group-by-x' => [
                 'title'         => 'Average total waiting time for tickets resolved <date> grouped by <tickets field>',
@@ -102,7 +98,6 @@ FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'feedback-views-date-x-grouped-date' => [
                 'title'         => 'Number of feedback views <date> grouped by date',
@@ -116,7 +111,6 @@ FROM feedback
 WHERE feedback.views.date_created = ${date_1}
 GROUP BY ALIAS(DATE(feedback.views.date_created), \'Date\')',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'most-active-tickets-status-created-date' => [
                 'title'         => 'Most active tickets <status status> created <date>',
@@ -132,7 +126,6 @@ GROUP BY tickets_messages.ticket.id
 ORDER BY COUNT() DESC
 LIMIT 100',
                 'variables' => '[{"name":"status_field_1","type":"statuses","field_type":"tickets","table":"tickets_messages.ticket","default":"awaiting_agent"},{"name":"date_2","type":"dates"}]',
-                'is_custom' => false,
             ],
         'most-popular-email-domains-ticket-usage' => [
                 'title'         => 'Most popular email domains by ticket usage',
@@ -147,7 +140,6 @@ GROUP BY tickets.person_email.email_domain
 ORDER BY COUNT() DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'most-popular-people-email-domains' => [
                 'title'         => 'Most popular primary email domains',
@@ -162,7 +154,6 @@ GROUP BY people.primary_email.email_domain
 ORDER BY COUNT() DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'number-article-com-created-date-group-by-article' => [
                 'title'         => 'Number of article comments created <date> grouped by article <articles field>',
@@ -176,7 +167,6 @@ FROM article_comments
 WHERE article_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"articles","table":"article_comments.article","default":"person"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-article-comments-created-date-group-by-x' => [
                 'title'         => 'Number of article comments created <date> grouped by <article_comments field>',
@@ -190,7 +180,6 @@ FROM article_comments
 WHERE article_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"article_comments","table":"article_comments","default":"none"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-articles-created-date-group-by-x' => [
                 'title'         => 'Number of articles created <date> grouped by <articles field>',
@@ -204,7 +193,6 @@ FROM articles
 WHERE articles.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"articles","table":"articles","default":"person"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-chats-created-date-grouped-by-x' => [
                 'title'         => 'Number of chats created <date> grouped by <chats field>',
@@ -218,7 +206,6 @@ FROM chat_conversations
 WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-chats-missed-date-grouped-by-x' => [
                 'title'         => 'Number of chats missed <date> grouped by <chats field>',
@@ -232,7 +219,6 @@ FROM chat_conversations
 WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0 AND chat_conversations.agent_id = NULL
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"department"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-feedback-com-created-date-group-by-feedback' => [
                 'title'         => 'Number of feedback comments created <date> grouped by feedback <feedback field>',
@@ -246,7 +232,6 @@ FROM feedback_comments
 WHERE feedback_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback_comments.feedback","default":"type"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-feedback-comments-created-date-group-by-x' => [
                 'title'         => 'Number of feedback comments created <date> grouped by <feedback_comments field>',
@@ -260,7 +245,6 @@ FROM feedback_comments
 WHERE feedback_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback_comments","table":"feedback_comments","default":"none"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-feedback-created-date-group-by-x' => [
                 'title'         => 'Number of feedback entries created <date> grouped by <feedback field>',
@@ -274,7 +258,6 @@ FROM feedback
 WHERE feedback.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-feedback-votes-submitted-date-x-group-y' => [
                 'title'         => 'Number of feedback votes submitted <date> grouped by <feedback field>',
@@ -288,7 +271,6 @@ FROM feedback
 WHERE feedback.ratings.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-day' => [
                 'title'         => 'Number of ticket messages written <date> per agent per [day]',
@@ -304,7 +286,6 @@ SPLIT BY tickets_messages.person
 GROUP BY CONCAT(YEAR(tickets_messages.date_created), \'-\', LPAD(MONTHNAME(tickets_messages.date_created), 2, \'0\'), \'-\', LPAD(DAYOFMONTH(tickets_messages.date_created), 2, \'0\')) AS \'Period\'
 ORDER BY tickets_messages.date_created',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-month' => [
                 'title'         => 'Number of ticket messages written <date> per agent per [month]',
@@ -320,7 +301,6 @@ SPLIT BY tickets_messages.person
 GROUP BY CONCAT(YEAR(tickets_messages.date_created), \'-\', LPAD(MONTHNAME(tickets_messages.date_created), 2, \'0\')) AS \'Period\'
 ORDER BY tickets_messages.date_created',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-week' => [
                 'title'         => 'Number of ticket messages written <date> per agent per [week]',
@@ -336,7 +316,6 @@ SPLIT BY tickets_messages.person
 GROUP BY CONCAT(\'Week \', WEEKOFYEAR(tickets_messages.date_created), \', \', YEAR(tickets_messages.date_created)) AS \'Period\'
 ORDER BY tickets_messages.date_created',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-year' => [
                 'title'         => 'Number of ticket messages written <date> per agent per [year]',
@@ -352,7 +331,6 @@ SPLIT BY tickets_messages.person
 GROUP BY YEAR(tickets_messages.date_created) AS \'Period\'
 ORDER BY YEAR(tickets_messages.date_created) DESC',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-created-date-grouped-by-date-and-x' => [
                 'title'         => 'Number of tickets created <date> grouped by date created & <tickets field>',
@@ -366,7 +344,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY ALIAS(DATE(tickets.date_created), \'Date Created\'), ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-created-date-grouped-by-x-y' => [
                 'title'         => 'Number of tickets created <date> grouped by <tickets field> & <tickets field>',
@@ -380,7 +357,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-created-date-grouped-first-agent-x' => [
                 'title'         => 'Number of tickets created <date> grouped by first agent response time & <tickets field>',
@@ -394,7 +370,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_first_agent_reply), \'Time Waiting\'), ${group_by_field_2})',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-resolved-date-grouped-time-res-x' => [
                 'title'         => 'Number of tickets resolved <date> grouped by time to resolution & <tickets field>',
@@ -408,7 +383,6 @@ FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.date_resolved, tickets.date_created), \'Time To Resolve\'), ${group_by_field_2})',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-resolved-date-grouped-total-wait-x' => [
                 'title'         => 'Number of tickets resolved <date> grouped by total waiting time & <tickets field>',
@@ -422,7 +396,6 @@ FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${group_by_field_2})',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-resolved-date-grouped-x-y' => [
                 'title'         => 'Number of tickets resolved <date> grouped by <tickets field> & <tickets field>',
@@ -436,7 +409,6 @@ FROM tickets
 WHERE tickets.date_resolved = ${date_1} AND tickets.status IN (\'resolved\', \'archived\')
 GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-tickets-status-grouped-by-x-y' => [
                 'title'         => 'Number of tickets <status status> grouped by <tickets field> & <tickets field>',
@@ -450,7 +422,6 @@ FROM tickets
 WHERE ${status_field_1}
 GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"status_field_1","type":"statuses","field_type":"tickets","table":"tickets","default":"awaiting_agent"}]',
-                'is_custom' => false,
             ],
         'number-tickets-wait-agent-grouped-time-wait-ag-x' => [
                 'title'         => 'Number of tickets awaiting agent grouped by time awaiting agent and <tickets field>',
@@ -464,7 +435,6 @@ FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_user_waiting), \'Time Waiting\'), ${group_by_field_1})',
                 'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
-                'is_custom' => false,
             ],
         'number-tickets-wait-agent-grouped-total-wait-x' => [
                 'title'         => 'Number of tickets awaiting agent grouped by total waiting time and <tickets field>',
@@ -478,7 +448,6 @@ FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${group_by_field_1})',
                 'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
-                'is_custom' => false,
             ],
         'number-views-per-article-date-x' => [
                 'title'         => 'Number of views per article <date>',
@@ -493,7 +462,6 @@ WHERE articles.views.date_created = ${date_1}
 GROUP BY articles.id
 ORDER BY COUNT() DESC',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'number-views-per-feedback-date-x' => [
                 'title'         => 'Number of views per feedback entry <date>',
@@ -508,7 +476,6 @@ WHERE feedback.views.date_created = ${date_1}
 GROUP BY feedback.id
 ORDER BY COUNT() DESC',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'organizations-longest-total--wait' => [
                 'title'         => '[Organizations] with longest total waiting time',
@@ -523,7 +490,6 @@ GROUP BY tickets.organization
 ORDER BY SUM(tickets.total_user_waiting) DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'organizations-longest-total-first-reply-wait' => [
                 'title'         => '[Organizations] with longest total first reply waiting time',
@@ -538,7 +504,6 @@ GROUP BY tickets.organization
 ORDER BY SUM(tickets.total_to_first_reply) DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'people-longest-total--wait' => [
                 'title'         => '[People] with longest total waiting time',
@@ -553,7 +518,6 @@ GROUP BY tickets.person
 ORDER BY SUM(tickets.total_user_waiting) DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'people-longest-total-first-reply-wait' => [
                 'title'         => '[People] with longest total first reply waiting time',
@@ -568,7 +532,6 @@ GROUP BY tickets.person
 ORDER BY SUM(tickets.total_to_first_reply) DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'percent-ticket-create-date-resolved-24hour-group-x' => [
                 'title'         => 'Percentage of tickets created <date> resolved within 24 hours, grouped by <tickets field>',
@@ -582,7 +545,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'percent-tickets-created-date-replied-hour-group-x' => [
                 'title'         => 'Percentage of tickets created <date> replied to within an hour, grouped by <tickets field>',
@@ -596,7 +558,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.total_to_first_reply > 0
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'percent-tickets-created-date-res-1-agent-group-x' => [
                 'title'         => 'Percentage of tickets created <date> resolved by first response, grouped by <tickets field>',
@@ -610,7 +571,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.date_resolved <> NULL AND tickets.count_agent_replies > 0
 GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'sla-date-groupby-x' => [
                 'title'         => 'SLA Statuses for tickets created <date> grouped by <tickets field>',
@@ -624,7 +584,6 @@ FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
 GROUP BY ${group_by_field_2}, tickets.ticket_slas.sla_status',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'sla-status-date-splitby-x' => [
                 'title'         => 'SLA Statuses for tickets created <date> split by <tickets field>',
@@ -639,7 +598,6 @@ WHERE tickets.date_created = ${date_1} AND tickets.ticket_slas.sla_status IN (\'
 SPLIT BY ${group_by_field_2}
 GROUP BY tickets.ticket_slas.sla_status',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"sla"},{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'tickets-awaiting-agent-split-by-field-ordered-by-x' => [
                 'title'         => 'Tickets awaiting agent split by <tickets field> ordered by <order field>',
@@ -655,7 +613,6 @@ SPLIT BY ${group_by_field_1}
 ORDER BY ${order_field_2}
 LIMIT 100',
                 'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"orders","field_type":"tickets","table":"tickets"}]',
-                'is_custom' => false,
             ],
         'tickets-created-date-grouped-labels' => [
                 'title'         => 'Tickets created <date> grouped by labels',
@@ -669,7 +626,6 @@ FROM tickets
 WHERE tickets.labels.label <> NULL AND tickets.date_created = ${date_1}
 GROUP BY tickets.labels',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'tickets-resolved-date-grouped-by-agent-resolving' => [
                 'title'         => 'Tickets resolved <date> grouped by agent resolving ticket',
@@ -685,7 +641,6 @@ GROUP BY ALIAS(IF(tickets_log.person.is_agent, tickets_log.person, \'Non-Agent\'
 ORDER BY @\'Tickets Resolved\' DESC
 LIMIT 100',
                 'variables' => '[{"name":"date_1","type":"dates"}]',
-                'is_custom' => false,
             ],
         'tickets-split-by-labels' => [
                 'title'         => 'Tickets split by labels',
@@ -701,7 +656,6 @@ SPLIT BY tickets.labels
 ORDER BY tickets.date_created DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'tickets-unresolved-split-field-ordered-x' => [
                 'title'         => 'Tickets unresolved split by <tickets field> ordered by <order field>',
@@ -717,7 +671,6 @@ SPLIT BY ${group_by_field_1}
 ORDER BY ${order_field_2}
 LIMIT 100',
                 'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"orders","field_type":"tickets","table":"tickets"}]',
-                'is_custom' => false,
             ],
         'total-tickets-unresolved-after-week' => [
                 'title'         => 'Total tickets unresolved after a week',
@@ -730,7 +683,6 @@ SELECT COUNT() AS \'Total\', COUNT(tickets.status = \'awaiting_agent\') AS \'Tot
 FROM tickets
 WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date_created < %PAST_7_DAYS%',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'unresolved-high-priority-tickets' => [
                 'title'         => 'Unresolved [high priority] tickets',
@@ -745,7 +697,6 @@ WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_user\', \'
 ORDER BY tickets.date_created
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'unresolved-tickets-10-more-agent-replies' => [
                 'title'         => 'Unresolved tickets with 10 or more agent replies',
@@ -760,7 +711,6 @@ WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\') AND tickets.coun
 ORDER BY tickets.date_created
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'unresolved-urgent-tickets' => [
                 'title'         => 'Unresolved [urgent] tickets',
@@ -775,7 +725,6 @@ WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_user\', \'awaiting_a
 ORDER BY tickets.date_created
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
         'users-most-unresolved-tickets' => [
                 'title'         => 'Users with most unresolved tickets',
@@ -791,7 +740,6 @@ GROUP BY tickets.person
 ORDER BY COUNT() DESC
 LIMIT 100',
                 'variables' => '[]',
-                'is_custom' => false,
             ],
     ];
 
@@ -823,7 +771,8 @@ LIMIT 100',
                     ->setDescription($data['description'])
                     ->setDisplayTypes(explode(',', $data['display_types']))
                     ->setLabels((array) $data['labels'])
-                    ->setIsCustom(false);
+                    ->setIsCustom(false)
+                    ->setVariables(json_decode($data['variables'], true));
                 $em->persist($report);
             } else {
                 $em->remove($report);

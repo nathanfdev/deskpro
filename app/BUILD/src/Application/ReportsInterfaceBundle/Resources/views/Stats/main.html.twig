@@ -42,7 +42,7 @@
                             <span class="mark"></span>
                             <h1>
                                 <a ui-sref="reports.stats.view({ widget_id: report.id })">
-                                    <dp-report-variables change-widget-params="changeWidgetParams(params)" report-id="report.id" value-to-decorate="report.title" possible-values="group_params"></dp-report-variables>
+                                    {{ ng_var('report.title') }}
                                 </a>
                             </h1>
                             <p ng-if="report.description.length">{{ ng_var('report.description.length') }}</p>
@@ -55,7 +55,7 @@
                             <span class="mark"></span>
                             <h1>
                                 <a ui-sref="reports.stats.view({ widget_id: report.id })">
-                                    <dp-report-variables change-widget-params="changeWidgetParams(params)" report-id="report.id" value-to-decorate="report.title" possible-values="group_params"></dp-report-variables>
+                                    {{ ng_var('report.title') }}
                                 </a>
                             </h1>
                             <p ng-if="report.description.length">{{ ng_var('report.description.length') }}</p>
