@@ -57,6 +57,7 @@ class PortalRequestInfo
         'portal_login_callback',
         'portal_login_authenticate',
         'portal_login_submit',
+        'portal_apple_app_site_assoc',
         'dp_pagehit',
     ];
 

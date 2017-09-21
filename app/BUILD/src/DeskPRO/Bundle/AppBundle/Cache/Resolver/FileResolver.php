@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Cache\Resolver;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpCache\Store;
@@ -53,19 +54,21 @@ class FileResolver implements ResolverInterface
      */
     protected $resolve_status = 0;
 
-    /** @var SettingsResolver */
-    protected $settings_resolver;
+    /**
+     * @var SettingsResolver
+     */
+    protected $settingsResolver;
 
     /**
      * Constructor.
      *
-     * @param string           $cache_dir
-     * @param SettingsResolver $settings_resolver
+     * @param AppEnvInterface  $appEnv
+     * @param SettingsResolver $settingsResolver
      */
-    public function __construct($cache_dir, SettingsResolver $settings_resolver)
+    public function __construct(AppEnvInterface $appEnv, SettingsResolver $settingsResolver)
     {
-        $this->store             = new Store($cache_dir.'/http_cache/api');
-        $this->settings_resolver = $settings_resolver;
+        $this->store            = new Store($appEnv->getUserCacheDir().'/http_cache/'.$appEnv->getAppName().'/api');
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -94,8 +97,7 @@ class FileResolver implements ResolverInterface
     }
 
     /**
-     * @param Request  $request
-     * @param Response $response
+     * {@inheritdoc}
      */
     public function write(Request $request, Response $response)
     {
@@ -127,8 +129,11 @@ class FileResolver implements ResolverInterface
         return $response;
     }
 
+    /**
+     * @return bool
+     */
     protected function isEnabled()
     {
-        return $this->settings_resolver->getGlobalSettings()->get('response.cache.enabled', false);
+        return $this->settingsResolver->getGlobalSettings()->get('response.cache.enabled', false);
     }
 }
