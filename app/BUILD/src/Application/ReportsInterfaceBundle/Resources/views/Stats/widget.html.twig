@@ -78,7 +78,7 @@
         <div class="widget-vars">
             <div ng-repeat="var in widget.variables track by $index">
                 <div class="inline-input">
-                    <label><i class="fa fa-times" ng-click="deleteVariable($index)"></i></label>
+                    <label style="padding: 3px 10px;"><i class="fa fa-times" ng-click="deleteVariable($index)"></i></label>
 
                     <input ng-model="var.name" />
 
@@ -116,7 +116,7 @@
 
                 </div>
             </div>
-            <i class="fa fa-plus-circle" ng-click="addVariable()"></i>
+            <i class="fa fa-plus-circle" ng-click="addVariable()"></i> Add new var
         </div>
 
 
