@@ -3,11 +3,20 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   ($scope, $stateParams, $q, Api, $timeout) ->
     widget_id = parseInt($stateParams.widget_id)
     $scope.widget = { query_parts: {} }
+    $scope.groupParams = {}
+    $scope.tables = {}
 
     if(widget_id)
       Api.sendGet('/reports/widget/' + widget_id).then((r) ->
         $scope.widget = r.data.widget
+        console.log($scope.widget.variables)
       )
+
+    Api.sendGet('/reports/widget/group-params').then((r) ->
+      $scope.groupParams = r.data
+      for key, config of r.data
+        $scope.tables[key] = Object.keys r.data[key]
+    )
 
     $scope.editor_conf = (conf = {}) ->
       opts = {
@@ -36,9 +45,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         title: $scope.widget.title
         description: $scope.widget.description
         display_types: $scope.widget.query_parts.display
+        variables: $scope.widget.variables
       }
       if(widget_id)
         promise = Api.sendPostJson('/reports/widget/' + $scope.widget.id, {report: postData, parts: $scope.widget.query_parts})
       else
         promise = Api.sendPutJson('/reports/widget', {report: postData, parts: $scope.widget.query_parts})
+
+    $scope.addVariable = () ->
+      $scope.widget.variables.push({'name': 'new var', 'type': 'date', 'table': '', 'default': '', 'field_type': ''})
+
+    $scope.deleteVariable = (index) ->
+      $scope.widget.variables.splice(index, 1)
   ]

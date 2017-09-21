@@ -84,7 +84,7 @@ SQL;
                 '/%(\d+):DATE_GROUP%/',
                 function ($match) use (&$vars) {
                     $varName = 'date_'.$match[1];
-                    $vars[$varName] = ['name' => $varName, 'type' => 'date'];
+                    $vars[$varName] = ['name' => $varName, 'type' => 'dates'];
 
                     return '${date_'.$match[1].'}';
                 },
@@ -101,7 +101,7 @@ SQL;
 
                     $vars[$varName] = [
                         'name'       => $varName,
-                        'type'       => 'field',
+                        'type'       => 'fields',
                         'field_type' => $type,
                         'table'      => $table,
                     ];
@@ -119,7 +119,7 @@ SQL;
 
                     $vars[$varName] = [
                         'name'       => $varName,
-                        'type'       => 'status',
+                        'type'       => 'statuses',
                         'field_type' => $type,
                         'table'      => $table,
                     ];
@@ -137,7 +137,7 @@ SQL;
 
                     $vars[$varName] = [
                         'name'       => $varName,
-                        'type'       => 'order',
+                        'type'       => 'orders',
                         'field_type' => $type,
                         'table'      => $table,
                     ];

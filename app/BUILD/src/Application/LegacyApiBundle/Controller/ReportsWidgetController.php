@@ -159,6 +159,7 @@ class ReportsWidgetController extends AbstractController
             $postData = $this->in->getAll('req');
             $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
             $form->submit($postData['report'], true);
+
             if ($form->isValid()) {
                 $this->em->persist($report);
                 $this->em->flush();

@@ -45,7 +45,7 @@ SELECT COUNT() AS \'Views\'
 FROM articles
 WHERE articles.views.date_created = ${date_1}
 GROUP BY ALIAS(DATE(articles.views.date_created), \'Date\')',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'average-chat-length-chats-created-group-x' => [
@@ -59,7 +59,7 @@ SELECT AVG(chat_conversations.total_to_ended) / 60 AS \'Average Length (Minutes)
 FROM chat_conversations
 WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0 AND chat_conversations.status = \'ended\' AND chat_conversations.total_to_ended > 0
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'average-time-first-re-tickets-created-date-group-x' => [
@@ -73,7 +73,7 @@ SELECT AVG(UNIX_TIMESTAMP(tickets.date_first_agent_reply) - UNIX_TIMESTAMP(ticke
 FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.date_first_agent_reply <> NULL
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'average-time-resolve-tickets-date-group-by-x' => [
@@ -87,7 +87,7 @@ SELECT AVG(UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_c
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1} AND tickets.date_resolved <> NULL
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'average-total-wait-tickets-resolve-date-group-by-x' => [
@@ -101,7 +101,7 @@ SELECT AVG(tickets.total_user_waiting) / (60 * 60) AS \'Total Waiting Time (Hour
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'feedback-views-date-x-grouped-date' => [
@@ -115,7 +115,7 @@ SELECT COUNT() AS \'Views\'
 FROM feedback
 WHERE feedback.views.date_created = ${date_1}
 GROUP BY ALIAS(DATE(feedback.views.date_created), \'Date\')',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'most-active-tickets-status-created-date' => [
@@ -131,7 +131,7 @@ WHERE ${status_field_1} AND tickets_messages.ticket.date_created = ${date_2}
 GROUP BY tickets_messages.ticket.id
 ORDER BY COUNT() DESC
 LIMIT 100',
-                'variables' => '[{"name":"status_field_1","type":"status","field_type":"tickets","table":"tickets_messages.ticket","default":"awaiting_agent"},{"name":"date_2","type":"date"}]',
+                'variables' => '[{"name":"status_field_1","type":"statuses","field_type":"tickets","table":"tickets_messages.ticket","default":"awaiting_agent"},{"name":"date_2","type":"dates"}]',
                 'is_custom' => false,
             ],
         'most-popular-email-domains-ticket-usage' => [
@@ -175,7 +175,7 @@ SELECT COUNT() AS \'Comments Created\'
 FROM article_comments
 WHERE article_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"articles","table":"article_comments.article","default":"person"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"articles","table":"article_comments.article","default":"person"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-article-comments-created-date-group-by-x' => [
@@ -189,7 +189,7 @@ SELECT COUNT() AS \'Comments Created\'
 FROM article_comments
 WHERE article_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"article_comments","table":"article_comments","default":"none"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"article_comments","table":"article_comments","default":"none"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-articles-created-date-group-by-x' => [
@@ -203,7 +203,7 @@ SELECT COUNT() AS \'Entries Created\'
 FROM articles
 WHERE articles.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"articles","table":"articles","default":"person"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"articles","table":"articles","default":"person"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-chats-created-date-grouped-by-x' => [
@@ -217,7 +217,7 @@ SELECT COUNT() AS \'Chats Created\'
 FROM chat_conversations
 WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-chats-missed-date-grouped-by-x' => [
@@ -231,7 +231,7 @@ SELECT COUNT() AS \'Chats Created\'
 FROM chat_conversations
 WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0 AND chat_conversations.agent_id = NULL
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"chats","table":"chat_conversations","default":"department"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"department"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-feedback-com-created-date-group-by-feedback' => [
@@ -245,7 +245,7 @@ SELECT COUNT() AS \'Comments Created\'
 FROM feedback_comments
 WHERE feedback_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"feedback","table":"feedback_comments.feedback","default":"type"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback_comments.feedback","default":"type"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-feedback-comments-created-date-group-by-x' => [
@@ -259,7 +259,7 @@ SELECT COUNT() AS \'Comments Created\'
 FROM feedback_comments
 WHERE feedback_comments.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"feedback_comments","table":"feedback_comments","default":"none"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback_comments","table":"feedback_comments","default":"none"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-feedback-created-date-group-by-x' => [
@@ -273,7 +273,7 @@ SELECT COUNT() AS \'Entries Created\'
 FROM feedback
 WHERE feedback.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-feedback-votes-submitted-date-x-group-y' => [
@@ -287,7 +287,7 @@ SELECT COUNT() AS \'Ratings\'
 FROM feedback
 WHERE feedback.ratings.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-day' => [
@@ -303,7 +303,7 @@ WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = $
 SPLIT BY tickets_messages.person
 GROUP BY CONCAT(YEAR(tickets_messages.date_created), \'-\', LPAD(MONTHNAME(tickets_messages.date_created), 2, \'0\'), \'-\', LPAD(DAYOFMONTH(tickets_messages.date_created), 2, \'0\')) AS \'Period\'
 ORDER BY tickets_messages.date_created',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-month' => [
@@ -319,7 +319,7 @@ WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = $
 SPLIT BY tickets_messages.person
 GROUP BY CONCAT(YEAR(tickets_messages.date_created), \'-\', LPAD(MONTHNAME(tickets_messages.date_created), 2, \'0\')) AS \'Period\'
 ORDER BY tickets_messages.date_created',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-week' => [
@@ -335,7 +335,7 @@ WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = $
 SPLIT BY tickets_messages.person
 GROUP BY CONCAT(\'Week \', WEEKOFYEAR(tickets_messages.date_created), \', \', YEAR(tickets_messages.date_created)) AS \'Period\'
 ORDER BY tickets_messages.date_created',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-ticket-messages-written-agent-year' => [
@@ -351,7 +351,7 @@ WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = $
 SPLIT BY tickets_messages.person
 GROUP BY YEAR(tickets_messages.date_created) AS \'Period\'
 ORDER BY YEAR(tickets_messages.date_created) DESC',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-created-date-grouped-by-date-and-x' => [
@@ -365,7 +365,7 @@ SELECT COUNT() AS \'Tickets Created\'
 FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY ALIAS(DATE(tickets.date_created), \'Date Created\'), ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-created-date-grouped-by-x-y' => [
@@ -379,7 +379,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"field","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-created-date-grouped-first-agent-x' => [
@@ -393,7 +393,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_first_agent_reply), \'Time Waiting\'), ${group_by_field_2})',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-resolved-date-grouped-time-res-x' => [
@@ -407,7 +407,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.date_resolved, tickets.date_created), \'Time To Resolve\'), ${group_by_field_2})',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-resolved-date-grouped-total-wait-x' => [
@@ -421,7 +421,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${group_by_field_2})',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-resolved-date-grouped-x-y' => [
@@ -435,7 +435,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_resolved = ${date_1} AND tickets.status IN (\'resolved\', \'archived\')
 GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"field","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-tickets-status-grouped-by-x-y' => [
@@ -449,7 +449,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE ${status_field_1}
 GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"field","field_type":"tickets","table":"tickets","default":"agent"},{"name":"status_field_1","type":"status","field_type":"tickets","table":"tickets","default":"awaiting_agent"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"status_field_1","type":"statuses","field_type":"tickets","table":"tickets","default":"awaiting_agent"}]',
                 'is_custom' => false,
             ],
         'number-tickets-wait-agent-grouped-time-wait-ag-x' => [
@@ -463,7 +463,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_user_waiting), \'Time Waiting\'), ${group_by_field_1})',
-                'variables' => '[{"name":"group_by_field_1","type":"field","field_type":"tickets","table":"tickets","default":"none"}]',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
                 'is_custom' => false,
             ],
         'number-tickets-wait-agent-grouped-total-wait-x' => [
@@ -477,7 +477,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${group_by_field_1})',
-                'variables' => '[{"name":"group_by_field_1","type":"field","field_type":"tickets","table":"tickets","default":"none"}]',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
                 'is_custom' => false,
             ],
         'number-views-per-article-date-x' => [
@@ -492,7 +492,7 @@ FROM articles
 WHERE articles.views.date_created = ${date_1}
 GROUP BY articles.id
 ORDER BY COUNT() DESC',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'number-views-per-feedback-date-x' => [
@@ -507,7 +507,7 @@ FROM feedback
 WHERE feedback.views.date_created = ${date_1}
 GROUP BY feedback.id
 ORDER BY COUNT() DESC',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'organizations-longest-total--wait' => [
@@ -581,7 +581,7 @@ SELECT PERCENT(tickets.date_resolved <> NULL AND UNIX_TIMESTAMP(tickets.date_res
 FROM tickets
 WHERE tickets.date_created = ${date_1}
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'percent-tickets-created-date-replied-hour-group-x' => [
@@ -595,7 +595,7 @@ SELECT PERCENT(tickets.total_to_first_reply < 3600) AS \'Percentage\'
 FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.total_to_first_reply > 0
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'percent-tickets-created-date-res-1-agent-group-x' => [
@@ -609,7 +609,7 @@ SELECT PERCENT(tickets.count_agent_replies = 1) AS \'Percentage\'
 FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.date_resolved <> NULL AND tickets.count_agent_replies > 0
 GROUP BY ${group_by_field_2}',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'sla-date-groupby-x' => [
@@ -623,7 +623,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
 GROUP BY ${group_by_field_2}, tickets.ticket_slas.sla_status',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'sla-status-date-splitby-x' => [
@@ -638,7 +638,7 @@ FROM tickets
 WHERE tickets.date_created = ${date_1} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
 SPLIT BY ${group_by_field_2}
 GROUP BY tickets.ticket_slas.sla_status',
-                'variables' => '[{"name":"group_by_field_2","type":"field","field_type":"tickets","table":"tickets","default":"sla"},{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"sla"},{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'tickets-awaiting-agent-split-by-field-ordered-by-x' => [
@@ -654,7 +654,7 @@ WHERE tickets.status = \'awaiting_agent\'
 SPLIT BY ${group_by_field_1}
 ORDER BY ${order_field_2}
 LIMIT 100',
-                'variables' => '[{"name":"group_by_field_1","type":"field","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"order","field_type":"tickets","table":"tickets"}]',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"orders","field_type":"tickets","table":"tickets"}]',
                 'is_custom' => false,
             ],
         'tickets-created-date-grouped-labels' => [
@@ -668,7 +668,7 @@ SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.labels.label <> NULL AND tickets.date_created = ${date_1}
 GROUP BY tickets.labels',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'tickets-resolved-date-grouped-by-agent-resolving' => [
@@ -684,7 +684,7 @@ WHERE tickets_log.action_type = \'changed_status\' AND tickets_log.id_after = 20
 GROUP BY ALIAS(IF(tickets_log.person.is_agent, tickets_log.person, \'Non-Agent\'), \'Person\')
 ORDER BY @\'Tickets Resolved\' DESC
 LIMIT 100',
-                'variables' => '[{"name":"date_1","type":"date"}]',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
                 'is_custom' => false,
             ],
         'tickets-split-by-labels' => [
@@ -716,7 +716,7 @@ WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\')
 SPLIT BY ${group_by_field_1}
 ORDER BY ${order_field_2}
 LIMIT 100',
-                'variables' => '[{"name":"group_by_field_1","type":"field","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"order","field_type":"tickets","table":"tickets"}]',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"orders","field_type":"tickets","table":"tickets"}]',
                 'is_custom' => false,
             ],
         'total-tickets-unresolved-after-week' => [

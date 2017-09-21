@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\ReportWidget;
 use Application\LegacyApiBundle\Service\DashboardWidget;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -82,7 +83,14 @@ class ReportWidgetType extends AbstractType
                 'multiple'          => true,
                 'choices_as_values' => true,
                 'required'          => true,
-            ]);
+            ])
+            ->add('variables', CollectionType::class, [
+                'entry_type'     => ReportWidgetVariableType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+            ])
+        ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'transformDisplayTypes']);
     }
@@ -100,16 +108,17 @@ class ReportWidgetType extends AbstractType
         $data->setDisplayTypes($transformedTypes);
     }
 
-/**
- * @param OptionsResolver $resolver
- */public function configureOptions(OptionsResolver $resolver)
-{
-    $resolver->setDefaults(
+    /**
+     * @param OptionsResolver $resolver
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
             [
                 'data_class' => ReportWidget::class,
             ]
         );
-}
+    }
 
     public function getName()
     {

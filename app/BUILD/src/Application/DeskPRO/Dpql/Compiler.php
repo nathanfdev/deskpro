@@ -229,24 +229,22 @@ class Compiler
         $that        = $this;
 
         $input = preg_replace_callback(
-            '#(\$\{([a-zA-Z_]+)\})#',
+            '#(\$\{([a-zA-Z0-9_]+)\})#',
             function ($match) use ($input, $variables, $placeholders, $groupParams, $that) {
                 $varName = $match[2];
                 if (isset($variables[$varName])) {
                     $variable = $variables[$varName];
                     switch ($variable['type']) {
-                        case 'date':
-                            return $that->replaceDate($varName, $placeholders);
-                        case 'field':
-                            return $that->replaceGroup($variable, $placeholders, 'fields');
-                        case 'order':
-                            return $this->replaceGroup($varName, $placeholders, 'orders');
-                        case 'status':
-                            return $this->replaceGroup($varName, $placeholders, 'statuses');
+                        case 'dates':
+                            return $that->replaceDate($variable, $varName, $variables);
+                        case 'fields':
+                        case 'orders':
+                        case 'statuses':
+                            return $that->replaceGroup($variable, $variables, $variable['type']);
                     }
                 }
 
-                return $input;
+                return $match[0];
             },
             $input
         );
@@ -255,22 +253,27 @@ class Compiler
     }
 
     /**
-     * @param $match
-     * @param $placeholders
+     * @param $var
+     * @param $varName
+     * @param $variables
      *
      * @return mixed
      */
-    protected function replaceDate($match, $placeholders)
+    protected function replaceDate($var, $varName, $variables)
     {
         $repository  = \Application\DeskPRO\App::getEntityRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
 
-        if (isset($placeholders[$match])) {
-            $value = strval($placeholders[$match]);
+        $default = isset($var['default']) ? $var['default'] : null;
+
+        if (isset($variables[$varName])) {
+            $valueExists = isset($variables[$varName]['value']) && $variables[$varName]['value'];
+            $value       = $valueExists ? strval($variables[$varName]['value']) : $default;
             if (isset($groupParams['dates'][$value])) {
                 return $groupParams['dates'][$value][1];
             }
         }
+
         $first = reset($groupParams['dates']);
 
         return $first[1];
@@ -278,12 +281,12 @@ class Compiler
 
     /**
      * @param $var
-     * @param $placeholders
+     * @param $variables
      * @param $groupType
      *
      * @return string
      */
-    protected function replaceGroup($var, $placeholders, $groupType)
+    protected function replaceGroup($var, $variables, $groupType)
     {
         $repository  = \Application\DeskPRO\App::getEntityRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
@@ -291,12 +294,18 @@ class Compiler
         $varName = $var['name'];
         $type    = $var['field_type'];
         $table   = $var['table'];
+        $default = isset($var['default']) ? $var['default'] : null;
 
-        if (isset($placeholders[$varName])) {
-            $value = strval($placeholders[$varName]);
+        if (isset($variables[$varName])) {
+            $valueExists = isset($variables[$varName]['value']) && $variables[$varName]['value'];
+            $value       = $valueExists ? strval($variables[$varName]['value']) : $default;
             if (isset($groupParams[$groupType][$type][$value])) {
                 return sprintf($groupParams[$groupType][$type][$value][1], $table);
             }
+        }
+
+        if ($default) {
+            return $default;
         }
 
         if (isset($groupParams[$groupType][$type])) {

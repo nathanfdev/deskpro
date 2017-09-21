@@ -75,6 +75,51 @@
             </div>
         </div>
 
+        <div class="widget-vars">
+            <div ng-repeat="var in widget.variables track by $index">
+                <div class="inline-input">
+                    <label><i class="fa fa-times" ng-click="deleteVariable($index)"></i></label>
+
+                    <input ng-model="var.name" />
+
+                    <select ui-select2 style="min-width:70px;" ng-model="var.type">
+                        <option value="dates" ng-selected="var.type == 'dates'">
+                            Date
+                        </option>
+                        <option value="fields" ng-selected="var.type == 'fields'">
+                            Group by field
+                        </option>
+                        <option value="statuses" ng-selected="var.type == 'statuses'">
+                            Status group
+                        </option>
+                        <option value="orders" ng-selected="var.type == 'orders'">
+                            Order group
+                        </option>
+                    </select>
+
+                    <select style="min-width: 200px;" ng-model="var.default" ui-select2="" ng-if="var.type == 'dates'">
+                        <option ng-repeat='(key, value) in groupParams[var.type]' ng-value="key" ng-selected="var.default == key">
+                            {{ ng_var('value.0') }}
+                        </option>
+                    </select>
+
+                    <select ui-select2 style="min-width: 200px;" ng-model="var.table" ng-if="var.type != 'dates'">
+                        <option ng-repeat="table in tables[var.type]" ng-value="table" ng-selected='table == var.table'>
+                            {{ ng_var('table') }}
+                        </option>
+                    </select>
+                    <select style="min-width: 200px;" ng-model="var.default" ui-select2="" ng-if="var.type != 'dates'">
+                        <option ng-repeat='(key, value) in groupParams[var.type][var.table]' ng-value="key" ng-selected="var.default == key">
+                            {{ ng_var('value.0') }}
+                        </option>
+                    </select>
+
+                </div>
+            </div>
+            <i class="fa fa-plus-circle" ng-click="addVariable()"></i>
+        </div>
+
+
         <div class="editor-controls">
             <a ng-if="widget.is_custom || !widget.id" href="#" ng-click="saveWidget($event)" class="button">Save Query <i class="fa fa-save"></i></a>
             <a href="#" class="button button-edit">Test <i class="fa fa-fast-forward"></i></a>

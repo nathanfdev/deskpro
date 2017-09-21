@@ -124,8 +124,10 @@ class ReportsWidgetService
      */
     public function getRenderedResult($id, $query = null)
     {
-        $report = $this->repository->find($id);
-        $params = $this->getParamsInput('params');
+        $report              = $this->repository->find($id);
+        $params              = $this->getParamsInput('params');
+        $reportData          = $this->in->getArrayValue('report');
+        $params['variables'] = $reportData['variables'];
 
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');
@@ -173,7 +175,9 @@ class ReportsWidgetService
         $report = $this->repository->find($id);
         $params = $this->getParamsInput('params');
 
-        $params['variables'] = $report ? $report->getVariables() : [];
+        $reportData          = $this->in->getArrayValue('report');
+        $params['variables'] = $reportData['variables'];
+
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');
             $query = Display::getQueryStringFromParts($parts);
@@ -279,7 +283,12 @@ class ReportsWidgetService
             $compiler = new Compiler();
             if ($withParams) {
                 $input = $compiler->replacePlaceholders($query, $this->getParamsInput('params'));
-                $input = $compiler->replaceVariables($input, $this->getParamsInput('params'));
+
+                $params              = $this->getParamsInput('params');
+                $reportData          = $this->in->getArrayValue('report');
+                $params['variables'] = $reportData['variables'];
+
+                $input = $compiler->replaceVariables($input, $params);
             } else {
                 $input = $query;
             }
