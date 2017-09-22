@@ -39,6 +39,24 @@
     </tr>
     <tr>
         <th>
+            {{ phrase('agent.general.ticket_ref') }}:
+        </th>
+        <td>
+            {{ ticket.ref }}
+        </td>
+    </tr>
+    {% if brands|length > 1 %}
+    <tr>
+        <th>
+            {{ phrase('agent.general.brand') }}:
+        </th>
+        <td>
+            {{ ticket.brand.name }}
+        </td>
+    </tr>
+    {% endif %}
+    <tr>
+        <th>
             {{ phrase('agent.general.urgency') }}:
         </th>
         <td>
@@ -60,6 +78,14 @@
                 }
             %}
             {{ status_strings[ticket.status_code] }}
+        </td>
+    </tr>
+    <tr>
+        <th>
+            {{ phrase('agent.general.department') }}:
+        </th>
+        <td>
+            {{ ticket.department.title }}
         </td>
     </tr>
     {% if ticket_flagged %}
@@ -132,6 +158,38 @@
                     {{ part.person.display_name }}
                     {% if not loop.last %}, {% endif %}
                 {% endfor %}
+            </td>
+        </tr>
+    {% endif %}
+    {% if ticket.category %}
+        <tr>
+            <th>{{ phrase('agent.general.category') }}:</th>
+            <td>
+                {{ ticket.category.title }}
+            </td>
+        </tr>
+    {% endif %}
+    {% if ticket.priority %}
+        <tr>
+            <th>{{ phrase('agent.general.priority') }}:</th>
+            <td>
+                {{ ticket.priority.title }}
+            </td>
+        </tr>
+    {% endif %}
+    {% if ticket.product %}
+        <tr>
+            <th>{{ phrase('agent.general.product') }}:</th>
+            <td>
+                {{ ticket.product.title }}
+            </td>
+        </tr>
+    {% endif %}
+    {% if ticket.workflow %}
+        <tr>
+            <th>{{ phrase('agent.general.workflow') }}:</th>
+            <td>
+                {{ ticket.workflow.title }}
             </td>
         </tr>
     {% endif %}
