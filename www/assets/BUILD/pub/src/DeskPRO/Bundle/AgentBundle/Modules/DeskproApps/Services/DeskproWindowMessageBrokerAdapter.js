@@ -2,7 +2,7 @@ import { loadContextsFromPageFragments, unloadContextsFromPageFragments } from '
 
 /**
  * @param {function} reduxDispatch
- * @param {DeskproAppStoreConfiguration} config
+ * @param {AppsConfig} config
  * @param {DeskPRO.Agent.PageFragment.Basic} page
  * @param args
  */
@@ -28,8 +28,7 @@ const onTabDestroy = (reduxDispatch, config, page, ...args)  => { // eslint-disa
   }
 };
 
-class DeskproWindowMessageBrokerAdapter {
-
+export class DeskproWindowMessageBrokerAdapter {
   /**
    * @type {string}
    */
@@ -46,7 +45,7 @@ class DeskproWindowMessageBrokerAdapter {
 
   /**
    * @param {DeskPRO.MessageBroker} messageBroker
-   * @param {DeskproAppStoreConfiguration} config
+   * @param {AppsConfig} config
    * @returns {function(*=, *=)}
    */
   static registerListener(messageBroker, config)  {
@@ -59,5 +58,3 @@ class DeskproWindowMessageBrokerAdapter {
     };
   }
 }
-
-export default DeskproWindowMessageBrokerAdapter;

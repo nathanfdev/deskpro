@@ -1,4 +1,4 @@
-import DeskproAppStoreConfiguration from '../Domain/DeskproAppStoreConfiguration';
+import { AppsConfig } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 
 export const filterAppConfig =  ({ DeskproAppStore: { Main:state } }) => state.get('apps').toJS();
 
@@ -6,7 +6,7 @@ export const filterApiToken =  ({ DeskproAppStore: { Main:state } }) => state.ge
 
 export const filterAppstoreConfig =  ({ DeskproAppStore: { Main:state } }) => {
   const configJS = state.get('config').toJS();
-  return new DeskproAppStoreConfiguration(configJS);
+  return new AppsConfig(configJS);
 };
 
 export const filterAppManifestsConfig = ({ DeskproAppStore: { Main:state } }) => {

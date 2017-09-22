@@ -1,24 +1,23 @@
-import ContainerMounter from './Services/ContainerMounter';
-import DeskproWindowMessageBrokerAdapter from './Services/DeskproWindowMessageBrokerAdapter';
-import { filterAppManifestsConfig, filterApiToken, changedContextsSelector, filterAppstoreConfig } from './Selectors/Main';
-import DeskproAppRegistry from './Domain/DeskproAppRegistry';
-import { loadApps, loadApiToken, loadContextsFromPageFragments, loadAppstoreConfig } from './Actions/Actions';
-
-import { DeskproAppStoreConfigBuilder } from './DeskproAppStoreConfigBuilder';
-
-import { AppServices, mountContextInWindow, unmountContextInWindow } from './Services';
+import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
+import { AppServices, mountContextInWindow, unmountContextInWindow, ContainerMounter } from 'DeskPRO/Bundle/AppsBundle/Modules/Services';
 import {
   registerIncomingWidgetRequestListeners,
   registerOutgoingWidgetRequestListeners,
   dispatchOutgoingWidgetRequestOnIntercept
-} from './WidgetMessage';
+} from 'DeskPRO/Bundle/AppsBundle/Modules/WidgetMessage';
+
+
+import { DeskproWindowMessageBrokerAdapter } from './Services/DeskproWindowMessageBrokerAdapter';
+import { filterAppManifestsConfig, filterApiToken, changedContextsSelector, filterAppstoreConfig } from './Selectors/Main';
+import { loadApps, loadApiToken, loadContextsFromPageFragments, loadAppstoreConfig } from './Actions/Actions';
+
 
 /**
  * Dispatches the action to load the api token
  *
  * @param {Function} reduxDispatch
  * @param {DpApi} api
- * @param {DeskproAppStoreConfiguration} config
+ * @param {AppsConfig} config
  * @return {Promise}
  */
 const dispatchLoadAppstoreConfig = (reduxDispatch, api, config)  => {
@@ -31,7 +30,7 @@ const dispatchLoadAppstoreConfig = (reduxDispatch, api, config)  => {
  *
  * @param {Function} reduxDispatch
  * @param {DpApi} api
- * @param {DeskproAppStoreConfiguration} config
+ * @param {AppsConfig} config
  * @return {Promise}
  */
 const dispatchLoadApiToken = (reduxDispatch, api, config) => {
@@ -44,7 +43,7 @@ const dispatchLoadApiToken = (reduxDispatch, api, config) => {
  *
  * @param {Function} reduxDispatch
  * @param {DpApi} api
- * @param {DeskproAppStoreConfiguration} config
+ * @param {AppsConfig} config
  * @return {Promise}
  */
 const dispatchLoadAppManifestsAction = (reduxDispatch, api, config) => {
@@ -56,10 +55,10 @@ const dispatchLoadAppManifestsAction = (reduxDispatch, api, config) => {
 class DeskproAppStore {
   /**
    * @param {Window} windowObject
-   * @return {DeskproAppStoreConfigBuilder}
+   * @return {AppsConfigBuilder}
    */
   static configureWithWindowParams(windowObject)  {
-    const builder = new DeskproAppStoreConfigBuilder();
+    const builder = new AppsConfigBuilder();
     return builder.addWindowParams(windowObject);
   }
 
@@ -68,7 +67,7 @@ class DeskproAppStore {
    *
    * @param {Function} reduxDispatch
    * @param {DpApi} api
-   * @param {DeskproAppStoreConfiguration} config
+   * @param {AppsConfig} config
    * @return {Promise}
    */
   static bootstrap(reduxDispatch, api, config)  {
@@ -103,10 +102,8 @@ class DeskproAppStore {
   static onAgentLegacyAppReady(reduxStore, windowObject, api, messageBroker)  {
     const state = reduxStore.getState();
     const apiToken = filterApiToken(state);
-    const manifests = filterAppManifestsConfig(state);
     const config = filterAppstoreConfig(state);
 
-    const appRegistry = DeskproAppRegistry.fromJS(manifests, config);
 
     const appServices = new AppServices({ api, apiToken, window: windowObject, config });
     appServices.onAppStateChanged(state);
@@ -122,6 +119,9 @@ class DeskproAppStore {
 
       // mount new contexts if any
       const changedContexts = changedContextsSelector(newState);
+
+      const manifests = filterAppManifestsConfig(newState);
+      const appRegistry = AppsRegistry.fromJS(manifests, config);
       const containerMounter = new ContainerMounter(reduxStore, appRegistry);
 
       /** @var {Context} context **/

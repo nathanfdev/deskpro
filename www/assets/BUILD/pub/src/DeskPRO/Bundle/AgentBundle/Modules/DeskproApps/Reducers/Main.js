@@ -1,8 +1,10 @@
-import cloneDeep from 'lodash/cloneDeep';
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
+import {
+  /** var {Context} **/ Context
+} from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
+
 import * as actions from '../Actions/Actions';
-import { Context } from '../Domain/Context';
 
 const initialState = Immutable.fromJS({
   apps:     null, // all loaded apps (instances)
@@ -14,7 +16,7 @@ const initialState = Immutable.fromJS({
 
 /**
  * @param {Object} state
- * @param {{config:DeskproAppStoreConfiguration, manifests:*}}  payload
+ * @param {{config:AppsConfig, manifests:*}}  payload
  * @param {Object} action
  * @returns {Object}
  */
@@ -30,7 +32,7 @@ function loadAppstoreConfigHandler(state, payload, action) {
 
 /**
  * @param {Object} state
- * @param {{config:DeskproAppStoreConfiguration, manifests:*}}  payload
+ * @param {{config:AppsConfig, manifests:*}}  payload
  * @param {Object} action
  * @returns {Object}
  */
@@ -38,41 +40,17 @@ function loadAppsHandler(state, payload, action) {
   const { sequence } = action.meta;
   if (sequence !== 'done') { return state; }
 
-  /** @var {DeskproAppStoreConfiguration} */
-  const { config, manifests: manifestsJS } = payload;
+  /** @var {AppsConfig} */
+  const { config, manifests } = payload;
+  const { environment } = config;
 
-  if (config.environment === 'production') {
-    const manifests = manifestsJS.data.map((instance) => {
-      const appId = instance.app;
-      const manifest = cloneDeep(manifestsJS.linked.app[appId].manifest);
-
-      manifest.application_id = instance.application_id;
-      manifest.id = instance.id;
-      manifest.targets = instance.targets;
-      manifest.title = manifest.name;
-
-      return manifest;
-    });
-
-    const newState = Immutable.fromJS({
-      apps: { environment: 'production', manifests }
-    });
-    return state.merge(newState);
-  }
-
-  if (config.environment === 'development') {
-    const newState = Immutable.fromJS({
-      apps: { environment: 'development', manifests: [manifestsJS] }
-    });
-    return state.merge(newState);
-  }
-
-  return state;
+  const newState = Immutable.fromJS({ apps: { environment, manifests } });
+  return state.merge(newState);
 }
 
 /**
  * @param {Object} state
- * @param {{config:DeskproAppStoreConfiguration, contexts: Array<Context>}} payload
+ * @param {{config:AppsConfig, contexts: Array<Context>}} payload
  * @param {Object} action
  * @returns {Object}
  */
@@ -89,7 +67,7 @@ function unloadContexts(state, payload, action) { // eslint-disable-line no-unus
 
 /**
  * @param {Object} state
- * @param {{config:DeskproAppStoreConfiguration, contexts: Array<Context>}} payload
+ * @param {{config:AppsConfig, contexts: Array<Context>}} payload
  * @param {Object} action
  * @returns {Object}
  */
@@ -110,7 +88,7 @@ function loadApiTokenHandler(state, payload, action) {
   if (sequence !== 'done') { return state; }
 
    // the deskpro appstore config is also available in the payload if we need
-  // /** @var {DeskproAppStoreConfiguration} */
+  // /** @var {AppsConfig} */
   // const { config, token } = payload;
   const { token } = payload;
 
