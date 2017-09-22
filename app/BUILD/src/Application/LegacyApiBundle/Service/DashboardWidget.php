@@ -155,12 +155,18 @@ class DashboardWidget
         $error     = false;
         $variables = [];
 
-        foreach ($widget->getVariables() as $key => $variable) {
-            $variables[$key + 1] = $variable;
+        $reportVariables = $report->getVariables();
+        $widgetVariables = $widget->getVariables();
+
+        foreach ($reportVariables as $variable) {
+            $variables[$variable['name']] = $variable;
+            if (isset($widgetVariables[$variable['name']]) && isset($widgetVariables[$variable['name']]['value'])) {
+                $variables[$variable['name']]['value'] = $widgetVariables[$variable['name']]['value'];
+            }
         }
 
         return Display::renderQuery('json', $query,
-            $variables,
+            ['variables' => $variables],
             $error);
     }
 
