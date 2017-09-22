@@ -10,7 +10,7 @@ import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 
-import { InstallerFactory } from '../../Apps/Components';
+import { InstallerFactory } from '../../DeskproApps';
 
 class AppContainer extends React.Component {
 
@@ -74,7 +74,7 @@ class AppContainer extends React.Component {
             </Route> : null}
           <Route
             path="app-installer/:app"
-            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory(window))}
+            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory(window, store))}
           />
         </Router>
       </Provider>
