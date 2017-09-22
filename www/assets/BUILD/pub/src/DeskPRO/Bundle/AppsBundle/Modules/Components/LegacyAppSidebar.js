@@ -56,4 +56,4 @@ class LegacyAppSidebar {
 
 }
 
-export default LegacyAppSidebar;
+export { LegacyAppSidebar };

@@ -1,6 +1,6 @@
-import DeskproAppStoreConfiguration from './Domain/DeskproAppStoreConfiguration';
+import { AppsConfig } from './AppsConfig';
 
-export class DeskproAppStoreConfigBuilder {
+export class AppsConfigBuilder {
   constructor()  {
     this.state = {
       windowProps:    {},
@@ -10,7 +10,7 @@ export class DeskproAppStoreConfigBuilder {
 
   /**
    * @param {Window} windowObject
-   * @return {DeskproAppStoreConfigBuilder}
+   * @return {AppsConfigBuilder}
    */
   addWindowParams(windowObject)  {
     const { location:locationObject }  = windowObject;
@@ -33,15 +33,19 @@ export class DeskproAppStoreConfigBuilder {
         }, {})
       ;
 
-    if (!windowProps.environment || DeskproAppStoreConfiguration.validEnvironments.indexOf(windowProps.environment) === -1) {
+    if (!windowProps.environment || AppsConfig.validEnvironments.indexOf(windowProps.environment) === -1) {
       windowProps.environment = environment;
     }
 
     const isDev = windowProps.environment === 'development';
-    windowProps.endpoint = isDev ? DeskproAppStoreConfiguration.devEndpoint : locationObject.origin;
+    windowProps.endpoint = isDev ? AppsConfig.devEndpoint : locationObject.origin;
 
     const defaultApiRoot = `${locationObject.protocol}//${locationObject.host}${windowObject.DP_BASE_URL}`;
     windowProps.apiRoot = isDev && windowProps.apiRoot ? windowProps.apiRoot : defaultApiRoot;
+
+    if (windowObject.DP_API_TOKEN) {
+      windowProps.apiToken = windowObject.DP_API_TOKEN;
+    }
 
     this.state.windowProps = windowProps;
     return this;
@@ -49,7 +53,7 @@ export class DeskproAppStoreConfigBuilder {
 
   /**
    * @param {{}} settings
-   * @return {DeskproAppStoreConfigBuilder}
+   * @return {AppsConfigBuilder}
    */
   addHelpdeskDiscoverySettings(settings)  {
     this.state.discoveryProps = {
@@ -64,16 +68,16 @@ export class DeskproAppStoreConfigBuilder {
   }
 
   /**
-   * @return {DeskproAppStoreConfiguration}
+   * @return {AppsConfig}
    */
   build()  {
     const { windowProps, discoveryProps } = this.state;
     if (windowProps.environment === 'development') { // window props override discovery props
       const props = Object.assign({}, discoveryProps, windowProps);
-      return new DeskproAppStoreConfiguration(props);
+      return new AppsConfig(props);
     }
 
     const props = Object.assign({}, windowProps, discoveryProps);
-    return new DeskproAppStoreConfiguration(props);
+    return new AppsConfig(props);
   }
 }

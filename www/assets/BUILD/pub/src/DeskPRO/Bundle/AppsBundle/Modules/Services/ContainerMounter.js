@@ -2,12 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import DeskproAppContainer from '../Components/DeskproAppContainer';
-import LegacySidebarContainer from '../Components/LegacySidebarContainer';
-import LegacyAppSidebar from '../Components/LegacyAppSidebar';
-
-import ContainerConfiguration from './ContainerConfiguration';
-import { dispatchIncomingWidgetMessage, parseIncomingWidgetMessageJS, addWidgetEventListener } from '../WidgetMessage';
+import { DeskproAppContainerProps, DeskproAppContainer, LegacySidebarContainer, LegacyAppSidebar } from '../Components';
+import { ContainerConfiguration } from './ContainerConfiguration';
 
 /**
  * This class mounts the react container components
@@ -15,7 +11,7 @@ import { dispatchIncomingWidgetMessage, parseIncomingWidgetMessageJS, addWidgetE
 class ContainerMounter {
   /**
    * @param reduxStore
-   * @param {DeskproAppRegistry} appRegistry
+   * @param {AppsRegistry} appRegistry
    */
   constructor(reduxStore, appRegistry)  {
     this.reduxStore = reduxStore;
@@ -24,23 +20,14 @@ class ContainerMounter {
 
   /**
    * @param {ContainerConfiguration} configuration
-   * @param {Context} context
-   * @return {{widgetsConfigList: Array.<WidgetConfiguration>, dispatchIncomingWidgetMessage, context: *}}
+   * @return {Array.<WidgetConfiguration>}
    */
-  createProps = (configuration, context) =>  {
-    const { appRegistry } = this;
-
+  getWidgetConfigForContainer(configuration)  {
     const targetType = configuration.targetType;
-    const widgetsConfigList = appRegistry.getWidgetConfigByTargetType(targetType);
 
-    return {
-      widgetsConfigList,
-      context,
-      dispatchIncomingWidgetMessage,
-      parseIncomingWidgetMessageJS,
-      addWidgetEventListener
-    };
-  };
+    const { appRegistry } = this;
+    return appRegistry.getWidgetConfigByTargetType(targetType);
+  }
 
   /**
    * @param {Context} context
@@ -69,7 +56,8 @@ class ContainerMounter {
    */
   mountAt(context, domNode) {
     const configuration = ContainerConfiguration.fromDOM(domNode);
-    const props = this.createProps(configuration, context);
+    const widgetsConfigList = this.getWidgetConfigForContainer(configuration);
+    const props = DeskproAppContainerProps.create({ context, widgetsConfigList });
 
     let reactElement = null;
     const { renderType: renderStrategy } = configuration;
@@ -123,4 +111,4 @@ class ContainerMounter {
   };
 }
 
-export default ContainerMounter;
+export { ContainerMounter };

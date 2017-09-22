@@ -268,4 +268,4 @@ class DeskproAppContainer extends React.Component {
 
 }
 
-export default DeskproAppContainer;
+export { DeskproAppContainer };

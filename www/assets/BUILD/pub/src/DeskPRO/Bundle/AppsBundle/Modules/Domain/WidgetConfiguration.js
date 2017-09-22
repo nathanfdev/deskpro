@@ -1,7 +1,7 @@
 import { PropertyBag } from './PropertyBag';
 import { WidgetUrlBuilder } from './WidgetUrlBuilder';
 
-class WidgetConfiguration extends PropertyBag {
+export class WidgetConfiguration extends PropertyBag {
   /**
    * @param {String} id
    * @param {String} target
@@ -59,5 +59,3 @@ class WidgetConfiguration extends PropertyBag {
   }
 
 }
-
-export default WidgetConfiguration;

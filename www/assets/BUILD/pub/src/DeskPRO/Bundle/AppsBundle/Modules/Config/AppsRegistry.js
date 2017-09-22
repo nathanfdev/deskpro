@@ -1,12 +1,11 @@
 import uuid from 'node-uuid';
-import AppConfiguration from './AppConfiguration';
-import WidgetConfiguration from './WidgetConfiguration';
+import { AppConfiguration, WidgetConfiguration }  from '../Domain';
 
-class DeskproAppRegistry {
+export class AppsRegistry {
   /**
    * @param {Array<Object>} rawManifests
-   * @param {DeskproAppStoreConfiguration} config
-   * @return { DeskproAppRegistry }
+   * @param {AppsConfig} config
+   * @return { AppsRegistry }
    */
   static fromJS(rawManifests, config) {
     // we need to process a bit the manifest before we can use it
@@ -24,7 +23,7 @@ class DeskproAppRegistry {
     const manifests = rawManifests.map(mapper);
 
     const appList = manifests.map(manifest => AppConfiguration.fromAppManifestJS(manifest));
-    return new DeskproAppRegistry(appList);
+    return new AppsRegistry(appList);
   }
 
   /**
@@ -45,7 +44,7 @@ class DeskproAppRegistry {
    * @return {Array<WidgetConfiguration>}
    */
   getWidgetConfigByTargetType = (targetType) => {
-    const mapper = app => DeskproAppRegistry.createWidget(targetType, app);
+    const mapper = app => AppsRegistry.createWidget(targetType, app);
     return this.getAppsConfigByTargetType(targetType).map(mapper);
   };
 
@@ -59,5 +58,3 @@ class DeskproAppRegistry {
     return new WidgetConfiguration({ id, target, appConfig });
   }
 }
-
-export default DeskproAppRegistry;

@@ -50,4 +50,4 @@ class LegacyAppIcons {
   }
 }
 
-export default LegacyAppIcons;
+export { LegacyAppIcons };

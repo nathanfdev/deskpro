@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'; // eslint-disable-line no-unused-vars
-import DeskproAppContainer from './DeskproAppContainer';
-import LegacyAppSidebar from './LegacyAppSidebar';
-import LegacyAppIcons from './LegacyAppIcons';
+import { DeskproAppContainer } from './DeskproAppContainer';
+import { LegacyAppSidebar } from './LegacyAppSidebar';
+import { LegacyAppIcons } from './LegacyAppIcons';
 
 const addEventListener = (dom, event, handler) => {
   dom.addEventListener(event, handler);
@@ -117,5 +117,5 @@ class LegacySidebarContainer extends DeskproAppContainer {
   }
 }
 
-export default LegacySidebarContainer;
+export { LegacySidebarContainer };
 

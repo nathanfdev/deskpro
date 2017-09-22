@@ -17,7 +17,7 @@ export class AppServices {
    * @param {Http} api
    * @param {string} apiToken
    * @param {Window} window
-   * @param {DeskproAppStoreConfiguration} config
+   * @param {AppsConfig} config
    */
   constructor({ api, apiToken, window, config }) {
     this.props = { api, apiToken, window, config };
@@ -30,7 +30,7 @@ export class AppServices {
    * @param {{}} state
    */
   onAppStateChanged(state)  {
-    this.state.me = meSelector(state);
+    this.state.authUser = meSelector(state);
   }
 
   /**
@@ -117,23 +117,33 @@ export class AppServices {
   }
 
   /**
-   * @return {DeskproAppStoreConfiguration}
+   * @return {AppsConfig}
    */
   get config() { return this.props.config; }
 
-  /** @return {String} */
-  get apiToken() { return this.props.apiToken; }
+  /** @type {String|null} */
+  get apiToken() {
+    if (this.props.apiToken) {
+      return this.props.apiToken;
+    }
 
-  /** @return {Http} */
+    if (this.props.config.apiToken) {
+      return this.props.config.apiToken;
+    }
+
+    return null;
+  }
+
+  /** @type {Http} */
   get api() { return this.props.api; }
 
   /**
-   * @return {Location}
+   * @type {Location}
    */
   get location() { return this.props.window.location; }
 
   /**
-   * @return {Window}
+   * @type {Window}
    */
   get window() { return this.props.window; }
 
@@ -142,6 +152,9 @@ export class AppServices {
    */
   get $() { return this.window.$; }
 
+  /**
+   * @type {WidgetDOM}
+   */
   get widgetDOM() {
     const { document } = this.props.window;
     return new WidgetDOM({ document });

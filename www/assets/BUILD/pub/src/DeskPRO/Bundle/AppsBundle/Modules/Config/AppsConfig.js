@@ -1,6 +1,6 @@
-import { PropertyBag } from './PropertyBag';
+import { PropertyBag } from '../Domain';
 
-class DeskproAppStoreConfiguration extends PropertyBag {
+class AppsConfig extends PropertyBag {
   static get validTargets() {
     return [
 
@@ -31,7 +31,10 @@ class DeskproAppStoreConfiguration extends PropertyBag {
       'org-summary-new-tab', 'org-content-box-new-tab', 'org-notes-new-tab',
 
       // background location
-      'background'
+      'background',
+
+      // installer
+      'install'
     ];
   }
 
@@ -50,29 +53,34 @@ class DeskproAppStoreConfiguration extends PropertyBag {
   }
 
   /**
-   * @return {string}
+   * @type {string}
+   */
+  get apiToken() { return this.props.apiToken; }
+
+  /**
+   * @type {string}
    */
   get environment() { return this.props.environment; }
 
   /**
-   * @return {string}
+   * @type {string}
    */
   get apiRoot() { return this.props.apiRoot; }
 
   /**
-   * @return {string}
+   * @type {string}
    */
   get oauthProxyEndpoint() { return this.props.oauthProxyEndpoint; }
 
   /**
-   * @return {string}
+   * @type {string}
    */
   get httpProxyEndpoint() { return this.props.httpProxyEndpoint; }
 
   /**
-   * @return {string}
+   * @type {string}
    */
   get endpoint() { return this.props.endpoint; }
 }
 
-export default DeskproAppStoreConfiguration;
+export { AppsConfig };

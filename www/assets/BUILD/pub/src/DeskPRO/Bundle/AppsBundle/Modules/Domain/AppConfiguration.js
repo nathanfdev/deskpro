@@ -2,7 +2,7 @@ import { AppAssets } from './AppAssets';
 import { PropertyBag } from './PropertyBag';
 import { InstanceProps } from './WidgetProps';
 
-class AppConfiguration extends PropertyBag {
+export class AppConfiguration extends PropertyBag {
   /**
    * @param {object} config
    * @return {AppConfiguration}
@@ -124,4 +124,3 @@ class AppConfiguration extends PropertyBag {
   }
 }
 
-export default AppConfiguration;

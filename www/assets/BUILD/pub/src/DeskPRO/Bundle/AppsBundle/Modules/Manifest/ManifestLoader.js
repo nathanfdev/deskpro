@@ -1,0 +1,34 @@
+const readAppManifest = ({ data, linked }) => {
+  const { application_id: appId, id, targets, name: title } = data;
+  const manifest = JSON.parse(JSON.stringify(linked.app[appId].manifest));
+  return { ...manifest, application_id: appId, id, targets, title };
+};
+
+
+export class ManifestLoader {
+  /**
+   * @param {DpApi} apiClient
+   */
+  constructor(apiClient)  {
+    this.apiClient = apiClient;
+  }
+
+  loadAll()  {
+    return this.apiClient.sendGet('DP_API/apps?include=app')
+      .then(response => response.data)
+      .then(all => all.map(readAppManifest))
+    ;
+  }
+
+  loadApp(app)  {
+    return this.apiClient.sendGet(`DP_API/apps/${app}?include=app`)
+      .then(response => response.data)
+      .then(readAppManifest)
+    ;
+  }
+
+  loadDev(endpoint)  {
+    const url = `${endpoint}/manifest.json`;
+    return this.apiClient.sendGet(url).then(response => response.data);
+  }
+}

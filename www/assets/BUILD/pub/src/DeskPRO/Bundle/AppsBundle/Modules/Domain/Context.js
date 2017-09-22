@@ -31,24 +31,32 @@ export class Context {
   /**
    * @return {String}
    */
+  get locationId() { return this.props.get('locationId'); }
+
+  /**
+   * The type of entity associated with this context
+   *
+   * @return {String}
+   */
   get type() { return this.props.get('type'); }
 
   /**
+   * The id of the entity associated with this context
+   *
    * @return {String}
    */
   get entityId() { return this.props.get('entityId'); }
 
   /**
-   * @return {String}
-   */
-  get locationId() { return this.props.get('locationId'); }
-
-  /**
+   * The id of the UI Tab that displays this context
+   *
    * @return {String}
    */
   get tabId() { return this.props.get('tabId'); }
 
   /**
+   * The url of the UI Tab that displays this context
+   *
    * @return {String}
    */
   get tabUrl() { return this.props.get('tabUrl'); }

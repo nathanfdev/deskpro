@@ -61,4 +61,4 @@ class ContainerConfiguration extends PropertyBag {
   get renderIconsContainer() { return this.props.renderIconsContainer; }
 }
 
-export default ContainerConfiguration;
+export { ContainerConfiguration };
