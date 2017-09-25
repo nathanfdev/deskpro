@@ -229,6 +229,29 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
 
     $scope.$watch('tickets', this.fillListItems.bind(this));
+
+    // sync cached sla count
+    if (self.meta.sla_id) {
+      if (self.meta.sla_status) {
+        var cachedSlaCount = $('#ticket_sla_'+self.meta.sla_id+'_count_'+self.meta.sla_status);
+        var oldSlaCount = parseInt(cachedSlaCount.html(), 10);
+        var newSlaCount = self.meta.ticketResultIds.length;
+
+        if (oldSlaCount !== newSlaCount) {
+          cachedSlaCount.html(newSlaCount);
+        }
+      } else {
+        ['ok', 'warning', 'fail'].forEach(function(slaStatus) {
+          var cachedSlaCount = $('#ticket_sla_'+self.meta.sla_id+'_count_'+slaStatus);
+          var oldSlaCount = parseInt(cachedSlaCount.html(), 10);
+          var newSlaCount = parseInt(self.meta.slaGroupCounts[slaStatus], 10);
+
+          if (oldSlaCount !== newSlaCount) {
+            cachedSlaCount.html(newSlaCount);
+          }
+        });
+      }
+    }
   },
 
   fillListItems: function() {

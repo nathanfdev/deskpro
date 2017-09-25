@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\TicketResults;
@@ -304,7 +300,7 @@ class TicketSearchController extends AbstractController
                 }
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
-                $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+                $searcher = new TicketSearch();
                 $searcher->setPerson($this->person);
                 $searcher->setOrderBy('ticket.date_created');
 
@@ -341,7 +337,7 @@ class TicketSearchController extends AbstractController
                 }
             }
         } else {
-            $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+            $searcher = new TicketSearch();
             $searcher->setPerson($this->person);
             $searcher->setOrderBy('ticket.date_created');
 
@@ -642,34 +638,34 @@ class TicketSearchController extends AbstractController
                 throw $this->createNotFoundException();
             }
 
-            $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+            $searcher = new TicketSearch();
             $searcher->setPerson($this->person);
 
             $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
             if ($sla_filter == 'agent') {
-                $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT, 'is', $this->person->id);
+                $searcher->addTerm(TicketSearch::TERM_AGENT, 'is', $this->person->id);
             } elseif ($sla_filter == 'team') {
-                $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT_TEAM, 'is', $this->person->getAgentTeamIds());
+                $searcher->addTerm(TicketSearch::TERM_AGENT_TEAM, 'is', $this->person->getAgentTeamIds());
             }
 
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', [
+            $searcher->addTerm(TicketSearch::TERM_SLA_COMPLETED, 'is', [
                 'is_completed' => 0,
                 'sla_id'       => $sla_id,
             ]);
 
             if ($sla_status = $this->in->getString('sla_status')) {
-                $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', [
+                $searcher->addTerm(TicketSearch::TERM_SLA_STATUS, 'is', [
                     'sla_status' => $sla_status,
                     'sla_id'     => $sla_id,
                 ]);
             }
 
             if ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME) {
-                $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+                $searcher->addTerm(TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
             } elseif ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE) {
-                $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+                $searcher->addTerm(TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
             } else {
-                $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', ['awaiting_agent', 'awaiting_user']);
+                $searcher->addTerm(TicketSearch::TERM_STATUS, 'is', ['awaiting_agent', 'awaiting_user']);
             }
 
             $set_group_term   = null;
@@ -909,7 +905,7 @@ class TicketSearchController extends AbstractController
         //------------------------------
 
         if ($do_run) {
-            $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+            $searcher = new TicketSearch();
             $searcher->setPerson($this->person);
             if ($order_by) {
                 $searcher->setOrderByCode($order_by);
@@ -1140,34 +1136,34 @@ class TicketSearchController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+        $searcher = new TicketSearch();
         $searcher->setPerson($this->person);
 
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter', 'all');
         if ($sla_filter == 'agent') {
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT, 'is', $this->person->id);
+            $searcher->addTerm(TicketSearch::TERM_AGENT, 'is', $this->person->id);
         } elseif ($sla_filter == 'team') {
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_AGENT_TEAM, 'is', $this->person->getAgentTeamIds());
+            $searcher->addTerm(TicketSearch::TERM_AGENT_TEAM, 'is', $this->person->getAgentTeamIds());
         }
 
-        $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_COMPLETED, 'is', [
+        $searcher->addTerm(TicketSearch::TERM_SLA_COMPLETED, 'is', [
             'is_completed' => 0,
             'sla_id'       => $sla_id,
         ]);
 
         if ($sla_status) {
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_SLA_STATUS, 'is', [
+            $searcher->addTerm(TicketSearch::TERM_SLA_STATUS, 'is', [
                 'sla_status' => $sla_status,
                 'sla_id'     => $sla_id,
             ]);
         }
 
         if ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_WAITING_TIME) {
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+            $searcher->addTerm(TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
         } elseif ($sla->sla_type == \Application\DeskPRO\Entity\Sla::TYPE_FIRST_RESPONSE) {
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
+            $searcher->addTerm(TicketSearch::TERM_STATUS, 'is', 'awaiting_agent');
         } else {
-            $searcher->addTerm(\Application\DeskPRO\Searcher\TicketSearch::TERM_STATUS, 'is', ['awaiting_agent', 'awaiting_user']);
+            $searcher->addTerm(TicketSearch::TERM_STATUS, 'is', ['awaiting_agent', 'awaiting_user']);
         }
 
         $order_by = $this->in->getString('order_by');
@@ -1200,8 +1196,22 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $results = $searcher->getMatches();
+        // if no sla status was provided then count by sla status
+        // to update sla badge counts real-time
+        $slaGroupCounts = [];
+        if (!$sla_status) {
+            foreach (['ok', 'warning', 'fail'] as $groupStatus) {
+                $groupSearcher = clone $searcher;
+                $groupSearcher->addTerm(TicketSearch::TERM_SLA_STATUS, 'is', [
+                    'sla_status' => $groupStatus,
+                    'sla_id'     => $sla->getId(),
+                ]);
 
+                $slaGroupCounts[$groupStatus] = $groupSearcher->getCount();
+            }
+        }
+
+        $results = $searcher->getMatches();
         $results = Arrays::castToType($results, 'integer');
 
         $helper = new Helper\TicketResults($this);
@@ -1238,6 +1248,7 @@ class TicketSearchController extends AbstractController
             'set_group_option' => $set_group_option,
             'ticket_ids'       => $results,
             'order_by'         => $searcher->getOrderBy(),
+            'sla_group_counts' => $slaGroupCounts,
         ];
 
         $pref_display_fields = $this->person->getPref('agent.ui.ticket-sla-display-fields.'.$sla['id']);
