@@ -26,35 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace deskpro_sendgrid;
-
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\EmailBundle\Service\SendGrid;
-
-class InstallerHandler extends AbstractInstallerHandler
+class Build1506332294 extends AbstractBuild implements OnlineBuildInterface
 {
-    const NAME = 'emails.sendgrid';
-
-    /**
-     * {@inheritdoc}
-     */
-    public function install(InstallerContext $context)
+    public function addNewTables()
     {
-        $context->getContainer()->getSettingsHandler()->setSetting(self::NAME.'.enabled', 1);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function uninstall(InstallerContext $context)
+    public function runAlters()
     {
-        $context->getContainer()->getSettingsHandler()->setSetting(self::NAME.'.enabled', 0);
+    }
+
+    public function run()
+    {
+        $this->execDbQuery('default', 'DELETE FROM app_instances WHERE package_name = \'deskpro_sendgrid\';');
+        $this->execDbQuery('default', 'DELETE FROM app_packages WHERE name = \'deskpro_sendgrid\';');
     }
 }
