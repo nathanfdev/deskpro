@@ -2,27 +2,35 @@ import uuid from 'node-uuid';
 import { AppConfiguration, WidgetConfiguration }  from '../Domain';
 
 export class AppsRegistry {
+
+  /**
+   * @param {Array<Object>} manifest
+   * @param {AppsConfig} config
+   * @return {AppConfiguration}
+   */
+  static appConfiguration(manifest, config)  {
+    // we need to process a bit the manifest before we can use it
+    let props;
+    if (config.environment === 'development') {
+      props = {
+        id:             1,
+        application_id: 1,
+        baseUrl:        config.endpoint,
+        ...manifest
+      };
+    } else {
+      props = { baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest };
+    }
+    return AppConfiguration.fromAppManifestJS(props);
+  }
+
   /**
    * @param {Array<Object>} rawManifests
    * @param {AppsConfig} config
    * @return { AppsRegistry }
    */
   static fromJS(rawManifests, config) {
-    // we need to process a bit the manifest before we can use it
-    let mapper;
-    if (config.environment === 'development') {
-      mapper = manifest => ({
-        id:             1,
-        application_id: 1,
-        baseUrl:        config.endpoint,
-        ...manifest
-      });
-    } else {
-      mapper = manifest => ({ baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest });
-    }
-    const manifests = rawManifests.map(mapper);
-
-    const appList = manifests.map(manifest => AppConfiguration.fromAppManifestJS(manifest));
+    const appList = rawManifests.map(manifest => AppsRegistry.appConfiguration(manifest, config));
     return new AppsRegistry(appList);
   }
 
