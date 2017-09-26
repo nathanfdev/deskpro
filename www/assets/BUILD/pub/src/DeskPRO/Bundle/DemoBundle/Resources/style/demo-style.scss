@@ -104,6 +104,11 @@ footer {
   width: 460px;
   margin: auto;
   padding: 50px;
+
+  .button {
+    display: block;
+    margin-top: 40px !important;
+  }
 }
 .ui.horizontal.segments.extend-trial {
   width: 1220px;
