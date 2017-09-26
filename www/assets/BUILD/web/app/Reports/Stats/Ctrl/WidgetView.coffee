@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays'], (Arrays) -> [
-  '$scope', '$stateParams', '$q', 'Api', '$timeout',
-  ($scope, $stateParams, $q, Api, $timeout) ->
+  '$scope', '$stateParams', '$q', 'Api',
+  ($scope, $stateParams, $q, Api) ->
     widget_id = parseInt($stateParams.widget_id)
     $scope.widget = { query_parts: {}, variables: []}
     $scope.groupParams = {}
