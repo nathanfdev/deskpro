@@ -37,7 +37,27 @@ class Build1505128950 extends AbstractBuild implements OnlineBuildInterface
     public function addNewTables()
     {
         $this->out('Creating report dashboards tables');
-        $this->execDbQuery('default', 'CREATE TABLE report_widget like report_builder;');
+        $this->execDbQuery('default', '
+CREATE TABLE `report_widget` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`parent_id` INT(11) NULL DEFAULT NULL,
+	`unique_key` VARCHAR(50) NULL DEFAULT NULL,
+	`title` VARCHAR(255) NOT NULL,
+	`description` LONGTEXT NOT NULL,
+	`query` LONGTEXT NOT NULL,
+	`is_custom` TINYINT(1) NOT NULL,
+	`labels` TINYTEXT NULL COMMENT \'(DC2Type:simple_array)\',
+	`display_order` INT(11) NOT NULL,
+	`display_types` LONGTEXT NOT NULL COMMENT \'(DC2Type:simple_array)\',
+	`variables` LONGTEXT NULL COMMENT \'(DC2Type:json_array)\',
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `unique_key_idx` (`unique_key`),
+	INDEX `parent_id_idx` (`parent_id`),
+	CONSTRAINT `FK_AC0ACB4F727ACA70` FOREIGN KEY (`parent_id`) REFERENCES `report_widget` (`id`) ON DELETE SET NULL
+)
+COLLATE=\'utf8_general_ci\'
+ENGINE=InnoDB
+;');
         $this->execDbQuery('default', 'CREATE TABLE report_widget_favorite like report_builder_favorite;');
         $this->execDbQuery('default', "CREATE TABLE report_dashboard (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, is_default TINYINT(1) DEFAULT '0' NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
         $this->execDbQuery('default', 'CREATE TABLE report_dashboard_report (id INT AUTO_INCREMENT NOT NULL, dashboard_id INT NOT NULL, title VARCHAR(255) NOT NULL, sort_order INT(1) UNSIGNED NOT NULL, columns INT NOT NULL DEFAULT 10, INDEX IDX_6EE5C64BB9D04D2B (dashboard_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
@@ -48,21 +68,18 @@ class Build1505128950 extends AbstractBuild implements OnlineBuildInterface
     public function runAlters()
     {
         $this->execDbQuery('default', 'INSERT INTO report_widget_favorite (SELECT * FROM report_builder_favorite);');
-        $this->execDbQuery('default', "
-			ALTER TABLE report_widget ADD labels TINYTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', DROP category;
-			ALTER TABLE report_widget ADD display_types LONGTEXT NOT NULL COMMENT '(DC2Type:simple_array)';
+        $this->execDbQuery('default', '
 			ALTER TABLE `report_widget_favorite` DROP FOREIGN KEY `FK_CCD5CB1186DD4ADF`;
 			ALTER TABLE `report_widget_favorite` CHANGE COLUMN `report_builder_id` `report_widget_id` INT(11) NULL DEFAULT NULL AFTER `id`,
-			ADD CONSTRAINT `FK_CCD5CB1186DD4ADF` FOREIGN KEY (`report_widget_id`) REFERENCES `report_widget` (`id`) ON DELETE CASCADE;");
+			ADD CONSTRAINT `FK_CCD5CB1186DD4ADF` FOREIGN KEY (`report_widget_id`) REFERENCES `report_widget` (`id`) ON DELETE CASCADE;');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_report ADD CONSTRAINT FK_6EE5C64BB9D04D2B FOREIGN KEY (dashboard_id) REFERENCES report_dashboard (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_widget ADD CONSTRAINT FK_2F33AF1FFBE885E2 FOREIGN KEY (widget_id) REFERENCES report_widget (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_widget ADD CONSTRAINT FK_2F33AF1F4BD2A4C0 FOREIGN KEY (report_id) REFERENCES report_dashboard_report (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_permission ADD CONSTRAINT FK_DED8DEFB9D04D2B FOREIGN KEY (dashboard_id) REFERENCES report_dashboard (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_permission ADD CONSTRAINT FK_DED8DEF217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
 
-        $this->execDbQuery('default', 'INSERT INTO report_widget (SELECT * FROM report_builder);');
+        $this->execDbQuery('default', 'INSERT INTO report_widget (SELECT `id`, `parent_id`, `unique_key`, `title`, `description`, `query`, `is_custom`, `display_order` FROM report_builder);');
     }
-
     public function run()
     {
         $sql = <<<'SQL'

@@ -293,7 +293,7 @@ class Compiler
 
         $varName = $var['name'];
         $type    = $var['field_type'];
-        $table   = $var['table'];
+        $table   = isset($var['table']) && $var['table'] ? $var['table'] : $var['field_type'];
         $default = isset($var['default']) ? $var['default'] : null;
 
         if (isset($variables[$varName])) {
