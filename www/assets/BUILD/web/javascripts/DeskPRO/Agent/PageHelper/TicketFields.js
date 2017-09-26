@@ -145,7 +145,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         var $el = $(el);
         value = allowDefaultValue ? $el.data('default-value') : value;
         $el.find('input[type=text], textarea, select').val(value);
-        $el.find('.with-select2').val(value.split(',')).change();
+        $el.find('.with-select2').val(Array.isArray(value) ? value : value.split(',')).change();
         $el.find('input[type=radio]').each(function(i, field) {
           var $field = $(field);
 
@@ -495,6 +495,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	replaceHolders: function(html) {
 		var labels = this.display.find('tbody.labels-row');
 		var last = this.display.find('tbody.controls-row');
+		$('select', this.display).select2('close');
 		this.$scope.$destroy();
 
 		var old = this.display;

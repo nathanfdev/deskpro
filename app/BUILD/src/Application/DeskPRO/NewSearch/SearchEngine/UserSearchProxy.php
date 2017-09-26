@@ -106,7 +106,7 @@ class UserSearchProxy implements UserSearchInterface
      *
      * @return Elastic\UserSearch|SearchEngine
      */
-    protected function es()
+    public function es()
     {
         if ($this->es) {
             return $this->es;
@@ -121,7 +121,7 @@ class UserSearchProxy implements UserSearchInterface
     /**
      * @return Mysql\UserSearch|SearchEngine
      */
-    protected function dbs()
+    public function dbs()
     {
         if ($this->dbs) {
             return $this->dbs;

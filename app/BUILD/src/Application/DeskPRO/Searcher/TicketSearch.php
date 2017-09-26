@@ -1463,6 +1463,17 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_CATEGORY:
                         $this->affected_fields[] = 'ticket.category_id';
 
+                        if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
+                            $choice = (array) $choice;
+                        }
+
+                        $childIds = App::getDb()->fetchAllCol('SELECT * FROM ticket_categories WHERE parent_id IN (:parent_id)', [
+                            'parent_id' => implode(', ', $choice),
+                        ]);
+
+                        $choice = array_merge($choice, $childIds);
+                        $choice = array_unique($choice, \SORT_NUMERIC);
+
                         if (count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_CATEGORY;
                         }
@@ -1471,6 +1482,17 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_PRODUCT:
                         $this->affected_fields[] = 'ticket.product_id';
+
+                        if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
+                            $choice = (array) $choice;
+                        }
+
+                        $childIds = App::getDb()->fetchAllCol('SELECT * FROM products WHERE parent_id IN (:parent_id)', [
+                            'parent_id' => implode(', ', $choice),
+                        ]);
+
+                        $choice = array_merge($choice, $childIds);
+                        $choice = array_unique($choice, \SORT_NUMERIC);
 
                         if (count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_PRODUCT;
