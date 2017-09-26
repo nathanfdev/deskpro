@@ -44,9 +44,12 @@
                 <span ng-click="makeChoice(report)" class="mark"></span>
 
                 <h1>
-                    <dp-report-variables change-widget-params="changeWidgetParams(params)" report-id="report.id"
-                                         value-to-decorate="report.title"
-                                         possible-values="groupParams"></dp-report-variables>
+                    <dp-report-variables
+                            widget="widget"
+                            change-widget-params="changeWidgetParams(params)"
+                            report="report"
+                            possible-values="groupParams">
+                    </dp-report-variables>
                 </h1>
 
                 <p>

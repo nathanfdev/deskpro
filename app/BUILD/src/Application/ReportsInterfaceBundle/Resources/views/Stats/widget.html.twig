@@ -104,13 +104,13 @@
                         </option>
                     </select>
 
-                    <select ui-select2 style="min-width: 200px;" ng-model="var.table" ng-if="var.type != 'dates'">
-                        <option ng-repeat="table in tables[var.type]" ng-value="table" ng-selected='table == var.table'>
+                    <select ui-select2 style="min-width: 200px;" ng-model="var.field_type" ng-if="var.type != 'dates'">
+                        <option ng-repeat="fieldType in fieldTypes[var.type]" ng-value="table" ng-selected='fieldType == var.field_type'>
                             {{ ng_var('table') }}
                         </option>
                     </select>
                     <select style="min-width: 200px;" ng-model="var.default" ui-select2="" ng-if="var.type != 'dates'">
-                        <option ng-repeat='(key, value) in groupParams[var.type][var.table]' ng-value="key" ng-selected="var.default == key">
+                        <option ng-repeat='(key, value) in groupParams[var.type][var.fieldType]' ng-value="key" ng-selected="var.default == key">
                             {{ ng_var('value.0') }}
                         </option>
                     </select>

@@ -99,7 +99,7 @@ class DashboardWidgetController extends AbstractController
             ->setReport($tab)
             ->setWidget($reportWidget);
         if (isset($postData['variables'])) {
-            $widget->setVariables(explode(',', $postData['variables']));
+            $widget->setVariables($postData['variables']);
         }
         $this->em->persist($widget);
         $this->em->flush();
