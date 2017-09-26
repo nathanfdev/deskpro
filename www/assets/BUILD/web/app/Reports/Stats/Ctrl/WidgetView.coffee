@@ -4,7 +4,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     widget_id = parseInt($stateParams.widget_id)
     $scope.widget = { query_parts: {}, variables: []}
     $scope.groupParams = {}
-    $scope.tables = {}
+    $scope.fieldTypes = {}
 
     if(widget_id)
       Api.sendGet('/reports/widget/' + widget_id).then((r) ->
@@ -14,7 +14,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     Api.sendGet('/reports/widget/group-params').then((r) ->
       $scope.groupParams = r.data
       for key, config of r.data
-        $scope.tables[key] = Object.keys r.data[key]
+        $scope.fieldTypes[key] = Object.keys r.data[key]
     )
 
     $scope.editor_conf = (conf = {}) ->

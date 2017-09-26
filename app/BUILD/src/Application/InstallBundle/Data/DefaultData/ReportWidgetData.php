@@ -792,7 +792,8 @@ LIMIT 100',
                 ->setDescription($data['description'])
                 ->setDisplayTypes(explode(',', $data['display_types']))
                 ->setLabels((array) $data['labels'])
-                ->setIsCustom(false);
+                ->setIsCustom(false)
+                ->setVariables(json_decode($data['variables'], true));
             $em->persist($report);
         }
 
