@@ -64,10 +64,8 @@ class TicketDepartmentsController extends AbstractDepartmentsController
     /**
      * {@inheritdoc}
      */
-    protected function getAllowedDepartmentsId()
+    protected function getAllowedDepartments()
     {
-        $permissionBag = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
-
-        return $permissionBag->getAllowedTicketDepartmentIds();
+        return $this->get('data.departments')->getTicketDepartmentsForPerson($this->getUser());
     }
 }
