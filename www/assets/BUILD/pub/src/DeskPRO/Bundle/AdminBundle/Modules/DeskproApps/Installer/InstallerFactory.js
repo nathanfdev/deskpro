@@ -1,4 +1,5 @@
 import React from 'react';
+import uuid from 'node-uuid';
 
 import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
@@ -8,6 +9,9 @@ import { ManifestLoader } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { InstallerContainer } from './Components';
 import { InstallerContainerProps } from './InstallerContainerProps';
+
+
+const INSTALLER_TARGET = 'install';
 
 class InstallerFactory extends React.Component {
   /**
@@ -21,25 +25,22 @@ class InstallerFactory extends React.Component {
 
     const manifestLoader = new ManifestLoader(api);
     const loadAppManifest = manifestLoader.loadApp.bind(manifestLoader);
-    const installerProps = new InstallerContainerProps({ loadAppManifest });
+    const containerProps = new InstallerContainerProps({ loadAppManifest });
 
     return class extends React.Component {
       render() {
-        installerProps.setRouteProps(this.props);
+        containerProps.setRouteProps(this.props);
         return (
-          <InstallerContainer {...installerProps.toJS()}>
+          <InstallerContainer {...containerProps.toJS()}>
             {(manifest) => {
-              // const location = 'install';
-              const location = 'ticket-sidebar';
+              const appConfiguration = AppsRegistry.appConfiguration(manifest, config);
+              const widgetsConfigList = [AppsRegistry.createWidget(INSTALLER_TARGET, appConfiguration)];
 
-              const registry = AppsRegistry.fromJS([manifest], config);
-              const widgetsConfigList = registry.getWidgetConfigByTargetType(location);
-              // const context = new Context({id: 5, location, type: "app", entityId: 1});
               const context = new Context({
-                id:       5,
-                location,
-                type:     'person',
-                entityId: 1,
+                id:       uuid.v4(),
+                INSTALLER_TARGET,
+                type:     'app',
+                entityId: appConfiguration.applicationId,
                 manifest
               });
               const props = DeskproAppContainerProps.create({ context, widgetsConfigList });
