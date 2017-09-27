@@ -378,15 +378,26 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
 
         // usergroups
+        $userGroups   = $this->em->getRepository(Usergroup::class)->findAll();
+        $userGroupIds = new ArrayCollection();
         if (!$chatSettings->getUserGroups() instanceof ArrayCollection) {
-            $userGroups   = $this->em->getRepository(Usergroup::class)->findAll();
-            $userGroupIds = new ArrayCollection();
             foreach ($userGroups as $userGroup) {
                 $userGroupIds->add($userGroup->getId());
             }
+        } else {
+            $existUserGroupsIds = [];
+            foreach ($userGroups as $userGroup) {
+                $existUserGroupsIds[$userGroup->getId()] = $userGroup->getId();
+            }
 
-            $chatSettings->setUserGroups($userGroupIds);
+            foreach ($chatSettings->getUserGroups() as $userGroupId) {
+                if (isset($existUserGroupsIds[$userGroupId])) {
+                    $userGroupIds->add($userGroupId);
+                }
+            }
         }
+
+        $chatSettings->setUserGroups($userGroupIds);
 
         return $model;
     }
