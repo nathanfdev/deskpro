@@ -8,9 +8,10 @@ const DEBUG = true;
 
 export class InstallerContainer extends React.Component {
   static propTypes = {
-    app:             PropTypes.string.isRequired,
-    loadAppManifest: PropTypes.func.isRequired,
-    children:        PropTypes.func.isRequired
+    app:                   PropTypes.string.isRequired,
+    loadAppManifest:       PropTypes.func.isRequired,
+    loadInstallerManifest: PropTypes.func.isRequired,
+    children:              PropTypes.func.isRequired
   };
 
   constructor(props)  {
@@ -19,21 +20,28 @@ export class InstallerContainer extends React.Component {
   }
 
   componentDidMount()  {
-    const { app, loadAppManifest } = this.props;
+    const { app, loadAppManifest, loadInstallerManifest } = this.props;
 
-    loadAppManifest(app).then((manifest) => {
-      this.setState({ manifest, screen: 'normal' });
-    }).catch((err) => { // eslint-disable-line no-unused-expressions, no-unused-vars
-      const state = { error: InstallerErrors.UNEXPECTED_ERROR, screen: 'error' };
-      this.setState(state);
-    });
+    let appManifest;
+
+    loadAppManifest(app)
+      .then((manifest) => {
+        appManifest = manifest;
+        return loadInstallerManifest(manifest);
+      })
+      .then(installerManifest => ({ screen: 'normal', installerManifest, appManifest }))
+      .catch(err =>  // eslint-disable-line no-unused-expressions, no-unused-vars
+         ({ screen: 'error', error: InstallerErrors.UNEXPECTED_ERROR }))
+      .then(state => this.setState(state))
+    ;
   }
 
   initState()  {
     this.state = {
-      error:    null,
-      screen:   'loading',
-      manifest: null
+      error:             null,
+      screen:            'loading',
+      appManifest:       null,
+      installerManifest: null,
     };
   }
 
@@ -50,8 +58,8 @@ export class InstallerContainer extends React.Component {
     }
 
     if (screen === 'normal') {
-      const { manifest } = this.state; // eslint-disable-line no-unused-expressions, no-unused-vars
-      return this.props.children(manifest);
+      const { appManifest, installerManifest } = this.state; // eslint-disable-line no-unused-expressions, no-unused-vars
+      return this.props.children({ appManifest, installerManifest });
     }
 
     if (screen === 'loading') {

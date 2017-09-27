@@ -2,9 +2,10 @@ export class InstallerContainerProps {
   /**
    * @param {string} [app]
    * @param {function} [loadAppManifest]
+   * @param {function} [loadInstallerManifest]
    */
-  constructor({ app, loadAppManifest })  {
-    this.state = { app, loadAppManifest };
+  constructor({ app, loadAppManifest, loadInstallerManifest })  {
+    this.state = { app, loadAppManifest, loadInstallerManifest };
   }
 
   /**
@@ -29,6 +30,20 @@ export class InstallerContainerProps {
   }
 
   /**
+   * @type {function}
+   */
+  get loadInstallerManifest()  {
+    return this.state.loadInstallerManifest;
+  }
+
+  /**
+   * @type {function}
+   */
+  set loadInstallerManifest(loader)  {
+    this.state.loadInstallerManifest = loader;
+  }
+
+  /**
    * @param {{}} params
    * @return {InstallerContainerProps}
    */
@@ -43,7 +58,6 @@ export class InstallerContainerProps {
   }
 
   toJS() { return { ...this.state }; }
-
 
 }
 

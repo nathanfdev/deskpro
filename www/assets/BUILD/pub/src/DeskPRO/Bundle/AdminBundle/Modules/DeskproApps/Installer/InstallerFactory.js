@@ -11,7 +11,7 @@ import { InstallerContainer } from './Components';
 import { InstallerContainerProps } from './InstallerContainerProps';
 
 
-const INSTALLER_TARGET = 'install';
+const TARGET_INSTALL = 'install';
 
 class InstallerFactory extends React.Component {
   /**
@@ -23,25 +23,30 @@ class InstallerFactory extends React.Component {
     builder.addWindowParams(windowObject);
     const config = builder.build();
 
+    const containerProps = new InstallerContainerProps({});
     const manifestLoader = new ManifestLoader(api);
-    const loadAppManifest = manifestLoader.loadApp.bind(manifestLoader);
-    const containerProps = new InstallerContainerProps({ loadAppManifest });
+    containerProps.loadAppManifest = manifestLoader.loadApp.bind(manifestLoader);
+
+    if (config.environment === 'development') {
+      containerProps.loadInstallerManifest = manifestLoader.loadDev.bind(manifestLoader, config.endpoint);
+    } else {
+      containerProps.loadInstallerManifest = manifest => manifest;
+    }
 
     return class extends React.Component {
       render() {
         containerProps.setRouteProps(this.props);
         return (
           <InstallerContainer {...containerProps.toJS()}>
-            {(manifest) => {
-              const appConfiguration = AppsRegistry.appConfiguration(manifest, config);
-              const widgetsConfigList = [AppsRegistry.createWidget(INSTALLER_TARGET, appConfiguration)];
+            {({ appManifest, installerManifest }) => {
+              const installerConfiguration = AppsRegistry.appConfiguration(installerManifest, config);
+              const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
 
               const context = new Context({
                 id:       uuid.v4(),
-                INSTALLER_TARGET,
+                target:   TARGET_INSTALL,
                 type:     'app',
-                entityId: appConfiguration.applicationId,
-                manifest
+                entityId: appManifest.application_id
               });
               const props = DeskproAppContainerProps.create({ context, widgetsConfigList });
 
