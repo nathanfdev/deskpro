@@ -82,11 +82,13 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
+                $context->getLogger()->debug('[SendAgentEmail] notify_list all agents');
                 $agents = $this->getContainer()->getAgentData()->getAgents();
                 break;
             }
 
             if ($aid == 'notify_list') {
+                $context->getLogger()->debug('[SendAgentEmail] notify_list using notify_list');
                 if ($is_notif_disabled) {
                     continue;
                 }
@@ -135,10 +137,16 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         }
 
         if ($context->getVars()->has('mention_agents')) {
+            $aids = array_map(function ($a) {
+                return $a->getId();
+            }, $context->getVars()->get('mention_agents'));
+            $context->getLogger()->debug('[SendAgentEmail] notify_list adding mentioned agents: '.implode(', ', $aids));
             $agents = array_merge($agents, array_values($context->getVars()->get('mention_agents')));
         }
 
         if (!$agents) {
+            $context->getLogger()->debug('[SendAgentEmail] notify_list is empty');
+
             return [];
         }
 
@@ -149,6 +157,11 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $set_agents[$a->getId()] = $a;
             }
         }
+
+        $aids = array_map(function ($a) {
+            return $a->getId();
+        }, $set_agents);
+        $context->getLogger()->debug('[SendAgentEmail] notify_list final list: '.implode(', ', $aids));
 
         return array_values($set_agents);
     }
@@ -279,7 +292,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $vars['is_my_mention'] = true;
             }
 
-            $vars['is_mention_email'] = $context->getVars()->has('mention_agents');
+            $vars['is_mention_email'] = $context->getVars()->has('mention_agents') ? true : false;
 
             try {
                 $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
