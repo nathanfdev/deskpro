@@ -30,18 +30,9 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 
 use JMS\Serializer\Annotation as JMS;
 
-/**
- * Class AppManifestSetting.
- */
-class AppSetting
-{
-    /**
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $name;
 
+class CustomField
+{
     /**
      * @JMS\Type("string")
      *
@@ -51,42 +42,17 @@ class AppSetting
 
     /**
      * @JMS\Type("string")
-     * @JMS\SerializedName("defaultValue")
      *
      * @var string
      */
-    private $defaultValue;
+    private $alias;
 
     /**
      * @JMS\Type("boolean")
-     * @JMS\SerializedName("isPrivate")
      *
-     * @var bool
+     * @var string
      */
-    private $isPrivate;
-
-    /**
-     * @JMS\Type("array")
-     *
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
+    private $enabled;
 
     /**
      * @return string
@@ -99,7 +65,7 @@ class AppSetting
     /**
      * @param string $type
      */
-    public function setType($type)
+    public function setType( $type )
     {
         $this->type = $type;
     }
@@ -107,48 +73,33 @@ class AppSetting
     /**
      * @return string
      */
-    public function getDefaultValue()
+    public function getAlias()
     {
-        return $this->defaultValue;
+        return $this->alias;
     }
 
     /**
-     * @param string $defaultValue
+     * @param string $alias
      */
-    public function setDefaultValue($defaultValue)
+    public function setAlias( $alias )
     {
-        $this->defaultValue = $defaultValue;
+        $this->alias = $alias;
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isPrivate()
+    public function getEnabled()
     {
-        return $this->isPrivate;
+        return $this->enabled;
     }
 
     /**
-     * @param bool $isPrivate
+     * @param string $enabled
      */
-    public function setIsPrivate($isPrivate)
+    public function setEnabled( $enabled )
     {
-        $this->isPrivate = $isPrivate;
+        $this->enabled = $enabled;
     }
 
-    /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
-    }
 }

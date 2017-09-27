@@ -84,13 +84,22 @@ class AppManifest
     private $scope;
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppSetting>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting>")
      * @JMS\Expose()
      * @JMS\SerializedName("settings")
      *
-     * @var AppManifest\AppSetting[]
+     * @var AppManifest\Setting[]
      */
     private $settings = [];
+
+    /**
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("customFields")
+     *
+     * @var AppManifest\CustomField[]
+     */
+    private $customFields = [];
 
     /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppTarget>")
@@ -244,7 +253,7 @@ class AppManifest
     }
 
     /**
-     * @return AppManifest\AppSetting[]
+     * @return AppManifest\Setting[]
      */
     public function getSettings()
     {
@@ -252,7 +261,7 @@ class AppManifest
     }
 
     /**
-     * @param AppManifest\AppSetting[] $settings
+     * @param AppManifest\Setting[] $settings
      *
      * @return $this
      */
@@ -389,5 +398,21 @@ class AppManifest
     public function setAppVersion($appVersion)
     {
         $this->appVersion = $appVersion;
+    }
+
+    /**
+     * @return AppManifest\CustomField[]
+     */
+    public function getCustomFields()
+    {
+        return $this->customFields;
+    }
+
+    /**
+     * @param AppManifest\CustomField[] $customFields
+     */
+    public function setCustomFields( $customFields )
+    {
+        $this->customFields = $customFields;
     }
 }
