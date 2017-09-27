@@ -26,104 +26,56 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use JMS\Serializer\Annotation as JMS;
 
-
-class CustomField
+class ApplicationStatus
 {
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("boolean")
      *
-     * @var string
+     * @var boolean
      */
-    private $type;
-
-    /**
-     * @JMS\Type("string")
-     * @JMS\SerializedName("attachedTo")
-     *
-     * @var string
-     */
-    private $attachedTo;
-
-    /**
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    private $alias;
+    private $isDev;
 
     /**
      * @JMS\Type("boolean")
      *
-     * @var string
+     * @var boolean
      */
-    private $enabled;
+    private $isInstalled;
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getType()
+    public function isIsDev()
     {
-        return $this->type;
+        return $this->isDev;
     }
 
     /**
-     * @param string $type
+     * @param bool $isDev
      */
-    public function setType( $type )
+    public function setIsDev( $isDev )
     {
-        $this->type = $type;
+        $this->isDev = $isDev;
     }
 
     /**
-     * @return string
+     * @return bool
      */
-    public function getAlias()
+    public function isIsInstalled()
     {
-        return $this->alias;
+        return $this->isInstalled;
     }
 
     /**
-     * @param string $alias
+     * @param bool $isInstalled
      */
-    public function setAlias( $alias )
+    public function setIsInstalled( $isInstalled )
     {
-        $this->alias = $alias;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param string $enabled
-     */
-    public function setEnabled( $enabled )
-    {
-        $this->enabled = $enabled;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAttachedTo()
-    {
-        return $this->attachedTo;
-    }
-
-    /**
-     * @param string $attachedTo
-     */
-    public function setAttachedTo( $attachedTo )
-    {
-        $this->attachedTo = $attachedTo;
+        $this->isInstalled = $isInstalled;
     }
 
 }

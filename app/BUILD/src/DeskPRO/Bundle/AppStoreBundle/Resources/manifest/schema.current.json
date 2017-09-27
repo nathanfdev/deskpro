@@ -34,7 +34,6 @@
     "targets": {
       "type": "array",
       "minItems": 1,
-      "maxItems": 1,
       "items": {
         "$ref": "#/definitions/target"
       }
@@ -83,6 +82,15 @@
         "name" : { "type" : "string" }
       },
       "required": [ "name", "permRead", "permWrite", "isBackendOnly" ]
+    },
+
+    "validator": {
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["regex"] },
+        "pattern": { "type": "string" }
+      },
+      "required": [ "type", "pattern" ]
     },
 
     "settingCommon": {
@@ -151,10 +159,11 @@
       "type": "object",
       "properties": {
         "type": { "type": "string", "enum": ["dataJson", "dataList", "data", "date", "dateTime", "text", "textarea", "textEmail", "textUrl", "toggle", "choice"] },
-        "alias": { "type": "string" },
+        "alias": { "type": "string", "pattern": "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*" },
+        "attachedTo": { "type": "string", "enum": ["ticket", "person", "organization"] },
         "enabled": { "type": "boolean" }
       },
-      "required": [ "type", "alias", "enabled" ]
+      "required": [ "type", "alias", "enabled", "attachedTo" ]
     },
 
     "author": {

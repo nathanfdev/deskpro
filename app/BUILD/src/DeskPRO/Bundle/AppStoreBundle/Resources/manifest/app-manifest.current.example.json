@@ -12,7 +12,8 @@
   "isSingle": true,
   "scope": "agent",
   "targets": [
-    { "target": "ticket-sidebar", "url": "html/index.html" }
+    { "target": "ticket-sidebar", "url": "html/index.html" },
+    { "target": "install", "url": "html/install.html" }
   ],
   "storage": [
     {

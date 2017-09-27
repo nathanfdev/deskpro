@@ -42,6 +42,8 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class AppsController.
@@ -49,6 +51,20 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
  * @ApiModes("all")
  * @Rest\Route("/apps")
  * @ApiUnstable()
+ * @ApiDoc(
+ *     target="updateAppAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\ApiBundle\Controller\Apps\ApplicationStatus",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\CustomDefTicket"
+ *      }
+ *     },
+ *     output="DeskPRO\Bundle\AppBundle\Entity\AppStore\App",
+ *     statusCodes={
+ *         200="Application updated",
+ *         400="Invalid request"
+ *     }
+ *  )
  */
 class AppsController extends BaseController
 {
@@ -172,6 +188,62 @@ class AppsController extends BaseController
     }
 
     /**
+     * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     *
+     * @param Entity\AppStore\App $application
+     * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
+     */
+    public function updateAppAction(Entity\AppStore\App $application = null, Request $request)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        //parse response body
+        $body = $request->getContent();
+        $representation = json_decode($body, $associative = true);
+
+        $properties = [
+            'is_dev' => function(Entity\AppStore\App $app, $value) {
+                if (is_bool($value)) {
+                    $app->setIsDev($value);
+                    return true;
+                }
+                return false;
+            },
+            'is_installed' => function(Entity\AppStore\App $app, $value) {
+                if (is_bool($value)) {
+                    $app->setIsInstalled($value);
+                    return true;
+                }
+                return false;
+            }
+        ];
+
+        if (!is_array($representation)) {
+            throw new BadRequestHttpException('could not decode value');
+        }
+
+        $validRequest = false;
+        foreach ($properties as $name => $mapper) {
+            if (array_key_exists($name, $representation)) {
+                $validRequest = $validRequest | $mapper($application, $representation[$name]);
+            }
+        }
+
+        if (! $validRequest)  {
+            throw new BadRequestHttpException('invalid representation');
+        }
+
+        $em = $this->getManager();
+        $em->persist($application);
+        $em->flush();
+
+        return $this->wrap($application);
+    }
+
+    /**
      * @Rest\Delete("/{application}")
      *
      * @param Entity\AppStore\AppInstance $application
@@ -273,11 +345,9 @@ class AppsController extends BaseController
             throw new NotFoundHttpException('could not find application');
         }
 
-        $data = [
-            'is_dev' => $application->getIsDev(),
-            'is_installed' => $application->getIsInstalled()
-        ];
-
-        return $data;
+        $status = new ApplicationStatus();
+        $status->setIsDev($application->getIsDev());
+        $status->setIsInstalled($application->getIsInstalled());
+        return $status;
     }
 }
