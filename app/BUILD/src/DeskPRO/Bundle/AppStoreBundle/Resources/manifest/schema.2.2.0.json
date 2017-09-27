@@ -40,14 +40,7 @@
       }
     },
     "settings": {
-      "type": "array",
-      "minItems": 0,
-      "items": { "$ref": "#/definitions/setting" }
-    },
-    "customFields": {
-      "type": "array",
-      "minItems": 0,
-      "items": { "$ref": "#/definitions/customField" }
+      "type": "array"
     },
     "version": {
       "type": "string"
@@ -84,79 +77,6 @@
       },
       "required": [ "name", "permRead", "permWrite", "isBackendOnly" ]
     },
-
-    "settingCommon": {
-      "type": "object",
-      "properties": {
-        "name": { "type": "string" },
-        "title": { "type": "string" },
-        "required": { "type": "boolean" },
-        "isBackendOnly": { "type": "boolean" }
-      },
-      "required": [ "name", "title", "required" ]
-    },
-
-    "settingChoice": {
-      "type": "object",
-      "properties": {
-        "type": { "type": "string", "enum": ["choice"] },
-        "multi": { "type": "boolean" },
-        "choices": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "title": { "type": "string" },
-              "value": { "type": "string" }
-            },
-            "required": [ "value" ]
-          }
-        }
-      },
-      "required": [ "type", "multi", "choices" ],
-      "allOf": [ { "$ref": "#/definitions/settingCommon" } ]
-    },
-
-    "settingText": {
-      "type": "object",
-      "properties": {
-        "type": { "type": "string", "enum": ["text", "textarea"] },
-        "defaultValue": { "type": "string" },
-        "validator": { "$ref": "#/definitions/validator" }
-      },
-      "required": [ "type", "defaultValue" ],
-      "allOf": [ { "$ref": "#/definitions/settingCommon" } ]
-    },
-
-    "settingBoolean": {
-      "type": "object",
-      "properties": {
-        "type": { "type": "string", "enum": ["boolean"] },
-        "defaultValue": { "type": "boolean" }
-      },
-      "required": [ "type", "defaultValue" ],
-      "allOf": [ { "$ref": "#/definitions/settingCommon" } ]
-    },
-
-    "setting": {
-      "type": "object",
-      "anyOf": [
-        { "$ref": "#/definitions/settingText" },
-        { "$ref": "#/definitions/settingChoice" },
-        { "$ref": "#/definitions/settingBoolean" }
-      ]
-    },
-
-    "customField": {
-      "type": "object",
-      "properties": {
-        "type": { "type": "string", "enum": ["dataJson", "dataList", "data", "date", "dateTime", "text", "textarea", "textEmail", "textUrl", "toggle", "choice"] },
-        "alias": { "type": "string" },
-        "enabled": { "type": "boolean" }
-      },
-      "required": [ "type", "alias", "enabled" ]
-    },
-
     "author": {
       "type": "object",
       "properties": {
@@ -201,7 +121,7 @@
             "org-hierarchy-before", "org-hierarchy-after", "org-footer",
             "org-summary-new-tab", "org-content-box-new-tab", "org-notes-new-tab",
 
-            "background", "install"
+            "background"
           ]
         },
         "url": {

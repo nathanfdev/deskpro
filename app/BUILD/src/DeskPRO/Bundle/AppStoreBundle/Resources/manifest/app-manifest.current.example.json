@@ -1,43 +1,129 @@
 {
-  "appVersion": "0.1.0",
+  "appVersion": "0.2.3",
   "author": {
     "name": "DeskPRO Apps",
     "email": "apps@deskpro.com",
     "url": "https://www.deskpro.com"
   },
-  "description": "A foundation to get you started developing React DeskPro Apps with the best developer experience ",
-  "name": "@deskproapps/app-boilerplate-react",
-  "version": "2.2.0",
-  "title": "Your app title",
+  "description": "app-description",
+  "name": "package-name",
+  "version": "2.3.0",
+  "title": "app-title",
   "isSingle": true,
   "scope": "agent",
-  "storage" : [
+  "targets": [
+    { "target": "ticket-sidebar", "url": "html/index.html" }
+  ],
+  "storage": [
     {
-      "name": "settings",
+      "name": "install",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "auth",
+      "isBackendOnly": false,
+      "permRead": "OWNER",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "cards",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "EVERYBODY"
+    },
+
+    {
+      "name": "apiKey",
+      "isBackendOnly": true,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "welcomeMessage",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "foobar",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "yesorno",
       "isBackendOnly": false,
       "permRead": "EVERYBODY",
       "permWrite": "OWNER"
     }
   ],
-  "targets": [
-    {
-      "target": "ticket-sidebar",
-      "url": "html/index.html"
-    }
-  ],
   "settings": [
     {
-      "name": "my_setting",
-      "type": "text/textarea/select/hidden",
-      "defaultValue": "foo",
-      "isPrivate": false,
+      "type": "text",
+      "name": "apiKey",
+      "title": "Third party api key",
 
-      "options": [
-        {"name": "example_option", "value": "foo"}
+      "defaultValue": "",
+      "required": true,
+      "validator": {
+        "type": "regex",
+        "pattern": "^.+"
+      },
+      "isBackendOnly": true
+    },
+    {
+      "type": "textarea",
+      "name": "welcomeMessage",
+      "title": "Welcome message displayed by the app",
+
+      "defaultValue": "",
+      "required": true,
+      "validator": {
+        "type": "regex",
+        "pattern": "^.+"
+      }
+    },
+    {
+      "type": "choice",
+      "name": "foobar",
+      "title": "choose foo or bar",
+
+      "defaultValue": "foo",
+      "required": true,
+      "multi": false,
+      "choices": [
+        { "title": "Bar", "value": "bar" },
+        { "title": "Foo", "value": "foo" }
       ]
+    },
+    {
+      "type": "boolean",
+      "name": "yesorno",
+      "title": "choose yes or no",
+
+      "defaultValue": false,
+      "required": true
     }
   ],
-  "deskproApiTags": ["tickets.*"],
+
+  "customFields" : [
+    {
+      "type": "dataJson",
+      "alias": "trello-cards",
+      "enabled": true
+    },
+    {
+      "type": "date",
+      "alias": "adate",
+      "enabled": true
+    }
+  ],
+
+  "deskproApiTags": [
+    "tickets.*"
+  ],
   "externalApis": [
     "/^https?://([^.]+\\.)*mailchimp.com/?.*$/"
   ]
