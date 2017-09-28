@@ -2346,6 +2346,13 @@ define(function() {
     controller: 'Admin_Apps_Ctrl_PackageInfo'
   });
 
+  routes.push({
+    id: 'apps.apps.installer-v2',
+    url: '/app-installer/{appName:[a-zA-Z0-9\\-_\\.]+}',
+    templateName: 'Apps/install-app-v2.html',
+    controller: 'Admin_Apps_Ctrl_InstallAppV2'
+  });
+
   //###
   //# API Keys
   //###

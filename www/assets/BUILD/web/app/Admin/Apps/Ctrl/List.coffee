@@ -142,8 +142,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             @normalizedPackageName = data.package_name.replace(/\//, '-').replace('@', '');
             me.initialLoad().then(->
               $modalInstance.dismiss()
+
               me.$timeout(->
-                me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
+                if (data.version)
+                  me.$state.go('apps.apps.installer-v2', {appName: 'deskpro-app-trello'})
+                else
+                  me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
               , 250)
             )
 
