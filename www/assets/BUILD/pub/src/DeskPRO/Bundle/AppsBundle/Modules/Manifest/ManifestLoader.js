@@ -23,7 +23,7 @@ export class ManifestLoader {
   loadApp(app)  {
     return this.apiClient.sendGet(`DP_API/apps/${app}?include=app`)
       .then(response => response.data)
-      .then(readAppManifest)
+      .then(({ data, linked }) => readAppManifest(data, linked))
     ;
   }
 

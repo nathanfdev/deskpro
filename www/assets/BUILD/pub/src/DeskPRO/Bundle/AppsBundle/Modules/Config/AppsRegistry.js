@@ -4,7 +4,7 @@ import { AppConfiguration, WidgetConfiguration }  from '../Domain';
 export class AppsRegistry {
 
   /**
-   * @param {Array<Object>} manifest
+   * @param {{}} manifest
    * @param {AppsConfig} config
    * @return {AppConfiguration}
    */

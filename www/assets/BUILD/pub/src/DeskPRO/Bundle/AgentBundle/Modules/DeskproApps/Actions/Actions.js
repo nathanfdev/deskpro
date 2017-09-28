@@ -37,7 +37,7 @@ const loadAppsHandler = ({ api, config }) => {
   const loader = new ManifestLoader(api);
 
   if (isDev) {
-    return loader.loadDev(config.endpoint).then(manifests => ({ config, manifests }));
+    return loader.loadDev(config.endpoint).then(manifests => ({ config, manifests: [manifests] }));
   }
 
   return loader.loadAll().then(manifests => ({ config, manifests }));
