@@ -615,11 +615,15 @@ class FilterChangeDetector
      */
     public function getOrCreateSearcher(array $filter, array $forceTerms = [])
     {
+        return LegacyTicketFilter::createSearcher($filter['sys_name'], $filter['terms'], $forceTerms);
+
+        /* todo -- is there some kind of state being saved in the object making it unsuitable for caching?
         $key = md5($filter['sys_name'].serialize(array_merge($filter['terms'], $forceTerms)));
         if (!isset($this->cachedSearchers[$key])) {
             $this->cachedSearchers[$key] = LegacyTicketFilter::createSearcher($filter['sys_name'], $filter['terms'], $forceTerms);
         }
 
         return $this->cachedSearchers[$key];
+        */
     }
 }
