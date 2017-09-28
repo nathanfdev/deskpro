@@ -522,7 +522,7 @@ class PortalController extends AbstractController
      */
     public function appleAppSiteAssociationAction()
     {
-        $response = [
+        $data = [
             'applinks' => [
                 'apps'    => [],
                 'details' => [
@@ -534,7 +534,11 @@ class PortalController extends AbstractController
             ],
         ];
 
-        return new JsonResponse($response);
+        $response = new JsonResponse();
+        $response->setEncodingOptions(\JSON_UNESCAPED_SLASHES);
+        $response->setData($data);
+
+        return $response;
     }
 
     /**
