@@ -65,7 +65,8 @@ class ApiCaptchaType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'constraints' => [
+            'error_bubbling' => false,
+            'constraints'    => [
                 new AppAssert\Captcha\ApiCaptcha(),
             ],
         ]);
