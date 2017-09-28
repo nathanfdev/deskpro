@@ -71,7 +71,7 @@ class AppParamConverter implements ParamConverterInterface
      */
     private function convert($from)
     {
-        if ($this->identifierParser->recognizeApplicationName($from)) {
+        if ($this->identifierParser->recognizeApplicationReference($from)) {
             return $this->finder->findByName($from);
         }
 

@@ -101,6 +101,8 @@ class ApplicationManagerService
 
         $app->setManifest(json_decode($bundle->getManifestAsString(), true));
         $app->setName($manifest->getName());
+        $app->setIsInstalled(false);
+        $app->setIsDev(false);
 
         //save blob assets
         foreach ($app->getAssets() as $asset) {
