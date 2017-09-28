@@ -239,8 +239,8 @@ class NotificationController extends BaseController
                     /** @var DeskproClientModel $deskproClientModel */
                     $deskproClientModel = $form->getData();
                     $settingRepo->updateSetting('notification.settings.deskpro_client.host', $deskproClientModel->getHost());
-                    $settingRepo->updateSetting('notification.settings.pusher_client.secret', $deskproClientModel->getSecret());
-                    $settingRepo->updateSetting('notification.settings.pusher_client.port', $deskproClientModel->getPort());
+                    $settingRepo->updateSetting('notification.settings.deskpro_client.secret', $deskproClientModel->getSecret());
+                    $settingRepo->updateSetting('notification.settings.deskpro_client.port', $deskproClientModel->getPort());
                 } else {
                     throw new InvalidFormException($form);
                 }
