@@ -4357,6 +4357,37 @@ article.content-message .content .body-text .fade-bar {
 		}
 	}
 }
+.message-shortcut-list {
+	position: absolute;
+	z-index: 10000;
+	background: white;
+	border: 1px solid #BBC8D4;
+	.rounded(3px);
+	box-sizing: content-box;
+
+	li {
+		height: 18px;
+		padding: 5px;
+		vertical-align: middle;
+		cursor: pointer;
+		border-top: 1px solid #BBC8D4;
+		background: none no-repeat;
+		background-position: 4px;
+
+		&:first-child {
+			border-top: none;
+			.border-radius(3px, 3px, 0, 0);
+		}
+
+		&:last-child {
+			.border-radius(0, 0, 3px, 3px);
+		}
+
+		&.selected, &:hover {
+			background-color: #eceef0;
+		}
+	}
+}
 
 
 
