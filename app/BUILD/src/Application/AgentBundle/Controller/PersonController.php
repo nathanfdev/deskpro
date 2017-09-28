@@ -1708,26 +1708,4 @@ class PersonController extends AbstractController
 
         return $this->createJsonResponse($ret);
     }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getNotifierMapAction()
-    {
-        /** @var PersonRepository $personRepo */
-        $personRepo = $this->em->getRepository(Person::class);
-        $agents     = $personRepo->getAgents();
-        $agentMap   = [];
-
-        foreach ($agents as $agent) {
-            $agentMap[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-
-        unset($agentMap[$this->person->getId()]);
-
-        return $this->createJsonResponse($agentMap);
-    }
 }

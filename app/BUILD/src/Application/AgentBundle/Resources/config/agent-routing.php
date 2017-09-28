@@ -517,11 +517,6 @@ $collection->create('agent_team_list', [
     'controller' => 'AgentBundle:Person:listTeams',
     'condition'  => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
 ]);
-$collection->create('agent_notifier_list', [
-    'path'       => '/people/agent_notifier_map.json',
-    'controller' => 'AgentBundle:Person:getNotifierMap',
-    'condition'  => 'request.headers.get("X-Requested-With") == "XMLHttpRequest"',
-]);
 
 $collection->create('agent_person_get_tickets', [
     'path'         => '/person/{person_id}/tickets',
