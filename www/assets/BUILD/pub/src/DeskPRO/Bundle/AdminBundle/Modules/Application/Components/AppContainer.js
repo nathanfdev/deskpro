@@ -74,7 +74,7 @@ class AppContainer extends React.Component {
             </Route> : null}
           <Route
             path="app-installer/:app"
-            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory(window, store))}
+            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory(window.parent || window))}
           />
         </Router>
       </Provider>
