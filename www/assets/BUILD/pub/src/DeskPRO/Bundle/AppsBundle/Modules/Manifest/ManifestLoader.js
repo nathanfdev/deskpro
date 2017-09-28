@@ -1,4 +1,4 @@
-const readAppManifest = ({ data, linked }) => {
+const readAppManifest = (data, linked) => {
   const { application_id: appId, id, targets, name: title } = data;
   const manifest = JSON.parse(JSON.stringify(linked.app[appId].manifest));
   return { ...manifest, application_id: appId, id, targets, title };
@@ -16,7 +16,7 @@ export class ManifestLoader {
   loadAll()  {
     return this.apiClient.sendGet('DP_API/apps?include=app')
       .then(response => response.data)
-      .then(all => all.map(readAppManifest))
+      .then(({ data, linked }) => data.map(manifest => readAppManifest(manifest, linked)))
     ;
   }
 
