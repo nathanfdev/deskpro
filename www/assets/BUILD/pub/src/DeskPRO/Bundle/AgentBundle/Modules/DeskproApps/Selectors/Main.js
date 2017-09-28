@@ -1,20 +1,20 @@
 import { AppsConfig } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 
-export const filterAppConfig =  ({ DeskproAppStore: { Main:state } }) => state.get('apps').toJS();
+export const filterAppConfig =  ({ DeskproApps: { Main:state } }) => state.get('apps').toJS();
 
-export const filterApiToken =  ({ DeskproAppStore: { Main:state } }) => state.get('apiToken');
+export const filterApiToken =  ({ DeskproApps: { Main:state } }) => state.get('apiToken');
 
-export const filterAppstoreConfig =  ({ DeskproAppStore: { Main:state } }) => {
+export const filterAppstoreConfig =  ({ DeskproApps: { Main:state } }) => {
   const configJS = state.get('config').toJS();
   return new AppsConfig(configJS);
 };
 
-export const filterAppManifestsConfig = ({ DeskproAppStore: { Main:state } }) => {
+export const filterAppManifestsConfig = ({ DeskproApps: { Main:state } }) => {
   const manifests = state.get('apps').get('manifests');
   return manifests.toJS();
 };
 
-const filterContexts =  ({ DeskproAppStore: { Main:state } }) => state.get('contexts');
+const filterContexts =  ({ DeskproApps: { Main:state } }) => state.get('contexts');
 
 const createContextsStateSelector = (initialContexts) => {
   let oldContexts = initialContexts;
