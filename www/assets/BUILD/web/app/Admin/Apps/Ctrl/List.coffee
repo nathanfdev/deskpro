@@ -137,17 +137,14 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 
           uploadDone = (data) ->
-            # TODO: this is a hack to allow installation of packages which might be scoped to an organization, for instance
-            # @deskproapps/app-mailchimp
-            @normalizedPackageName = data.package_name.replace(/\//, '-').replace('@', '');
             me.initialLoad().then(->
               $modalInstance.dismiss()
 
               me.$timeout(->
                 if (data.version)
-                  me.$state.go('apps.apps.installer-v2', {appName: 'deskpro-app-trello'})
+                  me.$state.go('apps.apps.installer-v2', {appName: data.package_name})
                 else
-                  me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
+                  me.$state.go('apps.go_apps_install', {name: 'go-apps-' + data.package_name})
               , 250)
             )
 
