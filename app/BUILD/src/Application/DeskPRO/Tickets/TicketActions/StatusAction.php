@@ -158,7 +158,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get the full status (stauts.hidden_status).
+     * Get the full status (status.hidden_status).
      *
      * @return string
      */
