@@ -527,7 +527,7 @@ class PortalController extends AbstractController
                 'apps'    => [],
                 'details' => [
                     [
-                        'appID' => 'PR39D6QFRX.com.deskpro.mobile.ios',
+                        'appID' => 'HC9N5Z797X.com.deskpro.mobile.ios',
                         'paths' => [$this->get('router')->generate('go_to_ticket_ref', ['ref' => '*'])],
                     ],
                 ],
