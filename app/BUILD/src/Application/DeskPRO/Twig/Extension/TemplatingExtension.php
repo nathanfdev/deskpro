@@ -184,6 +184,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('ng_tpl', [$this, 'ngIncTpl'], ['is_safe' => ['html'], 'needs_context' => true]),
             new \Twig_SimpleFunction('js_error_tracking', [$this, 'js_error_tracking'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('isChatAvailable', [$this->container->get('brand_aware_settings_resolver'), 'isChatAvailable']),
+            new \Twig_SimpleFunction('calcGroupedHierarchyCount', [$this, 'calcGroupedHierarchyCount']),
 
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
@@ -1911,5 +1912,24 @@ class TemplatingExtension extends \Twig_Extension
         } else {
             return '<a class="internal_link '.$type.'" href="'.$url.'">'.$title.'</a>';
         }
+    }
+
+    /**
+     * @param array $groupedInfo
+     * @param mixed $category
+     *
+     * @return int
+     */
+    public function calcGroupedHierarchyCount($groupedInfo, array $category)
+    {
+        $count = isset($groupedInfo['counts'][$category['id']]['total']) ? $groupedInfo['counts'][$category['id']]['total'] : 0;
+
+        if (isset($category['children'])) {
+            foreach ($category['children'] as $childCategory) {
+                $count += $this->calcGroupedHierarchyCount($groupedInfo, $childCategory);
+            }
+        }
+
+        return $count;
     }
 }
