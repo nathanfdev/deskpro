@@ -73,8 +73,7 @@ class EntityQueryBuilders
         $qb
             ->from(Entity\AppStore\AppInstance::class, 'i')
             ->select('i')
-            ->where('1')
-            ->where('i.app.id != 1')
+            ->innerJoin('i.app', 'a')
         ;
 
         if ($filter->hasScope()) {
@@ -83,6 +82,14 @@ class EntityQueryBuilders
 
         if ($filter->hasApplicationIdList()) {
             $qb->andWhere('i.app IN (:appIds)')->setParameter('appIds', $filter->getApplicationIdList());
+        }
+
+        if ($filter->hasIsDev()) {
+            $qb->andWhere('a.isDev = :isDev')->setParameter('isDev', $filter->getIsDev());
+        }
+
+        if ($filter->hasIsInstalled()) {
+            $qb->andWhere('a.isInstalled = :isInstalled')->setParameter('isInstalled', $filter->getIsInstalled());
         }
 
         return $qb->getQuery();

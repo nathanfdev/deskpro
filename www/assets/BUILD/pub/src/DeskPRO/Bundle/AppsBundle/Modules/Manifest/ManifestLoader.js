@@ -14,7 +14,7 @@ export class ManifestLoader {
   }
 
   loadAll()  {
-    return this.apiClient.sendGet('DP_API/apps?include=app')
+    return this.apiClient.sendGet('DP_API/apps?include=app&isInstalled=true&isDev=false')
       .then(response => response.data)
       .then(({ data, linked }) => data.map(manifest => readAppManifest(manifest, linked)))
     ;

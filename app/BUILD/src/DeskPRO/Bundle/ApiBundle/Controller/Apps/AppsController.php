@@ -90,6 +90,14 @@ class AppsController extends BaseController
             $searchFilter->setScope($parameterBag->get('scope'));
         }
 
+        $queryParams = $request->query;
+        if ($queryParams->has('isInstalled')) {
+            $searchFilter->setIsInstalled((bool) $queryParams->get('isInstalled'));
+        }
+        if ($queryParams->has('isDev')) {
+            $searchFilter->setIsDev((bool) $queryParams->get('isDev'));
+        }
+
         /** @var AppStoreBundle\Domain\ApplicationInstanceFinder $instanceFinder */
         $instanceFinder = $this->container->get(AppStoreBundle\Domain\ApplicationInstanceFinder::class);
         if ($searchFilter->isEmpty()) {

@@ -47,11 +47,12 @@ class Build1505751306 extends AbstractBuild implements BlockingBuildInterface, S
     public function runAlters()
     {
         $this->execDbQuery('default', 'DROP INDEX name_unique ON app2_app');
-        $this->execDbQuery('default', "ALTER TABLE app2_app ADD `is_installed` TINYINT(1) DEFAULT '0', ADD `is_dev` TINYINT(1) DEFAULT '0'");
+        $this->execDbQuery('default', "ALTER TABLE app2_app ADD `is_installed` TINYINT(1) NOT NULL DEFAULT '0', ADD `is_dev` TINYINT(1) NOT NULL DEFAULT '0'");
         $this->execDbQuery('default', 'CREATE UNIQUE INDEX name_unique ON app2_app (name, is_dev)');
     }
 
     public function run()
     {
+        $this->execDbQuery('default', 'UPDATE app2_app SET `is_installed` = 1');
     }
 }

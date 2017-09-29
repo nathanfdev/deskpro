@@ -68,20 +68,20 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\Column(name="`is_installed`", type="boolean", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="`is_installed`", type="boolean", options={"default" = 0}, nullable=false)
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
      */
-    private $isInstalled;
+    private $isInstalled = false;
 
     /**
-     * @ORM\Column(name="`is_dev`", type="boolean", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="`is_dev`", type="boolean", options={"default" = 0}, nullable=false)
      *
      * @JMS\Expose()
      * @JMS\Type("boolean")
      */
-    private $isDev;
+    private $isDev = false;
 
     /**
      * @ORM\Column(name="`manifest`", type="json_array", nullable=false)
