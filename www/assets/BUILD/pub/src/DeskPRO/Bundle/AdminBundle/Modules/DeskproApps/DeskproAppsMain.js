@@ -10,12 +10,17 @@ import {
 
 export class DeskproAppsMain {
 
+  /**
+   * Bootstraps application services
+   *
+   * @param {Window} windowObject
+   */
   static main(windowObject)  {
     const builder = new AppsConfigBuilder();
     builder.addWindowParams(windowObject);
     const config = builder.build();
 
-    const appServices = new AppServices({ api, windowObject, config });
+    const appServices = new AppServices({ api, window: windowObject, config, apiToken: null });
     registerIncomingWidgetRequestListeners(appServices);
     registerOutgoingWidgetRequestListeners(appServices);
   }
