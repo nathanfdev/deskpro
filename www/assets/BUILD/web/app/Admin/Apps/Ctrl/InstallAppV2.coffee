@@ -7,6 +7,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       reactProps = {
         routePath: 'app-installer/' + @$stateParams.appName
+        legacyNavigate: @$state.go.bind(@$state)
       }
 
       window.AdminBundle.render(reactProps, document.getElementById('react_admin_bundle'));

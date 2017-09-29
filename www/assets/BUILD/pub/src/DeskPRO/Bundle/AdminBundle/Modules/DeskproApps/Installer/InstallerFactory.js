@@ -16,9 +16,10 @@ const TARGET_INSTALL = 'install';
 class InstallerFactory extends React.Component {
   /**
    * @param {Window} windowObject
+   * @param {function} legacyNavigate
    * @return {{}}
    */
-  static routeFactory(windowObject)  {
+  static routeFactory({ windowObject, legacyNavigate })  {
     const builder = new AppsConfigBuilder();
     builder.addWindowParams(windowObject);
     const config = builder.build();
@@ -30,7 +31,12 @@ class InstallerFactory extends React.Component {
     if (config.environment === 'development') {
       containerProps.loadInstallerManifest = manifestLoader.loadDev.bind(manifestLoader, config.endpoint);
     } else {
-      containerProps.loadInstallerManifest = manifest => manifest;
+      containerProps.loadInstallerManifest = (manifest) => {
+        if (manifest.targets.filter(({ target }) => target === TARGET_INSTALL).length) {
+          return manifest;
+        }
+        return null;
+      };
     }
 
     return class extends React.Component {
@@ -39,6 +45,11 @@ class InstallerFactory extends React.Component {
         return (
           <InstallerContainer {...containerProps.toJS()}>
             {({ appManifest, installerManifest }) => {
+              if (!installerManifest) {
+                legacyNavigate('apps.apps.package', { name: appManifest.name });
+                return null;
+              }
+
               const installerConfiguration = AppsRegistry.appConfiguration(installerManifest, config);
               const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
 
@@ -49,7 +60,6 @@ class InstallerFactory extends React.Component {
                 entityId: appManifest.application_id
               });
               const props = DeskproAppContainerProps.create({ context, widgetsConfigList });
-
               return (<DeskproAppContainer {...props} />);
             }}
           </InstallerContainer>);

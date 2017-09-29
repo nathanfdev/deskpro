@@ -15,7 +15,8 @@ import { InstallerFactory } from '../../DeskproApps';
 class AppContainer extends React.Component {
 
   static propTypes = {
-    routePath: PropTypes.string
+    routePath:      PropTypes.string,
+    legacyNavigate: PropTypes.function
   };
 
   constructor(props) {
@@ -74,7 +75,10 @@ class AppContainer extends React.Component {
             </Route> : null}
           <Route
             path="app-installer/:app"
-            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory(window.parent || window))}
+            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory({
+              windowObject:   window.parent || window,
+              legacyNavigate: this.props.legacyNavigate
+            }))}
           />
         </Router>
       </Provider>
