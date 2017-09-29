@@ -1,14 +1,14 @@
 {
-  "appVersion": "0.2.3",
+  "appVersion": "0.1.0",
   "author": {
     "name": "DeskPRO Apps",
     "email": "apps@deskpro.com",
     "url": "https://www.deskpro.com"
   },
-  "description": "app-description",
-  "name": "package-name",
+  "description": "A foundation to get you started developing React DeskPro Apps with the best developer experience ",
+  "name": "@deskproapps/app-boilerplate-react",
   "version": "2.3.0",
-  "title": "app-title",
+  "title": "Your app title",
   "isSingle": true,
   "scope": "agent",
   "targets": [
@@ -75,7 +75,7 @@
       "isBackendOnly": true
     },
     {
-      "type": "textarea",
+      "type": "text",
       "name": "welcomeMessage",
       "title": "Welcome message displayed by the app",
 
@@ -111,14 +111,16 @@
 
   "customFields" : [
     {
-      "type": "dataJson",
       "alias": "trello-cards",
-      "enabled": true
+      "attachedTo" : "ticket",
+      "enabled": true,
+      "type": "dataJson"
     },
     {
-      "type": "date",
       "alias": "adate",
-      "enabled": true
+      "attachedTo" : "organization",
+      "enabled": true,
+      "type": "date"
     }
   ],
 

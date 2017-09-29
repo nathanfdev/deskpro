@@ -47,14 +47,13 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
      */
     public function test_previous_version_manifests_pass_validation()
     {
-        $validator = Infrastructure\Services::createAppBundleValidator(
-            $this->getFileLocator(),
-            '2.2.0'
-        );
+        $latestManifestVersion = $this->getContainer()->getParameter('manifest.current.version');
+        $validator = Infrastructure\Services::createAppBundleValidator($this->getFileLocator(), $latestManifestVersion);
 
         $previousVersions = [
             '2.0.0',
             '2.1.0',
+            '2.2.0',
         ];
 
         foreach ($previousVersions as $version) {
@@ -78,10 +77,8 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
         $manifestLocation = $this->locateFile('@AppStoreBundle/Resources/manifest/app-manifest.current.example.json');
         $manifestContents = file_get_contents($manifestLocation);
 
-        $validator = Infrastructure\Services::createAppBundleValidator(
-            $this->getFileLocator(),
-            '2.2.0'
-        );
+        $latestManifestVersion = $this->getContainer()->getParameter('manifest.current.version');
+        $validator = Infrastructure\Services::createAppBundleValidator($this->getFileLocator(), $latestManifestVersion);
 
         $zipBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
         $isValid = $validator->validateBundle($zipBundle);
@@ -97,10 +94,8 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
         $manifestContents = json_encode(new \stdClass());
         $zipBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
 
-        $validator = Infrastructure\Services::createAppBundleValidator(
-            $this->getFileLocator(),
-            '2.2.0'
-        );
+        $latestManifestVersion = $this->getContainer()->getParameter('manifest.current.version');
+        $validator = Infrastructure\Services::createAppBundleValidator($this->getFileLocator(), $latestManifestVersion);
         $isValid = $validator->validateBundle($zipBundle);
 
         $this->assertFalse($isValid, 'a bundle with an empty manifest should not pass validation');
