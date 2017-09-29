@@ -611,10 +611,11 @@ class PersonController extends AbstractController
 
             case 'remove-usersource':
 
-                $us_id = $this->in->getUint('usersource_id');
-                foreach ($person->usersource_assoc as $assoc) {
-                    if ($assoc->usersource->id == $us_id) {
+                $userSourceId = $this->in->getUint('usersource_id');
+                foreach ($person->getUsersourceAssoc() as $assoc) {
+                    if ($assoc->getUsersource()->getId() === $userSourceId) {
                         $this->em->remove($assoc);
+                        $person->getUsersourceAssoc()->removeElement($assoc);
                     }
                 }
 

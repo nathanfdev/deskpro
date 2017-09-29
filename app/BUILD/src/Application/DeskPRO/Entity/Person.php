@@ -777,6 +777,14 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return PersonUsersourceAssoc[]|ArrayCollection
+     */
+    public function getUsersourceAssoc()
+    {
+        return $this->usersource_assoc;
+    }
+
+    /**
      * @param string $type 'agent' or 'user'
      *
      * @return bool
