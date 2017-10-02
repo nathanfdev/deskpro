@@ -10,8 +10,8 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { InstallerContainer } from './Components';
 import { InstallerContainerProps } from './InstallerContainerProps';
 
-
 const TARGET_INSTALL = 'install';
+const INSTALL_STATUS_EVENT = 'install.status';
 
 class InstallerFactory extends React.Component {
   /**
@@ -39,6 +39,23 @@ class InstallerFactory extends React.Component {
       };
     }
 
+    /**
+     * @param {Widget} widget
+     * @param {String} eventName
+     * @param {WidgetRequest|WidgetResponse} widgetMessage
+     * @param {function} next
+     */
+    const dispatchIncomingWidgetMessage = (eventName, widgetMessage, widget, next)  => {
+      if (eventName === INSTALL_STATUS_EVENT) {
+        const { manifest, status } = widgetMessage.body;
+        if (status === 'success') {
+          legacyNavigate('apps.apps.package', { name: manifest.name });
+          return;
+        }
+      }
+      next(eventName, widgetMessage, widget);
+    };
+
     return class extends React.Component {
       render() {
         containerProps.setRouteProps(this.props);
@@ -54,12 +71,17 @@ class InstallerFactory extends React.Component {
               const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
 
               const context = new Context({
-                id:       uuid.v4(),
-                target:   TARGET_INSTALL,
-                type:     'app',
-                entityId: appManifest.application_id
+                id:              uuid.v4(),
+                target:          TARGET_INSTALL,
+                type:            'app',
+                entityId:        appManifest.application_id,
+                onInstallStatus: {
+                  event:          INSTALL_STATUS_EVENT,
+                  invocationType: 'event.invocation_fireandforget'
+                }
               });
-              const props = DeskproAppContainerProps.create({ context, widgetsConfigList });
+
+              const props = DeskproAppContainerProps.create({ context, widgetsConfigList, dispatchIncomingWidgetMessage });
               return (<DeskproAppContainer {...props} />);
             }}
           </InstallerContainer>);
