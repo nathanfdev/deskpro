@@ -318,7 +318,7 @@ class EzcReader extends AbstractReader
         $addr = array_shift($addrs);
 
         //(sic!) cuase I'm not sure about returnPath (it's set by SMTP server iirc)
-        $charset = $this->mail->from->charset;
+        $charset = !empty($this->mail->from->charset) ? $this->mail->from->charset : $this->mail->from->charset;
         if (!$charset) {
             $charset = 'us-ascii';
         }

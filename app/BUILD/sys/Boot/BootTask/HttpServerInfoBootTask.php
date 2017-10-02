@@ -386,7 +386,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
         $included = array_flip(get_included_files());
         foreach (require($filelistFile) as $file) {
             if (is_file($dir.$file) && !isset($included[$dir.DIRECTORY_SEPARATOR.$file])) {
-                opcache_compile_file($dir.DIRECTORY_SEPARATOR.$file);
+                @opcache_compile_file($dir.DIRECTORY_SEPARATOR.$file);
             }
         }
 
@@ -401,7 +401,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
         /** @var \SplFileInfo $f */
         foreach ($finder as $f) {
             if (!isset($included[$f->getRealPath()])) {
-                opcache_compile_file($f->getRealPath());
+                @opcache_compile_file($f->getRealPath());
             }
         }
     }
