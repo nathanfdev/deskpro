@@ -238,7 +238,7 @@ class DeskproAppContainer extends React.Component {
 
     // remove listeners
     const invokeRemoveListener = ({ removeListener }) => removeListener();
-    removeMatching(this.widgetRemoveListeners, listener => listener.widget === widget).each(invokeRemoveListener);
+    removeMatching(this.widgetRemoveListeners, listener => listener.widget === widget).forEach(invokeRemoveListener);
   }
 
   /**

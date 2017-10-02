@@ -145,7 +145,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
               me.$timeout(->
                 if (data.version)
-                  me.$state.go('apps.apps.installer-v2', {appName: data.package_name})
+                  me.$state.go('apps.apps.installer-v2-reload', {appName: data.package_name})
                 else
                   me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
 
