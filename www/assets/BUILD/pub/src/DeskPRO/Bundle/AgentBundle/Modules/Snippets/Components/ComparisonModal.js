@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import difflib from 'difflib';
 import diff2html from 'diff2html';
+import htmlToText from 'html-to-text';
 import Moment from 'moment';
 import Modal from 'deskpro-components/lib/Components/Modal';
 import { ConfirmButton } from 'deskpro-components/lib/Components/Buttons';
-import { CustomSelect } from 'deskpro-components/lib/Components/Forms';
+import { Checkbox, CustomSelect } from 'deskpro-components/lib/Components/Forms';
 import { List, ListElement } from 'deskpro-components/lib/Components/Common';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
@@ -25,11 +26,12 @@ export class ComparisonModal extends React.Component {
     const current = this.getRevisionFromVersion(version);
     const previous = this.getRevisionFromVersion(version - 1);
 
-    const render = this.renderDiff(previous, current);
+    const render = this.renderDiff(previous, current, false);
     this.state = {
       render,
       previous,
       current,
+      viewHtml: false,
     };
   }
 
@@ -116,6 +118,15 @@ export class ComparisonModal extends React.Component {
     return input;
   };
 
+  handleChangeViewHtml = (viewHtml) => {
+    const render = this.renderDiff(this.state.previous, this.state.current, viewHtml);
+    this.setState({
+      viewHtml,
+      render
+    });
+  };
+
+
   matchLinesHeight() {
     const sides = this.diff2html.getElementsByClassName('d2h-diff-tbody');
     for (let i = 0; i < sides[0].children.length; i++) {
@@ -136,14 +147,14 @@ export class ComparisonModal extends React.Component {
   selectRevision = (version, side) => {
     const newRevision = this.getRevisionFromVersion(version);
     if (side === 'left') {
-      const render = this.renderDiff(newRevision, this.state.current);
+      const render = this.renderDiff(newRevision, this.state.current, this.state.viewHtml);
       this.setState({
         render,
         previous: newRevision
       });
       this.previousSelect.close();
     } else {
-      const render = this.renderDiff(this.state.previous, newRevision);
+      const render = this.renderDiff(this.state.previous, newRevision, this.state.viewHtml);
       this.setState({
         render,
         current: newRevision
@@ -157,11 +168,26 @@ export class ComparisonModal extends React.Component {
     this.props.closeModal();
   };
 
-  renderDiff(previous, current) {
+  renderDiff = (previous, current, viewHtml) => {
     const { snippet } = this.props;
+    let previousContent;
+    let currentContent;
+
+    if (viewHtml) {
+      previousContent = previous.content.replace(/<br ?\/?>/g, '\n').split('\n');
+      currentContent = current.content.replace(/<br ?\/?>/g, '\n').split('\n');
+    } else {
+      const htmlToTextOptions = {
+        wordwrap:         false,
+        preserveNewlines: true,
+      };
+      previousContent = htmlToText.fromString(previous.content, htmlToTextOptions).split('\n');
+      currentContent = htmlToText.fromString(current.content, htmlToTextOptions).split('\n');
+    }
+
     let diff = difflib.unifiedDiff(
-      previous.content.replace(/<br ?\/?>/g, '\n').split('\n'),
-      current.content.replace(/<br ?\/?>/g, '\n').split('\n'), {
+      previousContent,
+      currentContent, {
         fromfile:     'Previous',
         tofile:       'Current',
         fromfiledate: previous.date,
@@ -233,6 +259,14 @@ export class ComparisonModal extends React.Component {
           >
             {agentPhrases.get('agent.snippets.revert_content')}
           </ConfirmButton>
+          <Checkbox
+            checked={this.state.viewHtml}
+            value="view_html"
+            className="html"
+            onChange={this.handleChangeViewHtml}
+          >
+            view html
+          </Checkbox>
         </Modal>
       </div>
     );

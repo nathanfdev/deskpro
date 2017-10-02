@@ -932,4 +932,9 @@
   .d2h-diff-tbody > tr:first-child {
     display: none;
   }
+  .dp-input--checkbox {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: bottom;
+  }
 }

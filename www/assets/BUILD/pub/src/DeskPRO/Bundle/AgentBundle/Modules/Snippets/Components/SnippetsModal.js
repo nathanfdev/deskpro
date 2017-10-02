@@ -83,7 +83,7 @@ export class SnippetsModalContainer extends React.Component {
       isSplit:           snippet.get('is_split', false),
       title:             snippet.get('title', ''),
       shortcutCode:      snippet.get('shortcut_code', ''),
-      isDraft:           snippet.get('is_draft', false),
+      isDraft:           !!snippet.get('is_draft', false),
       langId:            props.langId,
       mergeKeepValue:    'ticket',
     };
