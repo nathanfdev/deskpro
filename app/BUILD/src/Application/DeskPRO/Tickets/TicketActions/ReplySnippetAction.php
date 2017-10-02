@@ -199,6 +199,7 @@ class ReplySnippetAction extends AbstractReplyAction
         if (!$this->snippet_items) {
             return '<error>No snippet</error>';
         }
+        $newSnippets = App::$container->get('deskpro.feature_flags')->hasBeta('new_snippets');
 
         // Hack ot append the proper position
         // when being viewed from replybox
@@ -219,35 +220,82 @@ class ReplySnippetAction extends AbstractReplyAction
                     $snippetDesc = 'Prepend snippet to reply: '.$item->snippet->getTitle();
                 }
 
-                $html = '';
+                $html        = '';
+                $snippetText = [];
                 if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-                    $snippetText = [];
-
-                    $text = App::getTranslator()->objectChoosePhraseText(
-                        $item->snippet,
-                        'snippet',
-                        [
-                            $GLOBALS['DP_ACTIVE_TICKET']->language,
-                        ]
-                    );
-
-                    if ($text = trim($text)) {
-                        switch ($item->reply_pos) {
-                            case self::REPLY_POS_APPEND:
-                                $snippetText[] = $text;
-                                break;
-                            case self::REPLY_POS_PREPEND:
-                                array_unshift($snippetText, $text);
-                                break;
-                            case self::REPLY_POS_OVERWRITE:
-                                $snippetText = [$text];
-                                break;
+                    /** @var Ticket $ticket */
+                    $ticket = $GLOBALS['DP_ACTIVE_TICKET'];
+                    $person = $ticket->getPerson();
+                    if ($newSnippets) {
+                        /** @var Snippet $snippet */
+                        $snippet           = $item->snippet;
+                        $ticketTranslation = null;
+                        $personTranslation = null;
+                        $agentTranslation  = null;
+                        foreach ($snippet->getTranslations() as $translation) {
+                            if ($translation->getLanguage() === $ticket->language) {
+                                $ticketTranslation = $translation;
+                            }
+                            if ($person && $translation->getLanguage() === $person->getLanguage()) {
+                                $personTranslation = $translation;
+                            }
+                            if ($ticket->getAgent() && $translation->getLanguage() === $ticket->getAgent()->getLanguage()) {
+                                $agentTranslation = $translation;
+                            }
                         }
+                        $text = null;
+                        if ($ticketTranslation && $ticketTranslation->getContent()) {
+                            $text = $ticketTranslation->getContent();
+                        } elseif ($personTranslation && $personTranslation->getContent()) {
+                            $text = $personTranslation->getContent();
+                        } elseif ($agentTranslation && $agentTranslation->getContent()) {
+                            $text = $agentTranslation->getContent();
+                        }
+                        if ($text = trim($text)) {
+                            switch ($item->reply_pos) {
+                                case self::REPLY_POS_APPEND:
+                                    $snippetText[] = $text;
+                                    break;
+                                case self::REPLY_POS_PREPEND:
+                                    array_unshift($snippetText, $text);
+                                    break;
+                                case self::REPLY_POS_OVERWRITE:
+                                    $snippetText = [$text];
+                                    break;
+                            }
 
-                        $snippetText = implode("\n<br/><br/>\n", $snippetText);
-                        $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
-                        $formatter->addVar('agent_signature', '');
-                        $html = $formatter->formatText($snippetText, $GLOBALS['DP_ACTIVE_TICKET']);
+                            $snippetText = implode("\n<br/><br/>\n", $snippetText);
+                            $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
+                            $formatter->addVar('agent_signature', '');
+                            $html = $formatter->formatText($snippetText, $ticket);
+                        }
+                    } else {
+                        $text = App::getTranslator()->objectChoosePhraseText(
+                            $item->snippet,
+                            'snippet',
+                            [
+                                $GLOBALS['DP_ACTIVE_TICKET']->language,
+                            ]
+                        );
+
+                        if ($text = trim($text)) {
+                            switch ($item->reply_pos) {
+                                case self::REPLY_POS_APPEND:
+                                    $snippetText[] = $text;
+                                    break;
+                                case self::REPLY_POS_PREPEND:
+                                    array_unshift($snippetText, $text);
+                                    break;
+                                case self::REPLY_POS_OVERWRITE:
+                                    $snippetText = [$text];
+                                    break;
+                            }
+
+                            $snippetText = implode("\n<br/><br/>\n", $snippetText);
+                            $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
+                            $formatter->addVar('agent_signature', '');
+                            $html = $formatter->formatText($snippetText, $ticket);
+                        }
                     }
                 }
 
@@ -288,12 +336,16 @@ class ReplySnippetAction extends AbstractReplyAction
                 $ticketTranslation  = null;
                 $personTranslation  = null;
                 $snippetTranslation = null;
+                $agentTranslation   = null;
                 foreach ($snippet->getTranslations() as $translation) {
                     if ($translation->getLanguage() === $ticket->getLanguage()) {
                         $ticketTranslation = $translation;
                     }
                     if ($translation->getLanguage() === $person->getRealLanguage()) {
                         $personTranslation = $translation;
+                    }
+                    if ($ticket->getAgent() && $translation->getLanguage() === $ticket->getAgent()->getLanguage()) {
+                        $agentTranslation = $translation;
                     }
                 }
                 $text = null;
@@ -303,6 +355,9 @@ class ReplySnippetAction extends AbstractReplyAction
                 } elseif ($personTranslation && $personTranslation->getContent()) {
                     $text               = $personTranslation->getContent();
                     $snippetTranslation = $personTranslation;
+                } elseif ($agentTranslation && $agentTranslation->getContent()) {
+                    $text               = $agentTranslation->getContent();
+                    $snippetTranslation = $agentTranslation;
                 }
                 $text = trim($text);
                 if (!$text) {
