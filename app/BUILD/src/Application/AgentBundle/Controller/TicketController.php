@@ -5023,14 +5023,14 @@ class TicketController extends AbstractController
                 if ($comment) {
                     switch ($comment_action) {
                         case 'delete':
-                            $comment->setStatus('deleted');
+                            $this->em->remove($comment);
                             break;
                         case 'approve':
                             $comment->setStatus('visible');
+                            $this->em->persist($comment);
                             break;
                     }
 
-                    $this->em->persist($comment);
                     $this->em->flush();
                 }
 
