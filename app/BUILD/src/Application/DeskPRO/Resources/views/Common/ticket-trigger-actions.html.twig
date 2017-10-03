@@ -1,3 +1,5 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
+
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
 <div class="row">
 	<div class="term">
@@ -203,13 +205,13 @@
 	<div class="builder-options">
 		<select name="flag">
 			<option value="none">{{ phrase('agent.general.none') }}</option>
-			<option value="blue">{{ phrase('agent.general.flag_blue') }}</option>
-			<option value="green">{{ phrase('agent.general.flag_green') }}</option>
-			<option value="orange">{{ phrase('agent.general.flag_orange') }}</option>
-			<option value="pink">{{ phrase('agent.general.flag_pink') }}</option>
-			<option value="purple">{{ phrase('agent.general.flag_purple') }}</option>
-			<option value="red">{{ phrase('agent.general.flag_red') }}</option>
-			<option value="yellow">{{ phrase('agent.general.flag_yellow') }}</option>
+			<option value="blue">{{ flagnamer.flag_name('blue', person) }}</option>
+			<option value="green">{{ flagnamer.flag_name('green', person) }}</option>
+			<option value="orange">{{ flagnamer.flag_name('orange', person) }}</option>
+			<option value="pink">{{ flagnamer.flag_name('pink', person) }}</option>
+			<option value="purple">{{ flagnamer.flag_name('purple', person) }}</option>
+			<option value="red">{{ flagnamer.flag_name('red', person) }}</option>
+			<option value="yellow">{{ flagnamer.flag_name('yellow', person) }}</option>
 		</select>
 	</div>
 </div>
