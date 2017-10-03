@@ -349,10 +349,26 @@ class DeskproRequirements extends RequirementCollection
         }
 
         $this->addRequirement(
-            function_exists('imagecreate'),
+            function_exists('imagecreate') && function_exists('imagetypes'),
             'imagecreate() should be available',
             'Install and enable the <strong>GD</strong> extension.'
         );
+
+        if (function_exists('imagetypes')) {
+            $imageTypes = [
+                IMG_GIF => 'GIF',
+                IMG_JPG => 'JPG',
+                IMG_PNG => 'PNG',
+            ];
+
+            foreach ($imageTypes as $imageType => $imageTypeName) {
+                $this->addRequirement(
+                    imagetypes() & $imageType,
+                    "GD $imageTypeName should be enabled",
+                    "Install and enable the <strong>GD</strong> extension with <strong>$imageTypeName</strong> support."
+                );
+            }
+        }
 
         $check_fn = [
             'escapeshellarg',
