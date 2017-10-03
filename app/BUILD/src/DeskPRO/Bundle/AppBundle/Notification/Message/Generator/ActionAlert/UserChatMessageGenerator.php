@@ -29,15 +29,18 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as TemplatingEngine;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -51,33 +54,45 @@ class UserChatMessageGenerator extends SystemEventGenerator
     private $templating;
 
     /**
+     * @var LanguageManager
+     */
+    private $languageManager;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $tokenStorage
      * @param AgentDataService      $agentDataService
      * @param TemplatingEngine      $templating
+     * @param LanguageManager       $languageManager
      */
     public function __construct(
         EntityManager         $em,
         TokenStorageInterface $tokenStorage,
         AgentDataService      $agentDataService,
-        TemplatingEngine      $templating
+        TemplatingEngine      $templating,
+        LanguageManager       $languageManager
     ) {
         parent::__construct($em, $tokenStorage, $agentDataService);
-        $this->templating = $templating;
+
+        $this->templating      = $templating;
+        $this->languageManager = $languageManager;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @var UserChatEvent
      */
     public function createMessages(SystemEventInterface $event)
     {
-        $event->getName();
-        /* @var UserChatEvent $event */
         $messages = [];
-        foreach ($this->getTarget($event) as $agent) {
-            $messages[] = new ActionAlert((int) $agent, $this->getData($event), $event->getName());
+        foreach ($this->getTarget($event) as $agentId) {
+            $agent = $this->em->find(Person::class, $agentId);
+            if ($agent) {
+                $messages[] = new ActionAlert((int) $agentId, $this->getData($event, $agent), $event->getName());
+            }
         }
 
         return $messages;
@@ -93,33 +108,38 @@ class UserChatMessageGenerator extends SystemEventGenerator
 
     /**
      * @param UserChatEvent $event
+     * @param Person        $agent
      *
      * @return array
      */
-    private function getData(UserChatEvent $event)
+    private function getData(UserChatEvent $event, Person $agent)
     {
         $data = $event->getData();
         if ($event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
             $convo = $this->em->find(ChatConversation::class, $data['conversation_id']);
             if (!$convo) {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                throw new NotFoundHttpException();
             }
 
             if ($convo->getPerson()) {
-                $tickets = $this->em->getRepository(Ticket::class)->getLatestByUser($convo->getPerson(), 5, true);
+                /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
+                $ticketRepo = $this->em->getRepository(Ticket::class);
+                $tickets    = $ticketRepo->getLatestByUser($convo->getPerson(), 5, true);
             } else {
                 $tickets = null;
             }
 
-            $data['html'] = $this->templating->render('AgentBundle:UserChat:chat-alert.html.twig', [
-                'convo'        => $convo,
-                'person'       => $convo->getPerson(),
-                'tickets'      => $tickets,
-                'session'      => $convo->getSession(),
-                'visitor_id'   => $convo->getVisitorId(),
-                'waiting_secs' => time() - $convo->getDateCreated()->getTimestamp(),
-                'url'          => null,
-            ]);
+            $this->languageManager->callWithLanguage($agent->getLanguage(), function () use (&$data, $convo, $tickets) {
+                $data['html'] = $this->templating->render('AgentBundle:UserChat:chat-alert.html.twig', [
+                    'convo'        => $convo,
+                    'person'       => $convo->getPerson(),
+                    'tickets'      => $tickets,
+                    'session'      => $convo->getSession(),
+                    'visitor_id'   => $convo->getVisitorId(),
+                    'waiting_secs' => time() - $convo->getDateCreated()->getTimestamp(),
+                    'url'          => null,
+                ]);
+            });
         }
 
         return $data;
