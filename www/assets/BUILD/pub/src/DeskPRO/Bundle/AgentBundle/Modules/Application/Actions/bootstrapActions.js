@@ -156,13 +156,13 @@ export const preloadData    = createAction(
         }
 
         // set legacy agent notify map
-        window.DeskPRO_Window.notifyAgentMap = {};
+        window.notifyAgentMap = {};
         data.agents.forEach((agent) => {
           if (data.me.person.id === agent.id) {
             return;
           }
 
-          window.DeskPRO_Window.notifyAgentMap[agent.id] = {
+          window.notifyAgentMap[agent.id] = {
             name:        agent.name,
             picture_url: (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace(/\{\{IMG_SIZE}}/, '20')
           };
