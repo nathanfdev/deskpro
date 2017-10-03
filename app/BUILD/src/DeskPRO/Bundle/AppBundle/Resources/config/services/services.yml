@@ -102,7 +102,7 @@ services:
 
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
-    arguments: ["@brand_stack"]
+    arguments: ["@brand_stack","@deskpro.app_env"]
 
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
