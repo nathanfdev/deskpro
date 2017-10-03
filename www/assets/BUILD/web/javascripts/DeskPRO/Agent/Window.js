@@ -16,6 +16,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
+		this.notifyAgentMap = {};
 		this.hashHandling = true;
 		this.onloadStack = [];
 		this.dismissAlertQueue = [];
@@ -3606,35 +3607,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initAgentNotifierForRte: function(obj, textarea, alwaysAvailable) {
-		var self = this;
-		$.ajax({
-			url: BASE_URL + "agent/people/agent_notifier_map.json",
-			type: 'GET',
-			dataType: 'json',
-			noErrorOverride: true,
-			success: function(data) {
-				self._initAgentNotifierForRte(obj, textarea, data, alwaysAvailable);
-			}
-		});
-	},
-
-	_initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable) {
 		var api = textarea.data('redactor');
 		if (!api) {
-			return;
-		}
-
-		if (!agentMap) {
 			return;
 		}
 
 		var ed = textarea.getEditor();
 		var self = this;
 
-		delete agentMap[0];
-
 		var agentMapLower = {}, hasAgents = false;
-		Object.each(agentMap, function(data, agentId) {
+		Object.each(self.notifyAgentMap, function(data, agentId) {
 			hasAgents = true;
 			agentMapLower[agentId] = data.name.toLowerCase();
 		});
@@ -3646,7 +3628,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		obj.agentNotifyList = $('<ul />').addClass('message-agent-notify-list').hide().appendTo(document.body);
 
 		var insertAgentNotify = function(agentId) {
-			if (typeof agentMap[agentId] === 'undefined') {
+			if (typeof self.notifyAgentMap[agentId] === 'undefined') {
 				return;
 			}
 
@@ -3678,7 +3660,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			// web kit handles content editable without an issue. this prevents the span
 			// from being extended unnecessarily
 			var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId].name) + '</span>&nbsp;');
+			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(self.notifyAgentMap[agentId].name) + '</span>&nbsp;');
 		};
 
 		obj.agentNotifyList.on('mousedown', 'li', function(e) {
@@ -3816,7 +3798,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
 				if (afterAt.length >= 2 && afterAt.length < 75) {
-					Object.each(agentMap, function(data, agentId) {
+					Object.each(self.notifyAgentMap, function(data, agentId) {
 						if (agentMapLower[agentId].indexOf(afterAt) == 0) {
 							matches.push(agentId);
 						}
@@ -3830,8 +3812,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				obj.agentNotifyList.empty();
 				for (var i = 0; i < matches.length; i++) {
 					var li = $('<li>')
-						.text(agentMap[matches[i]].name)
-						.css('background-image', 'url('+agentMap[matches[i]].picture_url+')')
+						.text(self.notifyAgentMap[matches[i]].name)
+						.css('background-image', 'url('+self.notifyAgentMap[matches[i]].picture_url+')')
 						.data('agent-id', matches[i]);
 					if (matches[i] === selectedId) {
 						li.addClass('selected');

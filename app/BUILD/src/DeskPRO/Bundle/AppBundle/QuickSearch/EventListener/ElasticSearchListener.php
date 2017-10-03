@@ -45,22 +45,23 @@ class ElasticSearchListener implements EventSubscriberInterface
     /**
      * @var RepositoryManager
      */
-    private $elastic_manager;
+    private $elasticManager;
 
     /**
      * @var SettingsResolver
      */
-    private $settings_resolver;
+    private $settingsResolver;
 
     /**
-     * @param RepositoryManager $elastic_manager
-     * @param SettingsResolver  $settings_resolver
+     * Constructor.
+     *
+     * @param RepositoryManager $elasticManager
+     * @param SettingsResolver  $settingsResolver
      */
-    public function __construct(
-        RepositoryManager $elastic_manager, SettingsResolver $settings_resolver)
+    public function __construct(RepositoryManager $elasticManager, SettingsResolver $settingsResolver)
     {
-        $this->elastic_manager   = $elastic_manager;
-        $this->settings_resolver = $settings_resolver;
+        $this->elasticManager   = $elasticManager;
+        $this->settingsResolver = $settingsResolver;
     }
 
     /**
@@ -91,7 +92,7 @@ class ElasticSearchListener implements EventSubscriberInterface
         // note: IMHO the better approach is to subscribe both ES and DB to the same event using priority
         // the DB search may be skipped according to event payload
         // ES listener should not be subscribed if ES setting is disabled
-        if (!$this->settings_resolver->getGlobalSettings()->get('elastica.enabled')) {
+        if (!$this->settingsResolver->getGlobalSettings()->get('elastica.enabled')) {
             $dispatcher->dispatch(QuickSearchEvents::SEARCH_FALLBACK, $event);
 
             return;
@@ -99,7 +100,7 @@ class ElasticSearchListener implements EventSubscriberInterface
 
         try {
             /** @var Repository $repository */
-            $repository = $this->elastic_manager->getRepository($context->getEntityName());
+            $repository = $this->elasticManager->getRepository($context->getEntityName());
             if (method_exists($repository, 'setPersonContext')) {
                 $repository->setPersonContext($request->getPerson());
             }

@@ -34,15 +34,14 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\AbstractMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 
 /**
  * Class ReadNotificationsMessageGenerator.
  */
-class ReadNotificationsMessageGenerator extends AbstractGenerator
+class ReadNotificationsMessageGenerator extends SystemEventGenerator
 {
     /**
      * This is just a little optimization - we're about to alert client only once to read notifications
@@ -53,17 +52,6 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
     private $targets;
 
     /**
-     * Constructor.
-     *
-     * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
-     */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
-    {
-        parent::__construct($em, $token_storage);
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @param NewMessageEvent $event
@@ -72,7 +60,7 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
     {
         $messages = [];
         foreach ($this->getTargets($event) as $target) {
-            $messages[] = new ActionAlert($target->getId(), [], 'read.notifications.alert');
+            $messages[] = new ActionAlert($target, [], 'read.notifications.alert');
         }
 
         return $messages;
@@ -83,7 +71,7 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof NewMessageEvent;
+        return $event instanceof NewMessageEvent || $event instanceof UserChatEvent;
     }
 
     /**
@@ -96,18 +84,22 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
         $targets = [];
         if ($event instanceof NewMessageEvent) {
             $targets = $this->getChatTargets($event);
+        } elseif ($event instanceof UserChatEvent) {
+            $targets = $this->getUserChatTargets($event);
         }
 
         $processedTargets = $this->targets;
 
         $targets = array_filter($targets, function ($target) use ($processedTargets) {
-            /* @var Person $target */
-            return !isset($processedTargets[$target->getId()]);
+            $targetId = $target instanceof Person ? $target->getId() : $target;
+
+            return !isset($processedTargets[$targetId]);
         });
 
-        foreach ($targets as $target) {
-            /* @var Person $target */
-            $this->targets[$target->getId()] = true;
+        foreach ($targets as &$target) {
+            $targetId                 = $target instanceof Person ? $target->getId() : $target;
+            $this->targets[$targetId] = true;
+            $target                   = $targetId;
         }
 
         return $targets;
@@ -152,5 +144,10 @@ class ReadNotificationsMessageGenerator extends AbstractGenerator
         }
 
         return $message;
+    }
+
+    protected function getUserChatTargets(UserChatEvent $event)
+    {
+        return $this->getTarget($event);
     }
 }
