@@ -38,7 +38,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 // Please remove these NOTE comments after you have checked the code.
 
-class Build1505387057 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1507047569 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -62,9 +62,15 @@ class Build1505387057 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_article');
         $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_person');
         $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_product');
+
+        // installer columns
+        $this->execDbQuery('default', 'DROP INDEX name_unique ON app2_app');
+        $this->execDbQuery('default', "ALTER TABLE app2_app ADD `is_installed` TINYINT(1) NOT NULL DEFAULT '0', ADD `is_dev` TINYINT(1) NOT NULL DEFAULT '0'");
+        $this->execDbQuery('default', 'CREATE UNIQUE INDEX name_unique ON app2_app (name, is_dev)');
     }
 
     public function run()
     {
+        $this->execDbQuery('default', 'UPDATE app2_app SET `is_installed` = 1');
     }
 }
