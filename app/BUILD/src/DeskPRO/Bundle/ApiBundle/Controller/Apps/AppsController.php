@@ -92,10 +92,10 @@ class AppsController extends BaseController
 
         $queryParams = $request->query;
         if ($queryParams->has('isInstalled')) {
-            $searchFilter->setIsInstalled((bool) $queryParams->get('isInstalled'));
+            $searchFilter->setIsInstalled(filter_var($queryParams->get('isInstalled'), FILTER_VALIDATE_BOOLEAN));
         }
         if ($queryParams->has('isDev')) {
-            $searchFilter->setIsDev((bool) $queryParams->get('isDev'));
+            $searchFilter->setIsDev(filter_var($queryParams->get('isDev'), FILTER_VALIDATE_BOOLEAN));
         }
 
         /** @var AppStoreBundle\Domain\ApplicationInstanceFinder $instanceFinder */
