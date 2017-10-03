@@ -1,89 +1,57 @@
 import React, { PropTypes } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
+import { Fieldset } from 'react-forms';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
-import { Button } from 'DeskPRO/Component/Semantic/Button';
-import { Field, Form, Input } from 'DeskPRO/Component/Semantic/Form';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import * as actions from '../Actions/extendActions';
 
 @connect()
 export class ForgottenPasswordContainer extends React.Component {
+
   static propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired
   };
 
   static contextTypes = {
     router: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      email:  '',
-      submit: false,
-      errors: null
-    };
-  }
-
-  onChangeEmail = (value) => {
-    this.setState({
-      email:  value,
-      errors: null
-    });
-  };
-
+  onSubmit = data => this.props.dispatch(actions.forgotPassword(data));
   onBackToLogin = () => {
     this.context.router.push('/login');
-  };
-
-  onEmailInstructions = () => {
-    const { dispatch } = this.props;
-    this.setState({
-      submit: true
-    });
-
-    const promise = dispatch(actions.forgotPassword({
-      email: this.state.email
-    }));
-
-    promise.then(
-      () => {
-
-      },
-      (response) => {
-        if (this.mounted) {
-          this.setState({
-            submit: false,
-            errors: response.getData().errors
-          });
-        }
-      }
-    );
   };
 
   render() {
     return (
       <ForgottenPassword
         onBackToLogin={this.onBackToLogin}
-        onEmailInstructions={this.onEmailInstructions}
+        onSubmit={this.onSubmit}
       />
     );
   }
 }
 
 @injectIntl
-export class ForgottenPassword extends React.Component {
+export class ForgottenPassword extends BaseForm {
+
   static propTypes = {
-    email:               PropTypes.string,
-    submit:              PropTypes.bool,
-    errors:              PropTypes.object,
-    onBackToLogin:       PropTypes.func,
-    onChangeEmail:       PropTypes.func,
-    onEmailInstructions: PropTypes.func
+    submit:        PropTypes.bool,
+    onBackToLogin: PropTypes.func,
+    onChangeEmail: PropTypes.func,
+    onSubmit:      PropTypes.func
   };
 
+  getDefaultState() { // eslint-disable-line
+    return { email: '' };
+  }
+
   render() {
+    const { formData, saving } = this.state;
+    const { onBackToLogin } = this.props;
+
     return (
       <Segment className="forgotten-password">
         <h3>
@@ -98,34 +66,21 @@ export class ForgottenPassword extends React.Component {
             defaultMessage="Enter your email address to receive a new password:"
           />
         </p>
-        <Form onSubmit={this.props.onEmailInstructions}>
-          <Field>
-            <label htmlFor="username">
-              <FormattedMessage
-                id="cloud.demo_expired.email"
-                defaultMessage="Email"
-              />
-            </label>
-            <Input
-              id="username"
-              icon="mail"
-              iconPosition="left"
-              type="email"
-              errors={this.props.errors}
-              value={this.props.email}
-              onChange={this.props.onChangeEmail}
+        <Form onSubmit={this.onSubmit} formValue={formData}>
+          <Fieldset>
+            <Field select="email" label="Email">
+              <Input id="username" type="email" icon="mail" iconPosition="left" />
+            </Field>
+          </Fieldset>
+          <button className={classNames('ui button', { loading: saving })}>
+            <FormattedMessage
+              id="cloud.demo_expired.email_instructions"
+              defaultMessage="Email me a new password"
             />
-          </Field>
+          </button>
         </Form>
-        <Button onClick={this.props.onEmailInstructions}>
-          <FormattedMessage
-            id="cloud.demo_expired.email_instructions"
-            defaultMessage="Email me a new password"
-          />
-          {this.props.submit && <span> <i className="fa fa-spinner fa-pulse fa-fw margin-bottom" /></span>}
-        </Button>
         <p className="bottom-link">
-          <a onClick={this.props.onBackToLogin}>
+          <a onClick={onBackToLogin}>
             <FormattedMessage
               id="cloud.demo_expired.back_to_login"
               defaultMessage="Back to login form"
