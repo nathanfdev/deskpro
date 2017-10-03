@@ -301,21 +301,22 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             return;
         }
 
+        if (!$return = LegacyRequestUtils::readReturnParam($this->request)) {
+            try {
+                $return = $this->generateUrl(
+                    $this->request->attributes->get('_route'),
+                    $this->request->attributes->get('_route_params'),
+                    UrlGeneratorInterface::ABSOLUTE_URL);
+            } catch (\Exception $e) {
+                $return = null;
+            }
+        }
+
+        $this->session->set('auth_return', $return);
+        $this->session->save();
+
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-                if (!$return = LegacyRequestUtils::readReturnParam($this->request)) {
-                    try {
-                        $return = $this->generateUrl(
-                            $this->request->attributes->get('_route'),
-                            $this->request->attributes->get('_route_params'),
-                            UrlGeneratorInterface::ABSOLUTE_URL);
-                    } catch (\Exception $e) {
-                        $return = null;
-                    }
-                }
-                $this->session->set('auth_return', $return);
-                $this->session->save();
-
                 return $this->redirect($sso_result->getRedirectUrl());
             }
         }
