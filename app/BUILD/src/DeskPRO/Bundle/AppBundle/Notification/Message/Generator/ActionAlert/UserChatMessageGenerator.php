@@ -29,13 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as TemplatingEngine;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -50,20 +50,26 @@ class UserChatMessageGenerator extends SystemEventGenerator
      */
     private $templating;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager         $em
+     * @param TokenStorageInterface $tokenStorage
+     * @param AgentDataService      $agentDataService
+     * @param TemplatingEngine      $templating
+     */
     public function __construct(
-        EntityManager $em,
-        TokenStorageInterface $token_storage,
-        AgentDataService $agentDataService,
-        TemplatingEngine $templating
+        EntityManager         $em,
+        TokenStorageInterface $tokenStorage,
+        AgentDataService      $agentDataService,
+        TemplatingEngine      $templating
     ) {
-        parent::__construct($em, $token_storage, $agentDataService);
+        parent::__construct($em, $tokenStorage, $agentDataService);
         $this->templating = $templating;
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return MessageInterface[]
+     * {@inheritdoc}
      */
     public function createMessages(SystemEventInterface $event)
     {
@@ -77,11 +83,19 @@ class UserChatMessageGenerator extends SystemEventGenerator
         return $messages;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function canCreateMessage(SystemEventInterface $event)
     {
         return $event instanceof UserChatEvent;
     }
 
+    /**
+     * @param UserChatEvent $event
+     *
+     * @return array
+     */
     private function getData(UserChatEvent $event)
     {
         $data = $event->getData();
@@ -91,23 +105,20 @@ class UserChatMessageGenerator extends SystemEventGenerator
                 throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
             }
 
-            $tickets = null;
-            if ($convo->person) {
-                $tickets = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($convo->person, 5, true);
+            if ($convo->getPerson()) {
+                $tickets = $this->em->getRepository(Ticket::class)->getLatestByUser($convo->getPerson(), 5, true);
+            } else {
+                $tickets = null;
             }
-
-            $waiting_secs = time() - $convo->date_created->getTimestamp();
-
-            $url = null;
 
             $data['html'] = $this->templating->render('AgentBundle:UserChat:chat-alert.html.twig', [
                 'convo'        => $convo,
-                'person'       => $convo->person,
+                'person'       => $convo->getPerson(),
                 'tickets'      => $tickets,
-                'session'      => $convo->session,
-                'visitor_id'   => $convo->visitor_id,
-                'waiting_secs' => $waiting_secs,
-                'url'          => $url,
+                'session'      => $convo->getSession(),
+                'visitor_id'   => $convo->getVisitorId(),
+                'waiting_secs' => time() - $convo->getDateCreated()->getTimestamp(),
+                'url'          => null,
             ]);
         }
 

@@ -51,13 +51,15 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
     protected $token_storage;
 
     /**
+     * Constructor.
+     *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage)
+    public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage)
     {
         $this->em            = $em;
-        $this->token_storage = $token_storage;
+        $this->token_storage = $tokenStorage;
     }
 
     /**
