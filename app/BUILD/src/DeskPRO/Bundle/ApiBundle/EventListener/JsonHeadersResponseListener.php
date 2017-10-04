@@ -58,11 +58,6 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
     protected $resolver;
 
     /**
-     * @var string|null
-     */
-    protected $location = null;
-
-    /**
      * Constructor.
      *
      * @param SerializerInterface $serializer
@@ -93,23 +88,20 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
     {
         $request  = $event->getRequest();
         $response = $event->getResponse();
+        $location = $this->stripLocationHeader($request, $response);
 
-        $this->stripLocationHeader($request, $response);
-
-        if ($request->query->has(self::INCLUDE_HEADERS_PARAM) || $this->location) {
-
+        if ($request->query->has(self::INCLUDE_HEADERS_PARAM) || $location) {
             // add the "headers" node to the json response body
-
             $body = $response->getContent();
             if ($body) {
-                $data = $this->serializer->deserialize($body, 'array', 'json');
+                $data = json_decode($body);
             } else {
-                $data = [];
+                $data = new \stdClass();
             }
 
-            $data['headers'] = $this->extractHeaderArray($response);
+            $data->headers = $this->extractHeaderArray($response, $location);
 
-            $newBody = $this->serializer->serialize($data, 'json');
+            $newBody = json_encode($data);
 
             $response->setContent($newBody);
         }
@@ -130,19 +122,20 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
 
     /**
      * @param Response $response
+     * @param string   $location
      *
      * @return array
      */
-    private function extractHeaderArray(Response $response)
+    private function extractHeaderArray(Response $response, $location)
     {
-        $headers = (string) $response->headers;
+        $headers   = (string) $response->headers;
+        $headerBag = explode("\r\n", $headers);
 
-        $header_bag = explode("\r\n", $headers);
-
-        $json_headers = [
+        $jsonHeaders = [
             'status-code' => $response->getStatusCode(),
         ];
-        foreach ($header_bag as $key => $val) {
+
+        foreach ($headerBag as $key => $val) {
             $header_split = explode(':', $val);
 
             // the first string behind the first ":"
@@ -161,19 +154,21 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
                 continue;
             }
 
-            $json_headers[$header_name] = $header_val;
+            $jsonHeaders[$header_name] = $header_val;
         }
 
-        if ($this->location) {
-            $json_headers['location'] = $this->location;
+        if ($location) {
+            $jsonHeaders['location'] = $location;
         }
 
-        return $json_headers;
+        return $jsonHeaders;
     }
 
     /**
      * @param Request  $request
      * @param Response $response
+     *
+     * @return string
      */
     protected function stripLocationHeader(Request $request, Response $response)
     {
@@ -198,6 +193,7 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
         }
 
         $response->headers->remove('Location');
-        $this->location = $location;
+
+        return $location;
     }
 }

@@ -342,6 +342,7 @@ return [
     'agent.general.add_product'                                => 'Add Product',
     'agent.general.add_search_term'                            => 'Add search term',
     'agent.general.add_ticket_reply'                           => 'Add Ticket Reply',
+    'agent.general.add_reply_from_snippet'                     => 'Add reply from snippet',
     'agent.general.added_by'                                   => 'added by {{name}}',
     'agent.general.address'                                    => 'Address',
     'agent.general.admin_interface'                            => 'Admin Interface',

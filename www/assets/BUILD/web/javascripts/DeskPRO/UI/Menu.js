@@ -80,8 +80,8 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.origMenuElement = $(this.options.menuElement);
 
 		if (this.origMenuElement.data('menu-flag') && this.origMenuElement.data('menu-flag').indexOf('copy-menu') !== -1) {
-			if (origMenuElement.attr('id')) {
-				origMenuElement.attr('id', origMenuElement.attr('id') + '_' + Orb.uuid());
+			if (this.origMenuElement.attr('id')) {
+				this.origMenuElement.attr('id', this.origMenuElement.attr('id') + '_' + Orb.uuid());
 			}
 		}
 
