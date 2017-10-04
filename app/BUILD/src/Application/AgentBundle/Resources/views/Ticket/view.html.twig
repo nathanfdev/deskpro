@@ -455,7 +455,12 @@
                         </ul>
                     </nav>
                 </header>
-                <section class="description-area" style="padding:0">
+                <section class="description-area" style="padding:0; position: relative;">
+                    <div id="{{ baseId }}_updating-overlay" class="updating-overlay"></div>
+                    <div id="{{ baseId }}_agent_prop_controls">
+                        <span style="display:none" class="mark-loading"><i class="spinner-flat"></i></span>
+                        <span style="display:none" class="mark-saved">{{ phrase('agent.general.saved') }}</span>
+                    </div>
                     <div class="error-list {% if validator_errors %}on{% endif %}" id="{{ baseId }}_field_errors"
                          {% if not validator_errors %}style="display:none"{% endif %}>
                         <span class="title">{{ phrase('agent.tickets.save_errors') }}:</span>
