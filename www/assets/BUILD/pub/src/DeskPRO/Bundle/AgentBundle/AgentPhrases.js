@@ -3,6 +3,14 @@ import mapValues from 'lodash/mapValues';
 import assign from 'lodash/assign';
 
 class AgentPhrases {
+  static getCount(text, count) {
+    const variations = text.split('|');
+    if (count === 1 || variations.length === 1) {
+      return variations[0].replace('{{count}}', count);
+    }
+    return variations[1].replace('{{count}}', count);
+  }
+
   constructor() {
     this.phrases = {};
     this.isLoaded = false;
@@ -10,14 +18,6 @@ class AgentPhrases {
 
   setPhrases(phrases) {
     Object.assign(this.phrases, phrases);
-  }
-
-  getCount(text, count) {
-    const variations = text.split('|');
-    if (count === 1 || variations.length === 0) {
-      return variations[0].replace('{{count}}', count);
-    }
-    return variations[1].replace('{{count}}', count);
   }
 
   get(phraseId, vars) {
@@ -35,7 +35,7 @@ class AgentPhrases {
 
     if (vars) {
       if ({}.hasOwnProperty.call(vars, 'count')) {
-        text = this.getCount(text, vars.count);
+        text = AgentPhrases.getCount(text, vars.count);
       }
       Object.entries(vars).map((value) => {
         text = text.replace(`{${value[0]}}`, value[1]);

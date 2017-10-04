@@ -30,10 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Labels\Label;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetChangeLog;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -99,6 +102,29 @@ class SnippetListener
     }
 
     /**
+     * @param OnFlushEventArgs $args
+     */
+    public function onFlush(OnFlushEventArgs $args)
+    {
+        $em  = $args->getEntityManager();
+        $uow = $em->getUnitOfWork();
+
+        foreach ($uow->getScheduledEntityUpdates() as $keyEntity => $entity) {
+            if ($entity instanceof SnippetTranslation) {
+                $changeSet = $uow->getEntityChangeSet($entity);
+                if (isset($changeSet['content']) || isset($changeSet['type'])) {
+                    $type      = isset($changeSet['type']) ? $changeSet['type'][0] : $entity->getType();
+                    $content   = isset($changeSet['content']) ? $changeSet['content'][0] : $entity->getContent();
+                    $changeLog = $this->saveChanges($entity, $content, $type);
+                    // place here all the setters
+                    $em->persist($changeLog);
+                    $uow->computeChangeSet($em->getClassMetadata(get_class($changeLog)), $changeLog);
+                }
+            }
+        }
+    }
+
+    /**
      * @param Snippet $snippet
      * @param $action
      */
@@ -110,5 +136,34 @@ class SnippetListener
                 $snippet,
                 $action
             ));
+    }
+
+    /**
+     * @param SnippetTranslation $snippetTranslation
+     * @param string             $oldContent
+     * @param $type
+     *
+     * @return SnippetChangeLog
+     */
+    private function saveChanges(SnippetTranslation $snippetTranslation, $oldContent, $type)
+    {
+        $changeLog = new SnippetChangeLog();
+        $changeLog->setSnippet($snippetTranslation->getSnippet());
+        $changeLog->setLanguage($snippetTranslation->getLanguage());
+        $changeLog->setType($type);
+        $changeLog->setContent($oldContent);
+        $changeLog->setPerson($this->getPerson());
+
+        return $changeLog;
+    }
+
+    /**
+     * @return Person
+     */
+    private function getPerson()
+    {
+        $token = $this->container->get('security.token_storage')->getToken();
+
+        return $token->getUser();
     }
 }

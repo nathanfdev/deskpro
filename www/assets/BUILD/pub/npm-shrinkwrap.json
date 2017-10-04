@@ -210,8 +210,7 @@
     "abbrev": {
       "version": "1.0.9",
       "resolved": "https://registry.npmjs.org/abbrev/-/abbrev-1.0.9.tgz",
-      "integrity": "sha1-kbR5JYinc4wl813W9jdSovh3YTU=",
-      "dev": true
+      "integrity": "sha1-kbR5JYinc4wl813W9jdSovh3YTU="
     },
     "accepts": {
       "version": "1.2.13",
@@ -4704,9 +4703,9 @@
       "integrity": "sha1-fImR1HpR7ymGzsM30wzUPv96aqg="
     },
     "deskpro-components": {
-      "version": "0.5.13",
-      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.13.tgz",
-      "integrity": "sha512-r2/29EoyvWDIZ7JFTIf1rkbZ89LVUESPt7ImDKO8bBGNnrW9Wxd+rz+Cf4bBRf5jv4D2zgt7Mf3YDDqAqJJabg==",
+      "version": "0.5.16",
+      "resolved": "https://registry.npmjs.org/deskpro-components/-/deskpro-components-0.5.16.tgz",
+      "integrity": "sha512-mpMlbb1NqilkSqgk3CTuafJvMZSsP/jefnYwyzPaw58I58H6MSaJ8pUMFCNjZQCD9mj/Rw5hPFiDTXLxEVr3WA==",
       "requires": {
         "bourbon": "4.3.4",
         "bourbon-neat": "2.0.0",
@@ -5073,6 +5072,36 @@
       "resolved": "https://registry.npmjs.org/diff/-/diff-2.2.3.tgz",
       "integrity": "sha1-YOr9DSjukG5Oj/ClLBIpUhAzv5k=",
       "dev": true
+    },
+    "diff2html": {
+      "version": "2.3.0",
+      "resolved": "https://registry.npmjs.org/diff2html/-/diff2html-2.3.0.tgz",
+      "integrity": "sha1-N1+weDyo+pAwd0k5m8nHXrfPZYA=",
+      "requires": {
+        "diff": "3.3.1",
+        "hogan.js": "3.0.2",
+        "whatwg-fetch": "2.0.3"
+      },
+      "dependencies": {
+        "diff": {
+          "version": "3.3.1",
+          "resolved": "https://registry.npmjs.org/diff/-/diff-3.3.1.tgz",
+          "integrity": "sha512-MKPHZDMB0o6yHyDryUOScqZibp914ksXwAMYMTHj6KO8UeKsRYNJD3oNCKjTqZon+V488P7N/HzXF8t7ZR95ww=="
+        },
+        "whatwg-fetch": {
+          "version": "2.0.3",
+          "resolved": "https://registry.npmjs.org/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz",
+          "integrity": "sha1-nITsLc9oGH/wC8ZOEnS0QhduHIQ="
+        }
+      }
+    },
+    "difflib": {
+      "version": "0.2.4",
+      "resolved": "https://registry.npmjs.org/difflib/-/difflib-0.2.4.tgz",
+      "integrity": "sha1-teMDYabbAjF21WKJLbhZQKcY9H4=",
+      "requires": {
+        "heap": "0.2.6"
+      }
     },
     "disposables": {
       "version": "1.0.1",
@@ -8657,6 +8686,11 @@
       "resolved": "https://registry.npmjs.org/he/-/he-1.1.1.tgz",
       "integrity": "sha1-k0EP0hsAlzUVH4howvJx80J+I/0="
     },
+    "heap": {
+      "version": "0.2.6",
+      "resolved": "https://registry.npmjs.org/heap/-/heap-0.2.6.tgz",
+      "integrity": "sha1-CH4fELBGky/IWU3Z5tN4r8nR5aw="
+    },
     "highlight-words-core": {
       "version": "1.0.3",
       "resolved": "https://registry.npmjs.org/highlight-words-core/-/highlight-words-core-1.0.3.tgz",
@@ -8704,6 +8738,30 @@
       "version": "2.16.3",
       "resolved": "https://registry.npmjs.org/hoek/-/hoek-2.16.3.tgz",
       "integrity": "sha1-ILt0A9POo5jpHcRxCo/xuCdKJe0="
+    },
+    "hogan.js": {
+      "version": "3.0.2",
+      "resolved": "https://registry.npmjs.org/hogan.js/-/hogan.js-3.0.2.tgz",
+      "integrity": "sha1-TNnhq9QpQUbnZ55B14mHMrAse/0=",
+      "requires": {
+        "mkdirp": "0.3.0",
+        "nopt": "1.0.10"
+      },
+      "dependencies": {
+        "mkdirp": {
+          "version": "0.3.0",
+          "resolved": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.3.0.tgz",
+          "integrity": "sha1-G79asbqCevI1dRQ0kEJkVfSB/h4="
+        },
+        "nopt": {
+          "version": "1.0.10",
+          "resolved": "https://registry.npmjs.org/nopt/-/nopt-1.0.10.tgz",
+          "integrity": "sha1-bd0hvSoxQXuScn3Vhfim83YI6+4=",
+          "requires": {
+            "abbrev": "1.0.9"
+          }
+        }
+      }
     },
     "hoist-non-react-statics": {
       "version": "1.2.0",
@@ -13412,12 +13470,9 @@
       "integrity": "sha1-Z+6weU6SRxloLJe4VTFVVsiDyFg="
     },
     "react-timeago": {
-      "version": "3.0.0",
-      "resolved": "https://registry.npmjs.org/react-timeago/-/react-timeago-3.0.0.tgz",
-      "integrity": "sha1-HQarVC/MUfL3/5ytIUvzwOVryM0=",
-      "requires": {
-        "object-assign": "4.1.1"
-      }
+      "version": "3.4.3",
+      "resolved": "https://registry.npmjs.org/react-timeago/-/react-timeago-3.4.3.tgz",
+      "integrity": "sha1-65Bh7vsETkorCc6MmdNGRbLb+iU="
     },
     "react-tooltip": {
       "version": "3.2.10",
