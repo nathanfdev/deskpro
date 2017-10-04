@@ -694,7 +694,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.updateUi();
 			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
-			$.ajax({
+      if (self.meta.person_api_data) {
+				macroUrl += '&person_id=' + self.meta.person_api_data.id;
+			}
+
+      $.ajax({
 				url: macroUrl,
 				type: 'GET',
 				context: this,

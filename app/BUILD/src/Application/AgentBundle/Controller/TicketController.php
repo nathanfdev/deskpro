@@ -2706,6 +2706,11 @@ class TicketController extends AbstractController
     {
         if (!$ticket_id) {
             $ticket = new Ticket();
+            $ticket->setAgent($this->person);
+            if ($personId = $this->in->getUInt('person_id')) {
+                $person = $this->em->getRepository(Person::class)->find($personId);
+                $ticket->setPerson($person);
+            }
         } else {
             $ticket = $this->getTicketOr404($ticket_id);
         }
