@@ -89,9 +89,8 @@ abstract class AbstractDepartmentsController extends CrudController
         $qb->andWhere(sprintf("$alias.%s = true", static::$property));
 
         if ($request->query->getBoolean('my', false)) {
-            $allowedDepartmentIds = $this->getAllowedDepartmentsId();
             $qb->andWhere('e.id IN (:allowed_department_ids)');
-            $qb->setParameter('allowed_department_ids', $allowedDepartmentIds);
+            $qb->setParameter('allowed_department_ids', $this->getAllowedDepartments());
         }
         if ($request->query->getBoolean('selectable')) {
             $subQb = $qb->getEntityManager()->createQueryBuilder();
@@ -111,9 +110,9 @@ abstract class AbstractDepartmentsController extends CrudController
     }
 
     /**
-     * @return int[]
+     * @return Department[]
      */
-    abstract protected function getAllowedDepartmentsId();
+    abstract protected function getAllowedDepartments();
 
     /**
      * {@inheritdoc}

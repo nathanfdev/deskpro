@@ -266,27 +266,22 @@ export default class IMOverlay extends React.Component {
     if (filter) {
       chats = chats.filter((chat) => {
         switch (chat.get('chat_type')) {
-          case 'agent':
-            {
-              let agentId = 0;
-              chat.get('agents').forEach((item) => {
-                if (item !== me.get('id')) {
-                  agentId = item;
-                }
-              });
-              const agent = agents.get(agentId);
-              return agent ? agent.get('name').test(new RegExp(filter, 'gi')) : true;
-            }
+          case 'agent': {
+            let agentId = 0;
+            chat.get('agents').forEach((item) => {
+              if (item !== me.get('id')) {
+                agentId = item;
+              }
+            });
+            const agent = agents.get(agentId);
+            return agent ? (agent.get('name') || '').test(new RegExp(filter, 'gi')) : true;
+          }
           case 'department':
-            return departments
-              .getIn([chat.getIn(['departments', 0]), 'title'])
-              .test(new RegExp(filter, 'gi'));
+            return (departments.getIn([chat.getIn(['departments', 0]), 'title']) || '').test(new RegExp(filter, 'gi'));
           case 'team':
-            return teams
-              .getIn([chat.getIn(['agent_teams', 0]), 'name'])
-              .test(new RegExp(filter, 'gi'));
+            return (teams.getIn([chat.getIn(['agent_teams', 0]), 'name']) || '').test(new RegExp(filter, 'gi'));
           case 'group':
-            return chat.get('name').test(new RegExp(filter, 'gi'));
+            return (chat.get('name') || '').test(new RegExp(filter, 'gi'));
           case 'everyone':
             return 'everyone'.indexOf(filter) !== -1;
           default:
