@@ -48,12 +48,12 @@ export class InstallerContainerProps {
    * @return {InstallerContainerProps}
    */
   setRouteProps({ params })  {
-    if (!params) {
+    if (!params || typeof params !== 'object') {
       return this;
     }
 
     const { app } = params;
-    this.state =  { ...this.state, app };
+    this.state =  { ...this.state, app: decodeURIComponent(app) };
     return this;
   }
 

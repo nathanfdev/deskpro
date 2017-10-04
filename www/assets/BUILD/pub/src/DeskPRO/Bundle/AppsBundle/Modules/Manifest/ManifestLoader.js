@@ -21,7 +21,10 @@ export class ManifestLoader {
   }
 
   loadApp(app)  {
-    return this.apiClient.sendGet(`DP_API/apps/${app}?include=app`)
+    // double encoded as symfony decodes the uri before matching the routes so forward slashes which are part of the
+    // name will influence the matching algorithm
+    const encodedName = encodeURIComponent(encodeURIComponent(app));
+    return this.apiClient.sendGet(`DP_API/apps/${encodedName}?include=app`)
       .then(response => response.data)
       .then(({ data, linked }) => readAppManifest(data, linked))
     ;

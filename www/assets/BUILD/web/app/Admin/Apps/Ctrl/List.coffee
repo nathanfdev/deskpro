@@ -144,8 +144,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
               $modalInstance.dismiss()
 
               me.$timeout(->
-                if (data.version)
-                  me.$state.go('apps.apps.installer-v2-reload', {appName: data.package_name})
+                if (data.version == 2)
+                  me.$state.go('apps.apps.installer-v2-reload', {appName: encodeURIComponent(data.package_name)})
                 else
                   me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
 

@@ -47,9 +47,9 @@ class InstallerFactory extends React.Component {
      */
     const dispatchIncomingWidgetMessage = (eventName, widgetMessage, widget, next)  => {
       if (eventName === INSTALL_STATUS_EVENT) {
-        const { manifest, status } = widgetMessage.body;
+        const { manifest, status } = widgetMessage.body; // eslint-disable-line no-unused-expressions, no-unused-vars
         if (status === 'success') {
-          legacyNavigate('apps.apps.package', { name: manifest.name });
+          legacyNavigate('apps.apps.instance_v2', { id: `v2_${widget.instanceId}` });
           return;
         }
       }
@@ -63,7 +63,10 @@ class InstallerFactory extends React.Component {
           <InstallerContainer {...containerProps.toJS()}>
             {({ appManifest, installerManifest }) => {
               if (!installerManifest) {
-                legacyNavigate('apps.apps.package', { name: appManifest.name });
+                api.sendPut(`DP_API/apps/app:${appManifest.application_id}`, { is_installed: true  })
+                  .then(() => {
+                    legacyNavigate('apps.apps.instance_v2', { id: `v2_${appManifest.id}` });
+                  });
                 return null;
               }
 
