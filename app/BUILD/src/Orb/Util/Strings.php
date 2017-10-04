@@ -1754,9 +1754,9 @@ class Strings
      *
      * @return array
      */
-    public static function explodeTrim($delim, $string, $limit = null)
+    public static function explodeTrim($delim, $string)
     {
-        $array = explode($delim, $string, $limit);
+        $array = explode($delim, $string);
         array_walk($array, 'trim');
 
         return $array;
