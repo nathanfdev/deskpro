@@ -1,4 +1,11 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/ImmRanneft/mpdf.git"
+    }
+  ],
+
   "require": {
     "doctrine/common": "2.6.*",
     "doctrine/dbal": "2.5.*",
@@ -71,7 +78,7 @@
     "doctrine/mongodb-odm-bundle": "~3.0",
     "doctrine/mongodb-odm": "1.0.x-dev",
     "mongofill/mongofill": "dev-master",
-    "mpdf/mpdf": "^6.1",
+    "mpdf/mpdf": "7.0.0.2a",
     "alchemy/zippy": "^0.4.6",
     "mikey179/vfsStream": "^1.6",
     "eloquent/pathogen": "^0.6.1",
