@@ -126,11 +126,4 @@ $collection->create('gmail_token', [
     'controller' => 'AdminInterfaceBundle:Gmail:requestAccessToken',
 ]);
 
-// Apps2 Admin
-
-$collection->create('apps-admin', [
-    'path'       => '/admin-apps',
-    'controller' => 'AdminInterfaceBundle:Index:appsInstaller',
-]);
-
 return $collection;
