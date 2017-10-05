@@ -75,6 +75,85 @@ class Build1507193201 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function run()
     {
-        $this->execDbQuery('default', 'UPDATE app2_app_instance SET `is_installed` = 1');
+        $this->execDbQuery('default', "UPDATE app2_app_instance SET `is_installed` = 1");
+
+        // install trello ...
+
+        $connection = $this->getDbConnection();
+        $instanceIds = $connection->fetchAllCol("SELECT i.id FROM app2_app_instance i INNER JOIN app2_app a WHERE a.name = 'deskpro-app-trello'");
+        $customFieldIds = $this->runCreateTrelloCustomFields($connection, $instanceIds);
+        $this->runCopyTrelloTicketStateToCustomFields($connection, $instanceIds, $customFieldIds);
     }
+
+    /**
+     * @param \Application\DeskPRO\DBAL\Connection $connection
+     * @param array $instanceIds
+     *
+     * @return array
+     */
+    private function runCreateTrelloCustomFields($connection, $instanceIds) {
+        $customFieldAlias = 'trelloCards';
+        $customFieldIdList = [];
+
+        foreach ($instanceIds as $id) {
+            // create custom def
+            $customDefTicket = [
+                'js_class' => '',
+                'has_form_template' => '0',
+                'has_display_template' => '0',
+                'title' => $customFieldAlias,
+                'description' => '',
+                'handler_class' => 'Application\\DeskPRO\\CustomFields\\Handler\\DataJson',
+                'options' => 'a:1:{s:20:\"custom_css_classname\";s:0:\"\";}',
+                'is_user_enabled' => '1',
+                'is_enabled' => '0',
+                'display_order' => '0',
+                'is_agent_field' => '0'
+            ];
+            $connection->insert('custom_def_ticket', $customDefTicket);
+            $customDefTicketId = $connection->lastInsertId();
+
+            // create object alias
+            $objectAlias = [
+                'app_instance_id' => $id,
+                'custom_def_ticket_id' => $customDefTicketId,
+                'alias' => $customFieldAlias,
+                'object_type' => 'custom_def_ticket',
+            ];
+            $connection->insert('object_aliases', $objectAlias);
+
+            $customFieldIdList[] = $customDefTicketId;
+        }
+
+        return $customFieldIdList;
+    }
+
+    /**
+     * @param \Application\DeskPRO\DBAL\Connection $connection
+     * @param array $instanceIds ordered list of instance ids
+     * @param array $customFields ordered list of custom fields
+     */
+    private function runCopyTrelloTicketStateToCustomFields($connection, $instanceIds, $customFields)
+    {
+        reset ($customFields);
+        foreach ($instanceIds as $id) {
+            $customField = current($customFields);
+            next($customFields);
+
+            $items = $connection->fetchAll("SELECT id, entity_id, `value` FROM app2_app_state_v2  where app_instance_id = ? and entity_id LIKE ?", [$id, 'ticket:%']);
+            foreach ($items as $item) {
+                $ticketId = str_replace('ticket:', '', $item['entity_id']);
+                $customDataTicket = [
+                    'ticket_id' => $ticketId,
+                    'field_id' => $customField,
+                    'root_field_id' => $customField,
+                    'value' => 0,
+                    'input' => $item['value'],
+                ];
+                $connection->insert('custom_data_ticket', $customDataTicket);
+                $connection->delete('app2_app_state_v2', ['id' => $item['id']]);
+            }
+        }
+    }
+
 }
