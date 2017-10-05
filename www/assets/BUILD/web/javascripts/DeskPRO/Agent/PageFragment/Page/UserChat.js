@@ -960,6 +960,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
+		var authorName = name || '';
+		if (type == 'user') {
+			authorName = this.meta.convo.person_name || '';
+		}
+
 		if (type == 'sys') {
 			name = '* ';
 		} else {
@@ -987,13 +992,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (person_avatar.indexOf('gravatar.com') !== -1) {
 			person_avatar = person_avatar.replace(/&?s=\d+\//, "", person_avatar);
 			person_avatar = Orb.appendQueryData(person_avatar, 's', '25');
-		}
-
-		var authorName = '';
-		if (type == 'agent') {
-			authorName = this.meta.youName || '';
-		} else if (type == 'user') {
-			authorName = this.meta.convo.person_name || '';
 		}
 
 		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(authorName) +'"><img src="' + person_avatar + '" /></div>';
