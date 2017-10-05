@@ -68,14 +68,6 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\Column(name="`is_installed`", type="boolean", options={"default" = 0}, nullable=false)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     */
-    private $isInstalled = false;
-
-    /**
      * @ORM\Column(name="`is_dev`", type="boolean", options={"default" = 0}, nullable=false)
      *
      * @JMS\Expose()
@@ -236,22 +228,6 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     public function getInstances()
     {
         return $this->instances;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsInstalled()
-    {
-        return $this->isInstalled;
-    }
-
-    /**
-     * @param mixed $isInstalled
-     */
-    public function setIsInstalled( $isInstalled )
-    {
-        $this->isInstalled = $isInstalled;
     }
 
     /**

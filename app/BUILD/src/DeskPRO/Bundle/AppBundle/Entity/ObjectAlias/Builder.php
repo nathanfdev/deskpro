@@ -40,7 +40,7 @@ class Builder
     /** @var string */
     private $name;
 
-    /** @var AppStore\App  */
+    /** @var AppStore\AppInstance  */
     private $app;
 
     /** @var mixed  */
@@ -80,7 +80,7 @@ class Builder
      */
     public function setApp($ref)
     {
-        if ($ref instanceof AppStore\App) {
+        if ($ref instanceof AppStore\AppInstance) {
             $this->app = $ref;
             return $this;
         }
@@ -91,10 +91,10 @@ class Builder
             $id = $ref;
         }
 
-        $repository = $this->entityManager->getRepository(AppStore\App::class);
+        $repository = $this->entityManager->getRepository(AppStore\AppInstance::class);
         $app = $repository->find($id);
 
-        if ($app instanceof AppStore\App) {
+        if ($app instanceof AppStore\AppInstance) {
             $this->app = $app;
             return $this;
         }
@@ -150,7 +150,7 @@ class Builder
         }
 
         if ($this->app) {
-            $alias->setApp($this->app);
+            $alias->setAppInstance($this->app);
         }
 
         return $alias;

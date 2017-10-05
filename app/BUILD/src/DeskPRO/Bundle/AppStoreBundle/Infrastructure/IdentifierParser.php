@@ -36,35 +36,21 @@ class IdentifierParser
     /**
      * @param string $raw
      *
-     * @return bool
+     * @return ApplicationRef|null
      */
-    public function recognizeApplicationReference($raw)
+    public function parseApplicationRef($raw)
     {
-        if ($this->recognizeApplicationId($raw)) {
-            return true;
-        }
-
-        $name = $this->parseApplicationName($raw);
-
-        return !is_null($name);
-    }
-
-    /**
-     * @param string $raw
-     *
-     * @return string|null
-     */
-    public function parseApplicationName($raw)
-    {
-        if ($this->recognizeApplicationId($raw)) {
-            return null;
-        }
-
         if ($this->recognizeApplicationInstanceId($raw)) {
             return null;
         }
 
-        return $raw;
+        $appId = $this->parseApplicationId($raw);
+        if (!is_null($appId)) {
+            return new ApplicationRef($appId, false);
+        }
+
+        //let's consider it an application name
+        return new ApplicationRef($raw, true);
     }
 
     /**
@@ -79,16 +65,6 @@ class IdentifierParser
         }
 
         return null;
-    }
-
-    /**
-     * @param string $raw
-     *
-     * @return bool
-     */
-    public function recognizeApplicationId($raw)
-    {
-        return (bool) preg_match('#^app:\d+$#', $raw);
     }
 
     /**

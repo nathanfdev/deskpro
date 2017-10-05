@@ -39,7 +39,7 @@ class Repository extends EntityRepository implements ObjectAlias\ObjectIdResolve
      */
     public function aliasExists( $alias )
     {
-        $qb = $this->createQueryBuilder('s');
+        $qb = $this->createQueryBuilder('a');
         $qb
             ->select('COUNT(a.id)')
             ->where('a.alias = :alias')
@@ -74,7 +74,7 @@ class Repository extends EntityRepository implements ObjectAlias\ObjectIdResolve
         $appQualifier = AppQualifier::fromName($alias);
         if (! empty($appQualifier)) {
             $qb
-                ->innerJoin('a.app', 'app')
+                ->innerJoin('a.appInstance', 'app')
                 ->andWhere('app.id = :appid')
                 ->setParameter('appid', $appQualifier->getId())
             ;

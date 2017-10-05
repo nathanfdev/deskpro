@@ -82,12 +82,7 @@ class ApplicationDoctrineFinder implements ApplicationFinder
         return $result;
     }
 
-    /**
-     * @param string $reference
-     *
-     * @return Entity\AppStore\App|null
-     */
-    public function findByName($reference)
+    public function findByReference(ApplicationRef $reference)
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb
@@ -95,14 +90,11 @@ class ApplicationDoctrineFinder implements ApplicationFinder
             ->select('a')
         ;
 
-        $idParser = new IdentifierParser();
-        $appName  = $idParser->parseApplicationName($reference);
-        $appId    = $idParser->parseApplicationId($reference);
-
-        if (!is_null($appName)) {
-            $qb->where('a.name = :name')->setParameter('name', $reference);
-        } elseif (!is_null($appId)) {
-            $qb->where('a.id = :id')->setParameter('id', $appId);
+        $id = $reference->getIdentifier();
+        if ($reference->isName()) {
+            $qb->where('a.name = :name')->setParameter('name', $id);
+        } elseif ($reference->isId()) {
+            $qb->where('a.id = :id')->setParameter('id', $id);
         } else {
             throw new \DomainException('unknown application reference');
         }
@@ -116,6 +108,16 @@ class ApplicationDoctrineFinder implements ApplicationFinder
         $instance = array_pop($result);
 
         return $instance;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return Entity\AppStore\App|null
+     */
+    public function findByName( $name)
+    {
+        return $this->findByReference(new ApplicationRef($name, true));
     }
 
     /**

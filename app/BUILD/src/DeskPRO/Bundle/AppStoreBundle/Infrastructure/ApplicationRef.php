@@ -26,37 +26,47 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-interface ApplicationFinder
+class ApplicationRef
 {
-    /**
-     * @return Application[]
-     */
-    public function findAll();
+    private $identifier;
+
+    private $isName = false;
 
     /**
-     * @param array $idList
+     * ApplicationRef constructor.
      *
-     * @return Application[]
+     * @param string $identifier
+     * @param bool   $isName
      */
-    public function findAllById($idList);
+    public function __construct($identifier, $isName)
+    {
+        $this->identifier = $identifier;
+        $this->isName     = $isName;
+    }
 
     /**
-     * Finds one application by reference.
-     *
-     * @param string $name
-     *
-     * @return Application
+     * @return string
      */
-    public function findByName($name);
+    public function getIdentifier()
+    {
+        return $this->identifier;
+    }
 
     /**
-     * Finds one application by unique system identifier.
-     *
-     * @param string $id
-     *
-     * @return Application
+     * @return bool
      */
-    public function findByInstanceId($id);
+    public function isId()
+    {
+        return !$this->isName;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isName()
+    {
+        return $this->isName;
+    }
 }

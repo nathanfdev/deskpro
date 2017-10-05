@@ -38,13 +38,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 // Please remove these NOTE comments after you have checked the code.
 
-class Build1507047569 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1507193201 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
-        $this->execDbQuery('default', 'CREATE TABLE object_aliases (id INT AUTO_INCREMENT NOT NULL, app_id INT DEFAULT NULL, custom_def_ticket_id INT DEFAULT NULL, custom_def_organization_id INT DEFAULT NULL, custom_def_people_id INT DEFAULT NULL, ticket_triggers_id INT DEFAULT NULL, alias VARCHAR(200) NOT NULL, object_type VARCHAR(255) NOT NULL, INDEX IDX_5F5C3B997987212D (app_id), INDEX IDX_5F5C3B999DA6716B (custom_def_ticket_id), INDEX IDX_5F5C3B99E856A96F (custom_def_organization_id), INDEX IDX_5F5C3B99DCE1FF8F (custom_def_people_id), INDEX IDX_5F5C3B99E40E1167 (ticket_triggers_id), UNIQUE INDEX unique_alias (alias, app_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
+        $this->execDbQuery('default', 'CREATE TABLE object_aliases (id INT AUTO_INCREMENT NOT NULL, app_instance_id INT DEFAULT NULL, custom_def_ticket_id INT DEFAULT NULL, custom_def_organization_id INT DEFAULT NULL, custom_def_people_id INT DEFAULT NULL, ticket_triggers_id INT DEFAULT NULL, alias VARCHAR(200) NOT NULL, object_type VARCHAR(255) NOT NULL, INDEX IDX_5F5C3B9963B454A1 (app_instance_id), INDEX IDX_5F5C3B999DA6716B (custom_def_ticket_id), INDEX IDX_5F5C3B99E856A96F (custom_def_organization_id), INDEX IDX_5F5C3B99DCE1FF8F (custom_def_people_id), INDEX IDX_5F5C3B99E40E1167 (ticket_triggers_id), UNIQUE INDEX unique_alias (alias, app_instance_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
         $this->execDbQuery('default', "CREATE TABLE ticket_webhooks (id INT AUTO_INCREMENT NOT NULL, app_instance_id INT DEFAULT NULL, auth_id VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, payload_decoder VARCHAR(255) NOT NULL, is_enabled TINYINT(1) NOT NULL, search_terms LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', terms LONGTEXT DEFAULT NULL COMMENT '(DC2Type:dp_json_obj)', actions LONGTEXT NOT NULL COMMENT '(DC2Type:dp_json_obj)', INDEX IDX_1CE5B35C63B454A1 (app_instance_id), UNIQUE INDEX auth_id_unique (auth_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB");
-        $this->execDbQuery('default', 'ALTER TABLE object_aliases ADD CONSTRAINT FK_5F5C3B997987212D FOREIGN KEY (app_id) REFERENCES app2_app (id)');
+        $this->execDbQuery('default', 'ALTER TABLE object_aliases ADD CONSTRAINT FK_5F5C3B9963B454A1 FOREIGN KEY (app_instance_id) REFERENCES app2_app_instance (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE object_aliases ADD CONSTRAINT FK_5F5C3B999DA6716B FOREIGN KEY (custom_def_ticket_id) REFERENCES custom_def_ticket (id)');
         $this->execDbQuery('default', 'ALTER TABLE object_aliases ADD CONSTRAINT FK_5F5C3B99E856A96F FOREIGN KEY (custom_def_organization_id) REFERENCES custom_def_organizations (id)');
         $this->execDbQuery('default', 'ALTER TABLE object_aliases ADD CONSTRAINT FK_5F5C3B99DCE1FF8F FOREIGN KEY (custom_def_people_id) REFERENCES custom_def_people (id)');
@@ -62,15 +62,19 @@ class Build1507047569 extends AbstractBuild implements BlockingBuildInterface, S
         $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_article');
         $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_person');
         $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_product');
+        $this->execDbQuery('default', 'ALTER TABLE app2_app_instance DROP FOREIGN KEY FK_B1B171047987212D');
+        $this->execDbQuery('default', "ALTER TABLE app2_app_instance ADD `is_installed` TINYINT(1) DEFAULT '0' NOT NULL");
+        $this->execDbQuery('default', 'ALTER TABLE app2_app_instance ADD CONSTRAINT FK_B1B171047987212D FOREIGN KEY (app_id) REFERENCES app2_app (id) ON DELETE CASCADE');
+        $this->execDbQuery('default', 'ALTER TABLE app2_app_asset_blob DROP FOREIGN KEY FK_B4A87CA07987212D');
+        $this->execDbQuery('default', 'ALTER TABLE app2_app_asset_blob ADD CONSTRAINT FK_B4A87CA07987212D FOREIGN KEY (app_id) REFERENCES app2_app (id) ON DELETE CASCADE');
 
-        // installer columns
         $this->execDbQuery('default', 'DROP INDEX name_unique ON app2_app');
-        $this->execDbQuery('default', "ALTER TABLE app2_app ADD `is_installed` TINYINT(1) NOT NULL DEFAULT '0', ADD `is_dev` TINYINT(1) NOT NULL DEFAULT '0'");
+        $this->execDbQuery('default', "ALTER TABLE app2_app ADD `is_dev` TINYINT(1) DEFAULT '0' NOT NULL");
         $this->execDbQuery('default', 'CREATE UNIQUE INDEX name_unique ON app2_app (name, is_dev)');
     }
 
     public function run()
     {
-        $this->execDbQuery('default', 'UPDATE app2_app SET `is_installed` = 1');
+        $this->execDbQuery('default', 'UPDATE app2_app_instance SET `is_installed` = 1');
     }
 }

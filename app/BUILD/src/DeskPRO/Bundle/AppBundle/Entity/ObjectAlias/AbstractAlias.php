@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
-use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -37,7 +37,7 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\Entity
  * @ORM\Table(
  *  name="object_aliases", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_alias", columns={"alias", "app_id"})
+ *     @ORM\UniqueConstraint(name="unique_alias", columns={"alias", "app_instance_id"})
  *  })
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="object_type", type="string")
@@ -74,15 +74,15 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
     private $alias;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=true)
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance")
+     * @ORM\JoinColumn(name="app_instance_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AppStore\App>")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance>")
      *
-     * @var App
+     * @var AppInstance
      */
-    private $app;
+    private $appInstance;
 
     /**
      * @return mixed
@@ -117,19 +117,19 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
     }
 
     /**
-     * @return App
+     * @return AppInstance
      */
-    public function getApp()
+    public function getAppInstance()
     {
-        return $this->app;
+        return $this->appInstance;
     }
 
     /**
-     * @param App $app
+     * @param AppInstance $app
      */
-    public function setApp(App $app)
+    public function setAppInstance( AppInstance $app)
     {
-        $this->app = $app;
+        $this->appInstance = $app;
     }
 
     /**
@@ -139,8 +139,8 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
     {
         $qualifiers = [];
 
-        if ($this->app) {
-            $qualifiers[] = ['app', $this->app->getId()];
+        if ($this->appInstance) {
+            $qualifiers[] = ['app', $this->appInstance->getId()];
         }
 
         return $qualifiers;

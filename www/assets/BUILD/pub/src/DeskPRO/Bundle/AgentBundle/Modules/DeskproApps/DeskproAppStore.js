@@ -1,3 +1,5 @@
+import * as postRobot from 'post-robot';
+
 import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { AppServices, mountContextInWindow, unmountContextInWindow, ContainerMounter } from 'DeskPRO/Bundle/AppsBundle/Modules/Services';
 import {
@@ -10,7 +12,6 @@ import {
 import { DeskproWindowMessageBrokerAdapter } from './Services/DeskproWindowMessageBrokerAdapter';
 import { filterAppManifestsConfig, filterApiToken, changedContextsSelector, filterAppstoreConfig } from './Selectors/Main';
 import { loadApps, loadApiToken, loadContextsFromPageFragments, loadAppstoreConfig } from './Actions/Actions';
-
 
 /**
  * Dispatches the action to load the api token
@@ -104,6 +105,9 @@ class DeskproAppStore {
     const apiToken = filterApiToken(state);
     const config = filterAppstoreConfig(state);
 
+    if (config.environment === 'production') {
+      postRobot.CONFIG.LOG_LEVEL = 'error';
+    }
 
     const appServices = new AppServices({ api, apiToken, window: windowObject, config });
     appServices.onAppStateChanged(state);

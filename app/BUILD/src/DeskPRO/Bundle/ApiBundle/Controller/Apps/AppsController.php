@@ -197,12 +197,12 @@ class AppsController extends BaseController
 
     /**
      * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
-     * @param Entity\AppStore\App $application
+     * @param Entity\AppStore\AppInstance $application
      * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
      */
-    public function updateAppAction(Entity\AppStore\App $application = null, Request $request)
+    public function updateAppAction(Entity\AppStore\AppInstance $application = null, Request $request)
     {
         if (empty($application)) {
             throw new NotFoundHttpException('could not find application');
@@ -213,14 +213,7 @@ class AppsController extends BaseController
         $representation = json_decode($body, $associative = true);
 
         $properties = [
-            'is_dev' => function(Entity\AppStore\App $app, $value) {
-                if (is_bool($value)) {
-                    $app->setIsDev($value);
-                    return true;
-                }
-                return false;
-            },
-            'is_installed' => function(Entity\AppStore\App $app, $value) {
+            'is_installed' => function(Entity\AppStore\AppInstance $app, $value) {
                 if (is_bool($value)) {
                     $app->setIsInstalled($value);
                     return true;
@@ -248,6 +241,14 @@ class AppsController extends BaseController
         $em->persist($application);
         $em->flush();
 
+        $this->container
+            ->get('event_dispatcher')
+            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+            ]));
+
         return $this->wrap($application);
     }
 
@@ -265,9 +266,10 @@ class AppsController extends BaseController
             throw new NotFoundHttpException('could not find application');
         }
 
-        $em = $this->getManager();
-        $em->remove($application);
-        $em->flush();
+        /** @var AppStoreBundle\Infrastructure\ApplicationManagerService $appManager */
+        $appManager = $this->container->get('apps2.application_manager');
+        $strategy = $appManager->getRemoveStrategy($application);
+        $appManager->remove($application, $strategy);
 
         $this->container
             ->get('event_dispatcher')
@@ -341,20 +343,20 @@ class AppsController extends BaseController
     /**
      * @Rest\Get("/{application}/status")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
-     * @param Entity\AppStore\App $application
+     * @param Entity\AppStore\AppInstance $application
      *
      * @return array
      */
-    public function getStatusAction(Entity\AppStore\App $application = null)
+    public function getStatusAction(Entity\AppStore\AppInstance $application = null)
     {
         if (empty($application)) {
             throw new NotFoundHttpException('could not find application');
         }
 
         $status = new ApplicationStatus();
-        $status->setIsDev($application->getIsDev());
+        $status->setIsDev($application->getApp()->getIsDev());
         $status->setIsInstalled($application->getIsInstalled());
         return $status;
     }

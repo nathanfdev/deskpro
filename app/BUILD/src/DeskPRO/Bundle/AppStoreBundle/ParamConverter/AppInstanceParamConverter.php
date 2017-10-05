@@ -78,8 +78,9 @@ class AppInstanceParamConverter implements ParamConverterInterface
     private function convert($from)
     {
         $from = urldecode($from);
-        if ($this->identifierParser->recognizeApplicationReference($from)) {
-            return $this->finder->findSoleApplicationInstance($from);
+        $appRef  = $this->identifierParser->parseApplicationRef($from);
+        if (!is_null($appRef)) {
+            return $this->finder->findSoleApplicationInstanceByRef($appRef);
         }
 
         if ($this->identifierParser->recognizeApplicationInstanceId($from)) {

@@ -89,8 +89,27 @@ class EntityQueryBuilders
         }
 
         if ($filter->hasIsInstalled()) {
-            $qb->andWhere('a.isInstalled = :isInstalled')->setParameter('isInstalled', $filter->getIsInstalled());
+            $qb->andWhere('i.isInstalled = :isInstalled')->setParameter('isInstalled', $filter->getIsInstalled());
         }
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param ORM\EntityManager $em
+     * @param $id
+     * @return ORM\Query
+     */
+    public function buildFindApplicationInstanceByAppId(ORM\EntityManager $em, $id)
+    {
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppInstance::class, 'i')
+            ->select('i, a')
+            ->innerJoin('i.app', 'a')
+            ->where('a.id = :id')
+            ->setParameter('id', $id)
+        ;
 
         return $qb->getQuery();
     }

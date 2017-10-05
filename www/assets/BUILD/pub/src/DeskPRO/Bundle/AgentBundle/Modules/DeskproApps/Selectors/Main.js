@@ -4,6 +4,10 @@ export const filterAppConfig =  ({ DeskproApps: { Main:state } }) => state.get('
 
 export const filterApiToken =  ({ DeskproApps: { Main:state } }) => state.get('apiToken');
 
+/**
+ * @param state
+ * @return {AppsConfig}
+ */
 export const filterAppstoreConfig =  ({ DeskproApps: { Main:state } }) => {
   const configJS = state.get('config').toJS();
   return new AppsConfig(configJS);
