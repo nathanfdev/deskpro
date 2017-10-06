@@ -21,7 +21,8 @@ define([
   'underscore',
   'stacktrace',
   'DeskPRO/OptionBuilder/Module',
-  'DeskPRO/CategoryBuilder/Module'
+  'DeskPRO/CategoryBuilder/Module',
+  window.DP_REPORT_BUNDLE_PATH
 
 ], function(angular, InterfaceApp) {
 

@@ -26,6 +26,7 @@ api.addInterceptor(new UrlCorrector(window.DP_BASE_URL));
 
 // Replace DP_API in the beginning with full URL prefix including http://
 api.addInterceptor(new UrlCorrector(`${window.DP_BASE_API_URL}/v2/`, /^\/?DP_API\//));
+api.addInterceptor(new UrlCorrector(`${window.DP_BASE_API_URL}/`, /^\/?DP_API_OLD\//));
 
 // todo note that the last interceptor overrides DP_BASE_URL of previous one
 // Replace other DP_API occurrences with just '/api/v2' implying they're used to define sub-requests in batch API

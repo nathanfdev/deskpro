@@ -1,7 +1,17 @@
 define ['DeskPRO/Util/Arrays'], (Arrays) -> [
-  '$scope', '$stateParams', '$q', '$timeout', 'DataService', 'Api', 'DashboardWidgetService',
-  ($scope, $stateParams, $q, $timeout, DataService, Api, DashboardWidgetService) ->
+  '$scope', '$state', '$stateParams', '$q', '$timeout', 'DataService', 'Api', 'DashboardWidgetService',
+  ($scope, $state, $stateParams, $q, $timeout, DataService, Api, DashboardWidgetService) ->
     $scope.loaded = false
+
+    routePath = $state.current.url;
+    if (routePath[0] != '/')
+      routePath = '/' + routePath;
+
+    reactProps = {
+      routePath: routePath
+    }
+
+    window.ReportBundle.render(reactProps, document.getElementById('report_react_component'));
 
     customData = DataService.get('ReportWidgetCustom')
     builtInData = DataService.get('ReportWidgetBuiltIn')
@@ -39,6 +49,38 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           return true if v.title == label and v.active == true
       if index >= 0
         return true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       else
         return false
 
@@ -91,7 +133,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         else
           return true for label in value.labels when label.toLocaleLowerCase().indexOf(search) >= 0
           return false
-          
+
     $scope.changeWidgetParams = (params) ->
       return
   ]

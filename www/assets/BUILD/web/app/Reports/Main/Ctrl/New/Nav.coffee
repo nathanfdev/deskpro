@@ -13,8 +13,8 @@ define [], () -> [
     $scope.getDashboardList = (firstLoad = false) ->
       DashboardsInfo.getDashboardList().then((dbs) ->
         $scope.dashboards = dbs
-        
-        if(firstLoad)
+
+        if(firstLoad && $state.includes('reports.dashboards'))
           db = dbs[0]
           if db.reports?.length
             $state.go('reports.dashboards.view.report', { dashboard_id: db.id, report_id: db.reports[0].id })

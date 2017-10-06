@@ -168,16 +168,17 @@
 <link href='http://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="{{ asset('app-build/Interface/Resources/style/interface-style.css') }}"/>
 <script type="text/javascript">
-	window.DP_ASSET_URL         = '{{ asset('') }}';
-	window.DP_BASE_URL          = '/{{ path('user')|ltrim('/') }}';
-	window.DP_BASE_API_URL      = '/{{ path('user')|ltrim('/') }}api';
-	window.DP_BASE_REPORTS_URL = '/{{ path('reports')|trim('/') }}';
-	window.DP_API_TOKEN         = '{{ api_token.getKeyString() }}';
-	window.DP_PERSON_ID         = '{{ app.user.id }}';
-	window.DP_IS_DEBUG          = {% if app.isDebug() %}true{% else %}false{% endif %};
-	window.DP_IS_TESTING        = {% if app.isTesting() %}true{% else %}false{% endif %};
-	window.DP_USE_RJS_BUILD     = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
-	window.DP_BUILD_TIME        = {{ app.getBuildTime() }};
+	window.DP_ASSET_URL          = '{{ asset('') }}';
+	window.DP_BASE_URL           = '/{{ path('user')|ltrim('/') }}';
+	window.DP_BASE_API_URL       = '/{{ path('user')|ltrim('/') }}api';
+	window.DP_BASE_REPORTS_URL   = '/{{ path('reports')|trim('/') }}';
+	window.DP_API_TOKEN          = '{{ api_token.getKeyString() }}';
+	window.DP_PERSON_ID          = '{{ app.user.id }}';
+	window.DP_IS_DEBUG           = {% if app.isDebug() %}true{% else %}false{% endif %};
+	window.DP_IS_TESTING         = {% if app.isTesting() %}true{% else %}false{% endif %};
+	window.DP_USE_RJS_BUILD      = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+	window.DP_BUILD_TIME         = {{ app.getBuildTime() }};
+    window.DP_REPORT_BUNDLE_PATH = '{{ asset('DeskPRO_ReportBundle.js', 'app_assets') }}';
 </script>
 {{ js_error_tracking('reports_interface') }}
 <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
