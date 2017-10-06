@@ -111,16 +111,16 @@
 
   "customFields" : [
     {
-      "alias": "trello-cards",
-      "attachedTo" : "ticket",
-      "enabled": true,
-      "type": "dataJson"
-    },
-    {
       "alias": "adate",
       "attachedTo" : "organization",
-      "enabled": true,
-      "type": "date"
+      "type": "date",
+      "title": "Field title"
+    },
+    {
+      "alias": "trello-cards",
+      "attachedTo" : "ticket",
+      "type": "dataJson",
+      "title": "Field title"
     }
   ],
 

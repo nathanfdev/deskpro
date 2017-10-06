@@ -161,9 +161,9 @@
         "type": { "type": "string", "enum": ["dataJson", "dataList", "data", "date", "dateTime", "text", "textarea", "textEmail", "textUrl", "toggle", "choice"] },
         "alias": { "type": "string", "pattern": "^[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*" },
         "attachedTo": { "type": "string", "enum": ["ticket", "person", "organization"] },
-        "enabled": { "type": "boolean" }
+        "title": { "type": "string" }
       },
-      "required": [ "type", "alias", "enabled", "attachedTo" ]
+      "required": [ "type", "alias", "attachedTo", "title" ]
     },
 
     "author": {

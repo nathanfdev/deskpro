@@ -56,11 +56,11 @@ class CustomField
     private $alias;
 
     /**
-     * @JMS\Type("boolean")
+     * @JMS\Type("string")
      *
      * @var string
      */
-    private $enabled;
+    private $title;
 
     /**
      * @return string
@@ -97,22 +97,6 @@ class CustomField
     /**
      * @return string
      */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param string $enabled
-     */
-    public function setEnabled( $enabled )
-    {
-        $this->enabled = $enabled;
-    }
-
-    /**
-     * @return string
-     */
     public function getAttachedTo()
     {
         return $this->attachedTo;
@@ -124,6 +108,22 @@ class CustomField
     public function setAttachedTo( $attachedTo )
     {
         $this->attachedTo = $attachedTo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle( $title )
+    {
+        $this->title = $title;
     }
 
 }
