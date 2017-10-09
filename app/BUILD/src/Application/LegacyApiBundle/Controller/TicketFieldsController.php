@@ -32,6 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
@@ -142,13 +143,28 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      */
     public function getCustomFieldAction($id)
     {
+        /** @var CustomDefTicket $field */
         $field = $this->em->find('DeskPRO:CustomDefTicket', $id);
         if (!$field || $field->parent) {
             throw $this->createNotFoundException();
         }
 
-        $data          = [];
-        $data['field'] = $field->toApiData();
+        $referencedBy = [];
+        foreach ($field->getAliases() as $alias) {
+            $appInstance = $alias->getAppInstance();
+            if ($appInstance) {
+                $referencedBy[] = [
+                    'entity' => 'app',
+                    'appId' => $appInstance->getApp()->getId(),
+                    'appName' => $appInstance->getApp()->getManifest()->getTitle(),
+                ];
+            }
+        }
+
+        $data          = [
+            'field' => $field->toApiData(),
+            'referencedBy' => $referencedBy
+        ];
 
         return $this->createApiResponse($data);
     }
