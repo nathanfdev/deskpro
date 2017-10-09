@@ -57,6 +57,7 @@ class PreviewEmail extends React.Component {
               padding:  '30px',
               top:      0,
               left:     0,
+              zIndex:   9,
             }}
             content={code}
             isVisible

@@ -109,6 +109,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'emails',
+    url:          '/emails',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
+  routes.push({
     id:           'features',
     url:          '/features',
     templateName: 'Layout/app.html',

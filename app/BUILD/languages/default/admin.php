@@ -456,6 +456,7 @@ return [
     'adm.general.apps_chat'                                                                => 'Chat',
     'adm.general.voice_channel'                                                            => 'Voice Channel',
     'adm.general.apps_crm'                                                                 => 'CRM',
+    'adm.general.apps_emails'                                                              => 'Emails',
     'adm.general.apps_portal'                                                              => 'Portal',
     'adm.general.apps_server'                                                              => 'Server',
     'adm.general.apps_setup'                                                               => 'Setup',

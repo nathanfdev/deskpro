@@ -7,6 +7,7 @@ import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DA
 import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
+import * as EmailTemplates from '../../EmailTemplates/Components';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import * as Apps from '../../Apps/Components/index';
@@ -87,7 +88,7 @@ class AppContainer extends React.Component {
             }))}
           />
           <Route path="emails" key="email_routes">
-            <Route path="templates_editor(/:name)" component={EmailTemplates.Editor} />
+            <Route path="templates_editor(/:name)" component={EmailTemplates.EmailTemplatesEditorContainer} />
           </Route>
         </Router>
       </Provider>
