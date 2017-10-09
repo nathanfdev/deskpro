@@ -44,7 +44,6 @@ class Wrapper extends React.Component {
 
   onReportClick(report) {
     this.props.dispatch(loadReport(report.get('id')));
-    this.setState({ currentReport: report });
   }
 
   render() {
@@ -66,7 +65,7 @@ class Wrapper extends React.Component {
             </div>
           </div>
         </div>
-        <Edit report={this.state.currentReport} />
+        { this.props.currentReport.get('query_parts') ? <Edit report={this.state.currentReport} /> : null }
       </span>
     );
   }

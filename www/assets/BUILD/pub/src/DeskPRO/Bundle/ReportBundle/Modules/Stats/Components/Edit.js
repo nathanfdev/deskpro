@@ -1,147 +1,94 @@
 import React, { PropTypes } from 'react';
-import Immutable from 'immutable';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
+import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Fieldset, createValue } from 'react-forms';
 
-class Edit extends React.Component {
+
+class Edit extends BaseForm {
 
   static propTypes = {
     report: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
+  getDefaultState() {
+    const report = this.props.report;
 
-    this.state = {
-      report: Immutable.fromJS({ id: 0, is_new: false, is_custom: false })
+    return {
+      title:   report.get('title'),
+      select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
+      from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
+      where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
+      splitBy: report.get('query_parts') ? report.get('query_parts').get('splitBy') : '',
+      groupBy: report.get('query_parts') ? report.get('query_parts').get('groupBy') : '',
+      orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
+      offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
+      limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.report) {
-      this.setState({ report: newProps.report });
+  componentWillReceiveProps(props) {
+    const { report } = props;
+
+    if (props.report) {
+      this.setState({
+        formData: createValue({
+          value: {
+            title:   report.get('title'),
+            select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
+            from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
+            where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
+            splitBy: report.get('query_parts') ? report.get('query_parts').get('splitBy') : '',
+            groupBy: report.get('query_parts') ? report.get('query_parts').get('groupBy') : '',
+            orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
+            offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
+            limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
+          },
+          errorList: {},
+          onChange:  this.onChange
+        })
+      });
     }
   }
 
   renderReport() {
-    const { report } = this.state;
-
     return (
       <div className="reports-editor-panel full-editor">
-        <div className="editor-form full-editor-form">
-          <div className="inline-input">
-            <div className="query-part title">
-              <div>
-                { report.get('title') }
-              </div>
-            </div>
-          </div>
-          <div className="inline-input">
-            <label htmlFor="select">Select:</label>
-            <div className="input-container">
-              <div className="query-part">
-                <div>
-                  { report.get('query_parts') ? report.get('query_parts').select : '' }
-                </div>
-              </div>
-            </div>
-          </div>
+        <Form formValue={this.state.formData} className="editor-form full-editor-form">
+          <Fieldset>
+            <Field select="title" label="Title">
+              <Input type="text" />
+            </Field>
+            <Field select="select" label="Select">
+              <Input type="text" />
+            </Field>
+            <Field select="from" label="From">
+              <Input type="text" />
+            </Field>
+            <Field select="where" label="Where">
+              <Input type="text" />
+            </Field>
+            <Field select="splitBy" label="Split By">
+              <Input type="text" />
+            </Field>
+            <Field select="groupBy" label="Group By">
+              <Input type="text" />
+            </Field>
+            <Field select="orderBy" label="Order By">
+              <Input type="text" />
+            </Field>
+            <Field select="limit" label="Limit">
+              <Input type="text" />
+            </Field>
+            <Field select="offset" label="Offset">
+              <Input type="text" />
+            </Field>
 
-          <div className="inline-input">
-            <label htmlFor="from">From:</label>
-            <div className="input-container">
-              <div className="query-part short">
-                <div>
-                  { report.get('query_parts') ? report.get('query_parts').get('from') : '' }
-                </div>
-              </div>
+            <div className="editor-controls">
+              <a className="button">Save Query <i className="fa fa-save" /></a>
+              <a className="button button-edit">Test <i className="fa fa-fast-forward" /></a>
             </div>
-          </div>
-          <div className="inline-input">
-            <label htmlFor="where">Where:</label>
-            <div className="input-container">
-              <div className="query-part">
-                <div>
-                  { report.get('query_parts') ? report.get('query_parts').get('where') : '' }
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="inline-input">
-            <label htmlFor="splitBy">Split By:</label>
-            <div className="input-container">
-              <div className="query-part">
-                <div>
-                  { report.get('query_parts') ? report.get('query_parts').get('splitBy') : '' }
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="inline-input">
-            <label htmlFor="groupBy">Group By:</label>
-            <div className="input-container">
-              <div className="query-part">
-                <div>
-                  { report.get('query_parts') ? report.get('query_parts').get('groupBy') : '' }
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="inline-input">
-            <label htmlFor="orderBy">Order By:</label>
-            <div className="input-container">
-              <div className="query-part">
-                <div>
-                  { report.get('query_parts') ? report.get('query_parts').get('orderBy') : '' }
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="inline-input">
-            <label htmlFor="limit">Limit:</label>
-            <div className="input-container">
-              <input name="limit" type="text"  style={{ width: '100px' }} value={report.get('query_parts') ? report.get('query_parts').limit : ''} />
-            </div>
-            <div className="offset">
-              <label htmlFor="offset">Offset:</label>
-              <input name="offset" type="text" value={report.get('query_parts') ? report.get('query_parts').offset : ''} />
-            </div>
-          </div>
-
-          <div className="widget-vars">
-            <h3>Variables</h3>
-            <div>
-              <div className="inline-input">
-                <label htmlFor="type" style={{ padding: '3px 10px' }}><i className="fa fa-times" /></label>
-                <input name="type" />
-
-                <select style={{ minWidth: '70px' }}>
-                  <option value="dates">
-                    Date
-                  </option>
-                  <option value="fields">
-                    Group by field
-                  </option>
-                  <option value="statuses">
-                    Status group
-                  </option>
-                  <option value="orders">
-                    Order group
-                  </option>
-                </select>
-
-                <select style={{ minWidth: '200px' }} />
-                <select style={{ minWidth: '200px' }} />
-                <select style={{ minWidth: '200px' }} />
-
-              </div>
-            </div>
-            <i className="fa fa-plus-circle" /> Add new var
-          </div>
-
-          <div className="editor-controls">
-            <a className="button">Save Query <i className="fa fa-save" /></a>
-            <a className="button button-edit">Test <i className="fa fa-fast-forward" /></a>
-          </div>
-        </div>
+          </Fieldset>
+        </Form>
       </div>
     );
   }
@@ -149,7 +96,7 @@ class Edit extends React.Component {
   render() {
     return (
       <div className="stat-large-preview-wrapper">
-        { this.props.report ? this.renderReport() : '' }
+        { this.props.report && this.props.report.get('id') && this.props.report.get('query_parts') ? this.renderReport() : '' }
       </div>
     );
   }
