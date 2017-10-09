@@ -890,9 +890,9 @@ define(function() {
   //# Temporary Email Templates
   //###
   routes.push({
-    id: 'tickets.email_templates_old',
-    url: '/email_templates_old',
-    templateName: 'Templates/email-groups-old.html',
+    id: 'tickets.email_templates_legacy',
+    url: '/email_templates_legacy',
+    templateName: 'Templates/email-groups-legacy.html',
     controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
   });
 

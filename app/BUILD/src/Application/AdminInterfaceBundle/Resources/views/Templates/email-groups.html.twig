@@ -1,76 +1,4 @@
-{% extends 'AdminInterfaceBundle:Layout:list-with-fullpage-header.html.twig' %}
-{% block fullpane_content %}
-    {% if app.hasBeta('email_templates') %}
-		<section class="dp-paneblock dp-listpane">
-			<header>
-				<h3>{{ ng_var('toUpgradeTemplates.length') }} email templates need upgrading</h3>
-			</header>
-			<article>
-				<p class="dp-empty-list-notice">
-					This is the legacy template editor. These old templates lack the new features added in DeskPRO v5.7. These old templates
-					will soon stop working. You need to update them to use the new system. Updating your templates is easy and most
-					of the times only takes a couple minutes. Please refer to our guide here.
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th>Template</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr ng-repeat="template in toUpgradeTemplates" ng-init="templateName = template[0].name">
-                                <td>
-									{{ ng_var('templateName') }}
-									(<span ng-click="ListCtrl.openEditor(template[0])">
-										<span class="linked-text">
-											<em>view</em>
-										</span>
-									</span>)
-								</td>
-								<td>
-									<div ng-show="template[1]">
-										<div ng-repeat="item in template[1].split(',')">
-											Used in
-											<a ng-href="{{ ng_href('tickets.triggers.edit', '{type: item.split(\'-\')[0], id: item.split(\'-\')[1]}') }}">
-												Trigger {{ ng_var('item.split(\'-\')[1]') }}
-											</a>
-										</div>
-									</div>
-									<div ng-hide="template[1]">
-										<div ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
-											Unused (safe to delete)
-										</div>
-										<div ng-hide="templateName.indexOf('DeskPRO:emails_custom') !== -1">
-											Built-in Template
-										</div>
-									</div>
-								</td>
-								<td>
-									<a ng-href="{{ ng_href('emails.templates_editor.edit', '{name: templateName}') }}">Update Template</a> |
-									<span ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
-										<span ng-click="ListCtrl.deleteTemplate(template[0].id, template[1])">
-											<span class="linked-text">
-												<em>Delete Template</em>
-											</span>
-										</span>
-									</span>
-									<span ng-hide="templateName.indexOf('DeskPRO:emails_custom') !== -1">
-										<span ng-click="ListCtrl.revertTemplate(template[0].id, template[1])">
-											<span class="linked-text">
-												<em>Revert To Default</em>
-											</span>
-										</span>
-									</span>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-				</p>
-			</article>
-		</section>
-    {% endif %}
-{% endblock %}
+{% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
 	<section class="dp-paneblock dp-listpane">
 		<header>
@@ -90,50 +18,118 @@
 		</article>
 	</section>
 
-            </div>
-            Email:
-            <div class="email-body with-ace-editor">
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Custom Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="groupName:tickets.email_templates.list.custom">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'custom'}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Custom Email Templates</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
 
-            </div>
-        </div>
-        <div class="footer">
-            <button class="ui primary small button">Save changes</button>
-            <button class="ui basic small button">Undo changes</button>
-            <button class="ui right floated basic small button">Reset template</button>
-        </div>
-    </div>
-    <div class="preview">
-        <div class="header">
-            <p>
-                Enter details below to send a test email to yourself or a colleague.
-            </p>
-            <form class="ui form">
-                <div class="fields">
-                    <div class="six wide field">
-                        <label>From</label>
-                        <div class="ui selection dropdown">
-                            <input type="hidden">
-                            <i class="dropdown icon"></i>
-                                <span class="item">support@deskpro.com</span>
-                            </i>
-                        </div>
-                    </div>
-                    <div class="six wide field">
-                        <label for="test_email_to">To</label>
-                        <input type="text" name="to" id="test_email_to" />
-                    </div>
-                    <div class="four wide field">
-                        <label>&nbsp;</label>
-                        <input type="submit" class="ui basic button" value="Send">
-                    </div>
-                </div>
-            </form>
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>User Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="info in ListCtrl.templateInfo.user.groups" dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'user:' + info.groupId|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'user:' + info.groupId}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">{{ ng_var('info.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
 
-        </div>
-        <div class="email-preview">
-            <div class="email">
-                Test preview email
-            </div>
-        </div>
-    </div>
-</div>
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Agent Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li ng-repeat="info in ListCtrl.templateInfo.agent.groups" dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'agent:' + info.groupId|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'agent:' + info.groupId}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">{{ ng_var('info.title') }}</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+{% endblock %}
+{% block listpane_help %}
+	<header>
+		<h1>Customize the content of emails sent out to agents and users by editing these templates.</h1>
+			<p>These templates control the content of all emails sent by DeskPRO (except for the text written by agents or users), including both automatic notifications and agent/user replies.
+			</p>
+	</header>
+	<article>
+
+		<section>
+
+			<p>Templates reference <strong>phrases</strong> (as defined in language packs - see <strong>Setup > Languages</strong>): short re-usable pieces of text which specify something like the user greeting at the beginning of an email. To actually change the text of an email, you should edit the relevant phrase, or define a new phrase and include it in a template. For example, <code>{{ '{{' }} phrase('user.emails.greeting') {{ '}}' }}</code> is used to insert a standard greeting phrase into a user email.</p>
+			<p>Templates use <strong>variables</strong> to insert information from DeskPRO into the email. For example, <code>{{ '{{' }} to_name {{ '}}' }}</code> inserts the email recipient's name.</p>
+
+
+			<p>Changes to the header, footer and CSS templates will affect all emails.</p>
+
+		</section>
+	<section>
+		<h2><span>FAQ</span></h2>
+		<dl>
+			<dt><em>Q:</em>I don't understand the template code. Help!</dt>
+			<dd><em>A:</em>
+				The template syntax is a mixture of HTML, phrases, variables and special template commands. See the <a href="https://support.deskpro.com/guides/topic/396" target="_blank">Introducing Templates</a> section in the manual for an explanation.
+			</dd>
+
+			<dt><em>Q:</em>How can I learn all the details of the template syntax?</dt>
+				<dd><em>A:</em>
+					The syntax used is Twig by Sensio Labs. See their <a href="http://twig.sensiolabs.org/doc/templates.html" target="_blank">online documentation</a> for more details.
+				</dd>
+			<dt><em>Q:</em>I want to send a different new ticket auto-response, depending on the department.</dt>
+		<dd><em>A:</em>
+			You can create a custom template, based on the default template code, and change the relevant <strong>Department Trigger</strong> to use your new template.
+		</dd>
+
+			<dt><em>Q:</em>I want to send a custom email message when a trigger runs.</dt>
+		<dd><em>A:</em>
+			Create a custom template, then specify it in the trigger action that sends the email.
+		</dd>
+
+			<dt><em>Q:</em>My name and direct email are included when I use the <strong>Forward Message</strong> feature to forward a message out of the helpdesk. Can I edit a template to remove this?</dt>
+			<dd><em>A:</em>
+				The <strong>Forward Message</strong> feature is designed to start an email thread "off helpdesk", so the recipient needs to know your name and email address.
+			</dd>
+		</dl>
+</section>
+		<section class="related-content">
+			<h2><span>Related Content</span></h2>
+
+			<ul>
+				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/396" target="_blank">Introducing templates</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/397" target="_blank">Twig syntax basics</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/398#templates-example-custom-email-auto-response-by-department" target="_blank">Templates example: custom email auto-response by department</a></li>
+				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/400" target="_blank">Useful template variables</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/162-removing-links-to-the-deskpro-portal-from-email-notifications" target="_blank">Removing links to the DeskPRO Portal from email notifications</a></li>
+
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>
+				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/192" target="_blank">Send an email to the user when their ticket is assigned</a></li>
+
+		</section>
+	</article>
+{% endblock %}

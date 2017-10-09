@@ -34,6 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Actions\SendUserNewEmail;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
@@ -132,14 +134,34 @@ class TicketEscalation extends AbstractEntityRepository
         $esc['event_trigger_time'] = $def['default_time'];
         $esc['is_enabled']         = false;
 
-        if (@$def['default_template']) {
-            $esc->actions->addAction(new SendUserNewEmail([
-                'template'     => $def['default_template'],
-                'do_cc_users'  => false,
-                'from_name'    => 'helpdesk_name',
-                'from_account' => 0,
-                'headers'      => [],
-            ]));
+        if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            if (@$def['default_template']) {
+                $esc->actions->addAction(
+                    new SendUserNewEmail(
+                        [
+                            'template'     => $def['default_template'],
+                            'do_cc_users'  => false,
+                            'from_name'    => 'helpdesk_name',
+                            'from_account' => 0,
+                            'headers'      => [],
+                        ]
+                    )
+                );
+            }
+        } else {
+            if (@$def['default_template']) {
+                $esc->actions->addAction(
+                    new SendUserEmail(
+                        [
+                            'template'     => $def['default_template'],
+                            'do_cc_users'  => false,
+                            'from_name'    => 'helpdesk_name',
+                            'from_account' => 0,
+                            'headers'      => [],
+                        ]
+                    )
+                );
+            }
         }
 
         if (@$def['default_status']) {

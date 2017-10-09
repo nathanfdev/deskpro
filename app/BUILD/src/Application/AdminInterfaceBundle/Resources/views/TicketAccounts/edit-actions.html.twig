@@ -18,9 +18,15 @@
 					When a user submits a new ticket by emailing this address:
 				</header>
 				<article>
-					<dp-option-builder types-def="TicketAccountsEdit.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetBrand', 'SetDepartment', 'SendUserNewEmail'], fixOn: ['SetBrand', 'SetDepartment'] }" option-types="actionOptionTypes">
-						<add-btn-label>Action</add-btn-label>
-					</dp-option-builder>
+                    {% if app.hasBeta('email_templates') %}
+						<dp-option-builder types-def="TicketAccountsEdit.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetBrand', 'SetDepartment', 'SendUserNewEmail'], fixOn: ['SetBrand', 'SetDepartment'] }" option-types="actionOptionTypes">
+							<add-btn-label>Action</add-btn-label>
+						</dp-option-builder>
+					{% else %}
+						<dp-option-builder types-def="TicketAccountsEdit.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetBrand', 'SetDepartment', 'SendUserEmail'], fixOn: ['SetBrand', 'SetDepartment'] }" option-types="actionOptionTypes">
+							<add-btn-label>Action</add-btn-label>
+						</dp-option-builder>
+					{% endif %}
 				</article>
 			</div>
 		</div>

@@ -1,0 +1,145 @@
+{% extends 'AdminInterfaceBundle:Layout:list-with-fullpage-header.html.twig' %}
+{% block fullpane_content %}
+    {% if app.hasBeta('email_templates') %}
+		<section class="dp-paneblock dp-listpane">
+			<header>
+				<h3>{{ ng_var('toUpgradeTemplates.length') }} email templates need upgrading</h3>
+			</header>
+			<article>
+				<p class="dp-empty-list-notice">
+					This is the legacy template editor. These old templates lack the new features added in DeskPRO v5.7. These old templates
+					will soon stop working. You need to update them to use the new system. Updating your templates is easy and most
+					of the times only takes a couple minutes. Please refer to our guide here.
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Template</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="template in toUpgradeTemplates" ng-init="templateName = template[0].name">
+                                <td>
+									{{ ng_var('templateName') }}
+									(<span ng-click="ListCtrl.openEditor(template[0])">
+										<span class="linked-text">
+											<em>view</em>
+										</span>
+									</span>)
+								</td>
+								<td>
+									<div ng-show="template[1]">
+										<div ng-repeat="item in template[1].split(',')">
+											Used in
+											<a ng-href="{{ ng_href('tickets.triggers.edit', '{type: item.split(\'-\')[0], id: item.split(\'-\')[1]}') }}">
+												Trigger {{ ng_var('item.split(\'-\')[1]') }}
+											</a>
+										</div>
+									</div>
+									<div ng-hide="template[1]">
+										<div ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+											Unused (safe to delete)
+										</div>
+										<div ng-hide="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+											Built-in Template
+										</div>
+									</div>
+								</td>
+								<td>
+									<a ng-href="{{ ng_href('emails.templates_editor.edit', '{name: templateName}') }}">Update Template</a> |
+									<span ng-show="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+										<span ng-click="ListCtrl.deleteTemplate(template[0].id, template[1])">
+											<span class="linked-text">
+												<em>Delete Template</em>
+											</span>
+										</span>
+									</span>
+									<span ng-hide="templateName.indexOf('DeskPRO:emails_custom') !== -1">
+										<span ng-click="ListCtrl.revertTemplate(template[0].id, template[1])">
+											<span class="linked-text">
+												<em>Revert To Default</em>
+											</span>
+										</span>
+									</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</p>
+			</article>
+		</section>
+    {% endif %}
+{% endblock %}
+{% block listpane_content %}
+<div>
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Email Templates</h3>
+		</header>
+		<article>
+			<ul class="dp-item-list">
+				<li dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
+					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'layout:top'}") }}">
+						<h4>
+							<i class="fa fa-folder"></i>
+							<span class="title-text">Layout (Header, footer, CSS)</span>
+						</h4>
+					</a>
+				</li>
+			</ul>
+		</article>
+	</section>
+
+	<div>
+		<div>
+			<div>
+
+            </div>
+            Email:
+            <div class="email-body with-ace-editor">
+
+            </div>
+        </div>
+        <div class="footer">
+            <button class="ui primary small button">Save changes</button>
+            <button class="ui basic small button">Undo changes</button>
+            <button class="ui right floated basic small button">Reset template</button>
+        </div>
+    </div>
+    <div class="preview">
+        <div class="header">
+            <p>
+                Enter details below to send a test email to yourself or a colleague.
+            </p>
+            <form class="ui form">
+                <div class="fields">
+                    <div class="six wide field">
+                        <label>From</label>
+                        <div class="ui selection dropdown">
+                            <input type="hidden">
+                            <i class="dropdown icon"></i>
+                                <span class="item">support@deskpro.com</span>
+                            </i>
+                        </div>
+                    </div>
+                    <div class="six wide field">
+                        <label for="test_email_to">To</label>
+                        <input type="text" name="to" id="test_email_to" />
+                    </div>
+                    <div class="four wide field">
+                        <label>&nbsp;</label>
+                        <input type="submit" class="ui basic button" value="Send">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="email-preview">
+            <div class="email">
+                Test preview email
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

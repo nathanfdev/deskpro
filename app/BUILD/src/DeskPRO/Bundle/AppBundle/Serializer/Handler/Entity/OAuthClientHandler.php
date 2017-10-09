@@ -67,7 +67,7 @@ class OAuthClientHandler extends AbstractEntityHandler
      *
      * @param OAuthClient $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $tokenEndpoint = $this->router->generate('api_oauth_get_token', [], UrlGeneratorInterface::ABSOLUTE_URL);
 

@@ -79,9 +79,15 @@
 									The following actions will run:
 								</header>
 								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetDepartment', 'SendUserNewEmail'], fixOn: ['SetDepartment'] }" option-types="actionOptionTypes">
-										<add-btn-label>Action</add-btn-label>
-									</dp-option-builder>
+									{% if app.hasBeta('email_templates') %}
+										<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetDepartment', 'SendUserNewEmail'], fixOn: ['SetDepartment'] }" option-types="actionOptionTypes">
+											<add-btn-label>Action</add-btn-label>
+										</dp-option-builder>
+									{% else %}
+										<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetDepartment', 'SendUserNewEmail'], fixOn: ['SetDepartment'] }" option-types="actionOptionTypes">
+											<add-btn-label>Action</add-btn-label>
+										</dp-option-builder>
+									{% endif %}
 								</article>
 							</div>
 						</div>
