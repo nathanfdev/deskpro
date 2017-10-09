@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1506332294 extends AbstractBuild implements OnlineBuildInterface
+class Build1507539183 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
@@ -40,7 +40,7 @@ class Build1506332294 extends AbstractBuild implements OnlineBuildInterface
 
     public function run()
     {
-        $this->execDbQuery('default', 'DELETE FROM app_instances WHERE package_name = \'deskpro_sendgrid\';');
-        $this->execDbQuery('default', 'DELETE FROM app_packages WHERE name = \'deskpro_sendgrid\';');
+        $this->execDbQuery('default', 'DELETE FROM app_instances WHERE package_name = \'deskpro_sendgrid\'');
+        $this->execDbQuery('default', 'DELETE FROM app_packages WHERE name = \'deskpro_sendgrid\'');
     }
 }
