@@ -42,20 +42,16 @@
 				</a>
 			</li>
 		{% endif %}
-		{% for cat in grouped_info.group1_structure %}
+		{% macro recursiveGroupHierachy(cat, grouped_info, grouping_url, parent_cat = null) %}
 			{% set count = grouped_info.counts[cat.id].total %}
-			{% set count_all = count %}
-			{% if cat.children %}
-				{% for subcat in cat.children %}
-					{% set count_all = count_all + grouped_info.counts[subcat.id].total %}
-				{% endfor %}
-			{% endif %}
+			{% set count_all = calcGroupedHierarchyCount(grouped_info, cat) %}
 			<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on" id="{{ tplvars.baseId }}_total_grouped_count"{% endif %} {% if count_all == 0 %}style="display: none;"{% endif %}>
 				<a data-route="{{ grouping_url ~ cat.id }}"
-				   {% if group_by == 'urgency' %}
-						class="group-by-pill urgency-{{cat.title}}"
-				   {% endif %}
-						>
+						{% if group_by == 'urgency' %}
+							class="group-by-pill urgency-{{cat.title}}"
+						{% endif %}
+				>
+					{% if parent_cat %}{{ parent_cat.title }} &gt; {% endif %}
 					{{- cat.title -}}
 					<span>
 						{% if cat.children %}
@@ -69,16 +65,13 @@
 			</li>
 			{% if cat.children %}
 				{% for subcat in cat.children %}
-					{% set subcount = grouped_info.counts[subcat.id].total %}
-					<li class="subList {% if grouping_option == subcat.id %}on{% endif %}" {% if grouping_option == subcat.id %}id="{{ tplvars.baseId }}_total_grouped_count"{% endif %} data-grouping-option="{{ subcat.id }}" {% if subcount == 0 %}style="display: none;"{% endif %}>
-						<a data-route="{{ grouping_url ~ subcat.id }}">
-							{{ cat.title }} &gt;
-							{{ subcat.title }}
-							<span>{{ subcount }}</span>
-						</a>
-					</li>
+					{{ _self.recursiveGroupHierachy(subcat, grouped_info, grouping_url, cat) }}
 				{% endfor %}
 			{% endif %}
+		{% endmacro %}
+
+		{% for cat in grouped_info.group1_structure %}
+			{{ _self.recursiveGroupHierachy(cat, grouped_info, grouping_url) }}
 		{% endfor %}
 		</ul>
 		<br class="clear" />

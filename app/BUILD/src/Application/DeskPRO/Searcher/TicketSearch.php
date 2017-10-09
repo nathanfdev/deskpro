@@ -2282,6 +2282,24 @@ class TicketSearch extends SearcherAbstract
                                     }
                                 }
 
+                                // collect all sub-choices
+                                $choices_in = explode(',', $choices_in);
+                                $iterator   = function ($parentId) use ($field, &$choices_in, &$iterator) {
+                                    /** @var Entity\CustomDefAbstract $child */
+                                    foreach ($field->getChildren() as $child) {
+                                        if ((int) $child->getOption('parent_id') === (int) $parentId) {
+                                            $choices_in[] = $child->getId();
+                                            $iterator($child->getId());
+                                        }
+                                    }
+                                };
+
+                                foreach ($choices_in as $choiceId) {
+                                    $iterator($choiceId);
+                                }
+
+                                $choices_in = implode(',', $choices_in);
+
                                 $field = 'custom_data_ticket_'.$join_id.'.field_id';
                                 switch ($op) {
                                     case self::OP_CONTAINS:
