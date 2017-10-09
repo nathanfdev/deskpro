@@ -215,5 +215,6 @@ services:
         - "@security.token_storage"
         - "@data.agent"
         - "@templating"
+        - "@language_manager"
       tags:
         - { name: deskpro.notification.action_alert.generator }

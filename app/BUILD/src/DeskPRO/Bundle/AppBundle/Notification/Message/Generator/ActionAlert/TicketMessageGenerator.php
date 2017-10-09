@@ -34,8 +34,14 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
 
+/**
+ * Class TicketMessageGenerator.
+ */
 class TicketMessageGenerator extends SystemEventGenerator
 {
+    /**
+     * {@inheritdoc}
+     */
     public function createMessages(SystemEventInterface $event)
     {
         $event->getName();
@@ -48,6 +54,9 @@ class TicketMessageGenerator extends SystemEventGenerator
         return $messages;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function canCreateMessage(SystemEventInterface $event)
     {
         if ($event instanceof TicketUpdatedEvent) {

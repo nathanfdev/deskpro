@@ -32,7 +32,6 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 
 /**
  * Class AgentStatusChangedMeessageGenerator.
@@ -40,9 +39,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 class AgentStatusChangedMeessageGenerator extends AbstractGenerator
 {
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return MessageInterface
+     * {@inheritdoc}
      */
     public function createMessages(SystemEventInterface $event)
     {
@@ -60,9 +57,7 @@ class AgentStatusChangedMeessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
