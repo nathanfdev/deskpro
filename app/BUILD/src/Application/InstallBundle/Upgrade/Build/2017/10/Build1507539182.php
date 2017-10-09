@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1507539182 extends AbstractBuild implements OnlineBuildInterface
+class Build1507539182 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
@@ -43,7 +43,7 @@ class Build1507539182 extends AbstractBuild implements OnlineBuildInterface
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE snippets ADD date_created DATETIME NOT NULL DEFAULT NOW()');
+        $this->execDbQuery('default', 'ALTER TABLE snippets ADD date_created DATETIME NOT NULL');
     }
 
     public function run()
