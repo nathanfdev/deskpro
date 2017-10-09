@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\Form\StringObject;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 use DeskPRO\Bundle\AppBundle\ObjectAlias\Comparators;
@@ -42,8 +43,8 @@ abstract class CustomFieldAbstract
     /** @var string */
     public $title;
 
-    /** @var string */
-    public $alias;
+    /** @var StringObject */
+    public $alias = null;
 
     /** @var string */
     public $description = '';
@@ -125,11 +126,11 @@ abstract class CustomFieldAbstract
             $this->title = 'Untitled';
         }
 
+        $saveAlias  = !is_null($this->alias) && ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
         $alias = null;
-        $canHaveAlias = ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
-        if ($this->alias && $canHaveAlias) {
+        if ($saveAlias && '' !== (string) $this->alias) {
             $aliasBuilder = new ObjectAlias\Builder($this->_em);
-            $alias = ObjectAlias\Aliases::createAlias($this->alias, $this->_field, $aliasBuilder);
+            $alias = ObjectAlias\Aliases::createAlias((string) $this->alias, $this->_field, $aliasBuilder);
         }
 
         $field->title          = $this->title;
@@ -155,7 +156,7 @@ abstract class CustomFieldAbstract
             $this->_em->persist($field);
             $this->_em->flush();
 
-            if ($canHaveAlias) {
+            if ($saveAlias) {
                 $this->saveAlias($alias);
             }
 
@@ -184,12 +185,14 @@ abstract class CustomFieldAbstract
             return ;
         }
 
-        // if the new one is already attached to the field we don't need to do anything
         $existingAliasList = $this->_field->getAliases();
         if ($existingAliasList) {
+            // if the new one is already attached to the field we don't need to do anything
             foreach ($existingAliasList as $existingAlias) {
                 if (Comparators::equal($alias, $existingAlias)) { return ; }
             }
+
+            // replace all other aliases with the new one
             foreach ($existingAliasList as $existingAlias) {
                 $this->_em->remove($existingAlias);
             }
