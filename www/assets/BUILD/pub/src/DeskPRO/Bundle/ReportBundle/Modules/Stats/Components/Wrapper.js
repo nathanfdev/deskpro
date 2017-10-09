@@ -4,12 +4,14 @@ import Immutable from 'immutable';
 import ListHeader from './ListHeader';
 import List from './List';
 import Edit from './Edit';
+import { loadReport } from '../../Application/Actions/reportActions';
 
 @connect(state => ({
   customReports:        state.Application.reports.get('customReports'),
   builtInReports:       state.Application.reports.get('builtInReports'),
   customReportsLoaded:  state.Application.reports.get('customReportsLoaded'),
   builtInReportsLoaded: state.Application.reports.get('builtInReportsLoaded'),
+  currentReport:        state.Application.reports.get('currentReport'),
 }))
 class Wrapper extends React.Component {
 
@@ -18,6 +20,8 @@ class Wrapper extends React.Component {
     builtInReports:       PropTypes.object,
     customReportsLoaded:  PropTypes.bool,
     builtInReportsLoaded: PropTypes.bool,
+    currentReport:        PropTypes.object,
+    dispatch:             PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -32,7 +36,14 @@ class Wrapper extends React.Component {
     this.onReportClick = this.onReportClick.bind(this);
   }
 
+  componentWillReceiveProps(props) {
+    if (props.currentReport && this.props.currentReport.get('id') !== props.currentReport.get('id')) {
+      this.setState({ currentReport: props.currentReport });
+    }
+  }
+
   onReportClick(report) {
+    this.props.dispatch(loadReport(report.get('id')));
     this.setState({ currentReport: report });
   }
 

@@ -8,6 +8,7 @@ const initialState = {
   builtInReports:       Immutable.fromJS({}),
   customReportsLoaded:  false,
   builtInReportsLoaded: false,
+  currentReport:        Immutable.fromJS({}),
 };
 
 export default createReducer(initialState, {
@@ -20,5 +21,8 @@ export default createReducer(initialState, {
     start:   state => state.set('builtInReportsLoaded', false),
     success: setFullPayload('builtInReports'),
     done:    state => state.set('builtInReportsLoaded', true)
+  }),
+  [actions.loadReport]: async({
+    success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload.widget)),
   })
 });

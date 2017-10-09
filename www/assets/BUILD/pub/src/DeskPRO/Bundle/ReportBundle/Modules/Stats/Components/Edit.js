@@ -16,7 +16,7 @@ class Edit extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.report && newProps.report.get('id') !== this.state.report.get('id')) {
+    if (newProps.report) {
       this.setState({ report: newProps.report });
     }
   }
