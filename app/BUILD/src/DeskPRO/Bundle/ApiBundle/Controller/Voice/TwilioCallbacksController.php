@@ -637,6 +637,18 @@ class TwilioCallbacksController extends BaseController
             $dialNumber = $autoAttendant->getDialNumber((int) $enteredCode);
             if ($dialNumber) {
                 $this->addTargetResponse($phoneCall, $dialNumber->getTarget(), $twiml);
+
+                // log auto-attendant press key event
+                $log = new VoicePhoneCallLog();
+                $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_KEY);
+                $log->setDetails(array_merge($request->request->all(), [
+                    'target_name' => $dialNumber->getTarget()->getTargetName(),
+                ]));
+                $log->setPhoneCall($phoneCall);
+
+                $em = $this->getManager();
+                $em->persist($log);
+                $em->flush();
             } else {
                 $number = $phoneCall->getNumber();
                 $target = $number->getTarget();
@@ -644,13 +656,34 @@ class TwilioCallbacksController extends BaseController
                 $twiml->say('Required dial number is not supported.', [
                     'voice' => 'alice',
                 ]);
+
                 $this->addTargetResponse($phoneCall, $target, $twiml);
+
+                // log auto-attendant press key event
+                $log = new VoicePhoneCallLog();
+                $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_UNSUPPORTED_KEY);
+                $log->setDetails($request->request->all());
+                $log->setPhoneCall($phoneCall);
+
+                $em = $this->getManager();
+                $em->persist($log);
+                $em->flush();
             }
         } elseif ($enteredCode === '*') {
             $number = $phoneCall->getNumber();
             $target = $number->getTarget();
 
             $this->addTargetResponse($phoneCall, $target, $twiml);
+
+            // log auto-attendant press key event
+            $log = new VoicePhoneCallLog();
+            $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_REPEAT_KEY);
+            $log->setDetails($request->request->all());
+            $log->setPhoneCall($phoneCall);
+
+            $em = $this->getManager();
+            $em->persist($log);
+            $em->flush();
         } elseif ($enteredCode === '#') {
             $twiml
                 ->gather([
@@ -661,17 +694,17 @@ class TwilioCallbacksController extends BaseController
                     'voice' => 'alice',
                 ])
             ;
+
+            // log auto-attendant press key event
+            $log = new VoicePhoneCallLog();
+            $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_EXTENSION_KEY);
+            $log->setDetails($request->request->all());
+            $log->setPhoneCall($phoneCall);
+
+            $em = $this->getManager();
+            $em->persist($log);
+            $em->flush();
         }
-
-        // log auto-attendant press key event
-        $log = new VoicePhoneCallLog();
-        $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_KEY);
-        $log->setDetails($request->request->all());
-        $log->setPhoneCall($phoneCall);
-
-        $em = $this->getManager();
-        $em->persist($log);
-        $em->flush();
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1135,6 +1168,18 @@ class TwilioCallbacksController extends BaseController
             $twiml = new Twiml();
             if ($account->getQueueWorkflowSid()) {
                 $this->addTargetResponse($phoneCall, $phoneCall->getNumber()->getTarget(), $twiml);
+
+                // log auto-attendant press key event
+                $log = new VoicePhoneCallLog();
+                $log->setActionType(VoicePhoneCallLog::ACTION_CALL_TARGET);
+                $log->setDetails(array_merge($request->request->all(), [
+                    'target_name' => $phoneCall->getNumber()->getTarget()->getTargetName(),
+                ]));
+                $log->setPhoneCall($phoneCall);
+
+                $em = $this->getManager();
+                $em->persist($log);
+                $em->flush();
             }
         }
 
