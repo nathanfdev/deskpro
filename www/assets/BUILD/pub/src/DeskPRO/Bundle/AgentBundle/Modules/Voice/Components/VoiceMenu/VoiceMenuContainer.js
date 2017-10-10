@@ -6,12 +6,14 @@ import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSel
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
 import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector } from '../../Selectors/client';
+import { allQueuesSelector } from '../../Selectors/queue';
 
 @connect(state => ({
   me:                    meSelector(state),
   agents:                voiceAgentsSelector(state),
   onlineAgents:          voiceOnlineAgentsSelector(state),
   people:                allPeopleSelector(state),
+  queues:                allQueuesSelector(state),
   incomingCall:          incomingCallSelector(state),
   outboundCallsEnabled:  outboundCallsEnabledSelector(state),
   outboundNumber:        outboundNumberSelector(state),
