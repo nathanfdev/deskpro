@@ -509,9 +509,7 @@ define [
 
     loadDataOptions: ->
       if not @loadDataPromise
-        @loadDataPromise = @$q.defer()
-
-        @Api.sendDataGet({
+        apiV1 = @Api.sendDataGet({
           agents:             '/agents'
           agent_teams:        '/agent_teams'
           ticket_brands:      '/ticket_brands'
@@ -534,33 +532,42 @@ define [
           tasks:              '/tasks/settings'
           contextual_fields:  '/custom_fields'
           jira_settings:      '/apps/jira'
-        }).then( (result) =>
-          data = result.data
+        })
+        apiV2 = @Api2.sendGet('/email_templates/info')
+
+        @loadDataPromise = @$q.defer()
+
+        @$q.all([apiV1, apiV2]).then( (result) =>
+          data = result[0].data
           options_data = {}
-          options_data['agents']           = data.agents.agents
-          options_data['agent_teams']      = data.agent_teams.agent_teams
-          options_data['ticket_brands']    = data.ticket_brands.brands
-          options_data['ticket_deps']      = data.ticket_deps.departments
-          options_data['ticket_cats']      = data.ticket_cats.categories
-          options_data['ticket_pris']      = data.ticket_pris.priorities
-          options_data['ticket_works']     = data.ticket_works.workflows
-          options_data['ticket_prods']     = data.ticket_prods?.products
-          options_data['ticket_fields']    = data.ticket_fields?.custom_fields
-          options_data['org_fields']       = data.org_fields?.custom_fields
-          options_data['user_fields']      = data.user_fields?.custom_fields
-          options_data['ticket_slas']      = data.ticket_slas?.slas
-          options_data['email_accounts']   = data.email_accounts.email_accounts
-          options_data['usergroups']       = data.usergroups.groups
-          options_data['langs']            = data.langs?.languages
-          options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
-          options_data['round_robin']      = data.round_robin
-          options_data['round_robins']     = data.round_robins
-          options_data['tasks']            = data.tasks
-          options_data['contextual_fields']= data.contextual_fields
-          options_data['jira_settings']    = data.jira_settings
-          options_data['ticket_labels']    = data.ticket_labels
+          options_data['agents']            = data.agents.agents
+          options_data['agent_teams']       = data.agent_teams.agent_teams
+          options_data['ticket_brands']     = data.ticket_brands.brands
+          options_data['ticket_deps']       = data.ticket_deps.departments
+          options_data['ticket_cats']       = data.ticket_cats.categories
+          options_data['ticket_pris']       = data.ticket_pris.priorities
+          options_data['ticket_works']      = data.ticket_works.workflows
+          options_data['ticket_prods']      = data.ticket_prods?.products
+          options_data['ticket_fields']     = data.ticket_fields?.custom_fields
+          options_data['org_fields']        = data.org_fields?.custom_fields
+          options_data['user_fields']       = data.user_fields?.custom_fields
+          options_data['ticket_slas']       = data.ticket_slas?.slas
+          options_data['email_accounts']    = data.email_accounts.email_accounts
+          options_data['usergroups']        = data.usergroups.groups
+          options_data['langs']             = data.langs?.languages
+          options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates
+          options_data['round_robin']       = data.round_robin
+          options_data['round_robins']      = data.round_robins
+          options_data['tasks']             = data.tasks
+          options_data['contextual_fields'] = data.contextual_fields
+          options_data['jira_settings']     = data.jira_settings
+          options_data['ticket_labels']     = data.ticket_labels
 
           options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
+
+          v2data = result[1].data['data']
+
+          options_data['new_custom_email_tpls'] = v2data.list['custom'].groups['custom'].subGroups['primary'].templates
 
           @options_data = options_data
 
@@ -577,7 +584,7 @@ define [
           @loadDataPromise.resolve(options_data)
         )
 
-      @loadDataPromise.promise
+      return @loadDataPromise.promise
 
 
     getSetAgent: (options = {}) ->
@@ -997,8 +1004,8 @@ define [
                     title: title
                   }
 
-                  if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
-                    me.options_data.custom_email_tpls.push(tpl)
+                  if me.options_data?.new_custom_email_tpls? and me.options_data.new_custom_email_tpls.indexOf(tpl) == -1
+                    me.options_data.new_custom_email_tpls.push(tpl)
 
                   $scope.model.template = info.templateName
                   $timeout(->
@@ -1219,8 +1226,8 @@ define [
                     title: title
                   }
 
-                  if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
-                    me.options_data.custom_email_tpls.push(tpl)
+                  if me.options_data?.new_custom_email_tpls? and me.options_data.new_custom_email_tpls.indexOf(tpl) == -1
+                    me.options_data.new_custom_email_tpls.push(tpl)
 
                   $scope.model.template = info.templateName
                   $timeout(->
@@ -1451,8 +1458,8 @@ define [
                   title: title
                 }
 
-                if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
-                  me.options_data.custom_email_tpls.push(tpl)
+                if me.options_data?.new_custom_email_tpls? and me.options_data.new_custom_email_tpls.indexOf(tpl) == -1
+                  me.options_data.new_custom_email_tpls.push(tpl)
 
                 $scope.model.template = info.templateName
                 $timeout(->

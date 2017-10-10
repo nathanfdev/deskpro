@@ -17,14 +17,14 @@
                 {% endfor %}
               </optgroup>
               <optgroup label="Other User Emails">
-                <option value="DeskPRO:emails_user:ticket-rate.html.twig">Request user feedback</option>
-                <option value="DeskPRO:emails_user:ticket-new-validate-email.html.twig">New ticket requires validation (auto-response)</option>
-                <option value="DeskPRO:emails_user:ticket-awaiting-warn.html.twig">Ticket Awaiting Warning</option>
-                <option value="DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig">Ticket Awaiting Final Warning</option>
-				<option value="DeskPRO:emails_user:ticket-autoclose-warn.html.twig">Auto-Close Warning</option>
+                <option value="SendmailBundle:emails_user:ticket_rate.html.twig">Request user feedback</option>
+                <option value="SendmailBundle:emails_user:ticket_new_validate_email.html.twig">New ticket requires validation (auto-response)</option>
+                <option value="SendmailBundle:emails_user:ticket_awaiting_warn.html.twig">Ticket Awaiting Warning</option>
+                <option value="SendmailBundle:emails_user:ticket_awaiting_warn_final.html.twig">Ticket Awaiting Final Warning</option>
+				<option value="SendmailBundle:emails_user:ticket_autoclose_warn.html.twig">Auto-Close Warning</option>
               </optgroup>
               <optgroup label="Custom Emails">
-                <option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
+                <option ng-repeat="tpl in new_custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
                 <option value="CREATE">Create a new template...</option>
               </optgroup>
             </select>
@@ -62,7 +62,7 @@
 										<option value="SendmailBundle:emails_user:ticket_autoclose_warn.html.twig">Auto-Close Warning</option>
 									</optgroup>
 									<optgroup label="Custom Emails">
-										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
+										<option ng-repeat="tpl in new_custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
 										<option value="CREATE">Create a new template...</option>
 									</optgroup>
 								</select>

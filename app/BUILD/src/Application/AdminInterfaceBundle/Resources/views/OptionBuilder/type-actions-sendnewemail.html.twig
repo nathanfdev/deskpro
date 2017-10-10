@@ -33,7 +33,7 @@
 										<option value="SendmailBundle:emails_user:ticket_autoclose_warn.html.twig">Auto-Close Warning</option>
 									</optgroup>
 									<optgroup label="Custom Emails">
-										<option ng-repeat="tpl in custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
+										<option ng-repeat="tpl in new_custom_email_tpls" value="{{ ng_var('tpl.name') }}">{{ ng_var('tpl.title') }}</option>
 										<option value="CREATE">Create a new template...</option>
 									</optgroup>
 								</select>
