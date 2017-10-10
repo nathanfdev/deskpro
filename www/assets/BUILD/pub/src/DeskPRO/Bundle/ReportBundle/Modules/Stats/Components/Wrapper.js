@@ -12,6 +12,7 @@ import { loadReport } from '../../Application/Actions/reportActions';
   customReportsLoaded:  state.Application.reports.get('customReportsLoaded'),
   builtInReportsLoaded: state.Application.reports.get('builtInReportsLoaded'),
   currentReport:        state.Application.reports.get('currentReport'),
+  groupParams:          state.Application.reports.get('groupParams'),
 }))
 class Wrapper extends React.Component {
 
@@ -21,6 +22,7 @@ class Wrapper extends React.Component {
     customReportsLoaded:  PropTypes.bool,
     builtInReportsLoaded: PropTypes.bool,
     currentReport:        PropTypes.object,
+    groupParams:          PropTypes.object,
     dispatch:             PropTypes.func.isRequired,
   };
 
@@ -65,7 +67,10 @@ class Wrapper extends React.Component {
             </div>
           </div>
         </div>
-        { this.props.currentReport.get('query_parts') ? <Edit report={this.state.currentReport} /> : null }
+        { this.props.currentReport.get('query_parts')
+          ? <Edit report={this.state.currentReport} groupParams={this.props.groupParams} />
+          : null
+        }
       </span>
     );
   }

@@ -7,9 +7,6 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 @import "../../../../../../node_modules/react-select/scss/components";
 @import '../../../AppBundle/Resources/style/variables';
 @import '../../../AppBundle/Resources/style/widget-modal';
-@import 'email-templates';
-@import 'voice';
-@import 'dev';
 
 .two-panels-menu {
   display: table;
@@ -198,5 +195,16 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 
   &.disabled {
     color: $dp-greyscale-250;
+  }
+}
+
+.vars {
+  .name label, .name > div, .name {
+    display: inline-block;
+  }
+
+  .type, .field-type, .field-type-value, .date-field {
+    display: inline-block;
+    min-width: 120px;
   }
 }

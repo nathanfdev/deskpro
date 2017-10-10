@@ -320,7 +320,7 @@ function getWebpackConfig(mode, isProd) {
   }
   if (mode === 'all' || mode === 'report') {
     config.entry.DeskPRO_ReportBundle             = ['./src/DeskPRO/Bundle/ReportBundle/DeskPRO_ReportBundle'];
-    config.entry.DeskPRO_ReportBundle_style       = ['./src/DeskPRO/Bundle/ReportBundle/Resources/style/admin-style.scss'];
+    config.entry.DeskPRO_ReportBundle_style       = ['./src/DeskPRO/Bundle/ReportBundle/Resources/style/report-style.scss'];
   }
   if (mode === 'all' || mode === 'demo') {
     config.entry.DeskPRO_DemoBundle             = ['./src/DeskPRO/Bundle/DemoBundle/DeskPRO_DemoBundle'];

@@ -2,12 +2,14 @@ import React, { PropTypes } from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from 'react-forms';
+import VarsField from './Fields/VarsField';
 
 
 class Edit extends BaseForm {
 
   static propTypes = {
-    report: PropTypes.object
+    report:      PropTypes.object,
+    groupParams: PropTypes.object
   };
 
   getDefaultState() {
@@ -23,6 +25,7 @@ class Edit extends BaseForm {
       orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
       offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
       limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
+      vars:    report.get('variables') ? report.get('variables').toJS() : []
     };
   }
 
@@ -42,6 +45,7 @@ class Edit extends BaseForm {
             orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
             offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
             limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
+            vars:    report.get('variables') ? report.get('variables').toJS() : []
           },
           errorList: {},
           onChange:  this.onChange
@@ -81,6 +85,10 @@ class Edit extends BaseForm {
             </Field>
             <Field select="offset" label="Offset">
               <Input type="text" />
+            </Field>
+
+            <Field select="vars" label="Vars" className="vars">
+              <VarsField groupParams={this.props.groupParams} />
             </Field>
 
             <div className="editor-controls">

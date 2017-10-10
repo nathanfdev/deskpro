@@ -6,7 +6,7 @@ import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import Wrapper from '../../Stats/Components/Wrapper';
-import { loadCustomReports, loadBuiltInReports } from '../Actions/reportActions';
+import { loadCustomReports, loadBuiltInReports, loadGroupParams } from '../Actions/reportActions';
 
 class AppContainer extends React.Component {
 
@@ -22,6 +22,7 @@ class AppContainer extends React.Component {
     loadRepositoriesConfig(repositoriesConfig);
     store.dispatch(loadCustomReports());
     store.dispatch(loadBuiltInReports());
+    store.dispatch(loadGroupParams());
   }
 
   componentWillMount() {

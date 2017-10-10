@@ -9,6 +9,7 @@ const initialState = {
   customReportsLoaded:  false,
   builtInReportsLoaded: false,
   currentReport:        Immutable.fromJS({}),
+  groupParams:          Immutable.fromJS({}),
 };
 
 export default createReducer(initialState, {
@@ -24,5 +25,8 @@ export default createReducer(initialState, {
   }),
   [actions.loadReport]: async({
     success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload.widget)),
+  }),
+  [actions.loadGroupParams]: async({
+    success: setFullPayload('groupParams'),
   })
 });
