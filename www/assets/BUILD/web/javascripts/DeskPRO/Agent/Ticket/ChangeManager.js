@@ -227,7 +227,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		var self = this;
 
 		if (this.updateUrl) {
-      this.fireEvent('changeManager.update.started', []);
 			DeskPRO_Window.util.ajaxWithClientMessages({
 				type: 'POST',
 				url: this.updateUrl,
@@ -252,7 +251,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						self.ticketPage.getEl('field_edit_cancel').show();
 						self.ticketPage.getEl('field_edit_save').show();
 						self.ticketPage.getEl('field_edit_controls').removeClass('loading');
-
 						return;
 					}
 
@@ -281,7 +279,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					}
 
 					this.fireEvent('updateResult', [data]);
-          this.fireEvent('changeManager.update.finished', []);
 				}
 			});
 		}
