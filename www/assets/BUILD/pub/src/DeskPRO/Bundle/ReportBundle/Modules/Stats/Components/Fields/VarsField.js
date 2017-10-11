@@ -32,17 +32,13 @@ class VarsField extends React.Component {
     },
   ];
 
-  componentWillReceiveProps(props) {
-    console.log(props);
-  }
-
   render() {
     const { groupParams } = this.props;
 
     return (<span>
       {this.props.value.map((variable, index) =>
-        (<Field key={index} select={`${index}`}>
-          <Fieldset>
+        (
+          <Fieldset key={index} select={`${index}`}>
             <Field className="name" select="name" label="Name">
               <Input type="text" />
             </Field>
@@ -57,7 +53,7 @@ class VarsField extends React.Component {
               ]
             }
           </Fieldset>
-        </Field>))}
+        ))}
     </span>
     );
   }

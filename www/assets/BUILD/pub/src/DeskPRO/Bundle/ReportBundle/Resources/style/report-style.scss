@@ -198,13 +198,30 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
   }
 }
 
-.vars {
-  .name label, .name > div, .name {
-    display: inline-block;
-  }
+.vars > div {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  .field {
+    display: inline-flex;
+    &.type .Select {
+      width: 90px;
+    }
+    &.field-type .Select, &.date-field .Select {
+      min-width: 180px;
+    }
+    &.field-type-value .Select {
+      min-width: 240px;
+    }
 
-  .type, .field-type, .field-type-value, .date-field {
-    display: inline-block;
-    min-width: 120px;
+    &.name {
+      input {
+        width: 120px;
+      }
+      label, > div {
+        display: inline-block;
+      }
+    }
   }
 }
