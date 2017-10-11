@@ -103,7 +103,7 @@ class Build1507193201 extends AbstractBuild implements BlockingBuildInterface, S
                 'has_display_template' => '0',
                 'title' => $customFieldAlias,
                 'description' => '',
-                'handler_class' => 'Application\\DeskPRO\\CustomFields\\Handler\\DataJson',
+                'handler_class' => 'Application\\DeskPRO\\CustomFields\\Handler\\DataList',
                 'options' => 'a:1:{s:20:\"custom_css_classname\";s:0:\"\";}',
                 'is_user_enabled' => '1',
                 'is_enabled' => '0',
@@ -142,16 +142,27 @@ class Build1507193201 extends AbstractBuild implements BlockingBuildInterface, S
 
             $items = $connection->fetchAll("SELECT id, entity_id, `value` FROM app2_app_state_v2  where app_instance_id = ? and entity_id LIKE ?", [$id, 'ticket:%']);
             foreach ($items as $item) {
-                $ticketId = str_replace('ticket:', '', $item['entity_id']);
-                $customDataTicket = [
-                    'ticket_id' => $ticketId,
-                    'field_id' => $customField,
-                    'root_field_id' => $customField,
-                    'value' => 0,
-                    'input' => $item['value'],
-                ];
-                $connection->insert('custom_data_ticket', $customDataTicket);
-                $connection->delete('app2_app_state_v2', ['id' => $item['id']]);
+                $decoded = json_decode($item['value'], true);
+                $shouldCopy = is_array($decoded)
+                    && array_key_exists('trello_cards', $decoded)
+                    && is_array($decoded['trello_cards'])
+                ;
+
+                if ($shouldCopy) {
+                    $ticketId = str_replace('ticket:', '', $item['entity_id']);
+                    foreach ($decoded['trello_cards'] as $cardId) {
+                        $customDataTicket = [
+                            'ticket_id' => $ticketId,
+                            'field_id' => $customField,
+                            'root_field_id' => $customField,
+                            'value' => 0,
+                            'input' => $cardId,
+                        ];
+                        $connection->insert('custom_data_ticket', $customDataTicket);
+                    }
+                    $connection->delete('app2_app_state_v2', ['id' => $item['id']]);
+                }
+
             }
         }
     }

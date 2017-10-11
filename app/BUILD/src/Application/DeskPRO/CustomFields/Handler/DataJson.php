@@ -61,7 +61,7 @@ class DataJson extends HandlerAbstract
 
     public function getSearchCapabilities()
     {
-        return ['is', 'not', 'contains', 'notcontains'];
+        return ['is', 'not'];
     }
 
     public function getFilterCapabilities()
