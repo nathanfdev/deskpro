@@ -51,7 +51,7 @@ class FeedbackHandler extends AbstractEntityHandler
      *
      * @param Model\Feedback $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\Feedback $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getFeedbackMapper(), $model);
@@ -77,7 +77,8 @@ class FeedbackHandler extends AbstractEntityHandler
         if ($model->getCategory()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getFeedbackCategoryMapper(),
-                $model->getCategory()
+                $model->getCategory(),
+                $brandName
             ));
         } else {
             // use default category

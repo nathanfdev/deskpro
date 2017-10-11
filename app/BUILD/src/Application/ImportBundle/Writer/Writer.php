@@ -103,14 +103,14 @@ class Writer implements WriterInterface
     /**
      * {@inheritdoc}
      */
-    public function writeData(PrimaryImportModelInterface $model, $dryRun = false)
+    public function writeData(PrimaryImportModelInterface $model, $brandName = null, $dryRun = false)
     {
         $this->em->beginTransaction();
         $this->appEnv->setRuntimeVar('dp.is_importing', true);
 
         try {
             $handler = $this->entityHandlers->getHandler($model);
-            $handler->writeModel($model);
+            $handler->writeModel($model, $brandName);
 
             $this->em->flush();
             $this->entityWatcher->flushUpdatesQuiet();

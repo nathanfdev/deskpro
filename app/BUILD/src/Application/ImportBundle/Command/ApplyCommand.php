@@ -76,6 +76,12 @@ class ApplyCommand extends AbstractImporterCommand
                 InputOption::VALUE_NONE,
                 'Runs only the next batch'
             )
+            ->addOption(
+                'brand',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Specify brand to import for multi-brand helpdesk'
+            )
         ;
     }
 
@@ -219,7 +225,7 @@ class ApplyCommand extends AbstractImporterCommand
             $importer->writeBatchConfig($context, $nextBatchConfig);
 
             $importer->validateData($dataCollection);
-            $importer->writeData($dataCollection, $input->getOption('dry-run', false));
+            $importer->writeData($dataCollection, $context->getBrand(), $input->getOption('dry-run', false));
 
             $output->writeln('');
             $output->writeln(sprintf(
@@ -273,6 +279,10 @@ class ApplyCommand extends AbstractImporterCommand
             $data       = file_get_contents($batchFilePath);
 
             $context->setBatchConfig($serializer->deserialize($data, BatchConfig::class, 'json'));
+        }
+
+        if ($input->getOption('brand')) {
+            $context->setBrand($input->getOption('brand'));
         }
 
         return $context;
