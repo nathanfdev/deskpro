@@ -63,6 +63,7 @@ define([
   'Admin/Templates/Ctrl/EmailGroupList',
   'Admin/Templates/Ctrl/EmailGroupListOld',
   'Admin/Templates/Ctrl/EmailList',
+  'Admin/Templates/Ctrl/NewEmailTemplateEditor',
   'Admin/Templates/Ctrl/TemplateEditor',
   'Admin/Templates/Ctrl/TemplateGroupList',
   'Admin/Templates/Ctrl/TemplateList',

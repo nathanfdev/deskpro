@@ -990,8 +990,9 @@ define [
               $scope.model.template = null
               $scope.is_creating = true
               $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-                controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+                size: 'lg',
+                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
                 resolve: {
                   templateName: ->
                     return null
@@ -1020,8 +1021,9 @@ define [
 
           $scope.editTemplate = ->
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+              size: 'lg',
+              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
               resolve: {
                 templateName: ->
                   return $scope.model.template
@@ -1212,8 +1214,9 @@ define [
               $scope.model.template = null
               $scope.is_creating = true
               $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-                controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+                size: 'lg',
+                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
                 resolve: {
                   templateName: ->
                     return null
@@ -1242,8 +1245,9 @@ define [
 
           $scope.editTemplate = ->
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+              size: 'lg',
+              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
               resolve: {
                 templateName: ->
                   return $scope.model.template
@@ -1444,8 +1448,9 @@ define [
             $scope.model.template = null
             $scope.is_creating = true
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+              size: 'lg',
+              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
               resolve: {
                 templateName: ->
                   return null
@@ -1474,8 +1479,9 @@ define [
 
         $scope.editTemplate = ->
           $modal.open({
-            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-            controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+            size: 'lg',
+            controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
             resolve: {
               templateName: ->
                 return $scope.model.template

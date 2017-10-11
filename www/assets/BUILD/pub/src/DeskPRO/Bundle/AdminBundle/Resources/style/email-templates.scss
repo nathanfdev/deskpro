@@ -618,3 +618,31 @@
     }
   }
 }
+#new-email-template-editor {
+  min-height: 500px;
+  padding: 0;
+  .editor {
+    .header {
+      .top-menu:first-child {
+        height: 35px;
+      }
+      .group-select {
+        display: none;
+      }
+      .emails-block-button {
+        display: none;
+      }
+      .ui.button {
+        display: none;
+      }
+    }
+  }
+  .preview {
+    .header {
+      display: none;
+    }
+    .email-preview {
+      top: 0;
+    }
+  }
+}

@@ -24,7 +24,8 @@ class EmailTemplatesEditorContainer extends React.Component {
   static propTypes = {
     dispatch:       PropTypes.func,
     emailTemplates: PropTypes.object.isRequired,
-    params:         PropTypes.object
+    params:         PropTypes.object,
+    route:          PropTypes.object
   };
   static contextTypes = {
     router: React.PropTypes.object.isRequired
@@ -149,7 +150,7 @@ class EmailTemplatesEditorContainer extends React.Component {
             group.get('subGroups').forEach((subGroup) => {
               if (!found) {
                 subGroup.get('templates').forEach((template) => {
-                  if (template.get('name') === name) {
+                  if (template.get('name') === name || template.get('newTemplate') === name) {
                     this.props.dispatch(actions.setCurrentTemplateGroup(type.get('typeId')));
                     this.openTemplate(template);
                     found = true;
@@ -377,6 +378,9 @@ class EmailTemplatesEditorContainer extends React.Component {
           saveSubmit: false
         });
         this.props.dispatch(actions.cleanExtraTemplates());
+        if (this.props.route.onSave) {
+          this.props.route.onSave();
+        }
       }
     );
   };
@@ -461,6 +465,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     return (<EmailTemplatesEditor
       emailTemplates={this.props.emailTemplates}
       emailAccounts={this.state.emailAccounts}
+      name={this.props.params.name}
       selectEmailAccount={this.selectEmailAccount}
       selectedEmailAccount={this.state.selectedEmailAccount}
       previewEmailAddress={this.state.previewEmailAddress}
@@ -499,6 +504,7 @@ class EmailTemplatesEditor extends React.Component {
     emailTemplates:         PropTypes.object,
     selectedEmailAccount:   PropTypes.string,
     previewEmailAddress:    PropTypes.string,
+    name:                   PropTypes.string,
     emailAccounts:          PropTypes.array,
     selectEmailAccount:     PropTypes.func,
     handleEmailAddress:     PropTypes.func,
@@ -890,7 +896,12 @@ class EmailTemplatesEditor extends React.Component {
               <CodeMirror value={this.props.emailTemplates.getIn(['legacyTemplate', 0, 'template_code'])} />
             </div>
             :
-            <PreviewEmail preview={this.props.emailTemplates.get('preview')} type={this.state.templateType} />
+            <PreviewEmail
+              preview={this.props.emailTemplates.get('preview')}
+              type={this.state.templateType}
+              content={this.state.templateBody}
+              name={this.props.name}
+            />
           }
         </div>
       </div>

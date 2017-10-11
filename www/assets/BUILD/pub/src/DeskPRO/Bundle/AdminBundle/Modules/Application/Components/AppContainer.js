@@ -48,6 +48,7 @@ class AppContainer extends React.Component {
   }
 
   render() {
+    const props = this.props;
     return (
       <Provider store={store}>
         <Router history={history}>
@@ -88,7 +89,7 @@ class AppContainer extends React.Component {
             }))}
           />
           <Route path="emails" key="email_routes">
-            <Route path="templates_editor(/:name)" component={EmailTemplates.EmailTemplatesEditorContainer} />
+            <Route path="templates_editor(/:name)" component={EmailTemplates.EmailTemplatesEditorContainer} {...props} />
           </Route>
         </Router>
       </Provider>
