@@ -6,7 +6,7 @@ import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import Wrapper from '../../Stats/Components/Wrapper';
-import { loadCustomReports, loadBuiltInReports, loadGroupParams } from '../Actions/reportActions';
+import { loadReports, loadGroupParams } from '../Actions/reportActions';
 
 class AppContainer extends React.Component {
 
@@ -20,8 +20,7 @@ class AppContainer extends React.Component {
     // Bootstrap API and DAL
     setApi(api);
     loadRepositoriesConfig(repositoriesConfig);
-    store.dispatch(loadCustomReports());
-    store.dispatch(loadBuiltInReports());
+    store.dispatch(loadReports());
     store.dispatch(loadGroupParams());
   }
 

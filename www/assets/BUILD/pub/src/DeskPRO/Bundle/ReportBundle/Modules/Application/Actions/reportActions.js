@@ -1,11 +1,11 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 
-export const loadCustomReports = createAction(
-  'REPORTS_LOAD_CUSTOM_REPORTS',
+export const loadReports = createAction(
+  'REPORTS_LOAD_REPORTS',
   () => () => new Promise(resolve => api
     .sendGet(
-    'DP_API_OLD/reports/widget/custom',
+    'DP_API_OLD/dashboards/widgets/reports/list',
     {
       headers: {
         'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
@@ -13,23 +13,8 @@ export const loadCustomReports = createAction(
         'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
       }
     })
-    .success(response => resolve(response.reports))
-));
-
-export const loadBuiltInReports = createAction(
-  'REPORTS_LOAD_BUILT_IN_REPORTS',
-  () => () => new Promise(resolve => api
-    .sendGet(
-    'DP_API_OLD/reports/widget/builtIn',
-    {
-      headers: {
-        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
-        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
-        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
-      }
-    })
-    .success(response => resolve(response.reports))
-));
+    .success(response => resolve(response))
+  ));
 
 export const loadReport = createAction(
   'REPORTS_LOAD_REPORT',
