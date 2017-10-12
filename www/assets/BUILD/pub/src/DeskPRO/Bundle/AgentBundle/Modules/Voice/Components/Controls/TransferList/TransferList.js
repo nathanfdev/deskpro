@@ -44,6 +44,9 @@ class TransferList extends React.Component {
   onWarmTransfer = () => {
     const { onTransferCall } = this.props;
     const { selectedTarget } = this.state;
+    this.setState({
+      selectedTarget: null
+    });
 
     setTimeout(() => onTransferCall(selectedTarget, 'warm'), 1);
   };
@@ -51,6 +54,9 @@ class TransferList extends React.Component {
   onColdTransfer = () => {
     const { onTransferCall } = this.props;
     const { selectedTarget } = this.state;
+    this.setState({
+      selectedTarget: null
+    });
 
     setTimeout(() => onTransferCall(selectedTarget, 'cold'), 1);
   };
