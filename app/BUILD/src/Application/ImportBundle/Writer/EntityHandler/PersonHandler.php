@@ -52,7 +52,7 @@ class PersonHandler extends AbstractEntityHandler
      *
      * @param Model\Person $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         if ($model->isAgent()) {
             $this->logger->alert(sprintf('Importing agent `%s`', $model->getFirstEmail()));

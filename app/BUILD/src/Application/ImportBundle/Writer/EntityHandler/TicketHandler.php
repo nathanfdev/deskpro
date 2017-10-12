@@ -52,7 +52,7 @@ class TicketHandler extends AbstractEntityHandler
      *
      * @param Model\Ticket $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\Ticket $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getTicketMapper(), $model);
@@ -152,7 +152,8 @@ class TicketHandler extends AbstractEntityHandler
         if ($model->getCategory()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getTicketCategoryMapper(),
-                $model->getCategory()
+                $model->getCategory(),
+                $brandName
             ));
         }
 
@@ -160,7 +161,8 @@ class TicketHandler extends AbstractEntityHandler
         if ($model->getProduct()) {
             $entity->setProduct($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getTicketProductMapper(),
-                $model->getProduct()
+                $model->getProduct(),
+                $brandName
             ));
         }
 
@@ -172,6 +174,14 @@ class TicketHandler extends AbstractEntityHandler
         // update ticket priority
         if ($model->getPriority()) {
             $entity->setPriority($this->findOrCreatePriority($model->getPriority()));
+        }
+
+        if ($brandName) {
+            // set specific brand for multi-brand helpdesks
+            $brand = $this->mappers->getBrandMapper()->findByName($brandName);
+            if ($brand) {
+                $entity->setBrand($brand);
+            }
         }
 
         // ensure that the ticket has brand and department

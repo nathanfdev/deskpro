@@ -93,10 +93,11 @@ class CategoryHelper
     /**
      * @param CategoryMapperInterface $mapper
      * @param string                  $categoryPath
+     * @param string                  $brandName
      *
      * @return CategoryAbstract
      */
-    public function findOrCreateCategory(CategoryMapperInterface $mapper, $categoryPath)
+    public function findOrCreateCategory(CategoryMapperInterface $mapper, $categoryPath, $brandName = null)
     {
         if (!$categoryPath) {
             throw new \RuntimeException('Category path is empty');
@@ -132,7 +133,7 @@ class CategoryHelper
                 /** @var CategoryAbstract $entity */
                 $entity = new $categoryClass();
                 $entity->setTitle($categoryTitle);
-                $this->setDefaultBrand($entity);
+                $this->setDefaultBrand($entity, $brandName);
                 $this->userGroupHelper->updateUserGroups($entity);
 
                 $this->persister->persistAndFlush($entity);
@@ -164,7 +165,7 @@ class CategoryHelper
                     $entity = new $categoryClass();
                     $entity->setTitle($categoryTitle);
                     $entity->setParent($parent);
-                    $this->setDefaultBrand($entity);
+                    $this->setDefaultBrand($entity, $brandName);
                     $this->userGroupHelper->updateUserGroups($entity);
 
                     if ($parent) {
@@ -183,11 +184,28 @@ class CategoryHelper
 
     /**
      * @param CategoryAbstract|TicketCategory $entity
+     * @param string                          $brandName
      */
-    private function setDefaultBrand($entity)
+    private function setDefaultBrand($entity, $brandName)
     {
         if (method_exists($entity, 'setBrand')) {
-            $entity->setBrand($this->brandMapper->findOneBy([]));
+            $brand = null;
+
+            // try to get custom brand
+            if ($brandName) {
+                // set specific brand for multi-brand helpdesks
+                $brand = $this->brandMapper->findByName($brandName);
+                if ($brand) {
+                    $entity->setBrand($brand);
+                }
+            }
+
+            // get default brand
+            if (!$brand) {
+                $brand = $this->brandMapper->findOneBy([]);
+            }
+
+            $entity->setBrand($brand);
         }
     }
 }

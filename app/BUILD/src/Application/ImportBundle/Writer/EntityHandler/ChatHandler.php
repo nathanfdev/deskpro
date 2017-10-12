@@ -49,7 +49,7 @@ class ChatHandler extends AbstractEntityHandler
      *
      * @param Model\Chat $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\ChatConversation $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getChatMapper(), $model);

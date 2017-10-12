@@ -41,7 +41,8 @@ interface WriterInterface
      * Writes an entity to the storage.
      *
      * @param PrimaryImportModelInterface $model
+     * @param string                      $brandName
      * @param bool                        $dryRun
      */
-    public function writeData(PrimaryImportModelInterface $model, $dryRun = false);
+    public function writeData(PrimaryImportModelInterface $model, $brandName = null, $dryRun = false);
 }
