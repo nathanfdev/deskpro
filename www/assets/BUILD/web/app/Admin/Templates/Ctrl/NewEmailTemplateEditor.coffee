@@ -45,7 +45,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       )
 
     onSave: (name) =>
-      console.log name
       if (@$scope.is_new_email)
         tpl = {
           name: name,
@@ -55,7 +54,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
           @dpObTypesDefTicketActions.options_data.custom_email_tpls.push(tpl)
         if @dpObTypesDefTicketCriteria.options_data
           @dpObTypesDefTicketCriteria.options_data.custom_email_tpls.push(tpl)
-      @$scope.dismiss()
+
+        @$modalInstance.close({
+          templateName: name,
+          isNewEmail:   @$scope.is_new_email,
+          mode:         'custom'
+        })
+      else
+        @$scope.dismiss()
 
 
   Admin_Templates_Ctrl_NewEmailTemplateEditor.EXPORT_CTRL()

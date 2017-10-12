@@ -379,7 +379,6 @@ class EmailTemplatesEditorContainer extends React.Component {
         });
         this.props.dispatch(actions.cleanExtraTemplates());
         if (this.props.route.onSave) {
-          console.log(name);
           this.props.route.onSave(name);
         }
       }
