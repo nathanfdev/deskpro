@@ -449,6 +449,34 @@ $voice-green-border-color: #47BF61;
           cursor: pointer;
         }
       }
+
+      .voice-online-agents {
+        padding: 15px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: $dp-greyscale-850;
+
+        .expand-button {
+          float: right;
+          margin-top: -15px;
+          font-size: 14px;
+        }
+
+        .ui.avatar.image {
+          height: 15px;
+          width: 15px;
+        }
+
+        .agents {
+          &.hidden {
+            display: none;
+          }
+          .content {
+            font-size: 12px;
+            font-weight: 400;
+          }
+        }
+      }
     }
 
     .call-button {
