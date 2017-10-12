@@ -379,7 +379,8 @@ class EmailTemplatesEditorContainer extends React.Component {
         });
         this.props.dispatch(actions.cleanExtraTemplates());
         if (this.props.route.onSave) {
-          this.props.route.onSave();
+          console.log(name);
+          this.props.route.onSave(name);
         }
       }
     );
@@ -466,6 +467,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       emailTemplates={this.props.emailTemplates}
       emailAccounts={this.state.emailAccounts}
       name={this.props.params.name}
+      newTemplate={this.props.route.newTemplate}
       selectEmailAccount={this.selectEmailAccount}
       selectedEmailAccount={this.state.selectedEmailAccount}
       previewEmailAddress={this.state.previewEmailAddress}
@@ -505,6 +507,7 @@ class EmailTemplatesEditor extends React.Component {
     selectedEmailAccount:   PropTypes.string,
     previewEmailAddress:    PropTypes.string,
     name:                   PropTypes.string,
+    newTemplate:            PropTypes.bool,
     emailAccounts:          PropTypes.array,
     selectEmailAccount:     PropTypes.func,
     handleEmailAddress:     PropTypes.func,
@@ -547,6 +550,12 @@ class EmailTemplatesEditor extends React.Component {
       newCustomTemplateOpened: false,
       showLegacy:              false,
     };
+  }
+
+  componentWillMount() {
+    if (this.props.newTemplate) {
+      this.openNewTemplateDialog();
+    }
   }
 
   componentDidMount() {
@@ -901,6 +910,7 @@ class EmailTemplatesEditor extends React.Component {
               type={this.state.templateType}
               content={this.state.templateBody}
               name={this.props.name}
+              newTemplate={this.props.newTemplate || this.state.newCustomTemplateOpened}
             />
           }
         </div>

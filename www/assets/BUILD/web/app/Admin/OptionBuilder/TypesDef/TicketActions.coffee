@@ -204,20 +204,36 @@ define [
 
       options = []
 
-      options.push({
-        title: 'Send Email To User',
-        value: 'SendUserNewEmail'
-      })
+      if (window.DP_HAS_NEW_EMAILS)
+        options.push({
+          title: 'Send Email To User',
+          value: 'SendUserNewEmail'
+        })
 
-      options.push({
-        title: 'Send Email To Agents',
-        value: 'SendAgentNewEmail'
-      })
+        options.push({
+          title: 'Send Email To Agents',
+          value: 'SendAgentNewEmail'
+        })
 
-      options.push({
-        title: 'Send Email to a specific email address',
-        value: 'SendSpecificUserNewEmail'
-      })
+        options.push({
+          title: 'Send Email to a specific email address',
+          value: 'SendSpecificUserNewEmail'
+        })
+      else
+        options.push({
+          title: 'Send Email To User',
+          value: 'SendUserEmail'
+        })
+
+        options.push({
+          title: 'Send Email To Agents',
+          value: 'SendAgentEmail'
+        })
+
+        options.push({
+          title: 'Send Email to a specific email address',
+          value: 'SendSpecificUserEmail'
+        })
 
       set_options.push({
         title: 'Send Email',
@@ -533,11 +549,16 @@ define [
           contextual_fields:  '/custom_fields'
           jira_settings:      '/apps/jira'
         })
-        apiV2 = @Api2.sendGet('/email_templates/info')
 
         @loadDataPromise = @$q.defer()
 
-        @$q.all([apiV1, apiV2]).then( (result) =>
+        promises = [apiV1]
+
+        if (window.DP_HAS_NEW_EMAILS)
+          apiV2 = @Api2.sendGet('/email_templates/info')
+          promises.push apiV2
+
+        @$q.all(promises).then( (result) =>
           data = result[0].data
           options_data = {}
           options_data['agents']            = data.agents.agents
@@ -565,9 +586,10 @@ define [
 
           options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
-          v2data = result[1].data['data']
+          if (window.DP_HAS_NEW_EMAILS)
+            v2data = result[1].data['data']
 
-          options_data['new_custom_email_tpls'] = v2data.list['custom'].groups['custom'].subGroups['primary'].templates
+            options_data['new_custom_email_tpls'] = v2data.list['custom'].groups['custom'].subGroups['primary'].templates
 
           @options_data = options_data
 

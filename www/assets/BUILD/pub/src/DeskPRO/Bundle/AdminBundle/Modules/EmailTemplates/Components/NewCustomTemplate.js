@@ -19,7 +19,7 @@ class NewCustomTemplate extends React.Component {
     super(props);
     this.state = {
       name:         '',
-      baseTemplate: '',
+      baseTemplate: 'SendmailBundle:emails_common:blank.html.twig',
       errors:       null
     };
   }
@@ -115,7 +115,7 @@ class NewCustomTemplate extends React.Component {
           Enter a file name for your email template. Valid characters are letters, numbers, hyphens, periods and underscores.
         </span><br />
         <label htmlFor="base_template">Base template: </label><br />
-        <Select options={templates} onChange={this.handleBaseTemplate} placeholder="Template" filter />< br />< br />
+        <Select options={templates} value={this.state.baseTemplate} onChange={this.handleBaseTemplate} filter />< br />< br />
         <Button
           onClick={this.handleAddTemplate}
           className={classNames({ loading: this.props.addingNewTemplate, disabled: this.state.errors })}

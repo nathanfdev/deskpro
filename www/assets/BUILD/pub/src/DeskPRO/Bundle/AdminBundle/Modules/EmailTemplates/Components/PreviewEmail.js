@@ -6,10 +6,11 @@ import SimpleFrame from 'Ampliflux/common/components/SimpleFrame';
 
 class PreviewEmail extends React.Component {
   static propTypes = {
-    preview: PropTypes.object,
-    type:    PropTypes.string,
-    content: PropTypes.string,
-    name:    PropTypes.string
+    preview:     PropTypes.object,
+    type:        PropTypes.string,
+    content:     PropTypes.string,
+    name:        PropTypes.string,
+    newTemplate: PropTypes.bool,
   };
 
   getPreviewAttachments = () => {
@@ -37,7 +38,14 @@ class PreviewEmail extends React.Component {
   };
 
   render() {
-    let code = this.props.content || this.props.name ? 'Loading preview ...' : 'Select a template to preview';
+    let code;
+    if (this.props.newTemplate) {
+      code = 'Preview will be available when you add content';
+    } else if (this.props.content || this.props.name) {
+      code = 'Loading preview';
+    } else {
+      code = 'Select a template to preview';
+    }
     let attachments = null;
     if (this.props.preview) {
       code = this.props.preview.get('body');

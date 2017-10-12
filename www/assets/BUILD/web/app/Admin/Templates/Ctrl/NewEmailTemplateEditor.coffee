@@ -8,14 +8,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       @$scope.display_title = @templateName
 
       @$scope.is_new_email = @templateName == null
-      if @$scope.is_new_email
-        @$scope.$watch('email.email_name', =>
-          @$scope.email.email_name = @$scope.email.email_name || ''
-          @$scope.email.email_name = @$scope.email.email_name.toLowerCase()
-          @$scope.email.email_name = @$scope.email.email_name.replace(/\s/g, '-')
-          @$scope.email.email_name = @$scope.email.email_name.replace(/[^a-z0-9\-_\.]/g, '')
-          @validateName();
-        )
 
       @$scope.dismiss = =>
         @$modalInstance.dismiss('cancel')
@@ -40,9 +32,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       element.style.height = (document.body.clientHeight * 0.9 - 51) + "px"
 
       reactProps = {
-        routePath: 'emails/templates_editor/' +  @templateName,
-        template:  @templateName,
-        onSave:    @$scope.dismiss
+        routePath:   'emails/templates_editor/' + @templateName,
+        template:    @templateName,
+        newTemplate: @templateName == null
+        onSave:      @onSave
       }
 
       window.AdminBundle.render(reactProps, element)
@@ -50,5 +43,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       @$scope.$on('$destroy', ->
         window.AdminBundle.unmount(element);
       )
+
+    onSave: (name) =>
+      console.log name
+      if (@$scope.is_new_email)
+        tpl = {
+          name: name,
+          title: name.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+        }
+        if @dpObTypesDefTicketActions.options_data
+          @dpObTypesDefTicketActions.options_data.custom_email_tpls.push(tpl)
+        if @dpObTypesDefTicketCriteria.options_data
+          @dpObTypesDefTicketCriteria.options_data.custom_email_tpls.push(tpl)
+      @$scope.dismiss()
+
 
   Admin_Templates_Ctrl_NewEmailTemplateEditor.EXPORT_CTRL()

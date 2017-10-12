@@ -49,6 +49,8 @@ class EmailTemplatesFeature extends AbstractBetaFeature
         'DeskPRO:emails_common:email-custom-css.css.twig' => 'SendmailBundle:blocks:resources.html.twig',
     ];
 
+    protected $migratedCustomTemplates = [];
+
     /**
      * {@inheritdoc}
      */
@@ -85,6 +87,9 @@ some emails might not be able to be migrated automatically.<br />
 There will be a link in the new Email Template Editor
 to allow to carry them over.
 
+You will be able to disable this Beta and restoring your previous state. However any modifications applied during the beta 
+will be discarded.
+
 HTML;
     }
 
@@ -93,7 +98,13 @@ HTML;
      */
     public function getDisableDescription()
     {
-        return 'Disable new Email templates.';
+        return <<<'HTML'
+Disable new Email templates.<br/><br/>
+Disabling the Beta will restore Emails templates to the previous state.<br />
+<br />
+Warning! Any modification applied during the Beta will be DISCARDED
+
+HTML;
     }
 
     /**
@@ -122,6 +133,17 @@ HTML;
         $this->copyLegacyBlocks($em, $container);
         $this->copyLegacyTemplates($em, $container);
         $this->replaceTriggers($em, $container);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function beforeDisable(ContainerInterface $container)
+    {
+        /** @var EntityManager $em */
+        $em = $container->get('doctrine.orm.default_entity_manager');
+        $this->restoreLegacyTemplates($em, $container);
+        $this->restoreTriggers($em, $container);
     }
 
     private function copyLegacyBlocks(EntityManager $em, ContainerInterface $container)
@@ -201,6 +223,7 @@ HTML;
             if (!$body) {
                 continue;
             }
+            $this->migratedCustomTemplates[$previousTemplate->getName()] = $newTemplateName;
             $templateCode->setBody($body);
             $set->saveTemplate($template);
             $this->saveLegacyTemplate($em, $previousTemplate);
@@ -294,11 +317,15 @@ CODE;
             foreach ($actions['@DATA']['actions'] as $actionId => $action) {
                 if ($action['type'] && isset($emailTriggers[$action['type']])) {
                     if (!in_array($action['options']['template'], $templates)) {
-                        $manifestKey = array_search($action['options']['template'], array_column($manifest, 'name'));
-                        $info        = $manifest[$manifestKey];
+                        $manifestKey = array_search($action['options']['template'], array_column($manifest, 'name'), true);
+                        if ($manifestKey) {
+                            $newTemplate = $manifest[$manifestKey]['newTemplate'];
+                        } elseif (isset($this->migratedCustomTemplates[$action['options']['template']])) {
+                            $newTemplate = $this->migratedCustomTemplates[$action['options']['template']];
+                        }
 
                         $actions['@DATA']['actions'][$actionId]['type']                = $emailTriggers[$action['type']];
-                        $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['newTemplate'];
+                        $actions['@DATA']['actions'][$actionId]['options']['template'] = $newTemplate;
                         $changed                                                       = true;
                     }
                 }
@@ -340,5 +367,106 @@ CODE;
         $dataStore->setData('code', $template->getTemplateCode());
 
         $em->persist($dataStore);
+    }
+
+    private function restoreTriggers(EntityManager $em, ContainerInterface $container)
+    {
+        $emailTriggers = [
+            'SendAgentNewEmail'         => 'SendAgentEmail',
+            'SendUserNewEmail'          => 'SendUserEmail',
+            'SendSpecificUserNewEmail'  => 'SendSpecificUserEmail',
+            'SendArbitraryUserNewEmail' => 'SendArbitraryUserEmail',
+        ];
+
+        $dbConnection  = $container->get('doctrine')->getConnection('default');
+        $templatesDesc = new EmailTemplatesDesc();
+        $manifest      = $templatesDesc->getManifest();
+
+        $manifest = array_values(array_filter($manifest, function ($entry) {
+            return !empty($entry['newTemplate']);
+        }));
+
+        $triggers      = $dbConnection->executeQuery('SELECT `id`,`actions` FROM `ticket_triggers`', []);
+        $templatesStmt = $dbConnection->executeQuery('SELECT `name` FROM `templates` WHERE name LIKE ?', ['DeskPRO:emails_%']);
+        $templates     = [];
+        foreach ($templatesStmt as $template) {
+            $templates[] = $template['name'];
+        }
+
+        foreach ($triggers as $trigger) {
+            $id      = $trigger['id'];
+            $changed = false;
+            try {
+                $actions = json_decode($trigger['actions'], true);
+            } catch (\Exception $e) {
+                continue;
+            }
+            foreach ($actions['@DATA']['actions'] as $actionId => $action) {
+                if ($action['type'] && isset($emailTriggers[$action['type']])) {
+                    if (!in_array($action['options']['template'], $templates)) {
+                        $manifestKey = array_search($action['options']['template'], array_column($manifest, 'newTemplate'), true);
+                        $info        = $manifest[$manifestKey];
+
+                        $actions['@DATA']['actions'][$actionId]['type']                = $emailTriggers[$action['type']];
+                        $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['name'];
+                        $changed                                                       = true;
+                    }
+                }
+            }
+            if ($changed) {
+                $dbConnection->executeQuery(
+                    'UPDATE `ticket_triggers` SET `actions` = ? WHERE `id` = ?',
+                    [json_encode($actions), $id]
+                );
+            }
+        }
+    }
+
+    private function restoreLegacyTemplates(EntityManager $em, ContainerInterface $container)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\DataStore $dataStoreRepository */
+        $dataStoreRepository = $em->getRepository(DataStore::class);
+        $legacyTemplates     = $dataStoreRepository->getByPrefix('legacy_email_template');
+
+        $set = $this->getTemplateSet($em, $container);
+
+        /** @var DataStore $legacyTemplate */
+        foreach ($legacyTemplates as $legacyTemplate) {
+            /** @var Template $previousBlock */
+            $template = $set->createCustomTemplate($legacyTemplate->getData('name'));
+
+            /** @var EmailTemplateCode $templateCode */
+            $templateCode = $template->getTemplateCode();
+
+            if (get_class($templateCode) !== EmailTemplateCode::class) {
+                continue;
+            }
+
+            $code = $legacyTemplate->getData('code');
+            $templateCode->setCode($code);
+
+            $body = $this->convertTemplateCode($templateCode->getBody());
+            if (!$body) {
+                continue;
+            }
+            $templateCode->setBody($body);
+            $set->saveTemplate($template);
+            $em->remove($legacyTemplate);
+        }
+
+        // Delete new templates
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->select('t')
+            ->from(Template::class, 't')
+            ->where('t.name LIKE :name')
+            ->setParameter('name', 'SendmailBundle:%')
+        ;
+
+        $templates = $qb->getQuery()->getResult();
+        /** @var Template $template */
+        foreach ($templates as $template) {
+            $em->remove($template);
+        }
     }
 }

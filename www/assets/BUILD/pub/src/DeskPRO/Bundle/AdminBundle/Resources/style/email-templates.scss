@@ -635,6 +635,22 @@
       .ui.button {
         display: none;
       }
+      .new-custom-template {
+        .close {
+          display: none;
+        }
+        .ui.button {
+          display: inline-block;
+        }
+        .ui.button.basic {
+          display: none;
+        }
+      }
+    }
+    .dp-code-editor {
+      .ui.loader {
+        display: none;
+      }
     }
   }
   .preview {
