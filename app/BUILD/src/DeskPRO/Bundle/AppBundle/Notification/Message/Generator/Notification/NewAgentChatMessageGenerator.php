@@ -53,12 +53,12 @@ class NewAgentChatMessageGenerator extends AbstractGenerator
      * NewAgentChatMessageGenerator constructor.
      *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      * @param AvatarResolver        $avatarResolver
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, AvatarResolver $avatarResolver)
+    public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage, AvatarResolver $avatarResolver)
     {
-        parent::__construct($em, $token_storage);
+        parent::__construct($em, $tokenStorage);
         $this->avatarResolver = $avatarResolver;
     }
 

@@ -32,7 +32,6 @@ use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -50,22 +49,20 @@ class SystemEventGenerator extends AbstractGenerator
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      * @param AgentDataService      $agentDataService
      */
     public function __construct(
         EntityManager         $em,
-        TokenStorageInterface $token_storage,
+        TokenStorageInterface $tokenStorage,
         AgentDataService      $agentDataService
     ) {
-        parent::__construct($em, $token_storage);
+        parent::__construct($em, $tokenStorage);
         $this->agentDataService = $agentDataService;
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return MessageInterface[]
+     * {@inheritdoc}
      */
     public function createMessages(SystemEventInterface $event)
     {
@@ -80,9 +77,7 @@ class SystemEventGenerator extends AbstractGenerator
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canCreateMessage(SystemEventInterface $event)
     {

@@ -31,7 +31,7 @@ namespace DeskPRO\Component\Pdf;
 /**
  * Class mPDF.
  */
-class mPDF extends \mPDF
+class mPDF extends \Mpdf\Mpdf
 {
     /**
      * {@inheritdoc}

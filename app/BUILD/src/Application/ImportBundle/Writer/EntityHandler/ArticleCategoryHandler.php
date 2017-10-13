@@ -51,7 +51,7 @@ class ArticleCategoryHandler extends AbstractEntityHandler
      *
      * @param Model\ArticleCategory $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         $entity = null;
         if ($model->getOid()) {
@@ -67,9 +67,9 @@ class ArticleCategoryHandler extends AbstractEntityHandler
             }
         }
 
-        $this->setCategoryProperties($model, $entity);
+        $this->setCategoryProperties($model, $entity, $brandName);
         $this->persister->persistAndFlush($entity, $model);
-        $this->createOrUpdateDeepCategories($entity, $model);
+        $this->createOrUpdateDeepCategories($entity, $model, $brandName);
     }
 
     /**
@@ -97,8 +97,9 @@ class ArticleCategoryHandler extends AbstractEntityHandler
      *
      * @param DeskPROEntity\ArticleCategory $entity
      * @param Model\AbstractArticleCategory $model
+     * @param string                        $brandName
      */
-    private function createOrUpdateDeepCategories(DeskPROEntity\ArticleCategory $entity, Model\AbstractArticleCategory $model)
+    private function createOrUpdateDeepCategories(DeskPROEntity\ArticleCategory $entity, Model\AbstractArticleCategory $model, $brandName)
     {
         $newTitles = [];
         $newIds    = [];
@@ -130,10 +131,10 @@ class ArticleCategoryHandler extends AbstractEntityHandler
                 }
             }
 
-            $this->setCategoryProperties($subModel, $subEntity);
+            $this->setCategoryProperties($subModel, $subEntity, $brandName);
             $entity->addChild($subEntity);
             $this->persister->persistAndFlush($subEntity, $subModel);
-            $this->createOrUpdateDeepCategories($subEntity, $subModel);
+            $this->createOrUpdateDeepCategories($subEntity, $subModel, $brandName);
 
             $newTitles[] = $subModel->getTitle();
         }
@@ -144,17 +145,29 @@ class ArticleCategoryHandler extends AbstractEntityHandler
      *
      * @param Model\AbstractArticleCategory $model
      * @param DeskPROEntity\ArticleCategory $entity
+     * @param string                        $brandName
      *
      * @return DeskPROEntity\ArticleCategory
      */
-    private function setCategoryProperties(Model\AbstractArticleCategory $model, DeskPROEntity\ArticleCategory $entity)
+    private function setCategoryProperties(Model\AbstractArticleCategory $model, DeskPROEntity\ArticleCategory $entity, $brandName)
     {
         $entity
             ->setRealTitle($model->getTitle())
             ->setIsAgent($model->isAgent())
             ->setIsBook($model->isBook())
-            ->setBrand($this->mappers->getBrandMapper()->findOneBy([])) // set first brand for now
         ;
+
+        if ($brandName) {
+            // set specific brand for multi-brand helpdesks
+            $brand = $this->mappers->getBrandMapper()->findByName($brandName);
+            if ($brand) {
+                $entity->setBrand($brand);
+            }
+        }
+
+        if (!$entity->getBrand()) {
+            $entity->setBrand($this->mappers->getBrandMapper()->findOneBy([])); // set first brand for now
+        }
 
         $this->helpers->getUserGroupHelper()->updateUserGroupsByModel($model, $entity);
 

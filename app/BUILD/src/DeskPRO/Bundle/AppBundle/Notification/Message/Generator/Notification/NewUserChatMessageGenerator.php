@@ -58,20 +58,20 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
     private $availableAgents;
 
     /**
-     * NewUserChatMessageGenerator constructor.
+     * Constructor.
      *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      * @param AgentDataService      $agentDataService
      * @param AvatarResolver        $avatarResolver
      */
     public function __construct(
         EntityManager $em,
-        TokenStorageInterface $token_storage,
+        TokenStorageInterface $tokenStorage,
         AgentDataService $agentDataService,
         AvatarResolver $avatarResolver
     ) {
-        parent::__construct($em, $token_storage, $agentDataService);
+        parent::__construct($em, $tokenStorage, $agentDataService);
     }
 
     /**

@@ -65,7 +65,31 @@ class BrandMapper extends AbstractContainerMapper
     }
 
     /**
-     * @return mixed
+     * @param string $name
+     *
+     * @return Brand
+     */
+    public function findByName($name)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('b');
+        $qb->from($this->getEntityClass(), 'b');
+
+        if (is_numeric($name)) {
+            $qb->where('b.id = :id');
+            $qb->setParameter('id', $name);
+        } else {
+            $qb->where('b.name LIKE :name OR b.url LIKE :name');
+            $qb->setParameter('name', '%'.$name.'%');
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+        return $result ? $result[0] : null;
+    }
+
+    /**
+     * @return Brand
      */
     public function getDefaultBrand()
     {

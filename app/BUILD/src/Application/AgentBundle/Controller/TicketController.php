@@ -2706,6 +2706,11 @@ class TicketController extends AbstractController
     {
         if (!$ticket_id) {
             $ticket = new Ticket();
+            $ticket->setAgent($this->person);
+            if ($personId = $this->in->getUInt('person_id')) {
+                $person = $this->em->getRepository(Person::class)->find($personId);
+                $ticket->setPerson($person);
+            }
         } else {
             $ticket = $this->getTicketOr404($ticket_id);
         }
@@ -5023,14 +5028,14 @@ class TicketController extends AbstractController
                 if ($comment) {
                     switch ($comment_action) {
                         case 'delete':
-                            $comment->setStatus('deleted');
+                            $this->em->remove($comment);
                             break;
                         case 'approve':
                             $comment->setStatus('visible');
+                            $this->em->persist($comment);
                             break;
                     }
 
-                    $this->em->persist($comment);
                     $this->em->flush();
                 }
 

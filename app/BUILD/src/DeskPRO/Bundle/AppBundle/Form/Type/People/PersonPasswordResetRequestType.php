@@ -26,35 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
+
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
- * DeskPRO.
- *
- * @category Entities
+ * Class PersonPasswordResetRequestType.
  */
-
-namespace deskpro_sendgrid;
-
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
-use Application\EmailBundle\Service\SendGrid;
-
-class InstallerHandler extends AbstractInstallerHandler
+class PersonPasswordResetRequestType extends AbstractType
 {
-    const NAME = 'emails.sendgrid';
-
     /**
      * {@inheritdoc}
      */
-    public function install(InstallerContext $context)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $context->getContainer()->getSettingsHandler()->setSetting(self::NAME.'.enabled', 1);
+        $builder->add('email', EmailType::class, [
+            'constraints' => [
+                new Assert\NotBlank(),
+                new Assert\Email(['strict' => true]),
+                new AppAssert\Person\Email\ExistEmail(),
+                new AppAssert\Person\PersonType(['type' => 'agent']),
+            ],
+        ]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function uninstall(InstallerContext $context)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $context->getContainer()->getSettingsHandler()->setSetting(self::NAME.'.enabled', 0);
+        $resolver->setDefaults([
+            'csrf_protection'               => false,
+            'csrf_double_submit_protection' => false,
+        ]);
     }
 }

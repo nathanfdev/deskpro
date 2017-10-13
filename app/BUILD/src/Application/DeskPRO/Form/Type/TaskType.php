@@ -141,6 +141,7 @@ class TaskType extends AbstractType
         $options = $event->getForm()->getConfig()->getOptions();
         $data    = $event->getData();
 
+        // set assigned agent or team
         if (isset($data['assigned_agent']) && strpos($data['assigned_agent'], ':') !== false) {
             list($type, $id) = explode(':', $data['assigned_agent']);
 
@@ -154,6 +155,11 @@ class TaskType extends AbstractType
             }
         } elseif ($options['person']) {
             $data['assigned_agent'] = $options['person']->getId();
+        }
+
+        // set task owner
+        if (!isset($data['person']) || !$data['person'] && $options['person']) {
+            $data['person'] = $options['person']->getId();
         }
 
         if (isset($data['visibility']) && strpos($data['visibility'], ':') !== false) {

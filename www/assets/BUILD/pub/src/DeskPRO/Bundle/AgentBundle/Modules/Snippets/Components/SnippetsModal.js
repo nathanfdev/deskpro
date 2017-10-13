@@ -19,6 +19,7 @@ import { ModalLanguageSelect } from './Menus/ModalLanguageSelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
 import { UsageHistoryModal } from './UsageHistoryModal';
+import { ChangeLogModal } from './ChangeLogModal';
 
 class VariableValue extends React.Component {
   render() {
@@ -26,7 +27,7 @@ class VariableValue extends React.Component {
       <div className="Select-value">
         <span className="Select-value-label">
           <i className="fa fa-dollar" />&nbsp;
-          Variables
+          {agentPhrases.get('agent.snippets.variables')}
         </span>
       </div>
     );
@@ -82,7 +83,7 @@ export class SnippetsModalContainer extends React.Component {
       isSplit:           snippet.get('is_split', false),
       title:             snippet.get('title', ''),
       shortcutCode:      snippet.get('shortcut_code', ''),
-      isDraft:           snippet.get('is_draft', false),
+      isDraft:           !!snippet.get('is_draft', false),
       langId:            props.langId,
       mergeKeepValue:    'ticket',
     };
@@ -125,6 +126,11 @@ export class SnippetsModalContainer extends React.Component {
     } else {
       this.redactor.setCode('');
     }
+  };
+
+  setContent = (content) => {
+    this.redactor.setCode(content);
+    this.saveTranslation();
   };
 
   saveTranslation = () => {
@@ -335,7 +341,7 @@ export class SnippetsModalContainer extends React.Component {
 
   splitSnippet = (e) => {
     e.preventDefault();
-    const { type } = this.state;
+    const { type, types } = this.state;
     let newTranslations = new Immutable.List();
     let translations = this.saveTranslation();
     translations = translations.map((t) => {
@@ -344,8 +350,16 @@ export class SnippetsModalContainer extends React.Component {
       newTranslations = newTranslations.push(newType);
       return t.set('type', type);
     });
+    if (types.length < 2) {
+      if (types[0] === 'ticket') {
+        types.push('chat');
+      } else {
+        types.push('ticket');
+      }
+    }
     translations = translations.concat(newTranslations);
     this.setState({
+      types,
       translations,
       isSplit: true,
     });
@@ -433,6 +447,7 @@ export class SnippetsModalContainer extends React.Component {
         saveSnippet={this.saveSnippet}
         deleteSnippet={this.deleteSnippet}
         setLanguage={this.setLanguage}
+        setContent={this.setContent}
         changeLabels={this.changeLabels}
         insertVariable={this.insertVariable}
         handleChangeDraft={this.handleChangeDraft}
@@ -483,6 +498,7 @@ export class SnippetsModal extends React.Component {
     saveSnippet:             PropTypes.func,
     deleteSnippet:           PropTypes.func,
     setLanguage:             PropTypes.func,
+    setContent:              PropTypes.func,
     closeModal:              PropTypes.func,
     changeLabels:            PropTypes.func,
     insertVariable:          PropTypes.func,
@@ -507,6 +523,7 @@ export class SnippetsModal extends React.Component {
     super(props);
     this.state = {
       displayMerge:          false,
+      changeLogModalOpen:    false,
       usageHistoryModalOpen: false,
     };
   }
@@ -635,6 +652,9 @@ export class SnippetsModal extends React.Component {
       <div>
         {snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
         {usage}
+        {snippet.get('id', false) ?
+          <a className="change_log" onClick={this.openChangeLogModal}>{agentPhrases.get('agent.general.changelog')}</a>
+          : null }
       </div>
     );
   };
@@ -651,6 +671,24 @@ export class SnippetsModal extends React.Component {
     );
   };
 
+  getChangeLogModal = () => {
+    if (!this.state.changeLogModalOpen) {
+      return null;
+    }
+    return (
+      <ChangeLogModal
+        snippet={this.props.snippet}
+        langId={this.props.langId}
+        languages={this.props.languages}
+        translation={this.props.translation}
+        translations={this.props.translations}
+        type={this.props.type}
+        revertContent={this.revertContent}
+        closeModal={this.closeChangeLogModal}
+      />
+    );
+  };
+
   getUploadUrl = () => '/api/v2/blobs/temp';
 
   openUsageHistoryModal = () => {
@@ -663,6 +701,29 @@ export class SnippetsModal extends React.Component {
     this.setState({
       usageHistoryModalOpen: false,
     });
+  };
+
+  openChangeLogModal = () => {
+    this.setState({
+      changeLogModalOpen: true,
+    });
+  };
+
+  closeChangeLogModal = () => {
+    this.setState({
+      changeLogModalOpen: false,
+    });
+  };
+
+  revertContent = (content, langId, type) => {
+    if (type !== null) {
+      this.props.changeType(type);
+    }
+    if (langId !== this.props.langId) {
+      this.props.setLanguage(langId);
+    }
+    this.props.setContent(content);
+    this.closeChangeLogModal();
   };
 
   isValid = () => this.isTitleValid() && this.isShortcutCodeValid();
@@ -786,6 +847,7 @@ export class SnippetsModal extends React.Component {
                 tags={labels}
                 onChange={changeLabels}
                 options={labelsSource}
+                inputProps={{ placeholder: agentPhrases.get('agent.general.add_a_label') }}
                 editable
               />
             </div>
@@ -887,26 +949,29 @@ export class SnippetsModal extends React.Component {
             <div className="types-field field">
               <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
               <Checkbox
-                checked={this.props.types.find(type => type === 'ticket')}
+                checked={!!this.props.types.find(type => type === 'ticket')}
                 value="ticket"
                 onChange={handleChangeTypes}
               >
                 {agentPhrases.get('agent.general.ticket')}
               </Checkbox>
               <Checkbox
-                checked={this.props.types.find(type => type === 'chat')}
+                checked={!!this.props.types.find(type => type === 'chat')}
                 value="chat"
                 onChange={handleChangeTypes}
               >
                 {agentPhrases.get('agent.general.chat')}
               </Checkbox>
               {!this.props.isSplit ?
-                <a href="#expand" onClick={splitSnippet}><Icon name="expand" /> Split snippet</a>
+                <a href="#expand" onClick={splitSnippet}><Icon name="expand" />
+                  &nbsp;{agentPhrases.get('agent.snippets.split_snippet')}
+                </a>
               : null}
             </div>
           </form>
         </Modal>
         {this.getUsageHistoryModal()}
+        {this.getChangeLogModal()}
       </div>
     );
   }

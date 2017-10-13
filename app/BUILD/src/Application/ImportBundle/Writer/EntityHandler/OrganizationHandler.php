@@ -51,7 +51,7 @@ class OrganizationHandler extends AbstractEntityHandler
      *
      * @param Model\Organization $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\Organization $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getOrganizationMapper(), $model);
