@@ -66,7 +66,11 @@ class TemplateFile extends Template
 
         list($bundle, $dir, $file) = $parts;
 
-        $path = DP_ROOT."/src/Application/$bundle/Resources/views/";
+        if ($bundle === 'SendmailBundle') {
+            $path = DP_ROOT.'/src/DeskPRO/Bundle/SendmailBundle/Resources/views/';
+        } else {
+            $path = DP_ROOT."/src/Application/$bundle/Resources/views/";
+        }
         if ($dir) {
             $path .= "$dir/";
         }

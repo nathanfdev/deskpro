@@ -178,6 +178,11 @@ export const resetTemplate = createAction(
   })
 );
 
+export const deleteTemplate = createAction(
+  'EMAIL_TEMPLATES_DELETE_TEMPLATE',
+  name => repository('EmailTemplates').deleteTemplate(name)
+);
+
 export const saveCustomPhrase = createAction(
   'EMAIL_TEMPLATES_SAVE_CUSTOM_PHRASE',
   phrase => repository('Languages').saveCustomPhrase(phrase)

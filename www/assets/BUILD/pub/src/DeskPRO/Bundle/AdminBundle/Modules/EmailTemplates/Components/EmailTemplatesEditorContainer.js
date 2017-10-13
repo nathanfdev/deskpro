@@ -328,6 +328,22 @@ class EmailTemplatesEditorContainer extends React.Component {
     return true;
   }, 400);
 
+  deleteTemplate = () => {
+    this.setState({
+      resetSubmit: true
+    });
+    const name = this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']);
+    this.props.dispatch(actions.deleteTemplate(name)).then(
+      () => {
+        this.props.dispatch(actions.setTemplate(''));
+        this.props.dispatch(actions.loadTemplates());
+        this.setState({
+          resetSubmit: false
+        });
+      }
+    );
+  };
+
   resetTemplate = () => {
     this.setState({
       resetSubmit: true
@@ -475,6 +491,7 @@ class EmailTemplatesEditorContainer extends React.Component {
       changeTemplateBody={this.changeTemplateBody}
       changeTemplateSubject={this.changeTemplateSubject}
       saveTemplate={this.saveTemplate}
+      deleteTemplate={this.deleteTemplate}
       resetTemplate={this.resetTemplate}
       resetTemplateAction={this.resetTemplateAction}
       undoChanges={this.undoChanges}
@@ -514,6 +531,7 @@ class EmailTemplatesEditor extends React.Component {
     changeTemplateSubject:  PropTypes.func,
     changeTemplateBody:     PropTypes.func,
     saveTemplate:           PropTypes.func,
+    deleteTemplate:         PropTypes.func,
     resetTemplate:          PropTypes.func,
     resetTemplateAction:    PropTypes.func,
     undoChanges:            PropTypes.func,
@@ -837,14 +855,25 @@ class EmailTemplatesEditor extends React.Component {
             >
               Undo changes
             </Button>
-            <Button
-              className={classNames('right floated basic small', { loading: this.props.resetSubmit })}
-              disabled={this.state.textareaDisabled}
-              onClick={this.props.resetTemplate}
-              confirm
-            >
-              Reset template
-            </Button>
+            { this.props.emailTemplates.getIn(['currentTemplate', 'is_custom'], false) ?
+              <Button
+                className={classNames('right floated negative basic small', { loading: this.props.resetSubmit })}
+                disabled={this.state.textareaDisabled}
+                onClick={this.props.deleteTemplate}
+                confirm
+              >
+                Delete
+              </Button>
+              :
+              <Button
+                className={classNames('right floated basic small', { loading: this.props.resetSubmit })}
+                disabled={this.state.textareaDisabled}
+                onClick={this.props.resetTemplate}
+                confirm
+              >
+                Reset template
+              </Button>
+            }
           </div>
         </div>
         <div className="preview">

@@ -45,6 +45,7 @@ export default createReducer(initialState, {
   [actions.loadExampleTicket]: async({
     success: setFullPayload('exampleTicket')
   }),
+  [actions.deleteTemplate]:          state => state.delete('template').delete('preview').delete('currentTemplate'),
   [actions.removeVariables]:         state => state.set('variables', null),
   [actions.setCurrentLanguage]:      (state, payload) => state.set('currentLanguage', payload),
   [actions.setCurrentTemplate]:      (state, payload) => state.set('currentTemplate', payload),

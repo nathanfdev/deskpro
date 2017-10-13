@@ -242,7 +242,11 @@ class TemplateController extends BaseController
 
         if ($template instanceof TemplateCustom) {
             $set->deleteTemplate($template);
-            $template = $set->getTemplate($name);
+            if ($template->templateFileExists()) {
+                $template = $set->getTemplate($name);
+            } else {
+                return new View();
+            }
         }
 
         $data = $set->exportTemplateToArray(

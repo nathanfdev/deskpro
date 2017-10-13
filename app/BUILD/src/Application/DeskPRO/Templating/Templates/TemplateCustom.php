@@ -162,4 +162,12 @@ class TemplateCustom extends Template
             return $this->custom_type;
         }
     }
+
+    /**
+     * @return bool
+     */
+    public function templateFileExists()
+    {
+        return $this->template_file->exists();
+    }
 }
