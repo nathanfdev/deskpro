@@ -360,12 +360,12 @@ export const transferCall = createAction(
   (connection, agent, type) => (dispatch) => {
     dispatch(toggleHold(connection, true));
 
-    if (type === 'cold') {
-      connection.disconnect();
-    }
-
     const callId = connection.message.CallId;
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/transfer/${agent.get('id')}/${type}`);
+    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/transfer/${agent.get('id')}/${type}`).success(() => {
+      if (type === 'cold') {
+        connection.disconnect();
+      }
+    });
   }
 );
 
