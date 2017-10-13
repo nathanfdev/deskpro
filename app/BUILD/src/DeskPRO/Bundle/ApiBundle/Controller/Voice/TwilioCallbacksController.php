@@ -143,6 +143,7 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        $adapter    = $this->get('twilio_adapter');
         $callSid    = $request->request->get('CallSid');
         $callStatus = $request->request->get('CallStatus');
 
@@ -152,23 +153,69 @@ class TwilioCallbacksController extends BaseController
                 'callSid' => $callSid,
             ]);
 
+            $em = $this->getManager();
             if ($participant) {
-                $log = new VoicePhoneCallLog();
-                $log
-                    ->setDetails($request->request->all())
-                    ->setPerson($participant->getPerson())
-                    ->setPhoneCall($participant->getPhoneCall())
-                ;
+                // set participant leave event time
+                $participant->setDateLeft(new \DateTime());
+                $em->persist($participant);
+                $em->flush();
+
+                $phoneCall = $participant->getPhoneCall();
 
                 if ($participant instanceof VoicePhoneCallParticipantUser) {
-                    $log->setActionType(VoicePhoneCallLog::ACTION_USER_DISCONNECTED);
-                } else {
-                    $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_DISCONNECTED);
-                }
+                    // log end-user ends the call
+                    $log = new VoicePhoneCallLog();
+                    $log
+                        ->setDetails($request->request->all())
+                        ->setPerson($participant->getPerson())
+                        ->setPhoneCall($participant->getPhoneCall())
+                        ->setActionType(VoicePhoneCallLog::ACTION_USER_DISCONNECTED)
+                    ;
 
-                $em = $this->getManager();
-                $em->persist($log);
-                $em->flush();
+                    $em->persist($log);
+                    $em->flush();
+
+                    // ensure that we completed the end-user task if the phone call was not established
+                    // to avoid new reservation creations
+                    $adapter->endTask($account, $phoneCall->getTaskSid());
+
+                    // mark the phone call as finished
+                    $phoneCall->setDateEnded(new \DateTime());
+                    $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+
+                    // log call end event
+                    // for now if a end-user finishes the call then it means the conference is ended
+                    $log = new VoicePhoneCallLog();
+                    $log->setActionType(VoicePhoneCallLog::ACTION_ENDED);
+                    $log->setDetails($request->request->all());
+                    $log->setPhoneCall($phoneCall);
+
+                    $em->persist($log);
+                    $em->persist($phoneCall);
+                    $em->flush();
+                } else {
+                    // log agent ends the call
+                    $log = new VoicePhoneCallLog();
+                    $log
+                        ->setDetails($request->request->all())
+                        ->setPerson($participant->getPerson())
+                        ->setPhoneCall($participant->getPhoneCall())
+                        ->setActionType(VoicePhoneCallLog::ACTION_AGENT_DISCONNECTED)
+                    ;
+
+                    $em->persist($log);
+                    $em->flush();
+
+                    if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
+                        // original agent was disconnected, change status to pending
+                        $phoneCall->setStatus(VoicePhoneCall::STATUS_PENDING);
+
+                        $em->persist($phoneCall);
+                        $em->flush();
+                    } else {
+                        $adapter->tryEndConference($phoneCall);
+                    }
+                }
             }
 
             // check voicemail worker status
@@ -180,7 +227,7 @@ class TwilioCallbacksController extends BaseController
             if ($phoneCall && $phoneCall->getStatus() === VoicePhoneCall::STATUS_VOICEMAIL) {
                 $voicemailWorker = $this->get('twilio_adapter')->getVoicemailWorker($account);
                 if ($voicemailWorker->activityName === 'Busy') {
-                    $this->get('twilio_adapter')->updateVoicemailWorkerActivity($account, 'Idle');
+                    $adapter->updateVoicemailWorkerActivity($account, 'Idle');
                 }
             }
         }
@@ -494,61 +541,6 @@ class TwilioCallbacksController extends BaseController
                 $em->persist($log);
                 $em->flush();
             }
-        } elseif ($eventName === 'participant-leave') {
-            // set participant leave event time
-            $participant = $phoneCall->getParticipantByCallSid($callSid);
-            if ($participant) {
-                $participant->setDateLeft(new \DateTime());
-                $em->persist($participant);
-                $em->flush();
-            }
-
-            // log participant leave event
-            $log = new VoicePhoneCallLog();
-            $log->setDetails($request->request->all());
-            $log->setPhoneCall($phoneCall);
-            if ($participant) {
-                if ($participant->getPerson()) {
-                    $log->setPerson($participant->getPerson());
-                }
-
-                if ($participant instanceof VoicePhoneCallParticipantAgent) {
-                    $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_LEFT);
-                } else {
-                    $log->setActionType(VoicePhoneCallLog::ACTION_USER_LEFT);
-                }
-            }
-
-            $em->persist($log);
-            $em->flush();
-
-            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
-                // original agent was disconnected, change status to pending
-                $phoneCall->setStatus(VoicePhoneCall::STATUS_PENDING);
-
-                $em->persist($phoneCall);
-                $em->flush();
-            } else {
-                $adapter->tryEndConference($phoneCall);
-            }
-        } elseif ($eventName === 'conference-end') {
-            // ensure that we completed the end-user task if the phone call was not established
-            // to avoid new reservation creations
-            $adapter->endTask($account, $phoneCall->getTaskSid());
-
-            // mark the phone call as finished
-            $phoneCall->setDateEnded(new \DateTime());
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
-
-            // log conference end event
-            $log = new VoicePhoneCallLog();
-            $log->setActionType(VoicePhoneCallLog::ACTION_ENDED);
-            $log->setDetails($request->request->all());
-            $log->setPhoneCall($phoneCall);
-
-            $em->persist($log);
-            $em->persist($phoneCall);
-            $em->flush();
         } elseif (in_array($eventName, ['participant-hold', 'participant-unhold', 'participant-mute', 'participant-unmute'])) {
             $actionTypeMapping = [
                 'participant-hold'   => VoicePhoneCallLog::ACTION_HOLD,
