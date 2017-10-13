@@ -99,7 +99,8 @@
     "justinrainbow/json-schema": "^5.2",
     "arcturial/clickatell": "^3.0",
     "league/oauth2-client": "^2.2",
-    "league/oauth1-client": "dev-master"
+    "league/oauth1-client": "dev-master",
+    "guzzlehttp/oauth-subscriber": "^0.3.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
