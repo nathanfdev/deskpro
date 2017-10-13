@@ -567,11 +567,9 @@ class TwilioCallbacksController extends BaseController
             }
 
             // all active participants
-            if (in_array($eventName, ['participant-join', 'participant-leave'])) {
-                $statusParams['agent_participants'] = array_map(function (Person $person) {
-                    return $person->getId();
-                }, $adapter->getActivePhoneCallParticipants($phoneCall));
-            }
+            $statusParams['agent_participants'] = array_map(function (Person $person) {
+                return $person->getId();
+            }, $adapter->getActivePhoneCallParticipants($phoneCall));
 
             // is conference on hold
             $statusParams['hold'] = $adapter->isConferenceOnHold($phoneCall);
@@ -950,6 +948,35 @@ class TwilioCallbacksController extends BaseController
         if (!$phoneCall) {
             throw $this->createBadRequestException('Phone call not found');
         }
+
+        $agentParticipant = $phoneCall->getAgentParticipants()->first();
+        $agent            = $agentParticipant instanceof VoicePhoneCallParticipantAgent ? $agentParticipant->getPerson() : null;
+
+        $ticketMessageCall = new TicketMessageVoicePhoneCall();
+        $ticketMessageCall->setPhoneCall($phoneCall);
+
+        $ticketMessage = new TicketMessage();
+        $ticketMessage->setPerson($phoneCall->getPerson());
+        $ticketMessage->addAttribute($ticketMessageCall);
+        $ticketMessage->setMessage('Call to '.$phoneCall->getExternalNumber());
+        $ticketMessage->setAsAgentNote(true);
+
+        $ticket = new Ticket();
+        $ticket->disableAutoTicketProcess();
+        $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
+        $ticket->setPerson($phoneCall->getPerson());
+        $ticket->setAgent($agent);
+        $ticket->addMessage($ticketMessage);
+
+        $this->saveTicket($ticket);
+
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.outgoing-call-answered',
+            [
+                'ticket'  => $this->get('serializer')->toArray($ticket, new SideloadSerializationContext()),
+                'CallSid' => $agentParticipant->getCallSid(),
+            ]
+        ));
 
         $twiml = new Twiml();
         $twiml->dial()->conference($this->getConferenceName($phoneCall), [

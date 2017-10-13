@@ -28,13 +28,14 @@ class VoiceMenuContainer extends React.Component {
 
   static propTypes = {
     dispatch:     PropTypes.func,
-    incomingCall: PropTypes.object
+    incomingCall: PropTypes.object,
+    outgoingCall: PropTypes.object
   };
 
   componentWillReceiveProps(newProps) {
-    const { incomingCall } = this.props;
+    const { incomingCall, outgoingCall } = this.props;
 
-    if (!newProps.incomingCall && incomingCall) {
+    if ((!newProps.incomingCall && incomingCall) || (!newProps.outgoingCall && outgoingCall)) {
       this.popup.closePopup();
     }
   }
