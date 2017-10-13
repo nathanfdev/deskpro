@@ -511,14 +511,14 @@ class TwilioCallbacksController extends BaseController
             }
 
             $participant = $phoneCall->getParticipantByCallSid($callSid);
-            if ($participant) {
+            if ($participant instanceof VoicePhoneCallParticipantAgent) {
                 // set participant join event time
                 $participant->setDateJoined(new \DateTime());
                 $em->persist($participant);
                 $em->flush();
 
                 // unhold the conference, could be on cold transfer
-                if ($participant instanceof VoicePhoneCallParticipantAgent && $phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
+                if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
                     $adapter->holdConferenceEndUser($phoneCall, false);
                 }
 
@@ -526,16 +526,9 @@ class TwilioCallbacksController extends BaseController
                 $log = new VoicePhoneCallLog();
                 $log->setDetails($request->request->all());
                 $log->setPhoneCall($phoneCall);
-                if ($participant) {
-                    if ($participant->getPerson()) {
-                        $log->setPerson($participant->getPerson());
-                    }
-
-                    if ($participant instanceof VoicePhoneCallParticipantAgent) {
-                        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_JOINED);
-                    } else {
-                        $log->setActionType(VoicePhoneCallLog::ACTION_USER_JOINED);
-                    }
+                $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_JOINED);
+                if ($participant->getPerson()) {
+                    $log->setPerson($participant->getPerson());
                 }
 
                 $em->persist($log);
