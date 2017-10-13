@@ -53,6 +53,7 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     const ACTION_AUTO_ATTENDANT_PRESS_EXTENSION_KEY   = 'call.auto_attendant_press_extension_key';
     const ACTION_AUTO_ATTENDANT_EXTENSION             = 'call.auto_attendant_extension';
     const ACTION_CALL_TARGET                          = 'call.target';
+    const ACTION_REJECTED                             = 'call.rejected';
     const ACTION_ANSWERED                             = 'call.answered';
     const ACTION_MUTED                                = 'call.participant_muted';
     const ACTION_UNMUTED                              = 'call.participant_unmuted';

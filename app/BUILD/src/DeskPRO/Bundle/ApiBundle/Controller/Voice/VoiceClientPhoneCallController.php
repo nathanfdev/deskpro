@@ -232,12 +232,11 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
 
+        $em = $this->getManager();
         if ($callType === 'transfer' && $inviteType === 'cold') {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
-            $this->getManager()->persist($phoneCall);
+            $em->persist($phoneCall);
         }
-
-        $em = $this->getManager();
 
         // get phone call ticket
         $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
