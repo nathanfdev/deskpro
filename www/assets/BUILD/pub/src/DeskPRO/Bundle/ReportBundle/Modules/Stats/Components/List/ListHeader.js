@@ -35,21 +35,31 @@ class ListHeader extends React.Component {
 
   render() {
     const { active } = this.state;
+    const { searchText, activeLabels, labels } = this.props;
+
+    const inputProps = {
+      type:        'text',
+      placeholder: 'Filter stats by name',
+      onChange:    this.onChange,
+    };
+    if (searchText) {
+      inputProps.searchText = searchText;
+    }
 
     return (
       <div className="big-list-of-stats-filters">
         <div className="bucket filter-title">
           <div className="box">
-            <input type="text" placeholder="Filter stats by name" onChange={this.onChange} value={this.props.searchText} />
+            <input {...inputProps} />
           </div>
         </div>
 
         <div className="bucket filter-label" style={{ position: 'relative' }}>
           <a className="link-pointer select" onClick={this.toggleSelect}>
-            {this.props.activeLabels > 0 ? `Selected: ${this.props.activeLabels}` : 'Select labels:'}  <i className={classNames('fa', { 'fa-caret-down': !active, 'fa-caret-up': active })} />
+            {activeLabels > 0 ? `Selected: ${activeLabels}` : 'Select labels:'}  <i className={classNames('fa', { 'fa-caret-down': !active, 'fa-caret-up': active })} />
           </a>
           {active ? <div className="select-label-dropdown">
-            { this.props.labels.map((label, index) => (
+            { labels.map((label, index) => (
               <a
                 key={index}
                 onClick={() => this.onLabelClick(label.label)}
@@ -61,7 +71,7 @@ class ListHeader extends React.Component {
           </div> : null }
         </div>
 
-        <a className="bucket add button"><i className="fa fa-plus" /> ADD</a>
+        <button className="ui button green"><i className="fa fa-plus" /> ADD</button>
       </div>
     );
   }

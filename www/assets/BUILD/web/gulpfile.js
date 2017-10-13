@@ -265,12 +265,14 @@ gulp.task('less', ['clean'], function () {
 
 gulp.task('less-dp-semantic-app', function () {
   deskpro.taskGen.copyThemeConfig();
-  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
 });
 
 gulp.task('less-dp-semantic', ['clean'], function () {
   deskpro.taskGen.copyThemeConfig();
-  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
 });
 
 //------------------------------
@@ -283,7 +285,8 @@ gulp.task('semantic', function () {
 });
 
 gulp.task('semantic-watch', function () {
-  return deskpro.taskGen.semantic('./app-build/Admin/Resources/style/');
+  deskpro.taskGen.semantic('./app-build/Admin/Resources/style/');
+  return deskpro.taskGen.semantic('./app-build/Interface/Resources/style/');
 });
 
 gulp.task('semantic-copy', ['clean'], function () {
@@ -292,9 +295,11 @@ gulp.task('semantic-copy', ['clean'], function () {
       autoprefixer(),
       comments({})
     ]))
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
   gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
 });
 
 gulp.task('semantic-copy-prod', ['clean'], function () {
@@ -304,9 +309,11 @@ gulp.task('semantic-copy-prod', ['clean'], function () {
       comments({}),
       cssnano()
     ]))
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
   gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
 });
 
 deskpro.taskGen.semantic = function(target_dir) {

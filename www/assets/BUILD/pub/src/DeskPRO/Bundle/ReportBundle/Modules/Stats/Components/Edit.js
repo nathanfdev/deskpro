@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from 'react-forms';
+import classNames from 'classnames';
 import VarsField from './Fields/VarsField';
 
 
@@ -9,14 +10,20 @@ class Edit extends BaseForm {
 
   static propTypes = {
     report:      PropTypes.object,
-    groupParams: PropTypes.object
+    groupParams: PropTypes.object,
+    onRunClick:  PropTypes.func.isRequired,
   };
+
+  constructor(props) {
+    super(props);
+    this.onRunClick = this.onRunClick.bind(this);
+  }
 
   getDefaultState() {
     const report = this.props.report;
-
-    return {
+    const state = {
       title:   report.get('title'),
+      desc:    report.has('description') ? report.get('description') : '',
       select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
       from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
       where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
@@ -25,39 +32,55 @@ class Edit extends BaseForm {
       orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
       offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
       limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
-      vars:    report.get('variables') ? report.get('variables').toJS() : []
+      vars:    report.has('variables') ? report.get('variables').toJS() : []
     };
+
+    if (report.get('id')) {
+      state.id = report.get('id');
+    }
+
+    return state;
   }
 
   componentWillReceiveProps(props) {
     const { report } = props;
-
-    if (props.report) {
+    if (report) {
+      const state = {
+        value: {
+          title:   report.get('title'),
+          desc:    report.has('description') ? report.get('description') : '',
+          select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
+          from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
+          where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
+          splitBy: report.get('query_parts') ? report.get('query_parts').get('splitBy') : '',
+          groupBy: report.get('query_parts') ? report.get('query_parts').get('groupBy') : '',
+          orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
+          offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
+          limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
+          vars:    report.get('variables') ? report.get('variables').toJS() : []
+        },
+        errorList: {},
+        onChange:  this.onChange
+      };
+      if (report.get('id')) {
+        state.id = report.get('id');
+      }
       this.setState({
-        formData: createValue({
-          value: {
-            title:   report.get('title'),
-            select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
-            from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
-            where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
-            splitBy: report.get('query_parts') ? report.get('query_parts').get('splitBy') : '',
-            groupBy: report.get('query_parts') ? report.get('query_parts').get('groupBy') : '',
-            orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
-            offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
-            limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
-            vars:    report.get('variables') ? report.get('variables').toJS() : []
-          },
-          errorList: {},
-          onChange:  this.onChange
-        })
+        formData: createValue(state)
       });
     }
   }
 
+  onRunClick() {
+    this.props.onRunClick(this.props.report);
+  }
+
   renderReport() {
+    const { formData, saving } = this.state;
+
     return (
       <div className="reports-editor-panel full-editor">
-        <Form formValue={this.state.formData} className="editor-form full-editor-form">
+        <Form formValue={formData} className="editor-form full-editor-form" onSubmit={this.onSubmit}>
           <Fieldset>
             <Field select="title" label="Title">
               <Input type="text" />
@@ -91,10 +114,8 @@ class Edit extends BaseForm {
               <VarsField groupParams={this.props.groupParams} />
             </Field>
 
-            <div className="editor-controls">
-              <a className="button">Save Query <i className="fa fa-save" /></a>
-              <a className="button button-edit">Test <i className="fa fa-fast-forward" /></a>
-            </div>
+            <button className={classNames('ui button', { loading: saving })}>Save</button>
+            <button onClick={this.onRunClick} className={classNames('ui olive button', { loading: saving })}>Run</button>
           </Fieldset>
         </Form>
       </div>

@@ -5,6 +5,11 @@
   @include clearfix;
   padding: 10px;
   padding-bottom: 0px;
+  position: absolute;
+  height: 40px;
+  width: 575px;
+  top: 0;
+  left: 0;
 
   .bucket {
     float: left;
@@ -41,6 +46,7 @@
 
   .select {
     border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #333;
 
     i {
       float: right;
@@ -48,8 +54,14 @@
     }
   }
 
+  .ui.button {
+    font-size: 1em;
+    height: 35px;
+    width: 75px;
+    margin-left: 4px;
+  }
 
-  input[type="text"], input[type="password"], .select, .button {
+  input[type="text"], input[type="password"], .select {
     border: 1px solid #bdbdbd;
     border-radius: 2px;
     padding: $item-padding;
@@ -59,15 +71,13 @@
     display: inline-block;
     font-size: 1em;
   }
-
-
 }
 
 
 .big-list-of-stats {
-  padding: 10px;
-  background: #f5f6f7;
-  max-height: 460px;
+  height: 100%;
+  padding: 0 0 10px 10px;
+  background: #ffffff;
   overflow-y: auto;
 
   ul.stat-list {
@@ -110,6 +120,9 @@
     h1 {
       font-size: 1.1em;
       line-height: 1.7em;
+      margin: 0;
+      font-weight: 400;
+
 
       .select-data {
         text-transform: uppercase;
@@ -215,9 +228,10 @@
   padding: 2px 4px;
   font-size: 0.85em;
   margin-left: 3px;
+  cursor: pointer;
 }
 
-.stat-label.active {
+.stat-label.active, .stat-label:hover {
   color: $blue;
 }
 
@@ -233,26 +247,32 @@
   a { margin-bottom: 5px; }
 }
 
+.reports-list {
+  height: 100%;
+  padding-top: 35px;
+}
 
 
 .report-list-content {
   padding-top: 10px;
+  height: 100%;
 }
 
 // Stats in page (not in popup)
 .report-list-wrapper {
+  height: 100%;
 
   .big-list-of-stats {
-//    height: auto;
-//    overflow-y: auto;
-    max-height: 900px;
     .stat-list-wrapper {
       overflow: auto;
-      max-height: 825px;
+
       .stat-list {
         li { padding-left: 10px; }
         .mark { display: none; }
-        a { text-decoration: none; }
+        a {
+          color: #333;
+          text-decoration: none;
+        }
       }
     }
 
@@ -278,20 +298,6 @@
 
       &.filter-label {
         width: 29%;
-      }
-
-      &.add.button {
-        width: 14%;
-        display: inline-block;
-        line-height: 1em;
-        background: #4681b2;
-        color: #fff;
-        border-radius: 2px;
-        padding: 12px 20px;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 0.8em;
-        margin-right: 3px;
       }
     }
   }
@@ -328,7 +334,7 @@
     }
 
     .title {
-      text-transform: underline;
+      text-decoration: underline;
       font-size: 0.8em;
       color: $text-grey;
     }
@@ -406,4 +412,8 @@
     }
 
   }
+}
+
+.report-editor-panel {
+  background: #ffffff;
 }

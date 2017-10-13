@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import ListHeader from './List/ListHeader';
 import List from './List/List';
 import Edit from './Edit';
-import { loadReport } from '../../Application/Actions/reportActions';
+import { loadReport, saveReport } from '../../Application/Actions/reportActions';
 
 @connect(state => ({
   customReports:  state.Application.reports.get('customReports'),
@@ -66,6 +66,7 @@ class Wrapper extends React.Component {
     this.onReportClick      = this.onReportClick.bind(this);
     this.onChangeFilterText = this.onChangeFilterText.bind(this);
     this.onLabelClick       = this.onLabelClick.bind(this);
+    this.onSubmit           = this.onSubmit.bind(this);
     this.filter             = this.filter.bind(this);
   }
 
@@ -107,6 +108,15 @@ class Wrapper extends React.Component {
     newSearchText = `${labels.join('')} ${newSearchText.trim()}`;
 
     this.setState({ labels: newLabels, activeLabels: newActiveLabels, searchText: newSearchText });
+  }
+
+  onRunClick(report) {
+    console.log(report, this.props.currentReport);
+    console.log('open modal window to show report example');
+  }
+
+  onSubmit(data) {
+    return this.props.dispatch(saveReport(data));
   }
 
   setLabels(props) {
@@ -175,7 +185,12 @@ class Wrapper extends React.Component {
           </div>
         </div>
         { this.props.currentReport.get('query_parts')
-          ? <Edit report={this.state.currentReport} groupParams={this.props.groupParams} />
+          ? <Edit
+            report={this.state.currentReport}
+            groupParams={this.props.groupParams}
+            onSubmit={this.onSubmit}
+            onRunClick={this.onRunClick}
+          />
           : null
         }
       </span>
