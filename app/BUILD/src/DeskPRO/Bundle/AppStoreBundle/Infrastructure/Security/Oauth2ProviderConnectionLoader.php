@@ -6,7 +6,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
 use Doctrine\ORM;
 
-class OauthProviderConnectionLoader
+class Oauth2ProviderConnectionLoader
 {
     /**
      * OauthConnectionLoader constructor.
@@ -31,7 +31,7 @@ class OauthProviderConnectionLoader
      * @param AppInstance|string $instance
      * @param Person $readableBy
      *
-     * @return SerializedOauthConnection|null
+     * @return SerializedOauth2Connection|null
      */
     public function loadReadable($instance, $readableBy)
     {
@@ -42,7 +42,7 @@ class OauthProviderConnectionLoader
         $appState = $appStateRepo->findOneReadableByName($instance, $readableBy, $stateName);
 
         if ($appState instanceof AppState) {
-            return SerializedOauthConnection::fromJSON($appState->getValue());
+            return SerializedOauth2Connection::fromJSON($appState->getValue());
         }
         return null;
     }

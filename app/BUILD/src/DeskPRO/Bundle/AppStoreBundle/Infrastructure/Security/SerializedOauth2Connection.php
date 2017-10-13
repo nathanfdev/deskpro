@@ -34,14 +34,14 @@ use League\OAuth2\Client\Provider\GenericProvider;
 /**
  * Class AppManifestAuthor.
  */
-class SerializedOauthConnection
+class SerializedOauth2Connection
 {
     /** @var \JMS\Serializer\Serializer $serializer */
 
     /**
      * @param $serializedValue
      * @param \JMS\Serializer\SerializerInterface null $serializer
-     * @return SerializedOauthConnection
+     * @return SerializedOauth2Connection
      */
     public static function fromJSON($serializedValue, $serializer = null)
     {
@@ -49,7 +49,7 @@ class SerializedOauthConnection
             $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
         }
 
-        return $serializer->deserialize($serializedValue, SerializedOauthConnection::class, 'json');
+        return $serializer->deserialize($serializedValue, SerializedOauth2Connection::class, 'json');
     }
 
     /**

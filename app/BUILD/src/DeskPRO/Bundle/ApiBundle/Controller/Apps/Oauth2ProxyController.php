@@ -8,8 +8,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauthConnection;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth2ProviderConnectionLoader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiUserContext("agent")
  * @Rest\Route("/apps/proxy-oauth")
  */
-class OauthProxyController extends BaseController
+class Oauth2ProxyController extends BaseController
 {
     /**
      * @param array $state
@@ -79,14 +79,14 @@ class OauthProxyController extends BaseController
     }
 
     /**
-     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
+     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\Oauth2ProviderConnectionLoaderConverter")
      *
      * @Rest\Get("/{provider}/authorize")
-     * @param OauthProviderConnectionLoader|null $provider
+     * @param Oauth2ProviderConnectionLoader|null $provider
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function authorizeAction(OauthProviderConnectionLoader $provider = null, Request $request)
+    public function authorizeAction( Oauth2ProviderConnectionLoader $provider = null, Request $request)
     {
         // check that we have an application
         $applicationId = $request->query->get('applicationId', null);
@@ -111,7 +111,7 @@ class OauthProxyController extends BaseController
             return $errorResponseBuilder->withErrorType('invalid client profile')->buildPostMessage();
         }
 
-        /** @var SerializedOauthConnection $connection */
+        /** @var SerializedOauth2Connection $connection */
         $connection = null;
         if ($clientProfile === 'web-server') {
             if (is_null($provider)) {
@@ -132,7 +132,7 @@ class OauthProxyController extends BaseController
             ];
 
             $secret = $this->readJWTSecret($this->getContainer());
-            $state = OauthProxyController::encode($proxyState, $secret);
+            $state = Oauth2ProxyController::encode($proxyState, $secret);
             if (empty($state)) {
                 return $errorResponseBuilder->withErrorType('failed to secure the request')->buildPostMessage();
             }
@@ -150,11 +150,11 @@ class OauthProxyController extends BaseController
      *
      * @Rest\Get("/{provider}/grant-access/{application}")
      * @param AppInstance $application
-     * @param OauthProviderConnectionLoader|null $provider
+     * @param Oauth2ProviderConnectionLoader|null $provider
      * @param Request $request
      * @return Response
      */
-    public function grantAccessAction(AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
+    public function grantAccessAction( AppInstance $application = null, Oauth2ProviderConnectionLoader $provider = null, Request $request)
     {
         if (is_null($application) || empty($provider)) {
             return new Response('Connection not found', 404);
@@ -162,8 +162,8 @@ class OauthProxyController extends BaseController
 
         // let's try and decode the state first so we can postMessage back an error
         $state = $request->query->get('state', null);
-        $secret = OauthProxyController::readJWTSecret($this->getContainer());
-        $proxyState = OauthProxyController::decode($state, $secret);
+        $secret = Oauth2ProxyController::readJWTSecret($this->getContainer());
+        $proxyState = Oauth2ProxyController::decode($state, $secret);
         if (empty($proxyState)) {
             return new Response('Invalid oauth request', 400);
         }

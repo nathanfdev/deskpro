@@ -29,14 +29,14 @@
 namespace DpTest\DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Bundle\ApiBundle\Controller\Apps\OauthProxyController;
+use DeskPRO\Bundle\ApiBundle\Controller\Apps\Oauth2ProxyController;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauthConnection;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth2ProviderConnectionLoader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
 use DpTest\AbstractKernelAwareTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
-class OauthProxyControllerTest extends AbstractKernelAwareTestCase
+class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
 {
     /**
      * @return \Symfony\Component\DependencyInjection\ContainerInterface|DeskproContainer
@@ -48,13 +48,13 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
 
     public function testDecodeReturnsNullWhenSecretIsNull()
     {
-        $actualResult = OauthProxyController::decode('not important', $secret = null);
+        $actualResult = Oauth2ProxyController::decode('not important', $secret = null);
         $this->assertNull($actualResult, 'OauthProxyController::decode should return null when secret is null');
     }
 
     public function testEncodeReturnsNullWhenSecretIsNull()
     {
-        $actualResult = OauthProxyController::encode(['not important'], $secret = null);
+        $actualResult = Oauth2ProxyController::encode(['not important'], $secret = null);
         $this->assertNull($actualResult, 'OauthProxyController::encode should return null when secret is null');
     }
 
@@ -66,7 +66,7 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
         $container->getSettingsResolver()->getGlobalSettings()->setArray(['core.app_secret' => $secret]);
 
         $providerName = 'test';
-        $connection = new SerializedOauthConnection();
+        $connection = new SerializedOauth2Connection();
         $connection->setProviderName($providerName);
         $connection->setUrlAccessToken('http://127.0.0.1/access_token');
         $connection->setUrlAuthorize('http://127.0.0.1/authorize');
@@ -75,8 +75,8 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
         $connection->setClientId('1');
         $connection->setClientSecret('secret');
 
-        /** @var OauthProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
-        $connectionLoader = $this->getMockBuilder(OauthProviderConnectionLoader::class)
+        /** @var Oauth2ProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
+        $connectionLoader = $this->getMockBuilder(Oauth2ProviderConnectionLoader::class)
             ->disableOriginalConstructor()->setMethods(['loadReadable'])
             ->getMock()
         ;
@@ -90,7 +90,7 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
             'state' => 'some state'
         ]);
 
-        $controller = new OauthProxyController();
+        $controller = new Oauth2ProxyController();
         $controller->setContainer($container);
 
         $response = $controller->authorizeAction($connectionLoader, $request);
@@ -99,7 +99,7 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
         $actualToken = $query->get('state', null);
         $this->assertNotNull($actualToken, 'Oauth proxy must add the state parameter');
 
-        $decodedToken = OauthProxyController::decode($actualToken, $secret);
+        $decodedToken = Oauth2ProxyController::decode($actualToken, $secret);
         $this->assertNotNull($decodedToken, 'Oauth proxy should decode the token when same secret is used');
     }
 
@@ -110,8 +110,8 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
         $container = $this->getContainer();
         $container->getSettingsResolver()->getGlobalSettings()->setArray(['core.app_secret' => $secret]);
 
-        /** @var OauthProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
-        $connectionLoader = $this->getMockBuilder(OauthProviderConnectionLoader::class)
+        /** @var Oauth2ProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
+        $connectionLoader = $this->getMockBuilder(Oauth2ProviderConnectionLoader::class)
             ->disableOriginalConstructor()->setMethods(['loadReadable'])
             ->getMock()
         ;
@@ -124,7 +124,7 @@ class OauthProxyControllerTest extends AbstractKernelAwareTestCase
             'state' => 'some state'
         ]);
 
-        $controller = new OauthProxyController();
+        $controller = new Oauth2ProxyController();
         $controller->setContainer($container);
 
         $response = $controller->grantAccessAction(new AppInstance(), $connectionLoader, $request);
