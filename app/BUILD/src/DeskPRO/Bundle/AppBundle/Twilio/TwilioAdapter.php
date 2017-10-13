@@ -899,11 +899,7 @@ class TwilioAdapter
             throw new TwilioException('Task not found');
         }
 
-        if ($task->assignmentStatus === 'reserved') {
-            $task->update([
-                'assignmentStatus' => 'canceled',
-            ]);
-        }
+        $task->delete();
     }
 
     /**
