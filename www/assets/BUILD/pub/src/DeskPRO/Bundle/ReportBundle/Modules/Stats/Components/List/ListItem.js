@@ -39,7 +39,11 @@ class ListItem extends React.Component {
             {report.get('labels').map(
               (label, index) =>
                 <span
-                  onClick={() => this.props.onLabelClick(label)}
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    this.props.onLabelClick(label);
+                  }}
                   key={index}
                   className={classNames('stat-label', { active: this.isLabelActive(label) })}
                 >

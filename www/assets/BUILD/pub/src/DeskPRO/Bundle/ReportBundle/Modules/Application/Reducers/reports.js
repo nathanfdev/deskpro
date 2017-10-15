@@ -16,6 +16,9 @@ export default createReducer(initialState, {
   [actions.loadReport]: async({
     success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload.widget)),
   }),
+  [actions.newReport]: async({
+    success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload)),
+  }),
   [actions.loadReports]: async({
     start:   state => state.set('reportsLoaded', false),
     success: (state, payload) => {

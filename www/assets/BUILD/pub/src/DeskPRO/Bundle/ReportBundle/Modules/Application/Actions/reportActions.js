@@ -48,11 +48,11 @@ export const loadGroupParams = createAction(
 
 export const saveReport = createAction(
   'REPORTS_SAVE_REPORT',
-  data => () => new Promise((resolve) => {
+  data => (dispatch) => {
     const dataToSend = {
       report: {
         title:         data.title,
-        description:   data.description,
+        description:   data.desc,
         display_types: data.display_types,
         variables:     data.vars,
       },
@@ -77,12 +77,44 @@ export const saveReport = createAction(
     };
 
     let promise;
-    if (data.id) {
+    if (data.id > 0) {
       promise = api.sendPost(`DP_API_OLD/reports/widget/${data.id}`, dataToSend, config);
     } else {
       promise = api.sendPut('DP_API_OLD/reports/widget', dataToSend, config);
     }
 
-    return promise.success(response => resolve(response));
+    return promise.success((response) => { dispatch(loadReport(response.id)); });
   }
-));
+);
+
+export const newReport = createAction(
+  'REPORTS_NEW_REPORT',
+  () => new Promise((resolve) => {
+    const newReportObject = {
+      id:            0,
+      unique_key:    '',
+      title:         'new report',
+      description:   '',
+      query:         '',
+      labels:        [],
+      display_order: 10,
+      display_types: [],
+      variables:     [],
+      query_parts:   {
+        display:    ['TABLE', 'BAR'],
+        select:     '',
+        from:       '',
+        where:      '',
+        splitBy:    '',
+        groupBy:    '',
+        orderBy:    '',
+        withRollup: false,
+        limit:      '',
+        offset:     ''
+      },
+      is_custom: true,
+      is_new:    true,
+    };
+    return resolve(newReportObject);
+  })
+);

@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field, MultiSelect, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from 'react-forms';
 import classNames from 'classnames';
+import Immutable from 'immutable';
 import VarsField from './Fields/VarsField';
 
 
@@ -14,25 +15,50 @@ class Edit extends BaseForm {
     onRunClick:  PropTypes.func.isRequired,
   };
 
+  static displayTypes = [
+    {
+      label: 'Bars',
+      value: 'simple_bars',
+    },
+    {
+      label: 'Lines',
+      value: 'simple_lines',
+    },
+    {
+      label: 'Area',
+      value: 'simple_area',
+    },
+    {
+      label: 'Pie',
+      value: 'pie',
+    },
+    {
+      label: 'Table',
+      value: 'tables',
+    },
+  ];
+
   constructor(props) {
     super(props);
-    this.onRunClick = this.onRunClick.bind(this);
+    this.onRunClick    = this.onRunClick.bind(this);
   }
 
   getDefaultState() {
-    const report = this.props.report;
+    const { report } = this.props;
+    const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
     const state = {
-      title:   report.get('title'),
-      desc:    report.has('description') ? report.get('description') : '',
-      select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
-      from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
-      where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
-      splitBy: report.get('query_parts') ? report.get('query_parts').get('splitBy') : '',
-      groupBy: report.get('query_parts') ? report.get('query_parts').get('groupBy') : '',
-      orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
-      offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
-      limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
-      vars:    report.has('variables') ? report.get('variables').toJS() : []
+      title:         report.get('title'),
+      desc:          report.has('description') ? report.get('description') : '',
+      display_types: report.has('display_types') ? report.get('display_types').toJS() : [],
+      select:        queryParts && queryParts.get('select') ? queryParts.get('select') : '',
+      from:          queryParts && queryParts.get('from') ? queryParts.get('from') : '',
+      where:         queryParts && queryParts.get('where') ? queryParts.get('where') : '',
+      splitBy:       queryParts && queryParts.get('splitBy') ? queryParts.get('splitBy') : '',
+      groupBy:       queryParts && queryParts.get('groupBy') ? queryParts.get('groupBy') : '',
+      orderBy:       queryParts && queryParts.get('orderBy') ? queryParts.get('orderBy') : '',
+      offset:        queryParts && queryParts.get('offset') ? queryParts.get('offset') : '',
+      limit:         queryParts && queryParts.get('limit') ? queryParts.get('limit') : '',
+      vars:          report.has('variables') ? report.get('variables').toJS() : []
     };
 
     if (report.get('id')) {
@@ -45,19 +71,21 @@ class Edit extends BaseForm {
   componentWillReceiveProps(props) {
     const { report } = props;
     if (report) {
+      const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
       const state = {
         value: {
-          title:   report.get('title'),
-          desc:    report.has('description') ? report.get('description') : '',
-          select:  report.get('query_parts') ? report.get('query_parts').get('select') : '',
-          from:    report.get('query_parts') ? report.get('query_parts').get('from') : '',
-          where:   report.get('query_parts') ? report.get('query_parts').get('where') : '',
-          splitBy: report.get('query_parts') ? report.get('query_parts').get('splitBy') : '',
-          groupBy: report.get('query_parts') ? report.get('query_parts').get('groupBy') : '',
-          orderBy: report.get('query_parts') ? report.get('query_parts').get('orderBy') : '',
-          offset:  report.get('query_parts') ? report.get('query_parts').get('offset') : '',
-          limit:   report.get('query_parts') ? report.get('query_parts').get('limit') : '',
-          vars:    report.get('variables') ? report.get('variables').toJS() : []
+          title:         report.get('title'),
+          desc:          report.get('description') ? report.get('description') : '',
+          display_types: report.has('display_types') ? report.get('display_types').toJS() : [],
+          select:        queryParts && queryParts.get('select') ? queryParts.get('select') : '',
+          from:          queryParts && queryParts.get('from') ? queryParts.get('from') : '',
+          where:         queryParts && queryParts.get('where') ? queryParts.get('where') : '',
+          splitBy:       queryParts && queryParts.get('splitBy') ? queryParts.get('splitBy') : '',
+          groupBy:       queryParts && queryParts.get('groupBy') ? queryParts.get('groupBy') : '',
+          orderBy:       queryParts && queryParts.get('orderBy') ? queryParts.get('orderBy') : '',
+          offset:        queryParts && queryParts.get('offset') ? queryParts.get('offset') : '',
+          limit:         queryParts && queryParts.get('limit') ? queryParts.get('limit') : '',
+          vars:          report.get('variables') ? report.get('variables').toJS() : []
         },
         errorList: {},
         onChange:  this.onChange
@@ -84,6 +112,12 @@ class Edit extends BaseForm {
           <Fieldset>
             <Field select="title" label="Title">
               <Input type="text" />
+            </Field>
+            <Field select="display_types" label="Available display types">
+              <MultiSelect choices={Edit.displayTypes} />
+            </Field>
+            <Field select="desc" label="Provide short description for this report">
+              <Textarea />
             </Field>
             <Field select="select" label="Select">
               <Input type="text" />
@@ -113,7 +147,8 @@ class Edit extends BaseForm {
             <Field select="vars" label="Vars" className="vars">
               <VarsField groupParams={this.props.groupParams} />
             </Field>
-
+            <br />
+            <br />
             <button className={classNames('ui button', { loading: saving })}>Save</button>
             <button onClick={this.onRunClick} className={classNames('ui olive button', { loading: saving })}>Run</button>
           </Fieldset>
@@ -123,9 +158,11 @@ class Edit extends BaseForm {
   }
 
   render() {
+    const { report } = this.props;
+    const reportExists  = report && report.get('id') && report.get('query_parts');
     return (
       <div className="stat-large-preview-wrapper">
-        { this.props.report && this.props.report.get('id') && this.props.report.get('query_parts') ? this.renderReport() : '' }
+        { (reportExists || report.get('is_new')) ? this.renderReport() : '' }
       </div>
     );
   }

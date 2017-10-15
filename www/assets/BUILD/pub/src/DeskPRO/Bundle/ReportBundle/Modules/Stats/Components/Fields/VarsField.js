@@ -10,7 +10,8 @@ class VarsField extends React.Component {
 
   static propTypes = {
     value:       PropTypes.array,
-    groupParams: PropTypes.object
+    groupParams: PropTypes.object,
+    onChange:    PropTypes.func,
   };
 
   static types = [
@@ -31,6 +32,17 @@ class VarsField extends React.Component {
       value: 'orders',
     },
   ];
+
+  constructor(props) {
+    super(props);
+    this.onAddVarClick = this.onAddVarClick.bind(this);
+  }
+
+  onAddVarClick(event) {
+    event.preventDefault();
+    this.props.value.push({ type: 'dates', name: 'new var' });
+    this.props.onChange(this.props.value);
+  }
 
   render() {
     const { groupParams } = this.props;
@@ -54,6 +66,7 @@ class VarsField extends React.Component {
             }
           </Fieldset>
         ))}
+      <button onClick={this.onAddVarClick} className="ui button small">add var</button>
     </span>
     );
   }

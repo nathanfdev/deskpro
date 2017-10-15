@@ -39,8 +39,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -91,21 +89,6 @@ class ReportWidgetType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'transformDisplayTypes']);
-    }
-
-    public function transformDisplayTypes(FormEvent $event)
-    {
-        /** @var ReportWidget $data */
-        $data             = $event->getData();
-        $transformedTypes = [];
-        // this is just a stub for now, we need to update our way to determine display types
-        foreach ($data->getDisplayTypes() as $displayType) {
-            $transformedTypes[] = $this->dashboardWidget->getReversedWidgetGraphType($displayType);
-        }
-
-        $data->setDisplayTypes($transformedTypes);
     }
 
     /**

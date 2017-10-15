@@ -51,11 +51,11 @@ class DashboardWidget
     const WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION = 'ticket_satisfaction';
     const WIDGET_TYPE_HARDCODED_UNDEFINED           = 'hardcoded';
 
-    const WIDGET_RENDER_TYPE_BAR   = 'BAR';
-    const WIDGET_RENDER_TYPE_LINE  = 'LINE';
-    const WIDGET_RENDER_TYPE_AREA  = 'AREA';
-    const WIDGET_RENDER_TYPE_PIE   = 'PIE';
-    const WIDGET_RENDER_TYPE_TABLE = 'TABLE';
+    const WIDGET_RENDER_TYPE_BAR   = 'simple_bars';
+    const WIDGET_RENDER_TYPE_LINE  = 'simple_lines';
+    const WIDGET_RENDER_TYPE_AREA  = 'simple_area';
+    const WIDGET_RENDER_TYPE_PIE   = 'pie';
+    const WIDGET_RENDER_TYPE_TABLE = 'table';
 
     const WIDGET_TYPE_GRAPH = 'graph';
     const WIDGET_TYPE_TABLE = 'table';

@@ -4,7 +4,7 @@ import Immutable from 'immutable';
 import ListHeader from './List/ListHeader';
 import List from './List/List';
 import Edit from './Edit';
-import { loadReport, saveReport } from '../../Application/Actions/reportActions';
+import { loadReport, saveReport, newReport } from '../../Application/Actions/reportActions';
 
 @connect(state => ({
   customReports:  state.Application.reports.get('customReports'),
@@ -67,6 +67,7 @@ class Wrapper extends React.Component {
     this.onChangeFilterText = this.onChangeFilterText.bind(this);
     this.onLabelClick       = this.onLabelClick.bind(this);
     this.onSubmit           = this.onSubmit.bind(this);
+    this.onAddClick         = this.onAddClick.bind(this);
     this.filter             = this.filter.bind(this);
   }
 
@@ -99,6 +100,10 @@ class Wrapper extends React.Component {
     }
 
     this.setState(state);
+  }
+
+  onAddClick() {
+    this.props.dispatch(newReport());
   }
 
   onLabelClick(clickedLabel) {
@@ -172,6 +177,7 @@ class Wrapper extends React.Component {
                 labels={labels}
                 activeLabels={activeLabels}
                 searchText={searchText}
+                onAddClick={this.onAddClick}
               />
               <List
                 customReports={filteredCustomReports}

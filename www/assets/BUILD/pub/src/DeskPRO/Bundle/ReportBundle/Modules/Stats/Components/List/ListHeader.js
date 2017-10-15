@@ -9,6 +9,7 @@ class ListHeader extends React.Component {
     labels:       PropTypes.object.isRequired,
     activeLabels: PropTypes.number.isRequired,
     searchText:   PropTypes.string.isRequired,
+    onAddClick:   PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -41,10 +42,8 @@ class ListHeader extends React.Component {
       type:        'text',
       placeholder: 'Filter stats by name',
       onChange:    this.onChange,
+      value:       searchText,
     };
-    if (searchText) {
-      inputProps.searchText = searchText;
-    }
 
     return (
       <div className="big-list-of-stats-filters">
@@ -71,7 +70,7 @@ class ListHeader extends React.Component {
           </div> : null }
         </div>
 
-        <button className="ui button green"><i className="fa fa-plus" /> ADD</button>
+        <button className="ui button green" onClick={this.props.onAddClick}><i className="fa fa-plus" /> ADD</button>
       </div>
     );
   }
