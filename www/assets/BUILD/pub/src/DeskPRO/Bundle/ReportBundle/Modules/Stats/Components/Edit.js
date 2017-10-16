@@ -105,6 +105,7 @@ class Edit extends BaseForm {
 
   renderReport() {
     const { formData, saving } = this.state;
+    const { groupParams, report } = this.props;
 
     return (
       <div className="reports-editor-panel full-editor">
@@ -145,11 +146,11 @@ class Edit extends BaseForm {
             </Field>
 
             <Field select="vars" label="Vars" className="vars">
-              <VarsField groupParams={this.props.groupParams} />
+              <VarsField loading={saving} groupParams={groupParams} />
             </Field>
             <br />
             <br />
-            <button className={classNames('ui button', { loading: saving })}>Save</button>
+            { report.get('is_custom') ? <button className={classNames('ui button', { loading: saving })}>Save</button> : null }
             <button onClick={this.onRunClick} className={classNames('ui olive button', { loading: saving })}>Run</button>
           </Fieldset>
         </Form>

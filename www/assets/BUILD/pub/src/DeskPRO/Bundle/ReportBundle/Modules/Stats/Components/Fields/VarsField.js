@@ -39,9 +39,18 @@ class VarsField extends React.Component {
   }
 
   onAddVarClick(event) {
+    const { value, onChange } = this.props;
+
     event.preventDefault();
-    this.props.value.push({ type: 'dates', name: 'new var' });
-    this.props.onChange(this.props.value);
+    value.push({ type: 'dates', name: 'new var' });
+    onChange(value);
+  }
+
+  onDeleteVarClick(index) {
+    const { value, onChange } = this.props;
+
+    delete value[index];
+    onChange(value);
   }
 
   render() {
@@ -64,6 +73,7 @@ class VarsField extends React.Component {
                 <TypeValueField key={`field_value_type_${index}`} values={groupParams.getIn([variable.type, variable.field_type])} />
               ]
             }
+            <i className="remove circle icon" onClick={() => this.onDeleteVarClick(index)} />
           </Fieldset>
         ))}
       <button onClick={this.onAddVarClick} className="ui button small">add var</button>
