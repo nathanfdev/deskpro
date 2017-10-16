@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\News;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\News;
 use JMS\Serializer\Annotation as JMS;
 
 class NewsSubscription extends UserEmailBaseType
@@ -37,7 +37,7 @@ class NewsSubscription extends UserEmailBaseType
     /**
      * The new news articles.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\News>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Content\News>")
      *
      * @var News[]
      */
@@ -46,7 +46,7 @@ class NewsSubscription extends UserEmailBaseType
     /**
      * The updated news articles.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\News>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Content\News>")
      *
      * @var News[]
      */

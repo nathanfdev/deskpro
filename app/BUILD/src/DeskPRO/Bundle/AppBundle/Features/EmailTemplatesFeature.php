@@ -247,11 +247,16 @@ CODE;
 
     private function convertTemplateCode($code)
     {
+        $code = str_replace($this->getTemplateUpgradePatterns(), $code);
         if (preg_match('/<dp:/', $code)) {
             return false;
         }
+        $whiteList = $this->getVariableWhiteList();
         if (preg_match_all('/{{[^}]+}}/', $code, $matches)) {
             foreach ($matches[0] as $match) {
+                if (in_array($match, $whiteList)) {
+                    continue;
+                }
                 // Only allow phrases without variables, excluding variables or phrases with variables
                 if (preg_match('/^{{\s*phrase\s*\([^{]+\)\s*}}$/', $match)) {
                     continue;
@@ -284,6 +289,48 @@ $code
 </body>
 </html>
 CODE;
+    }
+
+    private function getTemplateUpgradePatterns()
+    {
+        return [
+          '<dp:ticket-messages />' => <<<'CODE'
+{% for message in ticket_messages %}
+    {% if not context.message_limit or loop.index0 < context.message_limit %}
+        {% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
+    {% endif %}
+{% endfor %}
+CODE
+            ,
+          '{{ ticket.person.primary_email.email }}' => '{{ ticket.person.primary_email }}',
+          '{{ ticket.agent.primary_email.email }}'  => '{{ ticket.agent.primary_email }}',
+          '{{ article.person.display_name_user }}'  => '{{ article.person.display_name }}',
+          '{{ news.person.display_name_user }}'     => '{{ news.person.display_name }}',
+        ];
+    }
+
+    private function getVariableWhiteList()
+    {
+        return [
+            '{{ ticket.subject }}',
+            '{{ ticket.department.title }}',
+            '{{ ticket.product.title }}',
+            '{{ ticket.product.title }}',
+            '{{ ticket.category.title }}',
+            '{{ ticket.workflow.title }}',
+            '{{ ticket.priority.title }}',
+            '{{ ticket.id }}',
+            '{{ ticket.ref }}',
+            '{{ ticket.date_created|date(\'full\') }}',
+            '{{ ticket.agent.display_name }}',
+            '{{ ticket.person.display_name }}',
+            '{{ article.title }}',
+            '{{ article.content }}',
+            '{{ news.title }}',
+            '{{ news.content }}',
+            '{{ news.link }}',
+            '{{ news.category.title }}',
+        ];
     }
 
     private function replaceTriggers(EntityManager $em, ContainerInterface $container)

@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Article;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article;
 use JMS\Serializer\Annotation as JMS;
 
 class KbSubscription extends UserEmailBaseType
@@ -36,7 +36,7 @@ class KbSubscription extends UserEmailBaseType
     /**
      * The new articles.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Article>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article>")
      *
      * @var Article[]
      */
@@ -45,7 +45,7 @@ class KbSubscription extends UserEmailBaseType
     /**
      * The updated articles.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Article>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Article>")
      *
      * @var Article[]
      */
