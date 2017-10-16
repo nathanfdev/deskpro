@@ -422,7 +422,7 @@ function startWebpackServer(config) {
     }
 
     gutil.log('[webpack-dev-server]', 'http://localhost:9666/');
-    gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exists: ');
+    gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exist: ');
     gutil.log('[webpack-dev-server]', '\r\n$PATHS_CONFIG[\'asset_paths\'][\'app_assets\'] = [' +
       '\r\n    \'type\' => \'url\',' +
       '\r\n    \'value\' => \'http://localhost:9666/pub/build/\'' +
