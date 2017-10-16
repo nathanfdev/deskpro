@@ -11,6 +11,14 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
+    this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+      prefId: 'topic-filter',
+      resultId: this.meta.resultId,
+      refreshUrl: this.meta.refreshUrl,
+      prefSaveResultId: '0'
+    });
+    this.ownObject(this.displayOptions);
+
 		this.listWrapper = $('section.guide-simple-list', this.wrapper);
 
     var $rElement = $('<div></div>').insertAfter(this.listWrapper);
@@ -21,7 +29,8 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
       $rElement.get(0),
       this.meta.guideId,
       900,
-			this.openTopic
+			this.openTopic,
+      this.meta.display_fields
 		);
 
 		this._initGuideEditor();

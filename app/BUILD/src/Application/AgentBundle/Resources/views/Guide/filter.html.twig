@@ -11,6 +11,7 @@
       pageMeta.url_fragment = '{{ url_fragment('agent_guides_list', {'guide_id': guide.id}) }}';
       pageMeta.baseId = '{{ tplvars.baseId }}';
       pageMeta.guideId = {{ guide.id }};
+      pageMeta.display_fields = {{ display_fields|json_encode|raw }};
     </script>
 {% endblock top %}
 

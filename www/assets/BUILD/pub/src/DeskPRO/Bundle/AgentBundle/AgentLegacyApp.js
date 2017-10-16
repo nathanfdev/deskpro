@@ -188,13 +188,14 @@ class AgentLegacyApp {
     );
   }
 
-  renderTopicsTree(node, guideId, height, openTopic) {
+  renderTopicsTree(node, guideId, height, openTopic, displayStatuses) {
     ReactDOM.render(
       <Provider store={this.store}>
         <GuideTreeContainer
           guideId={guideId}
           height={height}
           openTopic={openTopic}
+          displayStatuses={displayStatuses}
         />
       </Provider>,
       node

@@ -411,6 +411,11 @@ class GuideController extends PublishController
 
         $tpl = 'AgentBundle:Guide:filter.html.twig';
 
+        $displayFields = $this->person->getPref('agent.ui.topic-filter-display-fields.0');
+        if (!$displayFields) {
+            $displayFields = [];
+        }
+
         $guideUserGroups = [];
         if ($guide) {
             $guideUserGroups = $this->db->fetchAllCol('
@@ -422,6 +427,7 @@ class GuideController extends PublishController
 
         return $this->render($tpl, [
             'results'        => $results,
+            'display_fields' => $displayFields,
             'guide'          => $guide,
             'cat_usergroups' => $guideUserGroups,
             'total_results'  => $totalResults,
