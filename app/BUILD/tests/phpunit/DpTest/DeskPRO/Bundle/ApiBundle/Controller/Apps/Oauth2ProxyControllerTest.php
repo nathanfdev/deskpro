@@ -31,7 +31,7 @@ namespace DpTest\DeskPRO\Bundle\ApiBundle\Controller\Apps;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\Controller\Apps\Oauth2ProxyController;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth2ProviderConnectionLoader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
 use DpTest\AbstractKernelAwareTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,8 +75,8 @@ class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
         $connection->setClientId('1');
         $connection->setClientSecret('secret');
 
-        /** @var Oauth2ProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
-        $connectionLoader = $this->getMockBuilder(Oauth2ProviderConnectionLoader::class)
+        /** @var OauthProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
+        $connectionLoader = $this->getMockBuilder(OauthProviderConnectionLoader::class)
             ->disableOriginalConstructor()->setMethods(['loadReadable'])
             ->getMock()
         ;
@@ -110,8 +110,8 @@ class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
         $container = $this->getContainer();
         $container->getSettingsResolver()->getGlobalSettings()->setArray(['core.app_secret' => $secret]);
 
-        /** @var Oauth2ProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
-        $connectionLoader = $this->getMockBuilder(Oauth2ProviderConnectionLoader::class)
+        /** @var OauthProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
+        $connectionLoader = $this->getMockBuilder(OauthProviderConnectionLoader::class)
             ->disableOriginalConstructor()->setMethods(['loadReadable'])
             ->getMock()
         ;

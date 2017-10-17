@@ -8,7 +8,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth2ProviderConnectionLoader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use League\OAuth2\Client\Token\AccessToken;
@@ -79,14 +79,14 @@ class Oauth2ProxyController extends BaseController
     }
 
     /**
-     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\Oauth2ProviderConnectionLoaderConverter")
+     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
      *
      * @Rest\Get("/{provider}/authorize")
-     * @param Oauth2ProviderConnectionLoader|null $provider
+     * @param OauthProviderConnectionLoader|null $provider
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function authorizeAction( Oauth2ProviderConnectionLoader $provider = null, Request $request)
+    public function authorizeAction( OauthProviderConnectionLoader $provider = null, Request $request)
     {
         // check that we have an application
         $applicationId = $request->query->get('applicationId', null);
@@ -118,7 +118,7 @@ class Oauth2ProxyController extends BaseController
                 return $errorResponseBuilder->withErrorType('provider not found')->buildPostMessage();
             }
 
-            $connection = $provider->loadReadable($applicationId, $this->getUser());
+            $connection = $provider->loadOauth2Connection($applicationId, $this->getUser());
             if (empty($connection)) {
                 return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
             }
@@ -150,11 +150,11 @@ class Oauth2ProxyController extends BaseController
      *
      * @Rest\Get("/{provider}/grant-access/{application}")
      * @param AppInstance $application
-     * @param Oauth2ProviderConnectionLoader|null $provider
+     * @param OauthProviderConnectionLoader|null $provider
      * @param Request $request
      * @return Response
      */
-    public function grantAccessAction( AppInstance $application = null, Oauth2ProviderConnectionLoader $provider = null, Request $request)
+    public function grantAccessAction( AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
     {
         if (is_null($application) || empty($provider)) {
             return new Response('Connection not found', 404);
@@ -180,7 +180,7 @@ class Oauth2ProxyController extends BaseController
         }
 
         if ($responseType === 'code') {
-            $connection = $provider->loadReadable($application, $this->getUser());
+            $connection = $provider->loadOauth2Connection($application, $this->getUser());
             if (empty($connection)) {
                 return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
             }
@@ -190,7 +190,7 @@ class Oauth2ProxyController extends BaseController
                 $token = $connection->getAccessToken('authorization_code', ['code' => $code]);
                 return OauthResponseBuilder::forResponseType('token')
                     ->withApplicationState($proxyState['appState'])
-                    ->withToken($token)
+                    ->withOauth2Token($token)
                     ->withRedirectUrl($proxyState['callbackUrl'])
                     ->buildPostMessage();
             } catch (\Exception $e) {

@@ -80,26 +80,11 @@ class ProxyRequestFactory
     }
 
     /**
-     * @param array     $whiteList
-     * @param Request   $request
-     *
-     * @return WhitelistableProxyRequest
-     */
-    public function createWhitelistableFromRequest(array $whiteList, Request $request)
-    {
-        $proxyMethod  = $this->getProxyMethod($request);
-        $proxyUrl     = $this->getOriginalProxyUrl($request);
-        $proxyHeaders = $this->getOriginalProxyHeaders($request);
-
-        return new WhitelistableProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList);
-    }
-
-    /**
      * @param AppInstance $instance
      * @param Request     $request
      * @param Person      $person
      *
-     * @return WhitelistableProxyRequest
+     * @return ApplicationProxyRequest
      */
     public function createFromAppRequest(AppInstance $instance, Request $request, Person $person)
     {
@@ -108,11 +93,25 @@ class ProxyRequestFactory
         $proxyHeaders = $this->getOriginalProxyHeaders($request);
         $whiteList    = $this->getOriginalWhiteList($instance);
 
-        if ($this->shouldReplaceVars($request)) {
+        $shouldReplaceVars = $this->shouldReplaceVars($request);
+        $signWithHeader = $this->getSignWithHeader($request);
+
+        if ($shouldReplaceVars || !is_null($signWithHeader)) {
+            $nameProviders = [];
+            if ($signWithHeader) {
+                $nameProviders[] = $signWithHeader;
+            }
+
+            if ($shouldReplaceVars) {
+                $nameProviders = array_merge($nameProviders, [$proxyUrl, $proxyHeaders, $whiteList ]);
+            }
+
+            $this->collectPrivateStateVars($instance, $person, $nameProviders);
+        }
+
+        if ($shouldReplaceVars) {
             // prepare placeholder values
             $this->collectSettings($instance);
-            $this->collectPrivateStateVars($instance, $person, $proxyUrl, $proxyHeaders, $whiteList);
-
             // replace placeholders
             $proxyUrl = $this->replaceVars($proxyUrl);
 
@@ -124,7 +123,41 @@ class ProxyRequestFactory
             }
         }
 
-        return new WhitelistableProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList);
+        $requestSigningStrategy = $signWithHeader ? $this->getRequestSigningStrategy($signWithHeader) : null;
+        return new ApplicationProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList, $requestSigningStrategy);
+    }
+
+    private function getRequestSigningStrategy(ProxySignWithHeader $header)
+    {
+        $credentialName = $header->getCredentialName();
+        if (array_key_exists($credentialName, $this->privateStateVars)) {
+            return new RequestSigningStrategy($header->getAlgorithm(), $this->privateStateVars[$credentialName]);
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return ProxySignWithHeader
+     */
+    private function getSignWithHeader( Request $request)
+    {
+        $value = $request->headers->get(ProxySignWithHeader::NAME, null);
+        if (is_null($value)) {
+            return null;
+        }
+
+        $parts = explode(' ', $value);
+        if (
+            count($parts) === 2
+            && is_string($parts[0]) && !empty($parts[0])
+            && is_string($parts[1]) && !empty($parts[1])
+        ) {
+            return new ProxySignWithHeader($parts[0], $parts[1]);
+        }
+        return null;
     }
 
     /**
@@ -248,20 +281,14 @@ class ProxyRequestFactory
 
     /**
      * @param AppInstance $instance
-     * @param Person      $person
-     * @param string      $proxyUrl
-     * @param string      $proxyHeaders
-     * @param string      $whiteList
+     * @param Person $person
+     * @param array $nameProviders
      */
-    private function collectPrivateStateVars(AppInstance $instance, Person $person, $proxyUrl, $proxyHeaders, $whiteList)
+    private function collectPrivateStateVars(AppInstance $instance, Person $person, $nameProviders)
     {
         $this->privateStateVars = [];
 
-        $names = $this->getAppStateNamesFromValue([
-            $proxyUrl,
-            $proxyHeaders,
-            $whiteList,
-        ]);
+        $names = $this->getAppStateNamesFromValue($nameProviders);
 
         /** @var AppStateRepository $appStateRepo */
         $appStateRepo = $this->em->getRepository(AppState::class);
@@ -282,7 +309,9 @@ class ProxyRequestFactory
     private function getAppStateNamesFromValue($value)
     {
         $names = [];
-        if (is_string($value)) {
+        if ($value instanceof ProxySignWithHeader) {
+            $names[] = $value->getCredentialName();
+        } if (is_string($value)) {
             if (preg_match_all('#{{privateState\.(.*?)}}#', $value, $m)) {
                 $names = $m[1];
             }
@@ -294,6 +323,6 @@ class ProxyRequestFactory
             }
         }
 
-        return $names;
+        return array_values($names);
     }
 }

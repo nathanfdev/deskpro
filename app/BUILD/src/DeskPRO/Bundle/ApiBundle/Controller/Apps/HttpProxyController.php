@@ -30,8 +30,11 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\ApiBundle\Proxy\ApplicationProxyRequest;
+use DeskPRO\Bundle\ApiBundle\Proxy\HttpProxyClientBuilder;
 use DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestFactory;
 use DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestValidator;
+use DeskPRO\Bundle\ApiBundle\Proxy\RequestSigningStrategy;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
@@ -100,10 +103,24 @@ class HttpProxyController extends BaseController
             throw $this->createBadRequestException($e->getMessage());
         }
 
-        // send proxy request
-        $httpClient = new HttpClient(['timeout' => 10]);
-        $buildId    = $this->get('deskpro.app_env')->getBuildId();
+        // build http client
+        try {
+            $httpClientBuilder = new HttpProxyClientBuilder();
 
+            if ($proxyRequest instanceof ApplicationProxyRequest) {
+                $requestSigningStrategy = $proxyRequest->getSigningStrategy();
+                if ($requestSigningStrategy) {
+                    $httpClientBuilder->setSigningStrategy($requestSigningStrategy);
+                }
+            }
+
+            $httpClient = $httpClientBuilder->setTimeout(10)->build();
+        } catch (\Exception $e) {
+            throw $this->createBadRequestException($e->getMessage());
+        }
+
+        // send proxy request
+        $buildId    = $this->get('deskpro.app_env')->getBuildId();
         try {
             $options = [
                 RequestOptions::HEADERS => array_merge(

@@ -26,78 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Proxy;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security;
 
-/**
- * Class ProxyRequest.
- */
-class WhitelistableProxyRequest implements ProxyRequestInterface
+interface Oauth1ProviderDetails
 {
     /**
-     * @var string
+     * @return string
      */
-    private $proxyMethod;
+    public function getProviderName();
 
     /**
-     * @var string
-     */
-    private $proxyUrl;
-
-    /**
-     * @var array
-     */
-    private $proxyHeaders;
-
-    /**
-     * @var string[]
-     */
-    private $whiteList;
-
-    /**
-     * Constructor.
+     * Get the URL for retrieving temporary credentials.
      *
-     * @param string $proxyMethod
-     * @param string $proxyUrl
-     * @param array  $proxyHeaders
-     * @param array  $whiteList
-     */
-    public function __construct($proxyMethod, $proxyUrl, array $proxyHeaders, array $whiteList)
-    {
-        $this->proxyMethod  = $proxyMethod;
-        $this->proxyUrl     = $proxyUrl;
-        $this->proxyHeaders = $proxyHeaders;
-        $this->whiteList    = $whiteList;
-    }
-
-    /**
      * @return string
      */
-    public function getProxyMethod()
-    {
-        return $this->proxyMethod;
-    }
-
+    public function getUrlTemporaryCredentials();
     /**
+     * Get the URL for redirecting the resource owner to authorize the client.
+     *
      * @return string
      */
-    public function getProxyUrl()
-    {
-        return $this->proxyUrl;
-    }
+    public function getUrlAuthorization();
 
     /**
-     * @return array
+     * Get the URL retrieving token credentials.
+     *
+     * @return string
      */
-    public function getProxyHeaders()
-    {
-        return $this->proxyHeaders;
-    }
+    public function getUrlTokenCredentials();
 
     /**
-     * @return \string[]
+     * Get the URL for retrieving user details.
+     *
+     * @return string
      */
-    public function getWhiteList()
-    {
-        return $this->whiteList;
-    }
+    public function getUrlUserDetails();
 }

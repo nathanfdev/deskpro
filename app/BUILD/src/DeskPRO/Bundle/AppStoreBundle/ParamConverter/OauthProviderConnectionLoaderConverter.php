@@ -28,21 +28,21 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth2ProviderConnectionLoader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class Oauth2ProviderConnectionLoaderConverter implements ParamConverterInterface
+class OauthProviderConnectionLoaderConverter implements ParamConverterInterface
 {
     /** @var EntityManager */
     private $entityManager;
 
     public function __construct(EntityManager $entityManager)
     {
-        $this->entityManager    = $entityManager;
+        $this->entityManager = $entityManager;
     }
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
@@ -54,8 +54,9 @@ class Oauth2ProviderConnectionLoaderConverter implements ParamConverterInterface
             return false;
         }
 
-        $loader = new Oauth2ProviderConnectionLoader($from, $this->entityManager);
+        $loader = new OauthProviderConnectionLoader($from, $this->entityManager);
         $request->attributes->set($attributeName, $loader);
+
         return true;
     }
 
