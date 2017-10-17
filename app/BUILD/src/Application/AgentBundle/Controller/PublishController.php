@@ -730,6 +730,9 @@ class PublishController extends AbstractController
             case 'feedback':
                 $entity_name = 'DeskPRO:Feedback';
                 break;
+            case 'topics':
+                $entity_name = 'DeskPRO:Topic';
+                break;
         }
 
         $this->db->beginTransaction();
