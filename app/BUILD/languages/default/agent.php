@@ -1695,6 +1695,7 @@ return [
     'agent.publish.post'                                       => 'Post',
     'agent.publish.primary_lang_explain'                       => 'The primary language for this article. After the article has been created you will be able to translate it into other languages.',
     'agent.publish.reorder_category_title'                     => 'Reorder Category (Drag & Drop)',
+    'agent.publish.reorder_guide_title'                        => 'Reorder Guide (Drag & Drop)',
     'agent.publish.requires_validation'                        => 'Requires Validation',
     'agent.publish.revision_by'                                => 'Revision by {{name}}',
     'agent.publish.search_sticky_words_explain'                => 'When a user searches for any of these words, this page will always be listed in their top results.',

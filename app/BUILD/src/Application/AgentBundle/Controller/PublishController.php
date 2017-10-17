@@ -895,7 +895,11 @@ class PublishController extends AbstractController
                     $parent_id = null;
                 }
 
-                $this->db->update($table, ['parent_id' => $parent_id, 'display_order' => $order], ['id' => $cat_id]);
+                if ($type === 'topics') {
+                    $this->db->update($table, ['display_order' => $order], ['id' => $cat_id]);
+                } else {
+                    $this->db->update($table, ['parent_id' => $parent_id, 'display_order' => $order], ['id' => $cat_id]);
+                }
             }
 
             $repos->repair();

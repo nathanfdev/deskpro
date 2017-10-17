@@ -416,24 +416,28 @@ class GuideController extends PublishController
             $displayFields = [];
         }
 
-        $guideUserGroups = [];
+        $guideUserGroups    = [];
+        $guideStructureData = [];
         if ($guide) {
             $guideUserGroups = $this->db->fetchAllCol('
                 SELECT usergroup_id
                 FROM guide2usergroup
                 WHERE guide_id = ?
             ', [$guide->getId()]);
+
+            $guideStructureData = $this->getFilteredCategory($guide->getBrand()->getId());
         }
 
         return $this->render($tpl, [
-            'results'        => $results,
-            'display_fields' => $displayFields,
-            'guide'          => $guide,
-            'cat_usergroups' => $guideUserGroups,
-            'total_results'  => $totalResults,
-            'num_pages'      => 1,
-            'cur_page'       => 1,
-            'showing_to'     => $totalResults,
+            'results'            => $results,
+            'display_fields'     => $displayFields,
+            'guide'              => $guide,
+            'cat_usergroups'     => $guideUserGroups,
+            'cat_structure_data' => $guideStructureData,
+            'total_results'      => $totalResults,
+            'num_pages'          => 1,
+            'cur_page'           => 1,
+            'showing_to'         => $totalResults,
         ]);
     }
 
@@ -450,5 +454,31 @@ class GuideController extends PublishController
             'brands'         => $brands,
             'brand_id'       => $brandId,
         ]);
+    }
+
+    /**
+     * @param int $brandId
+     *
+     * @return array
+     */
+    private function getFilteredCategory($brandId)
+    {
+        /** @var Guide[] $unFilteredGuides */
+        $unFilteredGuides = $this->em->getRepository(Guide::class)->findAll();
+
+        $guides = [];
+
+        foreach ($unFilteredGuides as $c) {
+            if ($brandId == $c->getBrand()->getId()) {
+                $guides[] = [
+                    'id'       => $c->getId(),
+                    'label'    => $c->getTitle(),
+                    'brand_id' => $c->getBrand()->getId(),
+                    'children' => [],
+                ];
+            }
+        }
+
+        return $guides;
     }
 }

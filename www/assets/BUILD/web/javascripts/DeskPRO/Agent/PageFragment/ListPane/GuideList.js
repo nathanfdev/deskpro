@@ -43,6 +43,21 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 			return;
 		}
 
+    var tree = this.getEl('cattree');
+    var treeData = tree.data('treedata');
+    var treeSave = this.getEl('cattree_struct');
+    tree.tree({
+      data: treeData,
+      dragAndDrop: true,
+      onCanMoveTo: function(moved_node, target_node, position) {
+				return (position !== 'inside');
+      }
+    });
+    tree.bind('tree.move', function(event) {
+      event.move_info.do_move();
+      treeSave.val(tree.tree('toJson'));
+    });
+
 		this.getEl('guidefoot').find('.guide-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);
 
