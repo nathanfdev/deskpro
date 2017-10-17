@@ -56,16 +56,6 @@ pageMeta.baseId = '{{ baseId }}';
 			</td>
 		</tr>
 	</table>
-	<input
-		type="checkbox"
-		id="{{ baseId }}_no_content"
-		{% if noContent %}checked="checked"{% endif %}
-		{% if (topic.parent is null) %}disabled="disabled"{% endif %}
-	/>
-	<label for="{{ baseId }}_no_content">
-        {{ phrase('agent.publish.no_content') }}
-	</label>
-	<br class="clear" />
 </header>
 
 {% if noContent %}
