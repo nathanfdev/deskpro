@@ -26,15 +26,9 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Language as LanguageEntity;
 use Orb\Util\Numbers;
 
 class Phrase extends AbstractEntityRepository
@@ -57,7 +51,7 @@ class Phrase extends AbstractEntityRepository
     }
 
     /**
-     * @param Language|int $language
+     * @param LanguageEntity|int $language
      *
      * @return mixed
      */
@@ -79,8 +73,8 @@ class Phrase extends AbstractEntityRepository
     }
 
     /**
-     * @param Language|int $language
-     * @param string       $group
+     * @param LanguageEntity|int $language
+     * @param string             $group
      *
      * @return array
      */
