@@ -58,6 +58,6 @@ class ReportWidgetVariableType extends AbstractType
 
     public function getName()
     {
-        return 'form_dashboards_report_widget';
+        return 'form_dashboards_report_widget_variable';
     }
 }

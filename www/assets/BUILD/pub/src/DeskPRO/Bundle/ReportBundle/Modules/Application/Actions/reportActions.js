@@ -55,6 +55,7 @@ export const saveReport = createAction(
         description:   data.desc,
         display_types: data.display_types,
         variables:     data.vars,
+        labels:        data.labels,
       },
       parts: {
         select:  data.select,

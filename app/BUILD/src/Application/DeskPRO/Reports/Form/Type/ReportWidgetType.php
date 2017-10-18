@@ -39,6 +39,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -82,6 +84,12 @@ class ReportWidgetType extends AbstractType
                 'choices_as_values' => true,
                 'required'          => true,
             ])
+            ->add('labels', CollectionType::class, [
+                'entry_type'     => TextType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'error_bubbling' => false,
+            ])
             ->add('variables', CollectionType::class, [
                 'entry_type'     => ReportWidgetVariableType::class,
                 'allow_add'      => true,
@@ -89,6 +97,22 @@ class ReportWidgetType extends AbstractType
                 'error_bubbling' => false,
             ])
         ;
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'transformLabels']);
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function transformLabels(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['labels']) && is_array($data['labels'])) {
+            foreach ($data['labels'] as &$label) {
+                $label = strtolower($label);
+            }
+        }
+        $event->setData($data);
     }
 
     /**
@@ -103,6 +127,9 @@ class ReportWidgetType extends AbstractType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'form_dashboards_report_widget';

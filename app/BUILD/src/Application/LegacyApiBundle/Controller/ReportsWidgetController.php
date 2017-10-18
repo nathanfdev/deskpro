@@ -55,9 +55,11 @@ class ReportsWidgetController extends AbstractController
             'reports' => $reportsWidget->getAll(),
         ];
 
+        $translator = $this->container->getTranslator();
         foreach ($data['reports'] as &$report) {
             foreach ($report['labels'] as &$label) {
-                $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+                $phraseName = 'reports.labels.'.strtolower($label);
+                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
             }
         }
 
@@ -72,9 +74,11 @@ class ReportsWidgetController extends AbstractController
         /* @var ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
         $customReports = $reportsWidget->getCustomReports();
+        $translator    = $this->container->getTranslator();
         foreach ($customReports as &$report) {
             foreach ($report['labels'] as &$label) {
-                $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+                $phraseName = 'reports.labels.'.strtolower($label);
+                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
             }
         }
 
@@ -89,9 +93,11 @@ class ReportsWidgetController extends AbstractController
         /* @var ReportsWidgetService */
         $reportsWidget  = $reportsWidget  = $this->container->get('reports.widget.service');
         $builtInReports = $reportsWidget->getBuiltInReports();
+        $translator     = $this->container->getTranslator();
         foreach ($builtInReports as &$report) {
             foreach ($report['labels'] as &$label) {
-                $label = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+                $phraseName = 'reports.labels.'.strtolower($label);
+                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
             }
         }
 
