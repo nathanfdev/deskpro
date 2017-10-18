@@ -48,9 +48,16 @@ export class OmniSearch extends React.Component {
         lastVal = e.target.value;
         this.doSearch({ q: e.target.value });
       }
-    }, 250);
+    }, 500);
 
-    $input.on('keyup change', throttleChanges);
+    $input.on('keyup change', (event) => {
+      this.setState({
+        data:        {},
+        doSpin:      true,
+        userTyping:  true,
+        searchQuery: { q: event.target.value }
+      }, () => throttleChanges(event));
+    });
     $close.click(this.onClickOut);
 
     // 1000ms pause before showing "no results"
@@ -73,15 +80,19 @@ export class OmniSearch extends React.Component {
     event.preventDefault();
 
     this.props.$input.val('');
-    this.doSearch({ q: '' }); // reset/close search
+    this.setState({
+      data:        {},
+      doSpin:      false,
+      userTyping:  false,
+      searchQuery: { q: '' }
+    });
   };
 
   doSearch(queryModifications) {
     const lastQuery = this.state.searchQuery || {};
     const searchQuery = { ...lastQuery, ...queryModifications };
     this.setState({
-      lastSearch: moment(),
-      searchQuery
+      lastSearch: moment()
     });
 
     if (!searchQuery.q || searchQuery.q.length < 3) {
@@ -94,8 +105,9 @@ export class OmniSearch extends React.Component {
       doSpin: true
     });
 
+    const query = searchQuery.q;
     portalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then((response) => {
-      if (response.isError()) {
+      if (response.isError() || (this.state.searchQuery && query !== this.state.searchQuery.q)) {
         return;
       }
 
