@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType;
+use DeskPRO\Bundle\AppBundle\Form\Type\TranslationType;
 use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -463,6 +464,9 @@ class LanguagesController extends CrudController
      *          201="Created",
      *          400="Bad Request"
      *      },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\TranslationType",
+     *     },
      *     output="array"
      * )
      * @Rest\Post("/translations/{phraseName}")
@@ -475,8 +479,13 @@ class LanguagesController extends CrudController
      */
     public function postTranslationsAction(Request $request, $phraseName)
     {
-        $translations = $request->get('translations');
+        $form = $this->createForm(TranslationType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
 
+        $translations = $form->getData()['translations'];
         /** @var Translate $translate */
         $translate = $this->container->get('deskpro.core.translate');
 

@@ -397,3 +397,10 @@ services:
     arguments: ["@language_manager"]
     tags:
       - { name: form.type }
+
+  form.traslation:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TranslationType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
