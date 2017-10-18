@@ -235,6 +235,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				dataType: 'json',
 				context: this,
 				success: function(data) {
+					this.fireEvent('changeManager.update.finished', []);
 
 					if (data.error_messages) {
 						property.setValue(oldVal);
@@ -281,7 +282,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					}
 
 					this.fireEvent('updateResult', [data]);
-          this.fireEvent('changeManager.update.finished', []);
+				},
+				error: function() {
+					this.fireEvent('changeManager.update.finished', []);
 				}
 			});
 		}
