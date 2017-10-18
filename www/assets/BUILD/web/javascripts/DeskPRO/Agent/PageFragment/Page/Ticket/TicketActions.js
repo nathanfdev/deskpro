@@ -32,6 +32,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 
 		var showSaving = this.getEl('agent_prop_controls').find('.mark-loading');
 		var showSaved  = this.getEl('agent_prop_controls').find('.mark-saved');
+		var updatingOverlay = this.getEl('updating-overlay');
+
+		this.changeManager.addEvent('changeManager.update.started', function() {
+			updatingOverlay.show();
+		});
+    this.changeManager.addEvent('changeManager.update.finished', function() {
+      updatingOverlay.fadeOut(1000);
+    });
 		var callQueue = new Orb.Util.CallQueue({
 			startCallback: function() {
 				showSaved.stop().hide();
