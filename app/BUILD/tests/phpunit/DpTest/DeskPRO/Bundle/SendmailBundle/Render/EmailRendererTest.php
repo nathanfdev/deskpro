@@ -105,7 +105,7 @@ class EmailRendererTest extends SendmailTestCase
                         'attribute'   => 'name',
                     ],
                     'display_name' => [
-                        'description' => 'Person display name.',
+                        'description' => 'Person name.',
                         'type'        => 'string',
                         'attribute'   => 'display_name',
                     ],
@@ -243,6 +243,11 @@ class EmailRendererTest extends SendmailTestCase
                         'description' => 'Contacts for this user.',
                         'type'        => 'array',
                         'attribute'   => 'contact_data',
+                    ],
+                    'is_agent' => [
+                        'description' => 'True if person is agent.',
+                        'type'        => 'boolean',
+                        'attribute'   => 'is_agent',
                     ],
                 ],
             ],
@@ -467,6 +472,11 @@ class EmailRendererTest extends SendmailTestCase
                 'description' => 'Reply written by the agent.',
                 'type'        => 'object (TicketMessage)',
                 'attribute'   => 'reply',
+            ],
+            'ticket_messages' => [
+                'description' => '',
+                'type'        => 'array of objects (TicketMessage)',
+                'attribute'   => 'ticket_messages',
                 'properties'  => [
                     'id' => [
                         'description' => 'The unique ID.',
