@@ -5,12 +5,14 @@ import { Fieldset, createValue } from 'react-forms';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import VarsField from './Fields/VarsField';
+import LabelsField from './Fields/LabelsField';
 
 
 class Edit extends BaseForm {
 
   static propTypes = {
     report:      PropTypes.object,
+    labels:      PropTypes.object,
     groupParams: PropTypes.object,
     onRunClick:  PropTypes.func.isRequired,
   };
@@ -48,17 +50,18 @@ class Edit extends BaseForm {
     const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
     const state = {
       title:         report.get('title'),
-      desc:          report.has('description') ? report.get('description') : '',
-      display_types: report.has('display_types') ? report.get('display_types').toJS() : [],
-      select:        queryParts && queryParts.get('select') ? queryParts.get('select') : '',
-      from:          queryParts && queryParts.get('from') ? queryParts.get('from') : '',
-      where:         queryParts && queryParts.get('where') ? queryParts.get('where') : '',
-      splitBy:       queryParts && queryParts.get('splitBy') ? queryParts.get('splitBy') : '',
-      groupBy:       queryParts && queryParts.get('groupBy') ? queryParts.get('groupBy') : '',
-      orderBy:       queryParts && queryParts.get('orderBy') ? queryParts.get('orderBy') : '',
-      offset:        queryParts && queryParts.get('offset') ? queryParts.get('offset') : '',
-      limit:         queryParts && queryParts.get('limit') ? queryParts.get('limit') : '',
-      vars:          report.has('variables') ? report.get('variables').toJS() : []
+      labels:        report.get('labels', Immutable.List()).toArray(),
+      desc:          report.get('description', ''),
+      display_types: report.get('display_types', Immutable.List()).toArray(),
+      select:        queryParts.get('select', ''),
+      from:          queryParts.get('from', ''),
+      where:         queryParts.get('where', ''),
+      splitBy:       queryParts.get('splitBy', ''),
+      groupBy:       queryParts.get('groupBy', ''),
+      orderBy:       queryParts.get('orderBy', ''),
+      offset:        queryParts.get('offset', ''),
+      limit:         queryParts.get('limit', ''),
+      vars:          report.get('variables', Immutable.List()).toArray(),
     };
 
     if (report.get('id')) {
@@ -75,17 +78,18 @@ class Edit extends BaseForm {
       const state = {
         value: {
           title:         report.get('title'),
-          desc:          report.get('description') ? report.get('description') : '',
-          display_types: report.has('display_types') ? report.get('display_types').toJS() : [],
-          select:        queryParts && queryParts.get('select') ? queryParts.get('select') : '',
-          from:          queryParts && queryParts.get('from') ? queryParts.get('from') : '',
-          where:         queryParts && queryParts.get('where') ? queryParts.get('where') : '',
-          splitBy:       queryParts && queryParts.get('splitBy') ? queryParts.get('splitBy') : '',
-          groupBy:       queryParts && queryParts.get('groupBy') ? queryParts.get('groupBy') : '',
-          orderBy:       queryParts && queryParts.get('orderBy') ? queryParts.get('orderBy') : '',
-          offset:        queryParts && queryParts.get('offset') ? queryParts.get('offset') : '',
-          limit:         queryParts && queryParts.get('limit') ? queryParts.get('limit') : '',
-          vars:          report.get('variables') ? report.get('variables').toJS() : []
+          labels:        report.get('labels', Immutable.List()).toArray(),
+          desc:          report.get('description', ''),
+          display_types: report.get('display_types', Immutable.List()).toArray(),
+          select:        queryParts.get('select', ''),
+          from:          queryParts.get('from', ''),
+          where:         queryParts.get('where', ''),
+          splitBy:       queryParts.get('splitBy', ''),
+          groupBy:       queryParts.get('groupBy', ''),
+          orderBy:       queryParts.get('orderBy', ''),
+          offset:        queryParts.get('offset', ''),
+          limit:         queryParts.get('limit', ''),
+          vars:          report.get('variables', Immutable.List()).toArray(),
         },
         errorList: {},
         onChange:  this.onChange
@@ -105,7 +109,7 @@ class Edit extends BaseForm {
 
   renderReport() {
     const { formData, saving } = this.state;
-    const { groupParams, report } = this.props;
+    const { groupParams, report, labels } = this.props;
 
     return (
       <div className="reports-editor-panel full-editor">
@@ -114,11 +118,14 @@ class Edit extends BaseForm {
             <Field select="title" label="Title">
               <Input type="text" />
             </Field>
-            <Field select="display_types" label="Available display types">
-              <MultiSelect choices={Edit.displayTypes} />
+            <Field select="labels"  label="Labels">
+              <LabelsField labels={labels} />
             </Field>
             <Field select="desc" label="Provide short description for this report">
               <Textarea />
+            </Field>
+            <Field select="display_types" label="Available display types">
+              <MultiSelect choices={Edit.displayTypes} />
             </Field>
             <Field select="select" label="Select">
               <Input type="text" />

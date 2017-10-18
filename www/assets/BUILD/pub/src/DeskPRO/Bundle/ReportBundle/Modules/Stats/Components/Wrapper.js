@@ -192,6 +192,7 @@ class Wrapper extends React.Component {
         </div>
         { this.props.currentReport.get('query_parts')
           ? <Edit
+            labels={labels}
             report={this.state.currentReport}
             groupParams={this.props.groupParams}
             onSubmit={this.onSubmit}

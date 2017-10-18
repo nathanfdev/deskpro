@@ -1,12 +1,14 @@
-$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
-$flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
+$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
+$flag-icon-css-path: '../../../../../../node_modules/flag-icon-css/flags';
+$dp-styles-font-path: '../../../../../../node_modules/deskpro-components/src/styles/fonts/';
 
 @import '../../../../../../node_modules/font-awesome/scss/font-awesome';
 @import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
-@import "../../../../../../node_modules/react-select/scss/select";
-@import "../../../../../../node_modules/react-select/scss/components";
+@import '../../../../../../node_modules/react-select/scss/select';
+@import '../../../../../../node_modules/react-select/scss/components';
 @import '../../../AppBundle/Resources/style/variables';
 @import '../../../AppBundle/Resources/style/widget-modal';
+@import '../../../../../../node_modules/deskpro-components/src/styles/main_no_apps';
 
 .two-panels-menu {
   display: table;
