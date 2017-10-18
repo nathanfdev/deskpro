@@ -56,6 +56,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $em->getRepository(AppState::class)->willReturn($appStateRepository);
         $request->headers = $headers;
 
+        $headers->get('X-Proxy-SignWith', null)->willReturn(null);
         $headers->get('X-Proxy-Url')->willReturn('http://deskpro.dev/');
         $headers->get('X-Proxy-Method')->willReturn('POST');
         $headers->get('X-Proxy-AutoHeaders', 'true')->willReturn('true');
