@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
 use DpTest\AbstractKernelAwareTestCase;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
@@ -77,10 +78,10 @@ class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
 
         /** @var OauthProviderConnectionLoader| \PHPUnit_Framework_MockObject_MockObject $connectionLoader */
         $connectionLoader = $this->getMockBuilder(OauthProviderConnectionLoader::class)
-            ->disableOriginalConstructor()->setMethods(['loadReadable'])
+            ->disableOriginalConstructor()->setMethods(['loadOauth2Connection'])
             ->getMock()
         ;
-        $connectionLoader->method('loadReadable')->willReturn($connection);
+        $connectionLoader->method('loadOauth2Connection')->willReturn($connection);
 
         $request = new Request();
         $request->query->add([
@@ -94,6 +95,8 @@ class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
         $controller->setContainer($container);
 
         $response = $controller->authorizeAction($connectionLoader, $request);
+        $this->assertTrue($response instanceof RedirectResponse, 'expecting a redirect response');
+
 
         $query = Request::create($response->getTargetUrl())->query;
         $actualToken = $query->get('state', null);

@@ -137,8 +137,8 @@ class Oauth2ProxyController extends BaseController
                 return $errorResponseBuilder->withErrorType('failed to secure the request')->buildPostMessage();
             }
 
-            $autorizationUrl = $connection->getAuthorizationUrl([ 'state' => $state ]);
-            return new RedirectResponse($autorizationUrl);
+            $authorizationUrl = $connection->getAuthorizationUrl([ 'state' => $state ]);
+            return new RedirectResponse($authorizationUrl);
         }
 
         return $errorResponseBuilder->withErrorType('only web-server profile allowed')->buildPostMessage();
