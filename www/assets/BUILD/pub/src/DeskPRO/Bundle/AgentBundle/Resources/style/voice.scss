@@ -71,14 +71,21 @@ $voice-green-border-color: #47BF61;
           }
         }
 
+        .ui.icon {
+          font-size: 24px;
+          float: left;
+          position: absolute;
+        }
+
         svg {
           width: 24px;
           height: 24px;
           float: left;
+          position: absolute;
         }
 
         .voice-profile-status-checkbox-title {
-          margin-left: 20px;
+          margin-left: 50px;
 
           .voice-profile-status-checkbox-title-disabled {
             padding-left: 10px;
