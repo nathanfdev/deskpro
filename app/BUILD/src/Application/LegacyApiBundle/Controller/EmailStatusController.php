@@ -269,7 +269,7 @@ class EmailStatusController extends AbstractController implements ProtectedContr
                 'num_pages'        => $info['num_pages'],
                 'count'            => $info['count'],
                 'sendmail_queue'   => $data,
-                'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME.'.enabled'),
+                'tracking_enabled' => false,
             ]
         );
     }
