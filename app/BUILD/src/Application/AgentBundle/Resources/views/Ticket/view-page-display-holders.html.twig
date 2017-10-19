@@ -386,7 +386,7 @@
     </tbody>
 {% endfor %}
 
-{% if linked_chat and isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
+{% if linked_chat and app.user.hasPerm('agent_chat.use') %}
     <tbody>
         <tr>
             <th>
