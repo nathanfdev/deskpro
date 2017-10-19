@@ -154,7 +154,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         $aids = array_map(function ($a) {
             return $a->getId();
-        }, $set_agents);
+        }, $setAgents);
         $context->getLogger()->debug('[SendAgentEmail] notify_list final list: '.implode(', ', $aids));
 
         return array_values($setAgents);

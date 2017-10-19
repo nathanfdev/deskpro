@@ -81,11 +81,13 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
+                $context->getLogger()->debug('[SendAgentNewEmail] notify_list all agents');
                 $agents = $this->getContainer()->getAgentData()->getAgents();
                 break;
             }
 
             if ($aid == 'notify_list') {
+                $context->getLogger()->debug('[SendAgentNewEmail] notify_list using notify_list');
                 if ($isNotifDisabled) {
                     continue;
                 }
@@ -134,10 +136,16 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         }
 
         if ($context->getVars()->has('mention_agents')) {
+            $aids = array_map(function ($a) {
+                return $a->getId();
+            }, $context->getVars()->get('mention_agents'));
+            $context->getLogger()->debug('[SendAgentNewEmail] notify_list adding mentioned agents: '.implode(', ', $aids));
             $agents = array_merge($agents, array_values($context->getVars()->get('mention_agents')));
         }
 
         if (!$agents) {
+            $context->getLogger()->debug('[SendAgentNewEmail] notify_list is empty');
+
             return [];
         }
 
@@ -148,6 +156,11 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 $setAgents[$a->getId()] = $a;
             }
         }
+
+        $aids = array_map(function ($a) {
+            return $a->getId();
+        }, $setAgents);
+        $context->getLogger()->debug('[SendAgentNewEmail] notify_list final list: '.implode(', ', $aids));
 
         return array_values($setAgents);
     }

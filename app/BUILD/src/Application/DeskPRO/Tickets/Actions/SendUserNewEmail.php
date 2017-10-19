@@ -236,6 +236,12 @@ class SendUserNewEmail extends AbstractEmailAction
             return true;
         }
 
+        if (!$ticket->getPerson()->getPrimaryEmail()) {
+            $context->getLogger()->debug("[SendUserNewEmail] person #{$ticket->getPerson()->getId()} has no email");
+
+            return true;
+        }
+
         return false;
     }
 }
