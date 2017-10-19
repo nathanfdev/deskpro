@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Download;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Download;
 use JMS\Serializer\Annotation as JMS;
 
 class DownloadSubscription extends UserEmailBaseType
@@ -36,7 +36,7 @@ class DownloadSubscription extends UserEmailBaseType
     /**
      * The new downloads.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Download>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Download>")
      *
      * @var Download[]
      */
@@ -45,7 +45,7 @@ class DownloadSubscription extends UserEmailBaseType
     /**
      * The updated downloads.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Download>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Content\Download>")
      *
      * @var Download[]
      */

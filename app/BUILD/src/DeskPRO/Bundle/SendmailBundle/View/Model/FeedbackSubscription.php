@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use Application\DeskPRO\Entity\Feedback;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
 use JMS\Serializer\Annotation as JMS;
 
 class FeedbackSubscription extends UserEmailBaseType
@@ -36,11 +36,11 @@ class FeedbackSubscription extends UserEmailBaseType
     /**
      * The updated feedback.
      *
-     * @JMS\Type("array<Application\DeskPRO\Entity\Feedback>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback>")
      *
      * @var Feedback[]
      */
-    protected $updatedItems;
+    protected $updatedFeedback;
 
     /**
      * Link to unsubscribe to feedback items.
@@ -58,13 +58,13 @@ class FeedbackSubscription extends UserEmailBaseType
      *
      * @param string $portalHome
      * @param $unsubscribeUrl
-     * @param Feedback[] $updatedItems
+     * @param Feedback[] $updatedFeedback
      */
-    public function __construct($portalHome, $unsubscribeUrl, $updatedItems)
+    public function __construct($portalHome, $unsubscribeUrl, $updatedFeedback)
     {
         parent::__construct($portalHome);
 
-        $this->updatedItems   = $updatedItems;
-        $this->unsubscribeUrl = $unsubscribeUrl;
+        $this->updatedFeedback = $updatedFeedback;
+        $this->unsubscribeUrl  = $unsubscribeUrl;
     }
 }

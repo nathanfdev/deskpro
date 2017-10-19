@@ -12,10 +12,10 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_items|length}) }}</h1>
+		<h1>{{ phrase('user.emails.feedback-updated-items', {count: updated_feedback|length}) }}</h1>
 		<ul>
-			{% for item in updated_items %}
-				<li><a href="{{ url_full('portal_feedback_view', {slug: item.slug}) }}">{{ item.title }}</a></li>
+			{% for feedback in updated_feedback %}
+				<li><a href="{{ url_full('portal_feedback_view', {slug: feedback.slug}) }}">{{ feedback.title }}</a></li>
 			{% endfor %}
 		</ul>
 

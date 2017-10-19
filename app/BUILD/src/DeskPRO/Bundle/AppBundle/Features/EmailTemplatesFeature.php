@@ -247,11 +247,21 @@ CODE;
 
     private function convertTemplateCode($code)
     {
-        $code = str_replace($this->getTemplateUpgradePatterns(), $code);
+        $code = $this->uniformiseVariableSyntax($code);
+        $code = str_replace(
+            array_keys($this->getTemplateUpgradePatterns()),
+            array_values($this->getTemplateUpgradePatterns()),
+            $code
+        );
         if (preg_match('/<dp:/', $code)) {
             return false;
         }
-        $whiteList = $this->getVariableWhiteList();
+        $whiteList = array_map(
+            function ($variable) {
+                return '{{ '.$variable.' }}';
+            },
+            $this->getVariableWhiteList()
+        );
         if (preg_match_all('/{{[^}]+}}/', $code, $matches)) {
             foreach ($matches[0] as $match) {
                 if (in_array($match, $whiteList)) {
@@ -291,6 +301,19 @@ $code
 CODE;
     }
 
+    private function uniformiseVariableSyntax($code)
+    {
+        $code = preg_replace_callback(
+            '|{{\s*([._a-z]+)\s*}}|',
+            function ($matches) {
+                return '{{ '.$matches[1].' }}';
+            },
+            $code
+        );
+
+        return $code;
+    }
+
     private function getTemplateUpgradePatterns()
     {
         return [
@@ -306,6 +329,11 @@ CODE
           '{{ ticket.agent.primary_email.email }}'  => '{{ ticket.agent.primary_email }}',
           '{{ article.person.display_name_user }}'  => '{{ article.person.display_name }}',
           '{{ news.person.display_name_user }}'     => '{{ news.person.display_name }}',
+          '{{ download.person.display_name_user }}' => '{{ download.person.display_name }}',
+          '{{ download.content_desc }}'             => '{{ download.content }}',
+          '{{ download.filename }}'                 => '{{ download.blob.filename }}',
+          '{{ download.readable_filesize }}'        => '{{ download.blob.filesize_readable }}',
+          '{{ feedback.person.display_name_user }}' => '{{ feedback.person.display_name }}',
         ];
     }
 
@@ -330,6 +358,10 @@ CODE
             '{{ news.content }}',
             '{{ news.link }}',
             '{{ news.category.title }}',
+            '{{ download.title }}',
+            '{{ download.slug }}',
+            '{{ download.date_created|date(\'full\') }}',
+            '{{ feedback.status }}',
         ];
     }
 

@@ -893,14 +893,14 @@ define(function() {
     id: 'tickets.email_templates_legacy',
     url: '/email_templates_legacy',
     templateName: 'Templates/email-groups-legacy.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupList'
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
   });
 
   routes.push({
     id: 'tickets.email_templates.list',
     url: '/{groupName:.*?}',
     templateName: 'Templates/email-listing.html',
-    controller: 'Admin_Templates_Ctrl_EmailListOld'
+    controller: 'Admin_Templates_Ctrl_EmailList'
   });
 
   //###
