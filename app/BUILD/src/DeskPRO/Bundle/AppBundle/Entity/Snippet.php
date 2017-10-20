@@ -343,6 +343,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         if (!in_array($type, $this->types, true)) {
             $this->types[] = $type;
         }
+        $this->setModelField('types', $this->types);
 
         return $this;
     }
@@ -358,6 +359,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
             unset($this->types[$key]);
             $this->types = array_values($this->types);
         }
+        $this->setModelField('types', $this->types);
 
         return $this;
     }
