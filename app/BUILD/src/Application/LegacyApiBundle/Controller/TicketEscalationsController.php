@@ -265,7 +265,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     public function saveAction($id, $special_type = null)
     {
         /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
-        $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
+        $rep = $this->em->getRepository(TicketEscalation::class);
 
         if ($special_type) {
             $esc = $rep->getSpecialEscalation($special_type, $id);

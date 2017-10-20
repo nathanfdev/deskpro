@@ -33,6 +33,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SwiftMailer\Message\Message;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
@@ -122,10 +123,18 @@ class EmailSender
         if (!$message) {
             $message = $this->getMailer()->createMessage();
         }
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->getEntityManager()->getRepository(Person::class);
         if (is_string($args['to'])) {
-            /** @var PersonRepository $personRepository */
-            $personRepository = $this->getEntityManager()->getRepository(Person::class);
-            $recipient        = $personRepository->findOneByEmail($args['to']);
+            $recipient = $personRepository->findOneByEmail($args['to']);
+        } elseif (is_a($args['to'], EmailTo::class)) {
+            /** @var EmailTo $emailTo */
+            $emailTo = $args['to'];
+            if ($emailTo->getPerson()) {
+                $recipient = $emailTo->getPerson();
+            } else {
+                $recipient = $personRepository->findOneByEmail($emailTo->getEmailAddress());
+            }
         } elseif (is_a($args['to'], Person::class)) {
             $recipient = $args['to'];
         } else {
@@ -138,6 +147,9 @@ class EmailSender
                 ->createModel($recipient, $serializationContext);
             $model->setRecipient($person);
             $message->setToPerson($recipient);
+        } elseif (is_a($args['to'], EmailTo::class)) {
+            $emailTo = $args['to'];
+            $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
         } else {
             $message->setTo($args['to']);
         }

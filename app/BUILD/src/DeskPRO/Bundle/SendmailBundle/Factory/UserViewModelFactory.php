@@ -291,12 +291,14 @@ class UserViewModelFactory extends AbstractViewModelFactory
 
     /**
      * @param string $verifyUrl
+     * @param string $origEmail
+     * @param string $newEmail
      *
      * @return NewEmailValidate
      */
-    public function createNewEmailValidateModel($verifyUrl)
+    public function createNewEmailValidateModel($verifyUrl, $origEmail, $newEmail)
     {
-        return $this->convertParameters(NewEmailValidate::class, [$verifyUrl]);
+        return $this->convertParameters(NewEmailValidate::class, [$verifyUrl, $origEmail, $newEmail]);
     }
 
     /**

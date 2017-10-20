@@ -849,7 +849,7 @@ BODY;
                                     $subject,
                                     Numbers::filesizeDisplay($maxSize)
                                 );
-                            $this->container->get('email.email_sender')
+                            App::getContainer()->get('email.email_sender')
                                 ->send($viewModel, ['to' => $fromEmail]);
                         } else {
                             $message = App::getMailer()->createMessage();

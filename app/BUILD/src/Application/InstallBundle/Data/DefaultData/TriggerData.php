@@ -136,7 +136,7 @@ class TriggerData extends AbstractDefaultData
             $trigger->actions->addAction(
                 new SendUserNewEmail(
                     [
-                        'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
+                        'template'    => 'SendmailBundle:emails_user:ticket_new_by_agent.html.twig',
                         'do_cc_users' => true,
                         'from_name'   => 'performer',
                     ]
@@ -175,7 +175,7 @@ class TriggerData extends AbstractDefaultData
             $trigger->actions->addAction(
                 new SendUserNewEmail(
                     [
-                        'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+                        'template'    => 'SendmailBundle:emails_user:ticket_new_autoreply.html.twig',
                         'do_cc_users' => true,
                         'from_name'   => 'helpdesk_name',
                     ]
@@ -214,7 +214,7 @@ class TriggerData extends AbstractDefaultData
             $trigger->actions->addAction(
                 new SendUserNewEmail(
                     [
-                        'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+                        'template'    => 'SendmailBundle:emails_user:ticket_reply_autoreply.html.twig',
                         'do_cc_users' => true,
                         'from_name'   => 'helpdesk_name',
                     ]
@@ -253,7 +253,7 @@ class TriggerData extends AbstractDefaultData
             $trigger->actions->addAction(
                 new SendUserNewEmail(
                     [
-                        'template'    => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+                        'template'    => 'SendmailBundle:emails_user:ticket_reply_by_agent.html.twig',
                         'do_cc_users' => true,
                         'from_name'   => 'performer',
                     ]

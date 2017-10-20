@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketEscalation as TicketEscalationEntity;
 use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Actions\SendUserNewEmail;
 use Application\DeskPRO\Tickets\Actions\SetStatus;
@@ -47,12 +48,13 @@ class TicketEscalation extends AbstractEntityRepository
     public static $definitions = [
         'satisfaction' => [
             [
-                'title'            => 'Satisfaction request',
-                'sys_name'         => 'satisfaction',
-                'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_RESOLVED,
-                'default_time'     => 259200, // 60 * 60 * 24 * 3
-                'default_template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
-                'terms'            => [
+                'title'                => 'Satisfaction request',
+                'sys_name'             => 'satisfaction',
+                'event'                => TicketEscalationEntity::EVENT_TYPE_TIME_RESOLVED,
+                'default_time'         => 259200, // 60 * 60 * 24 * 3
+                'default_template'     => 'DeskPRO:emails_user:ticket-rate.html.twig',
+                'default_new_template' => 'SendmailBundle:emails_user:ticket_rate.html.twig',
+                'terms'                => [
                     [
                         'type'    => 'FilterDateLastAgentReply',
                         'op'      => 'gte',
@@ -71,23 +73,25 @@ class TicketEscalation extends AbstractEntityRepository
         ],
         'statuses' => [
             1 => [
-                'title'            => 'Send warning when awaiting user',
-                'sys_name'         => 'statuses_awaiting_user_warning',
-                'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
-                'default_time'     => 604800, // 60 * 60 * 24 * 7
-                'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig',
+                'title'                => 'Send warning when awaiting user',
+                'sys_name'             => 'statuses_awaiting_user_warning',
+                'event'                => TicketEscalationEntity::EVENT_TYPE_TIME_AGENT_WAITING,
+                'default_time'         => 604800, // 60 * 60 * 24 * 7
+                'default_template'     => 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig',
+                'default_new_template' => 'SendmailBundle:emails_user:ticket_awaiting_warn.html.twig',
             ],
             2 => [
-                'title'            => 'Send final warning when awaiting user',
-                'sys_name'         => 'statuses_awaiting_user_final',
-                'event'            => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
-                'default_time'     => 1209600, // 60 * 60 * 24 * 14
-                'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig',
+                'title'                => 'Send final warning when awaiting user',
+                'sys_name'             => 'statuses_awaiting_user_final',
+                'event'                => TicketEscalationEntity::EVENT_TYPE_TIME_AGENT_WAITING,
+                'default_time'         => 1209600, // 60 * 60 * 24 * 14
+                'default_template'     => 'DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig',
+                'default_new_template' => 'SendmailBundle:emails_user:ticket_awaiting_warn_final.html.twig',
             ],
             3 => [
                 'title'          => 'Set status to resolved when awaiting user',
                 'sys_name'       => 'statuses_awaiting_user_set_resolved',
-                'event'          => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_AGENT_WAITING,
+                'event'          => TicketEscalationEntity::EVENT_TYPE_TIME_AGENT_WAITING,
                 'default_time'   => 1814400, // 60 * 60 * 24 * 21
                 'default_status' => 'resolved',
             ],
@@ -111,7 +115,7 @@ class TicketEscalation extends AbstractEntityRepository
      *
      * @throws NotFoundHttpException
      *
-     * @return \Application\DeskPRO\Entity\TicketEscalation
+     * @return TicketEscalationEntity
      */
     public function getSpecialEscalation($special_type, $id)
     {
@@ -127,7 +131,7 @@ class TicketEscalation extends AbstractEntityRepository
             return $esc;
         }
 
-        $esc                       = new \Application\DeskPRO\Entity\TicketEscalation();
+        $esc                       = new TicketEscalationEntity();
         $esc['title']              = $def['title'];
         $esc['sys_name']           = $def['sys_name'];
         $esc['event_trigger']      = $def['event'];
@@ -139,7 +143,7 @@ class TicketEscalation extends AbstractEntityRepository
                 $esc->actions->addAction(
                     new SendUserNewEmail(
                         [
-                            'template'     => $def['default_template'],
+                            'template'     => $def['default_new_template'],
                             'do_cc_users'  => false,
                             'from_name'    => 'helpdesk_name',
                             'from_account' => 0,
