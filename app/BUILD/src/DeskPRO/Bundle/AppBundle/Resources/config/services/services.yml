@@ -132,7 +132,7 @@ services:
 
   url_corrector_factory:
     class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
-    arguments: ["@brand_aware_settings_resolver"]
+    arguments: ["@deskpro.app_env", "@brand_aware_settings_resolver"]
 
   request_matcher:
     class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher
