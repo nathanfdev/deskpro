@@ -2894,7 +2894,7 @@ class Person extends DomainObject implements
         $url = false;
         if ($this->hasPicture() && !$default) {
             if ($this->picture_blob && $this->picture_blob->isImage()) {
-                $url = App::get('router')->generate(
+                $url = App::get('router.default')->generate(
                     'serve_blob_sizefit',
                     [
                         'blob_auth_id' => $this->picture_blob->getAuthId(),
@@ -2912,7 +2912,7 @@ class Person extends DomainObject implements
             if ($this->organization && $this->organization->hasPicture()) {
                 return $this->organization->getPictureUrl($size, $secure);
             } else {
-                $url = App::get('router')->generate(
+                $url = App::get('router.default')->generate(
                     'serve_default_picture',
                     [
                         's'        => $size,
