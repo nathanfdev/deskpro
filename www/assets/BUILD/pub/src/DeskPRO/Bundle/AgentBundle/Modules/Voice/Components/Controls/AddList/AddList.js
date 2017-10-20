@@ -36,6 +36,9 @@ class AddList extends React.Component {
   onWarmAdd = () => {
     const { onAddAgent } = this.props;
     const { selectedTarget } = this.state;
+    this.setState({
+      selectedTarget: null
+    });
 
     setTimeout(() => onAddAgent(selectedTarget, 'warm'), 1);
   };

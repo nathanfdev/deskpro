@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
@@ -131,10 +132,28 @@ class VoiceClientController extends BaseController
      */
     public function rejectCallAction($taskSid)
     {
+        // reject task worker
         $adapter = $this->get('twilio_adapter');
         $account = $this->getVoiceAccount();
 
         $adapter->rejectTaskWorker($account, $taskSid, $this->getUser());
+
+        // log that agent rejected the incoming call
+        $em        = $this->getManager();
+        $phoneCall = $em->getRepository(VoicePhoneCall::class)->findOneBy([
+            'taskSid' => $taskSid,
+        ]);
+
+        if ($phoneCall) {
+            // add action log
+            $log = new VoicePhoneCallLog();
+            $log->setPerson($this->getUser());
+            $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
+            $log->setPhoneCall($phoneCall);
+
+            $em->persist($log);
+            $em->flush();
+        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

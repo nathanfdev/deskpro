@@ -12,6 +12,7 @@ class TicketMessage extends React.Component {
 
   static propTypes = {
     people:               PropTypes.object,
+    numbers:              PropTypes.object,
     message:              PropTypes.object,
     phoneCall:            PropTypes.object,
     connection:           PropTypes.object,
@@ -48,12 +49,13 @@ class TicketMessage extends React.Component {
   };
 
   render() {
-    const { message = {}, phoneCall = Immutable.fromJS({}), people, connection } = this.props;
+    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
     const { transcript, outboundCallsEnabled } = this.props;
     const { onCall } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
     const recording = phoneCall.get('recording');
+    const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
 
     return (
       <div className="voice-ticket-message">
@@ -140,9 +142,11 @@ class TicketMessage extends React.Component {
                     <td>
                       {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
                         '{number}':       phoneCall.get('external_number'),
+                        '{to_number}':    number.get('nickname') || number.get('number'),
                         '{person_name}':  person.get('first_name') || '',
                         '{person_email}': person.get('primary_email') || '',
-                        '{key}':          log.getIn(['details', 'Digits']) || ''
+                        '{key}':          log.getIn(['details', 'Digits']) || '',
+                        '{target_name}':  log.getIn(['details', 'target_name']) || 'Unknown'
                       })}
                     </td>
                   </tr>

@@ -160,7 +160,7 @@ class RoutingModel extends React.Component {
   render() {
     const { value, onChange } = this.props;
     const choices = [
-      { value: 'automatic', label: 'Automatic', help: 'Call will be routed amongst all agents evenly. The system will automatically balance calls so that no single agent handles more or less than any other agent. For example, given three agents online, if AgentA and AgentB have both accepted a call, then they won\'t recieve another call until AgentC has also accepted a call.' },
+      { value: 'automatic', label: 'Automatic', help: 'Call will be routed amongst all agents evenly. The system will automatically balance calls so that no single agent handles more or less than any other agent. For example, given three agents online, if AgentA and AgentB have both accepted a call, then they won\'t receive another call until AgentC has also accepted a call.' },
       { value: 'least_utilized', label: 'Least Utilized', help: 'Calls will be routed towards agents who have handled the fewest calls.' },
       { value: 'simulring', label: 'Simulring', help: 'Any incoming call will ring ALL agents at the same time. The first to answer wil handle the call.' }
     ];

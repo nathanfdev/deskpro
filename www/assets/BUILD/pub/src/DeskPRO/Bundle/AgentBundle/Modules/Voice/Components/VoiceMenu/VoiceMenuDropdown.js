@@ -89,7 +89,7 @@ class VoiceMenuDropdown extends React.Component {
           zIndex={99999}
           content={<VoiceMenu {...this.props} />}
           className={classNames('voice-menu-popup', { green: incomingCall })}
-          allowClose={!incomingCall && !outgoingCall}
+          allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >
           {this.getIcon()}
           {this.getStatus()}

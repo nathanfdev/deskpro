@@ -4,14 +4,17 @@ import Immutable from 'immutable';
 import { loadBatch, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import TicketMessage from './TicketMessage';
 import { openDialpad } from '../../Actions/clientActions';
+import { loadNumbers } from '../../Actions/numberActions';
 import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 import { connectionsSelector } from '../../Selectors/client';
 import { outboundCallsEnabledSelector } from '../../Selectors/agents';
+import { allNumbersSelector } from '../../Selectors/numbers';
 
 @connect(state => ({
   people:               collectionSelectorFactory('Person', 'all')(state),
   phoneCalls:           allPhoneCallsSelector(state),
   connections:          connectionsSelector(state),
+  numbers:              allNumbersSelector(state),
   outboundCallsEnabled: outboundCallsEnabledSelector(state)
 }))
 class TicketMessageContainer extends React.Component {
@@ -78,6 +81,8 @@ class TicketMessageContainer extends React.Component {
     if (loadIds) {
       dispatch(loadBatch('Person', loadIds, 'all'));
     }
+
+    dispatch(loadNumbers());
   }
 
   render() {
