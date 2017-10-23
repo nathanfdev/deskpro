@@ -101,12 +101,12 @@ class Build1507549183 extends AbstractBuild implements BlockingBuildInterface, S
                 'js_class' => '',
                 'has_form_template' => '0',
                 'has_display_template' => '0',
-                'title' => $customFieldAlias,
+                'title' => 'Trello linked cards',
                 'description' => '',
                 'handler_class' => 'Application\\DeskPRO\\CustomFields\\Handler\\DataList',
                 'options' => 'a:1:{s:20:\"custom_css_classname\";s:0:\"\";}',
-                'is_user_enabled' => '1',
-                'is_enabled' => '0',
+                'is_user_enabled' => '0',
+                'is_enabled' => '1',
                 'display_order' => '0',
                 'is_agent_field' => '0'
             ];
