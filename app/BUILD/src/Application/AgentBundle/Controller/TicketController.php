@@ -3974,15 +3974,6 @@ class TicketController extends AbstractController
             $emailSize += (int) $blob->getFilesize();
         }
 
-        $email = $this->container->getMailer()->createMessage();
-        $email->setTemplate('DeskPRO:emails_user:ticket-fwd.html.twig', [
-            'ticket'        => $ticket,
-            'subject'       => $this->in->getString('subject'),
-            'messages'      => $messages,
-            'person'        => $this->getPerson(),
-            'agent_message' => $customMessage,
-        ]);
-
         $accessCodes = ListUtils::map(
             $ticket->getAccessCodes(),
             function (Entity\TicketAccessCode $tac) {
@@ -3991,36 +3982,38 @@ class TicketController extends AbstractController
         );
         $accessCodes[] = $ticket->getAccessCode();
 
+        $message = $this->container->getMailer()->createMessage();
+
         // There shouldnt be any access codes in the body usually,
         // but it's possible they might be in there because of a badly
         // cut reply back to the helpdesk. So this filter removes them.
-        $email->setBodyFilter(function ($body) use ($accessCodes) {
+        $message->setBodyFilter(function ($body) use ($accessCodes) {
             return str_replace($accessCodes, '', $body);
         });
 
         foreach ($tos as $k => $x) {
-            $email->addTo($k, $x);
+            $message->addTo($k, $x);
         }
         foreach ($ccs as $k => $x) {
-            $email->addCc($k, $x);
+            $message->addCc($k, $x);
         }
         foreach ($bccs as $k => $x) {
-            $email->addBcc($k, $x);
+            $message->addBcc($k, $x);
         }
 
         $account = $this->getAccount($ticket);
 
         $useMyAddress = $useMyAddress && $this->container->getSetting('core_tickets.fwd_use_agent_address');
         if ($useMyAddress) {
-            $from_email = $this->person->getEmailAddress();
+            $fromEmail = $this->person->getEmailAddress();
         } else {
-            $from_email = $account->getUseEmailAddress();
+            $fromEmail = $account->getUseEmailAddress();
         }
 
-        $from_name = $this->person->getDisplayNameUser();
+        $fromName = $this->person->getDisplayNameUser();
 
         try {
-            $email->setFrom($from_email, $from_name);
+            $message->setFrom($fromEmail, $fromName);
         } catch (\Swift_RfcComplianceException $e) {
             SystemErrorHandler::logException($e, false);
             throw $this->createNotFoundException();
@@ -4028,12 +4021,12 @@ class TicketController extends AbstractController
 
         $tr = $this->container->getEmailAccountManager()->getTransportForAccount($account);
 
-        if ($email instanceof MessageOptionsInterface) {
+        if ($message instanceof MessageOptionsInterface) {
             if ($tr) {
-                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
+                $message->getMessageOptions()->set(MessageOptionsInterface::OPT_ACCOUNT_ID, $account->id);
             }
             if ($useMyAddress) {
-                $email->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $from_email);
+                $message->getMessageOptions()->set(MessageOptionsInterface::OPT_USE_FROM, $fromEmail);
             }
         }
 
@@ -4041,8 +4034,8 @@ class TicketController extends AbstractController
         $size = 0;
 
         // now process inline attachments
-        $ticketdisplay  = new TicketDisplay($ticket, $this->person);
-        $allAttachments = $ticketdisplay->getAttachments();
+        $ticketDisplay  = new TicketDisplay($ticket, $this->person);
+        $allAttachments = $ticketDisplay->getAttachments();
         foreach ($allAttachments as $attachment) {
             if (
                 $attachment->isInline()
@@ -4051,7 +4044,7 @@ class TicketController extends AbstractController
                 if ((int) $attachment->getBlob()->getFilesize() + $size > $max) {
                     break;
                 }
-                $email->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), true);
+                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), true);
                 $size += (int) $attachment->getBlob()->getFilesize();
             }
         }
@@ -4063,12 +4056,34 @@ class TicketController extends AbstractController
                 break;
             }
             $size += (int) $blob->filesize;
-            $email->attachBlob($blob, $blob->getDownloadUrl(true), false);
+            $message->attachBlob($blob, $blob->getDownloadUrl(true), false);
         }
 
-        $this->container->getMailer()->send($email);
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createTicketForwardModel(
+                    $ticket,
+                    $customMessage,
+                    $this->in->getString('subject')
+                );
 
-        foreach ($messagesIds as $message_id) {
+            $message = $this->getContainer()->get('email.email_sender')
+                ->prepareMessage($viewModel, $messagesArgs, $message);
+        } else {
+            $message->setTemplate(
+                'DeskPRO:emails_user:ticket-fwd.html.twig',
+                [
+                    'ticket'        => $ticket,
+                    'subject'       => $this->in->getString('subject'),
+                    'messages'      => $messages,
+                    'person'        => $this->getPerson(),
+                    'agent_message' => $customMessage,
+                ]
+            );
+        }
+        $this->container->getMailer()->send($message);
+
+        foreach ($messagesIds as $messageId) {
             // Log the action
             $this->db->insert(
                 'tickets_logs',
@@ -4078,7 +4093,7 @@ class TicketController extends AbstractController
                     'action_type' => 'message_forwarded',
                     'details'     => serialize(
                         [
-                            'message_id'     => $message_id,
+                            'message_id'     => $messageId,
                             'agent_id'       => $this->person->id,
                             'agent_name'     => $this->person->getDisplayName(),
                             'to'             => array_keys($tos),
@@ -4091,8 +4106,8 @@ class TicketController extends AbstractController
                             'to_string'      => implode(', ', array_keys($tos)),
                             'cc_string'      => implode(', ', array_keys($ccs)),
                             'bcc_string'     => implode(', ', array_keys($bccs)),
-                            'from_email'     => $from_email,
-                            'from_name'      => $from_name,
+                            'from_email'     => $fromEmail,
+                            'from_name'      => $fromName,
                             'custom_message' => $customMessage ?: null,
                         ]
                     ),

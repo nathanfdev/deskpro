@@ -113,6 +113,7 @@ class EmailSender
     /**
      * @param EmailBaseType $model
      * @param $args
+     * @param Message $message
      *
      * @throws \Exception
      *
@@ -137,10 +138,10 @@ class EmailSender
             }
         } elseif (is_a($args['to'], Person::class)) {
             $recipient = $args['to'];
-        } else {
+        } elseif (!$message->getTo()) {
             throw new \Exception('Missing required "to" argument');
         }
-        if ($recipient) {
+        if (!empty($recipient)) {
             $serializationContext = new SideloadSerializationContext();
             $serializationContext->setInlineSideloads(true);
             $person = $this->container->get('api_serializer.handler.person')
@@ -150,7 +151,7 @@ class EmailSender
         } elseif (is_a($args['to'], EmailTo::class)) {
             $emailTo = $args['to'];
             $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
-        } else {
+        } elseif ($args['to']) {
             $message->setTo($args['to']);
         }
         $template = isset($args['template']) ? $args['template'] : $model->getTemplate();
@@ -177,8 +178,8 @@ class EmailSender
             $message->setFrom($args['from_account']->getUseEmailAddress(), $args['from_name']);
         }
 
-        if (!empty($arguments['Message-ID'])) {
-            $message->getHeaders()->get('Message-ID')->setId($arguments['Message-ID']);
+        if (!empty($args['Message-ID'])) {
+            $message->getHeaders()->get('Message-ID')->setId($args['Message-ID']);
         }
 
         return $message;
