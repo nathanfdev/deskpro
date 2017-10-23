@@ -47,12 +47,12 @@ class Guide extends AbstractEntityRepository
     public function getAllCounts()
     {
         $counts = App::getDb()->fetchAllKeyed('
-            SELECT m.id as guide_id, COUNT(t.id) as count
-            FROM guides AS m
+            SELECT g.id as guide_id, COUNT(t.id) as count
+            FROM guides AS g
               LEFT JOIN topics AS t
-                ON t.guide_id = m.id
-            GROUP BY m.id
-            ORDER BY m.id ASC
+                ON t.guide_id = g.id
+            GROUP BY g.id
+            ORDER BY g.id ASC
         ', [], 'guide_id');
 
         $result = [];
@@ -103,6 +103,14 @@ class Guide extends AbstractEntityRepository
         $guideIds = $conn->fetchAllCol($qb->getSQL());
 
         return $guideIds;
+    }
+
+    public function getIds()
+    {
+        return App::getDb()->fetchAllCol('
+            SELECT m.id as guide_id
+            FROM guides AS m
+        ');
     }
 
     /**
