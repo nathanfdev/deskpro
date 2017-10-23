@@ -43,7 +43,7 @@ class HttpProxyClientBuilder
             'token'           => $connection->getToken(),
             'token_secret'    => $connection->getTokenSecret(),
             'consumer_secret' => $connection->getClientSecret(),
-            'consumer_key'    => $connection->getClientIdentifier(),
+            'consumer_key'    => $connection->getClientId(),
         ];
 
         $privateKey = $connection->getRSAPrivateKey();

@@ -101,11 +101,11 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
 
     /**
      * @JMS\Type("string")
-     * @JMS\SerializedName("urlCallback")
+     * @JMS\SerializedName("urlRedirect")
      *
      * @var string
      */
-    private $urlCallback;
+    private $urlRedirect;
 
     /**
      * @JMS\Type("string")
@@ -113,7 +113,7 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
      *
      * @var string
      */
-    private $clientIdentifier;
+    private $clientId;
 
     /**
      * @JMS\Type("string")
@@ -223,17 +223,17 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     /**
      * @return string
      */
-    public function getUrlCallback()
+    public function getUrlRedirect()
     {
-        return $this->urlCallback;
+        return $this->urlRedirect;
     }
 
     /**
      * @return string
      */
-    public function getClientIdentifier()
+    public function getClientId()
     {
-        return $this->clientIdentifier;
+        return $this->clientId;
     }
 
     /**

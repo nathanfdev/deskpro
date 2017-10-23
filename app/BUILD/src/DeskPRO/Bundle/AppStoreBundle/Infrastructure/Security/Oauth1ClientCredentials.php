@@ -38,12 +38,12 @@ interface Oauth1ClientCredentials
     /**
      * @return string
      */
-    public function getUrlCallback();
+    public function getUrlRedirect();
 
     /**
      * @return string
      */
-    public function getClientIdentifier();
+    public function getClientId();
 
     /**
      * @return string

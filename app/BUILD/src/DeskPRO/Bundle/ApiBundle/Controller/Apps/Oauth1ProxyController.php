@@ -47,7 +47,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("session")
  * @ApiUserContext("agent")
- * @Rest\Route("/apps/proxy-oauth1")
+ * @Rest\Route("/apps/proxy-oauth/1.0")
  */
 class Oauth1ProxyController extends BaseController
 {

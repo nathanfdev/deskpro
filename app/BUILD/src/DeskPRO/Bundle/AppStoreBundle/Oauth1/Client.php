@@ -58,9 +58,9 @@ class Client extends Server
         } else {
             $clientCredentials = new ClientCredentials();
         }
-        $clientCredentials->setCallbackUri($credentials->getUrlCallback());
+        $clientCredentials->setCallbackUri($credentials->getUrlRedirect());
         $clientCredentials->setSecret($credentials->getClientSecret());
-        $clientCredentials->setIdentifier($credentials->getClientIdentifier());
+        $clientCredentials->setIdentifier($credentials->getClientId());
 
         return $clientCredentials;
     }
