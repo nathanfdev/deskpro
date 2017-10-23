@@ -20,6 +20,9 @@ define [
       @editFormMapper = new TriggerEditFormMapper()
       @mode = null
       @appTriggerEvents = []
+      @allNewTriggers = [];
+      @allReplyTriggers = [];
+      @allUpdateTriggers = [];
 
       @$scope.form = @editFormMapper.getFormFromModel({})
 
@@ -37,6 +40,9 @@ define [
           @mode = 'TriggersUpdate'
 
       @dpTriggers = @DataService.get @mode
+
+
+
       @criteraTypeDef = @dpObTypesDefTicketCriteria
       @criteraTypeDef.setWithChangedOps with_changed_ops
 
@@ -47,6 +53,14 @@ define [
 
       @criteraTypeDef.setVar('object_type', 'trigger');
       @actionsTypeDef.setVar('object_type', 'trigger');
+
+      @dpTriggersNew = @DataService.get 'TriggersNew'
+      @dpTriggersReply = @DataService.get 'TriggersReply'
+      @dpTriggersUpdate = @DataService.get 'TriggersUpdate'
+
+      @dpTriggersNew.loadList().then( (list) => @allNewTriggers = list)
+      @dpTriggersReply.loadList().then( (list) => @allReplyTriggers = list)
+      @dpTriggersUpdate.loadList().then( (list) => @allUpdateTriggers = list)
 
       @customInit()
       return
@@ -272,3 +286,47 @@ define [
         @$scope.actions_errors = []
         for t in errors.actions
           @$scope.actions_errors.push(@findActionTypeTitle(t))
+
+    showCopySettings: ->
+      allNewTriggers    = @allNewTriggers
+      allReplyTriggers  = @allReplyTriggers
+      allUpdateTriggers = @allUpdateTriggers
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('TicketTriggers/copy-trigger-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+
+          $scope.doCopySettings = ->
+            $modalInstance.close($scope.triggerId);
+
+          $scope.triggerId      = 0
+          $scope.newTriggers    = allNewTriggers
+          $scope.replyTriggers  = allReplyTriggers
+          $scope.updateTriggers = allUpdateTriggers
+        ]
+      })
+
+      inst.result.then((triggerId) =>
+        @copyTrigger triggerId
+      );
+
+    copyTrigger: (triggerId) ->
+
+      promise = @Api.sendGet("/ticket_triggers/#{triggerId}").then( (result) =>
+
+        triggerToCopy = result.data.trigger
+        triggerToCopy.id = @$scope.form.id
+        triggerToCopy.title = if @$scope.form.title? then @$scope.form.title else triggerToCopy.title
+
+        @$scope.form = @editFormMapper.getFormFromModel(triggerToCopy, @appTriggerEvents);
+      )
+
+      promise2 = @criteraTypeDef.loadDataOptions()
+      promise3 = @actionsTypeDef.loadDataOptions()
+
+      promises = [promise, promise2, promise3]
+
+      return @$q.all(promises).then(=>
+        @updateCriteriaOptionTypes()
+      )

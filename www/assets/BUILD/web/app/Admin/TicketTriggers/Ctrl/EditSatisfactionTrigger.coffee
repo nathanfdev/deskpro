@@ -37,6 +37,14 @@ define [
       @criteraTypeDef.setVar 'object_type', 'trigger'
       @actionsTypeDef.setVar 'object_type', 'trigger'
 
+      @dpTriggersNew = @DataService.get 'TriggersNew'
+      @dpTriggersReply = @DataService.get 'TriggersReply'
+      @dpTriggersUpdate = @DataService.get 'TriggersUpdate'
+
+      @dpTriggersNew.loadList().then( (list) => @allNewTriggers = list)
+      @dpTriggersReply.loadList().then( (list) => @allReplyTriggers = list)
+      @dpTriggersUpdate.loadList().then( (list) => @allUpdateTriggers = list)
+
       @$scope.types =
         0: 'negative'
         1: 'neutral'
