@@ -109,6 +109,14 @@ class VoiceClientPhoneCallController extends BaseController
             $ticket->addMessage($ticketMessage);
 
             $this->saveTicket($ticket);
+
+            // send notification that phone call was answered
+            $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+                'agent.voice.incoming-call-answered',
+                [
+                    'deskpro_call_id' => $phoneCall->getId(),
+                ]
+            ));
         } else {
             // ticket is already created, that means we are joining the existing conference
             $ticket = $messageAttribute->getMessage()->getTicket();
@@ -232,12 +240,11 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
 
+        $em = $this->getManager();
         if ($callType === 'transfer' && $inviteType === 'cold') {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
-            $this->getManager()->persist($phoneCall);
+            $em->persist($phoneCall);
         }
-
-        $em = $this->getManager();
 
         // get phone call ticket
         $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([

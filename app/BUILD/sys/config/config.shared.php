@@ -586,12 +586,10 @@ $container->loadFromExtension(
                                 'replacement'       => '$1$2 $10$2 0$2 $2',
                             ],
                             'phone_filter' => [
-                                'type'              => 'pattern_capture',
-                                'preserve_original' => 0,
-                                'patterns'          => [
-                                    '(\\+\\d+)',
-                                    '(\\d+)',
-                                ],
+                                'type'              => 'pattern_replace',
+                                'preserve_original' => 1,
+                                'pattern'           => '[^0-9]',
+                                'replacement'       => '',
                             ],
                         ],
                         'analyzer' => [

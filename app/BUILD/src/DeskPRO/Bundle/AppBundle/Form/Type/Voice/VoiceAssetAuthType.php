@@ -62,7 +62,7 @@ class VoiceAssetAuthType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addViewTransformer(new VoiceAssetTransformer($this->em));
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInline']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -80,7 +80,7 @@ class VoiceAssetAuthType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetInline(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if (is_array($data)) {

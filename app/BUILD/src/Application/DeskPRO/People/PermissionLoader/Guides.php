@@ -26,21 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\JobQueue\Processor\Reset;
+/**
+ * DeskPRO.
+ *
+ * @category Tickets
+ */
 
-class AgentsProcessor extends UsersProcessor
+namespace Application\DeskPRO\People\PermissionLoader;
+
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Guide;
+
+/**
+ * Loads download category permissions.
+ *
+ * @deprecated use new PermissionsManager to get the PermissionsBag instead of people helpers
+ */
+class Guides extends BasicTreeCategoryPermission
 {
-    const JOB_TYPE = 'reset.agents';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getPersons(array $data)
+    protected function getCategoryPermissionEntity()
     {
-        $limit  = (int) @$data['limit'];
-        $offset = (int) @$data['offset'];
-        $rep    = $this->em->getRepository('DeskPRO:Person');
+        return 'DeskPRO:GuidePermission';
+    }
 
-        return $rep->findBy(['is_agent' => true], null, $limit, $offset);
+    protected function getCategoryEntity()
+    {
+        return 'DeskPRO:Guide';
+    }
+
+    protected function init()
+    {
+        $this->specific_cats = App::getEntityRepository(Guide::class)->getGuidesForUsergroups($this->getUsergroupIds());
+
+        $this->_computeTree(null);
+
+        $allIds                = App::getEntityRepository(Guide::class)->getIds();
+        $this->disallowed_cats = array_diff($allIds, $this->allowed_cats);
+    }
+
+    protected function _computeTree($tree, $default = null)
+    {
+        $this->allowed_cats = $this->specific_cats;
     }
 }

@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
@@ -899,11 +900,7 @@ class TwilioAdapter
             throw new TwilioException('Task not found');
         }
 
-        if ($task->assignmentStatus === 'reserved') {
-            $task->update([
-                'assignmentStatus' => 'canceled',
-            ]);
-        }
+        $task->delete();
     }
 
     /**
@@ -967,8 +964,12 @@ class TwilioAdapter
         $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
 
         if (count($participants) < 2) {
+            $userParticipants = $phoneCall->getUserParticipants()->map(function (VoicePhoneCallParticipantUser $participant) {
+                return $participant->getCallSid();
+            });
+
             foreach ($participants as $participant) {
-                if ($participant->callSid === $phoneCall->getCallSid()) {
+                if ($userParticipants->contains($participant->callSid)) {
                     $participant->delete();
                 }
             }

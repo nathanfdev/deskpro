@@ -11,6 +11,14 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
+    this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+      prefId: 'topic-filter',
+      resultId: this.meta.resultId,
+      refreshUrl: this.meta.refreshUrl,
+      prefSaveResultId: '0'
+    });
+    this.ownObject(this.displayOptions);
+
 		this.listWrapper = $('section.guide-simple-list', this.wrapper);
 
     var $rElement = $('<div></div>').insertAfter(this.listWrapper);
@@ -21,7 +29,8 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
       $rElement.get(0),
       this.meta.guideId,
       900,
-			this.openTopic
+			this.openTopic,
+      this.meta.display_fields
 		);
 
 		this._initGuideEditor();
@@ -33,6 +42,21 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 		if (!guideEl[0]) {
 			return;
 		}
+
+    var tree = this.getEl('cattree');
+    var treeData = tree.data('treedata');
+    var treeSave = this.getEl('cattree_struct');
+    tree.tree({
+      data: treeData,
+      dragAndDrop: true,
+      onCanMoveTo: function(moved_node, target_node, position) {
+				return (position !== 'inside');
+      }
+    });
+    tree.bind('tree.move', function(event) {
+      event.move_info.do_move();
+      treeSave.val(tree.tree('toJson'));
+    });
 
 		this.getEl('guidefoot').find('.guide-save-trigger').on('click', function(ev){
 			Orb.cancelEvent(ev);

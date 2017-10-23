@@ -118,7 +118,7 @@ class PersonController extends AbstractController
         $rep = $this->em->getRepository('DeskPRO:Ticket');
 
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
-        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
         $person_tickets       = $rep->getPersonTickets($person, $this->getPerson(), 251, 'status', 'DESC', $allowedTicketDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
@@ -1630,7 +1630,7 @@ class PersonController extends AbstractController
         $rep = $this->em->getRepository('DeskPRO:Ticket');
 
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
-        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
         $person_tickets = $rep->getPersonTickets($person, $this->getPerson(), 250, $sort_by, 'DESC', $allowedTicketDepartmentIds);
 

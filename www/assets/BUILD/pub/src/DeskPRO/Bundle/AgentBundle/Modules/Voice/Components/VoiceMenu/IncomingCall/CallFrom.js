@@ -51,10 +51,6 @@ class CallFrom extends React.Component {
           <div className="call-from-email">
             {person.get('primary_email')}
           </div>}
-        {person &&
-          <div className="call-from-group">
-            ACME Group
-          </div>}
       </div>
     );
   }

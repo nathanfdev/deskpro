@@ -202,6 +202,10 @@ export const preloadData    = createAction(
 );
 
 export const closeIframes = () => {
+  if (!window.DP_FRAME_OVERLAYS) {
+    return;
+  }
+
   for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
     const iframe = window.DP_FRAME_OVERLAYS[key];
     if (iframe.opened) {
