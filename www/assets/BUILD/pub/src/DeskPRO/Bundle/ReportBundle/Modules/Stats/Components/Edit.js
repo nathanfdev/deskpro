@@ -122,7 +122,7 @@ class Edit extends BaseForm {
               <LabelsField labels={labels} />
             </Field>
             <Field select="desc" label="Provide short description for this report">
-              <Textarea />
+              <Textarea className="report-description" />
             </Field>
             <Field select="display_types" label="Available display types">
               <MultiSelect choices={Edit.displayTypes} />

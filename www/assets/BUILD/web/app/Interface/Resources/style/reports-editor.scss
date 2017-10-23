@@ -140,6 +140,9 @@
 }
 
 .reports-editor-panel.full-editor {
+  .report-description {
+    overflow: auto;
+  }
   .title-input {
     font-family: $font-stack;
   }
