@@ -61,7 +61,7 @@ class Edit extends BaseForm {
       orderBy:       queryParts.get('orderBy', ''),
       offset:        queryParts.get('offset', ''),
       limit:         queryParts.get('limit', ''),
-      vars:          report.get('variables', Immutable.List()).toArray(),
+      vars:          report.get('variables', Immutable.List()).toJS(),
     };
 
     if (report.get('id')) {
@@ -89,7 +89,7 @@ class Edit extends BaseForm {
           orderBy:       queryParts.get('orderBy', ''),
           offset:        queryParts.get('offset', ''),
           limit:         queryParts.get('limit', ''),
-          vars:          report.get('variables', Immutable.List()).toArray(),
+          vars:          report.get('variables', Immutable.List()).toJS(),
         },
         errorList: {},
         onChange:  this.onChange
