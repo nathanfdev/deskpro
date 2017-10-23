@@ -223,6 +223,9 @@ export const voiceBootstrap = createAction(
             dispatch(addToCollection('Person', 'all',  Object.values(data.linked.person)));
           }
         });
+        messageBroker.addMessageListener('agent.voice.incoming-call-answered', (data) => {
+          dispatch(removeIncomingCall(data));
+        });
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
           const state       = getState();
           const connections = connectionsSelector(state);
