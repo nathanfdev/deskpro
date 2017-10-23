@@ -57,19 +57,25 @@ class DashboardWidget
     const WIDGET_RENDER_TYPE_PIE   = 'pie';
     const WIDGET_RENDER_TYPE_TABLE = 'table';
 
+    const LEGACY_RENDER_TYPE_BAR   = 'BAR';
+    const LEGACY_RENDER_TYPE_LINE  = 'LINE';
+    const LEGACY_RENDER_TYPE_AREA  = 'AREA';
+    const LEGACY_RENDER_TYPE_PIE   = 'PIE';
+    const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
+
     const WIDGET_TYPE_GRAPH = 'graph';
     const WIDGET_TYPE_TABLE = 'table';
     const WIDGET_TYPE_STAT  = 'stat';
 
     protected $widgetGraphTypesMapping = [
-        'simple_bars'  => self::WIDGET_RENDER_TYPE_BAR,
-        'bars'         => self::WIDGET_RENDER_TYPE_BAR,
-        'simple_lines' => self::WIDGET_RENDER_TYPE_LINE,
-        'lines'        => self::WIDGET_RENDER_TYPE_LINE,
-        'area'         => self::WIDGET_RENDER_TYPE_AREA,
-        'simple_area'  => self::WIDGET_RENDER_TYPE_AREA,
-        'pie'          => self::WIDGET_RENDER_TYPE_PIE,
-        'table'        => self::WIDGET_RENDER_TYPE_TABLE,
+        'simple_bars'  => self::LEGACY_RENDER_TYPE_BAR,
+        'bars'         => self::LEGACY_RENDER_TYPE_BAR,
+        'simple_lines' => self::LEGACY_RENDER_TYPE_LINE,
+        'lines'        => self::LEGACY_RENDER_TYPE_LINE,
+        'area'         => self::LEGACY_RENDER_TYPE_AREA,
+        'simple_area'  => self::LEGACY_RENDER_TYPE_AREA,
+        'pie'          => self::LEGACY_RENDER_TYPE_PIE,
+        'table'        => self::LEGACY_RENDER_TYPE_TABLE,
     ];
 
     protected $widgetTypesMapping = [
