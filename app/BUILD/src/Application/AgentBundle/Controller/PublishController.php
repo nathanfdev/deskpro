@@ -847,6 +847,7 @@ class PublishController extends AbstractController
         if ($saveCategory['id'] && $cat = $this->em->getRepository($entityName)->find($saveCategory['id'])) {
             if ($saveCategory['title']) {
                 $cat->setTitle($saveCategory['title']);
+                $this->getContainer()->get('category_slug_manager')->ensureValidSlug($cat);
                 $this->db->update($table, [
                     'title' => $cat->getTitle(),
                     'slug'  => $cat->getSlug(),
