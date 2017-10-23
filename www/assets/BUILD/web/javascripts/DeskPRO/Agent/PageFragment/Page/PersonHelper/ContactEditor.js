@@ -67,7 +67,8 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 			customClassname: 'profile-contact-editor',
 			triggerElement: $('.contact-edit', this.wrapper),
 			contentElement: this.contactEditor,
-			zIndex: 'none'
+			zIndex: 'none',
+			destroyOnClose: true
 		});
 
 		$('.save-trigger', this.contactEditor).on('click', function(ev) {

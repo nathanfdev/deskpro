@@ -105,6 +105,9 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		if (!this.initOverlay()) {
 			return;
 		}
+		if (this.isThisDestroyed) {
+			return;
+		}
 
 		if (this.isOverlayOpen()) {
 			return;
