@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType;
@@ -79,7 +80,8 @@ class PersonAgentDataType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeAvailableStatus']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -87,9 +89,13 @@ class PersonAgentDataType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => AgentData::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => AgentData::class,
+            ])
+            ->setRequired('person')
+            ->setAllowedTypes('person', Person::class)
+        ;
     }
 
     /**
@@ -97,7 +103,7 @@ class PersonAgentDataType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onChangeAvailableStatus(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
 
@@ -109,5 +115,20 @@ class PersonAgentDataType extends AbstractType
         }
 
         $event->setData($data);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        if ($data instanceof AgentData) {
+            $data->setPerson($form->getConfig()->getOption('person'));
+        }
     }
 }
