@@ -9,7 +9,7 @@
     <div class="report-info">
         <h1><span>Report:</span> {{ ng_var('report.title') }}</h1>
 
-        <nav class="reports-control" ng-show="report.id">
+        <nav class="reports-control" ng-show="report.id" ng-hide="dashboard.is_default">
             <ul>
                 <li>
                     <a
