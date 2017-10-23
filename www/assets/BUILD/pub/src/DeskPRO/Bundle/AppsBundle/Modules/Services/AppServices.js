@@ -51,14 +51,18 @@ export class AppServices {
     return new Base64Converter(this.window);
   }
 
-  buildOauthProxyRedirectUrl(urlString, { provider, applicationId })  {
+  buildOauthProxyRedirectUrl(urlString, { provider, protocolVersion, applicationId })  {
     const builder = this.buildURL(urlString);
 
     let existingPath = builder.pathname;
     if (!existingPath) {
       existingPath = '';
     }
-    const pathname = `${existingPath.trim('/')}/${provider}/grant-access/${applicationId}`;
+
+    let pathPrefix = existingPath.trim('/');
+    pathPrefix = protocolVersion === '2.0' || !protocolVersion ? pathPrefix : [pathPrefix, protocolVersion].concat('/');
+
+    const pathname = `${pathPrefix}/${provider}/grant-access/${applicationId}`;
     return builder.set('protocol', 'https').set('pathname', pathname);
   }
 

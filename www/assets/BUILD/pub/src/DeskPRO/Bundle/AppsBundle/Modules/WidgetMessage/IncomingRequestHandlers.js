@@ -20,10 +20,10 @@ const registerPostMessageListener = (windowObject, handler) => {
 };
 
 export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, services) => {
-  const { provider } = widgetMessage.body;
+  const { provider, protocolVersion } = widgetMessage.body;
   const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
   if (oauthProxyEndpoint) {
-    const redirectUrlParams = { provider, applicationId: widget.instanceId };
+    const redirectUrlParams = { provider, protocolVersion, applicationId: widget.instanceId };
     const urlRedirect = services.buildOauthProxyRedirectUrl(oauthProxyEndpoint, redirectUrlParams).toString();
 
     const settings = { urlRedirect };
