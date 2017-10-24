@@ -44,6 +44,7 @@ use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -3860,7 +3861,7 @@ class Person extends DomainObject implements
     }
 
     /**
-     * @return VoiceQueue[]|ArrayCollection
+     * @return VoiceQueueAgent[]|ArrayCollection
      */
     public function getVoiceQueues()
     {
@@ -4573,10 +4574,10 @@ class Person extends DomainObject implements
             ],
         ]);
 
-        $metadata->mapManyToMany([
+        $metadata->mapOneToMany([
             'fieldName'    => 'voiceQueues',
-            'targetEntity' => VoiceQueue::class,
-            'mappedBy'     => 'agents',
+            'targetEntity' => VoiceQueueAgent::class,
+            'mappedBy'     => 'agent',
             'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
         ]);
 

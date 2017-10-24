@@ -60,10 +60,8 @@ class VoiceQueueType extends AbstractType
                 'class' => VoiceAccount::class,
             ])
             ->add('name', TextType::class)
-            ->add('agents', EntityType::class, [
-                'class'        => Person::class,
-                'multiple'     => true,
-                'by_reference' => false,
+            ->add('agents', VoiceQueueAgentCollectionType::class, [
+                'queue' => $builder->getData(),
             ])
             ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
@@ -109,8 +107,8 @@ class VoiceQueueType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetMaxQueueSize']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onEnsureAgentVoiceEnabled']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -128,9 +126,11 @@ class VoiceQueueType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetMaxQueueSize(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
+
+        // set task queue max size
         if (isset($data['routing_model'])) {
             if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_AUTOMATIC) {
                 $data['max_queue_size'] = 1;
@@ -147,11 +147,17 @@ class VoiceQueueType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onEnsureAgentVoiceEnabled(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if ($data instanceof VoiceQueue) {
-            foreach ($data->getAgents() as $agent) {
+            // make sure agent voice is enabled for queue agents
+            foreach ($data->getAgents() as $voiceAgent) {
+                $agent = $voiceAgent->getAgent();
+                if (!$agent) {
+                    continue;
+                }
+
                 $agentData = $agent->getAgentData();
                 if (!$agentData) {
                     $agentData = new AgentData();
