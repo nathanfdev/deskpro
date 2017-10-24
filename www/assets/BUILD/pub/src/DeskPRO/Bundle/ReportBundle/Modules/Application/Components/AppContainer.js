@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router';
 import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { repositoriesConfig } from 'DeskPRO/Bundle/AdminBundle/DAL/config';
+import { repositoriesConfig } from 'DeskPRO/Bundle/ReportBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import Wrapper from '../../Stats/Components/Wrapper';

@@ -61,10 +61,10 @@ class ListHeader extends React.Component {
             { labels.map((label, index) => (
               <a
                 key={index}
-                onClick={() => this.onLabelClick(label.label)}
-                className={classNames('link-pointer stat-label', { active: label.active })}
+                onClick={() => this.onLabelClick(label.get('label'))}
+                className={classNames('link-pointer stat-label', { active: label.get('active') })}
               >
-                <i className="fa fa-tag" />{label.label}
+                <i className="fa fa-tag" />{label.get('label')}
               </a>)
             )}
           </div> : null }

@@ -1,20 +1,21 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+
+export const reportsLoaded = createAction(
+  'REPORTS_LOADED'
+);
 
 export const loadReports = createAction(
   'REPORTS_LOAD_REPORTS',
-  () => () => new Promise(resolve => api
-    .sendGet(
-    'DP_API_OLD/dashboards/widgets/reports/list',
-    {
-      headers: {
-        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
-        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
-        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
-      }
+  () => dispatch => repository('Reports')
+    .loadAll()
+    .success((response) => {
+      dispatch(setCollection('Reports', 'all', response.reports));
+      dispatch(setCollection('ReportsLabels', 'all', response.labels));
+      dispatch(reportsLoaded());
     })
-    .success(response => resolve(response))
-  ));
+);
 
 export const loadReport = createAction(
   'REPORTS_LOAD_REPORT',

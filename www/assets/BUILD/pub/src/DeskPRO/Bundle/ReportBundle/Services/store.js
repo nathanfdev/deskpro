@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
-import AdminAppReducers from '../ReportApp_Reducers';
+import ReportAppReducers from '../ReportApp_Reducers';
 import AppReducers from '../../AppBundle/AppApp_Reducers';
 
-const reducer = combineReducerHierarchy(Object.assign({}, AdminAppReducers, AppReducers));
+const reducer = combineReducerHierarchy(Object.assign({}, ReportAppReducers, AppReducers));
 const middleware = applyMiddleware(
   ampMiddleware.timerMiddleware('startTime'),
   ampMiddleware.intervalMiddleware,

@@ -204,6 +204,7 @@ class DashboardWidgetController extends AbstractController
             'labels'  => [],
         ];
         $translator = $this->container->getTranslator();
+        $i          = 0;
         foreach ($reports as $report) {
             $datum            = $report->toApiData();
             $translatedLabels = [];
@@ -214,6 +215,7 @@ class DashboardWidgetController extends AbstractController
                     : ucfirst($label);
                 $translatedLabels[]        = $translatedLabel;
                 $apiData['labels'][$label] = [
+                    'id'    => ++$i,
                     'label' => $translatedLabel,
                     'value' => $label,
                 ];

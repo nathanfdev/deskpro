@@ -95,7 +95,7 @@ class Edit extends BaseForm {
         onChange:  this.onChange
       };
       if (report.get('id')) {
-        state.id = report.get('id');
+        state.value.id = report.get('id');
       }
       this.setState({
         formData: createValue(state)

@@ -1,5 +1,8 @@
+import ReportRepository from './Repositories/ReportRepository';
+
 export const repositoriesConfig = {
-  Person: { type: 'api', url: '/people', allowAll: false }
+  Reports:       { type: 'api', url: '/reports', repositoryClass: ReportRepository },
+  ReportsLabels: { type: 'api', url: '/reports/labels' }
 };
 
 export default repositoriesConfig;

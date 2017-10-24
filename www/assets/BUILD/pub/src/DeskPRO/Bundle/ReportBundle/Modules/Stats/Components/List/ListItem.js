@@ -21,7 +21,7 @@ class ListItem extends React.Component {
   }
 
   isLabelActive(label) {
-    const activeLabels = this.props.labels.filter(value => value.active).map(value => value.label).toJS();
+    const activeLabels = this.props.labels.filter(value => value.get('active')).map(value => value.get('label')).toJS();
     return activeLabels.indexOf(label) >= 0;
   }
 
