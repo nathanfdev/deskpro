@@ -3,7 +3,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
 @import "../../../../../../node_modules/highlight.js/styles/atom-one-light.css";
 
 .guides {
-  font-family: Lato;
+  font-family: $font-family-sans-serif;
 
   h1 {
     font-size: 22px;
