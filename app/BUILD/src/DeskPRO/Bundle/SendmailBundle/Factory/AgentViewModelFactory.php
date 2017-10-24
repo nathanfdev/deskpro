@@ -49,6 +49,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\AgentPasswordResetAlert;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskAssigned;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskCompleted;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTaskDueReminder;
+use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketForward;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketReply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
@@ -294,5 +295,24 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         $arguments = $this->getTicketArguments($ticket);
 
         return $this->convertParameters(AgentTicketReply::class, $arguments);
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param string $agentMessage
+     * @param string $subject
+     *
+     * @return AgentTicketForward
+     */
+    public function createAgentTicketForwardModel(
+        Ticket $ticket,
+        $agentMessage,
+        $subject
+    ) {
+        $arguments = $this->getTicketArguments($ticket);
+
+        $arguments = array_merge($arguments, [$agentMessage, $subject]);
+
+        return $this->convertParameters(AgentTicketForward::class, $arguments);
     }
 }

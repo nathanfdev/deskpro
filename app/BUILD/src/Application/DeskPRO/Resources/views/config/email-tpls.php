@@ -94,6 +94,14 @@ return [
         'viewModel'   => 'AgentTicketReply',
     ],
     [
+        'typeId'      => 'agent',
+        'groupId'     => 'tickets',
+        'subGroupId'  => 'primary',
+        'name'        => 'DeskPRO:emails_user:ticket-fwd.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_agent:ticket_fwd.html.twig',
+        'viewModel'   => 'AgentTicketForward',
+    ],
+    [
         'typeId'     => 'agent',
         'groupId'    => 'tickets',
         'subGroupId' => 'primary',
@@ -358,15 +366,6 @@ return [
         'newTemplate' => 'SendmailBundle:emails_user:ticket_participant.html.twig',
         'type'        => 'template',
         'viewModel'   => 'TicketParticipant',
-    ],
-    [
-        'typeId'      => 'user',
-        'groupId'     => 'tickets',
-        'subGroupId'  => 'primary',
-        'name'        => 'DeskPRO:emails_user:ticket-fwd.html.twig',
-        'newTemplate' => 'SendmailBundle:emails_user:ticket_fwd.html.twig',
-        'type'        => 'template',
-        'viewModel'   => 'TicketForward',
     ],
 
     //--------------------

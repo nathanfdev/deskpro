@@ -38,6 +38,7 @@ use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EmailSender
 {
@@ -62,6 +63,11 @@ class EmailSender
     private $container;
 
     /**
+     * @var OptionsResolver
+     */
+    private $optionsResolver;
+
+    /**
      * EmailSender constructor.
      *
      * @param EmailRenderer      $emailRenderer
@@ -79,6 +85,9 @@ class EmailSender
         $this->mailer        = $mailer;
         $this->entityManager = $entityManager;
         $this->container     = $container;
+
+        $this->optionsResolver = new OptionsResolver();
+        $this->configureOptions();
     }
 
     /**
@@ -112,7 +121,7 @@ class EmailSender
 
     /**
      * @param EmailBaseType $model
-     * @param $args
+     * @param $options
      * @param Message $message
      *
      * @throws \Exception
@@ -124,20 +133,24 @@ class EmailSender
         if (!$message) {
             $message = $this->getMailer()->createMessage();
         }
+
         /** @var PersonRepository $personRepository */
         $personRepository = $this->getEntityManager()->getRepository(Person::class);
-        if (is_string($args['to'])) {
-            $recipient = $personRepository->findOneByEmail($args['to']);
-        } elseif (is_a($args['to'], EmailTo::class)) {
+
+        $options = $this->optionsResolver->resolve($args);
+
+        if (is_string($options['to'])) {
+            $recipient = $personRepository->findOneByEmail($options['to']);
+        } elseif (is_a($options['to'], EmailTo::class)) {
             /** @var EmailTo $emailTo */
-            $emailTo = $args['to'];
+            $emailTo = $options['to'];
             if ($emailTo->getPerson()) {
                 $recipient = $emailTo->getPerson();
             } else {
                 $recipient = $personRepository->findOneByEmail($emailTo->getEmailAddress());
             }
-        } elseif (is_a($args['to'], Person::class)) {
-            $recipient = $args['to'];
+        } elseif (is_a($options['to'], Person::class)) {
+            $recipient = $options['to'];
         } elseif (!$message->getTo()) {
             throw new \Exception('Missing required "to" argument');
         }
@@ -148,13 +161,13 @@ class EmailSender
                 ->createModel($recipient, $serializationContext);
             $model->setRecipient($person);
             $message->setToPerson($recipient);
-        } elseif (is_a($args['to'], EmailTo::class)) {
-            $emailTo = $args['to'];
+        } elseif (is_a($options['to'], EmailTo::class)) {
+            $emailTo = $options['to'];
             $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
-        } elseif ($args['to']) {
-            $message->setTo($args['to']);
+        } elseif ($options['to']) {
+            $message->setTo($options['to']);
         }
-        $template = isset($args['template']) ? $args['template'] : $model->getTemplate();
+        $template = isset($options['template']) ? $options['template'] : $model->getTemplate();
 
         $emailCode = $this->getRenderer()->render($template, $model);
         $message->setBody($emailCode->getBody(), 'text/html');
@@ -162,24 +175,24 @@ class EmailSender
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);
         }
-        if (!empty($args['attachments'])) {
-            foreach ($args['attachments'] as $attach) {
+        if (!empty($options['attachments'])) {
+            foreach ($options['attachments'] as $attach) {
                 $message->attach($attach);
             }
         }
 
-        if (isset($args['headers'])) {
-            foreach ($args['headers'] as $header) {
+        if (isset($options['headers'])) {
+            foreach ($options['headers'] as $header) {
                 $message->getHeaders()->addTextHeader($header['name'], $header['value']);
             }
         }
 
-        if (isset($args['from_account'])) {
-            $message->setFrom($args['from_account']->getUseEmailAddress(), $args['from_name']);
+        if (isset($options['from_account'])) {
+            $message->setFrom($options['from_account']->getUseEmailAddress(), $options['from_name']);
         }
 
-        if (!empty($args['Message-ID'])) {
-            $message->getHeaders()->get('Message-ID')->setId($args['Message-ID']);
+        if (!empty($options['Message-ID'])) {
+            $message->getHeaders()->get('Message-ID')->setId($options['Message-ID']);
         }
 
         return $message;
@@ -195,5 +208,22 @@ class EmailSender
     {
         $message = $this->prepareMessage($model, $args);
         $this->mailer->send($message);
+    }
+
+    private function configureOptions()
+    {
+        $this->optionsResolver->setDefined([
+            'template',
+            'attachments',
+            'headers',
+            'from_account',
+            'Message-ID',
+        ]);
+        $this->optionsResolver->setDefaults([
+            'to'        => null,
+            'from_name' => null,
+        ]);
+        $this->optionsResolver->setAllowedTypes('attachments', 'array');
+        $this->optionsResolver->setAllowedTypes('headers', 'array');
     }
 }

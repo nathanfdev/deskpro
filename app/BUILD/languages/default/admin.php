@@ -292,6 +292,8 @@ return [
     'adm.email_templates.emails_agent_task-completed_title'                                => 'Task Completed',
     'adm.email_templates.emails_agent_task-due-reminder_desc'                              => 'Email sent to remind an agent that a task is due.',
     'adm.email_templates.emails_agent_task-due-reminder_title'                             => 'Task Reminder',
+    'adm.email_templates.emails_user_ticket-fwd_desc'                                      => 'Email sent when an agent forward a ticket',
+    'adm.email_templates.emails_user_ticket-fwd_title'                                     => 'Ticket Forward',
     'adm.email_templates.emails_agent_ticket-new_desc'                                     => 'Email sent when a new ticket is created.',
     'adm.email_templates.emails_agent_ticket-new_title'                                    => 'New Ticket Notification',
     'adm.email_templates.emails_agent_ticket-reply_desc'                                   => 'Email sent when a new message is added to a ticket.',

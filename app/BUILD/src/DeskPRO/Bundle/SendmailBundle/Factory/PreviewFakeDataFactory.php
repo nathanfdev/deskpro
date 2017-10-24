@@ -144,6 +144,8 @@ class PreviewFakeDataFactory
                         return 'First Name Last Name';
                     case 'subject':
                         return 'Example Subject';
+                    case 'agentMessage':
+                        return 'Here\'s my forwarded ticket';
                     case 'maxSize':
                         return Numbers::filesizeDisplay(20971520);
                     default:

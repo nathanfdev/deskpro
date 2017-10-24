@@ -4060,15 +4060,15 @@ class TicketController extends AbstractController
         }
 
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = $this->container->get('email.user_viewmodel_factory')
-                ->createTicketForwardModel(
+            $viewModel = $this->container->get('email.agent_viewmodel_factory')
+                ->createAgentTicketForwardModel(
                     $ticket,
                     $customMessage,
                     $this->in->getString('subject')
                 );
 
             $message = $this->getContainer()->get('email.email_sender')
-                ->prepareMessage($viewModel, $messagesArgs, $message);
+                ->prepareMessage($viewModel, [], $message);
         } else {
             $message->setTemplate(
                 'DeskPRO:emails_user:ticket-fwd.html.twig',

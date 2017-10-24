@@ -15,8 +15,8 @@
 			<br /><br />
 		{% endif %}
 
-		{% for message in messages %}
-			{{ message.getMessageHtml(false)|raw }}
+		{% for message in ticket_messages %}
+			{{ message.message|raw }}
 		{% endfor %}
 	</container>
 

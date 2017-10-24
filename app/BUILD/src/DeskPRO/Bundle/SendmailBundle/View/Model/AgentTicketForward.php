@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
-class TicketForward extends TicketEmailType
+class AgentTicketForward extends TicketEmailType
 {
     /**
      * The agent message.
@@ -50,7 +50,7 @@ class TicketForward extends TicketEmailType
      */
     protected $subject;
 
-    protected $templateFile = 'emails_user:ticket_fwd.html.twig';
+    protected $templateFile = 'emails_agent:ticket_fwd.html.twig';
 
     public function __construct(
         $ticket,

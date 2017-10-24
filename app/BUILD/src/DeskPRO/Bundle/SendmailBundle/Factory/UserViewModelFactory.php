@@ -75,7 +75,6 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAddCc;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAutocloseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarnFinal;
-use DeskPRO\Bundle\SendmailBundle\View\Model\TicketForward;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
@@ -599,25 +598,6 @@ class UserViewModelFactory extends AbstractViewModelFactory
         $arguments = $this->getTicketArguments($ticket);
 
         return $this->convertParameters(TicketReplyAutoreply::class, $arguments);
-    }
-
-    /**
-     * @param Ticket $ticket
-     * @param string $agentMessage
-     * @param string $subject
-     *
-     * @return TicketForward
-     */
-    public function createTicketForwardModel(
-        Ticket $ticket,
-        $agentMessage,
-        $subject
-    ) {
-        $arguments = $this->getTicketArguments($ticket);
-
-        $arguments = array_merge($arguments, [$agentMessage, $subject]);
-
-        return $this->convertParameters(TicketForward::class, $arguments);
     }
 
     /**
