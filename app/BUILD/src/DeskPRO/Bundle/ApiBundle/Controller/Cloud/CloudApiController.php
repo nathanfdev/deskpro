@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Cloud;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
+use Application\EmailBundle\SwiftMailer\Message\Message;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -324,22 +325,40 @@ class CloudApiController extends BaseController
             $interface = 'billing';
         }
 
-        $code_data = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
-        $this->getManager()->persist($code_data);
+        $codeData = TmpData::create('reset-password', ['person_id' => $person['id'], 'interface' => $interface], '+3 days');
+        $this->getManager()->persist($codeData);
         $this->getManager()->flush();
 
-        $vars = [
-            'code'      => $code_data->getCode(),
-            'person'    => $person,
-            'email'     => $email,
-            'interface' => $interface,
-        ];
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $resetCode = $codeData->getCode();
+            if ($person->isAgent()) {
+                if ($interface == 'billing') {
+                    $resetUrl = $this->get('router')->generate('billing_login', ['reset_code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+                } else {
+                    $resetUrl = $this->get('router')->generate('agent_login', ['reset_code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+                }
+            } else {
+                $resetUrl = $this->get('router')->generate('user_login_resetpass_newpass', ['code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
+            $viewModel = $this->get('email.user_viewmodel_factory')
+                ->createResetPasswordModel($resetUrl);
+            $this->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $vars = [
+                'code'      => $codeData->getCode(),
+                'person'    => $person,
+                'email'     => $email,
+                'interface' => $interface,
+            ];
 
-        $message = $this->container->get('mailer')->createMessage();
-        $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
-        $message->setTo($form->get('email')->getData(), $person->getDisplayName());
+            /** @var Message $message */
+            $message = $this->container->get('mailer')->createMessage();
+            $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
+            $message->setTo($form->get('email')->getData(), $person->getDisplayName());
 
-        $this->container->get('mailer')->send($message);
+            $this->container->get('mailer')->send($message);
+        }
 
         return new View();
     }

@@ -1090,14 +1090,22 @@ class LoginController extends AbstractController
         $tmpdata = TmpData::create('reset-password', ['person' => $person->id], '+1 day', $name);
         $this->em()->persist($tmpdata);
         $this->em()->flush();
-        $resetUrl = $this->container->get('router')->generate(
-            'user_login_resetpass_newpass',
-            ['code' => $tmpdata->getCode()],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
 
         $this->container->getTranslator()->setDefaultPersonContext($person);
         if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            if ($person->isAgent()) {
+                $resetUrl = $this->container->get('router')->generate(
+                    'agent_login',
+                    ['code' => $tmpdata->getCode()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $resetUrl = $this->container->get('router')->generate(
+                    'user_login_resetpass_newpass',
+                    ['code' => $tmpdata->getCode()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            }
             $viewModel = $this->get('email.user_viewmodel_factory')
                 ->createResetPasswordModel($resetUrl);
             $emailSender = $this->get('email.email_sender');
@@ -1108,7 +1116,9 @@ class LoginController extends AbstractController
                 }
             );
         } else {
-            $vars    = ['reset_url' => $resetUrl];
+            $vars = [
+                'code' => $tmpdata->getCode(),
+            ];
             $message = $this->container->getMailer()->createMessage();
             $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
             $message->setTo($email, $person->getDisplayName());

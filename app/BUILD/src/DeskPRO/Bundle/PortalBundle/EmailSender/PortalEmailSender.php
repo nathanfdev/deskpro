@@ -58,13 +58,20 @@ class PortalEmailSender
 
     public function sendPasswordResetLink(Person $person, array $reset)
     {
-        $resetUrl = $this->getRouter()->generate(
-            'portal_reset_password_process',
-            ['code' => $reset['code']],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            if ($person->isAgent()) {
+                $resetUrl = $this->getRouter()->generate(
+                    'agent_login',
+                    ['code' => $reset['code']],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $resetUrl = $this->getRouter()->generate(
+                    'user_login_resetpass_newpass',
+                    ['code' => $reset['code']],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            }
             $viewModel = $this->container->get('email.user_viewmodel_factory')
                 ->createResetPasswordModel($resetUrl);
             $this->container->get('email.email_sender')
@@ -74,8 +81,8 @@ class PortalEmailSender
                 new EmailTo($person),
                 'DeskPRO:emails_user:reset-password.html.twig',
                 [
-                    'person'    => $person,
-                    'reset_url' => $resetUrl,
+                    'person' => $person,
+                    'code'   => $reset['code'],
                 ]
             );
         }

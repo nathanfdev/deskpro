@@ -1,5 +1,5 @@
-{{ set_tplvar('plain_email', true) }}
 <dp:subject>{{ subject | default('FW: ' ~ ticket.subject) }}</dp:subject>
+{{ set_tplvar('plain_email', true) }}
 
 <html>
 <head>
