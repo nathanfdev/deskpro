@@ -208,16 +208,20 @@ class DashboardWidgetController extends AbstractController
             $datum            = $report->toApiData();
             $translatedLabels = [];
             foreach ($datum['labels'] as $label) {
-                $phraseName         = 'reports.labels.'.strtolower($label);
-                $translatedLabels[] = $translator->hasPhrase($phraseName)
+                $phraseName      = 'reports.labels.'.strtolower($label);
+                $translatedLabel = $translator->hasPhrase($phraseName)
                     ? $translator->phrase($phraseName)
                     : ucfirst($label);
+                $translatedLabels[]        = $translatedLabel;
+                $apiData['labels'][$label] = [
+                    'label' => $translatedLabel,
+                    'value' => $label,
+                ];
             }
             $datum['labels']      = $translatedLabels;
-            $apiData['labels']    = array_merge($apiData['labels'], $translatedLabels);
             $apiData['reports'][] = $datum;
         }
-        $apiData['labels'] = array_values(array_unique($apiData['labels']));
+        $apiData['labels'] = array_values($apiData['labels']);
 
         return $this->createApiResponse($apiData);
     }

@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Reports\Form\Type;
 
 use Application\DeskPRO\Entity\ReportWidget;
+use Application\LegacyApiBundle\Service\Dashboard;
 use Application\LegacyApiBundle\Service\DashboardWidget;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -49,18 +50,18 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ReportWidgetType extends AbstractType
 {
     /**
-     * @var DashboardWidget
+     * @var Dashboard
      */
-    private $dashboardWidget;
+    private $dashboard;
 
     /**
      * ReportWidgetType constructor.
      *
-     * @param DashboardWidget $dashboardWidget
+     * @param Dashboard $dashboard
      */
-    public function __construct(DashboardWidget $dashboardWidget)
+    public function __construct(Dashboard $dashboard)
     {
-        $this->dashboardWidget = $dashboardWidget;
+        $this->dashboard = $dashboard;
     }
 
     /**
@@ -109,7 +110,7 @@ class ReportWidgetType extends AbstractType
         $data = $event->getData();
         if (isset($data['labels']) && is_array($data['labels'])) {
             foreach ($data['labels'] as &$label) {
-                $label = strtolower($label);
+                $label = $this->dashboard->mapLabelToSystemName($label);
             }
         }
         $event->setData($data);

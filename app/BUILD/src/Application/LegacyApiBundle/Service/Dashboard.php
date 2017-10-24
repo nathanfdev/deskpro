@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,8 @@ namespace Application\LegacyApiBundle\Service;
 
 use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
+use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\Translate\Translate;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -47,13 +49,40 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class Dashboard
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var DashboardWidget
+     */
+    private $widgetService;
+
+    /**
+     * @var array
+     */
+    private $labelsStorage;
+
+    /**
      * @param EntityManager   $em
      * @param DashboardWidget $widgetService
+     * @param Translate       $translator
      */
-    public function __construct(EntityManager $em, DashboardWidget $widgetService)
+    public function __construct(EntityManager $em, DashboardWidget $widgetService, Translate $translator)
     {
         $this->em            = $em;
         $this->widgetService = $widgetService;
+
+        $repository = $this->em->getRepository(ReportWidget::class);
+        foreach ($repository->findBy(['is_custom' => false]) as $reportWidget) {
+            foreach ($reportWidget->getLabels() as $label) {
+                $phraseName = 'reports.labels.'.strtolower($label);
+                //sic! We need to have reverted key-value here
+                $key                       = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : ucfirst($label);
+                $value                     = strtolower($label);
+                $this->labelsStorage[$key] = $value;
+            }
+        }
     }
 
     ///
@@ -249,5 +278,15 @@ class Dashboard
         $allReports = $dashboard->getReports();
 
         return $allReports->last() ? $allReports->last()->getSortOrder() + 1 : 1;
+    }
+
+    /**
+     * @param string $label
+     *
+     * @return string
+     */
+    public function mapLabelToSystemName($label)
+    {
+        return isset($this->labelsStorage[$label]) ? $this->labelsStorage[$label] : strtolower($label);
     }
 }

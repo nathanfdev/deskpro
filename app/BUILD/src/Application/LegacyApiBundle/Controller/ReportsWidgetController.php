@@ -59,7 +59,10 @@ class ReportsWidgetController extends AbstractController
         foreach ($data['reports'] as &$report) {
             foreach ($report['labels'] as &$label) {
                 $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
+                $label      = [
+                    'label' => $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label,
+                    'value' => $label,
+                ];
             }
         }
 
@@ -128,8 +131,13 @@ class ReportsWidgetController extends AbstractController
         if (!$report) {
             throw $this->createNotFoundException();
         }
-        $queryParts            = $reportsWidget->getQueryParts($id, false);
-        $widget                = $this->getApiData($report);
+        $queryParts = $reportsWidget->getQueryParts($id, false);
+        $widget     = $this->getApiData($report);
+        $translator = $this->container->getTranslator();
+        foreach ($widget['labels'] as &$label) {
+            $phraseName = 'reports.labels.'.strtolower($label);
+            $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
+        }
         $widget['query_parts'] = $queryParts;
 
         return $this->createApiResponse([

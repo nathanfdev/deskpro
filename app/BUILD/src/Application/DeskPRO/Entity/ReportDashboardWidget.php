@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -252,7 +252,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getHcData()
     {
@@ -279,6 +279,11 @@ class ReportDashboardWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @param $type
+     *
+     * @return $this
+     */
     public function setType($type)
     {
         $this->type = $type;
@@ -286,16 +291,27 @@ class ReportDashboardWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @return array
+     */
     public function getVariables()
     {
         return $this->variables;
     }
 
+    /**
+     * @param array $variables
+     *
+     * @return $this
+     */
     public function setVariables(array $variables)
     {
         $this->variables = $variables;
@@ -307,10 +323,12 @@ class ReportDashboardWidget extends DomainObject
     // Doctrine Metadata
     //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportWidget';
         $metadata->setPrimaryTable(
             [
                 'name'    => 'report_dashboard_widget',

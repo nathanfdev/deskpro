@@ -30,7 +30,7 @@ class Wrapper extends React.Component {
 
   static transformLabels(labels) {
     return labels.map((value) => {
-      const label = { label: value, active: false };
+      const label = { ...value, active: false };
       return label;
     });
   }
