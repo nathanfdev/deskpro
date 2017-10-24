@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { connect } from 'react-redux';
-import Modal from 'deskpro-components/lib/Components/Modal';
-import { Checkbox } from 'deskpro-components/lib/Components/Forms';
-import Icon from 'deskpro-components/lib/Components/Icon';
+import Modal from '@deskpro/react-components/lib/Components/Modal';
+import { Checkbox } from '@deskpro/react-components/lib/Components/Forms';
+import Icon from '@deskpro/react-components/lib/Components/Icon';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import * as actions from '../Actions/snippetsActions';

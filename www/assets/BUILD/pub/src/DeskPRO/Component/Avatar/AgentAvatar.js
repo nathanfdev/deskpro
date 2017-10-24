@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import Avatar from 'deskpro-components/lib/Components/Avatar';
+import Avatar from '@deskpro/react-components/lib/Components/Avatar';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
