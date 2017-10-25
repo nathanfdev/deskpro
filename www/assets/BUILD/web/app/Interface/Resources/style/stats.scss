@@ -3,8 +3,7 @@
 
 .big-list-of-stats-filters {
   @include clearfix;
-  padding: 10px;
-  padding-bottom: 0px;
+  padding: 10px 10px 0 10px;
   position: absolute;
   height: 40px;
   width: 575px;
@@ -36,10 +35,10 @@
 
     .box {
       padding-left: 45px;
-      border: 0px;
+      border: 0;
 
       input {
-        border: 0px;
+        border: 0;
       }
     }
   }
@@ -92,6 +91,24 @@
       padding-left: 30px;
       position: relative;
 
+      .controls {
+        display: none;
+        float: right;
+        cursor: pointer;
+      }
+
+      &:hover, &.active {
+        background: $dp-morning-sky;
+      }
+
+      &:hover .controls {
+        display: block;
+      }
+
+      &.active .mark {
+        opacity: 1;
+      }
+
       .mark {
         display: block;
         position: absolute;
@@ -104,16 +121,9 @@
         border-radius: 199px;
         opacity: 0.5;
       }
-    }
 
-    li:last-child {
-      border-bottom: 0px;
-    }
-
-    li.active {
-      background: #efeeeb;
-      .mark {
-        opacity: 1;
+      &:last-child {
+        border-bottom: 0;
       }
     }
 
@@ -163,43 +173,9 @@
     }
   }
 
-
-  .select-data-dropdown {
-    position: absolute;
-    z-index: 199;
-    background: #fff;
-    min-width: 260px;
-
-    ul {
-      @extend %flat-list;
-      display: block;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-
-    li {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    }
-
-    a {
-      display: block;
-      line-height: 1em;
-      padding: 7px 6px;
-      text-decoration: none;
-      text-transform: uppercase;
-      font-size: 0.85em;
-      font-weight: 600;
-      color: #6e6e6e;
-
-      &:hover {
-        color: #333;
-      }
-    }
-  }
-
   .controls {
     a {
       background: #4681b2;
-      color: #fff;
       text-transform: uppercase;
       display: inline-block;
       line-height: 1em;
@@ -229,11 +205,12 @@
   font-size: 0.85em;
   margin-left: 3px;
   cursor: pointer;
+
+  &.active, &:hover {
+    color: $dp-sonic-primary;
+  }
 }
 
-.stat-label.active, .stat-label:hover {
-  color: $blue;
-}
 
 
 .select-label-dropdown {
@@ -287,9 +264,8 @@
     .bucket {
       float: none;
       width: 100%;
-      margin: 0;
+      margin: 0 0 10px;
       padding: 0;
-      margin-bottom: 10px;
       display: inline-block;
 
       &.filter-title {
@@ -305,7 +281,7 @@
 
 
 .report-list-big-buttons {
-  margin: 0px 10px;
+  margin: 0 10px;
   text-align: center;
 
   .graph-type-filter {
@@ -344,31 +320,31 @@
       font-size: 1.3em;
       opacity: 0.3;
     }
-  }
 
-  .graph-type-filter:hover {
-    .icon {
-      background: darken(#ecf0f3, 5%);
-    }
-  }
-
-  .graph-type-filter.extendable {
-    .icon {
-      width: 64px;
-      padding-right: 20px;
+    &:hover {
+      .icon {
+        background: darken(#ecf0f3, 5%);
+      }
     }
 
-    .extender {
-      position: absolute;
-      top: 1px;
-      right: 0px;
-      width: 20px;
-      height: 42px;
-      border-left: 1px solid $global-border;
+    &.extendable {
+      .icon {
+        width: 64px;
+        padding-right: 20px;
+      }
 
-      i {
-        font-size: 12px;
-        left: -1px;
+      .extender {
+        position: absolute;
+        top: 1px;
+        right: 0;
+        width: 20px;
+        height: 42px;
+        border-left: 1px solid $global-border;
+
+        i {
+          font-size: 12px;
+          left: -1px;
+        }
       }
     }
   }
@@ -382,8 +358,7 @@
     left: -1px;
     background: #ecf0f3;
     text-align: left;
-    padding: 5px 10px;
-    padding-bottom: 20px;
+    padding: 5px 10px 20px;
 
     .check {
       display: block;

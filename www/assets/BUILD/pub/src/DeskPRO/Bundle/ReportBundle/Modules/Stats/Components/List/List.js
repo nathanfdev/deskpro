@@ -6,6 +6,7 @@ class List extends React.Component {
   static propTypes = {
     customReports:  PropTypes.object.isRequired,
     builtInReports: PropTypes.object.isRequired,
+    currentReport:  PropTypes.object,
     reportsLoaded:  PropTypes.bool.isRequired,
     onReportClick:  PropTypes.func.isRequired,
     onLabelClick:   PropTypes.func.isRequired,
@@ -22,8 +23,7 @@ class List extends React.Component {
   }
 
   showList() {
-    const { onLabelClick, onReportClick, labels } = this.props;
-
+    const { onLabelClick, onReportClick, labels, currentReport } = this.props;
     return (
       <div className="stat-list-wrapper">
         <ul className="stat-list">
@@ -33,6 +33,7 @@ class List extends React.Component {
                 key={report.get('id')}
                 onLabelClick={onLabelClick}
                 onReportClick={onReportClick}
+                isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}
               />
@@ -43,6 +44,7 @@ class List extends React.Component {
                 key={report.get('id')}
                 onLabelClick={onLabelClick}
                 onReportClick={onReportClick}
+                isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}
               />

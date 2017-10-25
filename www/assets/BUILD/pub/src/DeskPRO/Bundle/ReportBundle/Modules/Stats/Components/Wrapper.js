@@ -157,7 +157,7 @@ class Wrapper extends React.Component {
 
   render() {
     const { reports, reportsLoaded } = this.props;
-    const { labels, activeLabels, searchText } = this.state;
+    const { labels, activeLabels, searchText, currentReport } = this.state;
 
     const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
     const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
@@ -178,6 +178,7 @@ class Wrapper extends React.Component {
               <List
                 customReports={filteredCustomReports}
                 builtInReports={filteredBuiltInReports}
+                currentReport={currentReport}
                 reportsLoaded={reportsLoaded}
                 onReportClick={this.onReportClick}
                 onLabelClick={this.onLabelClick}

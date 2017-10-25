@@ -7,7 +7,8 @@ class ListItem extends React.Component {
     report:        PropTypes.object.isRequired,
     onReportClick: PropTypes.func.isRequired,
     onLabelClick:  PropTypes.func.isRequired,
-    labels:        PropTypes.object.isRequired
+    labels:        PropTypes.object.isRequired,
+    isActive:      PropTypes.bool.isRequired,
   };
 
   constructor(props) {
@@ -26,13 +27,14 @@ class ListItem extends React.Component {
   }
 
   render() {
-    const { report } = this.props;
+    const { report, isActive } = this.props;
 
     return (
-      <li onClick={this.onClick}>
+      <li className={classNames({ active: isActive })}>
         <span className="mark" />
         <h1>
           <a>{ report.get('title') }</a>
+          <span onClick={this.onClick} className="controls"><i className="pencil icon" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
           <p>
