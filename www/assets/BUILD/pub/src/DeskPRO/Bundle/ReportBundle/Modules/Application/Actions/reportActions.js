@@ -30,7 +30,7 @@ export const loadReport = createAction(
       }
     })
     .success((response) => {
-      dispatch(addToCollection('ReportsLabel', 'all', { [response.widget.id]: response.widget }, [response.widget.id]));
+      dispatch(addToCollection('Reports', 'all', { [response.widget.id]: response.widget }, [response.widget.id]));
       return resolve(response);
     })
 ));
