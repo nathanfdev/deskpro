@@ -1,6 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 export const reportsLoaded = createAction(
   'REPORTS_LOADED'
@@ -19,7 +19,7 @@ export const loadReports = createAction(
 
 export const loadReport = createAction(
   'REPORTS_LOAD_REPORT',
-  reportId => () => new Promise(resolve => api
+  reportId => dispatch => new Promise(resolve => api
     .sendGet(
     `DP_API_OLD/reports/widget/${reportId}`,
     {
@@ -29,7 +29,10 @@ export const loadReport = createAction(
         'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
       }
     })
-    .success(response => resolve(response))
+    .success((response) => {
+      dispatch(addToCollection('ReportsLabel', 'all', { [response.widget.id]: response.widget }, [response.widget.id]));
+      return resolve(response);
+    })
 ));
 
 export const loadGroupParams = createAction(

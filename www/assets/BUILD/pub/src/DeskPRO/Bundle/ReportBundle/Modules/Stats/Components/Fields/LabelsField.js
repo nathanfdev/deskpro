@@ -16,7 +16,7 @@ class LabelsField extends React.Component {
     return (<TagInput
       tags={value}
       onChange={onChange}
-      options={labels.map(label => label.label).toJS()}
+      options={labels.map(label => label.get('label')).toJS()}
       inputProps={{ placeholder: 'Pick up a label' }}
       editable
     />);
