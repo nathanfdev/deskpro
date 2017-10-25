@@ -259,6 +259,11 @@ class PortalSupportExtension extends \Twig_Extension
                     return true;
                 }
                 break;
+            case 'guides':
+                if ($sec->isGranted('USE_GUIDES') && $this->container->get('data.guides')->hasAny()) {
+                    return true;
+                }
+                break;
         }
 
         return false;
