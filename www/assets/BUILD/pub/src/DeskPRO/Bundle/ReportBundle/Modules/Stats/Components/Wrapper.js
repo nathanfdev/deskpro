@@ -4,7 +4,8 @@ import Immutable from 'immutable';
 import ListHeader from './List/ListHeader';
 import List from './List/List';
 import Edit from './Edit';
-import { loadReport, saveReport, newReport } from '../../Application/Actions/reportActions';
+import Run from './Run';
+import { loadReport, saveReport, newReport, runReport } from '../../Application/Actions/reportActions';
 import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
 
 @connect(state => ({
@@ -59,7 +60,8 @@ class Wrapper extends React.Component {
       activeLabels:  0
     };
 
-    this.onReportClick      = this.onReportClick.bind(this);
+    this.onEditReportClick  = this.onEditReportClick.bind(this);
+    this.onRunReportClick   = this.onRunReportClick.bind(this);
     this.onChangeFilterText = this.onChangeFilterText.bind(this);
     this.onLabelClick       = this.onLabelClick.bind(this);
     this.onSubmit           = this.onSubmit.bind(this);
@@ -74,8 +76,14 @@ class Wrapper extends React.Component {
     this.setLabels(props);
   }
 
-  onReportClick(report) {
+  onEditReportClick(report) {
     this.props.dispatch(loadReport(report.get('id')));
+    this.setState({ mode: 'edit' });
+  }
+
+  onRunReportClick(report, data) {
+    this.props.dispatch(runReport(report.get('id'), data));
+    this.setState({ mode: 'run' });
   }
 
   onChangeFilterText(value) {
@@ -156,8 +164,8 @@ class Wrapper extends React.Component {
   }
 
   render() {
-    const { reports, reportsLoaded } = this.props;
-    const { labels, activeLabels, searchText, currentReport } = this.state;
+    const { reports, reportsLoaded, groupParams } = this.props;
+    const { labels, activeLabels, searchText, currentReport, mode } = this.state;
 
     const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
     const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
@@ -180,21 +188,26 @@ class Wrapper extends React.Component {
                 builtInReports={filteredBuiltInReports}
                 currentReport={currentReport}
                 reportsLoaded={reportsLoaded}
-                onReportClick={this.onReportClick}
+                onEditReportClick={this.onEditReportClick}
+                onRunReportClick={this.onRunReportClick}
                 onLabelClick={this.onLabelClick}
                 labels={labels}
               />
             </div>
           </div>
         </div>
-        { this.props.currentReport.get('query_parts')
+        { currentReport.get('query_parts') && mode === 'edit'
           ? <Edit
             labels={labels}
-            report={this.state.currentReport}
-            groupParams={this.props.groupParams}
+            report={currentReport}
+            groupParams={groupParams}
             onSubmit={this.onSubmit}
             onRunClick={this.onRunClick}
           />
+          : null
+        }
+        { currentReport && mode === 'run'
+          ? <Run report={currentReport} />
           : null
         }
       </span>

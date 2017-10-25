@@ -1,24 +1,52 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
+import Immutable from 'immutable';
 
 class ListItem extends React.Component {
 
   static propTypes = {
-    report:        PropTypes.object.isRequired,
-    onReportClick: PropTypes.func.isRequired,
-    onLabelClick:  PropTypes.func.isRequired,
-    labels:        PropTypes.object.isRequired,
-    isActive:      PropTypes.bool.isRequired,
+    report:            PropTypes.object.isRequired,
+    onEditReportClick: PropTypes.func.isRequired,
+    onRunReportClick:  PropTypes.func.isRequired,
+    onLabelClick:      PropTypes.func.isRequired,
+    labels:            PropTypes.object.isRequired,
+    isActive:          PropTypes.bool.isRequired,
   };
 
   constructor(props) {
     super(props);
-    this.onClick = this.onClick.bind(this);
+    this.onEditClick = this.onEditClick.bind(this);
+    this.onRunClick  = this.onRunClick.bind(this);
   }
 
-  onClick(event) {
+  onRunClick(event) {
     event.preventDefault();
-    this.props.onReportClick(this.props.report);
+
+    const { report, onRunReportClick } = this.props;
+
+    const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
+    const data = {
+      title:         report.get('title'),
+      labels:        report.get('labels', Immutable.List()).toArray(),
+      desc:          report.get('description', ''),
+      display_types: report.get('display_types', Immutable.List()).toJS(),
+      select:        queryParts.get('select', ''),
+      from:          queryParts.get('from', ''),
+      where:         queryParts.get('where', ''),
+      splitBy:       queryParts.get('splitBy', ''),
+      groupBy:       queryParts.get('groupBy', ''),
+      orderBy:       queryParts.get('orderBy', ''),
+      offset:        queryParts.get('offset', ''),
+      limit:         queryParts.get('limit', ''),
+      vars:          report.get('variables', Immutable.List()).toJS(),
+    };
+    onRunReportClick(report, data);
+  }
+
+  onEditClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onEditReportClick(this.props.report);
   }
 
   isLabelActive(label) {
@@ -30,11 +58,11 @@ class ListItem extends React.Component {
     const { report, isActive } = this.props;
 
     return (
-      <li className={classNames({ active: isActive })}>
+      <li className={classNames({ active: isActive })} onClick={this.onRunClick}>
         <span className="mark" />
         <h1>
           <a>{ report.get('title') }</a>
-          <span onClick={this.onClick} className="controls"><i className="pencil icon" /></span>
+          <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
           <p>

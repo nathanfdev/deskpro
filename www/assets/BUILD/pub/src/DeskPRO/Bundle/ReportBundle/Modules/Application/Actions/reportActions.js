@@ -30,10 +30,48 @@ export const loadReport = createAction(
       }
     })
     .success((response) => {
-      dispatch(addToCollection('Reports', 'all', { [response.widget.id]: response.widget }, [response.widget.id]));
+      dispatch(addToCollection('Reports', 'all', { [response.id]: response }, [response.id]));
       return resolve(response);
     })
 ));
+
+export const runReport = createAction(
+  'REPORTS_RUN_REPORT',
+  (reportId, data) => {
+    const dataToSend = {
+      report: {
+        title:         data.title,
+        description:   data.desc,
+        display_types: data.display_types,
+        variables:     data.vars,
+        labels:        data.labels,
+      },
+      parts: {
+        select:  data.select,
+        from:    data.from,
+        where:   data.where,
+        splitBy: data.splitBy,
+        groupBy: data.groupBy,
+        orderBy: data.orderBy,
+        limit:   data.limit,
+        offset:  data.offset
+      }
+    };
+
+    return new Promise(resolve => api
+      .sendPost(
+      `DP_API_OLD/reports/widget/test/${reportId}`,
+      dataToSend,
+      {
+        headers: {
+          'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
+          'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
+          'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
+        }
+      })
+      .success(response => resolve(response))
+    );
+  });
 
 export const loadGroupParams = createAction(
   'REPORTS_LOAD_GROUP_PARAMS',
@@ -64,7 +102,7 @@ export const saveReport = createAction(
       parts: {
         select:  data.select,
         from:    data.from,
-        where:   data.from,
+        where:   data.where,
         splitBy: data.splitBy,
         groupBy: data.groupBy,
         orderBy: data.orderBy,

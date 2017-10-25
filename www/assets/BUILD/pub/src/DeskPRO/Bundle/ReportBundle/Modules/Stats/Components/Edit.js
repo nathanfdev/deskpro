@@ -36,7 +36,7 @@ class Edit extends BaseForm {
     },
     {
       label: 'Table',
-      value: 'tables',
+      value: 'table',
     },
   ];
 

@@ -4,13 +4,14 @@ import ListItem from './ListItem';
 class List extends React.Component {
 
   static propTypes = {
-    customReports:  PropTypes.object.isRequired,
-    builtInReports: PropTypes.object.isRequired,
-    currentReport:  PropTypes.object,
-    reportsLoaded:  PropTypes.bool.isRequired,
-    onReportClick:  PropTypes.func.isRequired,
-    onLabelClick:   PropTypes.func.isRequired,
-    labels:         PropTypes.object.isRequired
+    customReports:     PropTypes.object.isRequired,
+    builtInReports:    PropTypes.object.isRequired,
+    currentReport:     PropTypes.object,
+    reportsLoaded:     PropTypes.bool.isRequired,
+    onEditReportClick: PropTypes.func.isRequired,
+    onRunReportClick:  PropTypes.func.isRequired,
+    onLabelClick:      PropTypes.func.isRequired,
+    labels:            PropTypes.object.isRequired
   };
 
 
@@ -23,7 +24,7 @@ class List extends React.Component {
   }
 
   showList() {
-    const { onLabelClick, onReportClick, labels, currentReport } = this.props;
+    const { onLabelClick, onEditReportClick, onRunReportClick, labels, currentReport } = this.props;
     return (
       <div className="stat-list-wrapper">
         <ul className="stat-list">
@@ -32,7 +33,8 @@ class List extends React.Component {
               <ListItem
                 key={report.get('id')}
                 onLabelClick={onLabelClick}
-                onReportClick={onReportClick}
+                onEditReportClick={onEditReportClick}
+                onRunReportClick={onRunReportClick}
                 isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}
@@ -43,7 +45,8 @@ class List extends React.Component {
               <ListItem
                 key={report.get('id')}
                 onLabelClick={onLabelClick}
-                onReportClick={onReportClick}
+                onEditReportClick={onEditReportClick}
+                onRunReportClick={onRunReportClick}
                 isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}

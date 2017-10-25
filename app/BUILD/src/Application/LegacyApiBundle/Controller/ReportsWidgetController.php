@@ -125,6 +125,11 @@ class ReportsWidgetController extends AbstractController
      */
     public function getAction($id)
     {
+        return $this->createApiResponse($this->getReportWidgetData($id));
+    }
+
+    private function getReportWidgetData($id)
+    {
         /* @var ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
         $report        = $reportsWidget->getById($id);
@@ -140,9 +145,7 @@ class ReportsWidgetController extends AbstractController
         }
         $widget['query_parts'] = $queryParts;
 
-        return $this->createApiResponse([
-            'widget' => $widget,
-        ]);
+        return $widget;
     }
 
     /**
@@ -183,12 +186,10 @@ class ReportsWidgetController extends AbstractController
                 );
             }
             $reportsWidget->saveQuery($report);
-            $renderedResult = $reportsWidget->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
-                'success'         => true,
-                'id'              => $report->getId(),
-                'rendered_result' => $renderedResult,
+                'success' => true,
+                'id'      => $report->getId(),
             ]);
         }
     }
@@ -273,14 +274,16 @@ class ReportsWidgetController extends AbstractController
     {
         /* @var ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
-        if ($error = $reportsWidget->getErrors($id, 'from_request')) {
+        $parts         = $this->in->getArrayValue('parts');
+        $query         = $parts && isset($parts['from']) && $parts['from'] ? 'from_request' : null;
+        if ($error = $reportsWidget->getErrors($id, $query)) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $renderedResult = $reportsWidget->getRenderedResult($id, 'from_request');
+            $renderedResult            = $reportsWidget->getRenderedResult($id, $query, 'html');
+            $widget                    = $this->getReportWidgetData($id);
+            $widget['rendered_result'] = $renderedResult;
 
-            return $this->createApiResponse([
-                'rendered_result' => $renderedResult,
-            ]);
+            return $this->createApiResponse($widget);
         }
     }
 

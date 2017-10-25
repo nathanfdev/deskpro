@@ -119,10 +119,11 @@ class ReportsWidgetService
     /**
      * @param int    $id
      * @param string $query
+     * @param string $format
      *
      * @return array
      */
-    public function getRenderedResult($id, $query = null)
+    public function getRenderedResult($id, $query = null, $format = 'json')
     {
         $report              = $this->repository->find($id);
         $params              = $this->getParamsInput('params');
@@ -137,7 +138,7 @@ class ReportsWidgetService
         }
 
         $error   = false;
-        $results = $this->renderQuery($query, 'json', $error, $params);
+        $results = $this->renderQuery($query, $format, $error, $params);
 
         return $results;
     }
