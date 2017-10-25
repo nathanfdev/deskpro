@@ -1061,12 +1061,19 @@ class PersonController extends AbstractController implements ProtectedController
         $this->em->persist($person);
 
         if ($send_email) {
-            $message = $this->container->getMailer()->createMessage();
-            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-            $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
-                'person' => $person,
-            ]);
-            $this->container->getMailer()->send($message);
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = $this->get('email.user_viewmodel_factory')
+                    ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
+                    'person' => $person,
+                ]);
+                $this->container->getMailer()->send($message);
+            }
         }
 
         return $this->createSuccessResponse();

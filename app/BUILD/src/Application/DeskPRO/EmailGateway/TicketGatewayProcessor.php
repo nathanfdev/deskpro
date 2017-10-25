@@ -279,35 +279,45 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         //-------------------------
 
         if ($person && ($person->is_disabled || $person->is_deleted)) {
+            //-------------------------
+            // Reject new replies by disabled users
+            //-------------------------
+
+            if (!$person->is_agent && $person->is_disabled) {
+                // user is disabled so can't create/reply to tickets
+
+                if (!$this->reader->isFromRobot() && !$isBounce) {
+                    if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                        $viewModel = $this->container->get('email.user_viewmodel_factory')
+                            ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                        $message = $this->container->get('email.email_sender')
+                            ->prepareMessage($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                    } else {
+                        $message = $this->container->getMailer()->createMessage();
+                        $message->setTemplate(
+                            'DeskPRO:emails_user:account-disabled.html.twig',
+                            [
+                                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                                'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
+                                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress(
+                                )->getEmail(),
+                            ]
+                        );
+                        $message->setTo($this->reader->getFromAddress()->getEmail());
+                    }
+                    $this->container->getTranslator()->setTemporaryLanguage(
+                        $person->getLanguage(),
+                        function () use ($message) {
+                            $message->prepare();
+                        }
+                    );
+
+                    $this->container->getMailer()->send($message);
+                }
+            }
             $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
             $this->error      = 'from_disabled_user';
             $this->error_type = 'rejected';
-
-            return null;
-        }
-
-        //-------------------------
-        // Reject new replies by disabled users
-        //-------------------------
-
-        if ($person && (!$person->is_agent && $person->is_disabled)) {
-            // user is disabled so can't create/reply to tickets
-
-            if (!$this->reader->isFromRobot() && !$isBounce) {
-                $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', [
-                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
-                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                ]);
-                $message->setTo($this->reader->getFromAddress()->getEmail());
-
-                $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                $this->container->getMailer()->send($message);
-            }
 
             return null;
         }
