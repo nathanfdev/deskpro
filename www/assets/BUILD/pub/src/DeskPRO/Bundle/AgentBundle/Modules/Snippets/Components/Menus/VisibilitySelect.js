@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { CustomSelect, Radio, Checkbox, Input } from 'deskpro-components/lib/Components/Forms';
-import { List, ListElement } from 'deskpro-components/lib/Components/Common';
+import { CustomSelect, Radio, Checkbox, Input } from '@deskpro/react-components/lib/Components/Forms';
+import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
