@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\Oauth1;
+namespace DeskPRO\Bundle\AppStoreBundle\Oauth1;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1ClientCredentials;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1ProviderDetails;
@@ -52,6 +52,7 @@ class Client extends Server
         /** @var ClientCredentialsInterface $clientCredentials */
         $clientCredentials = null;
         $rsaPrivateKey     = $credentials->getRSAPrivateKey();
+
         if ($rsaPrivateKey) {
             $clientCredentials = new RsaClientCredentials();
             $clientCredentials->setRsaPrivateKey($rsaPrivateKey);
@@ -60,7 +61,7 @@ class Client extends Server
         }
         $clientCredentials->setCallbackUri($credentials->getUrlRedirect());
         $clientCredentials->setSecret($credentials->getClientSecret());
-        $clientCredentials->setIdentifier($credentials->getClientId());
+        $clientCredentials->setIdentifier($credentials->getClientSecret());
 
         return $clientCredentials;
     }

@@ -32,7 +32,8 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Oauth1\AuthorizationSession;
+
+use DeskPRO\Bundle\AppStoreBundle\Oauth1\AuthorizationSession;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth1Connection;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -53,6 +54,17 @@ class Oauth1ProxyController extends BaseController
 {
     private $oauthSessionCookieName = 'dp_oauth1_sess';
 
+    private $tokenCallbackCookieName = 'dp_oauth1_token_callback';
+
+    private $authSessionDuration = 5 * 60;
+
+
+    private function readTokenCallbackCookie(Request $request)
+    {
+        $tokenCallback = $request->cookies->get($this->tokenCallbackCookieName, null);
+        return $tokenCallback;
+    }
+
     /**
      * @param Request $request
      *
@@ -69,6 +81,24 @@ class Oauth1ProxyController extends BaseController
     }
 
     /**
+     * @param Response $response
+     * @param string $callbackUrl
+     * @return Cookie
+     *
+     */
+    private function writeTokenCallbackCookie(Response $response, $callbackUrl = null)
+    {
+        if (is_null($callbackUrl)) {
+            $sessionCookie = new Cookie($this->oauthSessionCookieName, '');
+        } else {
+            $expirationTime = time() + $this->authSessionDuration;
+            $sessionCookie  = new Cookie($this->tokenCallbackCookieName, $callbackUrl, $expirationTime);
+        }
+
+        $response->headers->setCookie($sessionCookie);
+    }
+
+    /**
      * @param Response             $response
      * @param AuthorizationSession $session
      *
@@ -80,7 +110,7 @@ class Oauth1ProxyController extends BaseController
         if (is_null($session)) {
             $sessionCookie = new Cookie($this->oauthSessionCookieName, '');
         } else {
-            $expirationTime = time() + 5 * 60;
+            $expirationTime = time() + $this->authSessionDuration;
             $sessionCookie  = new Cookie(
                 $this->oauthSessionCookieName,
                 base64_encode(AuthorizationSession::serialize($session)),
@@ -146,6 +176,7 @@ class Oauth1ProxyController extends BaseController
 
             $response = new RedirectResponse($authorizationUrl);
             $this->writeAuthSessionCookie($response, $authSession);
+            $this->writeTokenCallbackCookie($response, $callbackUrl);
 
             return $response;
         }
@@ -166,9 +197,14 @@ class Oauth1ProxyController extends BaseController
             return new Response('Connection not found', 404);
         }
 
+        $callbackUrl = $this->readTokenCallbackCookie($request);
+        if (is_null($callbackUrl)) {
+            return new Response('Bad request. Missing callback url', 400);
+        }
+
         // prepare the error response builder
-        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
-//            ->withRedirectUrl($proxyState['callbackUrl'])
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error', '1.0')
+            ->withRedirectUrl($callbackUrl)
         ;
 
         $oauthToken    = $request->query->get('oauth_token', null);
@@ -189,11 +225,12 @@ class Oauth1ProxyController extends BaseController
             if (is_null($authSession)) {
                 return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
             }
+
             $token = $connection->getAccessToken($authSession, $oauthToken, $oauthVerifier);
 
-            return OauthResponseBuilder::forResponseType('token')
+            return OauthResponseBuilder::forResponseType('token', '1.0')
                 ->withTokenParams($token->jsonSerialize())
-//                    ->withRedirectUrl($proxyState['callbackUrl'])
+                ->withRedirectUrl($callbackUrl)
                 ->buildPostMessage();
         } catch (\Exception $e) {
             return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
@@ -215,8 +252,10 @@ class Oauth1ProxyController extends BaseController
     public function grantAccessAction(AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
     {
         $response = $this->handleGrantAccessAction($application, $provider, $request);
-        if ($response instanceof Response) {
+
+        if ($response instanceof Response) { // cleanup any authorization session cookies
             $this->writeAuthSessionCookie($response);
+            $this->writeTokenCallbackCookie($response);
         }
 
         return $response;

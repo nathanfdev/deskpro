@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\Oauth1;
+namespace DeskPRO\Bundle\AppStoreBundle\Oauth1;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1AccessToken;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1AuthorizationSession;
@@ -128,11 +128,11 @@ class AuthorizationSession implements Oauth1AuthorizationSession
         $oauthVerifier
     ) {
         $temporaryCredentials = $this->getTemporaryCredentials();
-        $credentials          = $this->createClient($providerDetails, $credentials)
+        $tokenCredentials          = $this->createClient($providerDetails, $credentials)
             ->getTokenCredentials($temporaryCredentials, $oauthToken, $oauthVerifier)
         ;
 
-        return new Oauth1AccessToken($credentials->getIdentifier(), $credentials->getSecret());
+        return new Oauth1AccessToken($tokenCredentials->getIdentifier(), $tokenCredentials->getSecret());
     }
 
     /**

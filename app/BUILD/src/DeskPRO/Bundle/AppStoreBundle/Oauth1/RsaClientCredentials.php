@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\Oauth1;
+namespace DeskPRO\Bundle\AppStoreBundle\Oauth1;
 
 use League\OAuth1\Client\Credentials\RsaClientCredentials as Oauth1RsaClientCredentials;
 

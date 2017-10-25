@@ -109,7 +109,7 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
 
     /**
      * @JMS\Type("string")
-     * @JMS\SerializedName("clientIdentifier")
+     * @JMS\SerializedName("clientId")
      *
      * @var string
      */

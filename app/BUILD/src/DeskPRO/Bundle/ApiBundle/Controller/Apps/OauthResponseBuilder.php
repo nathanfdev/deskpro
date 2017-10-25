@@ -8,10 +8,10 @@ class OauthResponseBuilder
 {
     /**
      * @param string $type
-     * @param int $oauthVersion
+     * @param string $oauthVersion
      * @return OauthResponseBuilder
      */
-    public static function forResponseType($type = 'token', $oauthVersion = 2) {
+    public static function forResponseType($type = 'token', $oauthVersion = '2.0') {
         return new OauthResponseBuilder($type === 'error', $oauthVersion);
     }
 
