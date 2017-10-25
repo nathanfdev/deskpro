@@ -1264,6 +1264,8 @@ class Person extends DomainObject implements
         } elseif ($this->primary_email) {
             // try to get a nice name from the email address
             return Strings::getNameFromEmail($this->primary_email->getEmail());
+        } elseif ($this->getPrimaryPhoneNumberText()) {
+            return $this->getPrimaryPhoneNumberText();
         } elseif ($id_fallback) {
             return 'ID-'.$this->id;
         }
@@ -2147,7 +2149,7 @@ class Person extends DomainObject implements
      */
     public function getPrimaryPhoneNumber()
     {
-        return $this->phone_numbers->first() ?: null;
+        return $this->phone_numbers && $this->phone_numbers->first() ? $this->phone_numbers->first() : null;
     }
 
     /**
