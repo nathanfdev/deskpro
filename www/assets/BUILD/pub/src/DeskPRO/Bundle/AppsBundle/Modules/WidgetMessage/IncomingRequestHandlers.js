@@ -21,17 +21,18 @@ const registerPostMessageListener = (windowObject, handler) => {
 
 export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, services) => {
   const { provider, protocolVersion } = widgetMessage.body;
-  const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
-  if (oauthProxyEndpoint) {
-    const redirectUrlParams = { provider, protocolVersion, applicationId: widget.instanceId };
-    const urlRedirect = services.buildOauthProxyRedirectUrl(oauthProxyEndpoint, redirectUrlParams).toString();
 
+  try {
+    const urlRedirect = services.oauthProxy.buildRedirectUrl({
+      provider,
+      protocolVersion,
+      applicationId: widget.instanceId
+    }).toString();
     const settings = { urlRedirect };
     response(null, settings);
-    return;
+  } catch (e) {
+    response(new Error('failed to build redirect url'));
   }
-
-  response(new Error('oauth proxy url is not configured'));
 };
 
 /**
@@ -45,81 +46,28 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
   const { correlationId }  = widgetMessage;
   const { id } = widget;
 
+  const { provider, protocolVersion } = widgetMessage.body;
 
-  const { provider } = widgetMessage.body;
-  const state = services.base64.encodeJSON({ correlationId });
-
-  const verifyUrl = services.buildURL(services.config.apiRoot) // use canonic xxx.deskpro.com
-      .set('username', services.window.DP_PERSON_ID)
-      .set('password', services.base64.encode(`token ${services.apiToken}`))
-      .toString()
-    ;
-
-  let oauthProxyUrl;
-  const oauthProxyEndpoint = services.config.oauthProxyEndpoint;
-  if (oauthProxyEndpoint) {
-    const oauthProxyParams = {
-      applicationId: widget.instanceId,
-
-      verifyUrl,
-      state,
+  try {
+    const authParams = {
       provider,
+      applicationId:  widget.instanceId,
+      correlationId,
       callbackMethod: 'postMessage',
       callbackUrl:    services.location.href
     };
-    oauthProxyUrl = services.buildOauthProxyAuthorizeUrl(oauthProxyEndpoint, oauthProxyParams).toString();
+
+    const oauthProxyUrl = services.oauthProxy.buildAuthorizeUrl({ protocolVersion })(authParams);
+    const listener = services.oauthProxy.buildReceiveTokenListener({ cb: response, protocolVersion, oauthProxyUrl })(authParams);
+
+    const windowName = `auth-${id}-${provider}`;
+    const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
+
+    registerPostMessageListener(services.window, listener);
+    services.window.open(oauthProxyUrl, windowName, windowFeatures);
+  } catch (e) {
+    response(new Error('failed to authenticate'));
   }
-
-  if (!oauthProxyUrl) {
-    response(new Error('oauth proxy url is not configured'));
-    return;
-  }
-
-  const validateOauthProxyMessage = (ev, originURL) => {
-    const { type } = ev.data;
-    if (type !== 'oauth-proxy-callback') { return false; }
-
-    const urlBuilder = services.buildURL(originURL);
-    const origin =  `${urlBuilder.protocol.replace(/:+$/, '')}://${urlBuilder.host}`;
-
-    return origin === ev.origin;
-  };
-
-  const windowName = `auth-${id}-${provider}`;
-  const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
-
-  const listener = (ev) => {
-    // there could two different authentication schemes running concurrently
-    if (!validateOauthProxyMessage(ev, oauthProxyUrl)) {
-      return false;
-    }
-
-    let messageIsAuthentic;
-    try {
-      const receivedState = services.base64.decodeJSON(ev.data.body.state);
-      messageIsAuthentic = correlationId === receivedState.correlationId;
-    } catch (error) {
-      messageIsAuthentic = false;
-    }
-
-    if (!messageIsAuthentic) {
-      response(new Error('authentication failed'));
-      return true;
-    }
-
-    const { status } = ev.data;
-    if (status === 'success') {
-      response(null, ev.data);
-    } else {
-      const { error: oauthError } = ev.data.body;
-      const errorMessage = oauthError || 'authentication failed';
-      response(new Error(errorMessage), null);
-    }
-    return true;
-  };
-
-  registerPostMessageListener(services.window, listener);
-  services.window.open(oauthProxyUrl, windowName, windowFeatures);
 };
 
 /**

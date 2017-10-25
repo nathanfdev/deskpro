@@ -1,10 +1,10 @@
-import { default as URL } from 'url-parse';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
 import { WidgetDOM } from '../WidgetDOM';
 import { subscribeWidgetToEvent } from '../WidgetMessage';
 import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
 import { Base64Converter } from './Base64Converter';
+import { OauthProxy } from './OauthProxy';
 
 export class AppServices {
 
@@ -51,56 +51,16 @@ export class AppServices {
     return new Base64Converter(this.window);
   }
 
-  buildOauthProxyRedirectUrl(urlString, { provider, protocolVersion, applicationId })  {
-    const builder = this.buildURL(urlString);
-
-    let existingPath = builder.pathname;
-    if (!existingPath) {
-      existingPath = '';
-    }
-
-    let pathPrefix = existingPath.trim('/');
-    pathPrefix = protocolVersion === '2.0' || !protocolVersion ? pathPrefix : [pathPrefix, protocolVersion].concat('/');
-
-    const pathname = `${pathPrefix}/${provider}/grant-access/${applicationId}`;
-    return builder.set('protocol', 'https').set('pathname', pathname);
-  }
-
   /**
-   * @param {String} urlString
-   * @param {String} verifyUrl
-   * @param {String} state
-   * @param {String} provider
-   * @param {String} callbackMethod
-   * @param {String} callbackUrl
-   * @param applicationId
-   * @return {URL}
+   * @type {OauthProxy}
    */
-  buildOauthProxyAuthorizeUrl(urlString, { verifyUrl, state, provider, callbackMethod, callbackUrl, applicationId })  {
-    const builder = this.buildURL(urlString);
-
-    let existingPath = builder.pathname;
-    if (!existingPath) {
-      existingPath = '';
-    }
-    const pathname = `${existingPath.trim('/')}/${provider}/authorize`;
-
-    return builder.set('protocol', 'https')
-      .set('pathname', pathname)
-      .set('query', { verifyUrl, state, callbackMethod, callbackUrl, applicationId })
-    ;
-  }
-
-  /**
-   * @param urlString
-   * @return {URL}
-   */
-  buildURL(urlString) {
-    // es-lint forces the use of this in class methods....
-    const { props } = this;
-    const parseUrlString = !!props || true;
-
-    return new URL(urlString, parseUrlString);
+  get oauthProxy()  {
+    return new OauthProxy({
+      base64:     this.base64,
+      appsConfig: this.props.config,
+      username:   this.window.DP_PERSON_ID,
+      apiToken:   this.apiToken
+    });
   }
 
   /**
