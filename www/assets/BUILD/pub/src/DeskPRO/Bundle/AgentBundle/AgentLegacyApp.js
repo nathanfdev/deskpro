@@ -19,7 +19,7 @@ import { preloadData } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Acti
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
-import { voiceBootstrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
+import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import LegacyStoreProvider from 'DeskPRO/Bundle/AgentBundle/Services/LegacyStoreProvider';
 import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Services/LegacySnippetInserter';
@@ -135,6 +135,10 @@ class AgentLegacyApp {
     );
 
     return tabRef;
+  }
+
+  openVoiceDialpad(number) {
+    this.store.dispatch(openDialpad(number));
   }
 
   unmountVoiceControls(node) { // eslint-disable-line

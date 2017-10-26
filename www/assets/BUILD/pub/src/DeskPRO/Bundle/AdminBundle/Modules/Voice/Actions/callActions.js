@@ -32,3 +32,8 @@ export const loadPhoneCall = createAction(
     return promise;
   }
 );
+
+export const openDialpad = createAction(
+  'ADMIN_VOICE_OPEN_DIALPAD',
+  number => window.parent.AgentLegacyBundle.openVoiceDialpad(number)
+);
