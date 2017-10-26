@@ -276,8 +276,8 @@ class TicketListRenderer
                 case 'organization':
                     if (isset($this->cache_orgs[$ticket->organization->getId()])) {
                         $data['organization'] = [
-                            'id'   => $this->cache_orgs[$ticket->organization->getId()]->id,
-                            'name' => $this->cache_orgs[$ticket->organization->getId()]->name,
+                            'id'   => $this->cache_orgs[$ticket->organization->getId()]->getId(),
+                            'name' => $this->cache_orgs[$ticket->organization->getId()]->getName(),
                         ];
                     }
                     break;
