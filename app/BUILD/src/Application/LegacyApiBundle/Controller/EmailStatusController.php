@@ -267,7 +267,6 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             [
                 'page'             => $filter->getPage(),
                 'num_pages'        => $info['num_pages'],
-                'count'            => $info['count'],
                 'sendmail_queue'   => $data,
                 'tracking_enabled' => false,
             ]
@@ -510,10 +509,8 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             $info['sendmail_raw'] = null;
         }
 
-        if ($this->container->getSetting(InstallerHandler::NAME.'.enabled')) {
-            foreach ($sendmail->getStatuses() as $status) {
-                $info['statuses'][] = $status->toArray();
-            }
+        foreach ($sendmail->getStatuses() as $status) {
+            $info['statuses'][] = $status->toArray();
         }
 
         return $this->createApiResponse($info);
