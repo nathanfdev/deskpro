@@ -56,7 +56,7 @@ class Oauth1ProxyController extends BaseController
 
     private $tokenCallbackCookieName = 'dp_oauth1_token_callback';
 
-    private $authSessionDuration = 5 * 60;
+    private $authSessionDuration = 300; //in seconds
 
 
     private function readTokenCallbackCookie(Request $request)
