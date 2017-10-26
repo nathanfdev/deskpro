@@ -8,7 +8,7 @@ import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicatio
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproAppStore/DeskproAppStore';
+import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
 
 export const loadAgentPhraseTranslations = createAction(
@@ -177,6 +177,7 @@ export const preloadData    = createAction(
         .then((responses) => {
           const { discover } = responses.data.responses;
           // create appstore configuration
+          /** @var {AppsConfigBuilder} **/
           const builder = DeskproAppStore.configureWithWindowParams(window);
 
           if (discover && discover.data) {

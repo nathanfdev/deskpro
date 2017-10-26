@@ -50,11 +50,11 @@ class SearchFilters
         return new SearchAssetFilter($fileExtension, $pathPattern, $usePrefixPathMatchingStrategy);
     }
 
-    public function convertValueMapToStateFilter(SearchStateFilterOptions $valueMap)
+    public function convertValueMapToStateFilter( SearchAppStorageFilterOptions $valueMap)
     {
         $name = $valueMap->getStateVariableName();
-        $entityId = ApplicationState\EntityId::parse($valueMap->getEntityId());
-        return new ApplicationStateSearchFilter($valueMap->getApplicationId(), $entityId, $name);
+        $entityId = AppStorage\EntityId::parse($valueMap->getEntityId());
+        return new AppStorageSearchFilter($valueMap->getApplicationId(), $entityId, $name);
     }
 
 }

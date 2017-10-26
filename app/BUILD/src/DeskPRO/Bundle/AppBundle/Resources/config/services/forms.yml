@@ -185,6 +185,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.trigger_actions_form:
+    class: DeskPRO\Bundle\ApiBundle\Controller\Webhooks\TriggerActionsFormType
+    calls:
+      - [ setContainer, [ '@service_container' ]]
+    tags:
+      - { name: form.type }
+
   form.term_engine.term:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
     arguments:

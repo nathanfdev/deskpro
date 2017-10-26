@@ -36,8 +36,7 @@ class EntityQueryBuilders
 {
     /**
      * @param ORM\EntityManager $em
-     * @param {string}          $instanceId
-     *
+     * @param {string} $instanceId
      * @return ORM\Query
      */
     public function buildFindApplicationByInstanceIdQuery(ORM\EntityManager $em, $instanceId)
@@ -57,12 +56,10 @@ class EntityQueryBuilders
     }
 
     /**
-     * @param ORM\EntityManager                      $em
+     * @param ORM\EntityManager $em
      * @param Domain\SearchApplicationInstanceFilter $filter
-     *
-     * @throws \DomainException
-     *
      * @return ORM\Query
+     * @throws \DomainException
      */
     public function buildFindApplicationInstanceByFilterQuery(
         ORM\EntityManager $em,
@@ -76,8 +73,7 @@ class EntityQueryBuilders
         $qb
             ->from(Entity\AppStore\AppInstance::class, 'i')
             ->select('i')
-            ->where('1')
-            ->where('i.app.id != 1')
+            ->innerJoin('i.app', 'a')
         ;
 
         if ($filter->hasScope()) {
@@ -88,13 +84,39 @@ class EntityQueryBuilders
             $qb->andWhere('i.app IN (:appIds)')->setParameter('appIds', $filter->getApplicationIdList());
         }
 
+        if ($filter->hasIsDev()) {
+            $qb->andWhere('a.isDev = :isDev')->setParameter('isDev', $filter->getIsDev());
+        }
+
+        if ($filter->hasIsInstalled()) {
+            $qb->andWhere('i.isInstalled = :isInstalled')->setParameter('isInstalled', $filter->getIsInstalled());
+        }
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * @param ORM\EntityManager $em
+     * @param $id
+     * @return ORM\Query
+     */
+    public function buildFindApplicationInstanceByAppId(ORM\EntityManager $em, $id)
+    {
+        $qb = $em->createQueryBuilder();
+        $qb
+            ->from(Entity\AppStore\AppInstance::class, 'i')
+            ->select('i, a')
+            ->innerJoin('i.app', 'a')
+            ->where('a.id = :id')
+            ->setParameter('id', $id)
+        ;
+
         return $qb->getQuery();
     }
 
     /**
      * @param ORM\EntityManager $em
      * @param $applicationName
-     *
      * @return ORM\Query
      */
     public function buildFindApplicationInstanceByNameQuery(ORM\EntityManager $em, $applicationName)
@@ -112,13 +134,12 @@ class EntityQueryBuilders
     }
 
     /**
-     * @param ORM\EntityManager                   $em
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
-     *
+     * @param ORM\EntityManager $em
+     * @param Domain\AppStorageSearchFilter $searchFilter
      * @return ORM\Query
      */
-    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\ApplicationStateSearchFilter $searchFilter)
-    {
+    public function buildFindOwnedByNobodyStateQuery(ORM\EntityManager $em, Domain\AppStorageSearchFilter $searchFilter) {
+
         $qb = $em->createQueryBuilder();
         $qb
             ->from(Entity\AppStore\AppState::class, 'a')
@@ -135,14 +156,13 @@ class EntityQueryBuilders
     }
 
     /**
-     * @param ORM\EntityManager                   $em
-     * @param null                                $stateOwnerId
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
-     *
+     * @param ORM\EntityManager $em
+     * @param null $stateOwnerId
+     * @param Domain\AppStorageSearchFilter $searchFilter
      * @return ORM\Query
      */
-    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\ApplicationStateSearchFilter $searchFilter)
-    {
+    public function buildFindOwnedStateQuery(ORM\EntityManager $em, $stateOwnerId, Domain\AppStorageSearchFilter $searchFilter) {
+
         $qb = $em->createQueryBuilder();
         $qb
             ->from(Entity\AppStore\AppState::class, 'a')
@@ -162,8 +182,9 @@ class EntityQueryBuilders
     public function buildFindOwnedByOtherStateQuery(
         ORM\EntityManager $em,
         $stateOwnerId,
-        Domain\ApplicationStateSearchFilter $searchFilter
+        Domain\AppStorageSearchFilter $searchFilter
     ) {
+
         $qb = $em->createQueryBuilder();
         $qb
             ->from(Entity\AppStore\AppState::class, 'a')
@@ -181,15 +202,14 @@ class EntityQueryBuilders
     }
 
     /**
-     * @param ORM\EntityManager         $em
-     * @param Domain\ApplicationStateId $id
-     * @param null|string               $stateOwnerId
-     *
+     * @param ORM\EntityManager $em
+     * @param Domain\AppStorageItemIdentifier $id
+     * @param null|string $stateOwnerId
      * @return ORM\Query
      */
     public function buildFindStateEntityByIdQuery(
         ORM\EntityManager $em,
-        Domain\ApplicationStateId $id, $stateOwnerId = null
+        Domain\AppStorageItemIdentifier $id, $stateOwnerId = null
     ) {
         //TODO do not assume the application state id is the same as the persistence id
         $qb = $em->createQueryBuilder();
@@ -213,14 +233,13 @@ class EntityQueryBuilders
     }
 
     /**
-     * @param ORM\EntityManager                   $em
-     * @param Domain\ApplicationStateSearchFilter $searchFilter
-     *
+     * @param ORM\EntityManager $em
+     * @param Domain\AppStorageSearchFilter $searchFilter
      * @return ORM\Query
      */
     public function buildFindStateEntityByFilterQuery(
         ORM\EntityManager $em,
-        Domain\ApplicationStateSearchFilter $searchFilter
+        Domain\AppStorageSearchFilter $searchFilter
     ) {
         $qb = $em->createQueryBuilder();
         $qb
@@ -232,24 +251,23 @@ class EntityQueryBuilders
         ;
 
         $this->applySearchStateFilter($qb, $searchFilter);
-
         return $qb->getQuery();
     }
 
-    private function applySearchStateFilter(ORM\QueryBuilder $qb, Domain\ApplicationStateSearchFilter $assetFilter)
+    private function applySearchStateFilter(ORM\QueryBuilder $qb, Domain\AppStorageSearchFilter $assetFilter)
     {
         $filterField = $assetFilter->getName();
-        if (!empty($filterField)) {
+        if (! empty($filterField)) {
             $qb->andWhere('a.name IN (:name)')->setParameter('name', $filterField);
         }
 
         $filterField = $assetFilter->getEntityId();
-        if (!empty($filterField)) {
+        if (! empty($filterField)) {
             $qb->andWhere('a.entityId = :entityId')->setParameter('entityId', $filterField);
         }
 
         $accessPermission = $assetFilter->getAccessPermision();
-        if (!is_null($accessPermission)) {
+        if (! is_null($accessPermission)) {
             $permission = $accessPermission->getPermission();
             if ($accessPermission->hasAccessLevel(Domain\Constants::ACCESS_LEVEL_READ)) {
                 $qb->andWhere('a.permRead = :permRead')->setParameter('permRead', $permission);

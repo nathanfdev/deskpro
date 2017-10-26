@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
@@ -261,6 +262,33 @@ class TicketManager
         }
 
         return $ticket;
+    }
+
+    /**
+     * Finds all tickets and returns them.
+     *
+     * NOTE: This will disable auto-ticket processing,
+     * which means if you make changes, you need to use the saveTicket() method to
+     * have those changes run the other related systems (like triggers etc).
+     *
+     * @param int[]|string[] $ids
+     *
+     * @return \Application\DeskPRO\Entity\Ticket[]|array
+     */
+    public function getTickets($ids)
+    {
+        /** @var AbstractEntityRepository $ticketRepository */
+        $ticketRepository = $this->em->getRepository(Ticket::class);
+        if ($ticketRepository instanceof AbstractEntityRepository) {
+            /** @var Ticket[] $tickets */
+            $tickets = $ticketRepository->getByIds($ids);
+            foreach ($tickets as $ticket) {
+                $ticket->disableAutoTicketProcess();
+            }
+            return $tickets;
+        }
+
+        throw new \RuntimeException('unexpected repository type');
     }
 
     /**

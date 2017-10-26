@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomPeopleFieldDefinitionAlias;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -55,6 +56,13 @@ class CustomDefPerson extends CustomDefAbstract
     protected $children = null;
 
     /**
+     * Aliases for this field.
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $aliases = null;
+
+    /**
      * Set parent.
      *
      * @param CustomDefPerson $parent
@@ -66,6 +74,14 @@ class CustomDefPerson extends CustomDefAbstract
         $this->setModelField('parent', $parent);
 
         return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|CustomOrganizationFieldDefinitionAlias[]|null
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 
     //###########################################################################
@@ -213,6 +229,17 @@ class CustomDefPerson extends CustomDefAbstract
             ],
             'mappedBy'      => 'parent',
             'orderBy'       => ['display_order' => 'ASC'],
+            'orphanRemoval' => true,
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'aliases',
+            'targetEntity' => CustomPeopleFieldDefinitionAlias::class,
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'object',
             'orphanRemoval' => true,
         ]);
         $metadata->mapManyToOne([

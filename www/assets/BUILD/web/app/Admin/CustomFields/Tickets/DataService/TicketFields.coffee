@@ -62,10 +62,12 @@ define [
 
       if id
         @Api.sendGet("/ticket_fields/#{id}").then( (result) =>
-          data = {}
-          data.field = result.data.field
-          data.field_type = result.data.field.type_name
-          data.form = @getFormMapper().getFormFromModel(data.field)
+          data = {
+            field: result.data.field,
+            field_type: result.data.field.type_name,
+            form: @getFormMapper().getFormFromModel(result.data.field),
+            referencedBy: result.data.referencedBy || []
+          }
           deferred.resolve(data)
         )
       else

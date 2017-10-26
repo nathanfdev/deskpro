@@ -1,4 +1,4 @@
-@new
+@new @radu
 Feature: Custom fields
   I want to check custom fields request data format
 
@@ -93,7 +93,10 @@ Feature: Custom fields
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
     And the JSON node "data.fields" should have 1 element
-    And the JSON node "data.fields.{f1}" should have 1 element
+    And the JSON node "data.fields.{f1}.aliases" should be equal to node:
+      """
+      []
+      """
     And the JSON node "data.fields.{f1}.value" should be equal to the string "some value"
 
     Examples:
@@ -110,8 +113,10 @@ Feature: Custom fields
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
-    And the JSON node "data.fields" should have 1 element
-    And the JSON node "data.fields.{f1}" should have 1 element
+    And the JSON node "data.fields.{f1}.aliases" should be equal to node:
+      """
+      []
+      """
     And the JSON node "data.fields.{f1}.value" should be equal to the string "<value>"
 
     Examples:
@@ -128,7 +133,10 @@ Feature: Custom fields
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
     And the JSON node "data.fields" should have 1 element
-    And the JSON node "data.fields.{f1}" should have 1 element
+    And the JSON node "data.fields.{f1}.aliases" should be equal to node:
+      """
+      []
+      """
     And the JSON node "data.fields.{f1}.value" should be equal to "<value>"
 
     Examples:
@@ -147,7 +155,10 @@ Feature: Custom fields
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
     And the JSON node "data.fields" should have 1 element
-    And the JSON node "data.fields.{f1}" should have 2 elements
+    And the JSON node "data.fields.{f1}.aliases" should be equal to node:
+      """
+      []
+      """
     And the JSON node "data.fields.{f1}.value" should exist
     And the JSON node "data.fields.{f1}.value" should have 1 element
     And the JSON node "data.fields.{f1}.value[0]" should be equal to "{c1}"
@@ -173,8 +184,12 @@ Feature: Custom fields
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
+    Then print last JSON response
     And the JSON node "data.fields" should have 1 element
-    And the JSON node "data.fields.{f1}" should have 2 elements
+    And the JSON node "data.fields.{f1}.aliases" should be equal to node:
+      """
+      []
+      """
     And the JSON node "data.fields.{f1}.value" should exist
     And the JSON node "data.fields.{f1}.value" should have 2 elements
     And the JSON node "data.fields.{f1}.value[0]" should be equal to "{c1}"

@@ -8,10 +8,11 @@ class OauthResponseBuilder
 {
     /**
      * @param string $type
+     * @param string $oauthVersion
      * @return OauthResponseBuilder
      */
-    public static function forResponseType($type = 'token') {
-        return new OauthResponseBuilder($type === 'error');
+    public static function forResponseType($type = 'token', $oauthVersion = '2.0') {
+        return new OauthResponseBuilder($type === 'error', $oauthVersion);
     }
 
     /** @var string */
@@ -22,12 +23,17 @@ class OauthResponseBuilder
 
     private $callbackUrl;
 
+    /** @var string */
+    private $oauthVersion;
+
     /**
      * @param bool $buildErrorResponse
+     * @param $oauthVersion
      */
-    public function __construct($buildErrorResponse)
+    public function __construct($buildErrorResponse, $oauthVersion)
     {
         $this->buildErrorResponse = $buildErrorResponse;
+        $this->oauthVersion = $oauthVersion;
     }
 
     /**
@@ -44,7 +50,7 @@ class OauthResponseBuilder
      * @param AccessToken $token
      * @return OauthResponseBuilder
      */
-    public function withToken(AccessToken $token)
+    public function withOauth2Token( AccessToken $token)
     {
         $params = $token->jsonSerialize();
         return $this->withTokenParams($params);
@@ -104,6 +110,7 @@ class OauthResponseBuilder
             'message' => json_encode([
                 'type' => 'oauth-proxy-callback',
                 'status' => $this->buildErrorResponse ? 'error' : 'success',
+                'oauthVersion' => $this->oauthVersion,
                 'body' => $this->messageProps
             ]),
             'windowUrl' => $this->callbackUrl

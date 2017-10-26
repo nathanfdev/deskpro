@@ -1,6 +1,16 @@
 {% extends 'AdminInterfaceBundle:CustomFields:Common/edit.html.twig' %}
+
+{% block message %}
+<div class="form-group" ng-show="EditCtrl.referencedByApp.status">
+	<div class="col-lg-12">
+		<h3>This field was created by the app <a href="#{{ ng_var('EditCtrl.referencedByApp.appUrl') }}">{{ ng_var('EditCtrl.referencedByApp.appName') }}</a>. This means it can not be deleted until the app is deleted.</h3>
+	</div>
+</div>
+{% endblock %}
+
+
 {% block topdefault_fields_pre %}
-	<div class="form-group" ng-show="EditCtrl.form.is_enabled">
+	<div class="form-group" ng-show="EditCtrl.form.is_enabled && EditCtrl.showLayouts">
 		<div class="col-lg-3">
 			<h3>Layouts</h3>
 		</div>

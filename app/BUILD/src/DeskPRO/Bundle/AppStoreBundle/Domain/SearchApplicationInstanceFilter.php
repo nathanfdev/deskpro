@@ -33,6 +33,12 @@ class SearchApplicationInstanceFilter
     /** @var string */
     private $scope;
 
+    /** @var boolean */
+    private $isDev;
+
+    /** @var boolean */
+    private $isInstalled;
+
     /** @var array */
     private $applicationIdList;
 
@@ -97,6 +103,59 @@ class SearchApplicationInstanceFilter
      */
     public function isEmpty()
     {
-        return ! ($this->hasScope() || $this->hasApplicationIdList());
+        return ! (
+            $this->hasScope()
+            || $this->hasApplicationIdList()
+            || $this->hasIsInstalled()
+            || $this->hasIsDev()
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasIsInstalled()
+    {
+        return !is_null($this->isInstalled);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsInstalled()
+    {
+        return $this->isInstalled;
+    }
+
+    /**
+     * @param bool $isInstalled
+     */
+    public function setIsInstalled( $isInstalled )
+    {
+        $this->isInstalled = (bool) $isInstalled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasIsDev()
+    {
+        return !is_null($this->isDev);
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsDev()
+    {
+        return $this->isDev;
+    }
+
+    /**
+     * @param bool $isDev
+     */
+    public function setIsDev( $isDev )
+    {
+        $this->isDev = (bool) $isDev;
     }
 }

@@ -38,7 +38,9 @@ use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias as ObjectAliasEntity;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
+use DeskPRO\Bundle\AppBundle\ObjectAlias as ObjectAliasDomain;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
@@ -63,6 +65,32 @@ class CustomFieldManager
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+    }
+
+    /**
+     * @param string $customFieldType
+     * @return FieldNameResolver
+     */
+    public function getFieldNameResolver($customFieldType)
+    {
+        try {
+            $aliasFieldNameStrategy = null;
+            $aliasType = ObjectAliasEntity\Aliases::resolveAliasType($customFieldType, $this->em);
+            if (empty($aliasType)) {
+                throw new \DomainException('no alias type found');
+            }
+
+            /** @var ObjectAliasEntity\Repository $repository */
+            $repository = $this->em->getRepository($aliasType);
+            $strategies = [
+                new ObjectAliasDomain\FieldIdResolvingStrategy(),
+                new ObjectAliasDomain\DefaultIdResolvingStrategy($repository)
+            ];
+
+            return new FieldNameResolver($strategies);
+        } catch (\Exception $e) {
+            throw FieldNameResolverException::missingStrategy($customFieldType, $e);
+        }
     }
 
     /**
@@ -182,11 +210,9 @@ class CustomFieldManager
             ->where(
                 'f.is_user_enabled = true',
                 'f.is_enabled = true',
-                'f.handler_class IS NOT NULL',
-                'f.handler_class != :data_handler_class'
+                'f.handler_class IS NOT NULL'
             )
             ->orderBy('f.display_order')
-            ->setParameter('data_handler_class', CustomDefAbstract::HANDLER_CLASS_DATA)
         ;
 
         $result = new ArrayCollection($qb->getQuery()->getResult());

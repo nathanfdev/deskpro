@@ -20,7 +20,7 @@ import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBu
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
 import { voiceBootstrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
-import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproAppStore/DeskproAppStore';
+import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import LegacyStoreProvider from 'DeskPRO/Bundle/AgentBundle/Services/LegacyStoreProvider';
 import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Services/LegacySnippetInserter';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';

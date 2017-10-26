@@ -36,6 +36,7 @@ use Behat\Mink\Exception\ExpectationException;
 use Behatch\Context\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
+use Symfony\Component\HttpFoundation\Request;
 
 class RestContext extends BaseContext
 {
@@ -101,6 +102,7 @@ class RestContext extends BaseContext
         $url = DataContext::replace($url);
         DataContext::setPlaceholder('lastRequestUrl', $url);
 
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
         $client = $this->getSession()->getDriver()->getClient();
 
         // intercept redirection
@@ -215,6 +217,46 @@ class RestContext extends BaseContext
         }
 
         return $page;
+    }
+
+    /**
+     * Sends a HTTP request with a body.
+     *
+     * @Given I send a :method request to :url with a json body:
+     */
+    public function iSendARequestToWithJsonBody($method, $url, PyStringNode $body)
+    {
+        $url = DataContext::replace($url);
+        DataContext::setPlaceholder('lastRequestUrl', $url);
+
+        $client = $this->getSession()->getDriver()->getClient();
+
+        // intercept redirection
+        $client->followRedirects(false);
+
+        $content = DataContext::replace($body->getRaw(), true);
+        $encodedContent = json_encode(json_decode($content));
+
+        $client->request($method, $this->locatePath($url), [], [], $this->server_params, $encodedContent);
+        $client->followRedirects(true);
+
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            $this->saveLastCreatedId($page->getContent());
+        }
+
+        return $page;
+    }
+
+    /**
+     * Saves the last created id as a different alias so it can be reused when multiple requests fire in same scenario
+     *
+     * @Given I save the last created id as :alias
+     */
+    public function iSaveLastCreatedIdAs($alias)
+    {
+        $placeholder = DataContext::getPlaceholder('lastCreatedId', true);
+        DataContext::setPlaceholder($alias, $placeholder);
     }
 
     /**
@@ -379,26 +421,26 @@ class RestContext extends BaseContext
      */
     public function printTheCorrespondingCurlCommand()
     {
+        /** @var Request $request */
         $request = $this->getSession()->getDriver()->getClient()->getRequest();
 
         $method = $request->getMethod();
         $url    = $request->getUri();
 
         $headers = '';
-        foreach ($request->getServer() as $name => $value) {
-            if (substr($name, 0, 5) !== 'HTTP_' && $name !== 'HTTPS') {
-                $headers .= " -H '$name: $value'";
-            }
+        foreach ($request->headers->all() as $name => $value) {
+            $headerValue = is_array($value) ? implode(' ', $value) : $value;
+            $headers .= " -H '$name: $headerValue'";
         }
 
-        $data   = '';
-        $params = $request->getParameters();
-        if (!empty($params)) {
-            $query = http_build_query($params);
-            $data  = " --data '$query'";
+        $dataBinary = '';
+        $content = $request->getContent();
+        if (! empty($content)) {
+            $content = str_replace("\n", "\\\n", $content);
+            $dataBinary = "--data-binary '$content'";
         }
 
-        echo "curl -X $method$data$headers '$url'";
+        echo "curl -X $method $headers $dataBinary '$url'";
     }
 
     /**

@@ -82,6 +82,14 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           usersource_id: '0',
           field_name: ''
         }
+        datajson: {
+          usersource_id: '0',
+          field_name: ''
+        }
+        datalist: {
+          usersource_id: '0',
+          field_name: ''
+        }
       }
 
       if fieldModel
@@ -204,7 +212,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             if fieldModel.default_value
               formTypeOpts.default_value = fieldModel.default_value
 
-          when "data"
+          when "data", "datajson", "datalist"
             formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
             formTypeOpts.field_name    = fieldModel.options.field_name || ''
 

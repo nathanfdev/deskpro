@@ -119,15 +119,7 @@ class CustomDataOrganization extends CustomDataAbstract
         $metadata->setPrimaryTable(
             [
                 'name'              => 'custom_data_organizations',
-                'uniqueConstraints' => [
-                    'unique_idx' => [
-                        'columns' => [
-                            'field_id',
-                            'organization_id',
-                            'root_field_id',
-                        ],
-                    ],
-                ],
+                'uniqueConstraints' => [],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

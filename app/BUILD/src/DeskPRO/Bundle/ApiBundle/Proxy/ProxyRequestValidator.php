@@ -59,7 +59,7 @@ class ProxyRequestValidator
      */
     public function validate(ProxyRequestInterface $request)
     {
-        if ($request instanceof WhitelistableProxyRequest) {
+        if ($request instanceof ApplicationProxyRequest) {
             $this->validateWhitelistableRequest($request);
         }
 
@@ -85,9 +85,9 @@ class ProxyRequestValidator
     }
 
     /**
-     * @param WhitelistableProxyRequest $request
+     * @param ApplicationProxyRequest $request
      */
-    public function validateWhitelistableRequest(WhitelistableProxyRequest $request)
+    public function validateWhitelistableRequest( ApplicationProxyRequest $request)
     {
         $this->validateProxyRequest($request);
 

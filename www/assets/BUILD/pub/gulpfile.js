@@ -195,7 +195,8 @@ function getWebpackConfig(mode, isProd) {
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/DemoBundle/Modules'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules')
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/Apps/Modules'),
           ]
         }
       ],
