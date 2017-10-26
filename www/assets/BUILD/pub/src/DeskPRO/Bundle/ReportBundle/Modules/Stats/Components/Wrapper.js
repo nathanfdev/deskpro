@@ -11,6 +11,7 @@ import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/repor
 @connect(state => ({
   reports:       allReportsSelector(state),
   reportsLoaded: state.Application.reports.get('reportsLoaded'),
+  reportLoading: state.Application.reports.get('reportLoading'),
   currentReport: state.Application.reports.get('currentReport'),
   groupParams:   state.Application.reports.get('groupParams'),
   labels:        allReportsLabelsSelector(state),
@@ -20,6 +21,7 @@ class Wrapper extends React.Component {
   static propTypes = {
     reports:       PropTypes.object,
     reportsLoaded: PropTypes.bool,
+    reportLoading: PropTypes.bool,
     currentReport: PropTypes.object,
     groupParams:   PropTypes.object,
     labels:        PropTypes.object,
@@ -164,7 +166,7 @@ class Wrapper extends React.Component {
   }
 
   render() {
-    const { reports, reportsLoaded, groupParams } = this.props;
+    const { reports, reportsLoaded, groupParams, reportLoading } = this.props;
     const { labels, activeLabels, searchText, currentReport, mode } = this.state;
 
     const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
@@ -198,6 +200,7 @@ class Wrapper extends React.Component {
         </div>
         { currentReport.get('query_parts') && mode === 'edit'
           ? <Edit
+            reportLoading={reportLoading}
             labels={labels}
             report={currentReport}
             groupParams={groupParams}
@@ -207,7 +210,7 @@ class Wrapper extends React.Component {
           : null
         }
         { currentReport && mode === 'run'
-          ? <Run report={currentReport} />
+          ? <Run report={currentReport} reportLoading={reportLoading} />
           : null
         }
       </span>

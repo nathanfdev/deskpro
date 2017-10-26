@@ -1118,7 +1118,7 @@ class Display
      * @param array  $params   Parameters for the query (if applicable)
      * @param mixed  $error    If an error occurs, the error message
      *
-     * @return bool|string
+     * @return bool|string|array
      */
     public static function renderQuery($renderer, $query, array $params = [], &$error = false)
     {

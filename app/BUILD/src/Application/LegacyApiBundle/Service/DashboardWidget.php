@@ -67,6 +67,9 @@ class DashboardWidget
     const WIDGET_TYPE_TABLE = 'table';
     const WIDGET_TYPE_STAT  = 'stat';
 
+    /**
+     * @var array
+     */
     protected $widgetGraphTypesMapping = [
         'simple_bars'  => self::LEGACY_RENDER_TYPE_BAR,
         'bars'         => self::LEGACY_RENDER_TYPE_BAR,
@@ -78,6 +81,9 @@ class DashboardWidget
         'table'        => self::LEGACY_RENDER_TYPE_TABLE,
     ];
 
+    /**
+     * @var array
+     */
     protected $widgetTypesMapping = [
         'simple_bars'  => self::WIDGET_TYPE_GRAPH,
         'bars'         => self::WIDGET_TYPE_GRAPH,
@@ -90,16 +96,41 @@ class DashboardWidget
         'simple_stat'  => self::WIDGET_TYPE_STAT,
     ];
 
+    /**
+     * DashboardWidget constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @param $widgetType
+     *
+     * @return mixed|string
+     */
     public function getWidgetType($widgetType)
     {
         return isset($this->widgetTypesMapping[$widgetType]) ? $this->widgetTypesMapping[$widgetType] : self::WIDGET_TYPE_TABLE;
     }
 
+    /**
+     * @param $widgetType
+     *
+     * @return mixed|string
+     */
     public function getWidgetGraphType($widgetType)
     {
         return isset($this->widgetGraphTypesMapping[$widgetType]) ? $this->widgetGraphTypesMapping[$widgetType] : self::WIDGET_RENDER_TYPE_TABLE;
     }
 
+    /**
+     * @param $graphType
+     *
+     * @return string
+     */
     public function getReversedWidgetGraphType($graphType)
     {
         $flipped = array_flip($this->widgetGraphTypesMapping);
@@ -107,11 +138,11 @@ class DashboardWidget
         return isset($flipped[$graphType]) ? $flipped[$graphType] : 'table';
     }
 
-    public function __construct(EntityManager $em)
-    {
-        $this->em = $em;
-    }
-
+    /**
+     * @param $widget
+     *
+     * @return array
+     */
     public function getWidgetData($widget)
     {
         if (!($widget instanceof DashboardWidgetEntity)) {
@@ -152,15 +183,17 @@ class DashboardWidget
         return $data;
     }
 
+    /**
+     * @param DashboardWidgetEntity $widget
+     *
+     * @return bool|string|array
+     */
     public function renderWidgetQuery(DashboardWidgetEntity $widget)
     {
-        $report    = $widget->getWidget();
-        $query     = $report->getQuery();
-        $mapped    = $this->getWidgetGraphType($widget->getType());
-        $query     = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
-        $error     = false;
-        $variables = [];
+        $report = $widget->getWidget();
+        $query  = $report->getQuery();
 
+        $variables       = [];
         $reportVariables = $report->getVariables();
         $widgetVariables = $widget->getVariables();
 
@@ -171,11 +204,30 @@ class DashboardWidget
             }
         }
 
-        return Display::renderQuery('json', $query,
-            ['variables' => $variables],
-            $error);
+        return $this->renderQuery($query, ['variables' => $variables], $widget->getType());
     }
 
+    /**
+     * @param string $query
+     * @param array  $params
+     * @param string $displayType
+     * @param string $format
+     *
+     * @return bool|string|array
+     */
+    public function renderQuery($query, $params, $displayType, $format = 'json')
+    {
+        $mapped = $this->getWidgetGraphType($displayType);
+        $query  = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
+        $error  = false;
+
+        return Display::renderQuery('json', $query, $params, $error);
+    }
+
+    /**
+     * @param DashboardReportEntity $report
+     * @param DashboardReportEntity $reportPrototype
+     */
     public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)
     {
         foreach ($reportPrototype->getWidgets() as $widget_prototype) {

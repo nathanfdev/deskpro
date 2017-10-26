@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Loader } from 'deskpro-components';
 import ListItem from './ListItem';
 
 class List extends React.Component {
@@ -18,7 +19,7 @@ class List extends React.Component {
   static showLoading() {
     return (
       <div style={{ textAlign: 'center', padding: '45px' }}>
-        <i className="spinner-big-circle" />
+        <Loader size="xlarge" />
       </div>
     );
   }

@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
+import { Loader } from 'deskpro-components';
 import { Input, Form, Field, MultiSelect, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from 'react-forms';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import VarsField from './Fields/VarsField';
 import LabelsField from './Fields/LabelsField';
-
 
 class Edit extends BaseForm {
 
@@ -169,8 +169,8 @@ class Edit extends BaseForm {
     const { report } = this.props;
     const reportExists  = report && report.get('id') && report.get('query_parts');
     return (
-      <div className="stat-large-preview-wrapper">
-        { (reportExists || report.get('is_new')) ? this.renderReport() : '' }
+      <div className="report-widget-edit-n-run-content">
+        { (reportExists || report.get('is_new')) ? this.renderReport() : <Loader size="xlarge" /> }
       </div>
     );
   }

@@ -1,21 +1,26 @@
-.star-it {
-  opacity: 0.3;
-  font-size: 1.2em;
-  margin: 5px;
-  position: relative;
-  top: 1px;
+.report-widget-edit-n-run-content {
+  position: absolute;
+  top: 0;
+  left: $report-list-width;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  background: #fff;
+  border-left: 1px solid $global-border;
 
-  &:hover {
-    opacity: 1;
-  }
-}
+  .dp-loader {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    background: #fff;
+    display: block;
 
-.star-it.starred {
-  // replace html content with class="fa fa-star" when favorited
-  opacity: 1;
-
-  &:hover {
-    opacity: 0.3;
+    > svg {
+      margin: 40%;
+    }
   }
 }
 
@@ -40,7 +45,6 @@
     color: #929292;
     i { color: #cdcdcd; }
   }
-
 
   .editor-form {
     padding: 5px 0px 5px 0px;

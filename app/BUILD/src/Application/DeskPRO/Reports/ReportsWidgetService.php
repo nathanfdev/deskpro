@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -38,6 +34,8 @@ use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
+use Application\DeskPRO\Input\Reader;
+use Application\LegacyApiBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,11 +51,28 @@ class ReportsWidgetService
      */
     protected $repository;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var Reader
+     */
+    protected $in;
+
+    /**
+     * @var DashboardWidget
+     */
+    protected $dashboardWidget;
+
+    /**
+     * ReportsWidgetService constructor.
+     *
+     * @param EntityManager   $em
+     * @param DashboardWidget $dashboardWidget
+     */
+    public function __construct(EntityManager $em, DashboardWidget $dashboardWidget)
     {
-        $this->em         = $em;
-        $this->repository = $this->em->getRepository(ReportWidget::class);
-        $this->in         = App::getContainer()->getIn();
+        $this->em              = $em;
+        $this->dashboardWidget = $dashboardWidget;
+        $this->repository      = $this->em->getRepository(ReportWidget::class);
+        $this->in              = App::getContainer()->getIn();
     }
 
     /**
@@ -129,6 +144,7 @@ class ReportsWidgetService
         $params              = $this->getParamsInput('params');
         $reportData          = $this->in->getArrayValue('report');
         $params['variables'] = $reportData['variables'];
+        $displayType         = isset($reportData['display_types'][0]) ? $reportData['display_types'][0] : DashboardWidget::WIDGET_RENDER_TYPE_BAR;
 
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');
@@ -137,8 +153,7 @@ class ReportsWidgetService
             $query = $report->getQuery();
         }
 
-        $error   = false;
-        $results = $this->renderQuery($query, $format, $error, $params);
+        $results = $this->dashboardWidget->renderQuery($query, $params, $displayType);
 
         return $results;
     }

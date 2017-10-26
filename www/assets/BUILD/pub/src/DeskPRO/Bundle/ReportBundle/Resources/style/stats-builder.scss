@@ -389,6 +389,16 @@
   }
 }
 
-.report-editor-panel {
-  background: #ffffff;
+
+.content-wrapper {
+  padding-left: $content-width;
+  position: relative;
+}
+
+.report-list-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: $report-list-width;
 }

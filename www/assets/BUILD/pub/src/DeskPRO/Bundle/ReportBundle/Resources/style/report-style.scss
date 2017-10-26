@@ -9,6 +9,12 @@ $dp-styles-font-path: '../../../../../../node_modules/deskpro-components/src/sty
 @import '../../../AppBundle/Resources/style/variables';
 @import '../../../AppBundle/Resources/style/widget-modal';
 @import '../../../../../../node_modules/deskpro-components/src/styles/main_no_apps';
+@import '../../../../../../node_modules/deskpro-components/src/styles/components/loader';
+@import '../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon';
+
+@import 'legacy-vars.scss';
+@import 'report-widget-editor';
+@import 'stats-builder';
 
 .two-panels-menu {
   display: table;
