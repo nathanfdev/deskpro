@@ -1,0 +1,1 @@
+export { InstallerFactory } from './InstallerFactory';

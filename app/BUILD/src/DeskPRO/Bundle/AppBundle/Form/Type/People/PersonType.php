@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
@@ -136,6 +137,10 @@ class PersonType extends AbstractType
                 ],
             ])
         ;
+
+        // resolve field name aliases
+        $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefPerson::class);
+        $builder->addEventSubscriber($fieldNameResolver);
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUnsetAgentData'], 100);

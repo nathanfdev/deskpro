@@ -172,6 +172,9 @@ class CommonFactories
             'toggle'         => CustomDefAbstract::HANDLER_CLASS_TOGGLE,
             'hidden'         => CustomDefAbstract::HANDLER_CLASS_HIDDEN,
             'display'        => CustomDefAbstract::HANDLER_CLASS_DISPLAY,
+            'data'           => CustomDefAbstract::HANDLER_CLASS_DATA,
+            'data_list'      => CustomDefAbstract::HANDLER_CLASS_DATALIST,
+            'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON
         ];
 
         $def = new $types[$type]();

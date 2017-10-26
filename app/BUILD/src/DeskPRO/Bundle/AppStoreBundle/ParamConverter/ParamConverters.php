@@ -50,12 +50,4 @@ class ParamConverters
         return new AssetFilterParamConverter($filterConverter);
     }
 
-    /**
-     * @return StateFilterParamConverter
-     */
-    static public function createStateFilterConverter()
-    {
-        $filterConverter = new Domain\SearchFilters();
-        return new StateFilterParamConverter($filterConverter);
-    }
 }

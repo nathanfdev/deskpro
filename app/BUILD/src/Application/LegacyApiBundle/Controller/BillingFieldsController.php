@@ -32,7 +32,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\DeskPRO\CustomFields\Form;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
@@ -112,7 +112,8 @@ class BillingFieldsController extends AbstractController implements ProtectedCon
 
         $post = $this->in->getAll('req');
 
-        $helper = new CustomFieldHelper($this);
+        $container = $this->getContainer();
+        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
         $helper->saveFormToField($field, $post);
 
         if ($id) {

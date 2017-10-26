@@ -41,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/organization_custom_fields")
  * @ApiDoc(target="all", section="Organizations", output="Application\DeskPRO\Entity\CustomDefOrganization")
  * @ApiDoc(
- *     target="putAction",
+ *     target="postAction,putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
  *      "options"={

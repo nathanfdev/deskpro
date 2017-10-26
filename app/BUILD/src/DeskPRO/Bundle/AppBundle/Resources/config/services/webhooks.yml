@@ -1,0 +1,21 @@
+services:
+  DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor:
+    class: DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor
+    arguments:
+      - "@DeskPRO\\Bundle\\AppBundle\\Webhooks\\PayloadConvertersRegistry"
+      - "@ticket_manager"
+    calls:
+      - [ setContainer, [ @service_container ] ]
+
+  DeskPRO\Bundle\AppBundle\Webhooks\PayloadConvertersRegistry:
+    class: DeskPRO\Bundle\AppBundle\Webhooks\PayloadConvertersRegistry
+
+  DeskPRO\Bundle\AppBundle\Webhooks\JSONPayloadConverter:
+    class: DeskPRO\Bundle\AppBundle\Webhooks\JSONPayloadConverter
+    tags:
+      - { name: webhooks.payload_converter }
+
+  DeskPRO\Bundle\AppBundle\Webhooks\FormPayloadConverter:
+    class: DeskPRO\Bundle\AppBundle\Webhooks\FormPayloadConverter
+    tags:
+      - { name: webhooks.payload_converter }

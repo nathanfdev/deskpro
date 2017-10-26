@@ -113,37 +113,34 @@ class DpKernel extends BaseKernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Symfony\Bundle\TwigBundle\TwigBundle(),
             new \Symfony\Bundle\MonologBundle\MonologBundle(),
-            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-            new \FOS\ElasticaBundle\FOSElasticaBundle(),
-
+            new \Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
             new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new \FOS\RestBundle\FOSRestBundle(),
+            new \FOS\ElasticaBundle\FOSElasticaBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
+            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
             new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
+            new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
+            new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
+            new \Application\ImportBundle\ImportBundle(),
+
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
-            new \Application\ImportBundle\ImportBundle(),
-
-            new \DeskPRO\Bundle\AppBundle\AppBundle(),
-            new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
-            new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
-
-            new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
-            new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
-
-            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle()
+            new \DeskPRO\Bundle\UpdateBundle\UpdateBundle()
         ];
 
         if (defined('DPC_IS_CLOUD')) {

@@ -3,6 +3,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/ImmRanneft/mpdf.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/deskpro/oauth1-client.git"
     }
   ],
 
@@ -94,7 +98,9 @@
     "jms/serializer": "~1.7.1",
     "justinrainbow/json-schema": "^5.2",
     "arcturial/clickatell": "^3.0",
-    "league/oauth2-client": "^2.2"
+    "league/oauth2-client": "^2.2",
+    "league/oauth1-client": "dev-master",
+    "guzzlehttp/oauth-subscriber": "^0.3.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

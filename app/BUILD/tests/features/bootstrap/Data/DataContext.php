@@ -476,6 +476,7 @@ class DataContext extends BaseContext
         $this->em()->persist($record);
         $this->em()->flush();
         $this->em()->clear();
+
     }
 
     /**

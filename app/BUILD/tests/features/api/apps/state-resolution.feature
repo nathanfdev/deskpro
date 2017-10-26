@@ -5,12 +5,13 @@ Feature: Test Apps State Resolution
 
   Background:
     Given there are no "Person" records
-    And there are no "App" records
     And there are no "AppState" records
+    And there are no "App" records
     And I'm authenticated as agent
     And I package the app from folder "resources/apps/state-tests"
     And I send a "POST" request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
-    And I save a reference "application" to the JSON node "id"
+    And I save the JSON node "id" as placeholder "application"
+
     And an agent with "user-test-apps-one@deskpro.com" email exists
     And an agent with "user-test-apps-two@deskpro.com" email exists
 
@@ -22,15 +23,15 @@ Feature: Test Apps State Resolution
   "value": "<value>"
 }
   """
-    And I'm authenticated as person with email "user-test-apps-one@deskpro.com"
-    When I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
     Then the response status code should be 200
-    And the JSON node "value" should be equal to "<value>"
+    When I'm authenticated as person with email "user-test-apps-one@deskpro.com"
+    And I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
+    Then the response status code should be 200
+    Then the JSON node "value" should be equal to "<value>"
 
     # perform cleanup
     Given I'm authenticated as person with email "user-test-apps-two@deskpro.com"
     And I send a DELETE request to "/api/v2/apps/{application}/state/<entity>/<name>"
-    Then the response status code should be 200
 
   Examples:
   | name           | value    | entity   |
@@ -45,7 +46,7 @@ Feature: Test Apps State Resolution
   "value": "<user-one>"
 }
   """
-    Given I'm authenticated as person with email "<user-two>@deskpro.com"
+    And I'm authenticated as person with email "<user-two>@deskpro.com"
     And I send a PUT request to "/api/v2/apps/{application}/state/<entity>/<name>" with body:
     """
 {
@@ -55,7 +56,7 @@ Feature: Test Apps State Resolution
     Given I'm authenticated as person with email "<user-one>@deskpro.com"
     When I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
     Then the response status code should be 200
-    Then the JSON node "value" should be equal to "<user-one>"
+    And the JSON node "value" should be equal to "<user-one>"
 
     Given I'm authenticated as person with email "<user-two>@deskpro.com"
     When I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
@@ -63,12 +64,7 @@ Feature: Test Apps State Resolution
     Then the JSON node "value" should be equal to "<user-two>"
 
     # perform cleanup
-
-    Given I'm authenticated as person with email "<user-one>@deskpro.com"
-    And I send a DELETE request to "/api/v2/apps/{application}/state/<entity>/<name>"
-    Then the response status code should be 200
-
-    Given I'm authenticated as person with email "<user-two>@deskpro.com"
+    Given I'm authenticated as person with email "user-test-apps-two@deskpro.com"
     And I send a DELETE request to "/api/v2/apps/{application}/state/<entity>/<name>"
     Then the response status code should be 200
 
@@ -84,12 +80,12 @@ Feature: Test Apps State Resolution
   "value": "<user-two>"
 }
   """
-    Given I'm authenticated as person with email "<user-one>@deskpro.com"
+    And I'm authenticated as person with email "<user-one>@deskpro.com"
     When I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
     Then the response status code should be 404
 
-    Given I'm authenticated as person with email "<user-two>@deskpro.com"
-    When I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
+    When I'm authenticated as person with email "<user-two>@deskpro.com"
+    And I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"
     Then the response status code should be 200
     Then the JSON node "value" should be equal to "<user-two>"
 

@@ -32,18 +32,20 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Hierarchy\HierarchyStructureProcessor;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
+
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Application\DeskPRO\CustomFields\Form;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -141,13 +143,28 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      */
     public function getCustomFieldAction($id)
     {
+        /** @var CustomDefTicket $field */
         $field = $this->em->find('DeskPRO:CustomDefTicket', $id);
         if (!$field || $field->parent) {
             throw $this->createNotFoundException();
         }
 
-        $data          = [];
-        $data['field'] = $field->toApiData();
+        $referencedBy = [];
+        foreach ($field->getAliases() as $alias) {
+            $appInstance = $alias->getAppInstance();
+            if ($appInstance) {
+                $referencedBy[] = [
+                    'entity' => 'app',
+                    'appId' => $appInstance->getApp()->getId(),
+                    'appName' => $appInstance->getApp()->getManifest()->getTitle(),
+                ];
+            }
+        }
+
+        $data          = [
+            'field' => $field->toApiData(),
+            'referencedBy' => $referencedBy
+        ];
 
         return $this->createApiResponse($data);
     }
@@ -213,7 +230,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             return $this->createApiErrorResponse('validation_error', 'Empty title');
         }
 
-        $helper = new CustomFieldHelper($this);
+        $container = $this->getContainer();
+        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
         $helper->saveFormToField($field, $post);
 
         if ($id) {
@@ -695,7 +713,9 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
         $field                = $this->container->getTicketFieldManager()->createNewDefEntity();
         $field->handler_class = $data['handler_class'];
-        $helper               = new CustomFieldHelper($this);
+
+        $container = $this->getContainer();
+        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
         $helper->saveFormToField($field, $data);
 
         /*

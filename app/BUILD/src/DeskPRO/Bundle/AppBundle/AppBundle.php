@@ -55,6 +55,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\TransferSessionAuthFactory;
+use DeskPRO\Bundle\AppBundle\Webhooks;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -89,6 +90,8 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new FeaturesCompilerPass());
         $container->addCompilerPass(new NotificationCompilerPass());
         $container->addCompilerPass(new SerializerPass());
+
+        $container->addCompilerPass(new Webhooks\DependencyInjection\CompilerPass());
 
         /** @var \Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension $security */
         $security = $container->getExtension('security');

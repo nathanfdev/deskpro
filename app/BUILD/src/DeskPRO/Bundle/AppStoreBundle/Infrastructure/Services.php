@@ -36,11 +36,11 @@ class Services
 {
     /**
      * @param ORM\EntityManager $entityManager
-     * @return ApplicationState\AccessService
+     * @return AppStorage\AccessService
      */
-    public static function createApplicationStateAccessService(ORM\EntityManager $entityManager)
+    public static function createAppStorageAccessService(ORM\EntityManager $entityManager)
     {
-        $service = new ApplicationState\AccessService($entityManager, new EntityQueryBuilders());
+        $service = new AppStorage\AccessService($entityManager, new EntityQueryBuilders());
         return $service;
     }
 
@@ -56,15 +56,16 @@ class Services
 
     /**
      * @param FileLocator $schemaLocator
+     * @param string $currentManifestVersion
      *
      * @return AppBundleValidator
      */
-    public static function createAppBundleValidator(FileLocator $schemaLocator)
+    public static function createAppBundleValidator(FileLocator $schemaLocator, $currentManifestVersion)
     {
-        $schemaPath = $schemaLocator->locate('@AppStoreBundle/Resources/manifest/schema.default.json');
-        $schemaInfo = new \SplFileInfo($schemaPath);
+        $schemaDir = '@AppStoreBundle/Resources/manifest';
+        $schemaLocator = new ManifestSchemaLocator($schemaLocator, $schemaDir, $currentManifestVersion);
 
-        $service = new AppBundleValidator(new Validator(), $schemaInfo);
+        $service = new AppBundleValidator(new Validator(), $schemaLocator);
 
         return $service;
     }
@@ -92,10 +93,10 @@ class Services
     /**
      * @param ORM\EntityManager $entityManager
      *
-     * @return ApplicationState\StateEntityFinder
+     * @return AppStorage\StateEntityFinder
      */
     public static function createApplicationStateFinder(ORM\EntityManager $entityManager)
     {
-        return new ApplicationState\StateEntityFinder($entityManager);
+        return new AppStorage\StateEntityFinder($entityManager);
     }
 }

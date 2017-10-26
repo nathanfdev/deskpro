@@ -41,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/user_chat_custom_fields")
  * @ApiDoc(target="all", section="Chats", output="Application\DeskPRO\Entity\CustomDefChat")
  * @ApiDoc(
- *     target="putAction",
+ *     target="postAction,putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
  *      "options"={

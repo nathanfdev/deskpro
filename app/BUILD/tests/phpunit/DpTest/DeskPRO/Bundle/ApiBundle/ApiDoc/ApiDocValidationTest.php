@@ -70,7 +70,7 @@ class ApiDocValidationTest extends ApiTestCase
         $commandTester->execute([
             'command' => $command->getName(),
         ]);
-
+//        echo ($commandTester->getDisplay());
         $this->assertContains('All fine', $commandTester->getDisplay());
     }
 }

@@ -2346,6 +2346,21 @@ define(function() {
     controller: 'Admin_Apps_Ctrl_PackageInfo'
   });
 
+  // this route allows reloading of the apps.apps.installer-v2 route
+  routes.push({
+    id: 'apps.apps.installer-v2-reload',
+    url: '/app-installer-reload/{appName:[a-zA-Z0-9@%\\/\\-_\\.]+}',
+    templateName: 'Index/blank.html',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.installer-v2', { appName: $stateParams.appName }); }]
+  });
+
+  routes.push({
+    id: 'apps.apps.installer-v2',
+    url: '/app-installer/{appName:[a-zA-Z0-9@%\\/\\-_\\.]+}',
+    templateName: 'Apps/install-app-v2.html',
+    controller: 'Admin_Apps_Ctrl_InstallAppV2'
+  });
+
   //###
   //# API Keys
   //###

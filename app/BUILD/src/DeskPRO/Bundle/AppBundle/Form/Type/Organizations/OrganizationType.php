@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
+use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -109,6 +110,10 @@ class OrganizationType extends AbstractType
                 'by_reference' => false,
             ])
         ;
+
+        // resolve field name aliases
+        $fieldNameResolver = $this->field_manager->getFieldNameResolver(CustomDefOrganization::class);
+        $builder->addEventSubscriber($fieldNameResolver);
     }
 
     /**
