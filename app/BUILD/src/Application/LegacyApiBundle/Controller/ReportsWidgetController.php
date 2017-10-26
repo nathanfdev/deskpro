@@ -141,7 +141,7 @@ class ReportsWidgetController extends AbstractController
         $translator = $this->container->getTranslator();
         foreach ($widget['labels'] as &$label) {
             $phraseName = 'reports.labels.'.strtolower($label);
-            $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
+            $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : ucfirst($label);
         }
         $widget['query_parts'] = $queryParts;
 

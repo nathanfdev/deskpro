@@ -217,7 +217,7 @@ class DashboardWidgetController extends AbstractController
                 $apiData['labels'][$label] = [
                     'id'    => ++$i,
                     'label' => $translatedLabel,
-                    'value' => $label,
+                    'value' => ucfirst($label),
                 ];
             }
             $datum['labels']      = $translatedLabels;
