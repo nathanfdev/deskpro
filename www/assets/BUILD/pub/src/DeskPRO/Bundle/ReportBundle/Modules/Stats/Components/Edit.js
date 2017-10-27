@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import { Loader } from 'deskpro-components';
+import { Loader } from '@deskpro/react-components';
 import { Input, Form, Field, MultiSelect, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from 'react-forms';
 import classNames from 'classnames';

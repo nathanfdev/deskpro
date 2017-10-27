@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Loader } from 'deskpro-components';
+import { Loader } from '@deskpro/react-components';
 import ListItem from './ListItem';
 
 class List extends React.Component {

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import AmCharts from '@amcharts/amcharts3-react';
-import { Loader } from 'deskpro-components';
+import { Loader } from '@deskpro/react-components';
 
 class Run extends React.Component {
 

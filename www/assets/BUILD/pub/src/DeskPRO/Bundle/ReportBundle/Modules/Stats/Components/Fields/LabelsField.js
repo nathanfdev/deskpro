@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import { TagInput } from 'deskpro-components/lib/Components/Forms';
+import { TagInput } from '@deskpro/react-components';
 
 class LabelsField extends React.Component {
 
