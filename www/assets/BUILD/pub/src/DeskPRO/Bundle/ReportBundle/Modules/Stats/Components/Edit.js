@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import Immutable from 'immutable';
 import VarsField from './Fields/VarsField';
 import LabelsField from './Fields/LabelsField';
+import { displayTypes } from './helper';
 
 class Edit extends BaseForm {
 
@@ -16,29 +17,6 @@ class Edit extends BaseForm {
     groupParams: PropTypes.object,
     onRunClick:  PropTypes.func.isRequired,
   };
-
-  static displayTypes = [
-    {
-      label: 'Bars',
-      value: 'simple_bars',
-    },
-    {
-      label: 'Lines',
-      value: 'simple_lines',
-    },
-    {
-      label: 'Area',
-      value: 'simple_area',
-    },
-    {
-      label: 'Pie',
-      value: 'pie',
-    },
-    {
-      label: 'Table',
-      value: 'table',
-    },
-  ];
 
   constructor(props) {
     super(props);
@@ -125,7 +103,7 @@ class Edit extends BaseForm {
               <Textarea className="report-description" />
             </Field>
             <Field select="display_types" label="Available display types">
-              <MultiSelect choices={Edit.displayTypes} />
+              <MultiSelect choices={displayTypes} />
             </Field>
             <Field select="select" label="Select">
               <Input type="text" />

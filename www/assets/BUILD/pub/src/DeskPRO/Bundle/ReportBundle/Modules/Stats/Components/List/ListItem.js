@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import Immutable from 'immutable';
+import { transformReportData } from '../helper';
 
 class ListItem extends React.Component {
 
@@ -21,25 +21,8 @@ class ListItem extends React.Component {
 
   onRunClick(event) {
     event.preventDefault();
-
     const { report, onRunReportClick } = this.props;
-
-    const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
-    const data = {
-      title:         report.get('title'),
-      labels:        report.get('labels', Immutable.List()).toArray(),
-      desc:          report.get('description', ''),
-      display_types: report.get('display_types', Immutable.List()).toJS(),
-      select:        queryParts.get('select', ''),
-      from:          queryParts.get('from', ''),
-      where:         queryParts.get('where', ''),
-      splitBy:       queryParts.get('splitBy', ''),
-      groupBy:       queryParts.get('groupBy', ''),
-      orderBy:       queryParts.get('orderBy', ''),
-      offset:        queryParts.get('offset', ''),
-      limit:         queryParts.get('limit', ''),
-      vars:          report.get('variables', Immutable.List()).toJS(),
-    };
+    const data = transformReportData(report);
     onRunReportClick(report, data);
   }
 
