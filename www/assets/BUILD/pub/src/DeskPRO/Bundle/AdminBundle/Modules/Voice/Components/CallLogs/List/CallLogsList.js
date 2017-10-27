@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import ReactPaginate from 'react-paginate';
 import moment from 'moment';
 import Immutable from 'immutable';
+import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
 import CallStatus from '../Common/CallStatus';
@@ -10,21 +11,25 @@ import CallDuration from '../Common/CallDuration';
 class CallLogsList extends React.Component {
 
   static propTypes = {
-    calls:         PropTypes.object,
-    numbers:       PropTypes.object,
-    pageCount:     PropTypes.number,
-    onPageChange:  PropTypes.func,
-    onOpenCallLog: PropTypes.func,
-    openDialpad:   PropTypes.func
+    calls:               PropTypes.object,
+    numbers:             PropTypes.object,
+    pageCount:           PropTypes.number,
+    liveUpdates:         PropTypes.bool,
+    onPageChange:        PropTypes.func,
+    onOpenCallLog:       PropTypes.func,
+    openDialpad:         PropTypes.func,
+    onToggleLiveUpdates: PropTypes.func
   };
 
   render() {
-    const { calls, numbers, pageCount, onPageChange, onOpenCallLog, openDialpad } = this.props;
+    const { calls, numbers, pageCount, liveUpdates } = this.props;
+    const { onPageChange, onOpenCallLog, openDialpad, onToggleLiveUpdates } = this.props;
 
     return (
       <div className="page">
         <SectionHeader title="Call logs" dividing />
 
+        <Checkbox label="Live updates" value={liveUpdates} onChange={onToggleLiveUpdates} />
         <table className="table">
           <colgroup>
             <col width="1%" />
