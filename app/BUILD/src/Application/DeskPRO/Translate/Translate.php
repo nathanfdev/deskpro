@@ -536,6 +536,13 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
         if (!isset($this->_phrases[$languageId][$phraseName])) {
             $checkGroup = $this->getPhraseGroupFromName($phraseName);
+            if (!$checkGroup) {
+                if ($nullOnNotFound) {
+                    return;
+                }
+
+                return $this->_noPhrase($phraseName, $language);
+            }
 
             if (!isset($this->_loaded_groups[$languageId]) or !in_array(
                     $checkGroup,
