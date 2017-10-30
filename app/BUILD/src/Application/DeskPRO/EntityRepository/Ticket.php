@@ -542,8 +542,8 @@ class Ticket extends AbstractEntityRepository
         }
 
         if (!$person->isAgent()) {
-            $params      = [$person->getId(), $person->getId(), $agent->getId()];
-            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT, \PDO::PARAM_INT];
+            $params      = [$person->getId(), $person->getId()];
+            $paramsTypes = [\PDO::PARAM_INT, \PDO::PARAM_INT];
 
             if ($departmentIds) {
                 $wheres[] = '%alias%.department_id IN (?)';
