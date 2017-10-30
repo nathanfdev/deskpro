@@ -49,7 +49,7 @@ class PreProcessor extends AbstractGatewayProcessor
     public function run()
     {
         // TODO [cloudspam] proper cloud spam checker/handling
-        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo()) {
+        if (defined('DPC_IS_CLOUD') && \DpSys\License::getLicense()->isDemo() && !DPC_SITE_IS_APPROVED) {
             $em = $this->getEm();
             $db = $this->getDb();
 
@@ -59,10 +59,11 @@ class PreProcessor extends AbstractGatewayProcessor
                 WHERE date_created > ?
             ', [date('Y-m-d H:i:s', time() - 3600)]);
 
-            if ($emailCount && $emailCount >= 50) {
+            if ($emailCount && $emailCount >= 150) {
                 \DpShutdown::add(function () use ($em) {
                     $tmpdata = new \Application\DeskPRO\Entity\TmpData();
                     $tmpdata->setType('cancel_for_abuse');
+                    $tmpdata->setData('message', '>150 incoming emails in under an hour');
                     $tmpdata->date_expire = new \DateTime('+30 minutes');
                     $em->persist($tmpdata);
                     $em->flush();
