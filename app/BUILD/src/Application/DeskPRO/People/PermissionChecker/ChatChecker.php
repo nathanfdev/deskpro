@@ -92,7 +92,7 @@ class ChatChecker extends AbstractChecker
         // Cant view others
         //------------------------------
 
-        if ($convo->agent && !$this->person->hasPerm('agent_chat.view_others')) {
+        if ($convo->agent && $convo->agent !== $this->person && !$this->person->hasPerm('agent_chat.view_others')) {
             return false;
         }
 
