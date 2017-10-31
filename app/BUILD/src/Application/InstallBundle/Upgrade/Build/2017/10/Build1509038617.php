@@ -69,16 +69,18 @@ ENGINE=InnoDB
     {
         $this->execDbQuery('default', 'INSERT INTO report_widget_favorite (SELECT * FROM report_builder_favorite);');
         $this->execDbQuery('default', '
-			ALTER TABLE `report_widget_favorite` DROP FOREIGN KEY `FK_CCD5CB1186DD4ADF`;
-			ALTER TABLE `report_widget_favorite` CHANGE COLUMN `report_builder_id` `report_widget_id` INT(11) NULL DEFAULT NULL AFTER `id`,
-			ADD CONSTRAINT `FK_CCD5CB1186DD4ADF` FOREIGN KEY (`report_widget_id`) REFERENCES `report_widget` (`id`) ON DELETE CASCADE;');
+			ALTER TABLE `report_widget_favorite`
+          	  DROP INDEX `IDX_CCD5CB1186DD4ADF`,
+	          DROP INDEX `unique_key_idx`;
+	          ALTER TABLE `report_widget_favorite` CHANGE COLUMN `report_builder_id` `report_widget_id` INT(11) NULL DEFAULT NULL AFTER `id`,
+			    ADD CONSTRAINT `FK_CCD5CB1186DD4ADF` FOREIGN KEY (`report_widget_id`) REFERENCES `report_widget` (`id`) ON DELETE CASCADE,
+			    ADD INDEX `unique_key_idx` (`report_widget_id`, `person_id`, `params`);
+        ');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_report ADD CONSTRAINT FK_6EE5C64BB9D04D2B FOREIGN KEY (dashboard_id) REFERENCES report_dashboard (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_widget ADD CONSTRAINT FK_2F33AF1FFBE885E2 FOREIGN KEY (widget_id) REFERENCES report_widget (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_widget ADD CONSTRAINT FK_2F33AF1F4BD2A4C0 FOREIGN KEY (report_id) REFERENCES report_dashboard_report (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_permission ADD CONSTRAINT FK_DED8DEFB9D04D2B FOREIGN KEY (dashboard_id) REFERENCES report_dashboard (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE report_dashboard_permission ADD CONSTRAINT FK_DED8DEF217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE');
-
-        $this->execDbQuery('default', 'INSERT INTO report_widget (SELECT `id`, `parent_id`, `unique_key`, `title`, `description`, `query`, `is_custom`, `display_order` FROM report_builder);');
     }
     public function run()
     {
