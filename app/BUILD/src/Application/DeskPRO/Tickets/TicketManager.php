@@ -46,6 +46,7 @@ use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
+use Application\DeskPRO\Tickets\Actions\SendAgentMention;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
@@ -285,6 +286,7 @@ class TicketManager
             foreach ($tickets as $ticket) {
                 $ticket->disableAutoTicketProcess();
             }
+
             return $tickets;
         }
 
@@ -394,6 +396,12 @@ class TicketManager
         //----------------------------------------
         // Set the creation system
         //----------------------------------------
+
+        if (!$is_noop) {
+            $agent_alert_action = new SendAgentMention();
+            $agent_alert_action->setContainer($this->container);
+            $agent_alert_action->applyAction($ticket, $context);
+        }
 
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf('[TicketManager:saveaction] %s', OrbUtil::getBaseClassname($action)));

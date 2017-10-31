@@ -412,56 +412,26 @@ class NewTicket
         //------------------------------
 
         // Message
-        $message         = new TicketMessage();
-        $message->ticket = $ticket;
-        $message->person = $this->_person_context;
+        $message = new TicketMessage();
+        $message->setTicket($ticket);
+        $message->setPerson($this->_person_context);
 
         if ($this->is_note) {
-            $message->is_agent_note = true;
+            $message->setAsAgentNote(true);
         }
 
         $message_text = $this->message;
         $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
 
-        $notify_agent_ids = [];
         if ($this->is_html_reply) {
-            preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $message_text, $matches, PREG_SET_ORDER);
-            foreach ($matches as $match) {
-                $notify_agent_ids[] = $match[1];
-            }
-            $message_text     = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
-            $message_text     = \Orb\Util\Strings::trimHtml($message_text);
-            $message_text     = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
-            $message->message = $message_text;
+            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html');
+            $message_text = \Orb\Util\Strings::trimHtml($message_text);
+            $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+            $message->setMessageHtml($message_text);
+            $message->setOriginalMessage($this->message);
         } else {
             $message->setMessageText($message_text);
-        }
-
-        $notify_chat = [];
-        $agent_chat  = null;
-        if ($notify_agent_ids && $message->is_agent_note) {
-            $agent_chat = new \Application\DeskPRO\Chat\AgentChat($message->person, App::getSession()->getEntity());
-            $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
-            $notify_email     = [];
-            $notify_agent_ids = array_unique($notify_agent_ids);
-
-            foreach ($notify_agent_ids as $agent_id) {
-                if (!($agent = App::$container->getAgentData()->get($agent_id))) {
-                    continue;
-                }
-
-                $notify_chat[$agent->id] = $agent;
-
-                $pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
-                if ($pref == 'always_send' || ($pref == 'smart_send' && !App::$container->getAgentData()->isAgentOnline($agent))) {
-                    $notify_email[$agent->id] = $agent;
-                }
-            }
-
-            if ($notify_email) {
-                $ticket_context->getVars()->set('mention_agents', $notify_email);
-            }
         }
 
         // Message Attachments
@@ -586,31 +556,6 @@ class NewTicket
         $new_custom_fields->handleRequest(App::$container->getRequest());
 
         $this->_ticket_manager->saveTicket($ticket, $ticket_context);
-
-        if ($agent_chat) {
-            $agentIds   = array_keys($notify_chat);
-            $notifyText = sprintf(
-                '%s alerted you in a note in {{t-%d}}: %s',
-                $message->getPerson()->getDisplayName(),
-                $ticket->getId(),
-                $ticket->getSubject()
-            );
-            $agent_chat->sendAgentMessage($notifyText, $agentIds);
-            if (App::$container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
-                $newIMtext = sprintf(
-                    '[{{t-%d}}] %s',
-                    $ticket->getId(),
-                    Strings::prepareWysiwygHtml(Strings::trimHtml($this->message))
-                );
-
-                App::$container->get('deskpro.notification.service')->sendNote(
-                    $message->getPerson(),
-                    $agentIds,
-                    $newIMtext
-                );
-            }
-        }
-
         $this->_ticket = $ticket;
 
         return $this->_ticket;

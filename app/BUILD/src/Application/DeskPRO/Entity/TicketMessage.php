@@ -323,6 +323,11 @@ class TicketMessage extends DomainObject
     protected $_message_length = null;
 
     /**
+     * @var string
+     */
+    protected $originalMessage;
+
+    /**
      * @var TicketMessageEmailId[]
      */
     protected $email_message_id;
@@ -705,6 +710,14 @@ class TicketMessage extends DomainObject
         return nl2br($this->getMessageText());
     }
 
+    /**
+     * @return string
+     */
+    public function getOriginalMessage()
+    {
+        return $this->originalMessage ?: $this->message;
+    }
+
     public function setMessageHtml($message)
     {
         $this->setMessage($message);
@@ -737,6 +750,14 @@ class TicketMessage extends DomainObject
         $this->setModelField('message', $message);
 
         return $this;
+    }
+
+    /**
+     * @param string $originalMessage
+     */
+    public function setOriginalMessage($originalMessage)
+    {
+        $this->originalMessage = $originalMessage;
     }
 
     /**
