@@ -76,6 +76,13 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
     private $event;
 
     /**
+     * @ORM\Column(type="json_array", name="params")
+     *
+     * @var array
+     */
+    private $params = [];
+
+    /**
      * @return int
      */
     public function getId()
@@ -131,6 +138,49 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
     public function setEvent($event)
     {
         $this->setModelField('event', $event);
+
+        return $this;
+    }
+
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return ZapierHook
+     */
+    public function setParams($params)
+    {
+        $this->setModelField('params', $params);
+
+        return $this;
+    }
+
+    public function addParam($param)
+    {
+        if (!in_array($param, $this->params, true)) {
+            $this->params[] = $param;
+        }
+        $this->setModelField('params', $this->params);
+
+        return $this;
+    }
+
+    public function hasParam($param)
+    {
+        return in_array($param, $this->params, true);
+    }
+
+    public function removeParam($param)
+    {
+        if (false !== $key = array_search($param, $this->params, true)) {
+            unset($this->params[$key]);
+            $this->params = array_values($this->params);
+        }
+        $this->setModelField('params', $this->params);
 
         return $this;
     }

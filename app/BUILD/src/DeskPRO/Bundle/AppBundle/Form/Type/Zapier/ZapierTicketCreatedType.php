@@ -26,34 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Zapier;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
-use DeskPRO\Bundle\AppBundle\Form\Type\Zapier\ZapierHookType;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 
-/**
- * Class PeopleController.
- *
- * @ApiModes("all")
- * @Rest\Route("/apps/zapier/hooks")
- * @ApiDoc(target="all", section="Apps", output="DeskPRO\Bundle\AppBundle\Entity\ZapierHook")
- * @ApiDoc(
- *     target="postAction,putAction",
- *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Zapier\ZapierHookType",
- *      "options"={
- *          "data"="DeskPRO\Bundle\AppBundle\Entity\ZapierHook"
- *      }
- *     }
- * )
- */
-class ZapierHooksController extends CrudController
+class ZapierTicketCreatedType extends AbstractType
 {
-    public static $exposeOnly = ['post', 'delete'];
-    public static $entity     = ZapierHook::class;
-    public static $type       = ZapierHookType::class;
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('filter', EntityType::class, [
+            'class' => TicketFilter::class,
+        ]);
+    }
 }

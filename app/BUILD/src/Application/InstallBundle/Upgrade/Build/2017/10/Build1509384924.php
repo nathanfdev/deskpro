@@ -26,34 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
-use DeskPRO\Bundle\AppBundle\Form\Type\Zapier\ZapierHookType;
-use FOS\RestBundle\Controller\Annotations as Rest;
+// NOTE: I used the BlockingBuildInterface interface because
+//       it looks like your schema changes are NOT backwards compatible with the previous version.
+//       You should double-check this yourself though. If they are backwards compatible, use OnlineBuildInterface instead.
 
-/**
- * Class PeopleController.
- *
- * @ApiModes("all")
- * @Rest\Route("/apps/zapier/hooks")
- * @ApiDoc(target="all", section="Apps", output="DeskPRO\Bundle\AppBundle\Entity\ZapierHook")
- * @ApiDoc(
- *     target="postAction,putAction",
- *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Zapier\ZapierHookType",
- *      "options"={
- *          "data"="DeskPRO\Bundle\AppBundle\Entity\ZapierHook"
- *      }
- *     }
- * )
- */
-class ZapierHooksController extends CrudController
+// NOTE: I have added the SkipPostBuildInterface interface because
+//       it looks like you do not have any changes that require PostBuild to run.
+//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.
+
+// Please remove these NOTE comments after you have checked the code.
+
+class Build1509384924 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
-    public static $exposeOnly = ['post', 'delete'];
-    public static $entity     = ZapierHook::class;
-    public static $type       = ZapierHookType::class;
+    public function addNewTables()
+    {
+    }
+
+    public function runAlters()
+    {
+        $this->execDbQuery('default', 'ALTER TABLE zapier_hooks ADD params LONGTEXT NOT NULL COMMENT \'(DC2Type:simple_array)\'');
+    }
+
+    public function run()
+    {
+    }
 }

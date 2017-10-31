@@ -26,12 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Zapier;
 
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -54,6 +56,14 @@ class ZapierHookType extends AbstractType
             ->add('subscription_url', TextType::class, [
                 'mapped' => false,
             ])
+            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                $hook = $event->getData();
+                $form = $event->getForm();
+
+                if ($hook['event'] === 'ticket_created') {
+                    $form->add('params', ZapierTicketCreatedType::class);
+                }
+            })
         ;
     }
 
