@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Dpql\Statement\Display;

@@ -291,10 +291,21 @@ class ReportsWidgetService
      */
     public function getQueryParts($id, $withParams = true)
     {
-        $parts  = [];
+
         $report = $this->repository->find($id);
         $query  = $report->getQuery();
 
+        return $this->compileQueryParts($query, $withParams);
+    }
+
+    /**
+     * @param $query
+     * @param $withParams
+     *
+     * @return array
+     */
+    public function compileQueryParts($query, $withParams) {
+        $parts  = [];
         try {
             $compiler = new Compiler();
             if ($withParams) {
