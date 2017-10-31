@@ -4417,12 +4417,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/syastrebov/mpdf.git",
-                "reference": "be6784e6ab671976ee09c370e6fcf5e93b35bcaf"
+                "reference": "9f0a8efdaf4638995868cf8087765549cd7cde00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/syastrebov/mpdf/zipball/be6784e6ab671976ee09c370e6fcf5e93b35bcaf",
-                "reference": "be6784e6ab671976ee09c370e6fcf5e93b35bcaf",
+                "url": "https://api.github.com/repos/syastrebov/mpdf/zipball/9f0a8efdaf4638995868cf8087765549cd7cde00",
+                "reference": "9f0a8efdaf4638995868cf8087765549cd7cde00",
                 "shasum": ""
             },
             "require": {
@@ -4493,7 +4493,7 @@
                 "source": "https://github.com/mpdf/mpdf",
                 "docs": "http://mpdf.github.io"
             },
-            "time": "2017-10-31 12:24:01"
+            "time": "2017-10-31 14:47:22"
         },
         {
             "name": "mtdowling/jmespath.php",
