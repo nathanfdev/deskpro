@@ -76,7 +76,9 @@ class ZapierHookType extends AbstractType
                 $hook = $event->getData();
                 $form = $event->getForm();
 
-                $hook->setParams($form->get('params')->getData());
+                if ($hook->getEvent() === 'ticket_created') {
+                    $hook->setParams($form->get('params')->getData());
+                }
             })
         ;
     }
