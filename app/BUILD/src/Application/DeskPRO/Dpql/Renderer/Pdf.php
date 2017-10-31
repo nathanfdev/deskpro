@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Renderer;
 
 use Application\DeskPRO\App;
@@ -73,25 +69,9 @@ class Pdf extends Html
             'title' => $this->_title,
         ]);
 
-        $mpdf = new \mPDF(
-            'utf-8', // Language/Character set
-            'A4', // Size
-            '8', // Default Font Size
-            '', // Default Font
-            20, // Margin Left
-            20, // Margin Right
-            20, // Margin Top
-            20, // Margin Bottom
-            10, // Margin Header
-            10, // Margin Footer
-            'P' // Orientation
-        );
+        $mpdf = App::$container->get('pdf_renderer');
 
-        $mpdf->SetBasePath(realpath(__DIR__.'/../../../../../web/images'));
-
-        $mpdf->WriteHTML($contentHtml);
-
-        return $mpdf->Output('', 'S');
+        return $mpdf->render($contentHtml);
     }
 
     /**
