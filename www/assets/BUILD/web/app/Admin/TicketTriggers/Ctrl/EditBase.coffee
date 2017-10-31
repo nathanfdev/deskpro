@@ -20,9 +20,7 @@ define [
       @editFormMapper = new TriggerEditFormMapper()
       @mode = null
       @appTriggerEvents = []
-      @allNewTriggers = [];
-      @allReplyTriggers = [];
-      @allUpdateTriggers = [];
+      @allTriggers = [];
 
       @$scope.form = @editFormMapper.getFormFromModel({})
 
@@ -41,8 +39,6 @@ define [
 
       @dpTriggers = @DataService.get @mode
 
-
-
       @criteraTypeDef = @dpObTypesDefTicketCriteria
       @criteraTypeDef.setWithChangedOps with_changed_ops
 
@@ -54,13 +50,7 @@ define [
       @criteraTypeDef.setVar('object_type', 'trigger');
       @actionsTypeDef.setVar('object_type', 'trigger');
 
-      @dpTriggersNew = @DataService.get 'TriggersNew'
-      @dpTriggersReply = @DataService.get 'TriggersReply'
-      @dpTriggersUpdate = @DataService.get 'TriggersUpdate'
-
-      @dpTriggersNew.loadList().then( (list) => @allNewTriggers = list)
-      @dpTriggersReply.loadList().then( (list) => @allReplyTriggers = list)
-      @dpTriggersUpdate.loadList().then( (list) => @allUpdateTriggers = list)
+      @dpTriggers.loadList().then( (list) => @allTriggers = list)
 
       @customInit()
       return
@@ -288,9 +278,8 @@ define [
           @$scope.actions_errors.push(@findActionTypeTitle(t))
 
     showCopySettings: ->
-      allNewTriggers    = @allNewTriggers
-      allReplyTriggers  = @allReplyTriggers
-      allUpdateTriggers = @allUpdateTriggers
+      allTriggers = @allTriggers
+      mode        = @$stateParams.type
       inst = @$modal.open({
         templateUrl: @getTemplatePath('TicketTriggers/copy-trigger-modal.html'),
         controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
@@ -301,9 +290,14 @@ define [
             $modalInstance.close($scope.triggerId);
 
           $scope.triggerId      = 0
-          $scope.newTriggers    = allNewTriggers
-          $scope.replyTriggers  = allReplyTriggers
-          $scope.updateTriggers = allUpdateTriggers
+          switch mode
+            when 'newticket'
+              $scope.title = 'New Ticket'
+            when 'newreply'
+              $scope.title = 'New Reply'
+            else
+              $scope.title = 'Ticket Update'
+          $scope.allTriggers    = allTriggers
         ]
       })
 

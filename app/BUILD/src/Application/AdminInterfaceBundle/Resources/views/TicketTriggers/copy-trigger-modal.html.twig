@@ -4,16 +4,8 @@
 {% endblock %}
 {% block modal_body %}
     <p>
-        Copy settings from <select ui-select2 style="width: 250px;" ng-model="triggerId">
-            <optgroup label="New Triggers">
-                <option ng-repeat="trigger in newTriggers" value="{{ ng_var('trigger.id') }}">{{ ng_var('trigger.title') }}</option>
-            </optgroup>
-            <optgroup label="Reply Triggers">
-                <option ng-repeat="trigger in replyTriggers" value="{{ ng_var('trigger.id') }}">{{ ng_var('trigger.title') }}</option>
-            </optgroup>
-            <optgroup label="Update Triggers">
-                <option ng-repeat="trigger in updateTriggers" value="{{ ng_var('trigger.id') }}">{{ ng_var('trigger.title') }}</option>
-            </optgroup>
+        Copy settings from another {{ ng_var('title') }} trigger <select ui-select2 style="width: 250px;" ng-model="triggerId">
+            <option ng-repeat="trigger in allTriggers" value="{{ ng_var('trigger.id') }}">{{ ng_var('trigger.title') }}</option>
         </select>
     </p>
     <p>
