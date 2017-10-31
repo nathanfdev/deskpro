@@ -338,9 +338,9 @@ abstract class SearcherAbstract implements PersonContextInterface
     /**
      * Add a new term.
      *
-     * @param  $term
+     * @param string $term
      * @param  $op
-     * @param  $data
+     * @param array $data
      */
     public function addTerm($term, $op, $data)
     {

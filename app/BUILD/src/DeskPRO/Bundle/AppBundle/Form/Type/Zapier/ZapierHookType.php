@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Zapier;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -56,13 +58,25 @@ class ZapierHookType extends AbstractType
             ->add('subscription_url', TextType::class, [
                 'mapped' => false,
             ])
+            ->add('person', PersonAssignType::class, [
+                'person' => $options['person'],
+            ])
             ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
                 $hook = $event->getData();
                 $form = $event->getForm();
 
                 if ($hook['event'] === 'ticket_created') {
-                    $form->add('params', ZapierTicketCreatedType::class);
+                    $form->add('params', ZapierTicketCreatedType::class, [
+                        'mapped' => false,
+                    ]);
                 }
+            })
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+                /** @var ZapierHook $hook */
+                $hook = $event->getData();
+                $form = $event->getForm();
+
+                $hook->setParams($form->get('params')->getData());
             })
         ;
     }
@@ -73,8 +87,11 @@ class ZapierHookType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
+            ->setRequired('person')
             ->setDefaults([
-            'data_class' => ZapierHook::class,
-        ]);
+                'data_class' => ZapierHook::class,
+            ])
+            ->setAllowedTypes('person', Person::class)
+        ;
     }
 }

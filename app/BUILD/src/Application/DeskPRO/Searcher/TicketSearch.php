@@ -260,9 +260,9 @@ class TicketSearch extends SearcherAbstract
     /**
      * Add a new term.
      *
-     * @param  $term
+     * @param string $term
      * @param  $op
-     * @param  $data
+     * @param array $data
      *
      * @return $this
      */
@@ -280,9 +280,9 @@ class TicketSearch extends SearcherAbstract
     /**
      * Add a new term.
      *
-     * @param  $term
+     * @param string $term
      * @param  $op
-     * @param  $data
+     * @param array $data
      *
      * @return $this
      */
@@ -298,8 +298,8 @@ class TicketSearch extends SearcherAbstract
     }
 
     /**
-     * @param $term
-     * @param $data
+     * @param string $term
+     * @param array  $data
      *
      * @return bool
      */
