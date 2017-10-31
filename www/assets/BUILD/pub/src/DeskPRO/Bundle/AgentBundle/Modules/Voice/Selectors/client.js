@@ -1,8 +1,9 @@
 import { createSelector } from 'reselect';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
-const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 const stateSelector = state => state.Voice.client;
+
+export const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 
 // tokens
 export const tokensSelector = createSelector(
@@ -95,18 +96,21 @@ export const outgoingCallSelector = createSelector(
 export const isVoiceAvailableSelector = createSelector(
   meSelector,
   idleActivitySidSelector,
+  (me, idleSid) => me.getIn(['agent_data', 'is_voice_enabled']) && !!idleSid
+);
+
+export const isVoiceSyncedSelector = createSelector(
+  isVoiceAvailableSelector,
   phoneTokenSelector,
   workerTokenSelector,
-  (me, idleSid, phoneToken, workerToken) =>
-      me.getIn(['agent_data', 'is_voice_enabled'])
-      && !!idleSid
-      && !!phoneToken
-      && !!workerToken
+  (voiceAvailable, phoneToken, workerToken) => voiceAvailable && !!phoneToken && !!workerToken
 );
 
 export const isVoiceEnabledSelector = createSelector(
-  isVoiceAvailableSelector,
-  voiceAvailable => voiceAvailable && isSecure
+  isVoiceSyncedSelector,
+  phoneTokenSelector,
+  workerTokenSelector,
+  voiceSynced => voiceSynced && isSecure
 );
 
 // settings

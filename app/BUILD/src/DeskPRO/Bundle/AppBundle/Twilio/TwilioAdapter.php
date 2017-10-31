@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
 use DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
@@ -1137,8 +1138,11 @@ class TwilioAdapter
     {
         $queueIds = $person
             ->getVoiceQueues()
-            ->map(function (VoiceQueue $voiceQueue) {
-                return $voiceQueue->getId();
+            ->filter(function (VoiceQueueAgent $voiceQueue) {
+                return $voiceQueue->isEnabled();
+            })
+            ->map(function (VoiceQueueAgent $voiceQueue) {
+                return $voiceQueue->getQueue()->getId();
             })
             ->toArray()
         ;

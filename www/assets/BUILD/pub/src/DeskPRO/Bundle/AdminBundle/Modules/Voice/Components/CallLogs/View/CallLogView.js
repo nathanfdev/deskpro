@@ -16,12 +16,16 @@ class CallLogView extends React.Component {
     call:         PropTypes.object,
     numbers:      PropTypes.object,
     people:       PropTypes.object,
-    onReturnBack: PropTypes.func
+    onReturnBack: PropTypes.func,
+    openDialpad:  PropTypes.func
   };
 
   render() {
-    const { onReturnBack, call, numbers, people } = this.props;
+    const { onReturnBack, openDialpad, call, numbers, people } = this.props;
     const number = numbers.get(call.get('number')) || Immutable.fromJS({});
+    const fromNumber = call.getIn(['data', 'From']);
+    const toNumber = call.getIn(['data', 'To']);
+    const isInbound = call.get('type') === 'inbound';
 
     return (
       <div className="page">
@@ -57,9 +61,25 @@ class CallLogView extends React.Component {
               </td>
             </tr>
             <tr>
-              <th>Number</th>
+              <th>From Number</th>
               <td>
-                {number.get('number')}
+                {isInbound
+                  ? <button onClick={() => openDialpad(fromNumber)}>
+                    {fromNumber}
+                  </button>
+                  : number.get('number')
+                }
+              </td>
+            </tr>
+            <tr>
+              <th>To Number</th>
+              <td>
+                {isInbound
+                  ? number.get('number')
+                  : <button onClick={() => openDialpad(toNumber)}>
+                    {toNumber}
+                  </button>
+                }
               </td>
             </tr>
             <tr>

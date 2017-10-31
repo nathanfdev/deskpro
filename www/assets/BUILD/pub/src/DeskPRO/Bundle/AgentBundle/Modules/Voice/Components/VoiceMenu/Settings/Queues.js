@@ -14,22 +14,8 @@ class Queues extends React.Component {
     saving:   PropTypes.bool
   };
 
-  onToggleQueue = (queue) => {
-    const { me, onChange } = this.props;
-    const agentId = me.get('id');
-
-    let agents = queue.get('agents') || Immutable.fromJS([]);
-    if (agents.contains(agentId)) {
-      agents = agents.splice(agents.indexOf(agentId), 1);
-    } else {
-      agents = agents.push(agentId);
-    }
-
-    onChange(queue, agents.contains(agentId));
-  };
-
   render() {
-    const { agents, me, queues = Immutable.fromJS({}), saving } = this.props;
+    const { agents, me, queues = Immutable.fromJS({}), saving, onChange } = this.props;
 
     if (!queues.size) {
       return (
@@ -43,16 +29,20 @@ class Queues extends React.Component {
 
     return (
       <ScrollArea className="voice-queue-list">
-        {queues.map((queue, index) =>
-          <QueueItem
-            key={index}
-            agents={agents}
-            queue={queue}
-            active={queue.get('agents').contains(me.get('id'))}
-            onChange={this.onToggleQueue}
-            saving={saving}
-          />
-        )}
+        {queues.map((queue, index) => {
+          const voiceAgent = queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first();
+
+          return (
+            <QueueItem
+              key={index}
+              agents={agents}
+              queue={queue}
+              active={voiceAgent ? voiceAgent.get('is_enabled') : false}
+              onChange={onChange}
+              saving={saving}
+            />
+          );
+        })}
       </ScrollArea>
     );
   }
@@ -69,13 +59,13 @@ class QueueItem extends React.Component {
   };
 
   onClick = () => {
-    const { queue, onChange } = this.props;
-    onChange(queue);
+    const { queue, active, onChange } = this.props;
+    onChange(queue, !active);
   };
 
   render() {
     const { agents, queue, active, saving } = this.props;
-    const queueAgentIds = queue.get('agents') || Immutable.fromJS([]);
+    const queueAgentIds = queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) || Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
 
     return (
