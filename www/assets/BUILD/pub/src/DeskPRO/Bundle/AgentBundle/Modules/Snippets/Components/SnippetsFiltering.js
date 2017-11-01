@@ -256,7 +256,7 @@ class SnippetsFiltering extends React.Component {
               checked={option.value === this.props.showMode}
               value={option.value}
             >
-              {option.label} ({option.count})
+              <span className="label">{option.label}</span> ({option.count})
             </Radio>
           )}
         </div>
