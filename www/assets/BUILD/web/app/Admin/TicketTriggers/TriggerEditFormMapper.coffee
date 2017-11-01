@@ -4,11 +4,11 @@ define [
   _
 ) ->
   class Admin_TicketTriggers_TriggerEditFormMapper
-    getFormFromModel: (model, appTriggerEvents) ->
+    getFormFromModel: (model, forceModeMapping = false) ->
       form = {}
       form.title = model.title || ''
 
-      if model.id
+      if model.id or forceModeMapping == true
         form.typeForm = {
           by_user: false,
           by_agent: false,

@@ -120,7 +120,7 @@ define [
           @trigger = {}
           @triggerId = 0
 
-        @$scope.form = @editFormMapper.getFormFromModel(@trigger, @appTriggerEvents)
+        @$scope.form = @editFormMapper.getFormFromModel(@trigger)
       )
 
       promise2 = @criteraTypeDef.loadDataOptions()
@@ -312,8 +312,7 @@ define [
         triggerToCopy = result.data.trigger
         triggerToCopy.id = @$scope.form.id
         triggerToCopy.title = if @$scope.form.title? then @$scope.form.title else triggerToCopy.title
-
-        @$scope.form = @editFormMapper.getFormFromModel(triggerToCopy, @appTriggerEvents);
+        @$scope.form = @editFormMapper.getFormFromModel(triggerToCopy, true)
       )
 
       promise2 = @criteraTypeDef.loadDataOptions()
