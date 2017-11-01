@@ -577,6 +577,8 @@ export class SnippetsModal extends React.Component {
     variables = variables.concat([
       { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
       { value: 'entity.person.display_name', label: agentPhrases.get('agent.general.name') },
+      { value: 'entity.person.first_name', label: agentPhrases.get('agent.general.first_name') },
+      { value: 'entity.person.last_name', label: agentPhrases.get('agent.general.last_name') },
       { value: 'entity.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
       { value: 'entity.person.organization.name', label: agentPhrases.get('agent.general.organization') },
       { value: 'entity.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
