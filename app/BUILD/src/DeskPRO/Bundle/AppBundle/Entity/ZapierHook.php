@@ -78,7 +78,7 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
     private $event;
 
     /**
-     * @ORM\Column(type="json_array", name="params")
+     * @ORM\Column(type="json_array", name="params", nullable=true)
      *
      * @var array
      */
