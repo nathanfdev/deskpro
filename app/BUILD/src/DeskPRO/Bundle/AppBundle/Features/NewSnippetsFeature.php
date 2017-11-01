@@ -154,7 +154,7 @@ HTML;
         try {
             $connection->query(
                 "INSERT INTO snippets
-                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, is_split) 
+                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, is_split, date_created) 
                       SELECT
                           ts.id,
                           IFNULL(ts.person_id, tcs.person_id) as person_id,
@@ -164,7 +164,8 @@ HTML;
                           ts.is_draft,
                           tcs.is_global as ownership_global,
                           1 as visible_global,
-                          0 as is_split
+                          0 as is_split,
+                          NOW()
                     FROM text_snippets ts
                     LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = $langId
                     LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT('text_snippets.', ts.id) AND ol_content.prop_name = 'snippet'
