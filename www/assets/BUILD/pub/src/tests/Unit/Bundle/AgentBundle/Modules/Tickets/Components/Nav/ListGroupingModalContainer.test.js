@@ -5,7 +5,7 @@ jest.dontMock('~nav/ListGroupingModalContainer');
 jest.mock('DeskPRO/Component/Positioned/Detached');
 
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { renderInTicketsApp } from '../../tickets.test-helper';
 
 describe('Tickets Navigation: ListGroupingModalContainer component', () => {

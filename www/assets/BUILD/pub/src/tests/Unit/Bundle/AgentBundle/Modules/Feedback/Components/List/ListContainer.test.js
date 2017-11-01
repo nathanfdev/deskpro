@@ -3,8 +3,8 @@
 jest.disableAutomock();
 
 import React from 'react';
+import TestUtils from 'react-dom/test-utils';
 import { renderInFeedbackApp } from '../../feedback.test-helper';
-import TestUtils from 'react-addons-test-utils';
 
 describe('Feedback: ListContainer', () => {
   const ListContainer = require('~Components/ListContainer').ListContainer;

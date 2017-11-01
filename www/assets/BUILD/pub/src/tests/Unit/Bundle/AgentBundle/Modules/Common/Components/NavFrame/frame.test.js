@@ -1,5 +1,5 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 describe('UI: NavFrame component', () => {

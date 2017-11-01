@@ -3,7 +3,7 @@
 jest.dontMock('~components/FiltersTab');
 
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { toImmutable } from 'Helpers';
 import { renderInTicketsApp } from '../../../../tickets.test-helper';
 
