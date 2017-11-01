@@ -132,7 +132,7 @@ class HierarchySorting
                 }
 
                 foreach ($results as $j => $potentialChild) {
-                    if ($potentialChild['hierarchy_parent_id'] === $node['hierarchy_id']) {
+                    if ((int) $potentialChild['hierarchy_parent_id'] === (int) $node['hierarchy_id']) {
                         $potentialChild['hierarchy_depth']      = $node['hierarchy_depth'] + 1;
                         $potentialChild['hierarchy_root_title'] = $node['hierarchy_root_title'];
                         is_null($countFieldNum)
@@ -159,7 +159,7 @@ class HierarchySorting
             foreach ($results as $result) {
                 $isMissingFromRemaining = true;
                 foreach ($results as $remainingResult) {
-                    if ($result['hierarchy_parent_id'] === $remainingResult['hierarchy_id']) {
+                    if ((int) $result['hierarchy_parent_id'] === (int) $remainingResult['hierarchy_id']) {
                         $isMissingFromRemaining = false;
                         break;
                     }
@@ -171,21 +171,48 @@ class HierarchySorting
             }
 
             foreach ($selectedFields as $i => $field) {
-                if (strpos($field, "`$hierarchicalTargetTableAlias`.") !== 0) {
-                    $selectedFields[$i] = "'-'";
+                if (strpos($field, "`$hierarchicalTargetTableAlias`.") === 0) {
+                    continue;
                 }
+                if (preg_match('/IF\(`\w+_custom_data_\d+`.`value`, (`\w+_custom_data_\d+_field`.`title`), `\w+_custom_data_\d+`.`input`\)/', $field, $matches)) {
+                    $selectedFields[$i] = $matches[1];
+                    continue;
+                }
+                if (strpos($field, $hierarchicalTargetTableAlias) !== false && preg_match('/custom_data_(\d+)_field/', $field) && !preg_match('/custom_data_(\d+)`./', $field)) {
+                    continue;
+                }
+
+                $selectedFields[$i] = "'-'";
             }
+
+            $selectTableAlias = $hierarchicalTargetTableAlias;
+            if (strpos($selectTableAlias, 'custom_data_')) {
+                $selectTableAlias .= '_field';
+            }
+
             $selectedFieldsSql = implode(', ', $selectedFields);
             $sql               = "
                 SELECT
                     $selectedFieldsSql,
                     0 as 'hierarchy_depth'
-                FROM `$hierarchicalTargetTable` $hierarchicalTargetTableAlias
+                FROM `$hierarchicalTargetTable` $selectTableAlias
                 WHERE id IN (?)
             ";
             $stmt = App::getDbRead('reports')->executeQuery(
                 $sql, [$missing], [\Doctrine\DBAL\Connection::PARAM_INT_ARRAY]);
             $missing = $stmt->fetchAll(\PDO::FETCH_BOTH);
+
+            if (strpos($selectTableAlias, 'custom_data_')) {
+                foreach ($missing as &$item) {
+                    $decodedOptions = @unserialize($item['hierarchy_parent_options']);
+
+                    if (isset($decodedOptions['parent_id'])) {
+                        $item['hierarchy_parent_id'] = $decodedOptions['parent_id'];
+                    } else {
+                        $item['hierarchy_parent_id'] = null;
+                    }
+                }
+            }
 
             $combined   = array_merge($newResults, $results, $missing);
             $newResults = self::sort(

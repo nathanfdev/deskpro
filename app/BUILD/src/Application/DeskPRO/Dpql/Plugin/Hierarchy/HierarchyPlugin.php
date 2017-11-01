@@ -106,12 +106,22 @@ class HierarchyPlugin implements PluginInterface
             return;
         }
         $hierarchicalTargetTable = Hierarchy::getGroupingTargetTableReference($this->sql);
-        list($id, $title)        = Column::resolveTable(Hierarchy::getGroupingTargetTable($this->sql));
-        $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
-        $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");
-        $this->sql->addSelectField("`$hierarchicalTargetTable`.`$title` as 'hierarchy_title'");
+        $groupingTableName       = Hierarchy::getGroupingTargetTable($this->sql);
+        list($id, $title)        = Column::resolveTable($groupingTableName);
 
-        $this->titleFieldSql = "`$hierarchicalTargetTable`.`$title`";
+        if (strpos($groupingTableName, 'custom_def') === 0) {
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}_field`.`$id` as 'hierarchy_id'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}_field`.`options` as 'hierarchy_parent_options'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}_field`.`$title` as 'hierarchy_title'");
+
+            $this->titleFieldSql = "`{$hierarchicalTargetTable}_field`.`$title`";
+        } else {
+            $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
+            $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");
+            $this->sql->addSelectField("`$hierarchicalTargetTable`.`$title` as 'hierarchy_title'");
+
+            $this->titleFieldSql = "`$hierarchicalTargetTable`.`$title`";
+        }
     }
 
     /**
@@ -152,9 +162,22 @@ class HierarchyPlugin implements PluginInterface
         $parentIdIndex = $lastNum - 2;
         $idIndex       = $lastNum - 3;
         foreach ($results as &$result) {
-            $result['hierarchy_id']        = $result[$idIndex];
-            $result['hierarchy_parent_id'] = $result[$parentIdIndex];
-            $result['hierarchy_title']     = $path.$result[$titleIndex];
+            $result['hierarchy_id']    = $result[$idIndex];
+            $result['hierarchy_title'] = $path.$result[$titleIndex];
+
+            if (strpos($this->titleFieldSql, 'custom_data_') !== false) {
+                $customFieldOptions = $result[$parentIdIndex];
+                $decodedOptions     = @unserialize($customFieldOptions);
+
+                if (isset($decodedOptions['parent_id'])) {
+                    $result['hierarchy_parent_id'] = $decodedOptions['parent_id'];
+                } else {
+                    $result['hierarchy_parent_id'] = null;
+                }
+            } else {
+                $result['hierarchy_parent_id'] = $result[$parentIdIndex];
+            }
+
             unset($result[$idIndex]);
             unset($result[$parentIdIndex]);
             unset($result[$titleIndex]);
