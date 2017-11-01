@@ -652,6 +652,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             return null;
         }
 
+        if ($person && ($person->is_disabled || $person->is_deleted)) {
+            $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
+            $this->error      = 'from_disabled_user';
+            $this->error_type = 'rejected';
+
+            return null;
+        }
+
         if ($this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()) {
             $this->logMessage('[TicketGatewayProcessor] Detected a DeskPRO reply, disabling disable_autoresponses');
             $person->setDisableAutoresponses(
