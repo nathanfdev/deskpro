@@ -16302,6 +16302,22 @@
         }
       }
     },
+    "config": {
+      "version": "1.27.0",
+      "resolved": "https://registry.npmjs.org/config/-/config-1.27.0.tgz",
+      "integrity": "sha1-OrMNAID/dvQHwvR6wTJq39kIr18=",
+      "requires": {
+        "json5": "0.4.0",
+        "os-homedir": "1.0.2"
+      },
+      "dependencies": {
+        "json5": {
+          "version": "0.4.0",
+          "resolved": "https://registry.npmjs.org/json5/-/json5-0.4.0.tgz",
+          "integrity": "sha1-BUNS5MTIDIbAkjh31EneF2pzLI0="
+        }
+      }
+    },
     "configstore": {
       "version": "2.1.0",
       "resolved": "https://registry.npmjs.org/configstore/-/configstore-2.1.0.tgz",
@@ -17649,20 +17665,17 @@
       "integrity": "sha1-RkV89rmy+NoTroouTlR94G7hXpY="
     },
     "emojione-picker": {
-      "version": "1.1.0",
-      "resolved": "https://registry.npmjs.org/emojione-picker/-/emojione-picker-1.1.0.tgz",
-      "integrity": "sha1-fVi5jns9zfDi/rPdcMTpwPAbjIA=",
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/emojione-picker/-/emojione-picker-2.2.1.tgz",
+      "integrity": "sha1-wGgjEm0yOahLoqOcXoSkTw2orVw=",
       "requires": {
         "emojione": "2.2.7",
+        "escape-string-regexp": "1.0.5",
         "lodash": "4.17.4",
+        "react": "15.6.2",
+        "react-addons-shallow-compare": "15.6.2",
+        "react-virtualized": "9.9.0",
         "store": "1.3.20"
-      },
-      "dependencies": {
-        "lodash": {
-          "version": "4.17.4",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
-          "integrity": "sha1-eCA6TRwyiuHYbcpkYONptX9AVa4="
-        }
       }
     },
     "emojis-list": {
@@ -17891,8 +17904,7 @@
     "escape-string-regexp": {
       "version": "1.0.5",
       "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz",
-      "integrity": "sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=",
-      "dev": true
+      "integrity": "sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ="
     },
     "escodegen": {
       "version": "1.8.1",
@@ -18833,9 +18845,9 @@
       "dev": true
     },
     "froala-editor": {
-      "version": "2.5.1",
-      "resolved": "https://registry.npmjs.org/froala-editor/-/froala-editor-2.5.1.tgz",
-      "integrity": "sha1-2vM/1cvqwfU5UvARREn5IVN+TRk=",
+      "version": "2.7.1",
+      "resolved": "https://registry.npmjs.org/froala-editor/-/froala-editor-2.7.1.tgz",
+      "integrity": "sha512-GMRckZNsFaLxSmsLzIBkdN0U1VjJY88vBje+9G+1xlC3mm/0ggvJKv0NuQ+2OC9Rb6RW2xJWScgnGZ7n797AXA==",
       "requires": {
         "font-awesome": "4.4.0",
         "jquery": "2.1.4"
@@ -23952,8 +23964,7 @@
     "os-homedir": {
       "version": "1.0.2",
       "resolved": "https://registry.npmjs.org/os-homedir/-/os-homedir-1.0.2.tgz",
-      "integrity": "sha1-/7xJiDNuDoM94MFox+8VISGqf7M=",
-      "dev": true
+      "integrity": "sha1-/7xJiDNuDoM94MFox+8VISGqf7M="
     },
     "os-locale": {
       "version": "1.4.0",
@@ -25283,11 +25294,12 @@
       }
     },
     "react-froala-wysiwyg": {
-      "version": "2.5.1",
-      "resolved": "https://registry.npmjs.org/react-froala-wysiwyg/-/react-froala-wysiwyg-2.5.1.tgz",
-      "integrity": "sha1-uiRAugJl4Lq80K58NVbTrXmpOE8=",
+      "version": "2.7.1",
+      "resolved": "https://registry.npmjs.org/react-froala-wysiwyg/-/react-froala-wysiwyg-2.7.1.tgz",
+      "integrity": "sha512-m5cFekcCYrpftbdXo9LGC8ypljU/vFFkSBFlUvZSCE+wzhbGNHoKJdN2HuCzPQ5Kg+n+Pwu7Y0MEILeEcVxDGQ==",
       "requires": {
-        "froala-editor": "2.5.1"
+        "create-react-class": "15.6.2",
+        "froala-editor": "2.7.1"
       }
     },
     "react-fuzzy": {
@@ -25361,29 +25373,12 @@
       "integrity": "sha1-+x/cok4wUBYXcyeB9DQbcE73wyA="
     },
     "react-inlinesvg": {
-      "version": "0.5.5",
-      "resolved": "https://registry.npmjs.org/react-inlinesvg/-/react-inlinesvg-0.5.5.tgz",
-      "integrity": "sha1-gRx13s05Lq72gjRnUUGML9kRr0I=",
+      "version": "0.7.0",
+      "resolved": "https://registry.npmjs.org/react-inlinesvg/-/react-inlinesvg-0.7.0.tgz",
+      "integrity": "sha512-FabxJTytQ3y/0dkCagNC2W/INW3qH1Un02tuGbF6p46Za+iPwRB8q++qh+803cwVW2mjJ9oUdVJ5nFC5u8wWJA==",
       "requires": {
-        "fbjs": "0.8.12",
         "httpplease": "0.16.4",
         "once": "1.4.0"
-      },
-      "dependencies": {
-        "fbjs": {
-          "version": "0.8.12",
-          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.12.tgz",
-          "integrity": "sha1-ELXZL3bUVXX9Y6IX1OoCvqL47QQ=",
-          "requires": {
-            "core-js": "1.2.7",
-            "isomorphic-fetch": "2.2.1",
-            "loose-envify": "1.3.1",
-            "object-assign": "4.1.1",
-            "promise": "7.1.1",
-            "setimmediate": "1.0.5",
-            "ua-parser-js": "0.7.12"
-          }
-        }
       }
     },
     "react-input-autosize": {
@@ -25446,10 +25441,12 @@
       }
     },
     "react-loader": {
-      "version": "2.4.0",
-      "resolved": "https://registry.npmjs.org/react-loader/-/react-loader-2.4.0.tgz",
-      "integrity": "sha1-NcXrNF1WoucgTs0m1cfyJdGmP5I=",
+      "version": "2.4.2",
+      "resolved": "https://registry.npmjs.org/react-loader/-/react-loader-2.4.2.tgz",
+      "integrity": "sha1-FOK5E5/FaT2lzb3JKAMtWxrrlMI=",
       "requires": {
+        "create-react-class": "15.6.2",
+        "prop-types": "15.6.0",
         "spin.js": "2.3.2"
       }
     },
@@ -25464,11 +25461,13 @@
       }
     },
     "react-motion": {
-      "version": "0.4.7",
-      "resolved": "https://registry.npmjs.org/react-motion/-/react-motion-0.4.7.tgz",
-      "integrity": "sha1-93Mx7HkgvbDQz8N+tv+hBXG/Qsc=",
+      "version": "0.4.8",
+      "resolved": "https://registry.npmjs.org/react-motion/-/react-motion-0.4.8.tgz",
+      "integrity": "sha1-I7st0nwtjgDSKeRVctEF789Ao14=",
       "requires": {
+        "create-react-class": "15.6.2",
         "performance-now": "0.2.0",
+        "prop-types": "15.6.0",
         "raf": "3.3.0"
       }
     },
@@ -25506,28 +25505,22 @@
       }
     },
     "react-redux": {
-      "version": "4.4.5",
-      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-4.4.5.tgz",
-      "integrity": "sha1-9QmimBviJS0QxinvfFWTR6SuxFc=",
+      "version": "5.0.6",
+      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-5.0.6.tgz",
+      "integrity": "sha512-8taaaGu+J7PMJQDJrk/xiWEYQmdo3mkXw6wPr3K3LxvXis3Fymiq7c13S+Tpls/AyNUAsoONkU81AP0RA6y6Vw==",
       "requires": {
-        "hoist-non-react-statics": "1.2.0",
-        "invariant": "2.2.2",
+        "hoist-non-react-statics": "2.3.1",
+        "invariant": "2.2.1",
         "lodash": "4.17.4",
-        "loose-envify": "1.3.1"
+        "lodash-es": "4.17.4",
+        "loose-envify": "1.3.1",
+        "prop-types": "15.6.0"
       },
       "dependencies": {
-        "invariant": {
-          "version": "2.2.2",
-          "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.2.tgz",
-          "integrity": "sha1-nh9WrArNtr8wMwbzOL47IErmA2A=",
-          "requires": {
-            "loose-envify": "1.3.1"
-          }
-        },
-        "lodash": {
-          "version": "4.17.4",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
-          "integrity": "sha1-eCA6TRwyiuHYbcpkYONptX9AVa4="
+        "hoist-non-react-statics": {
+          "version": "2.3.1",
+          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.3.1.tgz",
+          "integrity": "sha1-ND24TGAYxlB3iJgkATWhQg7iLOA="
         }
       }
     },
@@ -25583,13 +25576,14 @@
       }
     },
     "react-scrollbar": {
-      "version": "0.4.2",
-      "resolved": "https://registry.npmjs.org/react-scrollbar/-/react-scrollbar-0.4.2.tgz",
-      "integrity": "sha1-QTWW50xZ0zqOlvUBZLxx2G2npVQ=",
+      "version": "0.5.1",
+      "resolved": "https://registry.npmjs.org/react-scrollbar/-/react-scrollbar-0.5.1.tgz",
+      "integrity": "sha1-ASo3J/MOp01v8pT0hW11Mo8/Qis=",
       "requires": {
+        "config": "1.27.0",
         "line-height": "0.1.1",
         "react": "15.6.2",
-        "react-motion": "0.4.7"
+        "react-motion": "0.4.8"
       }
     },
     "react-select": {
@@ -25804,11 +25798,12 @@
       "integrity": "sha1-65Bh7vsETkorCc6MmdNGRbLb+iU="
     },
     "react-tooltip": {
-      "version": "3.2.10",
-      "resolved": "https://registry.npmjs.org/react-tooltip/-/react-tooltip-3.2.10.tgz",
-      "integrity": "sha1-SEpcjAcJcB6J254CgewypQoJJeo=",
+      "version": "3.4.0",
+      "resolved": "https://registry.npmjs.org/react-tooltip/-/react-tooltip-3.4.0.tgz",
+      "integrity": "sha1-A38495fD5rG1jSU0zMjCx2r09S0=",
       "requires": {
-        "classnames": "2.2.5"
+        "classnames": "2.2.5",
+        "prop-types": "15.6.0"
       },
       "dependencies": {
         "classnames": {
