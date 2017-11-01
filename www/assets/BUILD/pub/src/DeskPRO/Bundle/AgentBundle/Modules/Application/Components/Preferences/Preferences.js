@@ -23,7 +23,7 @@ export class Preferences extends React.Component {
         <header>
           <h1>Account Preferences</h1>
           <div className="controls">
-            <a href="#" onClick={this.close}><i className="fa fa-times"></i></a>
+            <a href="#" onClick={this.close}><i className="fa fa-times" /></a>
           </div>
         </header>
 

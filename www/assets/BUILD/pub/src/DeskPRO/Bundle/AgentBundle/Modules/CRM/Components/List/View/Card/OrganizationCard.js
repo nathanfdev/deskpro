@@ -29,7 +29,7 @@ export class OrganizationCard extends Component {
       return (
         <CardLineItem>
           <CardDisc />
-          <i className="fa fa-tags"></i> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
+          <i className="fa fa-tags" /> {labels.map((label, index) => <CardLabel key={index} label={label} />)}
           <CardDisc />
         </CardLineItem>
       );

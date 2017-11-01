@@ -80,10 +80,10 @@ export class OrganizationsTable extends Component {
           </tr>
         </thead>
         <tbody>
-        {organizations && organizations.map((element, index) =>
-          <tr key={index}>
-            {fields.map(field => this.renderField(field, element))}
-          </tr>
+          {organizations && organizations.map((element, index) =>
+            <tr key={index}>
+              {fields.map(field => this.renderField(field, element))}
+            </tr>
         )}
         </tbody>
       </Table>

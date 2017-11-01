@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { SingleForm } from './Form/SingleForm';
+import PropTypes from 'prop-types';
 import Loader from 'react-loader';
+import { SingleForm } from './Form/SingleForm';
 
 export class Content extends React.Component {
 
@@ -15,7 +15,8 @@ export class Content extends React.Component {
     const { dispatch, settings, settingsLoaded } = this.props;
 
     return (
-      <Loader loaded={settingsLoaded}
+      <Loader
+        loaded={settingsLoaded}
         opacity={0}
         width={3}
       >

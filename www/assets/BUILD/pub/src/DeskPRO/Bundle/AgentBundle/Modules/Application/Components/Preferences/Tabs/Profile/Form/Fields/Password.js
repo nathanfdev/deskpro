@@ -40,16 +40,18 @@ export class Password extends React.Component {
 
     return (
       <div>
-          <input type="password"
-            placeholder="Password"
-            value={first}
-            onChange={this.onChangeValue}
-          />
-          <input type="password"
-            placeholder="Confirm password"
-            value={second}
-            onChange={this.onChangeConfirmValue}
-          />
+        <input
+          type="password"
+          placeholder="Password"
+          value={first}
+          onChange={this.onChangeValue}
+        />
+        <input
+          type="password"
+          placeholder="Confirm password"
+          value={second}
+          onChange={this.onChangeConfirmValue}
+        />
       </div>
     );
   }

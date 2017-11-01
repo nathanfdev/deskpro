@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 import { preloadData } from '../../Application/Actions/bootstrapActions';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
 import { TicketsApp } from '../../Tickets/Components/TicketsApp';
@@ -14,7 +15,6 @@ import { LoginApp } from '../../Login/Components/LoginApp';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import { setActiveApp } from '../../Application/Actions/appActions';
 import { history } from '../../../Services/history';
-import $ from 'jquery';
 
 @connect()
 export class DpAppContainer extends React.Component {
@@ -27,7 +27,7 @@ export class DpAppContainer extends React.Component {
     $.ajaxSetup(
       {
         statusCode: {
-          401: () => history.replace(`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
+          401: () => history.replace(`${window.DP_BASE_URL_RELATIVE}/${window.DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
         }
       }
     );
@@ -52,9 +52,9 @@ export class DpAppContainer extends React.Component {
   }
 
   workOutBasePath() {
-    const baseEnd = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
+    const baseEnd = window.DP_BASE_URL.indexOf('/', window.DP_BASE_URL.indexOf('://') + 3);
 
-    return (baseEnd !== -1 ? DP_BASE_URL.substr(baseEnd) : '') + '/' + DP_AGENT_INTERFACE_PATH_NAMESPACE;
+    return `${baseEnd !== -1 ? window.DP_BASE_URL.substr(baseEnd) : ''}/${window.DP_AGENT_INTERFACE_PATH_NAMESPACE}`;
   }
 
   render() {

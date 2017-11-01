@@ -24,31 +24,33 @@ export class ColumnMode extends React.Component {
         </div>
 
         <div className="dpw-workspace-state">
-          <ChangeModeButton type={'column'}
+          <ChangeModeButton
+            type={'column'}
             title={'Column Mode'}
             activeType={currentMode}
             onChange={onChangeMode}
           >
 
-            <span className="workspace-state-item state-sidebar"></span>
-            <span className="workspace-state-item left-column active"></span>
-            <span className="workspace-state-item right-column active"></span>
+            <span className="workspace-state-item state-sidebar" />
+            <span className="workspace-state-item left-column active" />
+            <span className="workspace-state-item right-column active" />
           </ChangeModeButton>
 
-          <ChangeModeButton type={'focus'}
+          <ChangeModeButton
+            type={'focus'}
             title={'Focus Mode'}
             activeType={currentMode}
             onChange={onChangeMode}
           >
 
-            <span className="workspace-state-item state-sidebar"></span>
-            <span className="workspace-state-item full-width-column active"></span>
+            <span className="workspace-state-item state-sidebar" />
+            <span className="workspace-state-item full-width-column active" />
           </ChangeModeButton>
         </div>
 
         {currentMode === 'column' &&
           <ColumnSlider columnDimensions={columnDimensions} onChangeDimensions={onChangeDimensions} />}
 
-    </div>);
+      </div>);
   }
 }

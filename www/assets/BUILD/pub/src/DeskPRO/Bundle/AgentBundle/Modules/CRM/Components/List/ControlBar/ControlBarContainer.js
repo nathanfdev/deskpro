@@ -93,7 +93,7 @@ export class ControlBarContainer extends Component {
         },
 
         viewMode:              this.props.viewMode,
-        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
+        viewModeAction:        mode => updateRoutingState('list', 'view', mode),
         toggleFieldVisibility: this.props.togglePeopleFieldVisibility,
         changeFieldOrder:      this.props.changePeopleFieldOrder
       }
@@ -135,7 +135,7 @@ export class ControlBarContainer extends Component {
         },
 
         viewMode:              this.props.viewMode,
-        viewModeAction:        (mode) => updateRoutingState('list', 'view', mode),
+        viewModeAction:        mode => updateRoutingState('list', 'view', mode),
         toggleFieldVisibility: this.props.toggleOrgFieldVisibility,
         changeFieldOrder:      this.props.changeOrgFieldOrder
       }

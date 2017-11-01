@@ -16,7 +16,7 @@ export class Notification extends Modal {
   renderBody() {
     const { title, children, confirmTitle, cancelTitle } = this.props;
 
-    let style = {};
+    const style = {};
     if (this.props.zIndex) {
       style.zIndex = this.props.zIndex;
     }
@@ -35,7 +35,7 @@ export class Notification extends Modal {
             </p>
 
             <span className="dpw-friendly-warning-icon">
-              <div className="logo"></div>
+              <div className="logo" />
             </span>
 
             <span className="dpw-friendly-warning-more-help">

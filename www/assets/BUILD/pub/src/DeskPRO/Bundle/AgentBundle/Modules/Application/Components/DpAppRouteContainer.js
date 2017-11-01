@@ -5,7 +5,7 @@ import { DpApp } from './DpApp';
 import { WelcomeBack } from '../../Welcome/Components/WelcomeBack';
 import { IMContainer } from '../../IM/Components/IMContainer';
 import { PreferencesContainer } from './Preferences/PreferencesContainer';
-import { NotificationServiceContainer } from './Notifications/NotificationServiceContainer.js';
+import { NotificationServiceContainer } from './Notifications/NotificationServiceContainer';
 import { coverShownSelector } from '../Selectors/dpWindow';
 import { isBootstrappedSelector } from '../Selectors/bootstrap';
 
@@ -19,7 +19,6 @@ export class DpAppRouteContainer extends React.Component {
     children:       PropTypes.node.isRequired,
     isBootstrapped: PropTypes.bool.isRequired,
     coverShown:     PropTypes.bool.isRequired,
-    dispatch:       PropTypes.func.isRequired
   };
 
   render() {
@@ -35,7 +34,7 @@ export class DpAppRouteContainer extends React.Component {
           {children}
         </DpApp>
 
-        {coverShown && <div className="cover"></div>}
+        {coverShown && <div className="cover" />}
         <NotificationServiceContainer />
         <IMContainer />
         <PreferencesContainer positionTarget={document.body} />

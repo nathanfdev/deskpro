@@ -25,7 +25,7 @@ export class Workspace extends React.Component {
           <div className="header-controls">
             Your Workspace
             <span className="close">
-              <a href="#"><i className="fa fa-times" onClick={close}></i></a>
+              <a href="#"><i className="fa fa-times" onClick={close} /></a>
             </span>
           </div>
         </header>

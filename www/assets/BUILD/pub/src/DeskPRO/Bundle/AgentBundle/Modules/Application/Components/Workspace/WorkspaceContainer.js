@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Workspace } from './Workspace';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';
+import { Workspace } from './Workspace';
 import { closeWorkspace, setColumnDimensions, setColumnMode, setSidebarMode } from '../../Actions/appActions';
 
 @connect(state => ({
@@ -31,15 +31,15 @@ export class WorkspaceContainer extends React.Component {
     this.props.dispatch(setColumnMode(mode));
   };
 
-  setColumnDimensions = percent => {
+  setColumnDimensions = (percent) => {
     this.props.dispatch(setColumnDimensions(percent));
   };
 
-  setSidebarMode = mode => {
+  setSidebarMode = (mode) => {
     this.props.dispatch(setSidebarMode(mode));
   };
 
-  close = event => {
+  close = (event) => {
     event.preventDefault();
 
     this.resetAll(event);
@@ -50,7 +50,7 @@ export class WorkspaceContainer extends React.Component {
     this.props.dispatch(closeWorkspace());
   };
 
-  resetAll = event => {
+  resetAll = (event) => {
     event.preventDefault();
     const { dispatch } = this.props;
 
@@ -61,7 +61,7 @@ export class WorkspaceContainer extends React.Component {
     this.closeWorkspace();
   };
 
-  saveWorkspace = event => {
+  saveWorkspace = (event) => {
     event.preventDefault();
     const { dpWindow } = this.props;
 

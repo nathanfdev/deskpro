@@ -22,13 +22,13 @@ export class SingleForm extends React.Component {
     };
   }
 
-  onChange = event => {
+  onChange = (event) => {
     this.setState({
       signature: event.target.value
     });
   };
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
 
     const { settings, dispatch } = this.props;
@@ -41,7 +41,7 @@ export class SingleForm extends React.Component {
     }
 
     promise
-      .success(response => {
+      .success((response) => {
         dispatch(releaseCollection('Settings', 'my'));
         dispatch(setCollection('Settings', 'my', { [response.data.id]: response.data }));
       });
@@ -54,11 +54,12 @@ export class SingleForm extends React.Component {
 
         <div className="signature">
           <form>
-            <div className="textarea-tagalong"></div>
-              <textarea placeholder="Your Signature"
-                value={this.state.signature}
-                onChange={this.onChange}
-              />
+            <div className="textarea-tagalong" />
+            <textarea
+              placeholder="Your Signature"
+              value={this.state.signature}
+              onChange={this.onChange}
+            />
 
             <input type="submit" value="Save Signature" onClick={this.onSubmit} />
           </form>

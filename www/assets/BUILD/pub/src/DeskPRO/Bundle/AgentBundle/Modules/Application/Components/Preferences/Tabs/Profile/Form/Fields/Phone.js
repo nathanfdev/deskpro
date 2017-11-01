@@ -14,7 +14,8 @@ export class Phone extends React.Component {
 
     return (
       <div className="bucket-column">
-        <PhoneNumber number={value.number}
+        <PhoneNumber
+          number={value.number}
           extension={value.extension}
           onChange={onChange}
         />
