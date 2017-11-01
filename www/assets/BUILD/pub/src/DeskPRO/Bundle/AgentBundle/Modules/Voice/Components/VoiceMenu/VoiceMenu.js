@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import Settings from './Settings/Settings';
 import DialpadContainer from './Dialpad/DialpadContainer';

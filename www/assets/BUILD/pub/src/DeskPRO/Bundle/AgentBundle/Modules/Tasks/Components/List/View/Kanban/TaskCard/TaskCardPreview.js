@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { TaskCard } from './TaskCard';
 
 export class TaskCardPreview extends React.Component {

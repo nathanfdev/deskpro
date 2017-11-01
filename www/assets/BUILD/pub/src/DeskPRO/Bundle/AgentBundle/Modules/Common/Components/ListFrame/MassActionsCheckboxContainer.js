@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 // @flow
-import React, { PropTypes } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { List } from 'immutable';

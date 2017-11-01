@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Menu } from './Menu';
 import { Content } from './Content';
 import * as AppActions from '../../Actions/appActions';

@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 // @flow
-import React, { PropTypes } from 'react';
+import React from 'react';
 
 export const FeedbackCardMark = ({ numRatings }:{numRatings:number}) =>
   <div className="dpw--feedback-card-mark">

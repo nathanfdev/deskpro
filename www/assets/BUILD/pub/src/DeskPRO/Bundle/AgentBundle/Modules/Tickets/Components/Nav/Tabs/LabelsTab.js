@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { LabelsDictionary } from '../../../../Common/Components/NavFrame';
 
 export class LabelsTab extends Component {

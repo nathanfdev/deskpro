@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ProfileForm } from './Form/ProfileForm';
 
 export class Content extends React.Component {

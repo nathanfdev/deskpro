@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Immutable from 'immutable';
 import moment from 'moment';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';

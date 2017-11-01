@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { windowResize } from '../../../../../../Application/Actions/dpWindowActions';
 import { endChat, unsetChatId } from '../../../../../Actions/chatActions';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import classNames from 'classnames';
 import { hasErrors, getLastError } from 'DeskPRO/Component/Form/FormErrors';

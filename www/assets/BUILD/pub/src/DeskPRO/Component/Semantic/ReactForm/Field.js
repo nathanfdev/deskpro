@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Field as BaseField, ErrorList as BaseErrorList } from 'react-forms';
 import { getErrorsByPropertyPath } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ImageAvatar, Gravatar, TextAvatar } from 'DeskPRO/Component/Avatar';
 import { UserPhoto } from './UserPhoto';
 

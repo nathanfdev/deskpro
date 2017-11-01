@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import classNames from 'classnames';

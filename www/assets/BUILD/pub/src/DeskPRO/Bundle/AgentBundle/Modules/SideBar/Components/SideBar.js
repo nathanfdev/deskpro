@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Isvg from 'react-inlinesvg';
 import { connect } from 'react-redux';
 import classNames from 'classnames';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 import $ from 'jquery';
 

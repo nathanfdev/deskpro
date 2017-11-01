@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import htmlToText from 'html-to-text';
 import { CustomSelect } from '@deskpro/react-components/lib/Components/Forms';
 import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';

@@ -1,25 +1,26 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 
 export class ItemFormat extends React.Component {
   static propTypes = {
-    icon:             React.PropTypes.string,
-    label:            React.PropTypes.string,
-    format:           React.PropTypes.string,
-    itemType:         React.PropTypes.string,
-    filterType:       React.PropTypes.string,
-    widgetClass:      React.PropTypes.string,
-    checked:          React.PropTypes.bool,
-    isActive:         React.PropTypes.bool,
-    discMarked:       React.PropTypes.bool,
-    children:         React.PropTypes.any,
-    listItem:         React.PropTypes.bool,
-    hasMenu:          React.PropTypes.bool,
-    hasItemList:      React.PropTypes.bool,
-    selected:         React.PropTypes.array,
-    resetFilter:      React.PropTypes.func,
-    renderFilterInfo: React.PropTypes.func,
-    toggleInnerList:  React.PropTypes.func
+    icon:             PropTypes.string,
+    label:            PropTypes.string,
+    format:           PropTypes.string,
+    itemType:         PropTypes.string,
+    filterType:       PropTypes.string,
+    widgetClass:      PropTypes.string,
+    checked:          PropTypes.bool,
+    isActive:         PropTypes.bool,
+    discMarked:       PropTypes.bool,
+    children:         PropTypes.any,
+    listItem:         PropTypes.bool,
+    hasMenu:          PropTypes.bool,
+    hasItemList:      PropTypes.bool,
+    selected:         PropTypes.array,
+    resetFilter:      PropTypes.func,
+    renderFilterInfo: PropTypes.func,
+    toggleInnerList:  PropTypes.func
   };
 
   renderDiscMark() {

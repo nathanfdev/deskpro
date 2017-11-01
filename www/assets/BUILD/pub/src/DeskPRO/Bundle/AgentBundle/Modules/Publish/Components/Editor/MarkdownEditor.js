@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import CM from 'codemirror';
@@ -18,12 +19,12 @@ import * as Icons from './Icons';
 
 class MarkdownEditor extends React.Component {
   static propTypes = {
-    onChange:         React.PropTypes.func,
-    onAddFile:        React.PropTypes.func,
-    loadRemoteImages: React.PropTypes.func,
-    options:          React.PropTypes.object,
-    name:             React.PropTypes.string,
-    value:            React.PropTypes.string,
+    onChange:         PropTypes.func,
+    onAddFile:        PropTypes.func,
+    loadRemoteImages: PropTypes.func,
+    options:          PropTypes.object,
+    name:             PropTypes.string,
+    value:            PropTypes.string,
   };
   static defaultProps = {
     onChange() {},

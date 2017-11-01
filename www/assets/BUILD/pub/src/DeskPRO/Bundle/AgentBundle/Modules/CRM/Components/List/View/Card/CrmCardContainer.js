@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { toggleSelectedAction } from '../../../../../Application/Actions/massActions';
 import { applyParams } from '../../../../Actions/crmListActions';
 import { OrganizationCard } from './OrganizationCard';

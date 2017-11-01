@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 import { preloadData } from '../../Application/Actions/bootstrapActions';

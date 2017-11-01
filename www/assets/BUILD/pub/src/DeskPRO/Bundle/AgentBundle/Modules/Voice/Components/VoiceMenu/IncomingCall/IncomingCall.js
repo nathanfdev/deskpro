@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Immutable from 'immutable';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Timer from 'DeskPRO/Component/Timer';

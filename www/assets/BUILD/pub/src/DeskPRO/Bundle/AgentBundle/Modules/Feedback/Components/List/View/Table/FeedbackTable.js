@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { SlicedString } from '../../../../../Common/Components/SlicedString';
 import { Table, Th, Td, TdId, PersonInTable } from '../../../../../Common/Components/ListFrame';
 import { intlShape, FormattedRelative } from 'react-intl';

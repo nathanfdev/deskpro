@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { AbstractCustomField } from './AbstractCustomField';
 import { Field } from 'react-forms';
 import classNames from 'classnames';

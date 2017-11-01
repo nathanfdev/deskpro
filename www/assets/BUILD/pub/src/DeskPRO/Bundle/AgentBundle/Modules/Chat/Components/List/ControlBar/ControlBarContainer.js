@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { constants } from '../../../../../Constants/Constants';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../../Application/Actions/routingActions';

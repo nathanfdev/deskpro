@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { pureRender } from 'DeskPRO/Component/Ampliflux';
 import { immutableCountsListShape } from 'DeskPRO/Bundle/AppBundle/Shapes';
 import { Section, SectionHeader, ListItem, NavFrame, NavFrameHeaderContainer, NavFrameBody, SectionsPane }

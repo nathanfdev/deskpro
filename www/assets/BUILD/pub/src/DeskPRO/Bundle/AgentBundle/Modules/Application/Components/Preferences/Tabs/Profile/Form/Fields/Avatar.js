@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Avatar as AvatarIcon } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/Avatar';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { withFormValue, Input } from 'react-forms';
 import { AbstractCustomField } from './AbstractCustomField';
 import { noFocusBorder } from './noFocusBorderDecorator';

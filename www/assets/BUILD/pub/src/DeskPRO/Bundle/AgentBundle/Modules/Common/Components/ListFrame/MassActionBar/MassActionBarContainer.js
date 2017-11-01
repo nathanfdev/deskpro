@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { selectedSelector, paramsSelector } from '../../../../Application/Selectors/massActions';
 import { cancelMassActions, submitMassActions } from '../../../../Application/Actions/massActions';
 import { MassActionDropdown } from './MassActionDropdown';

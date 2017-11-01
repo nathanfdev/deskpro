@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { AttachedImage } from './AttachedImage';
 import { AttachedImagesList } from './AttachedImagesList';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';

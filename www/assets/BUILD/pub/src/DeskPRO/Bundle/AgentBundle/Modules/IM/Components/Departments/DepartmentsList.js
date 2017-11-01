@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { DepartmentsListItem } from './DepartmentsListItem';
 import { connect } from 'react-redux';
 import { myTicketsDepartmentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';

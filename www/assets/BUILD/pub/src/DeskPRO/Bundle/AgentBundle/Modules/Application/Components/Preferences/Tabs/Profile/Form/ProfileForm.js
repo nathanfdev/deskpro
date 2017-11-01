@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Field } from './Fields/Field';
 import { Avatar } from './Fields/Avatar';
 import { Name } from './Fields/Name';

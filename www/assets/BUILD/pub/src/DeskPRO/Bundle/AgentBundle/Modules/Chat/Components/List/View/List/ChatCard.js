@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { intlShape, injectIntl, FormattedRelative } from 'react-intl';
 import {
   Card, CardLine, CardLineLeft, CardLineRight, CardLineFull,

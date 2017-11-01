@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { NavFrame, NavFrameHeaderContainer, NavFrameBody }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { GroupsContainer } from './Groups/GroupsContainer';

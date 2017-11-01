@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { CalendarCell } from './Cell/CalendarCell';
 import { CalendarCellContent } from './Cell/CalendarCellContent';
 import moment from 'moment';

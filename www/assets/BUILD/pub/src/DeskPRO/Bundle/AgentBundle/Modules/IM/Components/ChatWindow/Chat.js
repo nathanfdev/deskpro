@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';

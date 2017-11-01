@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -8,9 +9,9 @@ export class MenuFooter extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    widgetClass:         React.PropTypes.string,
-    overrideWidgetClass: React.PropTypes.bool,
-    children:            React.PropTypes.node
+    widgetClass:         PropTypes.string,
+    overrideWidgetClass: PropTypes.bool,
+    children:            PropTypes.node
   };
 
   /**

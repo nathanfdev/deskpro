@@ -1,13 +1,14 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 
 export class MenuFooterOptions extends React.Component {
 
   static propTypes = {
-    options:  React.PropTypes.array,
-    active:   React.PropTypes.string,
-    onClick:  React.PropTypes.func,
-    children: React.PropTypes.node
+    options:  PropTypes.array,
+    active:   PropTypes.string,
+    onClick:  PropTypes.func,
+    children: PropTypes.node
   };
 
   renderOption(option) {

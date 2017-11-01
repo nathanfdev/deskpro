@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { SortingMenu } from './Sorting/SortingMenu';
 import { FilteringMenuContainer } from './Filtering/FilteringMenuContainer';
 import { ViewMenuContainer } from './View/ViewMenuContainer';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import countries from 'countries-list/countries.json';
 import classNames from 'classnames';
 import Select from './Select';

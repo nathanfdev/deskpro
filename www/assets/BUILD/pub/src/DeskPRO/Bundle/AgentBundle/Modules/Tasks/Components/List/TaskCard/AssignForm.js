@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Immutable from 'immutable';
 import { Popup } from '../../../../Common/Components/Popup';
 import { AssignForm as Form, AssignAgentContainer, AssignTeamContainer, AssignDepartmentContainer } from '../../../../Common/Components/Form';

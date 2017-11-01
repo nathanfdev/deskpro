@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Th } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/ListFrame';
 import { currentOrderBySelector, currentOrderDirSelector, tableFieldsSelector } from '../../../../Selectors/list';

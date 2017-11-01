@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';

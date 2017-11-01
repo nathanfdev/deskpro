@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import TransferListButton from '../TransferListButton';
 import TransferSearch from '../TransferSearch';
 import AgentList from '../AgentList';

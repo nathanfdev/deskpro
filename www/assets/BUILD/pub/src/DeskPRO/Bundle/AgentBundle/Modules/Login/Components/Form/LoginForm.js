@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { LoginFormHeader } from './LoginFormHeader';
 import { Email } from './Fields/Email';
 import { Password } from './Fields/Password';

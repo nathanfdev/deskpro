@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { NavFrame, NavFrameHeaderContainer, NavFrameBody, TabsPaneStatefulContainer, Tab }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { FiltersTabContainer, LabelsTabContainer, StarsTabContainer } from './Tabs';

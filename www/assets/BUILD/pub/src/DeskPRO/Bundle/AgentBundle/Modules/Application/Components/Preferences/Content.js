@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ContentContainer as ProfileContent } from './Tabs/Profile/ContentContainer';
 import { ContentContainer as SignatureContent } from './Tabs/Signature/ContentContainer';
 import { ContentContainer as SettingsContent } from './Tabs/Settings/ContentContainer';

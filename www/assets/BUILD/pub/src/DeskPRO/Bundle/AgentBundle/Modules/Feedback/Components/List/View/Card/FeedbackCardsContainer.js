@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { selectedSelector } from '../../../../../Application/Selectors/massActions';

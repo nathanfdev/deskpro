@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { NotificationService } from 'DeskPRO/Bundle/AgentBundle/Services/NotificationService';
 import ActionAlertsHandler from 'DeskPRO/Bundle/AgentBundle/Services/ActionAlertsHandler';

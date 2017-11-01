@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { TitleForm } from './TitleForm';
 import classNames from 'classnames';

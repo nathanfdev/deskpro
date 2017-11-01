@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Fieldset, createValue } from 'react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import Modal from 'DeskPRO/Component/Semantic/Modal';

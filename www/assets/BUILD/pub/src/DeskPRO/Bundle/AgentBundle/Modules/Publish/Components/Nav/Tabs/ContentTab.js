@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { immutableCountShape } from 'DeskPRO/Bundle/AppBundle/Shapes';
 import { SectionsPane, Section, SectionHeader } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { NestedList } from './NestedList';

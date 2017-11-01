@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form';
 import Immutable from 'immutable';
 import ScrollArea from 'react-scrollbar';

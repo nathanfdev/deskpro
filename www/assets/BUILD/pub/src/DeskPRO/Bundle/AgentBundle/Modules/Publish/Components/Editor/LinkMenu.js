@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Select from 'react-select-plus';
 import { connect } from 'react-redux';
 import invariant from 'invariant';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import * as AppActions from '../../Application/Actions/appActions';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { Link } from 'react-router';

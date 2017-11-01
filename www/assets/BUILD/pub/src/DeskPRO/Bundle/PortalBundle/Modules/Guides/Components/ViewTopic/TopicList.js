@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Topic from './Topic';
 
 class TopicList extends React.Component {
@@ -8,7 +9,7 @@ class TopicList extends React.Component {
     guideSlug: PropTypes.string
   };
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   };
 
   constructor(props) {

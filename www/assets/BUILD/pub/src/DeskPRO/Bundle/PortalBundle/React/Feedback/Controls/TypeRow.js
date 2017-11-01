@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
 import { TypeSlider } from './TypeSlider';

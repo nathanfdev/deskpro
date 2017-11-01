@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export const WidgetIframe = ({ url, id }) => (
@@ -12,6 +13,6 @@ export const WidgetIframe = ({ url, id }) => (
   );
 
 WidgetIframe.propTypes = {
-  url: React.PropTypes.string.isRequired,
-  id:  React.PropTypes.string.isRequired
+  url: PropTypes.string.isRequired,
+  id:  PropTypes.string.isRequired
 };
