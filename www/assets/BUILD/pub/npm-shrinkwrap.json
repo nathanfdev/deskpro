@@ -15977,6 +15977,11 @@
         "deep-eql": "0.1.3"
       }
     },
+    "chain-function": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/chain-function/-/chain-function-1.0.0.tgz",
+      "integrity": "sha1-DUqzfn4Y6tC9xHuSB2QRjOWHM9w="
+    },
     "chalk": {
       "version": "1.1.3",
       "resolved": "https://registry.npmjs.org/chalk/-/chalk-1.1.3.tgz",
@@ -25771,24 +25776,6 @@
         }
       }
     },
-    "react-testutils-additions": {
-      "version": "15.1.0",
-      "resolved": "https://registry.npmjs.org/react-testutils-additions/-/react-testutils-additions-15.1.0.tgz",
-      "integrity": "sha1-yDC/x+63s2CEpgIoATn8s5KiEaw=",
-      "dev": true,
-      "requires": {
-        "object-assign": "3.0.0",
-        "sizzle": "2.3.3"
-      },
-      "dependencies": {
-        "object-assign": {
-          "version": "3.0.0",
-          "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-3.0.0.tgz",
-          "integrity": "sha1-m+3VygiXlJvKR+f/QIBi1Un1h/I=",
-          "dev": true
-        }
-      }
-    },
     "react-textarea-autosize": {
       "version": "4.0.2",
       "resolved": "https://registry.npmjs.org/react-textarea-autosize/-/react-textarea-autosize-4.0.2.tgz",
@@ -25827,6 +25814,28 @@
       "requires": {
         "global": "4.3.1",
         "react-proxy": "1.1.8"
+      }
+    },
+    "react-transition-group": {
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/react-transition-group/-/react-transition-group-1.2.0.tgz",
+      "integrity": "sha1-tR/JIbDDg1p+98Vxx5/ILHPpIE8=",
+      "requires": {
+        "chain-function": "1.0.0",
+        "dom-helpers": "3.2.1",
+        "loose-envify": "1.3.1",
+        "prop-types": "https://registry.npmjs.org/prop-types/-/prop-types-15.5.10.tgz",
+        "warning": "3.0.0"
+      },
+      "dependencies": {
+        "warning": {
+          "version": "3.0.0",
+          "resolved": "https://registry.npmjs.org/warning/-/warning-3.0.0.tgz",
+          "integrity": "sha1-MuU3fLVy3kqwR1O9+IIcAe1gW3w=",
+          "requires": {
+            "loose-envify": "1.3.1"
+          }
+        }
       }
     },
     "react-virtualized": {
@@ -26916,12 +26925,6 @@
       "version": "3.0.2",
       "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.2.tgz",
       "integrity": "sha1-tf3AjxKH6hF4Yo5BXiUTK3NkbG0=",
-      "dev": true
-    },
-    "sizzle": {
-      "version": "2.3.3",
-      "resolved": "https://registry.npmjs.org/sizzle/-/sizzle-2.3.3.tgz",
-      "integrity": "sha1-TrB4w3IxpWtS5Bk/cB5++JN+YGs=",
       "dev": true
     },
     "skin-deep": {
