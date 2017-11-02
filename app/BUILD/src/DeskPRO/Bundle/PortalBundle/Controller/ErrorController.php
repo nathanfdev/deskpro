@@ -231,7 +231,7 @@ class ErrorController extends AbstractController
         if ($reflection->isSubclassOf(AbstractApiController::class)) {
             $request = $this->get('request_stack')->getCurrentRequest()->duplicate(null, null,
                 [
-                    '_controller' => 'FOS\RestBundle\Controller\ExceptionController::showAction',
+                    '_controller' => 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction',
                     'exception'   => $exception,
                 ]
             );
