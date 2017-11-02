@@ -41,7 +41,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     load_promises.push DashboardWidgetService.getReports().then (result) ->
       $scope.reports = result.reports.filter (report)->
         return true for display_type in report.display_types when display_type == $scope.widget.type
-      $scope.labels.push {title: label, active: false} for label in result.labels
+      $scope.labels.push {title: label.label, active: false} for label in result.labels
       $scope.filterByLabels()
 
     $q.all(load_promises).then(-> $scope.loaded = true)
