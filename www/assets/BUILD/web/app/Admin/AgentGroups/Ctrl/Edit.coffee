@@ -36,7 +36,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       else
         groupPromise = @service.groups.get(@groupId)
 
-      promises = [groupPromise, @service.agents.all(), @service.ticketDeps.all(), @service.chatDeps.all()]
+      promises = [groupPromise, @service.agents.all(), @service.ticketDeps.all(true), @service.chatDeps.all(true)]
 
       @$q.all(promises).then (res) =>
         if res[0] and res[0].data?.group?
