@@ -3,7 +3,7 @@
 .big-list-of-stats-filters {
   @include clearfix;
   padding: 10px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
 
   .bucket {
     float: left;
@@ -76,10 +76,22 @@
     background: #fff;
 
     > li {
-      padding: 10px 10px;
+      padding: 10px;
       border-bottom: 1px solid #d9d9d9;
       padding-left: 30px;
       position: relative;
+
+      &:hover, &.active {
+        background: $dp-morning-sky;
+      }
+
+      &:hover .controls {
+        display: block;
+      }
+
+      &.active .mark {
+        opacity: 1;
+      }
 
       .mark {
         display: block;
@@ -93,16 +105,9 @@
         border-radius: 199px;
         opacity: 0.5;
       }
-    }
 
-    li:last-child {
-      border-bottom: 0px;
-    }
-
-    li.active {
-      background: #efeeeb;
-      .mark {
-        opacity: 1;
+      &:last-child {
+        border-bottom: 0;
       }
     }
 
@@ -187,7 +192,6 @@
   .controls {
     a {
       background: #4681b2;
-      color: #fff;
       text-transform: uppercase;
       display: inline-block;
       line-height: 1em;
@@ -280,9 +284,9 @@
 
   .big-list-of-stats {
     height: 100%;
+    max-height: 100%;
     padding: 0 0 10px 10px;
     background: #ffffff;
-    overflow-y: auto;
 
     ul.stat-list {
       @extend %flat-list;
@@ -291,11 +295,6 @@
       background: #fff;
 
       > li {
-        padding: 10px 10px;
-        border-bottom: 1px solid #d9d9d9;
-        padding-left: 30px;
-        position: relative;
-
         .Select {
           display: inline-block;
           height: 20px;
@@ -321,98 +320,6 @@
           display: none;
           float: right;
           cursor: pointer;
-        }
-
-        &:hover, &.active {
-          background: $dp-morning-sky;
-        }
-
-        &:hover .controls {
-          display: block;
-        }
-
-        &.active .mark {
-          opacity: 1;
-        }
-
-        .mark {
-          display: block;
-          position: absolute;
-          left: 10px;
-          top: 16px;
-          width: 11px;
-          height: 11px;
-          border: 2px solid #4681b2;
-          background: #fff;
-          border-radius: 199px;
-          opacity: 0.5;
-        }
-
-        &:last-child {
-          border-bottom: 0;
-        }
-      }
-
-      h1 {
-        font-size: 1.1em;
-        line-height: 1.7em;
-        margin: 0;
-        font-weight: 400;
-
-
-        .select-data {
-          text-transform: uppercase;
-          font-size: 0.75em;
-          font-weight: 600;
-          display: inline-block;
-          background: #fff;
-          border: 1px solid #d9d9d9;
-          color: #a5a5a5;
-          line-height: 1em;
-          text-decoration: none;
-          margin-left: 4px;
-          margin-right: 4px;
-
-          a {
-            display: block;
-            padding: 5px 6px;
-            width: 100%;
-            height: 100%;
-          }
-
-          i {
-            font-size: 0.9em;
-            margin-left: 3px;
-            margin-right: 2px;
-          }
-
-          &:hover {
-            color: #333;
-          }
-        }
-      }
-
-      p {
-        font-size: 1em;
-        color: #898989;
-        line-height: 1.6em;
-      }
-    }
-
-    .controls {
-      a {
-        background: #4681b2;
-        text-transform: uppercase;
-        display: inline-block;
-        line-height: 1em;
-        padding: 7px 10px;
-        font-size: 0.75em;
-        font-weight: 600;
-        text-decoration: none;
-        color: #e7ecf2;
-
-        i {
-          margin-left: 5px;
         }
       }
     }
