@@ -64,7 +64,7 @@ class VarsField extends React.Component {
               <Input type="text" />
             </Field>
             <Field className="type" select="type">
-              <Select choices={VarsField.types} />
+              <Select choices={VarsField.types} clearable={false} />
             </Field>
             { variable.type === 'dates'
               ? <DateField  key={`date_${index}`} dates={groupParams.get('dates')} />

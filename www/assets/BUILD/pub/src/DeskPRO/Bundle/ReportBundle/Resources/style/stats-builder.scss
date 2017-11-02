@@ -91,6 +91,27 @@
       padding-left: 30px;
       position: relative;
 
+      .Select {
+        display: inline-block;
+        height: 20px;
+        width: 90px;
+        > .Select-control {
+          height: 22px;
+          .Select-input, .Select-placeholder, .Select-value {
+            line-height: 20px;
+            height: 20px;
+            padding: 0 5px;
+          }
+          .Select-value {
+            padding: 2px 5px;
+          }
+        }
+        .Select-option {
+          line-height: 20px;
+          padding: 2px 5px;
+        }
+      }
+
       .controls {
         display: none;
         float: right;

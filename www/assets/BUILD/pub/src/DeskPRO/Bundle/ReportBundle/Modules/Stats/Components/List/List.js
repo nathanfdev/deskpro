@@ -12,7 +12,8 @@ class List extends React.Component {
     onEditReportClick: PropTypes.func.isRequired,
     onRunReportClick:  PropTypes.func.isRequired,
     onLabelClick:      PropTypes.func.isRequired,
-    labels:            PropTypes.object.isRequired
+    labels:            PropTypes.object.isRequired,
+    groupParams:       PropTypes.object.isRequired,
   };
 
 
@@ -25,7 +26,7 @@ class List extends React.Component {
   }
 
   showList() {
-    const { onLabelClick, onEditReportClick, onRunReportClick, labels, currentReport } = this.props;
+    const { onLabelClick, onEditReportClick, onRunReportClick, labels, currentReport, groupParams } = this.props;
     return (
       <div className="stat-list-wrapper">
         <ul className="stat-list">
@@ -39,6 +40,7 @@ class List extends React.Component {
                 isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}
+                groupParams={groupParams}
               />
           )}
           {this.props.builtInReports.map(
@@ -51,6 +53,7 @@ class List extends React.Component {
                 isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}
+                groupParams={groupParams}
               />
           )}
         </ul>
@@ -61,7 +64,7 @@ class List extends React.Component {
   render() {
     return (
       <div className="big-list-of-stats">
-        { this.props.reportsLoaded ? this.showList() : List.showLoading() }
+        { this.props.reportsLoaded && this.props.groupParams.has('dates') ? this.showList() : List.showLoading() }
       </div>
     );
   }

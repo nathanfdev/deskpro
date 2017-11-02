@@ -20,7 +20,7 @@ class TypeField extends React.Component {
 
     return (
       <Field className="field-type" select="field_type">
-        <Select choices={choices} />
+        <Select choices={choices}  clearable={false} />
       </Field>
     );
   }

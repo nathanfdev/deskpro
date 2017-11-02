@@ -204,7 +204,7 @@ class DashboardWidget
             }
         }
 
-        return $this->renderQuery($query, ['variables' => $variables], $widget->getType());
+        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), $widget->getType() === 'table' ? 'html' : 'json');
     }
 
     /**
@@ -221,7 +221,7 @@ class DashboardWidget
         $query  = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
         $error  = false;
 
-        return Display::renderQuery('json', $query, $params, $error);
+        return Display::renderQuery($format, $query, $params, $error);
     }
 
     /**

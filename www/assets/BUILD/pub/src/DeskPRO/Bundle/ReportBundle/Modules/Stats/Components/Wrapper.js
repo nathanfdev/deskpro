@@ -184,6 +184,7 @@ class Wrapper extends React.Component {
                 onRunReportClick={this.onRunReportClick}
                 onLabelClick={this.onLabelClick}
                 labels={labels}
+                groupParams={groupParams}
               />
             </div>
           </div>

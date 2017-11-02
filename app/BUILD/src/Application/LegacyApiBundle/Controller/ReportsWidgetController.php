@@ -140,6 +140,9 @@ class ReportsWidgetController extends AbstractController
             $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : ucfirst($label);
         }
         $widget['query_parts'] = $queryParts;
+        $reportData            = $this->in->getArrayValue('report');
+        $widget['variables']   = $reportData['variables'];
+        $widget['query_parts'] = $this->in->getArrayValue('parts');
 
         return $widget;
     }
@@ -275,7 +278,7 @@ class ReportsWidgetController extends AbstractController
         if ($error = $reportsWidget->getErrors($id, $query)) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $renderedResult            = $reportsWidget->getRenderedResult($id, $query, 'html');
+            $renderedResult            = $reportsWidget->getRenderedResult($id, $query);
             $widget                    = $this->getReportWidgetData($id);
             $widget['rendered_result'] = $renderedResult;
 

@@ -153,7 +153,7 @@ class ReportsWidgetService
             $query = $report->getQuery();
         }
 
-        $results = $this->dashboardWidget->renderQuery($query, $params, $displayType);
+        $results = $this->dashboardWidget->renderQuery($query, $params, $displayType, $displayType === 'table' ? 'html' : 'json');
 
         return $results;
     }
@@ -291,7 +291,6 @@ class ReportsWidgetService
      */
     public function getQueryParts($id, $withParams = true)
     {
-
         $report = $this->repository->find($id);
         $query  = $report->getQuery();
 
@@ -304,8 +303,9 @@ class ReportsWidgetService
      *
      * @return array
      */
-    public function compileQueryParts($query, $withParams) {
-        $parts  = [];
+    public function compileQueryParts($query, $withParams)
+    {
+        $parts = [];
         try {
             $compiler = new Compiler();
             if ($withParams) {
