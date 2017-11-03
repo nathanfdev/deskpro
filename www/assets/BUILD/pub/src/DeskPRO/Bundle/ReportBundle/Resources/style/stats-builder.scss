@@ -81,6 +81,12 @@
       padding-left: 30px;
       position: relative;
 
+      .controls {
+        display: none;
+        float: right;
+        cursor: pointer;
+      }
+
       &:hover, &.active {
         background: $dp-morning-sky;
       }
@@ -314,12 +320,6 @@
             line-height: 20px;
             padding: 2px 5px;
           }
-        }
-
-        .controls {
-          display: none;
-          float: right;
-          cursor: pointer;
         }
       }
     }

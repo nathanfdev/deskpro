@@ -99,6 +99,7 @@ class Wrapper extends React.Component {
   }
 
   onAddClick() {
+    this.setState({ mode: 'edit' });
     this.props.dispatch(newReport());
   }
 

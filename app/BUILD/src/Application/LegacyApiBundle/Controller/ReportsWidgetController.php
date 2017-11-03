@@ -124,7 +124,7 @@ class ReportsWidgetController extends AbstractController
         return $this->createApiResponse($this->getReportWidgetData($id));
     }
 
-    private function getReportWidgetData($id)
+    private function getReportWidgetData($id, $useRequest = false)
     {
         /* @var ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
@@ -140,9 +140,11 @@ class ReportsWidgetController extends AbstractController
             $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : ucfirst($label);
         }
         $widget['query_parts'] = $queryParts;
-        $reportData            = $this->in->getArrayValue('report');
-        $widget['variables']   = $reportData['variables'];
-        $widget['query_parts'] = $this->in->getArrayValue('parts');
+        if ($useRequest) {
+            $reportData            = $this->in->getArrayValue('report');
+            $widget['variables']   = $reportData['variables'];
+            $widget['query_parts'] = $this->in->getArrayValue('parts');
+        }
 
         return $widget;
     }
@@ -279,7 +281,7 @@ class ReportsWidgetController extends AbstractController
             return $this->createApiResponse(['error' => $error]);
         } else {
             $renderedResult            = $reportsWidget->getRenderedResult($id, $query);
-            $widget                    = $this->getReportWidgetData($id);
+            $widget                    = $this->getReportWidgetData($id, true);
             $widget['rendered_result'] = $renderedResult;
 
             return $this->createApiResponse($widget);
