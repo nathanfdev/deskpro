@@ -110,7 +110,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     }
 
     if (!path && this.url.indexOf('#') !== -1) {
-      path = this.url.substr(url.indexOf('#') + 1);
+      path = this.url.substr(this.url.indexOf('#') + 1);
     }
 
     this.setHash(path);

@@ -215,7 +215,7 @@ class JsonContext extends \Behatch\Context\JsonContext
      */
     public function iSaveTheJsonNodeAsPlaceholder($node, $placeholder)
     {
-        $json = $this->getJson();
+        $json   = $this->getJson();
         $actual = $this->inspector->evaluate($json, $node);
 
         DataContext::setPlaceholder($placeholder, $actual);

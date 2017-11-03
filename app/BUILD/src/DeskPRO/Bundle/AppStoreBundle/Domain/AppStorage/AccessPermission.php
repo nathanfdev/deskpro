@@ -47,11 +47,12 @@ class AccessPermission
         }
 
         $this->accessLevel = $accessLevel;
-        $this->permission = $permission;
+        $this->permission  = $permission;
     }
 
     /**
      * @param $level
+     *
      * @return bool
      */
     public function hasAccessLevel($level)
@@ -74,6 +75,4 @@ class AccessPermission
     {
         return $this->permission;
     }
-
-
 }

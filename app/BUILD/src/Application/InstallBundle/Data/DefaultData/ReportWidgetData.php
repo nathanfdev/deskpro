@@ -1,0 +1,819 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace Application\InstallBundle\Data\DefaultData;
+
+use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
+
+class ReportWidgetData extends AbstractDefaultData
+{
+    private $data = [
+        'article-views-date-x-grouped-date' => [
+                'title'         => 'Number of article views ${date_1} grouped by date',
+                'labels'        => 'kb',
+                'description'   => '',
+                'display_types' => 'table,simple_lines',
+                'display_order' => 40,
+                'query'         => 'DISPLAY TABLE, LINE
+SELECT COUNT() AS \'Views\'
+FROM articles
+WHERE articles.views.date_created = ${date_1}
+GROUP BY ALIAS(DATE(articles.views.date_created), \'Date\')',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'average-chat-length-chats-created-group-x' => [
+                'title'         => 'Average chat length for chats created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'chat',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 30,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT AVG(chat_conversations.total_to_ended) / 60 AS \'Average Length (Minutes)\'
+FROM chat_conversations
+WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0 AND chat_conversations.status = \'ended\' AND chat_conversations.total_to_ended > 0
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"dates"}]',
+            ],
+        'average-time-first-re-tickets-created-date-group-x' => [
+                'title'         => 'Average time to first response in tickets created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 120,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT AVG(UNIX_TIMESTAMP(tickets.date_first_agent_reply) - UNIX_TIMESTAMP(tickets.date_created)) / (60 * 60) AS \'Average Time (Hours)\', COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.date_created = ${date_1} AND tickets.date_first_agent_reply <> NULL
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
+            ],
+        'average-time-resolve-tickets-date-group-by-x' => [
+                'title'         => 'Average time to resolve tickets ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 100,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT AVG(UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created)) / (60 * 60) AS \'Average Time (Hours)\', COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1} AND tickets.date_resolved <> NULL
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
+            ],
+        'average-total-wait-tickets-resolve-date-group-by-x' => [
+                'title'         => 'Average total waiting time for tickets resolved ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 110,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT AVG(tickets.total_user_waiting) / (60 * 60) AS \'Total Waiting Time (Hours)\', COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
+            ],
+        'feedback-views-date-x-grouped-date' => [
+                'title'         => 'Number of feedback views ${date_1} grouped by date',
+                'labels'        => 'feedback',
+                'description'   => '',
+                'display_types' => 'table,simple_lines',
+                'display_order' => 40,
+                'query'         => 'DISPLAY TABLE, LINE
+SELECT COUNT() AS \'Views\'
+FROM feedback
+WHERE feedback.views.date_created = ${date_1}
+GROUP BY ALIAS(DATE(feedback.views.date_created), \'Date\')',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'most-active-tickets-status-created-date' => [
+                'title'         => 'Most active tickets ${status_field_1} created ${date_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 210,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets_messages.ticket.subject, COUNT() AS \'Messages\', tickets_messages.ticket.person, tickets_messages.ticket.department, tickets_messages.ticket.date_created, tickets_messages.ticket.agent
+FROM tickets_messages
+WHERE ${status_field_1} AND tickets_messages.ticket.date_created = ${date_2}
+GROUP BY tickets_messages.ticket.id
+ORDER BY COUNT() DESC
+LIMIT 100',
+                'variables' => '[{"name":"status_field_1","type":"statuses","field_type":"tickets","table":"tickets_messages.ticket","default":"awaiting_agent"},{"name":"date_2","type":"dates"}]',
+            ],
+        'most-popular-email-domains-ticket-usage' => [
+                'title'         => 'Most popular email domains by ticket usage',
+                'labels'        => 'person',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 0,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total Uses\'
+FROM tickets
+GROUP BY tickets.person_email.email_domain
+ORDER BY COUNT() DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'most-popular-people-email-domains' => [
+                'title'         => 'Most popular primary email domains',
+                'labels'        => 'person',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 0,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total People\'
+FROM people
+GROUP BY people.primary_email.email_domain
+ORDER BY COUNT() DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'number-article-com-created-date-group-by-article' => [
+                'title'         => 'Number of article comments created ${date_1} grouped by article ${group_by_field_2}',
+                'labels'        => 'kb',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 30,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Comments Created\'
+FROM article_comments
+WHERE article_comments.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"articles","table":"article_comments.article","default":"person"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-article-comments-created-date-group-by-x' => [
+                'title'         => 'Number of article comments created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'kb',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 20,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Comments Created\'
+FROM article_comments
+WHERE article_comments.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"article_comments","table":"article_comments","default":"none"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-articles-created-date-group-by-x' => [
+                'title'         => 'Number of articles created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'kb',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 10,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Entries Created\'
+FROM articles
+WHERE articles.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"articles","table":"articles","default":"person"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-chats-created-date-grouped-by-x' => [
+                'title'         => 'Number of chats created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'chat',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 10,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Chats Created\'
+FROM chat_conversations
+WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"agent"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-chats-missed-date-grouped-by-x' => [
+                'title'         => 'Number of chats missed ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'chat',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 20,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Chats Created\'
+FROM chat_conversations
+WHERE chat_conversations.date_created = ${date_1} AND chat_conversations.is_agent = 0 AND chat_conversations.agent_id = NULL
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"chats","table":"chat_conversations","default":"department"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-feedback-com-created-date-group-by-feedback' => [
+                'title'         => 'Number of feedback comments created ${date_1} grouped by feedback ${group_by_field_2}',
+                'labels'        => 'feedback',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 30,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Comments Created\'
+FROM feedback_comments
+WHERE feedback_comments.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback_comments.feedback","default":"type"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-feedback-comments-created-date-group-by-x' => [
+                'title'         => 'Number of feedback comments created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'feedback',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 20,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Comments Created\'
+FROM feedback_comments
+WHERE feedback_comments.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback_comments","table":"feedback_comments","default":"none"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-feedback-created-date-group-by-x' => [
+                'title'         => 'Number of feedback entries created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'feedback',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 10,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Entries Created\'
+FROM feedback
+WHERE feedback.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-feedback-votes-submitted-date-x-group-y' => [
+                'title'         => 'Number of feedback votes submitted ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'feedback',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 60,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Ratings\'
+FROM feedback
+WHERE feedback.ratings.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback","default":"type"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-ticket-messages-written-agent-day' => [
+                'title'         => 'Number of ticket messages written ${date_1} per agent per [day]',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 140,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total Messages\'
+FROM tickets_messages
+WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date_1}
+SPLIT BY tickets_messages.person
+GROUP BY CONCAT(YEAR(tickets_messages.date_created), \'-\', LPAD(MONTHNAME(tickets_messages.date_created), 2, \'0\'), \'-\', LPAD(DAYOFMONTH(tickets_messages.date_created), 2, \'0\')) AS \'Period\'
+ORDER BY tickets_messages.date_created',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'number-ticket-messages-written-agent-month' => [
+                'title'         => 'Number of ticket messages written ${date_1} per agent per [month]',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 140,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total Messages\'
+FROM tickets_messages
+WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date_1}
+SPLIT BY tickets_messages.person
+GROUP BY CONCAT(YEAR(tickets_messages.date_created), \'-\', LPAD(MONTHNAME(tickets_messages.date_created), 2, \'0\')) AS \'Period\'
+ORDER BY tickets_messages.date_created',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'number-ticket-messages-written-agent-week' => [
+                'title'         => 'Number of ticket messages written ${date_1} per agent per [week]',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 140,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total Messages\'
+FROM tickets_messages
+WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date_1} 
+SPLIT BY tickets_messages.person
+GROUP BY CONCAT(\'Week \', WEEKOFYEAR(tickets_messages.date_created), \', \', YEAR(tickets_messages.date_created)) AS \'Period\'
+ORDER BY tickets_messages.date_created',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'number-ticket-messages-written-agent-year' => [
+                'title'         => 'Number of ticket messages written ${date_1} per agent per [year]',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 140,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total Messages\'
+FROM tickets_messages
+WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date_1}
+SPLIT BY tickets_messages.person
+GROUP BY YEAR(tickets_messages.date_created) AS \'Period\'
+ORDER BY YEAR(tickets_messages.date_created) DESC',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-created-date-grouped-by-date-and-x' => [
+                'title'         => 'Number of tickets created ${date_1} grouped by date created & ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_area',
+                'display_order' => 15,
+                'query'         => 'DISPLAY TABLE, AREA
+SELECT COUNT() AS \'Tickets Created\'
+FROM tickets
+WHERE tickets.date_created = ${date_1}
+GROUP BY ALIAS(DATE(tickets.date_created), \'Date Created\'), ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-created-date-grouped-by-x-y' => [
+                'title'         => 'Number of tickets created ${date_1} grouped by ${group_by_field_2} & ${group_by_field_3}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 10,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.date_created = ${date_1}
+GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-created-date-grouped-first-agent-x' => [
+                'title'         => 'Number of tickets created ${date_1} grouped by first agent response time & ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 90,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.date_created = ${date_1}
+GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_first_agent_reply), \'Time Waiting\'), ${group_by_field_2})',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-resolved-date-grouped-time-res-x' => [
+                'title'         => 'Number of tickets resolved ${date_1} grouped by time to resolution & ${group_by_field_2}',
+                'labels'        => 'tickets,resolved',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 80,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
+GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.date_resolved, tickets.date_created), \'Time To Resolve\'), ${group_by_field_2})',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-resolved-date-grouped-total-wait-x' => [
+                'title'         => 'Number of tickets resolved ${date_1} grouped by total waiting time & ${group_by_field_2}',
+                'labels'        => 'tickets,resolved',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 70,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date_1}
+GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${group_by_field_2})',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"none"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-resolved-date-grouped-x-y' => [
+                'title'         => 'Number of tickets resolved ${date_1} grouped by ${group_by_field_2} & ${group_by_field_3}',
+                'labels'        => 'tickets,resolved',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 30,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.date_resolved = ${date_1} AND tickets.status IN (\'resolved\', \'archived\')
+GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
+            ],
+        'number-tickets-status-grouped-by-x-y' => [
+                'title'         => 'Number of tickets ${status_field_1} grouped by ${group_by_field_2} & ${group_by_field_3}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 20,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE ${status_field_1}
+GROUP BY MATRIX(${group_by_field_2}, ${group_by_field_3})',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"status_field_1","type":"statuses","field_type":"tickets","table":"tickets","default":"awaiting_agent"}]',
+            ],
+        'number-tickets-wait-agent-grouped-time-wait-ag-x' => [
+                'title'         => 'Number of tickets awaiting agent grouped by time awaiting agent and ${group_by_field_1}',
+                'labels'        => 'tickets,agents',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 50,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status = \'awaiting_agent\'
+GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_user_waiting), \'Time Waiting\'), ${group_by_field_1})',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
+            ],
+        'number-tickets-wait-agent-grouped-total-wait-x' => [
+                'title'         => 'Number of tickets awaiting agent grouped by total waiting time and ${group_by_field_1}',
+                'labels'        => 'tickets,agents',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 60,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status = \'awaiting_agent\'
+GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${group_by_field_1})',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
+            ],
+        'number-views-per-article-date-x' => [
+                'title'         => 'Number of views per article ${date_1}',
+                'labels'        => 'kb',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 50,
+                'query'         => 'DISPLAY TABLE
+SELECT articles.title, COUNT() AS \'Views\'
+FROM articles
+WHERE articles.views.date_created = ${date_1}
+GROUP BY articles.id
+ORDER BY COUNT() DESC',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'number-views-per-feedback-date-x' => [
+                'title'         => 'Number of views per feedback entry ${date_1}',
+                'labels'        => 'feedback,agents',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 50,
+                'query'         => 'DISPLAY TABLE
+SELECT feedback.title, COUNT() AS \'Views\'
+FROM feedback
+WHERE feedback.views.date_created = ${date_1}
+GROUP BY feedback.id
+ORDER BY COUNT() DESC',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'organizations-longest-total--wait' => [
+                'title'         => '[Organizations] with longest total waiting time',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 200,
+                'query'         => 'DISPLAY TABLE
+SELECT SUM(tickets.total_user_waiting) / (60 * 60) AS \'Total Wait (Hours)\', COUNT() AS \'Total Tickets\', AVG(tickets.total_user_waiting) / (60 * 60) AS \'Average Wait (Hours)\'
+FROM tickets
+GROUP BY tickets.organization
+ORDER BY SUM(tickets.total_user_waiting) DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'organizations-longest-total-first-reply-wait' => [
+                'title'         => '[Organizations] with longest total first reply waiting time',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 190,
+                'query'         => 'DISPLAY TABLE
+SELECT SUM(tickets.total_to_first_reply) / (60 * 60) AS \'Total Wait (Hours)\', COUNT() AS \'Total Tickets\', AVG(tickets.total_to_first_reply) / (60 * 60) AS \'Average Wait (Hours)\'
+FROM tickets
+GROUP BY tickets.organization
+ORDER BY SUM(tickets.total_to_first_reply) DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'people-longest-total--wait' => [
+                'title'         => '[People] with longest total waiting time',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 200,
+                'query'         => 'DISPLAY TABLE
+SELECT SUM(tickets.total_user_waiting) / (60 * 60) AS \'Total Wait (Hours)\', COUNT() AS \'Total Tickets\', AVG(tickets.total_user_waiting) / (60 * 60) AS \'Average Wait (Hours)\'
+FROM tickets
+GROUP BY tickets.person
+ORDER BY SUM(tickets.total_user_waiting) DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'people-longest-total-first-reply-wait' => [
+                'title'         => '[People] with longest total first reply waiting time',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 190,
+                'query'         => 'DISPLAY TABLE
+SELECT SUM(tickets.total_to_first_reply) / (60 * 60) AS \'Total Wait (Hours)\', COUNT() AS \'Total Tickets\', AVG(tickets.total_to_first_reply) / (60 * 60) AS \'Average Wait (Hours)\'
+FROM tickets
+GROUP BY tickets.person
+ORDER BY SUM(tickets.total_to_first_reply) DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'percent-ticket-create-date-resolved-24hour-group-x' => [
+                'title'         => 'Percentage of tickets created ${date_1} resolved within 24 hours, grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 131,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT PERCENT(tickets.date_resolved <> NULL AND UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created) < 24 * 60 * 60) AS \'Percentage\'
+FROM tickets
+WHERE tickets.date_created = ${date_1}
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
+            ],
+        'percent-tickets-created-date-replied-hour-group-x' => [
+                'title'         => 'Percentage of tickets created ${date_1} replied to within an hour, grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 130,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT PERCENT(tickets.total_to_first_reply < 3600) AS \'Percentage\'
+FROM tickets
+WHERE tickets.date_created = ${date_1} AND tickets.total_to_first_reply > 0
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets"},{"name":"date_1","type":"dates"}]',
+            ],
+        'percent-tickets-created-date-res-1-agent-group-x' => [
+                'title'         => 'Percentage of tickets created ${date_1} resolved by first response, grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 135,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT PERCENT(tickets.count_agent_replies = 1) AS \'Percentage\'
+FROM tickets
+WHERE tickets.date_created = ${date_1} AND tickets.date_resolved <> NULL AND tickets.count_agent_replies > 0
+GROUP BY ${group_by_field_2}',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
+            ],
+        'sla-date-groupby-x' => [
+                'title'         => 'SLA Statuses for tickets created ${date_1} grouped by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 96,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.date_created = ${date_1} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
+GROUP BY ${group_by_field_2}, tickets.ticket_slas.sla_status',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date_1","type":"dates"}]',
+            ],
+        'sla-status-date-splitby-x' => [
+                'title'         => 'SLA Statuses for tickets created ${date_1} split by ${group_by_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,pie',
+                'display_order' => 95,
+                'query'         => 'DISPLAY TABLE, PIE
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.date_created = ${date_1} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
+SPLIT BY ${group_by_field_2}
+GROUP BY tickets.ticket_slas.sla_status',
+                'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"tickets","table":"tickets","default":"sla"},{"name":"date_1","type":"dates"}]',
+            ],
+        'tickets-awaiting-agent-split-by-field-ordered-by-x' => [
+                'title'         => 'Tickets awaiting agent split by ${group_by_field_1} ordered by ${order_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 40,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
+FROM tickets
+WHERE tickets.status = \'awaiting_agent\'
+SPLIT BY ${group_by_field_1}
+ORDER BY ${order_field_2}
+LIMIT 100',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"orders","field_type":"tickets","table":"tickets"}]',
+            ],
+        'tickets-created-date-grouped-labels' => [
+                'title'         => 'Tickets created ${date_1} grouped by labels',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
+                'display_order' => 170,
+                'query'         => 'DISPLAY TABLE, BAR
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.labels.label <> NULL AND tickets.date_created = ${date_1}
+GROUP BY tickets.labels',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'tickets-resolved-date-grouped-by-agent-resolving' => [
+                'title'         => 'Tickets resolved ${date_1} grouped by agent resolving ticket',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 160,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT_DISTINCT(tickets_log.ticket_id) AS \'Tickets Resolved\'
+FROM tickets_log
+WHERE tickets_log.action_type = \'changed_status\' AND tickets_log.id_after = 200 AND tickets_log.ticket.status IN (\'resolved\', \'archived\') AND tickets_log.date_created = ${date_1}
+GROUP BY ALIAS(IF(tickets_log.person.is_agent, tickets_log.person, \'Non-Agent\'), \'Person\')
+ORDER BY @\'Tickets Resolved\' DESC
+LIMIT 100',
+                'variables' => '[{"name":"date_1","type":"dates"}]',
+            ],
+        'tickets-split-by-labels' => [
+                'title'         => 'Tickets split by labels',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 180,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
+FROM tickets
+WHERE tickets.labels.label <> NULL
+SPLIT BY tickets.labels
+ORDER BY tickets.date_created DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'tickets-unresolved-split-field-ordered-x' => [
+                'title'         => 'Tickets unresolved split by ${group_by_field_1} ordered by ${order_field_2}',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 41,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
+FROM tickets
+WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\')
+SPLIT BY ${group_by_field_1}
+ORDER BY ${order_field_2}
+LIMIT 100',
+                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"order_field_2","type":"orders","field_type":"tickets","table":"tickets"}]',
+            ],
+        'total-tickets-unresolved-after-week' => [
+                'title'         => 'Total tickets unresolved after a week',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 220,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total\', COUNT(tickets.status = \'awaiting_agent\') AS \'Total Awaiting Agent\', COUNT(tickets.status = \'awaiting_user\') AS \'Total Awaiting User\'
+FROM tickets
+WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date_created < %PAST_7_DAYS%',
+                'variables' => '[]',
+            ],
+        'unresolved-high-priority-tickets' => [
+                'title'         => 'Unresolved [high priority] tickets',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 230,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.priority
+FROM tickets
+WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+ORDER BY tickets.date_created
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'unresolved-tickets-10-more-agent-replies' => [
+                'title'         => 'Unresolved tickets with 10 or more agent replies',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 240,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.count_agent_replies AS \'Agent Replies\'
+FROM tickets
+WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\') AND tickets.count_agent_replies >= 10
+ORDER BY tickets.date_created
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'unresolved-urgent-tickets' => [
+                'title'         => 'Unresolved [urgent] tickets',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 230,
+                'query'         => 'DISPLAY TABLE
+SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.urgency
+FROM tickets
+WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+ORDER BY tickets.date_created
+LIMIT 100',
+                'variables' => '[]',
+            ],
+        'users-most-unresolved-tickets' => [
+                'title'         => 'Users with most unresolved tickets',
+                'labels'        => 'tickets',
+                'description'   => '',
+                'display_types' => 'table',
+                'display_order' => 150,
+                'query'         => 'DISPLAY TABLE
+SELECT COUNT() AS \'Total Tickets\'
+FROM tickets
+WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+GROUP BY tickets.person
+ORDER BY COUNT() DESC
+LIMIT 100',
+                'variables' => '[]',
+            ],
+    ];
+
+    /**
+     * Called during a fresh install.
+     */
+    public function runInstall()
+    {
+        /* @var ReportWidgetRepository $repo */
+        $ids      = array_keys($this->data);
+        $em       = $this->getEm();
+        $schedule = $em->createQuery('
+            SELECT r
+            FROM DeskPRO:ReportWidget r
+            WHERE r.unique_key IS NOT NULL
+        ')->execute();
+        $updated = $existing = [];
+
+        foreach ($schedule as $report) {
+            /* @var ReportWidget $report */
+            $existing[] = $report->getUniqueKey();
+            if (array_key_exists($report->getUniqueKey(), $this->data)) {
+                $updated[] = $report->getUniqueKey();
+                $data      = $this->data[$report->getUniqueKey()];
+                $report
+                    ->setTitle($data['title'])
+                    ->setQuery($data['query'])
+                    ->setDisplayOrder($data['display_order'])
+                    ->setDescription($data['description'])
+                    ->setDisplayTypes(explode(',', $data['display_types']))
+                    ->setLabels((array) $data['labels'])
+                    ->setIsCustom(false)
+                    ->setVariables(json_decode($data['variables'], true));
+                $em->persist($report);
+            } else {
+                $em->remove($report);
+            }
+        }
+
+        $scheduledToInsert = array_diff($ids, $updated);
+
+        foreach ($scheduledToInsert as $insert) {
+            $report = new ReportWidget();
+            $data   = $this->data[$insert];
+            $report
+                ->setUniqueKey($insert)
+                ->setTitle($data['title'])
+                ->setQuery($data['query'])
+                ->setDisplayOrder($data['display_order'])
+                ->setDescription($data['description'])
+                ->setDisplayTypes(explode(',', $data['display_types']))
+                ->setLabels((array) $data['labels'])
+                ->setIsCustom(false)
+                ->setVariables(json_decode($data['variables'], true));
+            $em->persist($report);
+        }
+
+        $em->flush();
+    }
+
+    /**
+     * Called automatically during upgrades when the package has been installed before.
+     * This is used to sync the database with any changes (e.g. adding new records or updating them).
+     */
+    public function runSync()
+    {
+        $this->runInstall();
+    }
+
+    /**
+     * Called with the dp:reset-default-data command specifically. Usually the same as runSync.
+     */
+    public function runReset()
+    {
+        $this->runInstall();
+    }
+}

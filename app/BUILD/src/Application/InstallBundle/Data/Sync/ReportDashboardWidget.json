@@ -1,0 +1,9 @@
+{
+  "1":{"title":"Test widget 1","report_id":1,"position":"0:0","size":"5:2","type":"simple_lines","widget_id":8,"variables":null},
+  "2":{"title":"Test widget 2","report_id":1,"position":"0:5","size":"5:2","type":"simple_bars","widget_id":8,"variables":null},
+  "3":{"title":"Test widget 3","report_id":1,"position":"2:0","size":"5:2","type":"pie","widget_id":31,"variables":"[{\"placeholder\":\"field group\",\"value\":\"department\"}]"},
+  "4":{"title":"Test widget 4","report_id":1,"position":"2:5","size":"5:2","type":"simple_lines","widget_id":31,"variables":"[{\"placeholder\":\"field group\",\"value\":\"department\"}]"},
+  "5":{"title":"Test widget 5","report_id":1,"position":"4:0","size":"5:2","type":"simple_bars","widget_id":31,"variables":"[{\"placeholder\":\"field group\",\"value\":\"department\"}]"},
+  "6":{"title":"Test widget 6","report_id":1,"position":"4:5","size":"5:2","type":"pie","widget_id":31,"variables":"[{\"placeholder\":\"field group\",\"value\":\"department\"}]"},
+  "7":{"title":"Test widget 7","report_id":1,"position":"6:0","size":"5:2","type":"simple_bars","widget_id":31,"variables":"[{\"placeholder\":\"field group\",\"value\":\"department\"}]"}
+}

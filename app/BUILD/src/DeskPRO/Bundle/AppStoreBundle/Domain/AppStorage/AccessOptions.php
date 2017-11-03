@@ -38,19 +38,19 @@ class AccessOptions
     /** @var string */
     private $writePermission;
 
-    /** @var boolean */
+    /** @var bool */
     private $isBackendOnly;
 
     /**
      * @param string $readPermission
      * @param string $writePermission
-     * @param boolean $isBackendOnly
+     * @param bool   $isBackendOnly
      */
     public function __construct($readPermission = 'OWNER', $writePermission = 'OWNER', $isBackendOnly = false)
     {
-        $this->readPermission = $readPermission;
+        $this->readPermission  = $readPermission;
         $this->writePermission = $writePermission;
-        $this->isBackendOnly = $isBackendOnly;
+        $this->isBackendOnly   = $isBackendOnly;
     }
 
     public function isWorldAccessible()
@@ -61,7 +61,7 @@ class AccessOptions
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isBackendOnly()
     {
@@ -83,5 +83,4 @@ class AccessOptions
     {
         return $this->writePermission;
     }
-
 }

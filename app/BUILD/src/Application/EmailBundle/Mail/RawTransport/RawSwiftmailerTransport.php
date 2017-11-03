@@ -147,7 +147,7 @@ class RawSwiftmailerTransport implements RawTransportInterface
 
             $a->setFilename($attach['filename'])
                 ->setContentType($attach['type'])
-              ->setBody($attach['bin_data']);
+                ->setBody($attach['bin_data']);
 
             $message->attach($a);
         }

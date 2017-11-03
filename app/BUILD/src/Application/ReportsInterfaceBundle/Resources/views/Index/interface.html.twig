@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html ng-app>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>{{ phrase('admin.general.deskpro_reports_interface') }}</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>{{ phrase('admin.general.deskpro_reports_interface') }}</title>
 
-    <!--[if lte IE 8]>
-    <script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_reports';</script>
-    <![endif]-->
+	<!--[if lte IE 8]>
+	<script type="text/javascript">window.location = '/{{ path('user')|ltrim('/') }}index.php?_sys=message&ie8_reports';</script>
+	<![endif]-->
 
 	<link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('node_modules/Select2/select2.css') }}"/>
-    <link rel="stylesheet" href="{{ asset('app-build/Reports/Resources/style/reports-style.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('node_modules/Select2/select2.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('app-build/Reports/Resources/style/reports-style.css') }}"/>
 	<style type="text/css" media="print">
 		.dp-appstrip { display: none !important; }
 		.dp-app-header { display: none !important; }
@@ -39,80 +39,80 @@
 </head>
 <body>
 
-    <div id="dp_main_view" ng-controller="Reports_Main_Ctrl_MainPage">
-        <!-- Left Navigation Column -->
-        <nav class="dp-appstrip">
-            <ul>
-                <li tooltip="Overview"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="home"
-                    class="state-on">
-                    <a href="#/"><i class="app-icon app-icon-home"></i></a>
-                </li>
-                <li tooltip="Report Builder"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="builder">
-                    <a href="#/builder"><i class="app-icon app-icon-reports-builder"></i></a>
-                </li>
-                <li tooltip="Billing" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="billing">
-                    <a href="#/billing"><i class="app-icon app-icon-reports-billing"></i></a>
-                </li>
-                <li tooltip="Agent Activity"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="agent_activity">
-                    <a href="#/agent_activity"><i class="app-icon app-icon-reports-agentactivity"></i></a>
-                </li>
-                <li tooltip="Agent Hours"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="agent_hours">
-                    <a href="#/agent_hours"><i class="app-icon app-icon-reports-agenthours"></i></a>
-                </li>
-                <li tooltip="Ticket Satisfaction"
-                    tooltip-append-to-body="true"
-                    tooltip-placement="right"
-                    dp-state-mark="ticket_satisfaction">
-                    <a href="#/ticket_satisfaction"><i class="app-icon app-icon-reports-satisfaction"></i></a>
-                </li>
-            </ul>
-        </nav>
-        <div class="dp-layout">
-            <div class="dp-layout-app reports-app">
-                <div class="dp-layout-appbody" ui-view></div>
-            </div>
-        </div>
-    </div>
+<div id="dp_main_view" ng-controller="Reports_Main_Ctrl_MainPage">
+	<!-- Left Navigation Column -->
+	<nav class="dp-appstrip">
+		<ul>
+			<li tooltip="Overview"
+				tooltip-append-to-body="true"
+				tooltip-placement="right"
+				dp-state-mark="home"
+				class="state-on">
+				<a href="#/"><i class="app-icon app-icon-home"></i></a>
+			</li>
+			<li tooltip="Report Builder"
+				tooltip-append-to-body="true"
+				tooltip-placement="right"
+				dp-state-mark="builder">
+				<a href="#/builder"><i class="app-icon app-icon-reports-builder"></i></a>
+			</li>
+			<li tooltip="Billing" tooltip-append-to-body="true" tooltip-placement="right" dp-state-mark="billing">
+				<a href="#/billing"><i class="app-icon app-icon-reports-billing"></i></a>
+			</li>
+			<li tooltip="Agent Activity"
+				tooltip-append-to-body="true"
+				tooltip-placement="right"
+				dp-state-mark="agent_activity">
+				<a href="#/agent_activity"><i class="app-icon app-icon-reports-agentactivity"></i></a>
+			</li>
+			<li tooltip="Agent Hours"
+				tooltip-append-to-body="true"
+				tooltip-placement="right"
+				dp-state-mark="agent_hours">
+				<a href="#/agent_hours"><i class="app-icon app-icon-reports-agenthours"></i></a>
+			</li>
+			<li tooltip="Ticket Satisfaction"
+				tooltip-append-to-body="true"
+				tooltip-placement="right"
+				dp-state-mark="ticket_satisfaction">
+				<a href="#/ticket_satisfaction"><i class="app-icon app-icon-reports-satisfaction"></i></a>
+			</li>
+		</ul>
+	</nav>
+	<div class="dp-layout">
+		<div class="dp-layout-app reports-app">
+			<div class="dp-layout-appbody" ui-view></div>
+		</div>
+	</div>
+</div>
 
-    {{ ng_tpl('ReportsInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
-    {{ ng_tpl('ReportsInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker.html.twig', 'template/datepicker/datepicker.html') }}
+{{ ng_tpl('ReportsInterfaceBundle:Common:datepicker-menu.html.twig', 'template/datepicker/popup.html') }}
 
-    <script type="text/javascript">
-        window.DP_ASSET_URL        = '{{ asset('') }}';
-        window.DP_BASE_URL         = '/{{ path('user')|ltrim('/') }}';
-        window.DP_BASE_API_URL     = '/{{ path('user')|ltrim('/') }}api';
-        window.DP_BASE_ADMIN_URL   = '/{{ path('admin')|trim('/') }}';
-        window.DP_BASE_REPORTS_URL = '/{{ path('reports')|trim('/') }}';
-        window.DP_API_TOKEN        = '{{ api_token.getKeyString() }}';
-        window.DP_SESSION_ID       = '{{ session.session_code }}';
-        window.DP_REQUEST_TOKEN    = '{{ initial_request_token }}';
-        window.DP_PERSON_ID        = '{{ app.user.id }}';
-        window.DP_PERSON_EMAIL     = '{{ app.user.getPrimaryEmailAddress() }}';
-        window.DP_PERSON_LANG_ID   = {{ app.user.language.id }};
-        window.DP_IS_DEBUG         = {% if app.isDebug() %}true{% else %}false{% endif %};
-        window.DP_IS_TESTING       = {% if app.isTesting() %}true{% else %}false{% endif %};
-        window.DP_USE_RJS_BUILD    = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
-        window.DP_BUILD_TIME       = {{ app.getBuildTime() }};
-    </script>
-    {{ js_error_tracking('reports_interface') }}
-    <script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
-    <script	type="text/javascript" src="{{ asset('app/Reports/amcharts27.js') }}"></script>
-    <script type="text/javascript">
-        window.name = "NG_DEFER_BOOTSTRAP!";
-        window.DP_INTERFACE_LOADER = 'ReportsLoad';
-    </script>
-    <script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+<script type="text/javascript">
+	window.DP_ASSET_URL        = '{{ asset('') }}';
+	window.DP_BASE_URL         = '/{{ path('user')|ltrim('/') }}';
+	window.DP_BASE_API_URL     = '/{{ path('user')|ltrim('/') }}api';
+	window.DP_BASE_ADMIN_URL   = '/{{ path('admin')|trim('/') }}';
+	window.DP_BASE_REPORTS_URL = '/{{ path('reports')|trim('/') }}';
+	window.DP_API_TOKEN        = '{{ api_token.getKeyString() }}';
+	window.DP_SESSION_ID       = '{{ session.session_code }}';
+	window.DP_REQUEST_TOKEN    = '{{ initial_request_token }}';
+	window.DP_PERSON_ID        = '{{ app.user.id }}';
+	window.DP_PERSON_EMAIL     = '{{ app.user.getPrimaryEmailAddress() }}';
+	window.DP_PERSON_LANG_ID   = {{ app.user.language.id }};
+	window.DP_IS_DEBUG         = {% if app.isDebug() %}true{% else %}false{% endif %};
+	window.DP_IS_TESTING       = {% if app.isTesting() %}true{% else %}false{% endif %};
+	window.DP_USE_RJS_BUILD    = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+	window.DP_BUILD_TIME       = {{ app.getBuildTime() }};
+</script>
+{{ js_error_tracking('reports_interface') }}
+<script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
+<script	type="text/javascript" src="{{ asset('app/Reports/amcharts27.js') }}"></script>
+<script type="text/javascript">
+	window.name = "NG_DEFER_BOOTSTRAP!";
+	window.DP_INTERFACE_LOADER = 'ReportsLoad';
+</script>
+<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 </body>
 </html>

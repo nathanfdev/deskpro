@@ -1,8 +1,0 @@
-{% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
-{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
-{% block nav_content %}
-	{{ nav.list() }}
-		{{ nav.list_item('Twitter Setup', ng_href('twitter.setup'), 'twitter.setup', 'fa-cog') }}
-		{{ nav.list_item('Twitter Accounts', ng_href('twitter.accounts'), 'twitter.accounts', 'fa-twitter') }}
-	{{ nav.list_end() }}
-{% endblock %}

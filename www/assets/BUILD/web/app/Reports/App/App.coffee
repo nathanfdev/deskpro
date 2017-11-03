@@ -30,8 +30,8 @@ define [
   SetupDataServices(ReportsModule)
   SetupNetwork(ReportsModule)
   SetupDirectives(ReportsModule)
-  SetupRouting(ReportsModule)
   SetupTemplates(ReportsModule)
+  SetupRouting(ReportsModule)
 
   ReportsModule.factory('dpHttpSessionInterceptor', ['$q', ($q) ->
     return {

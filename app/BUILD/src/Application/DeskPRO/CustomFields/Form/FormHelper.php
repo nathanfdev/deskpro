@@ -74,7 +74,7 @@ class FormHelper
             $formData['handler_class'] = $handlerClass;
         }
 
-        $baseType    = Util::getBaseClassname($handlerClass);
+        $baseType   = Util::getBaseClassname($handlerClass);
         $modelClass = 'Application\\DeskPRO\\CustomFields\\Form\\Model\\'.$baseType.'Field';
         $typeClass  = 'Application\\DeskPRO\\CustomFields\\Form\\Type\\'.$baseType.'FieldType';
 

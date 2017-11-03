@@ -1,0 +1,33 @@
+<section class="content">
+    <nav class="dp-blocktabs">
+        <ul>
+            <li class="active" dp-tab-btn="ticket.satisfaction.feed">
+                <a href="#">
+                    <i class="fa fa-pencil"></i> Feed
+                </a>
+            </li>
+            <li class="pipe">|</li>
+            <li dp-tab-btn="ticket.satisfaction.summary">
+                <a href="#">
+                    <i class="fa fa-users"></i> Summary
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <div dp-tab-body="ticket.satisfaction.feed">
+        <ticket-satisfaction
+                inner-type="feed"
+                outer-type="ticket_satisfaction"
+                wtype="hardcoded"
+        />
+    </div>
+
+    <div dp-tab-body="ticket.satisfaction.summary">
+        <ticket-satisfaction
+                inner-type="summary"
+                outer-type="ticket_satisfaction"
+                wtype="hardcoded"
+        />
+    </div>
+</section>

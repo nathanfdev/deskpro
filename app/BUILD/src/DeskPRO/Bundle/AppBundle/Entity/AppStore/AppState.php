@@ -282,7 +282,7 @@ class AppState implements EntityInterface
     public function setTimestampsOnPersist()
     {
         $this->persistedAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt   = new \DateTime();
     }
 
     /**

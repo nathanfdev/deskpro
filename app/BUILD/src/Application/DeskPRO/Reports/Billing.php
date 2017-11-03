@@ -35,7 +35,7 @@ namespace Application\DeskPRO\Reports;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Compiler;
 use Application\DeskPRO\Dpql\Exception as DpqlException;
-use Application\DeskPRO\Entity\ReportBuilder;
+use Application\DeskPRO\Entity\ReportWidget;
 use Doctrine\ORM\EntityManager;
 
 class Billing
@@ -46,14 +46,14 @@ class Billing
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\ReportBuilder
+     * @var \Application\DeskPRO\EntityRepository\ReportWidget
      */
     protected $repository;
 
     public function __construct(EntityManager $em)
     {
         $this->em         = $em;
-        $this->repository = $this->em->getRepository('DeskPRO:ReportBuilder');
+        $this->repository = $this->em->getRepository('DeskPRO:ReportWidget');
         $this->in         = App::getContainer()->getIn();
     }
 
@@ -70,7 +70,7 @@ class Billing
         $params = $this->getParamsInput('params');
         $query  = $report['query'];
 
-        $tempReport            = new ReportBuilder();
+        $tempReport            = new ReportWidget();
         $tempReport->title     = $report['title'];
         $report['title_final'] = $tempReport->getTitle('printable', $params);
 
@@ -330,7 +330,7 @@ class Billing
             ],
         ];
 
-        $tempReport = new ReportBuilder();
+        $tempReport = new ReportWidget();
 
         foreach ($output as $id => &$report) {
             $report['id'] = $id;

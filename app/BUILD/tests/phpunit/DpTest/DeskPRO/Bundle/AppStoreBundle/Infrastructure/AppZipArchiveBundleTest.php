@@ -29,7 +29,6 @@
 namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
-use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DpTest\DeskProTestCase;
 
 class AppZipArchiveBundleTest extends DeskProTestCase
@@ -68,21 +67,20 @@ class AppZipArchiveBundleTest extends DeskProTestCase
         global $DP_ENV;
         $wwwRoot = $DP_ENV->getWwwRoot();
 
-        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->addFolder($wwwRoot, 2)->build();
+        $zipArchiveBundle   = Infrastructure\AppZipBundleBuilder::fromTmp()->addFolder($wwwRoot, 2)->build();
         $actualFilePathList = [];
-        $resourceObjects = $zipArchiveBundle->listAllResources();
+        $resourceObjects    = $zipArchiveBundle->listAllResources();
         foreach ($resourceObjects as $object) {
             $actualFilePathList[] = $object->getPath();
         }
         //clean up
         unlink($zipArchiveBundle->getFilePath());
 
-
         $filePathList = [];
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wwwRoot), \RecursiveIteratorIterator::LEAVES_ONLY);
+        $iterator     = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wwwRoot), \RecursiveIteratorIterator::LEAVES_ONLY);
         $iterator->setMaxDepth(2);
         foreach ($iterator as $name => $file) {
-            if (! $file->isDir()) { //only add files
+            if (!$file->isDir()) { //only add files
 
                 $localName = substr($file, strlen($wwwRoot));
                 $localName = ltrim($localName, '/');

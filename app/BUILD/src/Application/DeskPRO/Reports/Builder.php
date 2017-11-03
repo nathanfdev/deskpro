@@ -104,12 +104,12 @@ class Builder
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\ReportBuilder
+     * @return ReportBuilder
      */
     public function createNew()
     {
-        $report            = ReportBuilder::createReportBuilder();
-        $report->is_custom = true;
+        $report = ReportBuilder::createReportWidget();
+        $report->setIsCustom(true);
 
         return $report;
     }
@@ -129,7 +129,7 @@ class Builder
             $parts = $this->in->getArrayValue('parts');
             $query = Display::getQueryStringFromParts($parts);
         } else {
-            $query = $report->query;
+            $query = $report->getQuery();
         }
 
         $error   = false;
@@ -154,7 +154,7 @@ class Builder
             $parts = $this->in->getArrayValue('parts');
             $query = Display::getQueryStringFromParts($parts);
         } else {
-            $query = $report->query;
+            $query = $report->getQuery();
         }
 
         return $this->getReportResponseForType($type, $query, $report->getTitle('printable', $params), $params);
@@ -175,7 +175,7 @@ class Builder
             $parts = $this->in->getArrayValue('parts');
             $query = Display::getQueryStringFromParts($parts);
         } else {
-            $query = $report->query;
+            $query = $report->getQuery();
         }
 
         $error = false;
@@ -185,7 +185,7 @@ class Builder
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\ReportBuilder $report
+     * @param ReportBuilder $report
      *
      * @throws \Exception
      */
@@ -194,7 +194,7 @@ class Builder
         $parts = $this->in->getArrayValue('parts');
         $query = Display::getQueryStringFromParts($parts);
 
-        $report->query = $query;
+        $report->setQuery($query);
         $this->em->getConnection()->beginTransaction();
 
         try {
@@ -267,19 +267,14 @@ class Builder
      */
     public function getQueryParts($id, $with_params = true)
     {
-        $parts = [];
-
+        $parts  = [];
         $report = $this->repository->find($id);
-
-        if ($with_params) {
-            $params = $this->getParamsInput('params');
-        }
-        $query = $report->query;
+        $query  = $report->getQuery();
 
         try {
             $compiler = new Compiler();
             if ($with_params) {
-                $input = $compiler->replacePlaceholders($query, $params);
+                $input = $compiler->replacePlaceholders($query, $this->getParamsInput('params'));
             } else {
                 $input = $query;
             }

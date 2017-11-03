@@ -123,6 +123,8 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property \DateTime                           $date_picture_check
  * @property string                              $browser
  *
+ * @method ReportDashboardPermission[] getReportDashboardPermissions()
+ *
  * @JMS\ExclusionPolicy("all")
  * @Assert\GroupSequenceProvider
  */
@@ -583,6 +585,10 @@ class Person extends DomainObject implements
      * @var AgentTeam
      */
     protected $notes;
+    /**
+     * @var ReportDashboardPermission
+     */
+    protected $report_dashboard_permissions;
 
     /**
      * @var TicketParticipant[]|ArrayCollection
@@ -4516,6 +4522,12 @@ class Person extends DomainObject implements
                 'orphanRemoval' => true,
             ]
         );
+
+        $metadata->mapOneToMany([
+                                    'fieldName'    => 'report_dashboard_permissions',
+                                    'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
+                                    'mappedBy'     => 'person',
+                                ]);
 
         $metadata->mapManyToMany(
             [

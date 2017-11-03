@@ -1,0 +1,123 @@
+@import "lib";
+@import 'variables';
+@import 'report-builder-table';
+@import '../../../../../pub/src/DeskPRO/Bundle/AppBundle/Resources/style/variables.scss';
+
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
+body {
+  background: #f6f6f6;
+  font-family: Lato, "proxima nova";
+  font-size: 13px;
+  font-weight: 400;
+  color: #333;
+}
+
+* { @include box-sizing(border-box); }
+
+p {
+  font-weight: 400;
+  color: $text-color;
+}
+
+a {
+  color: $link-color;
+  cursor: pointer;
+}
+
+// So we don't have to repeat it every time we want to reposition an icon
+.fa { position: relative; }
+
+// extras
+@import 'sidebar';
+@import 'top-bar';
+@import 'content';
+@import 'dropdowns';
+@import 'live-search';
+@import 'forms';
+@import 'sidebar-kb';
+@import 'user-preferences';
+@import 'misc';
+@import 'reports';
+@import 'tooltips';
+@import 'editor';
+@import 'reports-overview';
+@import 'ticket_satisfaction';
+@import 'agent_performance';
+@import 'legacy-appstrip';
+
+@import 'dashboards/dashboards';
+@import 'dashboards/ng-tables';
+@import 'dashboards/gridster';
+
+// To keep a set width sidebar with a full width content columns: float left and give the content container
+// padding-left equal to the full width of the sidebars.
+//   |   |         |              |
+//   | A | sidebar |   content    |
+//   |   |         |              |
+//   |   |         |              |
+//
+//    A(pp-bar) + sidebar = content padding-left
+//
+
+$app-nav-width: 230px;
+$sidebar-width: 220px;
+$report-list-width: 555px;
+$content-width: $app-nav-width + $sidebar-width;
+
+.app-nav-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: $app-nav-width;
+  background: #f4f5f5;
+  border-right: 1px solid #d4d7d8;
+}
+
+.app-container {
+  position: absolute;
+  top: 0;
+  left: $app-nav-width;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+
+// Tenmporary for presentation]
+.app-bar {
+  text-align: center;
+  a {
+    display: block;
+    font-size: 1.5em;
+    color: #cecece;
+    padding: 15px 0;
+
+    &:hover {
+      color: #fff;
+    }
+
+    &.active {
+      background: #0B0E10;
+    }
+  }
+
+}
+
+// Main sidebar
+.sidebar-wrapper {
+  float: left;
+  width: $sidebar-width;
+  background: #cecece;
+  border-right: 1px solid #e2e4e5;
+  position: relative;
+  z-index: 209;
+}
+
+.wrapper {
+  @include clearfix;
+}
+.clearfix {
+  @include clearfix;
+}

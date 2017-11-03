@@ -2553,4 +2553,15 @@ $collection->create('go_to_topic_id', [
     'requirements' => ['id' => '\\d+'],
 ]);
 
+$collection->create('reports-interface', [
+    'path'       => '/reports-interface',
+    'controller' => 'AgentBundle:Interface:interface',
+    'defaults'   => ['interface' => 'reports'],
+]);
+
+$collection->create('iface_load_views', [
+    'path'       => '/viewer/load-views',
+    'controller' => 'AgentBundle:Interface:loadViews',
+]);
+
 return $collection;

@@ -45,12 +45,6 @@ use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * SWG\Resource(
- *    resourcePath="/api_keys",
- *    description="Operations about API Keys",
- *    basePath="/api/api_keys"
- * ).
- *
  * @ApiModes("all")
  */
 class ApiKeysController extends AbstractController implements ProtectedControllerInterface

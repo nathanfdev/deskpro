@@ -37,21 +37,17 @@ class Constants
 
     const PERMISSION_EVERYONE = 'EVERYBODY';
 
-
     const ACCESS_LEVEL_READ = 'READ';
 
     const ACCESS_LEVEL_WRITE = 'WRITE';
-
 
     const ACCESS_SERVICE_API = 'API';
 
     const ACCESS_SERVICE_PROXY = 'PROXY';
 
-
     const APPLICATION_SCOPE_AGENT = 'agent';
 
     const APPLICATION_SCOPE_USER = 'user';
-
 
     /** @deprecated */
     const STATE_TARGET_APPLICATION = 'app';
@@ -61,5 +57,4 @@ class Constants
 
     /** @deprecated */
     const STATE_PERMISSION_PRIVATE = 'private';
-
 }

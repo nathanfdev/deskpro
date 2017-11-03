@@ -1,0 +1,104 @@
+import React, { PropTypes } from 'react';
+import AmCharts from '@amcharts/amcharts3-react';
+import { Loader } from '@deskpro/react-components';
+import { Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import Immutable from 'immutable';
+import { displayTypes } from './helper';
+import Header from '../../../../../Component/Semantic/Common/Header';
+
+class Run extends React.Component {
+
+  static propTypes = {
+    report:        PropTypes.object,
+    reportLoading: PropTypes.bool.isRequired,
+    runReport:     PropTypes.func.isRequired,
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      runAs: 'table'
+    };
+    this.onChange   = this.onChange.bind(this);
+    this.clickSlice = this.clickSlice.bind(this);
+  }
+
+  onChange(runAs) {
+    this.setState({ runAs }, () => this.props.runReport(runAs));
+  }
+
+  clickSlice(event) {
+    const options = this.props.report.get('rendered_result');
+    let selected;
+    if (event.dataItem.dataContext.id) {
+      selected = event.dataItem.dataContext.id;
+    }
+    const chart = event.chart;
+    if (selected) {
+      const data = [];
+      options.dataProvider.forEach((element, index) => {
+        if (index === selected) {
+          options.pies[selected].forEach((pie) => {
+            pie.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+            data.push(pie);
+          });
+        } else {
+          data.push(element);
+        }
+      });
+      chart.dataProvider = data;
+    } else {
+      chart.dataProvider = options.dataProvider;
+    }
+    chart.validateData();
+  }
+
+  renderReport() {
+    const { report } = this.props;
+    const options = report.get('rendered_result') ? report.get('rendered_result') : Immutable.Map();
+
+    if (typeof options === 'object') {
+      options.listeners = [
+        {
+          event:  'clickSlice',
+          method: this.clickSlice
+        }
+      ];
+    }
+
+    return (
+      <div className="ui form">
+        <Header content={report.get('title')} level={2} />
+        <div className="inline fields">
+          <div className="eight wide field">
+            <label htmlFor="runAs">Run this report as</label>
+            <Select style={{ minWidth: '150px' }} id="runAs" value={this.state.runAs} onChange={this.onChange} choices={displayTypes} />
+          </div>
+        </div>
+        { typeof options === 'object'
+          ? <AmCharts.React style={{ width: '100%', height: '500px' }} options={options.toJS()} />
+          : <span dangerouslySetInnerHTML={{ __html: options }} />
+        }
+
+      </div>
+    );
+  }
+
+  renderRun() {
+    const { report } = this.props;
+
+    return report.get('rendered_result')
+      ? this.renderReport()
+      : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
+  }
+
+  render() {
+    return (
+      <div className="report-widget-edit-n-run-content">
+        {this.props.reportLoading ? <Loader size="xlarge" /> : this.renderRun()}
+      </div>
+    );
+  }
+}
+
+export default Run;

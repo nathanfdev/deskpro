@@ -1,0 +1,72 @@
+<section class="popup no-footer" style="width: 850px">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Add new stat</h1>
+        <div class="controls"><a class="link-pointer" ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <div class="popup-breadcrumbs">
+        You are creating a {{ ng_var('typeName') }} chart <i class="fa fa-bar-chart"></i>
+        <a ng-click="changeType()" class="link-pointer">Change stat type?</a>
+    </div>
+
+    <div class="big-list-of-stats-filters">
+        <div style="margin: 40px; text-align: center;" ng-show="!loaded">
+            <i class="spinner-circle-32"></i>
+        </div>
+        <div class="bucket" ng-show="loaded">
+            <div class="box">
+                <input type="text" ng-model="searchText" placeholder="Filter stats by name">
+            </div>
+        </div>
+
+        <div class="bucket" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener">
+            <a id="dp-select-label-opener" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
+
+            <!-- Needs to be same width as the .select above -->
+            <div id="dp-select-label-dropdown" class="select-label-dropdown">
+                <a ng-repeat="label in labels track by $index" ng-class="{'active': label.active}"
+                   ng-click="toggleLabel(label)" class="link-pointer stat-label">
+                    <i class="fa fa-tag"></i>{{ ng_var('label.title') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="big-list-of-stats">
+        <div style="margin: 40px; text-align: center;" ng-show="!loaded">
+            <i class="spinner-big-circle"></i>
+        </div>
+        <ul class="stat-list"  ng-show="loaded">
+            <li ng-class="{'active': report.id == widget.widget_id}"
+                ng-repeat="report in prefilteredReports | filter:filterBySearchText track by report.id">
+                <span ng-click="makeChoice(report)" class="mark"></span>
+
+                <h1>
+                    <dp-report-variables
+                            widget="widget"
+                            change-widget-params="changeWidgetParams(params)"
+                            report="report"
+                            possible-values="groupParams">
+                    </dp-report-variables>
+                </h1>
+
+                <p>
+                    <a ng-repeat="label in report.labels" class="link-pointer stat-label"
+                       ng-class="{'active': isActiveLabel(label)}" ng-click="toggleLabel(label)">
+                        <i class="fa fa-tag"></i> {{ ng_var('label') }}
+                    </a>
+                </p>
+
+                <div class="controls" ng-show="report.id == widget.widget_id">
+                    <a class='link-pointer' ng-click="preview()">Preview <i class="fa fa-external-link"></i></a>
+                    <a class='link-pointer' ng-click="insert()">Insert into report</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->
