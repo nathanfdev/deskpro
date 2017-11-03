@@ -6,21 +6,10 @@
     "paths": !!include('paths.json'),
     "shim": !!include('shims.json'),
     "priority": [
-      "amcharts",
       "jquery",
       "angular"
     ]
   };
-
-  //TODO This is dirty hack to make AmCharts work in our reality.
-  //We have to think about proper AmCharts loading via not shims.json, but shims.js
-  var amchartsConfig = {
-    "amcharts.pie": {"exports": "AmCharts", "deps": ["amcharts"], "init": function(){AmCharts.isReady = true;}},
-    "amcharts.serial": {"exports": "AmCharts", "deps": ["amcharts"], "init": function(){AmCharts.isReady = true;}}
-  };
-  for (var key in amchartsConfig) {
-    config.shim[key] = amchartsConfig[key];
-  }
 
   if (!window.DP_IS_DEBUG || window.DP_USE_RJS_BUILD) {
     config.paths["AgentLoad"]        = "app-build/Agent/AgentLoad.min";

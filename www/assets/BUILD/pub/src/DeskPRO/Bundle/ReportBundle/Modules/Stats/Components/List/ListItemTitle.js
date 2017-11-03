@@ -58,7 +58,7 @@ class ListItemTitle extends React.Component {
   replaceMissingVars() {
     const title = this.props.report.get('title');
     const vars = this.props.report.get('variables').filter(value => title.indexOf(`\${${value.get('name')}}`) === -1);
-    return vars.map(value => <div>{`\${${value.get('name')}}`}: {this.replaceVarWithSelectBox(value.get('name'))}</div>);
+    return vars.map((value, index) => <div key={`missing_${index}`}>{`\${${value.get('name')}}`}: {this.replaceVarWithSelectBox(value.get('name'))}</div>);
   }
 
   replaceVarWithSelectBox(varName) {
