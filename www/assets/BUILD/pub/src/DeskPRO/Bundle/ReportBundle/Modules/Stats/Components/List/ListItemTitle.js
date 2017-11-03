@@ -12,9 +12,16 @@ class ListItemTitle extends React.Component {
 
   constructor(props) {
     super(props);
+    const vars = {};
+    props.report
+      .get('variables')
+      .filter(value => value.has('default') && value.get('default'))
+      .forEach((value) => {
+        vars[value.get('name')] = value.get('default');
+      });
     this.state = {
       title: props.report.get('title'),
-      vars:  props.report.get('variables').map(value => value.set('value', value.get('default', 'none'))).toJS()
+      vars
     };
     this.dateChoices = this.props.groupParams.get('dates').map((date, index) => { const choice = { value: index, label: date.get(0) }; return choice; }).toList().toJS();
   }
@@ -46,6 +53,12 @@ class ListItemTitle extends React.Component {
       }
       return <span key={`title_${index}`} onClick={this.props.onRunClick}>{value}</span>;
     });
+  }
+
+  replaceMissingVars() {
+    const title = this.props.report.get('title');
+    const vars = this.props.report.get('variables').filter(value => title.indexOf(`\${${value.get('name')}}`) === -1);
+    return vars.map(value => <div>{`\${${value.get('name')}}`}: {this.replaceVarWithSelectBox(value.get('name'))}</div>);
   }
 
   replaceVarWithSelectBox(varName) {
@@ -95,8 +108,14 @@ class ListItemTitle extends React.Component {
 
   render() {
     const title = this.replaceVars();
+    const missingVars = this.replaceMissingVars();
 
-    return <span><a>{ title }</a></span>;
+    return (
+      <span>
+        <a>{ title }</a>
+        { missingVars }
+      </span>
+    );
   }
 }
 
