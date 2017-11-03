@@ -29,9 +29,7 @@ define [
   # global deps
   'angularGridster',
   'ngTable',
-  'amcharts',
-  'amcharts.pie',
-  'amcharts.serial',
+
   'jquery',
   'moment',
   'momentTimezone',
