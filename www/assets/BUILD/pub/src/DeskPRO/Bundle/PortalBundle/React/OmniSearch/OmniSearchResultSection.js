@@ -153,7 +153,7 @@ export class OmniSearchResultSection extends React.Component {
     });
   }
 
-  createsItemsFromProps(props) {
+  createsItemsFromProps(props) { // eslint-disable-line
     const theItems = new SearchResultCollection();
     forEach(props.initialResult.results, (item) => {
       theItems.addItem(item.object);
