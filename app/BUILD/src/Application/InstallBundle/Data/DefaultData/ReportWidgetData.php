@@ -234,7 +234,7 @@ GROUP BY ${group_by_field_2}',
                 'variables' => '[{"name":"group_by_field_2","type":"fields","field_type":"feedback","table":"feedback_comments.feedback","default":"type"},{"name":"date_1","type":"dates"}]',
             ],
         'number-feedback-comments-created-date-group-by-x' => [
-                'title'         => 'Number of feedback comments created ${date_1} grouped by <feedback_comments field>',
+                'title'         => 'Number of feedback comments created ${date_1} grouped by ${group_by_field_2}',
                 'labels'        => 'feedback',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
