@@ -781,6 +781,21 @@ class ServeFileScript extends LowScriptAbstract
 
             // Generate the resized blob and save it now
             } else {
+                // Check abuse for resize image cache
+                // If we have more than max allowed resized image copies then don't create a new blob for resized cache, just proceed it in runtime
+                $sth = $this->getPdoRead()->prepare('SELECT COUNT(*) FROM blobs WHERE original_blob_id = :original_blob_id AND sys_name LIKE :sys_name');
+                $sth->execute(['original_blob_id' => $blob_id, 'sys_name' => $this->getSizedBlobSysName($blob_id, '%', false)]);
+                $count = $sth->fetch(\PDO::FETCH_COLUMN);
+
+                if ($count > 25) {
+                    $file = $this->createSizedImage($blob, $size, $is_fit, false);
+
+                    $this->sendHeaders($blob);
+                    echo $file;
+
+                    return;
+                }
+
                 $new_blob = $this->createSizedBlob($blob, $size, $is_fit, false);
 
                 if ($new_blob) {
@@ -946,9 +961,16 @@ class ServeFileScript extends LowScriptAbstract
     }
 
     /**
-     * Resize a blob. This needs to load the entire environment.
+     * @param array $blob_info
+     * @param int   $size
+     * @param bool  $is_fit
+     * @param bool  $die_fail
+     *
+     * @throws \Exception
+     *
+     * @return string
      */
-    protected function createSizedBlob($blob_info, $size, $is_fit, $die_fail = true)
+    protected function createSizedImage(array $blob_info, $size, $is_fit, $die_fail = true)
     {
         $container = $this->bootFullSystem();
         $bs        = $container->getBlobStorage();
@@ -1053,9 +1075,9 @@ class ServeFileScript extends LowScriptAbstract
         try {
             $file = $image->get($blob->getImageType());
 
-        // Workaround for potential bug in some Windows servers
-        // where the GD handler tries to save a temp file and the default
-        // temp dir is not writable.
+            // Workaround for potential bug in some Windows servers
+            // where the GD handler tries to save a temp file and the default
+            // temp dir is not writable.
         } catch (\Imagine\Exception\RuntimeException $e) {
             $tmp = $this->dpEnv->getUserTmpDir().DIRECTORY_SEPARATOR.uniqid('img', true).'.'.Strings::getExtension($blob->filename);
             $image->save($tmp);
@@ -1063,17 +1085,38 @@ class ServeFileScript extends LowScriptAbstract
             @unlink($tmp);
         }
 
-        $new_blob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, [
+        return $file;
+    }
+
+    /**
+     * Resize a blob. This needs to load the entire environment.
+     *
+     * @param array $blob_info
+     * @param int   $size
+     * @param bool  $is_fit
+     * @param bool  $die_fail
+     *
+     * @return array
+     */
+    protected function createSizedBlob(array $blob_info, $size, $is_fit, $die_fail = true)
+    {
+        $container = $this->bootFullSystem();
+
+        $file = $this->createSizedImage($blob_info, $size, $is_fit, $die_fail);
+        $blob = $container->getEm()->find('DeskPRO:Blob', $blob_info['id']);
+        $bs   = $container->getBlobStorage();
+
+        $newBlob = $bs->createBlobRecordFromString($file, $blob->filename, $blob->content_type, [
             'sys_name'      => $this->getSizedBlobSysName($blob->id, $size, $is_fit),
             'original_blob' => $blob,
         ]);
 
-        $this->addLogMessage('Cached resize as blob %d', $new_blob->getId());
+        $this->addLogMessage('Cached resize as blob %d', $newBlob->getId());
 
-        $new_blob_info                  = $new_blob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
-        $new_blob_info['filename_safe'] = $blob->getFilenameSafe();
+        $newBlobInfo                  = $newBlob->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
+        $newBlobInfo['filename_safe'] = $blob->getFilenameSafe();
 
-        return $new_blob_info;
+        return $newBlobInfo;
     }
 
     /**
