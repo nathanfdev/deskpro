@@ -273,9 +273,16 @@ class TicketMessageType extends AbstractType
      */
     public function onEnsureMessageTextExists(FormEvent $event)
     {
+        $form = $event->getForm();
         $data = $event->getData();
         if (is_array($data) && !isset($data['message'])) {
             $data['message'] = '';
+        }
+
+        // add original message to handle agent note mentions
+        $ticketMessage = $form->getData();
+        if ($ticketMessage instanceof TicketMessage) {
+            $ticketMessage->setOriginalMessage(isset($data['message']) ? $data['message'] : '');
         }
 
         $event->setData($data);
