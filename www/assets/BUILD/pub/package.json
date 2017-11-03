@@ -4,8 +4,9 @@
   "version": "1.0.0",
   "author": "DeskPRO <support@deskpro.com>",
   "dependencies": {
-    "@deskpro/react-components": "^1.1.1",
     "@amcharts/amcharts3-react": "^3.0.3",
+    "@deskpro/react-components": "^1.1.1",
+    "amcharts3": "github:amcharts/amcharts3",
     "anytime": "1.3.0",
     "bi-app-sass": "^1.1.0",
     "blueimp-file-upload": "9.12.5",
