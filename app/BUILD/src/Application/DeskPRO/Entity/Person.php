@@ -44,6 +44,7 @@ use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -1269,6 +1270,8 @@ class Person extends DomainObject implements
         } elseif ($this->primary_email) {
             // try to get a nice name from the email address
             return Strings::getNameFromEmail($this->primary_email->getEmail());
+        } elseif ($this->getPrimaryPhoneNumberText()) {
+            return $this->getPrimaryPhoneNumberText();
         } elseif ($id_fallback) {
             return 'ID-'.$this->id;
         }
@@ -2152,7 +2155,7 @@ class Person extends DomainObject implements
      */
     public function getPrimaryPhoneNumber()
     {
-        return $this->phone_numbers->first() ?: null;
+        return $this->phone_numbers && $this->phone_numbers->first() ? $this->phone_numbers->first() : null;
     }
 
     /**
@@ -3866,7 +3869,7 @@ class Person extends DomainObject implements
     }
 
     /**
-     * @return VoiceQueue[]|ArrayCollection
+     * @return VoiceQueueAgent[]|ArrayCollection
      */
     public function getVoiceQueues()
     {
@@ -4585,10 +4588,10 @@ class Person extends DomainObject implements
             ],
         ]);
 
-        $metadata->mapManyToMany([
+        $metadata->mapOneToMany([
             'fieldName'    => 'voiceQueues',
-            'targetEntity' => VoiceQueue::class,
-            'mappedBy'     => 'agents',
+            'targetEntity' => VoiceQueueAgent::class,
+            'mappedBy'     => 'agent',
             'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
         ]);
 

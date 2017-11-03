@@ -40,7 +40,7 @@ Feature: /voice_queues endpoint
   "name": "My Queue",
   "routing_model": "least_utilized",
   "max_queue_size": 10,
-  "agents": [~p1~, ~p2~, ~p3~],
+  "agents": [{"agent": ~p1~, "is_enabled": true}, {"agent": ~p2~}, {"agent": ~p3~}],
   "voicemail_timeout": 30
 }
     """
@@ -49,9 +49,12 @@ Feature: /voice_queues endpoint
     And the JSON node "data.routing_model" should be equal to the string "least_utilized"
     And the JSON node "data.max_queue_size" should be equal to 10
     And the JSON node "data.agents" should have 3 elements
-    And the JSON node "data.agents[0]" should be equal to "{p1}"
-    And the JSON node "data.agents[1]" should be equal to "{p2}"
-    And the JSON node "data.agents[2]" should be equal to "{p3}"
+    And the JSON node "data.agents[0].agent" should be equal to "{p1}"
+    And the JSON node "data.agents[0].is_enabled" should be equal to 1
+    And the JSON node "data.agents[1].agent" should be equal to "{p2}"
+    And the JSON node "data.agents[1].is_enabled" should be equal to 0
+    And the JSON node "data.agents[2].agent" should be equal to "{p3}"
+    And the JSON node "data.agents[2].is_enabled" should be equal to 0
 
   Scenario: I update twilio queue
     Given only the following VoiceQueue records exist:

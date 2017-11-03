@@ -1,7 +1,12 @@
 const mapHeaders = (headers) => {
   // let's assume init.headers is an object literal
   const reducer = (mappedHeaders, header) => {
-    mappedHeaders[`x-proxy-header-${header}`] = headers[header];
+    if (header.toLowerCase().substr(0, 'x-proxy-'.length) === 'x-proxy-') {
+      mappedHeaders[header] = headers[header];
+    } else {
+      mappedHeaders[`x-proxy-header-${header}`] = headers[header];
+    }
+
     return mappedHeaders;
   };
 

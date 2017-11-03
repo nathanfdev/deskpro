@@ -111,21 +111,14 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $taskQueueSid;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="voiceQueues")
-     * @ORM\JoinTable(
-     *      name="voice_queue_agents",
-     *      joinColumns={
-     *          @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="CASCADE")
-     *      },
-     *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE")
-     *      }
-     * )
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
      *
      * @JMS\Expose()
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\Person>>")
+     * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent>")
      *
-     * @var Person[]|ArrayCollection
+     * @Assert\Valid()
+     *
+     * @var VoiceQueueAgent[]|ArrayCollection
      */
     private $agents;
 
@@ -243,7 +236,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getId()
     {
@@ -311,7 +304,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Person[]|ArrayCollection
+     * @return VoiceQueueAgent[]|ArrayCollection
      */
     public function getAgents()
     {
@@ -319,29 +312,48 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param Person $person
+     * @param VoiceQueueAgent $voiceAgent
      *
      * @return $this
      */
-    public function addAgent(Person $person)
+    public function addAgent(VoiceQueueAgent $voiceAgent)
     {
-        if (!$this->agents->contains($person)) {
-            $this->agents->add($person);
-            $person->getVoiceQueues()->add($this);
+        if ($voiceAgent->getAgent()) {
+            $existVoiceAgent = $this->agents->filter(function (VoiceQueueAgent $existVoiceAgent) use ($voiceAgent) {
+                return $existVoiceAgent->getAgent() === $voiceAgent->getAgent();
+            })->first();
+
+            if ($existVoiceAgent instanceof VoiceQueueAgent) {
+                $existVoiceAgent->setIsEnabled($voiceAgent->isEnabled());
+            } else {
+                $this->agents->add($voiceAgent);
+                $voiceAgent->setQueue($this);
+                $voiceAgent->getAgent()->getVoiceQueues()->add($voiceAgent);
+            }
+        } else {
+            // to support validation
+            $this->agents->add($voiceAgent);
+            $voiceAgent->setQueue($this);
         }
 
         return $this;
     }
 
     /**
-     * @param Person $person
+     * @param VoiceQueueAgent $voiceAgent
      *
      * @return $this
      */
-    public function removeAgent(Person $person)
+    public function removeAgent(VoiceQueueAgent $voiceAgent)
     {
-        $this->agents->removeElement($person);
-        $person->getVoiceQueues()->removeElement($this);
+        $existVoiceAgent = $this->agents->filter(function (VoiceQueueAgent $existVoiceAgent) use ($voiceAgent) {
+            return $existVoiceAgent->getAgent() === $voiceAgent->getAgent();
+        })->first();
+
+        if ($existVoiceAgent instanceof VoiceQueueAgent) {
+            $this->agents->removeElement($existVoiceAgent);
+            $existVoiceAgent->getAgent()->getVoiceQueues()->removeElement($this);
+        }
 
         return $this;
     }

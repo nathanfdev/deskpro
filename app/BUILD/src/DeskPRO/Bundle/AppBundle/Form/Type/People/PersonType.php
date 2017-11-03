@@ -123,6 +123,7 @@ class PersonType extends AbstractType
             ->add('agent_data', PersonAgentDataType::class, [
                 'property_path' => 'agentData',
                 'required'      => false,
+                'person'        => $builder->getData(),
             ])
             ->add('phone_numbers', CollectionType::class, [
                 'allow_add'     => true,
@@ -151,11 +152,9 @@ class PersonType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'agent_interface' => false,
-            ])
-        ;
+        $resolver->setDefaults([
+            'agent_interface' => false,
+        ]);
     }
 
     /**

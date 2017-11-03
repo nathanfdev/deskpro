@@ -24,12 +24,11 @@ export const updateQueue = createAction(
 
     const { enabled } = data;
     const agents = queue.get('agents');
-    const contains = agents.contains(me.get('id'));
+    const voiceAgent = agents.filter(agent => agent.get('agent') === me.get('id')).first();
+    const index = agents.indexOf(voiceAgent);
 
-    if (!enabled && contains) {
-      queue = queue.set('agents', agents.splice(agents.indexOf(me.get('id')), 1));
-    } else if (enabled && !contains) {
-      queue = queue.set('agents', agents.push(me.get('id')));
+    if (index !== -1) {
+      queue = queue.setIn(['agents', index, 'is_enabled'], enabled);
     }
 
     dispatch(updateCollection('VoiceQueue', Immutable.List([queue]), 'merge'));

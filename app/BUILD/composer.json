@@ -2,7 +2,7 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/ImmRanneft/mpdf.git"
+      "url": "https://github.com/syastrebov/mpdf.git"
     },
     {
       "type": "vcs",
@@ -82,7 +82,7 @@
     "doctrine/mongodb-odm-bundle": "~3.0",
     "doctrine/mongodb-odm": "1.0.x-dev",
     "mongofill/mongofill": "dev-master",
-    "mpdf/mpdf": "7.0.0.2a",
+    "mpdf/mpdf": "dev-master",
     "alchemy/zippy": "^0.4.6",
     "mikey179/vfsStream": "^1.6",
     "eloquent/pathogen": "^0.6.1",

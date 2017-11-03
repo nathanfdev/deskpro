@@ -130,9 +130,25 @@ $voice-green-border-color: #47BF61;
 }
 
 .voice-menu-popup {
+
+  .status {
+    position: relative;
+    margin-right: 10px;
+
+    .spinner-flat {
+      position: absolute;
+      right: -20px;
+    }
+  }
+
   .voice-menu {
     width: 360px;
     font-family: 'Open Sans';
+
+    .voice-menu-alert {
+      padding: 10px;
+      text-align: center;
+    }
 
     .tab-menu {
       margin: 0;

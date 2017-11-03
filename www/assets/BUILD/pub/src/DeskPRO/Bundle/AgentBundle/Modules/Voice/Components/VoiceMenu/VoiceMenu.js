@@ -21,7 +21,8 @@ class VoiceMenu extends React.Component {
     outboundNumber:        PropTypes.string,
     outgoingCall:          PropTypes.object,
     ringingVolume:         PropTypes.number,
-    agentVoicemailTimeout: PropTypes.number
+    agentVoicemailTimeout: PropTypes.number,
+    voiceSynced:           PropTypes.bool
   };
 
   constructor(props) {
@@ -95,7 +96,7 @@ class VoiceMenu extends React.Component {
   }
 
   render() {
-    const { outboundCallsEnabled, incomingCall, outgoingCall } = this.props;
+    const { outboundCallsEnabled, incomingCall, outgoingCall, voiceSynced } = this.props;
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
@@ -105,6 +106,10 @@ class VoiceMenu extends React.Component {
         <div className="voice-header">
           Calls
         </div>
+        {!voiceSynced &&
+        <div className="voice-menu-alert">
+           Changes to your Voice settings are still being applied. This may take a minute or two.
+        </div>}
         <div className="tab-menu">
           {!pendingCall &&
           <TabButton
