@@ -64,8 +64,16 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     private $name;
 
     /**
+     * @ORM\Column(name="`is_installed`", type="boolean", options={"default" = 0}, nullable=false)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     */
+    private $isInstalled = false;
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      *
      * @JMS\Expose()
      * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AppStore\App>")
@@ -228,5 +236,29 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
         }
 
         return $this->app->getManifest()->getTargets();
+    }
+
+    /**
+     * @return ArrayCollection|AppInstance[]
+     */
+    public function getInstances()
+    {
+        return $this->instances;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsInstalled()
+    {
+        return $this->isInstalled;
+    }
+
+    /**
+     * @param mixed $isInstalled
+     */
+    public function setIsInstalled( $isInstalled )
+    {
+        $this->isInstalled = $isInstalled;
     }
 }

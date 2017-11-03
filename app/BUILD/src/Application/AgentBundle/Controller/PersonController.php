@@ -118,7 +118,7 @@ class PersonController extends AbstractController
         $rep = $this->em->getRepository('DeskPRO:Ticket');
 
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
-        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
         $person_tickets       = $rep->getPersonTickets($person, $this->getPerson(), 251, 'status', 'DESC', $allowedTicketDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
@@ -611,10 +611,11 @@ class PersonController extends AbstractController
 
             case 'remove-usersource':
 
-                $us_id = $this->in->getUint('usersource_id');
-                foreach ($person->usersource_assoc as $assoc) {
-                    if ($assoc->usersource->id == $us_id) {
+                $userSourceId = $this->in->getUint('usersource_id');
+                foreach ($person->getUsersourceAssoc() as $assoc) {
+                    if ($assoc->getUsersource()->getId() === $userSourceId) {
                         $this->em->remove($assoc);
+                        $person->getUsersourceAssoc()->removeElement($assoc);
                     }
                 }
 
@@ -1629,7 +1630,7 @@ class PersonController extends AbstractController
         $rep = $this->em->getRepository('DeskPRO:Ticket');
 
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
-        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
         $person_tickets = $rep->getPersonTickets($person, $this->getPerson(), 250, $sort_by, 'DESC', $allowedTicketDepartmentIds);
 
@@ -1707,27 +1708,5 @@ class PersonController extends AbstractController
         $ret = $rep->getTeamsRaw();
 
         return $this->createJsonResponse($ret);
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getNotifierMapAction()
-    {
-        /** @var PersonRepository $personRepo */
-        $personRepo = $this->em->getRepository(Person::class);
-        $agents     = $personRepo->getAgents();
-        $agentMap   = [];
-
-        foreach ($agents as $agent) {
-            $agentMap[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-
-        unset($agentMap[$this->person->getId()]);
-
-        return $this->createJsonResponse($agentMap);
     }
 }

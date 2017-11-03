@@ -99,6 +99,18 @@ class CaptchaController extends \Gregwar\CaptchaBundle\Controller\CaptchaControl
             'text_color',
         ];
 
+        // delete old captcha codes
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em
+            ->createQueryBuilder()
+            ->delete(TmpData::class, 't')
+            ->where('t.name = :name')
+            ->setParameter('name', 'api_captcha.'.$token)
+            ->getQuery()
+            ->execute()
+        ;
+
+        // create a new captcha code
         $tmpData = new TmpData();
         $tmpData->setName('api_captcha.'.$token);
         $tmpData->setDateExpire(new \DateTime('+1 hour'));
@@ -106,7 +118,6 @@ class CaptchaController extends \Gregwar\CaptchaBundle\Controller\CaptchaControl
             $tmpData->setData($persistKey, $options[$persistKey]);
         }
 
-        $em = $this->getDoctrine()->getManager();
         $em->persist($tmpData);
         $em->flush();
 

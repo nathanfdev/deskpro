@@ -1,0 +1,37 @@
+﻿<div>
+    <script id="dynamic_header" type="text/ng-template">
+        <tr>
+            <th ng-repeat="column in columns"
+                class="text-center sortable" ng-class="{
+                    'sort-asc': tableParams.isSortBy(column.field, 'asc'),
+                    'sort-desc': tableParams.isSortBy(column.field, 'desc')
+                  }"
+                ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
+
+                {{column.title}}
+            </th>
+        </tr>
+    </script>
+
+    <script type="text/ng-template" id="custom/pager">
+        <ul class="pager ng-cloak">
+            <li ng-repeat="page in pages"
+                ng-class="{'disabled': !page.active, 'previous': page.type == 'prev', 'next': page.type == 'next'}"
+                ng-show="page.type == 'prev' || page.type == 'next'" ng-switch="page.type">
+                <a ng-switch-when="prev" ng-click="params.page(page.number)" href="">&laquo; Previous</a>
+                <a ng-switch-when="next" ng-click="params.page(page.number)" href="">Next &raquo;</a>
+            </li>
+
+        </ul>
+    </script>
+  
+    <table ng-table="tableParams" show-filter="true" template-header="dynamic_header" template-pagination="custom/pager" class="table">
+        <tr ng-repeat="d in $data">
+            <td ng-repeat="column in columns" sortable="column.field">
+                {{d[column.field]}}
+            </td>
+        </tr>
+    </table>
+</div>
+
+

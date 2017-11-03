@@ -4,8 +4,8 @@ import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { List } from 'react-virtualized';
-import { Checkbox, Tag } from 'deskpro-components/lib/Components/Forms';
-import Icon from 'deskpro-components/lib/Components/Icon';
+import { Checkbox, Tag } from '@deskpro/react-components/lib/Components/Forms';
+import Icon from '@deskpro/react-components/lib/Components/Icon';
 
 export class SnippetsListElement extends React.PureComponent {
   static propTypes = {
@@ -107,7 +107,7 @@ export class SnippetsListElement extends React.PureComponent {
           }
           content = `${matches[1]}${matches[2]}`;
         }
-        content.split(/\n/).forEach((line, key) => {
+        content.substring(0, 300).split(/\n/).forEach((line, key) => {
           lines.push(
             <span className="line" key={key}>
               <Highlighter
@@ -120,7 +120,7 @@ export class SnippetsListElement extends React.PureComponent {
           );
         });
       } else {
-        content.split(/\n/).forEach((line, key) => {
+        content.substring(0, 300).split(/\n/).forEach((line, key) => {
           lines.push(<span className="line" key={key}>{line}<span className="line-break">&#8617; </span></span>);
         });
       }
@@ -397,7 +397,7 @@ export class SnippetsList extends React.Component {
           height={height}
           width={listWidth}
           rowCount={this.list.length}
-          rowHeight={80}
+          rowHeight={83}
           rowRenderer={this.rowRenderer}
           noRowsRenderer={SnippetsList.noRowsRenderer}
           overscanRowCount={2}

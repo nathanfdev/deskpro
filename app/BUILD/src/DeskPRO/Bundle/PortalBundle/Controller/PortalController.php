@@ -522,19 +522,23 @@ class PortalController extends AbstractController
      */
     public function appleAppSiteAssociationAction()
     {
-        $response = [
+        $data = [
             'applinks' => [
                 'apps'    => [],
                 'details' => [
                     [
-                        'appID' => 'PR39D6QFRX.com.deskpro.mobile.ios',
+                        'appID' => 'HC9N5Z797X.com.deskpro.mobile.ios',
                         'paths' => [$this->get('router')->generate('go_to_ticket_ref', ['ref' => '*'])],
                     ],
                 ],
             ],
         ];
 
-        return new JsonResponse($response);
+        $response = new JsonResponse();
+        $response->setEncodingOptions(\JSON_UNESCAPED_SLASHES);
+        $response->setData($data);
+
+        return $response;
     }
 
     /**

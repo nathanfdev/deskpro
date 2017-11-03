@@ -2,12 +2,21 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Basic';
 </script>
 <div class="profile layout-content with-scrollbar">
-<div class="scrollbar disable"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-<div class="scroll-viewport"><div class="scroll-content">
-
-<table class="list" cellspacing="0" width="100%">
-	<tr class="white line-1">
-		<td>{{ phrase('agent.general.session_started') }}</td>
-		<td>{{ session.date_created|date('Y-m-d H:i:s') }}</td>
-	</tr>
-</table>
+	<div class="scrollbar disable">
+		<div class="track">
+			<div class="thumb">
+				<div class="end"></div>
+			</div>
+		</div>
+	</div>
+	<div class="scroll-viewport">
+		<div class="scroll-content">
+			<table class="list" cellspacing="0" width="100%">
+				<tr class="white line-1">
+					<td>{{ phrase('agent.general.session_started') }}</td>
+					<td>{{ session.date_created|date('Y-m-d H:i:s') }}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "61d3d1bd74b4246b9e5370dab5a5ab5d",
-    "content-hash": "3c0f267244c67a9b277c6bc298bfcf59",
+    "hash": "069042d1588eab1296c3b1aa1c7dd648",
+    "content-hash": "4f681342d492134dfbcc7d2985ca1c03",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2898,6 +2898,57 @@
             "time": "2016-10-08 15:01:37"
         },
         {
+            "name": "guzzlehttp/oauth-subscriber",
+            "version": "0.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/oauth-subscriber.git",
+                "reference": "04960cdef3cd80ea401d6b0ca8b3e110e9bf12cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/oauth-subscriber/zipball/04960cdef3cd80ea401d6b0ca8b3e110e9bf12cf",
+                "reference": "04960cdef3cd80ea401d6b0ca8b3e110e9bf12cf",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~6.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Subscriber\\Oauth\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                }
+            ],
+            "description": "Guzzle OAuth 1.0 subscriber",
+            "homepage": "http://guzzlephp.org/",
+            "keywords": [
+                "Guzzle",
+                "oauth"
+            ],
+            "time": "2015-08-15 19:44:28"
+        },
+        {
             "name": "guzzlehttp/promises",
             "version": "v1.3.1",
             "source": {
@@ -3739,6 +3790,71 @@
             "time": "2016-01-15 02:50:06"
         },
         {
+            "name": "league/oauth1-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deskpro/oauth1-client.git",
+                "reference": "7523d2aedceabe8ee2d9ab56cd1ff5ec67fbc676"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deskpro/oauth1-client/zipball/7523d2aedceabe8ee2d9ab56cd1ff5ec67fbc676",
+                "reference": "7523d2aedceabe8ee2d9ab56cd1ff5ec67fbc676",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.0",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9",
+                "phpunit/phpunit": "^4.0",
+                "squizlabs/php_codesniffer": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\OAuth1\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Corlett",
+                    "email": "bencorlett@me.com",
+                    "homepage": "http://www.webcomm.com.au",
+                    "role": "Developer"
+                }
+            ],
+            "description": "OAuth 1.0 Client Library",
+            "keywords": [
+                "authentication",
+                "authorization",
+                "bitbucket",
+                "identity",
+                "idp",
+                "oauth",
+                "oauth1",
+                "single sign on",
+                "sso",
+                "trello",
+                "tumblr",
+                "twitter"
+            ],
+            "support": {
+                "source": "https://github.com/deskpro/oauth1-client/tree/master"
+            },
+            "time": "2017-06-14 01:49:24"
+        },
+        {
             "name": "league/oauth2-client",
             "version": "2.2.1",
             "source": {
@@ -4297,54 +4413,87 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "v6.1.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "7f138bf7508eac895ac2c13d2509b056ac7e7e97"
+                "url": "https://github.com/syastrebov/mpdf.git",
+                "reference": "9f0a8efdaf4638995868cf8087765549cd7cde00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/7f138bf7508eac895ac2c13d2509b056ac7e7e97",
-                "reference": "7f138bf7508eac895ac2c13d2509b056ac7e7e97",
+                "url": "https://api.github.com/repos/syastrebov/mpdf/zipball/9f0a8efdaf4638995868cf8087765549cd7cde00",
+                "reference": "9f0a8efdaf4638995868cf8087765549cd7cde00",
                 "shasum": ""
             },
             "require": {
+                "ext-gd": "*",
                 "ext-mbstring": "*",
-                "php": ">=5.4.0",
+                "paragonie/random_compat": "^2.0",
+                "php": "^5.6 || ~7.0.0 || ~7.1.0 || ~7.2.0",
+                "psr/log": "^1.0",
                 "setasign/fpdi": "1.6.*"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.7"
+                "mockery/mockery": "^0.9.5",
+                "phpunit/phpunit": "^5.0",
+                "squizlabs/php_codesniffer": "^2.7.0",
+                "tracy/tracy": "^2.4"
             },
             "suggest": {
+                "ext-bcmath": "Needed for generation of some types of barcodes",
+                "ext-xml": "Needed mainly for SVG manipulation",
                 "ext-zlib": "Needed for compression of embedded resources, such as fonts"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-development": "7.0-dev"
+                }
+            },
             "autoload": {
-                "classmap": [
-                    "mpdf.php",
-                    "classes"
+                "psr-4": {
+                    "Mpdf\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Mpdf\\": "tests/Mpdf"
+                },
+                "files": [
+                    "src/functions-dev.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "post-install-cmd": [
+                    "php -r \"chmod('./tmp', 0777);\""
+                ]
+            },
             "license": [
                 "GPL-2.0"
             ],
             "authors": [
                 {
+                    "name": "Matěj Humpál",
+                    "role": "Developer, maintainer"
+                },
+                {
                     "name": "Ian Back",
-                    "role": "Developer"
+                    "role": "Developer (retired)"
                 }
             ],
             "description": "A PHP class to generate PDF files from HTML with Unicode/UTF-8 and CJK support",
-            "homepage": "http://mpdf.github.io",
+            "homepage": "https://mpdf.github.io",
             "keywords": [
                 "pdf",
                 "php",
                 "utf-8"
             ],
-            "time": "2016-12-12 10:42:18"
+            "support": {
+                "issues": "https://github.com/mpdf/mpdf/issues",
+                "source": "https://github.com/mpdf/mpdf",
+                "docs": "http://mpdf.github.io"
+            },
+            "time": "2017-10-31 14:47:22"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -12875,6 +13024,8 @@
         "zendframework/zend-queue": 20,
         "doctrine/mongodb-odm": 20,
         "mongofill/mongofill": 20,
+        "mpdf/mpdf": 20,
+        "league/oauth1-client": 20,
         "satooshi/php-coveralls": 20,
         "behatch/contexts": 20,
         "behat/mink-extension": 20,

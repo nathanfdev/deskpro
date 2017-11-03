@@ -54,13 +54,15 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
         }
     }
 
-    /**
-     * @param string $applicationName
-     * @return mixed
-     */
-    function findSoleApplicationInstance($applicationName)
-    {
-        $query = $this->queryBuilder->buildFindApplicationInstanceByNameQuery($this->entityManager, $applicationName);
+    public function findSoleApplicationInstanceByRef( ApplicationRef $appRef) {
+        $query = null;
+        $id = $appRef->getIdentifier();
+        if ($appRef->isName()) {
+            $query = $this->queryBuilder->buildFindApplicationInstanceByNameQuery($this->entityManager, $id);
+        } else {
+            $query = $this->queryBuilder->buildFindApplicationInstanceByAppId($this->entityManager, $id);
+        }
+
         $result = $query->setMaxResults(2)->getResult();
 
         /** @var Entity\AppStore\AppInstance $instance */
@@ -70,6 +72,15 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
         }
 
         return $instance;
+    }
+
+    /**
+     * @param string $applicationName
+     * @return mixed
+     */
+    function findSoleApplicationInstance($applicationName)
+    {
+        return $this->findSoleApplicationInstanceByRef(new ApplicationRef($applicationName, true));
     }
 
     function findAll()
@@ -82,17 +93,6 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
         ;
 
         $result = $qb->getQuery()->getResult();
-        return $result;
-    }
-
-    /**
-     * @param string $applicationName
-     * @return Entity\AppStore\AppInstance[]
-     */
-    function findByApplication($applicationName) {
-
-        $query = $this->queryBuilder->buildFindApplicationInstanceByNameQuery($this->entityManager, $applicationName);
-        $result = $query->getResult();
         return $result;
     }
 

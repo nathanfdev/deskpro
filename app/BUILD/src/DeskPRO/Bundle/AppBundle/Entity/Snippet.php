@@ -216,6 +216,17 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $negativeRatings = 0;
 
     /**
+     * When snippet was created.
+     *
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     *
+     * @Assert\NotNull()
+     *
+     * @var \DateTime
+     */
+    protected $dateCreated;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -224,6 +235,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         $this->ownershipTeams     = new ArrayCollection();
         $this->visibleDepartments = new ArrayCollection();
         $this->labels             = new ArrayCollection();
+        $this->setModelField('dateCreated', new \DateTime());
     }
 
     /**
@@ -331,6 +343,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         if (!in_array($type, $this->types, true)) {
             $this->types[] = $type;
         }
+        $this->setModelField('types', $this->types);
 
         return $this;
     }
@@ -346,6 +359,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
             unset($this->types[$key]);
             $this->types = array_values($this->types);
         }
+        $this->setModelField('types', $this->types);
 
         return $this;
     }
@@ -673,6 +687,26 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function setNegativeRatings($negativeRatings)
     {
         $this->setModelField('negativeRatings', $negativeRatings);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return Snippet
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->setModelField('dateCreated', $dateCreated);
 
         return $this;
     }

@@ -107,7 +107,6 @@ class MassLoader
 
         $this->connection->executeUpdate('TRUNCATE TABLE ticket_filter_subscriptions');
         $this->connection->executeUpdate('TRUNCATE TABLE permissions');
-        $this->connection->executeUpdate('TRUNCATE TABLE task_attachments');
         $this->connection->executeUpdate('DELETE FROM ticket_filters');
         $this->connection->executeUpdate('DELETE FROM people_emails WHERE person_id != 1');
         $this->connection->executeUpdate('TRUNCATE TABLE agent_team_members');

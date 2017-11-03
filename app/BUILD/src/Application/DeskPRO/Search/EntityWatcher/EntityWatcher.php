@@ -49,6 +49,7 @@ use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\Topic;
@@ -58,23 +59,24 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
     /** @var array */
     public static $watched_entities = [
-        Article::class          => 1,
-        LabelArticle::class     => 1,
-        Download::class         => 1,
-        LabelDownload::class    => 1,
-        Feedback::class         => 1,
-        LabelFeedback::class    => 1,
-        News::class             => 1,
-        LabelNews::class        => 1,
-        Ticket::class           => 1,
-        TicketMessage::class    => 1,
-        Topic::class            => 1,
-        Person::class           => 1,
-        PersonEmail::class      => 1,
-        Organization::class     => 1,
-        ChatConversation::class => 1,
-        ChatMessage::class      => 1,
-        ObjectLang::class       => 1,
+        Article::class               => 1,
+        LabelArticle::class          => 1,
+        Download::class              => 1,
+        LabelDownload::class         => 1,
+        Feedback::class              => 1,
+        LabelFeedback::class         => 1,
+        News::class                  => 1,
+        LabelNews::class             => 1,
+        Ticket::class                => 1,
+        TicketMessage::class         => 1,
+        Topic::class                 => 1,
+        Person::class                => 1,
+        PersonEmail::class           => 1,
+        Organization::class          => 1,
+        ChatConversation::class      => 1,
+        ChatMessage::class           => 1,
+        ObjectLang::class            => 1,
+        PersonUsersourceAssoc::class => 1,
     ];
 
     /**
@@ -252,6 +254,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
             } else {
                 return;
             }
+        } elseif ($ent instanceof PersonUsersourceAssoc) {
+            return $ent->getPerson();
         }
 
         return $ent;

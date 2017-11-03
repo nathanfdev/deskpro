@@ -44,6 +44,7 @@ use Application\DeskPRO\People\PasswordPolicyValidator;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -121,6 +122,8 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property \DateTime                           $date_password_set
  * @property \DateTime                           $date_picture_check
  * @property string                              $browser
+ *
+ * @method ReportDashboardPermission[] getReportDashboardPermissions()
  *
  * @JMS\ExclusionPolicy("all")
  * @Assert\GroupSequenceProvider
@@ -582,6 +585,10 @@ class Person extends DomainObject implements
      * @var AgentTeam
      */
     protected $notes;
+    /**
+     * @var ReportDashboardPermission
+     */
+    protected $report_dashboard_permissions;
 
     /**
      * @var TicketParticipant[]|ArrayCollection
@@ -774,6 +781,14 @@ class Person extends DomainObject implements
     public function hasPerm($name)
     {
         return $this->getPermissionsManager()->hasPerm($name);
+    }
+
+    /**
+     * @return PersonUsersourceAssoc[]|ArrayCollection
+     */
+    public function getUsersourceAssoc()
+    {
+        return $this->usersource_assoc;
     }
 
     /**
@@ -1255,6 +1270,8 @@ class Person extends DomainObject implements
         } elseif ($this->primary_email) {
             // try to get a nice name from the email address
             return Strings::getNameFromEmail($this->primary_email->getEmail());
+        } elseif ($this->getPrimaryPhoneNumberText()) {
+            return $this->getPrimaryPhoneNumberText();
         } elseif ($id_fallback) {
             return 'ID-'.$this->id;
         }
@@ -2138,7 +2155,7 @@ class Person extends DomainObject implements
      */
     public function getPrimaryPhoneNumber()
     {
-        return $this->phone_numbers->first() ?: null;
+        return $this->phone_numbers && $this->phone_numbers->first() ? $this->phone_numbers->first() : null;
     }
 
     /**
@@ -2886,7 +2903,7 @@ class Person extends DomainObject implements
         $url = false;
         if ($this->hasPicture() && !$default) {
             if ($this->picture_blob && $this->picture_blob->isImage()) {
-                $url = App::get('router')->generate(
+                $url = App::get('router.default')->generate(
                     'serve_blob_sizefit',
                     [
                         'blob_auth_id' => $this->picture_blob->getAuthId(),
@@ -2904,7 +2921,7 @@ class Person extends DomainObject implements
             if ($this->organization && $this->organization->hasPicture()) {
                 return $this->organization->getPictureUrl($size, $secure);
             } else {
-                $url = App::get('router')->generate(
+                $url = App::get('router.default')->generate(
                     'serve_default_picture',
                     [
                         's'        => $size,
@@ -3852,7 +3869,7 @@ class Person extends DomainObject implements
     }
 
     /**
-     * @return VoiceQueue[]|ArrayCollection
+     * @return VoiceQueueAgent[]|ArrayCollection
      */
     public function getVoiceQueues()
     {
@@ -4506,6 +4523,12 @@ class Person extends DomainObject implements
             ]
         );
 
+        $metadata->mapOneToMany([
+                                    'fieldName'    => 'report_dashboard_permissions',
+                                    'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
+                                    'mappedBy'     => 'person',
+                                ]);
+
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'teams',
@@ -4565,10 +4588,10 @@ class Person extends DomainObject implements
             ],
         ]);
 
-        $metadata->mapManyToMany([
+        $metadata->mapOneToMany([
             'fieldName'    => 'voiceQueues',
-            'targetEntity' => VoiceQueue::class,
-            'mappedBy'     => 'agents',
+            'targetEntity' => VoiceQueueAgent::class,
+            'mappedBy'     => 'agent',
             'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
         ]);
 

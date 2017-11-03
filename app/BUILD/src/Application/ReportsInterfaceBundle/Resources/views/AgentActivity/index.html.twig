@@ -9,15 +9,15 @@
 					ui-select2
 					ng-model="AgentActivity.filter.agent_or_team"
 					style="width: 200px;"
-					>
+			>
 				<option value="0"></option>
 				<option value="all" ng-if="AgentActivity.all_agents.length <= 20">All Agents</option>
 				<option ng-repeat="agent in AgentActivity.all_agents" ng-value="agent.id">
-					{{ ng_var('agent.display_name') }}
+                    {{ ng_var('agent.display_name') }}
 				</option>
 				<optgroup label="Teams">
 					<option ng-repeat="team in AgentActivity.agent_teams" value="team-{{ ng_var('team.id') }}">
-						{{ ng_var('team.name') }}
+                        {{ ng_var('team.name') }}
 					</option>
 				</optgroup>
 			</select>

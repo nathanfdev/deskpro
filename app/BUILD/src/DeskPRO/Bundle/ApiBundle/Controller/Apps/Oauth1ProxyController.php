@@ -1,0 +1,263 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
+
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
+
+use DeskPRO\Bundle\AppStoreBundle\Oauth1\AuthorizationSession;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth1Connection;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * Class HttpProxyController.
+ *
+ * @ApiModes("session")
+ * @ApiUserContext("agent")
+ * @Rest\Route("/apps/proxy-oauth/1.0")
+ */
+class Oauth1ProxyController extends BaseController
+{
+    private $oauthSessionCookieName = 'dp_oauth1_sess';
+
+    private $tokenCallbackCookieName = 'dp_oauth1_token_callback';
+
+    private $authSessionDuration = 300; //in seconds
+
+
+    private function readTokenCallbackCookie(Request $request)
+    {
+        $tokenCallback = $request->cookies->get($this->tokenCallbackCookieName, null);
+        return $tokenCallback;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return AuthorizationSession|null
+     */
+    private function readAuthSessionCookie(Request $request)
+    {
+        $serialized = $request->cookies->get($this->oauthSessionCookieName, null);
+        if (is_string($serialized)) {
+            return AuthorizationSession::unserialize(base64_decode($serialized));
+        }
+
+        return null;
+    }
+
+    /**
+     * @param Response $response
+     * @param string $callbackUrl
+     * @return Cookie
+     *
+     */
+    private function writeTokenCallbackCookie(Response $response, $callbackUrl = null)
+    {
+        if (is_null($callbackUrl)) {
+            $sessionCookie = new Cookie($this->oauthSessionCookieName, '');
+        } else {
+            $expirationTime = time() + $this->authSessionDuration;
+            $sessionCookie  = new Cookie($this->tokenCallbackCookieName, $callbackUrl, $expirationTime);
+        }
+
+        $response->headers->setCookie($sessionCookie);
+    }
+
+    /**
+     * @param Response             $response
+     * @param AuthorizationSession $session
+     *
+     * @return Cookie
+     */
+    private function writeAuthSessionCookie(Response $response, AuthorizationSession $session = null)
+    {
+        $sessionCookie = null;
+        if (is_null($session)) {
+            $sessionCookie = new Cookie($this->oauthSessionCookieName, '');
+        } else {
+            $expirationTime = time() + $this->authSessionDuration;
+            $sessionCookie  = new Cookie(
+                $this->oauthSessionCookieName,
+                base64_encode(AuthorizationSession::serialize($session)),
+                $expirationTime
+            );
+        }
+        $response->headers->setCookie($sessionCookie);
+
+        return $sessionCookie;
+    }
+
+    /**
+     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
+     *
+     * @Rest\Get("/{provider}/authorize")
+     *
+     * @param OauthProviderConnectionLoader|null $provider
+     * @param Request                            $request
+     *
+     * @return RedirectResponse|Response
+     */
+    public function authorizeAction(OauthProviderConnectionLoader $provider = null, Request $request)
+    {
+        // check that we have an application
+        $applicationId = $request->query->get('applicationId', null);
+        if (is_null($applicationId)) {
+            return new Response('Connection not found', 400);
+        }
+
+        // check that we can post back messages. if we can not then, we show html errors
+        $callbackMethod = $request->query->get('callbackMethod', 'postMessage');
+        $callbackUrl    = $request->query->get('callbackUrl');
+        if ($callbackMethod !== 'postMessage' || empty($callbackUrl)) {
+            return new Response('Invalid callback method', 400);
+        }
+
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
+            ->withApplicationState($request->query->get('state', null))
+            ->withRedirectUrl($callbackUrl)
+        ;
+
+        $clientProfile = $request->query->get('client_profile', 'web-server'); //web-server, user-agent, [ native applications, autonomous clients ]
+        if (!in_array($clientProfile, ['web-server', 'user-agent'])) {
+            return $errorResponseBuilder->withErrorType('invalid client profile')->buildPostMessage();
+        }
+
+        /** @var SerializedOauth1Connection $connection */
+        $connection = null;
+        if ($clientProfile === 'web-server') {
+            if (is_null($provider)) {
+                return $errorResponseBuilder->withErrorType('provider not found')->buildPostMessage();
+            }
+
+            $connection = $provider->loadOauth1Connection($applicationId, $this->getUser());
+            if (empty($connection)) {
+                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
+            }
+        }
+
+        if ($clientProfile === 'web-server') {
+            $authSession      = new AuthorizationSession();
+            $authorizationUrl = $connection->getAuthorizationUrl($authSession);
+
+            $response = new RedirectResponse($authorizationUrl);
+            $this->writeAuthSessionCookie($response, $authSession);
+            $this->writeTokenCallbackCookie($response, $callbackUrl);
+
+            return $response;
+        }
+
+        return $errorResponseBuilder->withErrorType('only web-server profile allowed')->buildPostMessage();
+    }
+
+    /**
+     * @param AppInstance|null                   $application
+     * @param OauthProviderConnectionLoader|null $provider
+     * @param Request                            $request
+     *
+     * @return Response
+     */
+    private function handleGrantAccessAction(AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
+    {
+        if (is_null($application) || empty($provider)) {
+            return new Response('Connection not found', 404);
+        }
+
+        $callbackUrl = $this->readTokenCallbackCookie($request);
+        if (is_null($callbackUrl)) {
+            return new Response('Bad request. Missing callback url', 400);
+        }
+
+        // prepare the error response builder
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error', '1.0')
+            ->withRedirectUrl($callbackUrl)
+        ;
+
+        $oauthToken    = $request->query->get('oauth_token', null);
+        $oauthVerifier = $request->query->get('oauth_verifier', null);
+
+        // was there an error ?
+        if (empty($oauthVerifier) || empty($oauthToken)) {
+            return $errorResponseBuilder->withErrorType('oauth error')->buildPostMessage();
+        }
+
+        $connection = $provider->loadOauth1Connection($application, $this->getUser());
+        if (empty($connection)) {
+            return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
+        }
+
+        try {
+            $authSession = $this->readAuthSessionCookie($request);
+            if (is_null($authSession)) {
+                return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
+            }
+
+            $token = $connection->getAccessToken($authSession, $oauthToken, $oauthVerifier);
+
+            return OauthResponseBuilder::forResponseType('token', '1.0')
+                ->withTokenParams($token->jsonSerialize())
+                ->withRedirectUrl($callbackUrl)
+                ->buildPostMessage();
+        } catch (\Exception $e) {
+            return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
+        }
+    }
+
+    /**
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
+     *
+     * @Rest\Get("/{provider}/grant-access/{application}")
+     *
+     * @param AppInstance                        $application
+     * @param OauthProviderConnectionLoader|null $provider
+     * @param Request                            $request
+     *
+     * @return Response
+     */
+    public function grantAccessAction(AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
+    {
+        $response = $this->handleGrantAccessAction($application, $provider, $request);
+
+        if ($response instanceof Response) { // cleanup any authorization session cookies
+            $this->writeAuthSessionCookie($response);
+            $this->writeTokenCallbackCookie($response);
+        }
+
+        return $response;
+    }
+}

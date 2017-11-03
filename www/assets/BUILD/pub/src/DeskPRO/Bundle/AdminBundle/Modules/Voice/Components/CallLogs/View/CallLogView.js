@@ -16,11 +16,16 @@ class CallLogView extends React.Component {
     call:         PropTypes.object,
     numbers:      PropTypes.object,
     people:       PropTypes.object,
-    onReturnBack: PropTypes.func
+    onReturnBack: PropTypes.func,
+    openDialpad:  PropTypes.func
   };
 
   render() {
-    const { onReturnBack, call, numbers, people } = this.props;
+    const { onReturnBack, openDialpad, call, numbers, people } = this.props;
+    const number = numbers.get(call.get('number')) || Immutable.fromJS({});
+    const fromNumber = call.getIn(['data', 'From']);
+    const toNumber = call.getIn(['data', 'To']);
+    const isInbound = call.get('type') === 'inbound';
 
     return (
       <div className="page">
@@ -56,9 +61,25 @@ class CallLogView extends React.Component {
               </td>
             </tr>
             <tr>
-              <th>Number</th>
+              <th>From Number</th>
               <td>
-                {numbers.getIn([call.get('number'), 'number'])}
+                {isInbound
+                  ? <button onClick={() => openDialpad(fromNumber)}>
+                    {fromNumber}
+                  </button>
+                  : number.get('number')
+                }
+              </td>
+            </tr>
+            <tr>
+              <th>To Number</th>
+              <td>
+                {isInbound
+                  ? number.get('number')
+                  : <button onClick={() => openDialpad(toNumber)}>
+                    {toNumber}
+                  </button>
+                }
               </td>
             </tr>
             <tr>
@@ -118,9 +139,11 @@ class CallLogView extends React.Component {
                           <td>
                             {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
                               '{number}':       call.get('external_number'),
+                              '{to_number}':    number.get('nickname') || number.get('number'),
                               '{person_name}':  person.get('first_name') || '',
                               '{person_email}': person.get('primary_email') || '',
-                              '{key}':          log.getIn(['details', 'Digits']) || ''
+                              '{key}':          log.getIn(['details', 'Digits']) || '',
+                              '{target_name}':  log.getIn(['details', 'target_name']) || 'Unknown'
                             })}
                           </td>
                         </tr>

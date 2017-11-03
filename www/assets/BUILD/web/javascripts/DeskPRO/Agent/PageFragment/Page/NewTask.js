@@ -203,6 +203,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			var visibility_sel = row.find('.visibility_sel');
 			DP.select(visibility_sel);
 
+			visibility_sel.val(1);
 			visibility_sel.on('change', function() {
 				var val = $(this).val();
 				var label = $(this).find(':selected').text().trim();

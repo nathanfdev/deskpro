@@ -29,7 +29,12 @@
 .big-list-of-stats-filters {
   @include clearfix;
   padding: 10px;
-  padding-bottom: 0px;
+  padding-bottom: 0;
+  position: absolute;
+  height: 40px;
+  width: 561px;
+  top: 0;
+  left: 0;
 
   .bucket {
     float: left;
@@ -91,10 +96,10 @@
 
 
 .big-list-of-stats {
-  padding: 10px;
+  height: 100%;
+  padding: 0 0 10px 10px;
   background: #f5f6f7;
-  max-height: 460px;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   ul.stat-list {
     @extend %flat-list;
@@ -235,9 +240,8 @@
 // Stats in page (not in popup)
 .report-list-wrapper {
   .big-list-of-stats {
-    height: auto;
-    overflow-y: default;
-    max-height: none;
+    overflow-y: auto;
+
 
     .stat-list {
       li { padding-left: 10px; }
@@ -257,9 +261,14 @@
       margin: 0;
       padding: 0;
       margin-bottom: 10px;
+      display: inline-block;
 
-      &:last-child {
-        margin-bottom: 0px;
+      &.filter-title {
+        width: 70%;
+      }
+
+      &.filter-label {
+        width: 29%;
       }
     }
   }

@@ -78,7 +78,7 @@ class AppAssetBlob implements Domain\ApplicationAsset, EntityInterface, NotifyPr
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\App")
-     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable = false)
+     * @ORM\JoinColumn(name="app_id", referencedColumnName="id", nullable = false, onDelete="CASCADE")
      *
      * @var App
      */

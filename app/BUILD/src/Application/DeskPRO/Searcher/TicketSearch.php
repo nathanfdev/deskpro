@@ -1463,16 +1463,21 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_CATEGORY:
                         $this->affected_fields[] = 'ticket.category_id';
 
+                        if (!$choice) {
+                            $choice = '0';
+                        }
                         if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
                             $choice = (array) $choice;
                         }
 
-                        $childIds = App::getDb()->fetchAllCol('SELECT * FROM ticket_categories WHERE parent_id IN (:parent_id)', [
-                            'parent_id' => implode(', ', $choice),
-                        ]);
+                        if ($choice) {
+                            $childIds = App::getDb()->fetchAllCol('SELECT * FROM ticket_categories WHERE parent_id IN (:parent_id)', [
+                                'parent_id' => implode(', ', $choice),
+                            ]);
 
-                        $choice = array_merge($choice, $childIds);
-                        $choice = array_unique($choice, \SORT_NUMERIC);
+                            $choice = array_merge($choice, $childIds);
+                            $choice = array_unique($choice, \SORT_NUMERIC);
+                        }
 
                         if (count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_CATEGORY;
@@ -1483,16 +1488,21 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_PRODUCT:
                         $this->affected_fields[] = 'ticket.product_id';
 
+                        if (!$choice) {
+                            $choice = '0';
+                        }
                         if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
                             $choice = (array) $choice;
                         }
 
-                        $childIds = App::getDb()->fetchAllCol('SELECT * FROM products WHERE parent_id IN (:parent_id)', [
-                            'parent_id' => implode(', ', $choice),
-                        ]);
+                        if ($choice) {
+                            $childIds = App::getDb()->fetchAllCol('SELECT * FROM products WHERE parent_id IN (:parent_id)', [
+                                'parent_id' => implode(', ', $choice),
+                            ]);
 
-                        $choice = array_merge($choice, $childIds);
-                        $choice = array_unique($choice, \SORT_NUMERIC);
+                            $choice = array_merge($choice, $childIds);
+                            $choice = array_unique($choice, \SORT_NUMERIC);
+                        }
 
                         if (count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_PRODUCT;
@@ -2281,6 +2291,24 @@ class TicketSearch extends SearcherAbstract
                                         $choices_in = '0';
                                     }
                                 }
+
+                                // collect all sub-choices
+                                $choices_in = explode(',', $choices_in);
+                                $iterator   = function ($parentId) use ($field, &$choices_in, &$iterator) {
+                                    /** @var Entity\CustomDefAbstract $child */
+                                    foreach ($field->getChildren() as $child) {
+                                        if ((int) $child->getOption('parent_id') === (int) $parentId) {
+                                            $choices_in[] = $child->getId();
+                                            $iterator($child->getId());
+                                        }
+                                    }
+                                };
+
+                                foreach ($choices_in as $choiceId) {
+                                    $iterator($choiceId);
+                                }
+
+                                $choices_in = implode(',', $choices_in);
 
                                 $field = 'custom_data_ticket_'.$join_id.'.field_id';
                                 switch ($op) {

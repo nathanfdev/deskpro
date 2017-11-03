@@ -22,12 +22,12 @@ export class DpxDateWidget extends PageWidget {
     const calendar = $el.data('calendar');
 
     if (!calendar || calendar === 'gregorian') {
-      if (window.DESKPRO_LANG) {
+      if (window.DESKPRO_LOCALE) {
         // datetime picker has locale for month/day names
-        $.datetimepicker.setLocale(window.DESKPRO_LANG.toLowerCase().split('_')[0]);
+        $.datetimepicker.setLocale(window.DESKPRO_LOCALE.toLowerCase().split('_')[0]);
 
         // we have to use moment for formatting tho
-        moment.locale(window.DESKPRO_LANG.toLowerCase().replace('_', '-'));
+        moment.locale(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-'));
       }
 
       $.datetimepicker.setDateFormatter({

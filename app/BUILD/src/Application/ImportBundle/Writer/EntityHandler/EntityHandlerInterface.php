@@ -48,8 +48,9 @@ interface EntityHandlerInterface
      * Parses to a collection of the importing DeskPRO doctrine entities.
      *
      * @param Model\PrimaryImportModelInterface $model
+     * @param string                            $brandName
      *
      * @throws \Exception
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model);
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null);
 }

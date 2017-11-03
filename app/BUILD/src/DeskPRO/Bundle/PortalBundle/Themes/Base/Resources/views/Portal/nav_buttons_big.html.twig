@@ -16,7 +16,7 @@
 
     {% elseif 'guides' == tab %}
 
-      {% if app.hasBeta('guides') and can_use_guides() and show_tab_guides() %}
+      {% if app.hasBeta('guides') and can_use_guides() and show_tab_guides() and has_any_guides() %}
         <li class="item-guides">
           <a href="{{ path('portal_guides') }}">
             <i class="fa fa-book"></i>

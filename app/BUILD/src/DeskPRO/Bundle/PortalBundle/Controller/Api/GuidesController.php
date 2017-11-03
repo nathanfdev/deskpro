@@ -91,7 +91,7 @@ class GuidesController extends AbstractApiController
         $guideDataService = $this->get('data.guides');
         $guide            = $guideDataService->getGuideBySlug($slug);
         if (!$guide) {
-            return $this->createNotFoundException();
+            throw $this->createNotFoundException();
         }
         $person = $this->getUser();
 

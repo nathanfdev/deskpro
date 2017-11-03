@@ -34,7 +34,6 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
-use DeskPRO\Bundle\AppStoreBundle\Domain\StateScope;
 use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -57,6 +56,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $em->getRepository(AppState::class)->willReturn($appStateRepository);
         $request->headers = $headers;
 
+        $headers->get('X-Proxy-SignWith', null)->willReturn(null);
         $headers->get('X-Proxy-Url')->willReturn('http://deskpro.dev/');
         $headers->get('X-Proxy-Method')->willReturn('POST');
         $headers->get('X-Proxy-AutoHeaders', 'true')->willReturn('true');

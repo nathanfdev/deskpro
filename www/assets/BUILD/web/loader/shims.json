@@ -36,5 +36,12 @@
   "angularSpectrumColorpicker":      ["angular", "spectrum"],
   "semanticAccordion":               ["jquery"],
   "clipboard":                       { "exports": "Clipboard" },
-  "customEventPolyfill":             []
+  "customEventPolyfill":             [],
+
+  "angularBootstrapDatetime":        ["angular"],
+  "angularUiDatetime":               ["angular"],
+  "angularOcLazyLoad":               ["angular"],
+  "ngTable":                         ["angular"],
+  "angularGridster":                 ["angular"],
+  "datatables":                      {"exports": "DataTable"}
 }

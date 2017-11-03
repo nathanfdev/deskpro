@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import TransferListButton from '../TransferListButton';
 import TransferSearch from '../TransferSearch';
-import Queues from './Queues';
-import Dialpad from './Dialpad';
-import QueuesContainer from '../../Common/QueuesContainer';
+// import Queues from './Queues';
+// import Dialpad from './Dialpad';
+// import QueuesContainer from '../../Common/QueuesContainer';
 import AgentList from '../AgentList';
 import TransferStatus from '../TransferStatus';
 
@@ -44,6 +44,9 @@ class TransferList extends React.Component {
   onWarmTransfer = () => {
     const { onTransferCall } = this.props;
     const { selectedTarget } = this.state;
+    this.setState({
+      selectedTarget: null
+    });
 
     setTimeout(() => onTransferCall(selectedTarget, 'warm'), 1);
   };
@@ -51,6 +54,9 @@ class TransferList extends React.Component {
   onColdTransfer = () => {
     const { onTransferCall } = this.props;
     const { selectedTarget } = this.state;
+    this.setState({
+      selectedTarget: null
+    });
 
     setTimeout(() => onTransferCall(selectedTarget, 'cold'), 1);
   };
@@ -77,7 +83,7 @@ class TransferList extends React.Component {
             onClick={this.onChangeTab}
             active={tabName === 'agents'}
           />
-          <TabButton
+          {/* <TabButton
             tabName="queues"
             title="Queues"
             iconClass="fa-tasks"
@@ -90,7 +96,7 @@ class TransferList extends React.Component {
             iconClass="fa-th"
             onClick={this.onChangeTab}
             active={tabName === 'dialpad'}
-          />
+          /> */}
         </div>
 
         <Tab active={tabName === 'agents'}>
@@ -101,6 +107,7 @@ class TransferList extends React.Component {
             onClick={this.onChangeTarget}
           />
         </Tab>
+        {/*
         <Tab active={tabName === 'queues'}>
           <QueuesContainer>
             <Queues
@@ -111,7 +118,7 @@ class TransferList extends React.Component {
         </Tab>
         <Tab active={tabName === 'dialpad'}>
           <Dialpad />
-        </Tab>
+        </Tab> */}
 
         <div className="voice-ticket-list-buttons">
           <TransferListButton

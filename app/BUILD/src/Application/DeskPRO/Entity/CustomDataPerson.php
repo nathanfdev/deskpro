@@ -138,15 +138,7 @@ class CustomDataPerson extends CustomDataAbstract
         $metadata->setPrimaryTable(
             [
                 'name'              => 'custom_data_person',
-                'uniqueConstraints' => [
-                    'unique_idx' => [
-                        'columns' => [
-                            'field_id',
-                            'person_id',
-                            'root_field_id',
-                        ],
-                    ],
-                ],
+                'uniqueConstraints' => [],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

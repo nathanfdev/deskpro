@@ -34,18 +34,18 @@ use Symfony\Component\HttpKernel\Exception;
 class HttpExceptionConverter
 {
     /**
-     * @param Domain\ApplicationState\Exception $e
+     * @param Domain\AppStorage\Exception $e
      *
      * @return Exception\HttpException
      */
-    public static function fromApplicationStateException(Domain\ApplicationState\Exception $e)
+    public static function fromApplicationStateException(Domain\AppStorage\Exception $e)
     {
         switch ($e->getCode()) {
-            case Domain\ApplicationState\Exception::CODE_STATE_NOT_FOUND:
+            case Domain\AppStorage\Exception::CODE_STATE_NOT_FOUND:
                 return new Exception\NotFoundHttpException($e->getMessage(), $e);
-            case Domain\ApplicationState\Exception::CODE_ACCESS_RULE_NOT_FOUND:
+            case Domain\AppStorage\Exception::CODE_ACCESS_RULE_NOT_FOUND:
                 return new Exception\UnprocessableEntityHttpException($e->getMessage(), $e);
-            case Domain\ApplicationState\Exception::CODE_ACCESS_DENIED:
+            case Domain\AppStorage\Exception::CODE_ACCESS_DENIED:
                 return new Exception\UnprocessableEntityHttpException($e->getMessage(), $e);
             default:
                 return new Exception\HttpException(500, 'unknown exception while processing application state', $e);

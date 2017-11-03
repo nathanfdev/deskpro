@@ -33,28 +33,30 @@ interface ApplicationFinder
     /**
      * @return Application[]
      */
-    function findAll();
+    public function findAll();
 
     /**
      * @param array $idList
+     *
      * @return Application[]
      */
-    function findAllById($idList);
+    public function findAllById($idList);
 
     /**
-     * Finds one application by name
+     * Finds one application by reference.
      *
      * @param string $name
+     *
      * @return Application
      */
-    function findByName($name);
+    public function findByName($name);
 
     /**
-     * Finds one application by unique system identifier
+     * Finds one application by unique system identifier.
      *
      * @param string $id
+     *
      * @return Application
      */
-    function findByInstanceId($id);
+    public function findByInstanceId($id);
 }
-

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import CallLogView from './CallLogView';
-import { loadPhoneCall } from '../../../Actions/callActions';
+import { loadPhoneCall, openDialpad } from '../../../Actions/callActions';
 import { loadNumbers } from '../../../Actions/numberActions';
 import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 import { allTicketsSelector } from '../../../../Application/Selectors/tickets';
@@ -48,6 +48,10 @@ class CallLogViewContainer extends React.Component {
     replaceRoute('/voice_channel/call_logs');
   };
 
+  openDialpad = (number) => {
+    this.props.dispatch(openDialpad(number));
+  };
+
   render() {
     const { numbersLoaded } = this.props;
     const { call } = this.state;
@@ -61,6 +65,7 @@ class CallLogViewContainer extends React.Component {
         {...this.props}
         call={call}
         onReturnBack={this.onReturnBack}
+        openDialpad={this.openDialpad}
       />
     );
   }

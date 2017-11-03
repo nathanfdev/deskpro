@@ -37,6 +37,8 @@ define [
       @criteraTypeDef.setVar 'object_type', 'trigger'
       @actionsTypeDef.setVar 'object_type', 'trigger'
 
+      @dpTriggers.loadList().then( (list) => @allTriggers = list)
+
       @$scope.types =
         0: 'negative'
         1: 'neutral'

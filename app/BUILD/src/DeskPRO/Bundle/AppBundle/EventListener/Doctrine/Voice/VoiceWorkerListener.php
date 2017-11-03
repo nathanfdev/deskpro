@@ -92,6 +92,16 @@ class VoiceWorkerListener
 
         $agentData->setAvailableStatus(AgentData::AVAILABLE_STATUS_OFFLINE);
         $this->updateAccountDateSync($this->getVoiceAccount());
+
+        if ($agentData->getPerson()) {
+            // force reload agent's interface to show voice UI components with a spinner before real sync
+            $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+                'target'      => $agentData->getPerson()->getId(),
+            ]));
+        }
     }
 
     /**

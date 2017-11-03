@@ -51,7 +51,7 @@ class DownloadHandler extends AbstractEntityHandler
      *
      * @param Model\Download $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\Download $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getDownloadMapper(), $model);
@@ -78,7 +78,8 @@ class DownloadHandler extends AbstractEntityHandler
         if ($model->getCategory()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getDownloadCategoryMapper(),
-                $model->getCategory()
+                $model->getCategory(),
+                $brandName
             ));
         } else {
             // use default category

@@ -148,7 +148,7 @@ abstract class DomainObject extends BasicDomainObject
             return;
         } elseif (is_scalar($value)) {
             if (is_numeric($value) && is_numeric($old)) {
-                if ($value == $old) {
+                if ((string) $value === (string) $old) {
                     return;
                 }
             } else {

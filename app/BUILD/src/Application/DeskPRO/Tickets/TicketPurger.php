@@ -122,7 +122,6 @@ class TicketPurger
             WHERE ticket_proc_log.ticket_id IS NOT NULL
         ');
 
-        $this->db->executeUpdate('delete from task_links where `type` = "ticket"');
         $this->db->executeUpdate('delete from tickets');
         $this->db->executeUpdate('delete from tickets_deleted');
         $this->db->executeUpdate('delete from tickets_flagged');

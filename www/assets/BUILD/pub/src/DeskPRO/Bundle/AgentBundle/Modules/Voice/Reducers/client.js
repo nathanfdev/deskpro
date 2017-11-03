@@ -39,13 +39,24 @@ export default createReducer(initialState, {
   },
   [actions.removeIncomingCall]: (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
-    if (payload && payload.sid) {
-      incomingCalls = incomingCalls.filter(incomingCall => incomingCall.sid !== payload.sid);
-    } else {
-      incomingCalls = incomingCalls.filter(incomingCall =>
-        !(incomingCall instanceof Immutable.Map)
-        || incomingCall.get('call_id') !== payload.call_id
-      );
+    if (payload) {
+      if (payload.deskpro_call_id) {
+        // remove calls by call id
+        // e.g. declines calls if agent several tabs are opened
+        incomingCalls = incomingCalls.filter(incomingCall =>
+          !incomingCall.task
+          || incomingCall.task.attributes.deskpro_call_id !== payload.deskpro_call_id
+        );
+      } else if (payload.sid) {
+        // remove calls from connection
+        incomingCalls = incomingCalls.filter(incomingCall => incomingCall.sid !== payload.sid);
+      } else {
+        // remove add/transfer calls
+        incomingCalls = incomingCalls.filter(incomingCall =>
+          !(incomingCall instanceof Immutable.Map)
+          || incomingCall.get('call_id') !== payload.call_id
+        );
+      }
     }
 
     return state.set('incomingCalls', incomingCalls);

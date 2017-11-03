@@ -44,7 +44,7 @@ abstract class AbstractCustomDefHandler extends AbstractEntityHandler
      *
      * @param AbstractCustomDef $model
      */
-    public function writeModel(PrimaryImportModelInterface $model)
+    public function writeModel(PrimaryImportModelInterface $model, $brandName = null)
     {
         $entity = $this->findOrCreateCustomDef($model);
         $entity

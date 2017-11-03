@@ -771,6 +771,7 @@ class SystemErrorHandler
         foreach ($logFiles as $errorLogFile) {
             if (
                 $errorLogFile
+                && is_file($errorLogFile)
                 && filesize($errorLogFile) < self::$maxErrorLogFileSize
                 && ($fh = @fopen($errorLogFile, 'a')) !== false
             ) {

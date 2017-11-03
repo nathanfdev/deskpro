@@ -28,8 +28,6 @@
 
 namespace Application\DeskPRO\JobQueue\Processor\Reset;
 
-use Application\DeskPRO\DBAL\Connection;
-
 class AgentsProcessor extends UsersProcessor
 {
     const JOB_TYPE = 'reset.agents';
@@ -44,27 +42,5 @@ class AgentsProcessor extends UsersProcessor
         $rep    = $this->em->getRepository('DeskPRO:Person');
 
         return $rep->findBy(['is_agent' => true], null, $limit, $offset);
-    }
-
-    public function doProcess(array $data)
-    {
-        $allIds = [];
-        foreach ($this->getPersons($data) as $person) {
-            if (@$data['context_person_id'] === $person['id']) {
-                continue;
-            }
-            $allIds[] = $person['id'];
-        }
-
-        $qb = $this->em->getConnection()->createQueryBuilder();
-        $qb
-            ->update('task_attachments')
-            ->set('person_id', ':person')
-            ->where('person_id IN (:ids)')
-            ->setParameter('ids', $allIds, Connection::PARAM_INT_ARRAY)
-            ->setParameter('person', null)
-            ->execute();
-
-        return parent::doProcess($data);
     }
 }

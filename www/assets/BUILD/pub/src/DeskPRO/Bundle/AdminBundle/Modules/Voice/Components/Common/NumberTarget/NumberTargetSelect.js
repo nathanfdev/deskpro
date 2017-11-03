@@ -22,7 +22,7 @@ class NumberTargetSelect extends React.Component {
     const type = value && value.type;
 
     return (
-      <div>
+      <div className="voice-number-target">
         <Field select="type" onChangeCallback={this.onChangeType}>
           <TargetTypeSelect />
         </Field>

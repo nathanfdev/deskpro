@@ -115,15 +115,7 @@ class CustomDataBilling extends CustomDataAbstract
         $metadata->setPrimaryTable(
             [
                 'name'              => 'custom_data_billing',
-                'uniqueConstraints' => [
-                    'unique_idx' => [
-                        'columns' => [
-                            'field_id',
-                            'ticket_charge_id',
-                            'root_field_id',
-                        ],
-                    ],
-                ],
+                'uniqueConstraints' => [],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

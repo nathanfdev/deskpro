@@ -51,7 +51,7 @@ class NewsHandler extends AbstractEntityHandler
      *
      * @param Model\News $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\News $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getNewsMapper(), $model);
@@ -77,7 +77,8 @@ class NewsHandler extends AbstractEntityHandler
         if ($model->getCategory()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getNewsCategoryMapper(),
-                $model->getCategory()
+                $model->getCategory(),
+                $brandName
             ));
         } else {
             // use default category

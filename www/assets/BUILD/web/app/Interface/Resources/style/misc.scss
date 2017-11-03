@@ -1,0 +1,63 @@
+
+
+// Custom Checkboxes
+// Base: <span class="c-check"><input type="checkbox" id="checkbox-name" /><label for="checkbox-name"></label></span>
+
+.c-check {
+  display: inline-block;
+  margin-left: 4px;
+  margin-right: 2px;
+}
+
+/* hover style just for information */
+label:hover:before {
+  background: #93d06e !important;
+}
+
+i.spinner-flat {
+  display: inline-block;
+  width: 16px;
+  height: 11px;
+  overflow: hidden;
+  text-indent: -100px;
+  line-height: 100%;
+  margin: 0;
+  padding: 0;
+
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  display: inline-block;
+  background-image: url('#{$old-img-path}/spinners/loading-small-flat.gif');
+}
+
+i.spinner-circle-32 {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  text-indent: -100px;
+  line-height: 100%;
+  margin: 0;
+  padding: 0;
+
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  display: inline-block;
+  background: url('#{$old-img-path}/spinners/loading-big-circle.gif');
+}
+
+i.spinner-big-circle {
+  display: inline-block;
+  width: 75px;
+  height: 75px;
+  overflow: hidden;
+  text-indent: -100px;
+  line-height: 100%;
+  margin: 0;
+  padding: 0;
+
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  display: inline-block;
+  background: url('#{$old-img-path}/spinners/editor-loading.gif');
+}

@@ -8,7 +8,7 @@ import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Applicatio
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproAppStore/DeskproAppStore';
+import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
 
 export const loadAgentPhraseTranslations = createAction(
@@ -155,6 +155,19 @@ export const preloadData    = createAction(
           }
         }
 
+        // set legacy agent notify map
+        window.notifyAgentMap = {};
+        data.agents.forEach((agent) => {
+          if (data.me.person.id === agent.id) {
+            return;
+          }
+
+          window.notifyAgentMap[agent.id] = {
+            name:        agent.name,
+            picture_url: (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace(/\{\{IMG_SIZE}}/, '20')
+          };
+        });
+
         return data;
       };
 
@@ -164,6 +177,7 @@ export const preloadData    = createAction(
         .then((responses) => {
           const { discover } = responses.data.responses;
           // create appstore configuration
+          /** @var {AppsConfigBuilder} **/
           const builder = DeskproAppStore.configureWithWindowParams(window);
 
           if (discover && discover.data) {
@@ -189,6 +203,10 @@ export const preloadData    = createAction(
 );
 
 export const closeIframes = () => {
+  if (!window.DP_FRAME_OVERLAYS) {
+    return;
+  }
+
   for (const key of Object.keys(window.DP_FRAME_OVERLAYS)) {
     const iframe = window.DP_FRAME_OVERLAYS[key];
     if (iframe.opened) {

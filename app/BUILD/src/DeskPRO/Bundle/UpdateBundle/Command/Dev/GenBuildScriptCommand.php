@@ -179,7 +179,7 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         if ($newTableQueries) {
             $this->appendBuffer("\n");
             $this->appendBuffer($this->getMethodLines('addNewTables', ListUtils::map($newTableQueries, function ($sql) {
-                return '$this->execDbQuery(\''.$sql[0].'\', "'.addslashes($sql[1]).'");';
+                return '$this->execDbQuery(\''.$sql[0].'\', \''.addslashes($sql[1]).'\');';
             })));
         } else {
             $this->appendBuffer($this->getMethodLines('addNewTables', []));
@@ -199,7 +199,7 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         if ($bcAlterQueries || $alterQueries) {
             $this->appendBuffer("\n");
             $this->appendBuffer($this->getMethodLines('runAlters', ListUtils::map(array_merge($bcAlterQueries, $alterQueries), function ($sql) {
-                return '$this->execDbQuery(\''.$sql[0].'\', "'.addslashes($sql[1]).'");';
+                return '$this->execDbQuery(\''.$sql[0].'\', \''.addslashes($sql[1]).'\');';
             })));
 
             if ($alterQueries) {

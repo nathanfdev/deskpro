@@ -1308,6 +1308,7 @@ article.content-message .content header h4 {
 	line-height: 25px;
 	margin: 0 5px 0 8px;
 	display: inline;
+	flex: 1;
 }
 
 article.content-message .content header .edit-gear {
@@ -1322,6 +1323,7 @@ article.content-message .content header .edit-gear {
 	height: 11px;
 	position: relative;
 	top: 7px;
+	margin-left: 10px;
 }
 
 .page-ticket article.content-message .content header .edit-gear {
@@ -1795,6 +1797,11 @@ header.page-header .labels-line {
 	width: 60px;
 	height: 60px;
 	background: url("../../images/agent/person-disabled-60.png");
+}
+
+.person-picture-box img {
+	max-width: 60px;
+	max-height: 60px;
 }
 
 .table-container {
@@ -4357,6 +4364,37 @@ article.content-message .content .body-text .fade-bar {
 		}
 	}
 }
+.message-shortcut-list {
+	position: absolute;
+	z-index: 10000;
+	background: white;
+	border: 1px solid #BBC8D4;
+	.rounded(3px);
+	box-sizing: content-box;
+
+	li {
+		height: 18px;
+		padding: 5px;
+		vertical-align: middle;
+		cursor: pointer;
+		border-top: 1px solid #BBC8D4;
+		background: none no-repeat;
+		background-position: 4px;
+
+		&:first-child {
+			border-top: none;
+			.border-radius(3px, 3px, 0, 0);
+		}
+
+		&:last-child {
+			.border-radius(0, 0, 3px, 3px);
+		}
+
+		&.selected, &:hover {
+			background-color: #eceef0;
+		}
+	}
+}
 
 
 
@@ -4505,6 +4543,11 @@ body.popup section.body textarea.fill {
 
 .change-picture-overlay .files {
 	margin-left: 16px;
+}
+
+.change-picture-overlay .files img {
+	max-width: 150px;
+	max-height: 150px;
 }
 
 .change-picture-overlay .save-row {

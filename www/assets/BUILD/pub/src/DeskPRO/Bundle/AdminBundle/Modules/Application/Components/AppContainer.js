@@ -10,10 +10,13 @@ import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 
+import { InstallerFactory } from '../../DeskproApps';
+
 class AppContainer extends React.Component {
 
   static propTypes = {
-    routePath: PropTypes.string
+    routePath:      PropTypes.string,
+    legacyNavigate: PropTypes.function
   };
 
   constructor(props) {
@@ -70,6 +73,13 @@ class AppContainer extends React.Component {
             <Route path="dev">
               <Route path="notifications" component={Dev.Notifications} />
             </Route> : null}
+          <Route
+            path="app-installer/:app"
+            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory({
+              windowObject:   window.parent || window,
+              legacyNavigate: this.props.legacyNavigate
+            }))}
+          />
         </Router>
       </Provider>
     );

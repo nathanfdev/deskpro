@@ -111,10 +111,6 @@ Feature: Ticket custom fields
     And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v2_field}.title" should be equal to "Multi Choice v2"
     And the JSON node "data.fields.{checkbox_group_field}.detail.{checkbox_group_v3_field}" should not exist
 
-  Scenario: I try to create a custom field via API
-    Given I send a POST request to "/api/v2/ticket_custom_fields"
-    Then the response status code should be 405
-
   Scenario: I try to modify a custom field via API
     Given I send a PUT request to "/api/v2/ticket_custom_fields/{text_field}"
     Then the response status code should be 204

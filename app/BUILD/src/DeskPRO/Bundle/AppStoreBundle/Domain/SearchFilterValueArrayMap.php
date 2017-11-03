@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class SearchFilterValueArrayMap implements SearchAssetFilterOptions, SearchStateFilterOptions, SearchSettingsFilterOptions
+class SearchFilterValueArrayMap implements SearchAssetFilterOptions, SearchAppStorageFilterOptions, SearchSettingsFilterOptions
 {
     /** @var string */
     private $applicationId;

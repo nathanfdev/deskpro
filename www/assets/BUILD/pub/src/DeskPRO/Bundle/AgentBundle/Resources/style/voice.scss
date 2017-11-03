@@ -71,14 +71,21 @@ $voice-green-border-color: #47BF61;
           }
         }
 
+        .ui.icon {
+          font-size: 24px;
+          float: left;
+          position: absolute;
+        }
+
         svg {
           width: 24px;
           height: 24px;
           float: left;
+          position: absolute;
         }
 
         .voice-profile-status-checkbox-title {
-          margin-left: 20px;
+          margin-left: 50px;
 
           .voice-profile-status-checkbox-title-disabled {
             padding-left: 10px;
@@ -123,9 +130,25 @@ $voice-green-border-color: #47BF61;
 }
 
 .voice-menu-popup {
+
+  .status {
+    position: relative;
+    margin-right: 10px;
+
+    .spinner-flat {
+      position: absolute;
+      right: -20px;
+    }
+  }
+
   .voice-menu {
     width: 360px;
     font-family: 'Open Sans';
+
+    .voice-menu-alert {
+      padding: 10px;
+      text-align: center;
+    }
 
     .tab-menu {
       margin: 0;
@@ -447,6 +470,34 @@ $voice-green-border-color: #47BF61;
         i {
           margin-left: 10px;
           cursor: pointer;
+        }
+      }
+
+      .voice-online-agents {
+        padding: 0 25px 15px 25px;
+        font-size: 14px;
+        font-weight: 600;
+        color: $dp-greyscale-850;
+
+        .expand-button {
+          float: right;
+          margin-top: -9px;
+          font-size: 14px;
+        }
+
+        .ui.avatar.image {
+          height: 15px;
+          width: 15px;
+        }
+
+        .agents {
+          &.hidden {
+            display: none;
+          }
+          .content {
+            font-size: 12px;
+            font-weight: 400;
+          }
         }
       }
     }

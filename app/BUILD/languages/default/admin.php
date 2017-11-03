@@ -651,6 +651,9 @@ return [
     'adm.ticket_triggers.title_explain'                                                    => 'This title will be used throughout the admin interface to refer to this trigger.',
     'adm.ticket_triggers.trigger_newticket_email'                                          => 'Email the user an automated message about their new ticket',
     'adm.ticket_triggers.triggers'                                                         => 'Triggers',
+    'adm.ticket_triggers.copy_trigger'                                                     => 'Copy another trigger',
+    'adm.ticket_triggers.copy_trigger_modal_title'                                         => 'Copy Trigger',
+    'adm.ticket_triggers.do_copy'                                                          => 'Apply Trigger settings to form',
     'adm.tickets.account_details'                                                          => 'Account Details',
     'adm.tickets.delete_account'                                                           => 'Delete Ticket Account',
     'adm.tickets.delete_account_confirm'                                                   => 'Are you sure you want to delete this email account? DeskPRO will stop processing emails from this account.',
@@ -2365,4 +2368,11 @@ return [
     'admin.server_jobs.log_summary'   => 'Log summary',
     'admin.server_jobs.log'           => 'Log',
 
+    'reports.labels.kb'       => 'Knowledgebase',
+    'reports.labels.person'   => 'Person',
+    'reports.labels.feedback' => 'Feedback',
+    'reports.labels.tickets'  => 'Tickets',
+    'reports.labels.agents'   => 'Agents',
+    'reports.labels.chat'     => 'Chat',
+    'reports.labels.resolved' => 'Resolved',
 ];

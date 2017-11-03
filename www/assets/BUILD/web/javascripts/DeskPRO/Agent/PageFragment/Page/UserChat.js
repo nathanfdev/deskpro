@@ -523,17 +523,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 			},
 			onContentSet: function(eventData) {
-				$('.unassign-trigger').on('click', function() {
+				var el = eventData.contentEl;
+        el.find('.unassign-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'unassign';
 					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
-				$('.end-trigger').on('click', function() {
+        el.find('.end-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'end';
 					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
-				$('.cancel-trigger').on('click', function() {
+        el.find('.cancel-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 				});
 			}
@@ -960,6 +961,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
+		var authorName = name || '';
+		if (type == 'user') {
+			authorName = this.meta.convo.person_name || '';
+		}
+
 		if (type == 'sys') {
 			name = '* ';
 		} else {
@@ -987,13 +993,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (person_avatar.indexOf('gravatar.com') !== -1) {
 			person_avatar = person_avatar.replace(/&?s=\d+\//, "", person_avatar);
 			person_avatar = Orb.appendQueryData(person_avatar, 's', '25');
-		}
-
-		var authorName = '';
-		if (type == 'agent') {
-			authorName = this.meta.youName || '';
-		} else if (type == 'user') {
-			authorName = this.meta.convo.person_name || '';
 		}
 
 		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(authorName) +'"><img src="' + person_avatar + '" /></div>';
@@ -1291,9 +1290,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		};
 
 		// TODO handle resize without element resize monitor
-		chatPositioner.on('resize', syncChatSize);
-		box1.on('resize', syncSizes);
-		box2.on('resize', syncSizes);
+		chatPositioner.on('resize', function (ev) {
+			ev.stopPropagation(); // needed to prevent resize loops
+			syncChatSize();
+    });
+		box1.on('resize', function(ev) {
+      ev.stopPropagation(); // needed to prevent resize loops
+      syncSizes();
+		});
+		box2.on('resize', function(ev) {
+      ev.stopPropagation(); // needed to prevent resize loops
+      syncSizes();
+		});
 
 		chatView.on('click', '.join-convo', $.proxy(self.joinConvo, this));
 

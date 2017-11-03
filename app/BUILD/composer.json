@@ -1,4 +1,15 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/syastrebov/mpdf.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/deskpro/oauth1-client.git"
+    }
+  ],
+
   "require": {
     "doctrine/common": "2.6.*",
     "doctrine/dbal": "2.5.*",
@@ -71,7 +82,7 @@
     "doctrine/mongodb-odm-bundle": "~3.0",
     "doctrine/mongodb-odm": "1.0.x-dev",
     "mongofill/mongofill": "dev-master",
-    "mpdf/mpdf": "^6.1",
+    "mpdf/mpdf": "dev-master",
     "alchemy/zippy": "^0.4.6",
     "mikey179/vfsStream": "^1.6",
     "eloquent/pathogen": "^0.6.1",
@@ -87,7 +98,9 @@
     "jms/serializer": "~1.7.1",
     "justinrainbow/json-schema": "^5.2",
     "arcturial/clickatell": "^3.0",
-    "league/oauth2-client": "^2.2"
+    "league/oauth2-client": "^2.2",
+    "league/oauth1-client": "dev-master",
+    "guzzlehttp/oauth-subscriber": "^0.3.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

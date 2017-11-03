@@ -6,6 +6,7 @@ parameters:
   doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
   templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
   jms_serializer.twig_extension.class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
+  validator.email.class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\EmailFormatValidator
   portal.session.name: sess_data
 
 services:

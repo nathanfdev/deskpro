@@ -213,6 +213,7 @@ class Active extends React.Component {
           positionAt="right bottom"
           isOpen={transferMenuOpened}
           positionTarget={this.transferButton}
+          zIndex={1000}
         >
           <ClickOut onClickOut={this.onCloseTransferMenu}>
             <TransferList {...this.props} />
@@ -223,6 +224,7 @@ class Active extends React.Component {
           positionAt="right bottom"
           isOpen={addMenuOpened}
           positionTarget={this.addButton}
+          zIndex={1000}
         >
           <ClickOut onClickOut={this.onCloseAddMenu}>
             <AddList {...this.props} />

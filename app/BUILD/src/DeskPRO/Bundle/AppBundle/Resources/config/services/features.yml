@@ -43,3 +43,10 @@ services:
         - "@settings_resolver"
       tags:
         - { name: deskpro.feature }
+
+  deskpro.features.new_reports:
+    class: DeskPRO\Bundle\AppBundle\Features\NewReportsFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

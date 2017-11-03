@@ -5,17 +5,20 @@ import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore
 import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
-import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector } from '../../Selectors/client';
+import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isVoiceSyncedSelector, isSecure } from '../../Selectors/client';
+import { allQueuesSelector } from '../../Selectors/queue';
 
 @connect(state => ({
   me:                    meSelector(state),
   agents:                voiceAgentsSelector(state),
   onlineAgents:          voiceOnlineAgentsSelector(state),
   people:                allPeopleSelector(state),
+  queues:                allQueuesSelector(state),
   incomingCall:          incomingCallSelector(state),
   outboundCallsEnabled:  outboundCallsEnabledSelector(state),
   outboundNumber:        outboundNumberSelector(state),
   voiceEnabled:          isVoiceEnabledSelector(state),
+  voiceSynced:           isVoiceSyncedSelector(state),
   callsEnabled:          callsEnabledSelector(state),
   outgoingCall:          outgoingCallSelector(state),
   ringingVolume:         ringingVolumeSelector(state),
@@ -26,13 +29,14 @@ class VoiceMenuContainer extends React.Component {
 
   static propTypes = {
     dispatch:     PropTypes.func,
-    incomingCall: PropTypes.object
+    incomingCall: PropTypes.object,
+    outgoingCall: PropTypes.object
   };
 
   componentWillReceiveProps(newProps) {
-    const { incomingCall } = this.props;
+    const { incomingCall, outgoingCall } = this.props;
 
-    if (!newProps.incomingCall && incomingCall) {
+    if ((!newProps.incomingCall && incomingCall) || (!newProps.outgoingCall && outgoingCall)) {
       this.popup.closePopup();
     }
   }
@@ -56,6 +60,7 @@ class VoiceMenuContainer extends React.Component {
       <VoiceMenuDropdown
         ref={(c) => { this.popup = c; }}
         {...this.props}
+        isSecure={isSecure}
         onAcceptCall={this.onAcceptCall}
         onDeclineCall={this.onDeclineCall}
       />

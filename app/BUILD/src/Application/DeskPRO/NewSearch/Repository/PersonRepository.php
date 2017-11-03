@@ -54,13 +54,25 @@ class PersonRepository extends AbstractRepository implements WithLabelsInterface
      */
     protected function getQueryString($q)
     {
-        $multi_match = new Query\MultiMatch();
-        $multi_match->setQuery(ElasticaUtil::escapeTerm($q));
-        $multi_match->setFields($this->getQueryFields());
-        $multi_match->setAnalyzer('text_content_analyzer');
-        $multi_match->setOperator('AND');
+        // prepare base query
+        $baseQuery = new Query\MultiMatch();
+        $baseQuery->setQuery(ElasticaUtil::escapeTerm($q));
+        $baseQuery->setFields($this->getQueryFields());
+        $baseQuery->setAnalyzer('text_content_analyzer');
+        $baseQuery->setOperator('AND');
 
-        return $multi_match;
+        // prepare phone number query
+        $phoneQuery = new Query\QueryString();
+        $phoneQuery->setQuery(preg_replace('#[^0-9]#', '', ElasticaUtil::escapeTerm($q)));
+        $phoneQuery->setFields(['phone_numbers']);
+        $phoneQuery->setAnalyzer('text_content_analyzer');
+        $phoneQuery->setDefaultOperator('AND');
+
+        $boolQuery = new Query\BoolQuery();
+        $boolQuery->addShould($baseQuery);
+        $boolQuery->addShould($phoneQuery);
+
+        return $boolQuery;
     }
 
     /**

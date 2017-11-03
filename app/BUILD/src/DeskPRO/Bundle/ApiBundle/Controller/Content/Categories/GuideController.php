@@ -80,12 +80,11 @@ class GuideController extends AbstractCategoriesController
     public function getTreeAction(Guide $guide)
     {
         $results = $this->getManager()->getConnection()->fetchAllKeyed('
-                SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id
+                SELECT t.id, t.title, IFNULL(t.parent_id, 0) as parent_id, status, hidden_status
                 FROM topics t
                 WHERE t.guide_id = ?
-                AND status <> ?
                 ORDER BY display_order ASC
-            ', [$guide->getId(), 'hidden'], 'id');
+            ', [$guide->getId()], 'id');
 
         return new JsonResponse(self::objectToArray(Arrays::intoHierarchy($results)));
     }

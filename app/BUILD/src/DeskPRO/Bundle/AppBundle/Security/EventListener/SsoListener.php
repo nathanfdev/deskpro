@@ -138,14 +138,13 @@ class SsoListener implements EventSubscriberInterface
             }
         }
 
-        $ssoResult = $this->handleAutomaticSso($authInterfaceSettings);
-        if ($ssoResult) {
-            if ($ssoResult->isRedirectRequired()) {
-                $return = $request->get('return');
-                $session->set('auth_return', $return);
+        if ($request->get('return')) {
+            $session->set('_security.portal.target_path', $request->get('return'));
+        }
 
-                return new RedirectResponse($ssoResult->getRedirectUrl());
-            }
+        $ssoResult = $this->handleAutomaticSso($authInterfaceSettings);
+        if ($ssoResult && $ssoResult->isRedirectRequired()) {
+            return new RedirectResponse($ssoResult->getRedirectUrl());
         }
     }
 

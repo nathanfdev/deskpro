@@ -29,7 +29,8 @@
   .dpdesignportal-deskpro-mark-logo {
     display: inline-block;
     vertical-align: middle;
-    @include retina-image("../img/deskpro-logo-small", 55px 16px);
+    background-image: url('../img/deskpro-logo-small.png');
+    background-size: 55px 16px;
     width: 55px;
     height: 16px;
     margin-left: 3px;

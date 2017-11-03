@@ -1,0 +1,16 @@
+<span ng-bind="report.title"></span>
+<br/>
+<span ng-repeat="variable in report.variables" ng-if="widget.widget_id == report.id">
+    Choose value for <code style="font-size: 10px; border: 1px solid darkgray; background: #eeeeee; padding: 2px; color: lightcoral">{{ ng_var('variable.name') }}</code>:
+    <select style="min-width: 150px;" ui-select2 ng-model="vars[variable.name]" ng-if="variable.type != 'dates'" ng-change="changeValue()">
+        <option ng-repeat="(key, param) in possibleValues[variable.type][variable.field_type]" ng-value="key" ng-selected="key === vars[variable.name]">
+            {{ ng_var('param[0]') }}
+        </option>
+    </select>
+    <select style="min-width: 150px;" ui-select2 ng-model="vars[variable.name]" ng-change="changeValue()" ng-if="variable.type == 'dates'">
+        <option ng-repeat="(key, param) in possibleValues[variable.type]" ng-value="key" ng-selected="key === vars[variable.name]">
+            {{ ng_var('param[0]') }}
+        </option>
+    </select>
+    <hr />
+</span>

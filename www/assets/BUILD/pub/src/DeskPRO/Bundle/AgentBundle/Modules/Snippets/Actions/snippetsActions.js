@@ -108,3 +108,8 @@ export const getUsageLog = createAction(
   snippetId => () =>
     api.sendGet(`DP_API/snippets_use?inline_sideloads=true&include=ticket_message,ticket,person&snippet_id=${snippetId}`)
 );
+export const getChangelog = createAction(
+  'SNIPPETS_CHANGE_LOG',
+  snippetId => () =>
+    api.sendGet(`DP_API/snippets_change_logs?inline_sideloads=true&snippet_id=${snippetId}`)
+);

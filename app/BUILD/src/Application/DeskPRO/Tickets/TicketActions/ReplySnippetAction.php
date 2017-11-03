@@ -30,10 +30,13 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketObjectUseLog;
 use Application\DeskPRO\Tickets\SnippetFormatter;
+use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 
 /**
  * Class ReplySnippetAction.
@@ -60,7 +63,11 @@ class ReplySnippetAction extends AbstractReplyAction
         $item             = new ReplySnippetActionItem();
         $item->snippet_id = $snippet_id;
         $item->reply_pos  = $reply_pos;
-        $item->snippet    = App::getOrm()->find('DeskPRO:TextSnippet', $snippet_id);
+        if (App::$container->get('deskpro.feature_flags')->hasBeta('new_snippets')) {
+            $item->snippet = App::getOrm()->find(Snippet::class, $snippet_id);
+        } else {
+            $item->snippet = App::getOrm()->find(TextSnippet::class, $snippet_id);
+        }
 
         if (!$item->snippet) {
             return;
@@ -96,7 +103,7 @@ class ReplySnippetAction extends AbstractReplyAction
     {
         $titles = [];
         foreach ($this->snippet_items as $item) {
-            $t = $item->snippet ? $item->snippet->title : null;
+            $t = $item->snippet ? $item->snippet->getTitle() : null;
             if ($t) {
                 $titles[] = $t;
             }
@@ -112,7 +119,7 @@ class ReplySnippetAction extends AbstractReplyAction
     {
         $ids = [];
         foreach ($this->snippet_items as $item) {
-            $id = $item->snippet ? $item->snippet->id : null;
+            $id = $item->snippet ? $item->snippet->getId() : null;
             if ($id) {
                 $ids[] = $id;
             }
@@ -192,62 +199,110 @@ class ReplySnippetAction extends AbstractReplyAction
         if (!$this->snippet_items) {
             return '<error>No snippet</error>';
         }
+        $newSnippets = App::$container->get('deskpro.feature_flags')->hasBeta('new_snippets');
 
         // Hack ot append the proper position
         // when being viewed from replybox
         // See TicketController::ajaxGetMacroAction
         if (isset($_GET['macro_reply_context'])) {
-            $ret       = [];
-            $reply_pos = null;
+            $ret      = [];
+            $replyPos = null;
 
             foreach ($this->snippet_items as $item) {
-                $reply_pos    = $item->reply_pos;
-                $snippet_desc = '';
+                $replyPos    = $item->reply_pos;
+                $snippetDesc = '';
 
                 if ($item->reply_pos == 'overwrite') {
-                    $snippet_desc = 'Reply with snippet: '.$item->snippet->title;
+                    $snippetDesc = 'Reply with snippet: '.$item->snippet->getTitle();
                 } elseif ($item->reply_pos == 'append') {
-                    $snippet_desc = 'Append snippet to reply: '.$item->snippet->title;
+                    $snippetDesc = 'Append snippet to reply: '.$item->snippet->getTitle();
                 } else {
-                    $snippet_desc = 'Prepend snippet to reply: '.$item->snippet->title;
+                    $snippetDesc = 'Prepend snippet to reply: '.$item->snippet->getTitle();
                 }
 
-                $html = '';
+                $html        = '';
+                $snippetText = [];
                 if (!empty($GLOBALS['DP_ACTIVE_TICKET'])) {
-                    $snippet_text = [];
-
-                    $text = App::getTranslator()->objectChoosePhraseText(
-                        $item->snippet,
-                        'snippet',
-                        [
-                            $GLOBALS['DP_ACTIVE_TICKET']->language,
-                        ]
-                    );
-
-                    if ($text = trim($text)) {
-                        switch ($item->reply_pos) {
-                            case self::REPLY_POS_APPEND:
-                                $snippet_text[] = $text;
-                                break;
-                            case self::REPLY_POS_PREPEND:
-                                array_unshift($snippet_text, $text);
-                                break;
-                            case self::REPLY_POS_OVERWRITE:
-                                $snippet_text = [$text];
-                                break;
+                    /** @var Ticket $ticket */
+                    $ticket = $GLOBALS['DP_ACTIVE_TICKET'];
+                    $person = $ticket->getPerson();
+                    if ($newSnippets) {
+                        /** @var Snippet $snippet */
+                        $snippet           = $item->snippet;
+                        $ticketTranslation = null;
+                        $personTranslation = null;
+                        $agentTranslation  = null;
+                        foreach ($snippet->getTranslations() as $translation) {
+                            if ($translation->getLanguage() === $ticket->language) {
+                                $ticketTranslation = $translation;
+                            }
+                            if ($person && $translation->getLanguage() === $person->getLanguage()) {
+                                $personTranslation = $translation;
+                            }
+                            if ($ticket->getAgent() && $translation->getLanguage() === $ticket->getAgent()->getLanguage()) {
+                                $agentTranslation = $translation;
+                            }
                         }
+                        $text = null;
+                        if ($ticketTranslation && $ticketTranslation->getContent()) {
+                            $text = $ticketTranslation->getContent();
+                        } elseif ($personTranslation && $personTranslation->getContent()) {
+                            $text = $personTranslation->getContent();
+                        } elseif ($agentTranslation && $agentTranslation->getContent()) {
+                            $text = $agentTranslation->getContent();
+                        }
+                        if ($text = trim($text)) {
+                            switch ($item->reply_pos) {
+                                case self::REPLY_POS_APPEND:
+                                    $snippetText[] = $text;
+                                    break;
+                                case self::REPLY_POS_PREPEND:
+                                    array_unshift($snippetText, $text);
+                                    break;
+                                case self::REPLY_POS_OVERWRITE:
+                                    $snippetText = [$text];
+                                    break;
+                            }
 
-                        $snippet_text = implode("\n<br/><br/>\n", $snippet_text);
-                        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
-                        $formatter->addVar('agent_signature', '');
-                        $html = $formatter->formatText($snippet_text, $GLOBALS['DP_ACTIVE_TICKET']);
+                            $snippetText = implode("\n<br/><br/>\n", $snippetText);
+                            $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
+                            $formatter->addVar('agent_signature', '');
+                            $html = $formatter->formatText($snippetText, $ticket);
+                        }
+                    } else {
+                        $text = App::getTranslator()->objectChoosePhraseText(
+                            $item->snippet,
+                            'snippet',
+                            [
+                                $GLOBALS['DP_ACTIVE_TICKET']->language,
+                            ]
+                        );
+
+                        if ($text = trim($text)) {
+                            switch ($item->reply_pos) {
+                                case self::REPLY_POS_APPEND:
+                                    $snippetText[] = $text;
+                                    break;
+                                case self::REPLY_POS_PREPEND:
+                                    array_unshift($snippetText, $text);
+                                    break;
+                                case self::REPLY_POS_OVERWRITE:
+                                    $snippetText = [$text];
+                                    break;
+                            }
+
+                            $snippetText = implode("\n<br/><br/>\n", $snippetText);
+                            $formatter   = new SnippetFormatter(App::getContainer()->get('twig'));
+                            $formatter->addVar('agent_signature', '');
+                            $html = $formatter->formatText($snippetText, $ticket);
+                        }
                     }
                 }
 
-                $snippet_desc = '<span class="with-reply" data-reply-pos="'.$reply_pos.'">'.$snippet_desc;
-                $snippet_desc .= '<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
+                $snippetDesc = '<span class="with-reply" data-reply-pos="'.$replyPos.'">'.$snippetDesc;
+                $snippetDesc .= '<script type="text/x-deskpro-plain" class="reply-text">'.$html.'</script></span>';
 
-                $ret[] = $snippet_desc;
+                $ret[] = $snippetDesc;
             }
 
             $ret = implode(', ', $ret);
@@ -271,25 +326,66 @@ class ReplySnippetAction extends AbstractReplyAction
         if (!$this->snippet_items) {
             return;
         }
+        $newSnippets = App::$container->get('deskpro.feature_flags')->hasBeta('new_snippets');
 
         $snippetText = [];
         foreach ($this->snippet_items as $item) {
-            $text = App::getTranslator()->objectChoosePhraseText(
-                $item->snippet,
-                'snippet',
-                [
-                    $ticket->getLanguage(),
-                    $person->getRealLanguage(),
-                ]
-            );
-            $text = trim($text);
-            if (!$text) {
-                continue;
-            }
-
-            if ($item->snippet && $person) {
-                $snippetLog = TicketObjectUseLog::createSnippetLog($ticket, $person, $item->snippet);
-                App::$container->getEm()->persist($snippetLog);
+            if ($newSnippets) {
+                /** @var Snippet $snippet */
+                $snippet            = $item->snippet;
+                $ticketTranslation  = null;
+                $personTranslation  = null;
+                $snippetTranslation = null;
+                $agentTranslation   = null;
+                foreach ($snippet->getTranslations() as $translation) {
+                    if ($translation->getLanguage() === $ticket->getLanguage()) {
+                        $ticketTranslation = $translation;
+                    }
+                    if ($translation->getLanguage() === $person->getRealLanguage()) {
+                        $personTranslation = $translation;
+                    }
+                    if ($ticket->getAgent() && $translation->getLanguage() === $ticket->getAgent()->getLanguage()) {
+                        $agentTranslation = $translation;
+                    }
+                }
+                $text = null;
+                if ($ticketTranslation && $ticketTranslation->getContent()) {
+                    $text               = $ticketTranslation->getContent();
+                    $snippetTranslation = $ticketTranslation;
+                } elseif ($personTranslation && $personTranslation->getContent()) {
+                    $text               = $personTranslation->getContent();
+                    $snippetTranslation = $personTranslation;
+                } elseif ($agentTranslation && $agentTranslation->getContent()) {
+                    $text               = $agentTranslation->getContent();
+                    $snippetTranslation = $agentTranslation;
+                }
+                $text = trim($text);
+                if (!$text) {
+                    continue;
+                }
+                if ($snippetTranslation) {
+                    $messages   = $ticket->getMessages();
+                    $message    = $messages->last();
+                    $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $person, $snippetTranslation);
+                    App::$container->getEm()->persist($snippetLog);
+                }
+            } else {
+                $text = App::getTranslator()->objectChoosePhraseText(
+                    $item->snippet,
+                    'snippet',
+                    [
+                        $ticket->getLanguage(),
+                        $person->getRealLanguage(),
+                    ]
+                );
+                $text = trim($text);
+                if (!$text) {
+                    continue;
+                }
+                if ($item->snippet && $person) {
+                    $snippetLog = TicketObjectUseLog::createSnippetLog($ticket, $person, $item->snippet);
+                    App::$container->getEm()->persist($snippetLog);
+                }
             }
 
             switch ($item->reply_pos) {
@@ -320,7 +416,7 @@ class ReplySnippetAction extends AbstractReplyAction
 class ReplySnippetActionItem
 {
     /**
-     * @var \Application\DeskPRO\Entity\TextSnippet
+     * @var TextSnippet|Snippet
      */
     public $snippet;
 

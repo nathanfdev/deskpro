@@ -1,0 +1,67 @@
+$web-path: "../../../../../../../";
+$old-img-path: "../../../../../../../images";
+
+$font-stack: Lato, helvetica, verdana, sans-serif;
+
+$global-border: #cacfd3;
+$text-color: #333;
+$link-color: #333;
+$text-color-secondary: #757575;
+
+$app-width: 55px;
+$sidebar-width: 220px;
+$report-list-width: 555px;
+$content-width: $app-width + $sidebar-width;
+
+// Live Results Stuff
+$results-text-color: #5b5e68;
+$results-background: #ededed;
+$header-background: #e1e6eb;
+$results-link: #1c4f7a;
+
+// Sidebar
+$sidebar-background: #f8f8f8;
+
+$sidebar-link-color: #5b5b5b;
+$sidebar-divider: #dedfe0;
+$sidebar-left-padding: 10px;// Default left padding for aligning text on the left
+
+$sidebar-color-selected: #2b77b5;
+$sidebar-color-selected-counter: #4681b2;
+
+// Colors
+$yellow: #ffc65e;
+$orange: #fa7313;
+$green: #3bb870;
+$grey: #bfc3c6;
+$text-grey: #898989;
+$blue: #4681b2;
+
+// Top bar
+$top-bar-blue: #4681b2;
+$top-bar-text-color: #fff;
+
+// User pref
+$item-padding: 9px 10px;
+
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
+// Invisible classes
+%whitespace {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+%flat-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+%inline-list {
+  li {
+    display: inline-block;
+  }
+}

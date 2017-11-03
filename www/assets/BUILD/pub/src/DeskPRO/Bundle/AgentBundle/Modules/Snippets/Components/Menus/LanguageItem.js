@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { ListElement } from 'deskpro-components/lib/Components/Common';
+import { ListElement } from '@deskpro/react-components/lib/Components/Common';
 import { DragSource, DropTarget } from 'react-dnd';
 
 const ItemTypes = {

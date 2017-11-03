@@ -25,6 +25,7 @@ services:
       - { name: doctrine.event_listener, event: postPersist }
       - { name: doctrine.event_listener, event: postUpdate }
       - { name: doctrine.event_listener, event: preRemove }
+      - { name: doctrine.event_listener, event: onFlush }
 
   event_listener.object_translatable:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ObjectTranslatableListener
@@ -67,7 +68,7 @@ services:
 
   event_listener.voice_number:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener
-    arguments: ["@twilio_adapter"]
+    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@event_dispatcher"]
     tags:
       - { name: doctrine.entity_listener }
 

@@ -34,23 +34,23 @@ class Converter
 {
     /**
      * @param Domain\AppManifest $manifest
-     * @return array|Domain\ApplicationState\AccessRule[]
+     * @return array|Domain\AppStorage\AccessRule[]
      */
     public function convertToAccessRuleList(Domain\AppManifest $manifest) {
-        $stateRules = $manifest->getState();
+        $stateRules = $manifest->getStorage();
         if (0 === count($stateRules)) {
             return [];
         }
 
         $accessRuleList = [];
         forEach ($stateRules as $stateRule) {
-            $options = new Domain\ApplicationState\AccessOptions(
+            $options = new Domain\AppStorage\AccessOptions(
                 $stateRule->getPermRead(),
                 $stateRule->getPermWrite(),
                 $stateRule->getIsBackendOnly()
             );
 
-            $accessRule = new Domain\ApplicationState\AccessRule($stateRule->getName(), $options);
+            $accessRule = new Domain\AppStorage\AccessRule($stateRule->getName(), $options);
             $accessRuleList[] = $accessRule;
         }
 

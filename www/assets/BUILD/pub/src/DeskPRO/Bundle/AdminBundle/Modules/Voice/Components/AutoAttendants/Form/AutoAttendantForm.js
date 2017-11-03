@@ -93,7 +93,7 @@ class AutoAttendantForm extends BaseForm {
 
               {autoAttendant &&
               <span className="voice-delete-button" onClick={this.onDelete}>
-                Delete this auto-attendant
+                Delete this Auto Attendant
               </span>}
             </Fieldset>
           </Form>

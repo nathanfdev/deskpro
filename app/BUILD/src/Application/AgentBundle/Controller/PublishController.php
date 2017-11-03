@@ -730,6 +730,9 @@ class PublishController extends AbstractController
             case 'feedback':
                 $entity_name = 'DeskPRO:Feedback';
                 break;
+            case 'topics':
+                $entity_name = 'DeskPRO:Topic';
+                break;
         }
 
         $this->db->beginTransaction();
@@ -844,6 +847,7 @@ class PublishController extends AbstractController
         if ($saveCategory['id'] && $cat = $this->em->getRepository($entityName)->find($saveCategory['id'])) {
             if ($saveCategory['title']) {
                 $cat->setTitle($saveCategory['title']);
+                $this->getContainer()->get('category_slug_manager')->ensureValidSlug($cat);
                 $this->db->update($table, [
                     'title' => $cat->getTitle(),
                     'slug'  => $cat->getSlug(),
@@ -895,7 +899,11 @@ class PublishController extends AbstractController
                     $parent_id = null;
                 }
 
-                $this->db->update($table, ['parent_id' => $parent_id, 'display_order' => $order], ['id' => $cat_id]);
+                if ($type === 'topics') {
+                    $this->db->update($table, ['display_order' => $order], ['id' => $cat_id]);
+                } else {
+                    $this->db->update($table, ['parent_id' => $parent_id, 'display_order' => $order], ['id' => $cat_id]);
+                }
             }
 
             $repos->repair();

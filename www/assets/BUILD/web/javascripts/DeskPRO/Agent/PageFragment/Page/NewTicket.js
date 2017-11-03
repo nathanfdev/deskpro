@@ -247,31 +247,41 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			getFieldValue: function(name) {
 				var $cont = self.getEl('fields_container');
-				var $field = $('[name="' + name + '"]', $cont);
-
-				// field is not present on the form
-				// e.g. org field if user doesn't belogn to a org
+				var $field = $cont.find('[name="' + name + '"], [name="' + name + '[]"]');
 				if (!$field.length) {
-					return null;
+					// field is not present on the form
+					// e.g. org field if user doesn't belong to a org
+					return;
 				}
 
-				if ($field.is(':checkbox')) {
+				if ($field.length === 1 && $field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
-        if ($field.attr('type') === 'hidden') {
+				if ($field.attr('type') === 'hidden') {
 					return $.trim($field.parent().text());
 				}
-        if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
-          return $field.val();
-        }
-				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $cont);
-				if ($field.hasClass('with-select2')) {
-          var val = $.trim($field.select2('val'));
-					return $field.select2('val');
+				if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
+					return $field.val();
 				}
+				if ($field.hasClass('with-select2')) {
+					var val = $.trim($field.select2('val'));
+					return val || null;
+				}
+
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
+				switch (fieldId) {
+					case 'category':
+						return this.getCategoryId();
+					case 'workflow':
+						return this.getWorkflowId();
+					case 'priority':
+						return this.getPriorityId();
+					case 'product':
+						return this.getProductId();
+				}
+
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
@@ -684,7 +694,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.updateUi();
 			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
-			$.ajax({
+      if (self.meta.person_api_data) {
+				macroUrl += '&person_id=' + self.meta.person_api_data.id;
+			}
+
+      $.ajax({
 				url: macroUrl,
 				type: 'GET',
 				context: this,

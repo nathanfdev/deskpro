@@ -48,6 +48,13 @@ define [
         return if not @form?.zones?
         @form.zones.reports = @form.zones.reports || @form.zones.admin
       )
+
+      @$scope.show_selected_permissions = false
+      @$scope.show_selected_teams = false
+      @$scope.selectedFilter = (show_selected) ->
+        return (itm) ->
+          return !show_selected || itm.value
+
       return
 
     initialLoad: ->

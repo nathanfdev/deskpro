@@ -27,7 +27,7 @@
  */
 
 return [
-    'adm.agents.perm_people_reset_password' => 'Peut réinitialiser les mots de passe utilisateur
+    'adm.agents.perm_people_reset_password'                                    => 'Peut réinitialiser les mots de passe utilisateur
 ',
     'adm.agents.perm_problems_delete'                                          => 'Peut supprimer des problèmes',
     'adm.agents.perm_title_problems'                                           => 'Problèmes',

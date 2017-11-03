@@ -32,7 +32,6 @@
 
 namespace Application\DeskPRO\Reports;
 
-use Application\DeskPRO\Entity\ReportBuilder;
 use Doctrine\ORM\EntityManager;
 
 class ReportEdit
@@ -42,7 +41,7 @@ class ReportEdit
      */
     public $report;
 
-    public function __construct(ReportBuilder $report)
+    public function __construct($report)
     {
         $this->report = $report;
     }

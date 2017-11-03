@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceBlobAsset;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -63,6 +64,7 @@ class VoiceAssetType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddFormFields'], 100);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCreateEntityInstance'], 200);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onUnsetTarget']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -171,6 +173,19 @@ class VoiceAssetType extends AbstractType
         $data = $event->getData();
         if (!$data instanceof AbstractVoiceAsset) {
             $event->setData(null);
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if ($data instanceof AbstractVoiceBlobAsset && $data->getBlob()) {
+            $data->getBlob()->setIsTemp(false);
         }
     }
 }

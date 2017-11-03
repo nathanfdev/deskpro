@@ -480,7 +480,7 @@ class ServerController extends AbstractController implements ProtectedController
         $errorLogSize = false;
         $maxSize      = SystemErrorHandler::$maxErrorLogFileSize;
         try {
-            $errorLogSize = filesize($errorLogFile) > $maxSize;
+            $errorLogSize = is_file($errorLogFile) && filesize($errorLogFile) > $maxSize;
         } catch (\Exception $e) {
         }
         $errorCount = $errReader->quickCount();

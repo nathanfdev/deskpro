@@ -40,8 +40,8 @@ class Apps2Data extends AbstractDefaultData
      */
     public function runInstall()
     {
-        $assetDir      = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
-        $appsDir = new \DirectoryIterator($assetDir.'/apps/v2');
+        $assetDir = $this->getContainer()->get('deskpro.app_env')->getAppWwwAssetDir();
+        $appsDir  = new \DirectoryIterator($assetDir.'/apps/v2');
 
         foreach ($appsDir as $fileInfo) {
             if (!$fileInfo->isDot()) {
@@ -54,7 +54,7 @@ class Apps2Data extends AbstractDefaultData
     {
         $this->getLogger()->info(sprintf('Installing v2 app from path: %s', $bundlePath));
 
-        $bundle = AppZipArchiveBundle::fromFile($bundlePath);
+        $bundle          = AppZipArchiveBundle::fromFile($bundlePath);
         $instanceCreator = $this->getContainer()->get('apps2.application_manager');
         $instanceCreator->createOrUpdateAppEntity($bundle);
     }

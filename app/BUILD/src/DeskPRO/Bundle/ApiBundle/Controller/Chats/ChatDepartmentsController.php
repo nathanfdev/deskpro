@@ -58,10 +58,8 @@ class ChatDepartmentsController extends AbstractDepartmentsController
     /**
      * {@inheritdoc}
      */
-    protected function getAllowedDepartmentsId()
+    protected function getAllowedDepartments()
     {
-        $permissionBag = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser());
-
-        return $permissionBag->getAllowedChatDepartmentIds();
+        return $this->get('data.departments')->getChatDepartmentsForPerson($this->getUser());
     }
 }

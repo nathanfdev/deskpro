@@ -81,12 +81,18 @@ class Column extends AbstractPart
     ELSE CONCAT(\'ID-\', %1$s.id)
 END)
 ', 'person'],
-        'products'          => ['id', 'title'],
-        'slas'              => ['id', 'title'],
-        'tickets'           => ['id', 'subject', 'ticket'],
-        'ticket_categories' => ['id', 'title'],
-        'ticket_priorities' => ['id', 'title'],
-        'ticket_workflows'  => ['id', 'title'],
+        'products'                 => ['id', 'title'],
+        'slas'                     => ['id', 'title'],
+        'tickets'                  => ['id', 'subject', 'ticket'],
+        'ticket_categories'        => ['id', 'title'],
+        'ticket_priorities'        => ['id', 'title'],
+        'ticket_workflows'         => ['id', 'title'],
+        'custom_def_article'       => ['id', 'title'],
+        'custom_def_chat'          => ['id', 'title'],
+        'custom_def_feedback'      => ['id', 'title'],
+        'custom_def_organizations' => ['id', 'title'],
+        'custom_def_ticket'        => ['id', 'title'],
+        'custom_def_people'        => ['id', 'title'],
     ];
 
     /**

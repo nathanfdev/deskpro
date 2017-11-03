@@ -103,10 +103,11 @@ class Pop3 extends AbstractFetcher
                 /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3Config */
                 $pop3Config = $incomingAccount;
 
-                $options['host']     = $pop3Config->host;
-                $options['port']     = $pop3Config->port;
-                $options['user']     = $pop3Config->user;
-                $options['password'] = $pop3Config->password;
+                $options['host']                    = $pop3Config->host;
+                $options['port']                    = $pop3Config->port;
+                $options['user']                    = $pop3Config->user;
+                $options['password']                = $pop3Config->password;
+                $options['disable_cert_validation'] = $pop3Config->disable_cert_validation;
 
                 $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 

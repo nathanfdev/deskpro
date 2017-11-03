@@ -42,6 +42,7 @@ abstract class AbstractRenderer
         'csv'  => 'Csv',
         'html' => 'Html',
         'pdf'  => 'Pdf',
+        'json' => 'Json',
     ];
 
     /**
@@ -242,7 +243,7 @@ abstract class AbstractRenderer
     protected function _render($format, array $rows)
     {
         switch ($format) {
-            case 'bar':
+
             case 'line':
             case 'pie':
             case 'area':
@@ -251,8 +252,8 @@ abstract class AbstractRenderer
                 }
 
                 return $this->_renderChart($format, $rows);
-                break;
-
+            case 'bar':
+                return $this->_renderChart($format, $rows);
             case 'table':
                 return $this->_renderTable($rows);
 

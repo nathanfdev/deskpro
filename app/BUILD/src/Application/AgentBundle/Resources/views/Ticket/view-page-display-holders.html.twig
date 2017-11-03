@@ -285,7 +285,7 @@
             <th width="80"><span class="custom-field edit-trigger ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">{{ f.title }}:</span>
             </th>
             <td>
-                <div class="custom-field content ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">
+                <div class="custom-field content ticket_field_{{ f.id }}" data-item-id="{{ f.id }}" ng-non-bindable>
                     {{ render_custom_field(f) }}
                 </div>
             </td>
@@ -293,7 +293,7 @@
         <tr class="mode-edit ng-hide" ng-show="isEditMode('ticket_field_{{ f.id }}')">
             <th width="80">{{ f.title }}:</th>
             <td>
-                <div class="custom-field field-input ticket_field_{{ f.id }}" data-item-id="{{ f.id }}">
+                <div class="custom-field field-input ticket_field_{{ f.id }}" data-item-id="{{ f.id }}" ng-non-bindable>
                     {{ render_custom_field_form(f) }}
                 </div>
             </td>
@@ -314,7 +314,7 @@
             ng-click="editField($event, 'user_field_{{ f.id }}')">
             <th width="80"><span class="custom-field edit-trigger user_field_{{ f.id }}" data-item-id="{{ f.id }}">{{ f.title }}:</span></th>
             <td>
-                <div class="custom-field content user_field_{{ f.id }}" data-item-id="{{ f.id }}">
+                <div class="custom-field content user_field_{{ f.id }}" data-item-id="{{ f.id }}" ng-non-bindable>
                     {{ render_custom_field(f) }}
                 </div>
             </td>
@@ -322,7 +322,7 @@
         <tr class="mode-edit ng-hide" ng-show="isEditMode('user_field_{{ f.id }}')">
             <th width="80">{{ f.title }}:</th>
             <td>
-                <div class="custom-field field-input user_field_{{ f.id }}" data-item-id="{{ f.id }}">
+                <div class="custom-field field-input user_field_{{ f.id }}" data-item-id="{{ f.id }}" ng-non-bindable>
                     {{ render_custom_field_form(f) }}
                 </div>
             </td>
@@ -343,7 +343,7 @@
             ng-click="editField($event, 'org_field_{{ f.id }}')">
             <th width="80"><span class="custom-field edit-trigger org_field_{{ f.id }}" data-item-id="{{ f.id }}">{{ f.title }}:</span></th>
             <td>
-                <div class="custom-field content org_field_{{ f.id }}" data-item-id="{{ f.id }}">
+                <div class="custom-field content org_field_{{ f.id }}" data-item-id="{{ f.id }}" ng-non-bindable>
                     {{ render_custom_field(f) }}
                 </div>
             </td>
@@ -351,7 +351,7 @@
         <tr class="mode-edit ng-hide" ng-show="isEditMode('org_field_{{ f.id }}')">
             <th width="80">{{ f.title }}:</th>
             <td>
-                <div class="custom-field field-input org_field_{{ f.id }}" data-item-id="{{ f.id }}">
+                <div class="custom-field field-input org_field_{{ f.id }}" data-item-id="{{ f.id }}" ng-non-bindable>
                     {{ render_custom_field_form(f) }}
                 </div>
             </td>
@@ -370,7 +370,7 @@
             ng-click="editField($event, 'custom_field_{{ id }}')">
             <th width="80"><span class="custom-field edit-trigger custom_field_{{ id }}" data-item-id="{{ id }}">{{ f.vars.label }}:</span></th>
             <td>
-                <div class="custom-field content ticket_field_{{ id }}" data-item-id="{{ id }}">
+                <div class="custom-field content ticket_field_{{ id }}" data-item-id="{{ id }}" ng-non-bindable>
                     {{ render_custom_field(f) }}
                 </div>
             </td>
@@ -378,7 +378,7 @@
         <tr class="mode-edit ng-hide" ng-show="isEditMode('custom_field_{{ id }}')">
             <th width="80">{{ form_label(f) }}:</th>
             <td>
-                <div class="custom-field field-input custom_field_{{ id }}" data-item-id="{{ id }}">
+                <div class="custom-field field-input custom_field_{{ id }}" data-item-id="{{ id }}" ng-non-bindable>
                     {{ form_widget(f) }}
                 </div>
             </td>
@@ -386,7 +386,7 @@
     </tbody>
 {% endfor %}
 
-{% if linked_chat and isChatAvailable() and app.user.hasPerm('agent_chat.use') %}
+{% if linked_chat and app.user.hasPerm('agent_chat.use') %}
     <tbody>
         <tr>
             <th>

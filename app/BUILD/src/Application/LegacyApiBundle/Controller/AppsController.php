@@ -952,47 +952,39 @@ class AppsController extends AbstractController
         }
 
         // detect apps v2
-        $json = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
-        $data = @json_decode($json, true);
+        $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
+        $bundleValidator = $this->container->get(AppBundleValidator::class);
+        if ($bundleValidator->validateBundle($appBundle)) {
+            $manifestString = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
+            $manifestReader = new AppManifestReader();
+            $manifest       = $manifestReader->readManifestFromJson($manifestString);
 
-        if (isset($data['version']) && version_compare($data['version'], '2.0.0', '>=')) {
-            $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
-            $bundleValidator = $this->container->get(AppBundleValidator::class);
-
-            if (!$bundleValidator->validateBundle($appBundle)) {
-                return $this->createApiErrorResponse('invalid_file', 'Uploaded app archive file is not valid.');
+            $app = $this->em->getRepository(App::class)->findOneBy([
+                'name' => $manifest->getName(),
+            ]);
+            $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
+            if ($isAppUpdate) {
+                $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appBundle);
+                $instance = $app->getInstances()->first();
+            } else {
+                $instance = $this->container->get('apps2.application_manager')->createFirstInstance($appBundle);
             }
 
-            $slug    = Strings::slugifyTitle($data['name']);
-            $sysName = 'apps_v2_zip_'.$slug;
+            $context = new SideloadSerializationContext();
+            $context->setIncludes(['app']);
+            $context->setInlineSideloads(true);
+            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
 
-            // delete previous blobs
-            $qb = $this->em->createQueryBuilder();
-            $qb
-                ->delete(Blob::class, 'b')
-                ->where('b.sys_name = :sys_name')
-                ->setParameter('sys_name', $sysName)
-            ;
-
-            $qb->getQuery()->execute();
-
-            // save uploaded one
-            $file   = $request->files->get('file');
-            $accept = $this->getContainer()->getAttachmentAccepter();
-            $blob   = $accept->accept($file);
-            $blob->setIsTemp(false);
-            $blob->setSysName($sysName);
-
-            $this->em->persist($blob);
-            $this->em->flush();
-
-            $packageName = $data['name'];
-            $packageUrl = $this->generateUrl('api_apps_package', ['name' => $slug]);
             return $this->createApiCreateResponse(
-                [
-                    'package_name' => $packageName,
-                ],
-                $packageUrl
+                array_merge(
+                    $serialized,
+                    [
+                        'version' => 2,
+                        'package_name' => $manifest->getName(),
+                        'updated' => $isAppUpdate,
+                    ]
+                ),
+                $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
             );
         }
 

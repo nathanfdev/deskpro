@@ -45,14 +45,17 @@ class AppManifestReader
     private function applyBackwardsCompatibleTransformation($actualManifest)
     {
         $transforms = [
-            [ 'toVersion' => '2.1.0', 'fromVersion' => '2.0.0',  'type' => 'changeKey', 'fromKey' => 'external_apis', 'toKey' => 'externalApis' ],
-            [ 'toVersion' => '2.1.0', 'fromVersion' => '2.0.0',  'type' => 'changeKey', 'fromKey' => 'is_single', 'toKey' => 'isSingle' ],
-            [ 'toVersion' => '2.1.0', 'fromVersion' => '2.0.0',  'type' => 'changeKey', 'fromKey' => 'deskpro_api_tags', 'toKey' => 'deskproApiTags' ],
+            [ 'fromVersion' => '2.0.0', 'toVersion' => '2.1.0', 'type' => 'changeKey', 'fromKey' => 'external_apis', 'toKey' => 'externalApis' ],
+            [ 'fromVersion' => '2.0.0', 'toVersion' => '2.1.0', 'type' => 'changeKey', 'fromKey' => 'is_single', 'toKey' => 'isSingle' ],
+            [ 'fromVersion' => '2.0.0', 'toVersion' => '2.1.0', 'type' => 'changeKey', 'fromKey' => 'deskpro_api_tags', 'toKey' => 'deskproApiTags' ],
+            [ 'fromVersion' => '2.1.0', 'toVersion' => '2.2.0', 'type' => 'changeKey', 'fromKey' => 'state', 'toKey' => 'storage' ],
+            [ 'fromVersion' => '2.2.0', 'toVersion' => '2.3.0', 'type' => 'setKey', 'key' => 'settings', 'value' => [] ],
         ];
         $transformedManifest = $actualManifest;
 
         do {
             $currentVersion = $transformedManifest['version'];
+
             $applicableTransforms = array_filter($transforms, function ($transform) use ($currentVersion) {
                 return $transform['fromVersion'] === $currentVersion;
             });
@@ -72,12 +75,16 @@ class AppManifestReader
                     $fromKey = $transform['fromKey'];
                     $toKey = $transform['toKey'];
 
-                    if (!array_key_exists($fromKey, $actualManifest)) {
-                        continue;
+                    if (array_key_exists($fromKey, $actualManifest)) {
+                        $transformedManifest[$toKey] = $actualManifest[$fromKey];
+                        unset($transformedManifest[$fromKey]);
                     }
+                }
 
-                    $transformedManifest[$toKey] = $actualManifest[$fromKey];
-                    unset($transformedManifest[$fromKey]);
+                if ($transform['type'] === 'setKey') {
+                    $key = $transform['key'];
+                    $value = $transform['value'];
+                    $transformedManifest[$key] = $value;
                 }
             }
 
@@ -88,6 +95,20 @@ class AppManifestReader
         } while (count($applicableTransforms) > 0);
 
         return $transformedManifest;
+    }
+
+    /**
+     * @param $jsonString
+     * @return string|null
+     */
+    public function readVersionFromJson($jsonString)
+    {
+        $decoded = json_decode($jsonString, true);
+        if (is_array($decoded) && array_key_exists('version', $decoded)) {
+            $version = $decoded['version'];
+            return is_string($version) && !empty($version) ? $version : null;
+        }
+        return null;
     }
 
     /**

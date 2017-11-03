@@ -59,6 +59,7 @@ class Build1504102498 extends AbstractBuild implements BlockingBuildInterface
   WHERE `app2_app_state_v2`.name = 'auth' AND `app2_app_state_v2`.entity_id  LIKE 'person:%' 
   AND `app2_app`.name IN ('deskpro-app-trello')
 SQL;
+
         return $sql;
     }
 
@@ -73,6 +74,7 @@ SQL;
   WHERE `app2_app_state_v2`.name = 'cards' AND ( `app2_app_state_v2`.perm_read = 'OWNER' OR `app2_app_state_v2`.perm_write = 'OWNER' )   
   AND `app2_app`.name IN ('deskpro-app-trello')
 SQL;
+
         return $sql;
     }
 }

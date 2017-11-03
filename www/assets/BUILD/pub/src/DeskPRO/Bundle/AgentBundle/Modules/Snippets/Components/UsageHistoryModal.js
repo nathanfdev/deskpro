@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import TimeAgo from 'react-timeago';
 import { connect } from 'react-redux';
-import Modal from 'deskpro-components/lib/Components/Modal';
-import Avatar from 'deskpro-components/lib/Components/Avatar';
-import { Checkbox } from 'deskpro-components/lib/Components/Forms';
-import Icon from 'deskpro-components/lib/Components/Icon';
+import Modal from '@deskpro/react-components/lib/Components/Modal';
+import { Checkbox } from '@deskpro/react-components/lib/Components/Forms';
+import Icon from '@deskpro/react-components/lib/Components/Icon';
+import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import * as actions from '../Actions/snippetsActions';
 
@@ -15,18 +15,6 @@ export class UsageHistoryModal extends React.Component {
     closeModal: PropTypes.func,
     dispatch:   PropTypes.func,
   };
-
-  static getAvatar(person) {
-    if (!person) {
-      return '';
-    }
-
-    let url = person.avatar.default_url_pattern;
-    if (person.avatar.url_pattern) {
-      url = person.avatar.url_pattern;
-    }
-    return url.replace(/{{IMG_SIZE}}/, 18);
-  }
 
   static getRating(use) {
     if (use.rating === 1) {
@@ -75,7 +63,7 @@ export class UsageHistoryModal extends React.Component {
         <span className="subject">{ticket.subject}</span>
         <span className="separator">|</span> <span className="person">{person.display_name}</span>
         <span className="email">&lt;{person.primary_email}&gt;</span>
-        <Avatar src={UsageHistoryModal.getAvatar(use.person)} title={use.person.display_name} />
+        <AgentAvatar agent={use.person} />
         <span className="date"><TimeAgo date={use.date_created} /></span>
         {use.rating !== null ?
           <div className="rating">

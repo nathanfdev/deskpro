@@ -31,7 +31,6 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
-use Application\DeskPRO\Chat\AgentChat;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
@@ -1345,11 +1344,11 @@ class TicketController extends AbstractController
         // Handle new message
         //------------------------------
 
-        $message                    = new Entity\TicketMessage();
-        $message['ticket']          = $ticket;
-        $message['person']          = $this->person;
-        $message['ip_address']      = $this->getRequest()->getClientIp();
-        $message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
+        $message = new Entity\TicketMessage();
+        $message->setTicket($ticket);
+        $message->setPerson($this->person);
+        $message->setIpAddress($this->getRequest()->getClientIp());
+        $message->setCreationSystem(Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL);
 
         if ($this->in->getBool('is_html_reply')) {
             $messageText = $requestMessageOrig;
@@ -1360,77 +1359,14 @@ class TicketController extends AbstractController
                 return $this->createJsonResponse(['error' => 'no_message']);
             }
 
-            $messageText      = Strings::prepareWysiwygHtml($messageText);
-            $message->message = $messageText;
-
-            $notifyAgentIds = [];
-            preg_match_all(
-                '/<span[^>]+data-notify-agent-id="(\d+)"/i',
-                $this->in->getRaw('message'),
-                $matches,
-                PREG_SET_ORDER
-            );
-            foreach ($matches as $match) {
-                $notifyAgentIds[] = $match[1];
-            }
+            $message->setMessageHtml($messageText);
+            $message->setOriginalMessage($this->in->getRaw('message'));
         } else {
             $message->setMessageText($requestMessageOrig);
-            $notifyAgentIds = [];
         }
 
         if ($this->in->getBool('options.is_note')) {
             $message['is_agent_note'] = true;
-        }
-
-        if ($notifyAgentIds && $message['is_agent_note']) {
-            $agentChat = new AgentChat($this->person, $this->session->getEntity());
-            $agentChat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
-
-            $notifyChat  = [];
-            $notifyEmail = [];
-
-            $notifyAgentIds = array_unique($notifyAgentIds);
-            foreach ($notifyAgentIds as $agentId) {
-                if (!($agent = $this->container->getAgentData()->get($agentId))) {
-                    continue;
-                }
-
-                $notifyChat[$agent->id] = $agent;
-
-                $pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
-                if ($pref == 'always_send' || ($pref == 'smart_send' && !$this->container->getAgentData(
-                        )->isAgentOnline($agent))
-                ) {
-                    $notifyEmail[$agent->id] = $agent;
-                }
-            }
-
-            if ($notifyChat) {
-                $agentIds   = array_keys($notifyChat);
-                $notifyText = sprintf(
-                    '%s alerted you in a note in {{t-%d}}: %s',
-                    $message->getPerson()->getDisplayName(),
-                    $ticket->getId(),
-                    $ticket->getSubject()
-                );
-                $agentChat->sendAgentMessage($notifyText, $agentIds);
-                if ($this->container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
-                    $newIMtext = sprintf(
-                        '[{{t-%d}}] %s',
-                        $ticket->getId(),
-                        Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
-                    );
-                    $this->container->get('deskpro.notification.service')->sendNote(
-                        $this->person,
-                        $agentIds,
-                        $newIMtext
-                    );
-                }
-            }
-
-            if ($notifyEmail) {
-                $ticketContext->getVars()->set('mention_agents', $notifyEmail);
-            }
         }
 
         foreach ($this->in->getCleanValueArray('attach') as $blobId) {
@@ -1808,7 +1744,7 @@ class TicketController extends AbstractController
                 'client_messages'                => false,
                 'cc_list'                        => $ccList,
                 'error_messages'                 => $errorMessages ?: false,
-                'notified_agents'                => $notifyAgentIds,
+                'notified_agents'                => $ticketContext->getVars()->get('notified_agents'),
                 'can_view'                       => $canView,
                 'api_data'                       => $ticket->toApiData(),
 
@@ -2706,6 +2642,11 @@ class TicketController extends AbstractController
     {
         if (!$ticket_id) {
             $ticket = new Ticket();
+            $ticket->setAgent($this->person);
+            if ($personId = $this->in->getUInt('person_id')) {
+                $person = $this->em->getRepository(Person::class)->find($personId);
+                $ticket->setPerson($person);
+            }
         } else {
             $ticket = $this->getTicketOr404($ticket_id);
         }
@@ -5023,14 +4964,14 @@ class TicketController extends AbstractController
                 if ($comment) {
                     switch ($comment_action) {
                         case 'delete':
-                            $comment->setStatus('deleted');
+                            $this->em->remove($comment);
                             break;
                         case 'approve':
                             $comment->setStatus('visible');
+                            $this->em->persist($comment);
                             break;
                     }
 
-                    $this->em->persist($comment);
                     $this->em->flush();
                 }
 

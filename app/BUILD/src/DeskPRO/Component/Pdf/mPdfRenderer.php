@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Component\Pdf;
 
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -37,7 +38,7 @@ use Symfony\Component\HttpFoundation\Response;
 class mPdfRenderer implements PdfRendererInterface
 {
     /**
-     * @var \mPDF
+     * @var mPDF
      */
     private $object;
 
@@ -47,26 +48,35 @@ class mPdfRenderer implements PdfRendererInterface
     private $brandStack;
 
     /**
+     * @var AppEnv
+     */
+    private $appEnv;
+
+    /**
      * Constructor.
      *
      * @param BrandStack $brandStack
+     * @param AppEnv     $appEnv
      */
-    public function __construct($brandStack)
+    public function __construct(BrandStack $brandStack, AppEnv $appEnv)
     {
         $this->brandStack = $brandStack;
+        $this->appEnv     = $appEnv;
 
-        $this->object = new mPDF(
-            'utf-8', // Language/Character set
-            'A4', // Size
-            '8', // Default Font Size
-            '', // Default Font
-            20, // Margin Left
-            20, // Margin Right
-            40, // Margin Top
-            40, // Margin Bottom
-            10, // Margin Header
-            10, // Margin Footer
-            'P' // Orientation
+        $this->object = new mPDF([
+            'mode'              => 'utf-8',
+            'format'            => 'A4',
+            'default_font_size' => 8,
+            'default_font'      => '',
+            'margin_left'       => 20,
+            'margin_right'      => 20,
+            'margin_top'        => 40,
+            'margin_bottom'     => 40,
+            'margin_header'     => 10,
+            'margin_footer'     => 10,
+            'orientation'       => 'P',
+            'tempDir'           => $appEnv->getUserTmpDir(),
+            ]
         );
 
         $this->object->SetBasePath($this->brandStack->getActive()->getSetting('core.deskpro_url').'/');

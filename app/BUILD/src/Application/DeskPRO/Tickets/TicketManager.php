@@ -42,9 +42,11 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketTrigger;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
 use Application\DeskPRO\Tickets\Actions\ActionApplicator;
 use Application\DeskPRO\Tickets\Actions\SendAgentAlert;
+use Application\DeskPRO\Tickets\Actions\SendAgentMention;
 use Application\DeskPRO\Tickets\Slas\SlaClientMessageSender;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
@@ -264,6 +266,34 @@ class TicketManager
     }
 
     /**
+     * Finds all tickets and returns them.
+     *
+     * NOTE: This will disable auto-ticket processing,
+     * which means if you make changes, you need to use the saveTicket() method to
+     * have those changes run the other related systems (like triggers etc).
+     *
+     * @param int[]|string[] $ids
+     *
+     * @return \Application\DeskPRO\Entity\Ticket[]|array
+     */
+    public function getTickets($ids)
+    {
+        /** @var AbstractEntityRepository $ticketRepository */
+        $ticketRepository = $this->em->getRepository(Ticket::class);
+        if ($ticketRepository instanceof AbstractEntityRepository) {
+            /** @var Ticket[] $tickets */
+            $tickets = $ticketRepository->getByIds($ids);
+            foreach ($tickets as $ticket) {
+                $ticket->disableAutoTicketProcess();
+            }
+
+            return $tickets;
+        }
+
+        throw new \RuntimeException('unexpected repository type');
+    }
+
+    /**
      * Disables auto-ticket processing on the ticket. This means you should save the ticket
      * via $this->saveTicket().
      *
@@ -366,6 +396,12 @@ class TicketManager
         //----------------------------------------
         // Set the creation system
         //----------------------------------------
+
+        if (!$is_noop) {
+            $agent_alert_action = new SendAgentMention();
+            $agent_alert_action->setContainer($this->container);
+            $agent_alert_action->applyAction($ticket, $context);
+        }
 
         foreach ($this->save_actions as $action) {
             $context->getLogger()->info(sprintf('[TicketManager:saveaction] %s', OrbUtil::getBaseClassname($action)));

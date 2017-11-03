@@ -49,7 +49,7 @@ class TextSnippetCategoryHandler extends AbstractEntityHandler
      *
      * @param Model\TextSnippetCategory $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var TextSnippetCategory $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getTextSnippetCategoryMapper(), $model);

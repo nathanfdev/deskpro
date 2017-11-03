@@ -53,12 +53,12 @@ class OrganizationRepository extends AbstractRepository implements WithLabelsInt
      */
     protected function getQueryString($q)
     {
-        $multi_match = new Query\MultiMatch();
-        $multi_match->setQuery(ElasticaUtil::escapeTerm($q));
-        $multi_match->setFields($this->getQueryFields());
-        $multi_match->setAnalyzer('text_content_analyzer');
-        $multi_match->setOperator('AND');
+        $multiMatch = new Query\MultiMatch();
+        $multiMatch->setQuery(ElasticaUtil::escapeTerm($q));
+        $multiMatch->setFields($this->getQueryFields());
+        $multiMatch->setAnalyzer('text_content_analyzer');
+        $multiMatch->setOperator('AND');
 
-        return $multi_match;
+        return $multiMatch;
     }
 }

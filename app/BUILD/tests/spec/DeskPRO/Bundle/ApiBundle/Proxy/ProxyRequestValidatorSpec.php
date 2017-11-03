@@ -28,7 +28,7 @@
 
 namespace spec\DeskPRO\Bundle\ApiBundle\Proxy;
 
-use DeskPRO\Bundle\ApiBundle\Proxy\WhitelistableProxyRequest;
+use DeskPRO\Bundle\ApiBundle\Proxy\ApplicationProxyRequest;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -45,12 +45,12 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->beConstructedWith($validator);
     }
 
-    public function it_throws_exception_on_empty_proxy_url(WhitelistableProxyRequest $request)
+    public function it_throws_exception_on_empty_proxy_url(ApplicationProxyRequest $request)
     {
         $this->shouldThrow(new \RuntimeException('No proxy url provided.'))->during('validateWhitelistableRequest', [$request]);
     }
 
-    public function it_throws_exception_on_url_validation(WhitelistableProxyRequest $request, ValidatorInterface $validator)
+    public function it_throws_exception_on_url_validation(ApplicationProxyRequest $request, ValidatorInterface $validator)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $validator->validate('http://deskpro-dev/api/some-endpoint', Argument::type('array'))->willReturn(false);
@@ -58,7 +58,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->shouldThrow(new \RuntimeException('The proxy url is not valid.'))->during('validateWhitelistableRequest', [$request]);
     }
 
-    public function it_throws_exception_if_empty_white_list(WhitelistableProxyRequest $request)
+    public function it_throws_exception_if_empty_white_list(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $request->getWhiteList()->willReturn([]);
@@ -66,7 +66,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->shouldThrow(new \RuntimeException('No proxy whitelist is defined.'))->during('validateWhitelistableRequest', [$request]);
     }
 
-    public function it_throws_exception_on_exact_match(WhitelistableProxyRequest $request)
+    public function it_throws_exception_on_exact_match(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $request->getWhiteList()->willReturn([
@@ -76,7 +76,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->shouldThrow(new \RuntimeException('The proxy url is not allowed (allowed http://my-site/api/some-endpoint).'))->during('validateWhitelistableRequest', [$request]);
     }
 
-    public function it_should_pass_on_exact_match(WhitelistableProxyRequest $request)
+    public function it_should_pass_on_exact_match(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $request->getWhiteList()->willReturn([
@@ -86,7 +86,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->validateWhitelistableRequest($request);
     }
 
-    public function it_should_pass_on_exact_match_with_query_params(WhitelistableProxyRequest $request)
+    public function it_should_pass_on_exact_match_with_query_params(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint?param=value');
         $request->getWhiteList()->willReturn([
@@ -96,7 +96,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->validateWhitelistableRequest($request);
     }
 
-    public function it_should_pass_on_exact_match_with_custom_port(WhitelistableProxyRequest $request)
+    public function it_should_pass_on_exact_match_with_custom_port(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev:8888/api/some-endpoint');
         $request->getWhiteList()->willReturn([
@@ -106,7 +106,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->validateWhitelistableRequest($request);
     }
 
-    public function it_should_pass_on_partial_match(WhitelistableProxyRequest $request)
+    public function it_should_pass_on_partial_match(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $request->getWhiteList()->willReturn([
@@ -116,7 +116,7 @@ class ProxyRequestValidatorSpec extends ObjectBehavior
         $this->validateWhitelistableRequest($request);
     }
 
-    public function it_should_pass_on_regex_match(WhitelistableProxyRequest $request)
+    public function it_should_pass_on_regex_match(ApplicationProxyRequest $request)
     {
         $request->getProxyUrl()->willReturn('http://deskpro-dev/api/some-endpoint');
         $request->getWhiteList()->willReturn([

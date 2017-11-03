@@ -44,6 +44,7 @@ class SystemLoader implements LoaderInterface
     private static $groupFileMap = [
         'adm'     => 'admin.php',
         'admin'   => 'admin.php',
+        'reports' => 'admin.php',
         'api'     => 'api.php',
         'agent'   => 'agent.php',
         'general' => 'general.php',

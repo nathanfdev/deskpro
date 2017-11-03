@@ -204,7 +204,7 @@ class SendAgentAlert extends AbstractContainerAwareAction implements ActionInter
 
         $em  = $this->getContainer()->getEm();
         $tpl = $this->getContainer()->getTemplating();
-        $tr  = $this->getContainer()->getTranslator();
+        $tr  = $this->getContainer()->get('language_manager');
 
         /** @var Connection $connection */
         $connection = $em->getConnection();

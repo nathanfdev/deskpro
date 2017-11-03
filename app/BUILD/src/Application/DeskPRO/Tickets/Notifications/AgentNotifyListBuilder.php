@@ -258,6 +258,8 @@ class AgentNotifyListBuilder implements PersonContextInterface
         $notify_list[$agentId]['filter_subs'][$filterId]['types']           = array_merge($notify_list[$agentId]['filter_subs'][$filterId]['types'], $notify_types);
         $notify_list[$agentId]['filter_subs'][$filterId]['types']           = array_unique($notify_list[$agentId]['filter_subs'][$filterId]['types']);
 
+        $this->logMessage(sprintf('Filter subscription match -- Agent(%s) Filter(%s) Types(%s)', $agentId, $filterId, implode(', ', $notify_list[$agentId]['filter_subs'][$filterId]['types'])));
+
         $notify_list[$agentId]['types'] = array_merge($notify_list[$agentId]['types'], $notify_types);
         $notify_list[$agentId]['types'] = array_unique($notify_list[$agentId]['types']);
     }

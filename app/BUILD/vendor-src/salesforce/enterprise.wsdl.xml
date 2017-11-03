@@ -2669,7 +2669,7 @@ All Rights Reserved
                         <element name="PermissionsManageUsers" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="PermissionsMassInlineEdit" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="PermissionsModifyAllData" nillable="true" minOccurs="0" type="xsd:boolean"/>
-                        <element name="PermissionsNewReportBuilder" nillable="true" minOccurs="0" type="xsd:boolean"/>
+                        <element name="PermissionsNewReportWidget" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="PermissionsPasswordNeverExpires" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="PermissionsPublishMultiforce" nillable="true" minOccurs="0" type="xsd:boolean"/>
                         <element name="PermissionsRunReports" nillable="true" minOccurs="0" type="xsd:boolean"/>

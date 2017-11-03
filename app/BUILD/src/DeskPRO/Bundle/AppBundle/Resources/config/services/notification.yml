@@ -168,6 +168,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+      - "@data.agent"
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
@@ -214,5 +215,6 @@ services:
         - "@security.token_storage"
         - "@data.agent"
         - "@templating"
+        - "@language_manager"
       tags:
         - { name: deskpro.notification.action_alert.generator }

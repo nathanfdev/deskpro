@@ -49,7 +49,7 @@ class SettingHandler extends AbstractEntityHandler
      *
      * @param Model\Setting $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         $entity = $this->mappers->getSettingMapper()->findOneBy(['name' => $model->getName()]);
         if ($entity) {

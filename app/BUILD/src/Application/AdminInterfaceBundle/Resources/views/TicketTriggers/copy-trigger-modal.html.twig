@@ -1,0 +1,23 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_title %}
+    <h4 class="modal-title">{{ phrase('adm.ticket_triggers.copy_trigger_modal_title') }}</h4>
+{% endblock %}
+{% block modal_body %}
+    <p>
+        Copy settings from another {{ ng_var('title') }} trigger <select ui-select2 style="width: 250px;" ng-model="triggerId">
+            <option ng-repeat="trigger in allTriggers" value="{{ ng_var('trigger.id') }}">{{ ng_var('trigger.title') }}</option>
+        </select>
+    </p>
+    <p>
+        Note that settings will be applied to the edit form and you will
+        need to click the "Save" button to actually save any changes.
+    </p>
+{% endblock %}
+{% block modal_footer %}
+    <div ng-hide="is_loading">
+        <button class="btn btn-primary" ng-click="doCopySettings()">{{ phrase('adm.ticket_triggers.do_copy') }}</button>
+    </div>
+    <div ng-show="is_loading">
+        <i class="spinner-flat"></i>
+    </div>
+{% endblock %}

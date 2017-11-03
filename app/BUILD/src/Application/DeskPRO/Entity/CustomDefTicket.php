@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -55,6 +56,13 @@ class CustomDefTicket extends CustomDefAbstract
     protected $children = null;
 
     /**
+     * Aliases for this field.
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $aliases = null;
+
+    /**
      * Set parent.
      *
      * @param CustomDefTicket $parent
@@ -70,6 +78,14 @@ class CustomDefTicket extends CustomDefAbstract
         }
 
         return $this;
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|CustomTicketFieldDefinitionAlias[]
+     */
+    public function getAliases()
+    {
+        return $this->aliases;
     }
 
     //###########################################################################
@@ -217,6 +233,17 @@ class CustomDefTicket extends CustomDefAbstract
             ],
             'mappedBy'      => 'parent',
             'orderBy'       => ['display_order' => 'ASC'],
+            'orphanRemoval' => true,
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'    => 'aliases',
+            'targetEntity' => CustomTicketFieldDefinitionAlias::class,
+            'cascade'      => [
+                0 => 'remove',
+                1 => 'persist',
+                3 => 'merge',
+            ],
+            'mappedBy'      => 'object',
             'orphanRemoval' => true,
         ]);
         $metadata->mapManyToOne([

@@ -33,7 +33,6 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreated
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
-use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -48,25 +47,23 @@ class OrganizationMessageGenerator extends AbstractGenerator
     private $agentDataService;
 
     /**
-     * OrganizationMessageGenerator constructor.
+     * Constructor.
      *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      * @param AgentDataService      $agentDataService
      */
     public function __construct(
-        EntityManager $em,
-        TokenStorageInterface $token_storage,
-        AgentDataService $agentDataService
+        EntityManager         $em,
+        TokenStorageInterface $tokenStorage,
+        AgentDataService      $agentDataService
     ) {
-        parent::__construct($em, $token_storage);
+        parent::__construct($em, $tokenStorage);
         $this->agentDataService = $agentDataService;
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return MessageInterface
+     * {@inheritdoc}
      */
     public function createMessages(SystemEventInterface $event)
     {
@@ -80,9 +77,7 @@ class OrganizationMessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param SystemEventInterface $event
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canCreateMessage(SystemEventInterface $event)
     {

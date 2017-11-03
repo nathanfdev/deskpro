@@ -162,7 +162,7 @@ abstract class AbstractRepository extends Repository
     protected function escapeQueryStringTerm($q)
     {
         $q = ElasticaUtil::escapeTerm($q);
-        $q = str_replace(['AND', 'OR', 'NOT'], ['and', 'or', 'not'], $q);
+        $q = str_replace(['AND', 'NOT'], ['and', 'not'], $q);
 
         return $q;
     }
@@ -191,6 +191,7 @@ abstract class AbstractRepository extends Repository
 
         $queryString = new Query\QueryString($term);
         $queryString->setFields($this->getQueryFields());
+        $queryString->setAnalyzer('text_content_analyzer');
         $queryString->setDefaultOperator('AND');
 
         return $queryString;

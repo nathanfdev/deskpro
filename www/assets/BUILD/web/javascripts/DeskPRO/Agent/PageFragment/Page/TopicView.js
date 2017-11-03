@@ -265,6 +265,18 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 		});
 	},
 
+  _initSearchTab: function() {
+    if (this.hasInitSearchTab) return;
+    this.hasInitSearchTab = true;
+
+    this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+      contentType: 'topics',
+      contentId: this.meta.topic_id,
+      element: this.getEl('stickysearch_input')
+    });
+    this.ownObject(this.stickyWords);
+  },
+
 
 	//#################################################################
 	//# Automatic Unpublish

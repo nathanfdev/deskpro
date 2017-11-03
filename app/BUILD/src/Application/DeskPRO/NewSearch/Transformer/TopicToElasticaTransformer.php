@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\NewSearch\Transformer;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Topic;
 use Elastica\Document;
 use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
@@ -57,6 +58,15 @@ class TopicToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
         $document->set('date_active', date('Y-m-d H:i:s'));
+
+        $stickyWords = App::$container->getDb()->fetchAllCol('
+            SELECT word
+            FROM search_sticky_result
+            WHERE object_type = ? AND object_id = ?
+        ', ['DeskPRO:Download', $object->getId()]);
+        if ($stickyWords) {
+            $document->set('sticky_words', $stickyWords);
+        }
 
         return $document;
     }

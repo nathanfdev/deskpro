@@ -1,0 +1,235 @@
+$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
+$flag-icon-css-path: '../../../../../../node_modules/flag-icon-css/flags';
+$dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/src/styles/fonts/';
+
+@import '../../../../../../node_modules/font-awesome/scss/font-awesome';
+@import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
+@import '../../../../../../node_modules/react-select/scss/select';
+@import '../../../../../../node_modules/react-select/scss/components';
+@import '../../../AppBundle/Resources/style/variables';
+@import '../../../AppBundle/Resources/style/widget-modal';
+@import '../../../../../../node_modules/@deskpro/react-components/src/styles/main_no_apps';
+@import '../../../../../../node_modules/@deskpro/react-components/src/styles/components/loader';
+@import '../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon';
+
+@import 'legacy-vars.scss';
+@import 'report-widget-editor';
+@import 'stats-builder';
+
+.two-panels-menu {
+  display: table;
+  border-collapse: collapse;
+  border: 1px solid $dp-sonic-primary;
+  & > .ui.vertical.menu {
+    display: table-cell;
+    width: 50%;
+    box-shadow: none;
+  }
+}
+
+.Select-input {
+  padding-left: 0;
+
+  input {
+    border: 0 !important;
+  }
+}
+.Select-control {
+  border-radius: 0;
+}
+
+.page {
+  padding: 50px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #4D4D4D;
+
+  &.page-modal-window {
+    padding: 0;
+  }
+
+  .ui.text.loader {
+    transform: initial;
+  }
+
+  h3 {
+    font-weight: bold !important;
+  }
+
+  .section-header {
+    margin-bottom: 30px;
+
+    h2 {
+      margin-bottom: 30px !important;
+    }
+
+    .sub-header {
+      padding: 0 0 30px 0;
+    }
+
+    &.dividing {
+      border-bottom: 1px solid #EFEFEF;
+    }
+  }
+
+  .section-header-button {
+    margin-top: -8px !important;
+    margin-right: 20px !important;
+  }
+
+  .Select {
+    i {
+      margin-right: 10px;
+    }
+  }
+
+  .multi-select {
+    border: 1px solid #e3e3e3;
+
+    .scrollarea-content {
+      >div {
+        margin-left: 17px;
+        margin-right: 17px;
+
+        &:first-child {
+          margin-top: 5px;
+        }
+
+        &:last-child {
+          margin-bottom: 5px;
+        }
+      }
+    }
+
+    .multi-select-label {
+      display: inline-block;
+      color: #4D4D4D;
+
+      >.user-photo {
+        margin-right: 10px;
+        display: inline-block;
+      }
+
+      .text-fallback {
+        font-size: 11px;
+      }
+    }
+
+    .checkbox {
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+  }
+
+  .flat-spinner {
+    i {
+      display: inline-block;
+      background: url('../img/loading-small-flat.gif') center;
+      background-size: 15px 15px;
+      width: 15px;
+      height: 15px;
+      margin: 0 auto;
+    }
+  }
+
+  .ui.pagination.menu {
+    span.item {
+      display: block;
+    }
+  }
+
+  .table {
+    font-size: 14px;
+
+    td {
+      .list-item {
+        &:empty {
+          display: none;
+        }
+        &:not(:first-child):before {
+          content: ", ";
+        }
+      }
+
+      a {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .media-controls {
+    display: inline-block;
+
+    .media-timeline {
+      display: inline-block;
+      width: 300px;
+
+      .range {
+        width: 100%;
+      }
+    }
+
+    .media-time, .media-size {
+      font-weight: 400;
+      font-size: 10px;
+      color: $dp-greyscale-850;
+    }
+
+    .media-time {
+      margin-left: 10px;
+    }
+
+    .media-size {
+      margin-left: 20px;
+
+      i {
+        padding-left: 0;
+      }
+    }
+
+    button {
+      padding-top: 3px;
+      padding-bottom: 3px;
+      margin-right: 10px;
+    }
+  }
+}
+
+.voice-delete-button {
+  margin-left: 15px;
+  color: $dp-greyscale-650;
+  text-decoration: underline;
+  cursor: pointer;
+
+  &.disabled {
+    color: $dp-greyscale-250;
+  }
+}
+
+.vars > div {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  .field {
+    display: inline-flex;
+    &.type .Select {
+      width: 90px;
+    }
+    &.field-type .Select, &.date-field .Select {
+      min-width: 180px;
+    }
+    &.field-type-value .Select {
+      min-width: 240px;
+    }
+
+    &.name {
+      input {
+        width: 120px;
+      }
+      label, > div {
+        display: inline-block;
+      }
+    }
+  }
+}

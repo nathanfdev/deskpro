@@ -1,3 +1,5 @@
+@import "../../../../../../node_modules/diff2html/dist/diff2html.css";
+
 #snippets__menu {
   background-color: $dp-greyscale-00;
   width: 720px;
@@ -154,6 +156,18 @@
     position: relative;
     > .dp-input--radio {
       margin-right: 0;
+      white-space: nowrap;
+      label {
+        width: 100%;
+      }
+      .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: calc(100% - 30px);
+        display: inline-block;
+        vertical-align: bottom;
+      }
     }
     .clear {
       position: absolute;
@@ -520,7 +534,14 @@
     text-decoration: underline;
     font-weight: $pf-regular;
     font-size: $font-size-m;
-    margin-right: 50px;
+    color: $dp-greyscale-00;
+    margin-left: 5px;
+  }
+  .change_log {
+    float: right;
+    text-decoration: underline;
+    font-weight: $pf-semi-bold;
+    font-size: $font-size-m;
     color: $dp-greyscale-00;
   }
   .dp-modal {
@@ -783,5 +804,149 @@
         font-style: italic;
       }
     }
+  }
+}
+#change_log_modal {
+  font-family: $primary-font;
+  color: $dp-greyscale-850;
+  .dp-modal__overlay {
+    background-color: transparent;
+  }
+  .display-options {
+    .dp-select {
+      display: inline-block;
+      width: 100px;
+      vertical-align: middle;
+      margin-left: 5px;
+    }
+  }
+  .change {
+    height: 26px;
+    padding: 3px;
+    font-size: $font-size-m;
+    font-weight: $pf-semi-bold;
+    border-top: 1px solid $dp-greyscale-250;
+    &:first-child {
+      border-top-color: transparent;
+    }
+    &:last-child {
+      border-bottom: 1px solid $dp-greyscale-250;
+    }
+    &:hover:not(.creation) {
+      cursor: pointer;
+      border-top: 1px solid $dp-sonic-primary;
+      background-color: $dp-morning-sky;
+      border-bottom: 1px solid $dp-sonic-primary;
+      .dp-icon, .date {
+        color: $dp-sonic-primary;
+      }
+    }
+  }
+  .dp-icon {
+    color: $dp-greyscale-450;
+    margin-right: 5px;
+  }
+  .date {
+    font-size: $font-size-s;
+    color: $dp-greyscale-500;
+    float: right;
+    margin-right: 3px;
+  }
+  .dp-avatar {
+    float: right;
+    height: $icon-size-l;
+    width: $icon-size-l;
+  }
+}
+#comparison_modal {
+  .dp-modal {
+    width: 960px;
+  }
+  .dp-modal__overlay {
+    background-color: transparent;
+  }
+  .revisions {
+    & > div {
+      display: inline-block;
+      width: 50%;
+    }
+    .revision {
+      margin-right: 5px;
+      display: inline-block;
+      &, .dp-select__input {
+        font-size: $font-size-m;
+        font-weight: $pf-semi-bold;
+        text-transform: uppercase;
+        border: none;
+      }
+      .dp-list__element:hover {
+        background-color: $dp-morning-sky;
+        cursor: pointer;
+      }
+      .dp-select__content {
+        .date {
+          margin-left: 2px;
+          font-weight: $pf-regular;
+        }
+        .dp-avatar {
+          cursor: pointer;
+          float: right;
+          height: 16px;
+          width: 16px;
+        }
+      }
+      .dp-icon {
+        margin-left: 3px;
+        margin-right: 0;
+      }
+    }
+    .date {
+      float: none;
+      font-size: $font-size-m;
+    }
+    .dp-avatar {
+      float: none;
+      vertical-align: middle;
+    }
+  }
+  .d2h-file-header {
+    display: none;
+  }
+  .d2h-file-side-diff {
+    vertical-align: top;
+  }
+  .d2h-file-wrapper {
+    padding-bottom: 4px;
+    max-height: 500px;
+    overflow: scroll;
+    position: relative;
+  }
+  .d2h-diff-table {
+    font-family: $primary-font;
+    font-size: $font-size-m;
+  }
+  .d2h-code-side-linenumber {
+    width: 30px;
+    position: relative;
+  }
+  .d2h-code-side-line {
+    margin-left: 0;
+    padding: 0 5px;
+  }
+  .d2h-code-line-prefix {
+    vertical-align: top;
+  }
+  .d2h-code-line-ctn {
+    display: inline-block;
+    white-space: normal;
+    width: calc(100% - 6px);
+  }
+  .d2h-diff-tbody > tr:first-child {
+    display: none;
+  }
+  .dp-input--checkbox {
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: bottom;
   }
 }

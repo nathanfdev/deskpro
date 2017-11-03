@@ -42,7 +42,7 @@ class OauthProviderConnectionLoaderConverter implements ParamConverterInterface
 
     public function __construct(EntityManager $entityManager)
     {
-        $this->entityManager    = $entityManager;
+        $this->entityManager = $entityManager;
     }
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
@@ -56,6 +56,7 @@ class OauthProviderConnectionLoaderConverter implements ParamConverterInterface
 
         $loader = new OauthProviderConnectionLoader($from, $this->entityManager);
         $request->attributes->set($attributeName, $loader);
+
         return true;
     }
 

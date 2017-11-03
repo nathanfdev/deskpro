@@ -84,13 +84,22 @@ class AppManifest
     private $scope;
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppSetting>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting>")
      * @JMS\Expose()
      * @JMS\SerializedName("settings")
      *
-     * @var AppManifest\AppSetting[]
+     * @var AppManifest\Setting[]
      */
     private $settings = [];
+
+    /**
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("customFields")
+     *
+     * @var AppManifest\CustomField[]
+     */
+    private $customFields = [];
 
     /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppTarget>")
@@ -101,12 +110,12 @@ class AppManifest
     private $targets = [];
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StateAccessRule>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StorageAccessRule>")
      * @JMS\Expose()
      *
-     * @var AppManifest\StateAccessRule[]
+     * @var AppManifest\StorageAccessRule[]
      */
-    private $state = [];
+    private $storage = [];
 
     /**
      * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppAuthor")
@@ -244,7 +253,7 @@ class AppManifest
     }
 
     /**
-     * @return AppManifest\AppSetting[]
+     * @return AppManifest\Setting[]
      */
     public function getSettings()
     {
@@ -252,7 +261,7 @@ class AppManifest
     }
 
     /**
-     * @param AppManifest\AppSetting[] $settings
+     * @param AppManifest\Setting[] $settings
      *
      * @return $this
      */
@@ -360,19 +369,19 @@ class AppManifest
     }
 
     /**
-     * @return AppManifest\StateAccessRule[]
+     * @return AppManifest\StorageAccessRule[]
      */
-    public function getState()
+    public function getStorage()
     {
-        return $this->state;
+        return $this->storage;
     }
 
     /**
-     * @param AppManifest\StateAccessRule[] $state
+     * @param AppManifest\StorageAccessRule[] $state
      */
-    public function setState(array $state)
+    public function setStorage( array $state)
     {
-        $this->state = $state;
+        $this->storage = $state;
     }
 
     /**
@@ -389,5 +398,21 @@ class AppManifest
     public function setAppVersion($appVersion)
     {
         $this->appVersion = $appVersion;
+    }
+
+    /**
+     * @return AppManifest\CustomField[]
+     */
+    public function getCustomFields()
+    {
+        return $this->customFields;
+    }
+
+    /**
+     * @param AppManifest\CustomField[] $customFields
+     */
+    public function setCustomFields( $customFields )
+    {
+        $this->customFields = $customFields;
     }
 }

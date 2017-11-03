@@ -1,3 +1,5 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
+
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
 <div class="row">
 	<div class="term">
@@ -203,13 +205,13 @@
 	<div class="builder-options">
 		<select name="flag">
 			<option value="none">{{ phrase('agent.general.none') }}</option>
-			<option value="blue">{{ phrase('agent.general.flag_blue') }}</option>
-			<option value="green">{{ phrase('agent.general.flag_green') }}</option>
-			<option value="orange">{{ phrase('agent.general.flag_orange') }}</option>
-			<option value="pink">{{ phrase('agent.general.flag_pink') }}</option>
-			<option value="purple">{{ phrase('agent.general.flag_purple') }}</option>
-			<option value="red">{{ phrase('agent.general.flag_red') }}</option>
-			<option value="yellow">{{ phrase('agent.general.flag_yellow') }}</option>
+			<option value="blue">{{ flagnamer.flag_name('blue', person) }}</option>
+			<option value="green">{{ flagnamer.flag_name('green', person) }}</option>
+			<option value="orange">{{ flagnamer.flag_name('orange', person) }}</option>
+			<option value="pink">{{ flagnamer.flag_name('pink', person) }}</option>
+			<option value="purple">{{ flagnamer.flag_name('purple', person) }}</option>
+			<option value="red">{{ flagnamer.flag_name('red', person) }}</option>
+			<option value="yellow">{{ flagnamer.flag_name('yellow', person) }}</option>
 		</select>
 	</div>
 </div>
@@ -253,8 +255,15 @@
 </div>
 
 {% if show_snippets and app.user.Agent.getGroupedSnippets()|length %}
-	<div class="builder-type" title="Add reply from snippet" data-rule-type="reply_snippet" data-rule-group="Ticket">
+	<div class="builder-type" title="{{ phrase('agent.general.add_reply_from_snippet') }}" data-rule-type="reply_snippet" data-rule-group="Ticket">
 		<div class="builder-options">
+            {% if app.hasBeta('new_snippets') %}
+				<select name="snippet_id" class="select2">
+                    {% for snippet in app.user.Agent.getGroupedSnippets(true) %}
+							<option value="{{ snippet.id }}">{{ snippet.title }}</option>
+                    {% endfor %}
+				</select>
+			{% else %}
 			<select name="snippet_id" class="select2">
 				{% for info in app.user.Agent.getGroupedSnippets(true) if info.snippets %}
 					<optgroup label="{{ info.category.title }}">
@@ -264,6 +273,7 @@
 					</optgroup>
 				{% endfor %}
 			</select>
+			{% endif %}
 			<div style="padding-top: 3px;">
 				When selected from the reply box, where should the snippet text be inserted?<br/>
 				<select name="reply_pos">

@@ -19,7 +19,7 @@
 					<span class="custom-field edit-trigger chat_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 				</th>
 				<td>
-					<div class="custom-field content chat_field_{{f.id}}" data-item-id="{{f.id}}">
+					<div class="custom-field content chat_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
 						{% if not convo.hasCustomField(f.id) %}
 							{{ phrase('agent.general.none') }}
 						{% else %}
@@ -32,7 +32,7 @@
 				{% if f.field_def.isFormField() %}
 					<th width="120">{{ f.title }}:</th>
 					<td>
-						<div class="custom-field field-input chat_field_{{f.id}}" data-item-id="{{f.id}}">
+						<div class="custom-field field-input chat_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
 							{{ render_custom_field_form(f) }}
 						</div>
 					</td>
@@ -41,7 +41,7 @@
 						<span class="custom-field edit-trigger chat_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
 					</td>
 					<td>
-						<div class="custom-field content chat_field_{{f.id}}" data-item-id="{{f.id}}">
+						<div class="custom-field content chat_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
 							{% if not chat.hasCustomField(f.id) %}
 								{{ phrase('agent.general.none') }}
 							{% else %}

@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Snippets;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet as SnippetEntity;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
@@ -178,6 +179,14 @@ class Snippet
      */
     private $negativeRatings;
 
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var DateTime
+     */
+    private $dateCreated;
+
     public function __construct(SnippetEntity $snippet)
     {
         $this->id                 = $snippet->getId();
@@ -197,5 +206,6 @@ class Snippet
         $this->positiveRatings    = $snippet->getPositiveRatings();
         $this->neutralRatings     = $snippet->getNeutralRatings();
         $this->negativeRatings    = $snippet->getNegativeRatings();
+        $this->dateCreated        = $snippet->getDateCreated();
     }
 }

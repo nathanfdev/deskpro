@@ -34,7 +34,7 @@ class QueueRow extends React.Component {
 
   render() {
     const { queue, agents } = this.props;
-    const queueAgentIds = queue.get('agents') || Immutable.fromJS([]);
+    const queueAgentIds = queue.get('agents') ? queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) : Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
 
     const displayQueueAgents = queueAgents.slice(0, 5);

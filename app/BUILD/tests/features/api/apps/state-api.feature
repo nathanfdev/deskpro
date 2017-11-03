@@ -8,7 +8,7 @@ Feature: Test Apps State API
     And I package the app from folder "resources/apps/state-tests"
     And I'm authenticated as agent
     And I send a "POST" request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
-    And I save a reference "application" to the JSON node "id"
+    And I save the JSON node "id" as placeholder "application"
 
   Scenario Outline: I create and delete state
     Given I send a GET request to "/api/v2/apps/{application}/state/<entity>/<name>"

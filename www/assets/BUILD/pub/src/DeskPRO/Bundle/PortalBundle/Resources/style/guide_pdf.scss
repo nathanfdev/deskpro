@@ -9,4 +9,5 @@ $fa-font-path: "#{$modules-path}/font-awesome/fonts" !default;
 
 
 @import '../../../AppBundle/Resources/style/variables';
-@import './guides';
+@import "vars";
+@import "guides";
