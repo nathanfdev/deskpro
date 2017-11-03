@@ -2143,7 +2143,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 60000
+				timeout: 90000
 			};
 
 			if (errorFn) {
@@ -3420,7 +3420,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$.ajax({
 			url: url,
 			data: extra_data || {},
-			timeout: 15000,
+			timeout: 90000,
 			dataType: 'json',
 			success: function(data) {
 				delete self.loadingSections[section_id];
@@ -3480,7 +3480,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			type: 'GET',
 			data: data,
 			dataType: 'json',
-			timeout: 30000,
+			timeout: 90000,
 			tryCount : 0,
 		    retryLimit: 3,
 			error: function(xhr, textStatus, errorThrown) {
