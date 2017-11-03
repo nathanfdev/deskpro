@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
+use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
@@ -74,6 +75,18 @@ class ZapierWebHook implements TicketSaveActionInterface
             /** @var ZapierHook $zapierHook */
             foreach ($hooks as $zapierHook) {
                 try {
+                    $params = $zapierHook->getParams();
+                    if ($params['filter']) {
+                        /** @var LegacyTicketFilter $filter */
+                        $filter = $this->em->getRepository(LegacyTicketFilter::class)->find($params['filter']);
+                        if ($filter) {
+                            $ticketSearch = $filter->getSearcher();
+                            $ticketSearch->setPersonContext($zapierHook->getPerson());
+                            if (!$ticketSearch->doesTicketMatch($ticket)) {
+                                continue;
+                            }
+                        }
+                    }
                     $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
                 } catch (ClientException $e) {
                     // Hooks needs to be unsubscribe

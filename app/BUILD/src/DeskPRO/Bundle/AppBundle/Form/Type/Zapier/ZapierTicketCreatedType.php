@@ -26,45 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Zapier;
 
-use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
+use Application\DeskPRO\Entity\LegacyTicketFilter;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class VoiceQueueType.
- */
-class ZapierHookType extends AbstractType
+class ZapierTicketCreatedType extends AbstractType
 {
-    /**
-     * {@inheritdoc}
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('target_url', TextType::class, [
-                'required' => true,
-            ])
-            ->add('event', TextType::class, [
-                'required' => true,
-            ])
-            ->add('subscription_url', TextType::class, [
-                'mapped' => false,
-            ])
-        ;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setDefaults([
-            'data_class' => ZapierHook::class,
+        $builder->add('filter', EntityType::class, [
+            'class' => LegacyTicketFilter::class,
         ]);
     }
 }

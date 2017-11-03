@@ -86,12 +86,6 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.zapier:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ZapierListener
-    arguments: ["@doctrine.orm.default_entity_manager", "@jms_serializer.serializer"]
-    tags:
-      - { name: doctrine.entity_listener }
-
   event_listener.person_email:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonEmailListener
     arguments: ["@email.email_account_manager", "@validator"]

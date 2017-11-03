@@ -28,16 +28,17 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class ZapierHook.
  *
  * @ORM\Entity()
  * @ORM\Table(name="zapier_hooks")
- * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ZapierListener"})
  *
  * @JMS\ExclusionPolicy("all")
  */
@@ -75,6 +76,23 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $event;
+
+    /**
+     * @ORM\Column(type="json_array", name="params", nullable=true)
+     *
+     * @var array
+     */
+    private $params = [];
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="id")
+     *
+     * @Assert\NotBlank()
+     *
+     * @var Person
+     */
+    private $person;
 
     /**
      * @return int
@@ -132,6 +150,68 @@ class ZapierHook implements EntityInterface, NotifyPropertyChanged
     public function setEvent($event)
     {
         $this->setModelField('event', $event);
+
+        return $this;
+    }
+
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return ZapierHook
+     */
+    public function setParams($params)
+    {
+        $params = array_map('strval', $params);
+        $this->setModelField('params', $params);
+
+        return $this;
+    }
+
+    public function addParam($param, $key = '')
+    {
+        $this->params[$key] = $param;
+        $this->setModelField('params', $this->params);
+
+        return $this;
+    }
+
+    public function hasParam($param)
+    {
+        return in_array($param, $this->params, true);
+    }
+
+    public function removeParam($param)
+    {
+        if (false !== $key = array_search($param, $this->params, true)) {
+            unset($this->params[$key]);
+            $this->params = array_values($this->params);
+        }
+        $this->setModelField('params', $this->params);
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return ZapierHook
+     */
+    public function setPerson($person)
+    {
+        $this->setModelField('person', $person);
 
         return $this;
     }
