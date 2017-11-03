@@ -965,7 +965,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField([
             'fieldName'  => 'filename',
             'type'       => 'string',
-            'length'     => 120,
+            'length'     => 255,
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => false,
