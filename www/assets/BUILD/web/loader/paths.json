@@ -61,8 +61,6 @@
   "sifter":                          "bower_components/sifter/sifter",
   "microplugin":                     "bower_components/microplugin/src/microplugin",
 
-  "ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
-  "ngClip":                          "bower_components/ng-clip/src/ngClip",
   "clipboard":                       "node_modules/clipboard/dist/clipboard.min",
 
   "spectrum":                        "bower_components/spectrum/spectrum",

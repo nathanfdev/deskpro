@@ -11,26 +11,26 @@
 					<table style="width: 100%;">
 						<tr>
 							<td style="width: 30%;">Post Back URL</td>
-							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
-								value="{{ usersource_details.consumer_url }}" /></td>
+							<td style="width:55%"><input type="text" style="width: 100%" readonly="readonly"
+								value="{{ usersource_details.consumer_url }}" id="post_back_url" /></td>
 							<td>
-								<button class="btn btn-default btn-sm" clip-copy="usersource_details.consumer_url">Copy URL</button>
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#post_back_url">Copy URL</button>
 							</td>
 						</tr>
 						<tr>
 							<td style="width: 30%;">Recipient</td>
-							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
-								value="{{ usersource_details.consumer_url }}" /></td>
+							<td style="width:55%"><input type="text" style="width: 100%" readonly="readonly"
+								value="{{ usersource_details.consumer_url }}" id="recipient_url" /></td>
 							<td>
-								<button class="btn btn-default btn-sm" clip-copy="usersource_details.consumer_url">Copy URL</button>
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#recipient_url">Copy URL</button>
 							</td>
 						</tr>
 						<tr>
 							<td>Audience Restriction</td>
-							<td><input style="width: 100%" type="text" disabled="disabled"
-								value="{{ usersource_details.metadata_url }}" /></td>
+							<td><input style="width: 100%" type="text" readonly="readonly"
+								value="{{ usersource_details.metadata_url }}" id="metadata_url" /></td>
 							<td>
-								<button class="btn btn-default btn-sm" clip-copy="usersource_details.metadata_url">Copy URL</button>
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#metadata_url">Copy URL</button>
 							</td>
 						</tr>
 					</table>

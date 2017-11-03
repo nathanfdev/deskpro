@@ -16,7 +16,6 @@
   "angularSelectize":                ["angular"],
   "angularScrollGlue":               ["angular"],
   "bootstrapDatetime":               ["jquery", "moment"],
-  "ngClip":                          ["angular"],
   "ngFileUpload":                    ["angular"],
   "ngContextMenu":                   ["angular"],
   "jquery":                          { "exports": "jquery" },

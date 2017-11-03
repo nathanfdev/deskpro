@@ -56,12 +56,6 @@
 			return options;
 		});
 
-		if (typeof ZeroClipboard != "undefined") {
-			ZeroClipboard.setDefaults({
-				moviePath: "{{ asset('vendor/ZeroClipboard/ZeroClipboard.swf') }}"
-			});
-		}
-
 		if (DP_IS_DOMDUMP_VIEW) {
 			return;
 		}

@@ -117,7 +117,6 @@ $CONFIG['agent_vendors'] = [
         'vendor/mootools/mootools-core.min.js',
         'javascripts/DeskPRO/tinycon.js',
         'vendor/select2/select2.js',
-        'vendor/ZeroClipboard/ZeroClipboard.min.js',
         'vendor/idbstore/idbstore.min.js',
         'vendor/twig/twig.js',
         'bower_components/moment/min/moment-with-locales.min.js',
