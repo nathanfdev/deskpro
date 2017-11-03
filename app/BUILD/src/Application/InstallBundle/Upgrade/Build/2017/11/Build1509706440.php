@@ -38,7 +38,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 // Please remove these NOTE comments after you have checked the code.
 
-class Build1507549183 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1509706440 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -75,50 +75,51 @@ class Build1507549183 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function run()
     {
-        $this->execDbQuery('default', "UPDATE app2_app_instance SET `is_installed` = 1");
+        $this->execDbQuery('default', 'UPDATE app2_app_instance SET `is_installed` = 1');
 
         // install trello ...
 
-        $connection = $this->getDbConnection();
-        $instanceIds = $connection->fetchAllCol("SELECT i.id FROM app2_app_instance i INNER JOIN app2_app a WHERE a.name = 'deskpro-app-trello'");
+        $connection     = $this->getDbConnection();
+        $instanceIds    = $connection->fetchAllCol("SELECT i.id FROM app2_app_instance i INNER JOIN app2_app a WHERE a.name = 'deskpro-app-trello'");
         $customFieldIds = $this->runCreateTrelloCustomFields($connection, $instanceIds);
         $this->runCopyTrelloTicketStateToCustomFields($connection, $instanceIds, $customFieldIds);
     }
 
     /**
      * @param \Application\DeskPRO\DBAL\Connection $connection
-     * @param array $instanceIds
+     * @param array                                $instanceIds
      *
      * @return array
      */
-    private function runCreateTrelloCustomFields($connection, $instanceIds) {
-        $customFieldAlias = 'trelloCards';
+    private function runCreateTrelloCustomFields($connection, $instanceIds)
+    {
+        $customFieldAlias  = 'trelloCards';
         $customFieldIdList = [];
 
         foreach ($instanceIds as $id) {
             // create custom def
             $customDefTicket = [
-                'js_class' => '',
-                'has_form_template' => '0',
+                'js_class'             => '',
+                'has_form_template'    => '0',
                 'has_display_template' => '0',
-                'title' => 'Trello linked cards',
-                'description' => '',
-                'handler_class' => 'Application\\DeskPRO\\CustomFields\\Handler\\DataList',
-                'options' => 'a:1:{s:20:\"custom_css_classname\";s:0:\"\";}',
-                'is_user_enabled' => '0',
-                'is_enabled' => '1',
-                'display_order' => '0',
-                'is_agent_field' => '0'
+                'title'                => 'Trello linked cards',
+                'description'          => '',
+                'handler_class'        => 'Application\\DeskPRO\\CustomFields\\Handler\\DataList',
+                'options'              => 'a:1:{s:20:\"custom_css_classname\";s:0:\"\";}',
+                'is_user_enabled'      => '0',
+                'is_enabled'           => '1',
+                'display_order'        => '0',
+                'is_agent_field'       => '0',
             ];
             $connection->insert('custom_def_ticket', $customDefTicket);
             $customDefTicketId = $connection->lastInsertId();
 
             // create object alias
             $objectAlias = [
-                'app_instance_id' => $id,
+                'app_instance_id'      => $id,
                 'custom_def_ticket_id' => $customDefTicketId,
-                'alias' => $customFieldAlias,
-                'object_type' => 'custom_def_ticket',
+                'alias'                => $customFieldAlias,
+                'object_type'          => 'custom_def_ticket',
             ];
             $connection->insert('object_aliases', $objectAlias);
 
@@ -130,19 +131,19 @@ class Build1507549183 extends AbstractBuild implements BlockingBuildInterface, S
 
     /**
      * @param \Application\DeskPRO\DBAL\Connection $connection
-     * @param array $instanceIds ordered list of instance ids
-     * @param array $customFields ordered list of custom fields
+     * @param array                                $instanceIds  ordered list of instance ids
+     * @param array                                $customFields ordered list of custom fields
      */
     private function runCopyTrelloTicketStateToCustomFields($connection, $instanceIds, $customFields)
     {
-        reset ($customFields);
+        reset($customFields);
         foreach ($instanceIds as $id) {
             $customField = current($customFields);
             next($customFields);
 
-            $items = $connection->fetchAll("SELECT id, entity_id, `value` FROM app2_app_state_v2  where app_instance_id = ? and entity_id LIKE ?", [$id, 'ticket:%']);
+            $items = $connection->fetchAll('SELECT id, entity_id, `value` FROM app2_app_state_v2  where app_instance_id = ? and entity_id LIKE ?', [$id, 'ticket:%']);
             foreach ($items as $item) {
-                $decoded = json_decode($item['value'], true);
+                $decoded    = json_decode($item['value'], true);
                 $shouldCopy = is_array($decoded)
                     && array_key_exists('trello_cards', $decoded)
                     && is_array($decoded['trello_cards'])
@@ -152,19 +153,17 @@ class Build1507549183 extends AbstractBuild implements BlockingBuildInterface, S
                     $ticketId = str_replace('ticket:', '', $item['entity_id']);
                     foreach ($decoded['trello_cards'] as $cardId) {
                         $customDataTicket = [
-                            'ticket_id' => $ticketId,
-                            'field_id' => $customField,
+                            'ticket_id'     => $ticketId,
+                            'field_id'      => $customField,
                             'root_field_id' => $customField,
-                            'value' => 0,
-                            'input' => $cardId,
+                            'value'         => 0,
+                            'input'         => $cardId,
                         ];
                         $connection->insert('custom_data_ticket', $customDataTicket);
                     }
                     $connection->delete('app2_app_state_v2', ['id' => $item['id']]);
                 }
-
             }
         }
     }
-
 }

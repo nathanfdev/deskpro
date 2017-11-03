@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1509548353 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1509706439 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -36,18 +36,10 @@ class Build1509548353 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function runAlters()
     {
+        $this->execSlowAlterTable('blobs', 'CHANGE filename filename VARCHAR(255) NOT NULL');
     }
 
     public function run()
     {
-        $db = $this->getDbConnection();
-
-        $dateCreated = $db->fetchColumn('SELECT MIN(date_created) FROM snippet_changelog');
-
-        if (!$dateCreated) {
-            $dateCreated = date('Y-m-d H:i:s');
-        }
-
-        $this->execDbQuery('default', 'UPDATE snippets SET date_created = \''.$dateCreated.'\' WHERE date_created IS NULL');
     }
 }

@@ -28,19 +28,17 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1508857344 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1509706523 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
-        $this->execDbQuery('default', 'DROP TABLE voice_queue_agents');
-        $this->execDbQuery('default', 'CREATE TABLE voice_queue_agents (id INT AUTO_INCREMENT NOT NULL, voice_queue_id INT NOT NULL, agent_id INT NOT NULL, is_enabled TINYINT(1) NOT NULL, INDEX IDX_50376B502E24EDAB (voice_queue_id), INDEX IDX_50376B503414710B (agent_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
-        $this->execDbQuery('default', 'ALTER TABLE voice_queue_agents ADD CONSTRAINT FK_50376B502E24EDAB FOREIGN KEY (voice_queue_id) REFERENCES voice_queues (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'ALTER TABLE voice_queue_agents ADD CONSTRAINT FK_50376B503414710B FOREIGN KEY (agent_id) REFERENCES people (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'CREATE UNIQUE INDEX queue_agent_idx ON voice_queue_agents (voice_queue_id, agent_id)');
     }
 
     public function runAlters()
     {
+        $this->execDbQuery('default', 'ALTER TABLE zapier_hooks ADD params LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', ADD person_id INT DEFAULT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE zapier_hooks ADD CONSTRAINT FK_FAD644B4217BBB47 FOREIGN KEY (person_id) REFERENCES people (id)');
+        $this->execDbQuery('default', 'CREATE INDEX IDX_FAD644B4217BBB47 ON zapier_hooks (person_id)');
     }
 
     public function run()
