@@ -81,12 +81,12 @@ class BaseController extends FOSRestController
      */
     protected function createErrorRepresentation($status, $code, $message, $errorsData = [])
     {
-        return $this->get('api_view_representation_factory')->createErrorRepresentation(
-            $status,
-            $code,
-            $message,
-            $errorsData
-        );
+        return [
+            'status'  => $status,
+            'code'    => $code,
+            'message' => $message,
+            'errors'  => count($errorsData) ? $errorsData : null,
+        ];
     }
 
     /**
