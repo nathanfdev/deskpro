@@ -375,7 +375,7 @@ class GroupingCounter
                 // total time is stored in seconds, so we're not doing a date compare
                 $from    = $ranges[$t];
                 $to      = $t;
-                $parts[] = " WHEN tickets.$fieldname BETWEEN $from AND $to THEN $t ";
+                $parts[] = " WHEN (tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(tickets.date_user_waiting)))) BETWEEN $from AND $to THEN $t ";
             } else {
                 // Get a real time so we dont have mysql doing calculations,
                 // and we dont need to do a subquery etc
@@ -889,9 +889,9 @@ class GroupingCounter
             case TicketSearch::TERM_TOTAL_USER_WAITING:
 
                 $times = array_keys(self::getTimeTitles());
-                $key   = array_search($groupchoice, $times);
+                $key   = array_search($groupchoice, $times) - 1;
 
-                if ($key == 0) {
+                if ($key < 1) {
                     $term = ['type' => $groupvar, 'op' => 'lte', 'options' => 300];
                 } elseif ($key == (count($times) - 1)) {
                     $term = ['type' => $groupvar, 'op' => 'gte', 'options' => 14515200];
