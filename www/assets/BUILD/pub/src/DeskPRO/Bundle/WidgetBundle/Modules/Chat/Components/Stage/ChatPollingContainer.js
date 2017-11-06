@@ -23,7 +23,7 @@ export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
     dispatch:      PropTypes.func.isRequired,
-    chatId:        PropTypes.number,
+    chatId:        PropTypes.string,
     hasChatInfo:   PropTypes.bool,
     lastMessageId: PropTypes.number,
     children:      PropTypes.node

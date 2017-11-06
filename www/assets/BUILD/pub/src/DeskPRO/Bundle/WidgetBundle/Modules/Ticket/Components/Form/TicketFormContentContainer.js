@@ -24,7 +24,7 @@ export default class TicketFormContentContainer extends React.Component {
     bootstrap:    PropTypes.bool,
     loading:      PropTypes.bool,
     saving:       PropTypes.bool,
-    primaryColor: PropTypes.bool
+    primaryColor: PropTypes.string
   };
 
   componentDidMount() {

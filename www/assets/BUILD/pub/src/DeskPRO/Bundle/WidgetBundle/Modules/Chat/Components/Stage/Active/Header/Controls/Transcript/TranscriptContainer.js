@@ -28,7 +28,7 @@ export class TranscriptContainer extends React.Component {
 
   static propTypes = {
     dispatch:    PropTypes.func,
-    chatId:      PropTypes.number,
+    chatId:      PropTypes.string,
     authorName:  PropTypes.string,
     authorEmail: PropTypes.string,
     checked:     PropTypes.bool,

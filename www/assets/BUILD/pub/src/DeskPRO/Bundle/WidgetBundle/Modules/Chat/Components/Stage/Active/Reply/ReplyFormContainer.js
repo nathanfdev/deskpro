@@ -32,7 +32,7 @@ export class ReplyFormContainer extends React.Component {
   static propTypes = {
     dispatch:    PropTypes.func,
     chatLoaded:  PropTypes.bool,
-    chatId:      PropTypes.number,
+    chatId:      PropTypes.string,
     attachments: PropTypes.object
   };
 

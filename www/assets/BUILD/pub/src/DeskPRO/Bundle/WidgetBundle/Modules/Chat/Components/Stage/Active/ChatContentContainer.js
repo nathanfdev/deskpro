@@ -26,10 +26,14 @@ export class ChatContentContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(newProps) {
+    if (this.props.children !== newProps.children) {
+      return;
+    }
+
     this.props.dispatch(widgetResize());
   }
 

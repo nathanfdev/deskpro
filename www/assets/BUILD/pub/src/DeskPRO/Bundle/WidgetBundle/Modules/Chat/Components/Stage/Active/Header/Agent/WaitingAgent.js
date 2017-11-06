@@ -9,7 +9,7 @@ export class WaitingAgent extends React.Component {
 
   static propTypes = {
     dispatch:      PropTypes.func,
-    chatId:        PropTypes.number,
+    chatId:        PropTypes.string,
     acceptTimeout: PropTypes.number
   };
 

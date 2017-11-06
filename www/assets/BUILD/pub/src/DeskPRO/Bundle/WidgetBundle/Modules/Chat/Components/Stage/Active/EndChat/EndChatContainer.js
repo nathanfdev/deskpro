@@ -16,7 +16,7 @@ export class EndChatContainer extends React.Component {
   static propTypes = {
     dispatch:        PropTypes.func,
     locked:          PropTypes.bool,
-    chatId:          PropTypes.number,
+    chatId:          PropTypes.string,
     confirmPosition: PropTypes.string,
     children:        PropTypes.node
   };
@@ -28,14 +28,14 @@ export class EndChatContainer extends React.Component {
     };
   }
 
-  onOpenPopup = event => {
+  onOpenPopup = (event) => {
     event.preventDefault();
     this.setState({
       confirmPopup: true
     });
   };
 
-  onEndChat = event => {
+  onEndChat = (event) => {
     const { chatId, dispatch, locked } = this.props;
     if (locked) {
       return;
@@ -45,7 +45,7 @@ export class EndChatContainer extends React.Component {
     dispatch(endChat(chatId));
   };
 
-  onClosePopup = event => {
+  onClosePopup = (event) => {
     event.preventDefault();
     this.setState({
       confirmPopup: false
@@ -64,13 +64,13 @@ export class EndChatContainer extends React.Component {
           ...childProps,
 
           locked,
-          ref:         'button',
+          ref:         (c) => { this.button = c; },
           onOpenPopup: this.onOpenPopup
         })}
 
         <Simple
           isOpen={this.state.confirmPopup}
-          positionTarget={this.refs.button}
+          positionTarget={this.button}
           positionAt={`right ${positionAt}`}
           positionMy={`right ${positionMy}`}
           zIndex={1000}

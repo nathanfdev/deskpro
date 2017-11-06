@@ -17,7 +17,7 @@ export class RateAgentContainer extends React.Component {
 
   static propTypes = {
     agentName: PropTypes.string,
-    chatId:    PropTypes.number,
+    chatId:    PropTypes.string,
     isEnded:   PropTypes.bool,
     stage:     PropTypes.string,
     dispatch:  PropTypes.func.isRequired
@@ -33,7 +33,7 @@ export class RateAgentContainer extends React.Component {
     dispatch(showNotHelpfulForm());
   };
 
-  onSubmitForm = comment => {
+  onSubmitForm = (comment) => {
     const { chatId, dispatch } = this.props;
     dispatch(sendFeedback(chatId, { helpful: 1, comment }));
   };

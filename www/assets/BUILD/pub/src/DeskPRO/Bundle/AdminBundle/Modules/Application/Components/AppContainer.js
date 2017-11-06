@@ -17,7 +17,7 @@ class AppContainer extends React.Component {
 
   static propTypes = {
     routePath:      PropTypes.string,
-    legacyNavigate: PropTypes.function
+    legacyNavigate: PropTypes.func
   };
 
   constructor(props) {

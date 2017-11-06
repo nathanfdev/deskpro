@@ -17,7 +17,7 @@ export class DropZoneContainer extends React.Component {
 
   static propTypes = {
     instant:  PropTypes.bool,
-    chatId:   PropTypes.number,
+    chatId:   PropTypes.string,
     dispatch: PropTypes.func,
     children: PropTypes.node
   };
