@@ -1,7 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { AppPane, NavPane, NavPaneContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
-import { NavContainer as TicketsNav } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Nav/NavContainer';
 import { NavContainer as CrmNav } from 'DeskPRO/Bundle/AgentBundle/Modules/CRM/Components/Nav/NavContainer';
 import { NavContainer as ChatNav } from 'DeskPRO/Bundle/AgentBundle/Modules/Chat/Components/Nav/NavContainer';
 import { css, redux } from '../../decorators';
@@ -45,17 +44,11 @@ storiesOf('App: Navigation', module)
 
   // Expanded app nav frames
 
-  .add('Expanded: Tickets', () => redux(app('tickets', ticketsNavDemoState), decorate(<TicketsNav />)))
   .add('Expanded: CRM', () => redux(app('crm', crmNavDemoState), decorate(<CrmNav />)))
   .add('Expanded: Chat', () => redux(app('chat', chatNavDemoState), decorate(<ChatNav />)))
 
   // Loading app nav frames
 
-  .add('Loading: Tickets', () => redux(app('tickets', ticketsNavLoadingState), decorate(<TicketsNav />)))
   .add('Loading: CRM', () => redux(app('crm', crmNavLoadingState), decorate(<CrmNav />)))
   .add('Loading: Chat', () => redux(app('chat', chatNavLoadingState), decorate(<ChatNav />)))
-
-  // Collapsed
-
-  .add('Collapsed: Tickets', () => redux({ ...ticketsNavDemoState, ...collapsed }, decorate(<TicketsNav />, true)))
 ;

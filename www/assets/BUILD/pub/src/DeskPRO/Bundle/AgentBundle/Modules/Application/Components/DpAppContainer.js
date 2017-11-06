@@ -5,9 +5,6 @@ import { connect } from 'react-redux';
 import $ from 'jquery';
 import { preloadData } from '../../Application/Actions/bootstrapActions';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
-import { TicketsApp } from '../../Tickets/Components/TicketsApp';
-import { TasksApp } from '../../Tasks/Components/TasksApp';
-import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
 import { CrmApp } from '../../CRM/Components/CrmApp';
 import { ChatApp } from '../../Chat/Components/ChatApp';
 import { PublishApp } from '../../Publish/Components/PublishApp';
@@ -67,10 +64,7 @@ export class DpAppContainer extends React.Component {
         <Route path={basePath} component={DpAppRouteContainer}>
           <Route name="crm" path="crm" component={CrmApp} />
           <Route name="chat" path="chat" component={ChatApp} />
-          <Route name="tickets" path="tickets" component={TicketsApp} />
-          <Route name="tasks" path="tasks" component={TasksApp} />
           <Route name="publish" path="publish" component={PublishApp} />
-          <Route name="feedback" path="feedback" component={FeedbackApp} />
         </Route>
         <Route path={basePath}>
           <Route name="login" path="login" component={LoginApp} />

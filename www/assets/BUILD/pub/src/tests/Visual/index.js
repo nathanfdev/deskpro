@@ -13,7 +13,6 @@ import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
 import './AgentBundle/Modules/Publish/publish';
 import './AgentBundle/Frames/nav';
 import './AgentBundle/Modules/Voice/index';
-import './AgentBundle/Modules/Tickets/tickets';
 import './DemoBundle/Modules/Application/login';
 import './AgentBundle/Modules/IM/im';
 import './Semantic/Accordion/accordion';

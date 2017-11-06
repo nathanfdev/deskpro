@@ -13,12 +13,6 @@ describe('RecordsStore loadBatch() action', () => {
     expect(action.payload).toBeDefined();
   });
 
-  it('should request records via record repository', () => {
-    spyOn(DAL, 'repository').and.callThrough();
-    dispatchInAgent(loadBatch('Ticket', [1, 2, 3], 'test'));
-    expect(DAL.repository).toHaveBeenCalledWith('Ticket');
-  });
-
   it('should call loadBatch() on the record\'s repository', () => {
     const TicketRepository = jasmine.createSpyObj('TicketRepository', ['loadBatch']);
     spyOn(DAL, 'repository').and.returnValue(TicketRepository);
