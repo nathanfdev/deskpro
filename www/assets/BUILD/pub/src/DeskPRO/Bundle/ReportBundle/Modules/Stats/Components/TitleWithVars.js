@@ -1,13 +1,17 @@
 import React, { PropTypes } from 'react';
 import { Select } from 'DeskPRO/Component/Semantic/ReactForm';
 
-class ListItemTitle extends React.Component {
+class TitleWithVars extends React.Component {
 
   static propTypes = {
     report:            PropTypes.object.isRequired,
     groupParams:       PropTypes.object.isRequired,
     onChangeReportVar: PropTypes.func.isRequired,
-    onRunClick:        PropTypes.func.isRequired,
+    onRunClick:        PropTypes.func,
+  };
+
+  static defaultProps = {
+    onRunClick: () => {},
   };
 
   constructor(props) {
@@ -112,11 +116,11 @@ class ListItemTitle extends React.Component {
 
     return (
       <span>
-        <a>{ title }</a>
+        { title }
         { missingVars }
       </span>
     );
   }
 }
 
-export default ListItemTitle;
+export default TitleWithVars;

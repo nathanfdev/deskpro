@@ -28,7 +28,7 @@ class Run extends React.Component {
   }
 
   clickSlice(event) {
-    const options = this.props.report.get('rendered_result');
+    const options = this.props.report.get('rendered_result').toJS();
     let selected;
     if (event.dataItem.dataContext.id) {
       selected = event.dataItem.dataContext.id;
@@ -38,7 +38,7 @@ class Run extends React.Component {
       const data = [];
       options.dataProvider.forEach((element, index) => {
         if (index === selected) {
-          options.pies[selected].forEach((pie) => {
+          options.pies[selected].dataProvider.forEach((pie) => {
             pie.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
             data.push(pie);
           });
@@ -55,15 +55,13 @@ class Run extends React.Component {
 
   renderReport() {
     const { report } = this.props;
-    const options = report.get('rendered_result') ? report.get('rendered_result') : Immutable.Map();
+    let options = report.get('rendered_result') ? report.get('rendered_result') : Immutable.Map();
 
     if (typeof options === 'object') {
-      options.listeners = [
-        {
-          event:  'clickSlice',
-          method: this.clickSlice
-        }
-      ];
+      options = options.set('listeners', [{
+        event:  'clickSlice',
+        method: this.clickSlice
+      }]);
     }
 
     return (

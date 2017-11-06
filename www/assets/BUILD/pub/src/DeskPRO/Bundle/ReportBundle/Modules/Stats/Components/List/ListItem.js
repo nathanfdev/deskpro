@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 import { transformReportData } from '../helper';
-import ListItemTitle from './ListItemTitle';
+import TitleWithVars from '../TitleWithVars';
 
 class ListItem extends React.Component {
 
@@ -58,7 +58,7 @@ class ListItem extends React.Component {
     return (
       <li className={classNames({ active: isActive })}>
         <h1>
-          <ListItemTitle onRunClick={this.onRunClick} onChangeReportVar={this.onChangeReportVar} groupParams={groupParams} report={report} />
+          <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={this.onChangeReportVar} groupParams={groupParams} report={report} />
           <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
