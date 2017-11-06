@@ -23,7 +23,7 @@ $joyride-overlay-color: rgba(#000, 0.2) !default;
 
 $joyride-close: (color: $dp-greyscale-850, size: 25px, top: 7px !important, right: 10px !important);
 
-@import '../../../../../../node_modules/react-joyride/lib/styles/react-joyride';
+@import '../../../../../../node_modules/react-joyride/src/styles/react-joyride';
 
 /******************************
    Override joyride styling
