@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import Modal from 'DeskPRO/Component/Semantic/Modal';
 import classNames from 'classnames';

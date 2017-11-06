@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Form, Field, BlurInput, Select, CountryCodeSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import AccountChoiceWrapper from '../../../Common/AccountChoiceWrapper';
 

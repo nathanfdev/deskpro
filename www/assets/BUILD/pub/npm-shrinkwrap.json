@@ -12520,6 +12520,32 @@
         }
       }
     },
+    "@deskpro/react-forms": {
+      "version": "2.0.0-beta36",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-forms/-/react-forms-2.0.0-beta36.tgz",
+      "integrity": "sha1-dzjICUfcXwHCstEo46v5Or5+ZTQ=",
+      "requires": {
+        "derivable": "1.0.0-beta11",
+        "generate-function": "2.0.0",
+        "generate-object-property": "1.2.0",
+        "invariant": "2.2.1",
+        "jsonpointer": "3.0.1",
+        "lodash": "4.17.4",
+        "memoize-decorator": "1.0.2",
+        "react-derivable": "0.2.0",
+        "react-stylesheet": "1.0.2"
+      },
+      "dependencies": {
+        "react-stylesheet": {
+          "version": "1.0.2",
+          "resolved": "https://registry.npmjs.org/react-stylesheet/-/react-stylesheet-1.0.2.tgz",
+          "integrity": "sha1-QZSzztEdiqr9S6z3fFSOh+jYhCI=",
+          "requires": {
+            "invariant": "2.2.1"
+          }
+        }
+      }
+    },
     "@deskpro/react-scrollbar": {
       "version": "0.5.1",
       "resolved": "https://registry.npmjs.org/@deskpro/react-scrollbar/-/react-scrollbar-0.5.1.tgz",
@@ -25317,45 +25343,6 @@
       "resolved": "https://registry.npmjs.org/react-emojione/-/react-emojione-2.0.0.tgz",
       "integrity": "sha1-eikCZDBCWUbzKi04DUxmIfsH0vE="
     },
-    "react-forms": {
-      "version": "2.0.0-beta35",
-      "resolved": "https://registry.npmjs.org/react-forms/-/react-forms-2.0.0-beta35.tgz",
-      "integrity": "sha1-+zru7a7JHsXzj9p2veLhBSu84bQ=",
-      "requires": {
-        "derivable": "1.0.0-beta11",
-        "generate-function": "2.0.0",
-        "generate-object-property": "1.2.0",
-        "invariant": "2.2.2",
-        "jsonpointer": "3.0.1",
-        "lodash": "4.17.4",
-        "memoize-decorator": "1.0.2",
-        "react-derivable": "0.2.0",
-        "react-stylesheet": "1.0.2"
-      },
-      "dependencies": {
-        "invariant": {
-          "version": "2.2.2",
-          "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.2.tgz",
-          "integrity": "sha1-nh9WrArNtr8wMwbzOL47IErmA2A=",
-          "requires": {
-            "loose-envify": "1.3.1"
-          }
-        },
-        "lodash": {
-          "version": "4.17.4",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz",
-          "integrity": "sha1-eCA6TRwyiuHYbcpkYONptX9AVa4="
-        },
-        "react-stylesheet": {
-          "version": "1.0.2",
-          "resolved": "https://registry.npmjs.org/react-stylesheet/-/react-stylesheet-1.0.2.tgz",
-          "integrity": "sha1-QZSzztEdiqr9S6z3fFSOh+jYhCI=",
-          "requires": {
-            "invariant": "2.2.2"
-          }
-        }
-      }
-    },
     "react-froala-wysiwyg": {
       "version": "2.7.1",
       "resolved": "https://registry.npmjs.org/react-froala-wysiwyg/-/react-froala-wysiwyg-2.7.1.tgz",
@@ -25631,16 +25618,6 @@
       "requires": {
         "object-assign": "4.1.1",
         "prop-types": "15.6.0"
-      }
-    },
-    "react-scrollbar": {
-      "version": "github:deskpro/reactScrollbar#731b1742a77757fee6c0331bb4f658c389ff4053",
-      "requires": {
-        "config": "1.27.0",
-        "line-height": "0.1.1",
-        "prop-types": "15.6.0",
-        "react": "15.6.2",
-        "react-motion": "0.5.2"
       }
     },
     "react-select": {

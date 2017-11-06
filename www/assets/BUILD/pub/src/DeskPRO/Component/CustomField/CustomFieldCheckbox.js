@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { withFormValue } from 'react-forms';
+import { withFormValue } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import { AbstractCustomField } from './AbstractCustomField';
 import { noFocusBorder } from './noFocusBorderDecorator';
@@ -40,7 +40,7 @@ class MultipleCheckbox extends React.Component {
 
   static propTypes = {
     formValue: PropTypes.object,
-    itemValue: PropTypes.any,
+    itemValue: PropTypes.node,
     itemLabel: PropTypes.string
   };
 

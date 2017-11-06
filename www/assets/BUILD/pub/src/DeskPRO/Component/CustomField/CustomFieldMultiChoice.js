@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field } from 'react-forms';
+import { Field } from '@deskpro/react-forms';
 import { AbstractCustomField } from './AbstractCustomField';
 import PortalSimpleSelectBoxWrapper from './PortalSimpleSelectBoxWrapper';
 

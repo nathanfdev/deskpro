@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { withFormValue, Input } from 'react-forms';
+import { withFormValue, Input } from '@deskpro/react-forms';
 import { AbstractCustomField } from './AbstractCustomField';
 import { noFocusBorder } from './noFocusBorderDecorator';
 
@@ -37,7 +37,7 @@ class RadioButton extends React.Component {
 
   static propTypes = {
     formValue: PropTypes.object,
-    itemValue: PropTypes.any,
+    itemValue: PropTypes.node,
     itemLabel: PropTypes.string
   };
 

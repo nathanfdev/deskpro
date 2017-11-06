@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { AbstractCustomField } from './AbstractCustomField';
-import { Field } from 'react-forms';
+import PropTypes from 'prop-types';
+import { Field } from '@deskpro/react-forms';
 import classNames from 'classnames';
+import { AbstractCustomField } from './AbstractCustomField';
 import { noFocusBorder } from './noFocusBorderDecorator';
 
 export class CustomFieldToggle extends AbstractCustomField {
@@ -22,13 +22,12 @@ export class CustomFieldToggle extends AbstractCustomField {
 class Checkbox extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.any,
-    label:    PropTypes.string,
+    value:    PropTypes.node,
     onChange: PropTypes.func
   };
 
   componentDidMount() {
-    this.addNoFocusBorderListeners(this.refs.el);
+    this.addNoFocusBorderListeners(this.element);
   }
 
   onClick = () => {
@@ -43,7 +42,7 @@ class Checkbox extends React.Component {
       <div
         className="checkbox-container"
         tabIndex={0}
-        ref="el"
+        ref={(c) => { this.element = c; }}
         onClick={this.onClick}
       >
         <span className={classNames('checkbox', { checked: value })}>

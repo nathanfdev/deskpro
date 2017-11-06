@@ -3,7 +3,7 @@ import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { Fieldset } from 'react-forms';
+import { Fieldset } from '@deskpro/react-forms';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';

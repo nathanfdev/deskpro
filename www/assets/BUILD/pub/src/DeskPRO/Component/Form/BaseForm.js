@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { createValue } from 'react-forms';
+import { createValue } from '@deskpro/react-forms';
 
 class BaseForm extends React.Component {
 

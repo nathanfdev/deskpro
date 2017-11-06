@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
 import { loadAll, loadWithParams, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
