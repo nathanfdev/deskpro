@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from '@deskpro/react-scrollbar';
 
 export class WidgetBodyScrollArea extends React.Component {
 

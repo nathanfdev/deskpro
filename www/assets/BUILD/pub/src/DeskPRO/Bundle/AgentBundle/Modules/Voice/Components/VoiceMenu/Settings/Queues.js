@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form';
 import Immutable from 'immutable';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from '@deskpro/react-scrollbar';
 import Avatar from '../../Common/Avatar';
 
 class Queues extends React.Component {

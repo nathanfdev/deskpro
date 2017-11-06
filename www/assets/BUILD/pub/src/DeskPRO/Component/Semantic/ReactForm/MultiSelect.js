@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from '@deskpro/react-scrollbar';
 import classNames from 'classnames';
 
 class SemanticMultiSelect extends React.Component {
