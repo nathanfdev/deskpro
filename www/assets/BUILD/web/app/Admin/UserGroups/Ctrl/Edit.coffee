@@ -24,7 +24,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
       groupPromise = @ugData.loadEditUserGroupData(@$stateParams.id || null);
-      promises = [groupPromise, @service.ticketDeps.all(), @service.chatDeps.all()]
+      promises = [groupPromise, @service.ticketDeps.all(true), @service.chatDeps.all(true)]
 
       @$q.all(promises).then (res) =>
         @group             = res[0].group
