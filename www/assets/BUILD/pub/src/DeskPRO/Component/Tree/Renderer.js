@@ -1,7 +1,37 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import { objectKeyFilter } from '@deskpro/react-components/lib/utils/objects';
 import { isDescendant } from 'react-sortable-tree';
+
+const propTypes = {
+  node:          PropTypes.object.isRequired,
+  path:          PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
+  treeIndex:     PropTypes.number.isRequired,
+  isSearchMatch: PropTypes.bool,
+  isSearchFocus: PropTypes.bool,
+
+  scaffoldBlockPxWidth:     PropTypes.number.isRequired,
+  toggleChildrenVisibility: PropTypes.func,
+  buttons:                  PropTypes.arrayOf(PropTypes.node),
+  className:                PropTypes.string,
+  style:                    PropTypes.object,
+  parentNode:               PropTypes.object,
+  canDrag:                  PropTypes.bool,
+  didDrop:                  PropTypes.bool,
+
+  // Drag and drop API functions
+  // Drag source
+  connectDragPreview: PropTypes.func.isRequired,
+  connectDragSource:  PropTypes.func.isRequired,
+  startDrag:          PropTypes.func, // Needed for drag-and-drop utils
+  endDrag:            PropTypes.func, // Needed for drag-and-drop utils
+  isDragging:         PropTypes.bool.isRequired,
+  draggedNode:        PropTypes.object,
+  // Drop target
+  isOver:             PropTypes.bool.isRequired,
+  canDrop:            PropTypes.bool.isRequired,
+};
 
 const NodeRendererDefault = ({
   scaffoldBlockPxWidth,
@@ -56,7 +86,7 @@ const NodeRendererDefault = ({
   return (
     <div
       style={{ height: '100%' }}
-      {...otherProps}
+      {...objectKeyFilter(otherProps, propTypes)}
     >
       {toggleChildrenVisibility && node.children && node.children.length > 0 && (
         <div>
@@ -130,30 +160,6 @@ const NodeRendererDefault = ({
   );
 };
 
-NodeRendererDefault.propTypes = {
-  node:          PropTypes.object.isRequired,
-  path:          PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.number])).isRequired,
-  treeIndex:     PropTypes.number.isRequired,
-  isSearchMatch: PropTypes.bool,
-  isSearchFocus: PropTypes.bool,
-
-  scaffoldBlockPxWidth:     PropTypes.number.isRequired,
-  toggleChildrenVisibility: PropTypes.func,
-  buttons:                  PropTypes.arrayOf(PropTypes.node),
-  className:                PropTypes.string,
-  style:                    PropTypes.object,
-
-  // Drag and drop API functions
-  // Drag source
-  connectDragPreview: PropTypes.func.isRequired,
-  connectDragSource:  PropTypes.func.isRequired,
-  startDrag:          PropTypes.func.isRequired, // Needed for drag-and-drop utils
-  endDrag:            PropTypes.func.isRequired, // Needed for drag-and-drop utils
-  isDragging:         PropTypes.bool.isRequired,
-  draggedNode:        PropTypes.object,
-  // Drop target
-  isOver:             PropTypes.bool.isRequired,
-  canDrop:            PropTypes.bool.isRequired,
-};
+NodeRendererDefault.propTypes = propTypes;
 
 export default NodeRendererDefault;
