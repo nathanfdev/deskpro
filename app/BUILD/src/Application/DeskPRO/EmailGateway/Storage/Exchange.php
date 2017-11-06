@@ -40,7 +40,6 @@ use EWSType_DeleteItemType;
 use EWSType_DisposalType;
 use EWSType_DistinguishedFolderIdNameType;
 use EWSType_DistinguishedFolderIdType;
-use EWSType_FieldOrderType;
 use EWSType_FieldURIOrConstantType;
 use EWSType_FindFolderType;
 use EWSType_FindItemType;
@@ -58,15 +57,12 @@ use EWSType_MessageType;
 use EWSType_MoveItemType;
 use EWSType_NonEmptyArrayOfBaseFolderIdsType;
 use EWSType_NonEmptyArrayOfBaseItemIdsType;
-use EWSType_NonEmptyArrayOfFieldOrdersType;
 use EWSType_NonEmptyArrayOfFoldersType;
 use EWSType_NonEmptyArrayOfItemChangeDescriptionsType;
 use EWSType_NonEmptyArrayOfPathsToElementType;
 use EWSType_PathToUnindexedFieldType;
 use EWSType_RestrictionType;
 use EWSType_SetItemFieldType;
-use EWSType_SortDirectionType;
-use EWSType_UnindexedFieldURIType;
 use EWSType_UpdateItemType;
 use Orb\Util\Arrays;
 
@@ -176,14 +172,6 @@ class Exchange
             }
         }
 
-        $order                          = new EWSType_FieldOrderType();
-        $order->FieldURI                = new EWSType_PathToUnindexedFieldType();
-        $order->FieldURI->FieldURI      = EWSType_UnindexedFieldURIType::ITEM_DATE_TIME_RECEIVED;
-        $order->Order                   = EWSType_SortDirectionType::ASCENDING;
-        $request->SortOrder             = new EWSType_NonEmptyArrayOfFieldOrdersType();
-        $request->SortOrder->FieldOrder = [$order];
-
-        $request->SortOrder = $order;
         $request->Traversal = EWSType_ItemQueryTraversalType::SHALLOW;
 
         $response = $this->service->FindItem($request);
