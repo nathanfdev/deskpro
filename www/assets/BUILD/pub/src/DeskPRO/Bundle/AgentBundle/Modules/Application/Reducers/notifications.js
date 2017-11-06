@@ -1,7 +1,6 @@
-import * as actions from '../Actions/notificationActions.js';
 import { createReducer } from 'Ampliflux';
-import uuid from 'node-uuid';
-import { async } from 'Ampliflux/reducers/handlers';
+import uuid from 'uuid';
+import * as actions from '../Actions/notificationActions';
 
 const initialState = {
   notifications:     [],
@@ -24,8 +23,8 @@ export default createReducer(initialState, {
     state.get('notifications').filter(notification => notification.id !== payload)
   ),
   [actions.setupActionAlerts]: (state, payload) => {
-    state = state.set('actionAlerts', payload);
-    return state.set('actionAlertsSetup', false);
+    const newState = state.set('actionAlerts', payload);
+    return newState.set('actionAlertsSetup', false);
   },
   [actions.newActionAlerts]: (state, payload) => {
     const last = payload[payload.length - 1];

@@ -12704,6 +12704,12 @@
               }
             }
           }
+        },
+        "uuid": {
+          "version": "2.0.3",
+          "resolved": "https://registry.npmjs.org/uuid/-/uuid-2.0.3.tgz",
+          "integrity": "sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=",
+          "dev": true
         }
       }
     },
@@ -15883,6 +15889,12 @@
             }
           }
         },
+        "uuid": {
+          "version": "2.0.3",
+          "resolved": "https://registry.npmjs.org/uuid/-/uuid-2.0.3.tgz",
+          "integrity": "sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=",
+          "dev": true
+        },
         "vinyl": {
           "version": "1.2.0",
           "resolved": "https://registry.npmjs.org/vinyl/-/vinyl-1.2.0.tgz",
@@ -16413,6 +16425,14 @@
         "uuid": "2.0.3",
         "write-file-atomic": "1.3.4",
         "xdg-basedir": "2.0.0"
+      },
+      "dependencies": {
+        "uuid": {
+          "version": "2.0.3",
+          "resolved": "https://registry.npmjs.org/uuid/-/uuid-2.0.3.tgz",
+          "integrity": "sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=",
+          "dev": true
+        }
       }
     },
     "console-browserify": {
@@ -23680,11 +23700,6 @@
       "integrity": "sha1-WuVUHQJGRdMqWPzdyc7s6nrjrC8=",
       "dev": true
     },
-    "node-uuid": {
-      "version": "1.4.7",
-      "resolved": "https://registry.npmjs.org/node-uuid/-/node-uuid-1.4.7.tgz",
-      "integrity": "sha1-baWhdmjEs91ZYjvaEc9/pMH2Cm8="
-    },
     "nopt": {
       "version": "3.0.6",
       "resolved": "https://registry.npmjs.org/nopt/-/nopt-3.0.6.tgz",
@@ -28180,10 +28195,9 @@
       "dev": true
     },
     "uuid": {
-      "version": "2.0.3",
-      "resolved": "https://registry.npmjs.org/uuid/-/uuid-2.0.3.tgz",
-      "integrity": "sha1-Z+LoY3lyFVMN/zGOW/nc6/1Hsho=",
-      "dev": true
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/uuid/-/uuid-3.1.0.tgz",
+      "integrity": "sha512-DIWtzUkw04M4k3bf1IcpS2tngXEL26YUD2M0tMDUpnUrz2hgzUBlD55a4FjdLGPvfHxS6uluGWvaVEqgBcVa+g=="
     },
     "v8flags": {
       "version": "2.1.1",

@@ -1,4 +1,4 @@
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 
 const hasAttributeWithValue = (dom, attributeName, valueList) => {
   const value = dom.hasAttribute(attributeName) ? dom.getAttribute(attributeName) : null;

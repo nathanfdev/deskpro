@@ -61,7 +61,6 @@
     "moment-hijri": "^2.0.1",
     "moment-range": "2.1.0",
     "node-libs-browser": "0.5.3",
-    "node-uuid": "1.4.7",
     "notifyjs": "^3.0.0",
     "post-robot": "^7.0.8",
     "prop-types": "^15.6.0",
@@ -111,7 +110,8 @@
     "striptags": "2.1.1",
     "to-markdown": "^3.0.3",
     "toastr": "^2.1.2",
-    "twig": "^1.10.5"
+    "twig": "^1.10.5",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.3.0",

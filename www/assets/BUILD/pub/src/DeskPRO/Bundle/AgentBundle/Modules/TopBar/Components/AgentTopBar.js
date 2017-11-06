@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 import striptags from 'striptags';
 import Notify from 'notifyjs';
 import linkifyHtml from 'linkifyjs/html';

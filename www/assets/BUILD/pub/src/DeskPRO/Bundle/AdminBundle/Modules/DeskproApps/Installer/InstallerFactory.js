@@ -1,5 +1,5 @@
 import React from 'react';
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 
 import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
