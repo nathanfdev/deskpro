@@ -522,13 +522,24 @@ class PortalController extends AbstractController
      */
     public function appleAppSiteAssociationAction()
     {
+        $router = $this->get('router');
+        $paths  = [
+            $router->generate('go_to_ticket_id', ['id' => 0]),
+            $router->generate('go_to_person_id', ['id' => 0]),
+            $router->generate('go_to_organization_id', ['id' => 0]),
+        ];
+
+        foreach ($paths as &$path) {
+            $path = str_replace(0, '*', $path);
+        }
+
         $data = [
             'applinks' => [
                 'apps'    => [],
                 'details' => [
                     [
                         'appID' => 'HC9N5Z797X.com.deskpro.mobile.ios',
-                        'paths' => [$this->get('router')->generate('go_to_ticket_ref', ['ref' => '*'])],
+                        'paths' => $paths,
                     ],
                 ],
             ],
