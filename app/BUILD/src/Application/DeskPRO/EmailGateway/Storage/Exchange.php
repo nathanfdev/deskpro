@@ -40,6 +40,7 @@ use EWSType_DeleteItemType;
 use EWSType_DisposalType;
 use EWSType_DistinguishedFolderIdNameType;
 use EWSType_DistinguishedFolderIdType;
+use EWSType_FieldOrderType;
 use EWSType_FieldURIOrConstantType;
 use EWSType_FindFolderType;
 use EWSType_FindItemType;
@@ -63,6 +64,8 @@ use EWSType_NonEmptyArrayOfPathsToElementType;
 use EWSType_PathToUnindexedFieldType;
 use EWSType_RestrictionType;
 use EWSType_SetItemFieldType;
+use EWSType_SortDirectionType;
+use EWSType_UnindexedFieldURIType;
 use EWSType_UpdateItemType;
 use Orb\Util\Arrays;
 
@@ -171,6 +174,12 @@ class Exchange
                 $request->ParentFolderIds->FolderId->Id = $folder->FolderId->Id;
             }
         }
+
+        $order                     = new EWSType_FieldOrderType();
+        $order->FieldURI           = new EWSType_PathToUnindexedFieldType();
+        $order->FieldURI->FieldURI = EWSType_UnindexedFieldURIType::ITEM_DATE_TIME_RECEIVED;
+        $order->Order              = EWSType_SortDirectionType::ASCENDING;
+        $request->SortOrder        = [$order];
 
         $request->Traversal = EWSType_ItemQueryTraversalType::SHALLOW;
 
