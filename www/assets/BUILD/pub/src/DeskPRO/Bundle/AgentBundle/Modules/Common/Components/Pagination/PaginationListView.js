@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import createFragment from 'react-addons-create-fragment';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { PageView } from './PageView';
 
 export class PaginationListView extends Component {
@@ -21,12 +21,13 @@ export class PaginationListView extends Component {
   render() {
     const { pageNum, pageRangeDisplayed, marginPagesDisplayed, onPageSelected, currentPage, breakLabel, dropdown } = this.props;
     const { subContainerClassName, pageClassName, pageLinkClassName, activeClassName } = this.props;
-    const items = {};
+    const items = [];
 
     if (pageNum <= pageRangeDisplayed) {
       for (let index = 0; index < pageNum; index++) {
-        items['key' + index] = (
-          <PageView onClick={onPageSelected}
+        items.push(
+          <PageView
+            onClick={onPageSelected}
             dropdown={dropdown}
             currentPage={currentPage}
             pageNum={pageNum}
@@ -56,7 +57,8 @@ export class PaginationListView extends Component {
         page = index + 1;
 
         const pageView = (
-          <PageView onClick={onPageSelected}
+          <PageView
+            onClick={onPageSelected}
             dropdown={dropdown}
             currentPage={currentPage}
             pageClassName={pageClassName}
@@ -68,17 +70,17 @@ export class PaginationListView extends Component {
         );
 
         if (page <= marginPagesDisplayed) {
-          items['key' + index] = pageView;
+          items.push(pageView);
           continue;
         }
 
         if (page > pageNum - marginPagesDisplayed) {
-          items['key' + index] = pageView;
+          items.push(pageView);
           continue;
         }
 
         if ((index >= currentPage - leftSide) && (index <= currentPage + rightSide)) {
-          items['key' + index] = pageView;
+          items.push(pageView);
           continue;
         }
 
@@ -87,14 +89,14 @@ export class PaginationListView extends Component {
         const breakLabelValue = items[breakLabelKey];
 
         if (breakLabelValue !== breakLabel) {
-          items['key' + index] = breakLabel;
+          items.push(breakLabel);
         }
       }
     }
 
     return (
       <ul className={subContainerClassName}>
-        {createFragment(items)}
+        {items}
       </ul>
     );
   }

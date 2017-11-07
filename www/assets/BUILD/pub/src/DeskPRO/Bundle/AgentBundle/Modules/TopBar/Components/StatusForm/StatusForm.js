@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Field, Select, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import classNames from 'classnames';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Route from 'react-router/lib/Route';
 import Router from 'react-router/lib/Router';
 import browserHistory from 'react-router/lib/browserHistory';

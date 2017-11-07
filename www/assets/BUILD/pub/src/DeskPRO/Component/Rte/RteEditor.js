@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
 import {
@@ -244,6 +245,7 @@ export default class RteEditor extends React.Component {
     delete props.onPasteImage;
     delete props.ctrlEnterSubmit;
     delete props.options;
+    delete props.inline;
     return React.createElement(tag, { ...props, ref: (c) => { this.node = c; } });
   }
 }

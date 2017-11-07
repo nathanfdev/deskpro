@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { CheckboxListItem } from './CheckboxListItem';
 import { RadioListItem } from './RadioListItem';
 import Immutable from 'immutable';

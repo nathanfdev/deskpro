@@ -17,29 +17,12 @@ import {
 import { TicketApp, TicketForm, TicketFormSubmitted } from '../../../Ticket/Components/index';
 import { history } from '../../../../Services/history';
 
-const routes = [
-  <Redirect key="1" from="/" to="chat" />,
-  <Route key="2" path="chat" component={ChatApp}>
-    <Route path="begin" component={ChatBeginContainer}>
-      <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />
-      <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
-      <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
-    </Route>
-    <Route component={ChatPollingContainer}>
-      <Route name="chat_active" path="active" component={ChatActive} />
-    </Route>
-  </Route>,
-  <Route key="3" path="ticket" component={TicketApp}>
-    <Route name="ticket_form" path="form" component={TicketForm} />
-    <Route name="ticket_form_submitted" path="form_submitted" component={TicketFormSubmitted} />
-  </Route>
-];
-
 export default class Widget extends React.Component {
 
   componentDidMount() {
     window.widgetFrame = parent.window.widget_iframe;
   }
+
 
   render() {
     return (
@@ -48,7 +31,21 @@ export default class Widget extends React.Component {
           <WidgetHeaderContainer />
           <WidgetBodyContainer>
             <Router history={history}>
-              {routes}
+              <Redirect from="/" to="chat" />
+              <Route path="chat" component={ChatApp}>
+                <Route path="begin" component={ChatBeginContainer}>
+                  <Route name="chat_begin_simple" path="simple" component={ChatBeginSimple} />
+                  <Route name="chat_begin_conversation" path="conversation" component={ChatBeginConversation} />
+                  <Route name="chat_begin_form" path="form" component={ChatBeginForm} />
+                </Route>
+                <Route component={ChatPollingContainer}>
+                  <Route name="chat_active" path="active" component={ChatActive} />
+                </Route>
+              </Route>
+              <Route path="ticket" component={TicketApp}>
+                <Route name="ticket_form" path="form" component={TicketForm} />
+                <Route name="ticket_form_submitted" path="form_submitted" component={TicketFormSubmitted} />
+              </Route>
             </Router>
           </WidgetBodyContainer>
           <WidgetFooter />

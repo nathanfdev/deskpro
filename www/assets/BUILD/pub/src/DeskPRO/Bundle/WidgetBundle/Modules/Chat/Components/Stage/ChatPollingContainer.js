@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { history, getLocation } from '../../../../Services/history';
@@ -22,7 +23,7 @@ export class ChatPollingContainer extends React.Component {
 
   static propTypes = {
     dispatch:      PropTypes.func.isRequired,
-    chatId:        PropTypes.number,
+    chatId:        PropTypes.string,
     hasChatInfo:   PropTypes.bool,
     lastMessageId: PropTypes.number,
     children:      PropTypes.node

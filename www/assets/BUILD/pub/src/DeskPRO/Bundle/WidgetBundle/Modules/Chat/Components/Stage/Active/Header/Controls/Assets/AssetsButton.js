@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ControlItem } from '../ControlItem';
 
 export class AssetsButton extends React.Component {

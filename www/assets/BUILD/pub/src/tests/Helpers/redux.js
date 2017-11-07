@@ -1,8 +1,8 @@
 import React from 'react';
-import TestUtils from 'react-addons-test-utils';
+import TestUtils from 'react-dom/test-utils';
 import { IntlProvider } from 'react-intl';
-import { fakeState } from './state';
 import { AgentApp } from 'DeskPRO/Bundle/AgentBundle/AgentApp';
+import { fakeState } from './state';
 
 export function renderInRedux(state, jsx, dispatch = null) {
   const { Provider } = require('react-redux');

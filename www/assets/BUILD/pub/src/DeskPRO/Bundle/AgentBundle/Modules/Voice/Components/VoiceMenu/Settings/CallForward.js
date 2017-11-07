@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Form, Field, Toggle, BlurInput } from 'DeskPRO/Component/Semantic/ReactForm';
 
 class CallForward extends React.Component {

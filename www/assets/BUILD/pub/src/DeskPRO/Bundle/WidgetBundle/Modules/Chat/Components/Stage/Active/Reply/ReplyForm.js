@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import ScrollArea from 'react-scrollbar';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ScrollArea from '@deskpro/react-scrollbar';
 import { EmotionButton } from 'DeskPRO/Component/Rte/EmotionButton';
 import RteEditor from 'DeskPRO/Component/Rte/RteEditor';
 import { PasteCatcher } from 'DeskPRO/Component/Uploader/PasteCatcher';

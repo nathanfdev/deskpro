@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import $ from 'jquery';
@@ -23,7 +24,7 @@ export default class TicketFormContentContainer extends React.Component {
     bootstrap:    PropTypes.bool,
     loading:      PropTypes.bool,
     saving:       PropTypes.bool,
-    primaryColor: PropTypes.bool
+    primaryColor: PropTypes.string
   };
 
   componentDidMount() {

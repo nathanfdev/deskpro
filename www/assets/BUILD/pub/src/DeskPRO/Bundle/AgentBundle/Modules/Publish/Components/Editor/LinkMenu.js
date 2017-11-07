@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Select from 'react-select-plus';
 import { connect } from 'react-redux';
 import invariant from 'invariant';
@@ -40,8 +41,8 @@ class LinkMenu extends React.Component {
     if (!input) {
       callback(null, []);
     }
-    const type = ['article', 'download', 'news', 'feedback', 'topic'];
-    this.props.dispatch(quickSearchAction({ type, query: input })).then((res) => {
+    const types = ['article', 'download', 'news', 'feedback', 'topic'];
+    this.props.dispatch(quickSearchAction({ types, query: input })).then((res) => {
       invariant(res.data && res.data.data && res.data.data.grouped_results, 'Malformed QuickSearch response');
 
       const options = [];

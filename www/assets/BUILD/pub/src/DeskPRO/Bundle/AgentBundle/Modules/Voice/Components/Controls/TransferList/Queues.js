@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import ScrollArea from 'react-scrollbar';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ScrollArea from '@deskpro/react-scrollbar';
 import Immutable from 'immutable';
 import classNames from 'classnames';
 import Avatar from '../../Common/Avatar';

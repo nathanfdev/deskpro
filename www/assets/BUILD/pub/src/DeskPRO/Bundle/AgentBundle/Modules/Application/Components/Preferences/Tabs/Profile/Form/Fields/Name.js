@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export class Name extends React.Component {
 
@@ -14,7 +15,8 @@ export class Name extends React.Component {
   render() {
     return (
       <div className="bucket-column">
-        <input type="text"
+        <input
+          type="text"
           placeholder="Your name"
           value={this.props.value}
           onChange={this.onChange}

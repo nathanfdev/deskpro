@@ -1,5 +1,5 @@
-import React, { PropTypes } from 'react';
-import * as AppActions from '../../Application/Actions/appActions';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 import { Link } from 'react-router';
 import classNames from 'classnames';
@@ -40,18 +40,19 @@ export class AppSwitcher extends React.Component {
   renderAppIcon(appId, title, linkClass, iconClass, notificationCount = 0) {
     const { switchApp } = this.props;
     const clickHandler = () => switchApp(appId);
-    const iconClassNames = 'icon ' + iconClass;
+    const iconClassNames = `icon ${iconClass}`;
 
     return (
       <li>
-        <Link className={linkClass}
+        <Link
+          className={linkClass}
           activeClassName="active"
-          to={`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
+          to={`${window.DP_BASE_URL_RELATIVE}/${window.DP_AGENT_INTERFACE_PATH_NAMESPACE}/${appId}`}
           onClick={clickHandler}
         >
           {notificationCount > 0 ? (<span className="dpw-app-bar-notification">{notificationCount}</span>) : null}
           <div className="dpw-app-bar-icon">
-            <div className={iconClassNames}></div>
+            <div className={iconClassNames} />
           </div>
           {this.state.expandedSwitcher ? (<span className="dps-app-bar-title">{title}</span>) : null}
         </Link>

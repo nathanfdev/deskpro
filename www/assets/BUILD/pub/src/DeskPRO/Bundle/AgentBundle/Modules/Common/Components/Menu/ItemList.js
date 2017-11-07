@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 export class ItemList extends React.Component {
@@ -7,9 +8,9 @@ export class ItemList extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    widgetClass:         React.PropTypes.string,
-    overrideWidgetClass: React.PropTypes.bool,
-    children:            React.PropTypes.node
+    widgetClass:         PropTypes.string,
+    overrideWidgetClass: PropTypes.bool,
+    children:            PropTypes.node
   };
 
   static displayName = 'ItemList';

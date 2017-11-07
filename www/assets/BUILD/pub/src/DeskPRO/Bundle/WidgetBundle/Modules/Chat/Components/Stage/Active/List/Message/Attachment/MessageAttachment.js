@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { MessageImage } from './MessageImage';
 import { MessageFile } from './MessageFile';
 import Immutable from 'immutable';

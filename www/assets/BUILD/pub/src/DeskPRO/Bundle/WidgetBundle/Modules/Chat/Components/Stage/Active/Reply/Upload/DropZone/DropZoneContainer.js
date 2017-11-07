@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { chatIdSelector } from '../../../../../../Selectors/chat';
 import {
@@ -16,7 +17,7 @@ export class DropZoneContainer extends React.Component {
 
   static propTypes = {
     instant:  PropTypes.bool,
-    chatId:   PropTypes.number,
+    chatId:   PropTypes.string,
     dispatch: PropTypes.func,
     children: PropTypes.node
   };

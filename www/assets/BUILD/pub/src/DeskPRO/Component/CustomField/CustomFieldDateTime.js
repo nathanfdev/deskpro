@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Field } from 'react-forms';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Field } from '@deskpro/react-forms';
 import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import 'jquery-datetimepicker-iframe/jquery.datetimepicker';
 import $ from 'jquery';

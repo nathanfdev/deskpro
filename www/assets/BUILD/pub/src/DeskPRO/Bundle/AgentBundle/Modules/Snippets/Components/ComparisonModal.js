@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import difflib from 'difflib';
 import diff2html from 'diff2html';
 import htmlToText from 'html-to-text';

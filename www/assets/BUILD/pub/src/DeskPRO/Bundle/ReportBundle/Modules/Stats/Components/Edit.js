@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Loader } from '@deskpro/react-components';
 import { Input, Form, Field, MultiSelect, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import VarsField from './Fields/VarsField';

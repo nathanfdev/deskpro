@@ -1,4 +1,7 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Loader from 'react-loader';
+import { updateMyProfile } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/profile';
 import { Field } from './Fields/Field';
 import { Avatar } from './Fields/Avatar';
 import { Name } from './Fields/Name';
@@ -9,8 +12,6 @@ import { Phone } from './Fields/Phone';
 import { Language } from './Fields/Language';
 import { Timezone } from './Fields/Timezone';
 import { Password } from './Fields/Password';
-import { updateMyProfile } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/profile';
-import Loader from 'react-loader';
 
 export class ProfileForm extends React.Component {
   static propTypes = {
@@ -57,7 +58,7 @@ export class ProfileForm extends React.Component {
     };
   }
 
-  onChangeAvatar = value => {
+  onChangeAvatar = (value) => {
     this.updateData(
       {
         avatar: {
@@ -67,15 +68,15 @@ export class ProfileForm extends React.Component {
       });
   };
 
-  onChangeName = value => {
+  onChangeName = (value) => {
     this.updateData({ name: value });
   };
 
-  onChangeDisplayName = value => {
+  onChangeDisplayName = (value) => {
     this.updateData({ display_name: value });
   };
 
-  onChangeEmails = emails => {
+  onChangeEmails = (emails) => {
     const diff = { emails };
     if (emails.length) {
       diff.primary_email = emails[0];
@@ -84,7 +85,7 @@ export class ProfileForm extends React.Component {
     this.updateData(diff);
   };
 
-  onChangePrimaryEmail = value => {
+  onChangePrimaryEmail = (value) => {
     this.updateData({ primary_email: value });
   };
 

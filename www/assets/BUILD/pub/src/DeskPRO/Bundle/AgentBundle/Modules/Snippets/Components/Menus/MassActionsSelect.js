@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { CustomSelect } from '@deskpro/react-components/lib/Components/Forms';
 import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
 import Icon from '@deskpro/react-components/lib/Components/Icon';

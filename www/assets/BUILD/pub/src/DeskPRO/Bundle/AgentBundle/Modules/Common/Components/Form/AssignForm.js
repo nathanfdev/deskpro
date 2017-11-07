@@ -1,4 +1,5 @@
-import React, { Component, PropTypes, Children } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component, Children } from 'react';
 import Immutable from 'immutable';
 import { ShowOnlySelected, Unassign } from './';
 import { QuickFilter } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/QuickFilter';

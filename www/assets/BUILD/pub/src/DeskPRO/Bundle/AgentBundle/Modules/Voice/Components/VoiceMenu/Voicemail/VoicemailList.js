@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
 import EventEmitter from 'eventemitter2';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from '@deskpro/react-scrollbar';
 import { WaitingFormat } from 'DeskPRO/Component/Timer';
 
 const emitter = new EventEmitter();

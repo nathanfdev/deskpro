@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { copyTextToClipboard } from 'DeskPRO/Component/Util/ClipBoard';
 
 class Anchor extends React.Component {

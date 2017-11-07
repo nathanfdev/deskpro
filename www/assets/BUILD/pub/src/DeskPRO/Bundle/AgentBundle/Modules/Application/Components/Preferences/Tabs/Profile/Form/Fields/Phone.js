@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { PhoneNumber } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Form/PhoneNumber';
 
 export class Phone extends React.Component {
@@ -13,7 +14,8 @@ export class Phone extends React.Component {
 
     return (
       <div className="bucket-column">
-        <PhoneNumber number={value.number}
+        <PhoneNumber
+          number={value.number}
           extension={value.extension}
           onChange={onChange}
         />

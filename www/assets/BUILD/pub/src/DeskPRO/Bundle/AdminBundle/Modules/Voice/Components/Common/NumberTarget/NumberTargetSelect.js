@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import TargetTypeSelect from '../../Common/NumberTarget/TargetTypeSelect';
 import AgentsSelectContainer from '../../../../Common/Components/Select/AgentsSelectContainer';

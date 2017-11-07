@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { updateRoutingState } from '../../../Application/Actions/routingActions';

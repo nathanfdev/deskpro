@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import BackButton from '../../../../../Common/Components/BackButton';
 import SectionHeader from '../../../../../Common/Components/SectionHeader';
 import { NumbersTable, BaseNumberRow } from '../NumbersTable';

@@ -1,11 +1,12 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Menu as ProfileMenu } from './Tabs/Profile/Menu';
 import { Menu as SignatureMenu } from './Tabs/Signature/Menu';
 import { Menu as SettingsMenu } from './Tabs/Settings/Menu';
 import { Menu as NotificationsMenu } from './Tabs/Notifications/Menu';
 import { Menu as DevicesMenu } from './Tabs/Devices/Menu';
 import * as AppActions from '../../Actions/appActions';
-import classNames from 'classnames';
 
 export class Menu extends React.Component {
 
@@ -19,7 +20,8 @@ export class Menu extends React.Component {
     const clickHandler = () => dispatch(AppActions.changePreferenceTab(name));
 
     return (
-      <li className={classNames({ 'active': dpWindow.get('preferenceTab') === name })}
+      <li
+        className={classNames({ active: dpWindow.get('preferenceTab') === name })}
         onClick={clickHandler}
       >
 

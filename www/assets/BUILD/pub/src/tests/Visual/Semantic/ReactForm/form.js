@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
-import { Fieldset, Input, createValue } from 'react-forms';
+import { Fieldset, Input, createValue } from '@deskpro/react-forms';
 import { css } from '../../decorators';
 
 const formErrors = {
@@ -17,7 +17,7 @@ const formErrors = {
   }
 };
 
-storiesOf('Semantic: react-forms', module)
+storiesOf('Semantic: @deskpro/react-forms', module)
   .addDecorator(story => css(story()))
   .add(
     'Simple form',

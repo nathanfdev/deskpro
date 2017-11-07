@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { replaceRoute } from 'DeskPRO/Bundle/AdminBundle/Services/history';
 import { loadAccounts } from '../../../Actions/accountActions';
 import { loadNumbers } from '../../../Actions/numberActions';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { reopenChat } from '../../../Actions/chatActions';
 import {
@@ -22,12 +23,11 @@ export class ReopenChatContainer extends React.Component {
 
   static propTypes = {
     dispatch:       PropTypes.func,
-    chatId:         PropTypes.number,
+    chatId:         PropTypes.string,
     locked:         PropTypes.bool,
     isEnded:        PropTypes.bool,
-    dateEnded:      PropTypes.string,
     canReopen:      PropTypes.bool,
-    children:       PropTypes.any,
+    children:       PropTypes.node,
     lostConnection: PropTypes.bool
   };
 

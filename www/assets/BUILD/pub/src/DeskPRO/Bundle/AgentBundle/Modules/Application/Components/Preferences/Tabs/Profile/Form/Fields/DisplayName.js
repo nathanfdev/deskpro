@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export class DisplayName extends React.Component {
 
@@ -31,7 +32,8 @@ export class DisplayName extends React.Component {
   renderInput() {
     return (
       <div className="bucket-column">
-        <input type="text"
+        <input
+          type="text"
           placeholder="Your display name"
           value={this.props.value}
           onChange={this.onChange}
@@ -45,7 +47,8 @@ export class DisplayName extends React.Component {
       <div>
         <div className="bucket short">
           <label className="simple-label">
-            <input type="checkbox"
+            <input
+              type="checkbox"
               checked={this.state.checked}
               onChange={this.onToggle}
             />

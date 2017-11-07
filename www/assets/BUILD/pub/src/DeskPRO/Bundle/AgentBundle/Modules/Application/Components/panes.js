@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { workspaceSelector, workspaceDimsSelector } from '../Selectors/workspace';
 
@@ -24,7 +25,8 @@ function getWorkspaceClasses(workspace, classes = []) {
 export class AppPane extends React.Component {
   static propTypes = {
     workspace:     PropTypes.object.isRequired,
-    workspaceDims: PropTypes.object.isRequired
+    workspaceDims: PropTypes.object.isRequired,
+    children:      PropTypes.node,
   };
 
   render() {
@@ -46,12 +48,13 @@ export class AppPane extends React.Component {
 }))
 export class NavPaneContainer extends React.Component {
   static propTypes = {
-    isHoverMode: PropTypes.bool.isRequired
+    isHoverMode: PropTypes.bool.isRequired,
+    children:    PropTypes.node,
   };
 
   constructor(props) {
     super(props);
-    
+
     // State to track mouse hover/leave if menu is in hover mode
     this.state = {
       isHovered: false
@@ -108,7 +111,8 @@ export class NavPaneContainer extends React.Component {
 
 export class NavPane extends React.Component {
   static propTypes = {
-    isVisible: PropTypes.bool.isRequired
+    isVisible: PropTypes.bool.isRequired,
+    children:  PropTypes.node,
   };
 
   render() {
@@ -119,7 +123,7 @@ export class NavPane extends React.Component {
 
     return (
       <div className={classNames}>
-        <div className="dp-collapsed-placeholder"></div>
+        <div className="dp-collapsed-placeholder" />
         <div className="dp-panes-nav-body">{this.props.children}</div>
       </div>
     );
@@ -133,7 +137,8 @@ export class NavPane extends React.Component {
 export class ListPane extends React.Component {
   static propTypes = {
     workspace:     PropTypes.object.isRequired,
-    workspaceDims: PropTypes.object.isRequired
+    workspaceDims: PropTypes.object.isRequired,
+    children:      PropTypes.node,
   };
 
   render() {
@@ -155,7 +160,8 @@ export class ListPane extends React.Component {
 export class TabBodyPane extends React.Component {
   static propTypes = {
     workspace:     PropTypes.object.isRequired,
-    workspaceDims: PropTypes.object.isRequired
+    workspaceDims: PropTypes.object.isRequired,
+    children:      PropTypes.node,
   };
 
   render() {

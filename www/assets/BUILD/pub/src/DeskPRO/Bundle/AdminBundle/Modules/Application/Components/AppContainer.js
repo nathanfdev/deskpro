@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router';
 import toastr from 'toastr';
@@ -16,7 +17,7 @@ class AppContainer extends React.Component {
 
   static propTypes = {
     routePath:      PropTypes.string,
-    legacyNavigate: PropTypes.function
+    legacyNavigate: PropTypes.func
   };
 
   constructor(props) {

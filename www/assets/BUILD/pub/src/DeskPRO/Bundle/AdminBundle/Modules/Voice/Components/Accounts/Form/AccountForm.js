@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import classNames from 'classnames';
 

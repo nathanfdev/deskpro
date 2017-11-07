@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { ColumnMode } from './ColumnMode';
 import { SidebarMode } from './SidebarMode';
 
@@ -24,7 +25,7 @@ export class Workspace extends React.Component {
           <div className="header-controls">
             Your Workspace
             <span className="close">
-              <a href="#"><i className="fa fa-times" onClick={close}></i></a>
+              <a href="#"><i className="fa fa-times" onClick={close} /></a>
             </span>
           </div>
         </header>

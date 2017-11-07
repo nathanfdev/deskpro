@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 import AbstractList from './AbstractList';
 import AvatarHelper from './AvatarHelper';
 

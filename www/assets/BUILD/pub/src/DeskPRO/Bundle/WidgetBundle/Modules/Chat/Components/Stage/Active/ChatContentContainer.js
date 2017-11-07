@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { widgetResize } from '../../../../Application/Actions/dpWindowActions';
 import {
@@ -25,10 +26,14 @@ export class ChatContentContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func,
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(newProps) {
+    if (this.props.children !== newProps.children) {
+      return;
+    }
+
     this.props.dispatch(widgetResize());
   }
 

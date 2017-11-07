@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import invariant from 'invariant';
 import { Detached } from 'DeskPRO/Component/Detached';
 
@@ -93,7 +94,7 @@ export class Modal extends React.Component {
       className += ' no-footer';
     }
 
-    let style = {};
+    const style = {};
     if (this.props.zIndex) {
       style.zIndex = this.props.zIndex;
     }
@@ -106,25 +107,15 @@ export class Modal extends React.Component {
               {title}
             </h1>
             <div className="controls">
-              <a href="#" onClick={this.cancelClick}><i className="fa fa-times"></i></a>
+              <a href="#" onClick={this.cancelClick}><i className="fa fa-times" /></a>
             </div>
           </header>
-          <div className={(isMini && 'mini-') + 'popup-content'}>
+          <div className={`${isMini && 'mini-'}popup-content`}>
             {children}
           </div>
           {this.renderFooter()}
         </section>
       </div>
-    );
-  }
-
-  render() {
-    const { isOpen } = this.state;
-
-    return (
-      <Detached>
-        {isOpen ? this.renderBody() : null}
-      </Detached>
     );
   }
 
@@ -141,14 +132,24 @@ export class Modal extends React.Component {
   }
 
   renderButton(type) {
-    invariant(Modal.defaultProps[type + 'Visible'] !== undefined, 'Invalid modal button type');
-    if (!this.props[type + 'Visible']) return null;
+    invariant(Modal.defaultProps[`${type}Visible`] !== undefined, 'Invalid modal button type');
+    if (!this.props[`${type}Visible`]) return null;
 
-    const className = 'popup-button ' + type;
+    const className = `popup-button ${type}`;
     return (
-      <button className={className} onClick={this[type + 'Click']}>
-        {this.props[type + 'Title']}
+      <button className={className} onClick={this[`${type}Click`]}>
+        {this.props[`${type}Title`]}
       </button>
+    );
+  }
+
+  render() {
+    const { isOpen } = this.state;
+
+    return (
+      <Detached>
+        {isOpen ? this.renderBody() : null}
+      </Detached>
     );
   }
 }

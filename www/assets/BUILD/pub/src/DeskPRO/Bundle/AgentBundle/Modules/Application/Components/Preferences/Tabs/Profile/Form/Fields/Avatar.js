@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Cropper } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Cropper';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Avatar as AvatarIcon } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/Avatar';
@@ -25,7 +26,7 @@ export class Avatar extends React.Component {
     };
   }
 
-  onCropThumbnail = file => {
+  onCropThumbnail = (file) => {
     if (file.cropped) {
       return;
     }
@@ -212,7 +213,7 @@ export class Avatar extends React.Component {
       <div className={classNames.join(' ')} id="avatar-crop">
         {!tmpFile && (
           <div className="controls">
-            <a href="#" onClick={this.onToggleEdit}><i className="fa fa-times"></i></a>
+            <a href="#" onClick={this.onToggleEdit}><i className="fa fa-times" /></a>
           </div>
         )}
 
@@ -222,7 +223,8 @@ export class Avatar extends React.Component {
         <div className="cropper-bucket">
           {(this.getImagePath() && !tmpFile) && ((<img src={this.getImagePath()} />))}
 
-          <DropzoneComponent className={tmpFile && 'hidden'}
+          <DropzoneComponent
+            className={tmpFile && 'hidden'}
             ref="dropzoneComponent"
             config={componentConfig}
             eventHandlers={{
@@ -268,7 +270,8 @@ export class Avatar extends React.Component {
           />
           Manage Avatar
         </a>
-        <ClickOut onClickOut={this.onCloseEdit}
+        <ClickOut
+          onClickOut={this.onCloseEdit}
           additionalNodes={[this.refs.editButton]}
           ignoreNodes={[jQuery('.dz-hidden-input')[0]]}
         >
