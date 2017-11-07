@@ -1083,19 +1083,21 @@ class TicketSearch extends SearcherAbstract
         $sql2 .= " GROUP BY part_perm.id $order_by $limit_sql ";
 
         if ($with_part_union) {
-            $select_query = "
+            $unionLimit  = !empty($page_info['limit']) ? $page_info['limit'] : $this->limit;
+            $selectQuery = "
                 ($sql)
                 UNION
                 ($sql2)
                 $order_by
+                LIMIT {$unionLimit}
             ";
         } else {
-            $select_query = $sql;
+            $selectQuery = $sql;
         }
 
-        $this->_last_sql = $select_query;
+        $this->_last_sql = $selectQuery;
 
-        return $select_query;
+        return $selectQuery;
     }
 
     /**
