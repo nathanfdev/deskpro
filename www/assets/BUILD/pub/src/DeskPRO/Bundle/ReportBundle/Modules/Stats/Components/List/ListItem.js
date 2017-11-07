@@ -36,7 +36,7 @@ class ListItem extends React.Component {
   onEditClick(event) {
     event.preventDefault();
     event.stopPropagation();
-    this.props.onEditReportClick(this.state.report);
+    this.props.onEditReportClick(this.props.report);
   }
 
   isLabelActive(label) {
