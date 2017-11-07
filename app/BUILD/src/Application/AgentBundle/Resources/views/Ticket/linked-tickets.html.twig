@@ -2,9 +2,10 @@
 	<tbody>
 		{% if linked_tickets.parent %}
 			<tr class="linked-title">
-				<th colspan="6" style="background: #eee;">Parent Ticket</th>
+				<th colspan="7" style="background: #eee;">Parent Ticket</th>
 			</tr>
 			<tr class="linked-head-title">
+				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.subject') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.department') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.person') }}</th>
@@ -14,6 +15,7 @@
 			</tr>
 			<tr class="linked-row">
 				{% set t = linked_tickets.parent %}
+				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.id }}</a></td>
 				<td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.subject }}</a></td>
 				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.department.full_title }}</td>
 				<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContactHtml()|raw }}</a></td>
@@ -43,9 +45,10 @@
 		{% endif %}
 		{% if linked_tickets.children|length %}
 			<tr class="linked-title">
-				<th colspan="6" style="background: #eee;">Sub-Tickets</th>
+				<th colspan="7" style="background: #eee;">Sub-Tickets</th>
 			</tr>
 			<tr class="linked-head-title">
+				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.subject') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.department') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.person') }}</th>
@@ -55,6 +58,7 @@
 			</tr>
 			{% for t in linked_tickets.children %}
 				<tr class="linked-row">
+					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.id }}</a></td>
 					<td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.subject }}</a></td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.department.full_title }}</td>
 					<td><div style="white-space: nowrap; text-wrap: none; overflow: hidden; text-overflow: ellipsis; min-width: 60px;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContactHtml()|raw }}</a></div></td>
@@ -85,9 +89,10 @@
 		{% endif %}
 		{% if linked_tickets.siblings|length %}
 			<tr class="linked-title">
-				<th colspan="6" style="background: #eee;">Other tickets with the same parent</th>
+				<th colspan="7" style="background: #eee;">Other tickets with the same parent</th>
 			</tr>
 			<tr class="linked-head-title">
+				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.subject') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.department') }}</th>
 				<th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.person') }}</th>
@@ -97,6 +102,7 @@
 			</tr>
 			{% for t in linked_tickets.siblings %}
 				<tr class="linked-row">
+					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.id }}</a></td>
 					<td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_ticket_view', {ticket_id: t.id}) }}">{{ t.subject }}</a></td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ t.department.full_title }}</td>
 					<td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_people_view', {person_id: t.person.id}) }}">{{ t.person.getDisplayContactHtml()|raw }}</a></td>
