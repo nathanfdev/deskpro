@@ -237,7 +237,7 @@ gulp.task('cpjs-all', function() {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 });
 
-gulp.task('cpjs', ['clean'], function() {
+gulp.task('cpjs', ['clean', 'cpjs-clipboard'], function() {
 
   var glob       = './app/**/*.js';
   var target_dir = './app-build/';
@@ -247,6 +247,11 @@ gulp.task('cpjs', ['clean'], function() {
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+});
+
+// it's unable to add to config.assets.php, failed on yui-compressor filter
+gulp.task('cpjs-clipboard', ['clean'], function () {
+  gulp.src('./node_modules/clipboard/dist/clipboard.min.js').pipe(gulp.dest('./app-build/'));
 });
 
 //------------------------------

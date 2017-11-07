@@ -7,6 +7,7 @@ define([
   'DeskPRO/Directive/DpTicketQuickActions',
   'DeskPRO/Directive/DpSubmitForm',
   'DeskPRO/Directive/JIRAFormWidget',
+  'DeskPRO/Directive/DpClipboard',
   'DeskPRO/Service/Person',
   'DeskPRO/Service/AgentTeam',
   'DeskPRO/CategoryBuilder/Module',
@@ -19,7 +20,8 @@ define([
   'ngContextMenu',
   'angularSanitize',
 	'jquery.ui.i18n',
-  'DeskPRO/Directive/DpDateTimePicker'
+  'DeskPRO/Directive/DpDateTimePicker',
+	'clipboard'
 ], function(
   angular,
   Functions,
@@ -29,6 +31,7 @@ define([
   DeskPRO_Directive_DpTicketQuickActions,
   DeskPRO_Directive_DpSubmitForm,
   DeskPRO_Directive_JIRAFormWidget,
+  DeskPRO_Directive_DpClipboard,
   DeskPRO_Service_Person,
   DeskPRO_Service_AgentTeam,
   DpCategoryBuilder
@@ -1168,6 +1171,7 @@ define([
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
 	AgentApp.directive('dpSubmitForm', DeskPRO_Directive_DpSubmitForm);
 	AgentApp.directive('jiraFormWidget', DeskPRO_Directive_JIRAFormWidget);
+	AgentApp.directive('clipboard', DeskPRO_Directive_DpClipboard);
 
 	return AgentApp;
 });

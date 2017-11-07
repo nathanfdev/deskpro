@@ -336,7 +336,6 @@
 
         window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% endif %};
 
-        window.DP_ZEROCLIPBOARD_PATH = '{{ asset('bower_components/zeroclipboard/dist/ZeroClipboard.swf') }}';
         window.DP_ADMIN_BUNDLE_PATH = '{{ asset('DeskPRO_AdminBundle.js', 'app_assets') }}';
         window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
     </script>
