@@ -13,16 +13,13 @@ class ListItem extends React.Component {
     labels:            PropTypes.object.isRequired,
     isActive:          PropTypes.bool.isRequired,
     groupParams:       PropTypes.object.isRequired,
+    onChangeReportVar: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
     this.onEditClick       = this.onEditClick.bind(this);
     this.onRunClick        = this.onRunClick.bind(this);
-    this.onChangeReportVar = this.onChangeReportVar.bind(this);
-    this.state = {
-      report: this.props.report
-    };
   }
 
   onRunClick(event) {
@@ -34,10 +31,6 @@ class ListItem extends React.Component {
     const { report } = this.state;
     const data = transformReportData(report);
     onRunReportClick(report, data);
-  }
-
-  onChangeReportVar(report) {
-    this.setState({ report }, this.onRunClick);
   }
 
   onEditClick(event) {
@@ -52,13 +45,12 @@ class ListItem extends React.Component {
   }
 
   render() {
-    const { isActive, groupParams } = this.props;
-    const { report } = this.state;
+    const { isActive, groupParams, onChangeReportVar, report } = this.props;
 
     return (
       <li className={classNames({ active: isActive })}>
         <h1>
-          <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={this.onChangeReportVar} groupParams={groupParams} report={report} />
+          <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />
           <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?

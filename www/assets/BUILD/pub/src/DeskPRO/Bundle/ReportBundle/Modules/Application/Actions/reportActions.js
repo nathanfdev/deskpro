@@ -37,7 +37,7 @@ export const loadReport = createAction(
 
 export const runReport = createAction(
   'REPORTS_RUN_REPORT',
-  (reportId, data) => {
+  (reportId, data) => (dispatch) => {
     const dataToSend = {
       report: {
         title:         data.title,
@@ -69,7 +69,10 @@ export const runReport = createAction(
           'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
         }
       })
-      .success(response => resolve(response))
+      .success((response) => {
+        dispatch(addToCollection('Reports', 'all', { [response.id]: response }, [response.id]));
+        return resolve(response);
+      })
     );
   });
 

@@ -39,15 +39,18 @@ class Wrapper extends React.Component {
 
     this.state = {
       currentReport: Immutable.Map(),
+      reports:       Immutable.List(),
       searchText:    '',
       labels:        newLabels,
-      activeLabels:  0
+      activeLabels:  0,
+      reportVars:    {},
     };
 
     this.onEditReportClick  = this.onEditReportClick.bind(this);
     this.onRunReportClick   = this.onRunReportClick.bind(this);
     this.onRunReport        = this.onRunReport.bind(this);
     this.onChangeFilterText = this.onChangeFilterText.bind(this);
+    this.onChangeReportVar  = this.onChangeReportVar.bind(this);
     this.onLabelClick       = this.onLabelClick.bind(this);
     this.onSubmit           = this.onSubmit.bind(this);
     this.onAddClick         = this.onAddClick.bind(this);
@@ -55,10 +58,27 @@ class Wrapper extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.currentReport) {
-      this.setState({ currentReport: props.currentReport });
-    }
+    const { currentReport, reports } = props;
+    this.setState({ currentReport, reports });
     this.setLabels(props);
+  }
+
+  onChangeReportVar(report, varName, value) {
+
+    const { vars } = this.state;
+    vars[varName] = value;
+    this.setState({ vars });
+    let newReport = report;
+
+    newReport.get('variables').forEach((val, index) => {
+      if (val.get('name') === varName) {
+        newReport = newReport.setIn(['variables', index, 'value'], value);
+      }
+    });
+
+    const data = transformReportData(report);
+    const newReports = this.state.reports.set(report.get('id'), report);
+    this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(report, data));
   }
 
   onEditReportClick(report) {
@@ -76,6 +96,7 @@ class Wrapper extends React.Component {
     const data = transformReportData(currentReport);
     data.display_types = [displayType];
     this.props.dispatch(runReport(currentReport.get('id'), data));
+    this.setState({ mode: 'run' });
   }
 
   onChangeFilterText(value) {
@@ -157,8 +178,8 @@ class Wrapper extends React.Component {
   }
 
   render() {
-    const { reports, reportsLoaded, groupParams, reportLoading } = this.props;
-    const { labels, activeLabels, searchText, currentReport, mode } = this.state;
+    const { reportsLoaded, groupParams, reportLoading } = this.props;
+    const { reports, labels, activeLabels, searchText, currentReport, mode } = this.state;
 
     const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
     const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
@@ -180,12 +201,13 @@ class Wrapper extends React.Component {
                 customReports={filteredCustomReports}
                 builtInReports={filteredBuiltInReports}
                 currentReport={currentReport}
+                groupParams={groupParams}
+                labels={labels}
                 reportsLoaded={reportsLoaded}
                 onEditReportClick={this.onEditReportClick}
                 onRunReportClick={this.onRunReportClick}
+                onChangeReportVar={this.onChangeReportVar}
                 onLabelClick={this.onLabelClick}
-                labels={labels}
-                groupParams={groupParams}
               />
             </div>
           </div>
@@ -202,7 +224,13 @@ class Wrapper extends React.Component {
           : null
         }
         { currentReport && mode === 'run'
-          ? <Run runReport={this.onRunReport} report={currentReport} reportLoading={reportLoading} />
+          ? <Run
+            onChangeReportVar={this.onChangeReportVar}
+            groupParams={groupParams}
+            runReport={this.onRunReport}
+            report={currentReport}
+            reportLoading={reportLoading}
+          />
           : null
         }
       </span>

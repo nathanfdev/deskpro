@@ -12,6 +12,7 @@ class List extends React.Component {
     onEditReportClick: PropTypes.func.isRequired,
     onRunReportClick:  PropTypes.func.isRequired,
     onLabelClick:      PropTypes.func.isRequired,
+    onChangeReportVar: PropTypes.func.isRequired,
     labels:            PropTypes.object.isRequired,
     groupParams:       PropTypes.object.isRequired,
   };
@@ -26,30 +27,33 @@ class List extends React.Component {
   }
 
   showList() {
-    const { onLabelClick, onEditReportClick, onRunReportClick, labels, currentReport, groupParams } = this.props;
+    const { labels, currentReport, groupParams, customReports, builtInReports } = this.props;
+    const { onLabelClick, onEditReportClick, onRunReportClick, onChangeReportVar } = this.props;
     return (
       <div className="stat-list-wrapper">
         <ul className="stat-list">
-          {this.props.customReports.map(
+          {customReports.map(
             report =>
               <ListItem
                 key={report.get('id')}
                 onLabelClick={onLabelClick}
                 onEditReportClick={onEditReportClick}
                 onRunReportClick={onRunReportClick}
+                onChangeReportVar={onChangeReportVar}
                 isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}
                 groupParams={groupParams}
               />
           )}
-          {this.props.builtInReports.map(
+          {builtInReports.map(
             report =>
               <ListItem
                 key={report.get('id')}
                 onLabelClick={onLabelClick}
                 onEditReportClick={onEditReportClick}
                 onRunReportClick={onRunReportClick}
+                onChangeReportVar={onChangeReportVar}
                 isActive={currentReport && currentReport.get('id') === report.get('id')}
                 report={report}
                 labels={labels}

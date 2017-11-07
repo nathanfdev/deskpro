@@ -3,15 +3,18 @@ import AmCharts from '@amcharts/amcharts3-react';
 import { Loader } from '@deskpro/react-components';
 import { Select } from 'DeskPRO/Component/Semantic/ReactForm';
 import Immutable from 'immutable';
+import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
 import Header from '../../../../../Component/Semantic/Common/Header';
 
 class Run extends React.Component {
 
   static propTypes = {
-    report:        PropTypes.object,
-    reportLoading: PropTypes.bool.isRequired,
-    runReport:     PropTypes.func.isRequired,
+    report:            PropTypes.object,
+    reportLoading:     PropTypes.bool.isRequired,
+    runReport:         PropTypes.func.isRequired,
+    onChangeReportVar: PropTypes.func.isRequired,
+    groupParams:       PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -54,7 +57,7 @@ class Run extends React.Component {
   }
 
   renderReport() {
-    const { report } = this.props;
+    const { report, onChangeReportVar, groupParams } = this.props;
     let options = report.get('rendered_result') ? report.get('rendered_result') : Immutable.Map();
 
     if (typeof options === 'object') {
@@ -64,9 +67,11 @@ class Run extends React.Component {
       }]);
     }
 
+    const title = <TitleWithVars onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />;
+
     return (
       <div className="ui form">
-        <Header content={report.get('title')} level={2} />
+        <Header content={title} level={2} />
         <div className="inline fields">
           <div className="eight wide field">
             <label htmlFor="runAs">Run this report as</label>

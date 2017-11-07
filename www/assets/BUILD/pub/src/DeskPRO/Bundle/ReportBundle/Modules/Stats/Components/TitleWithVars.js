@@ -31,8 +31,8 @@ class TitleWithVars extends React.Component {
   }
 
   onChange(varName, value) {
-    const { vars } = this.state;
     const { report, onChangeReportVar } = this.props;
+    const { vars } = this.state;
     vars[varName] = value;
     this.setState({ vars });
     let newReport = report;
@@ -42,7 +42,7 @@ class TitleWithVars extends React.Component {
         newReport = newReport.setIn(['variables', index, 'value'], value);
       }
     });
-    onChangeReportVar(newReport);
+    onChangeReportVar(report, varName, value);
   }
 
   replaceVars() {
