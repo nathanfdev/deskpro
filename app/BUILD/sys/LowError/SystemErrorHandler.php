@@ -620,7 +620,7 @@ class SystemErrorHandler
      *
      * @param array $errinfo
      */
-    public static function logErrorInfo(array $errinfo = null)
+    public static function logErrorInfo($errinfo = null)
     {
         if (!$errinfo) {
             return;
