@@ -28,8 +28,7 @@ class ListItem extends React.Component {
       event.preventDefault();
       event.stopPropagation();
     }
-    const { onRunReportClick } = this.props;
-    const { report } = this.state;
+    const { onRunReportClick, report } = this.props;
     const data = transformReportData(report);
     onRunReportClick(report, data);
   }

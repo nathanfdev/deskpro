@@ -58,7 +58,7 @@ class Run extends React.Component {
   }
 
   renderReport() {
-    const { report, onChangeReportVar, groupParams } = this.props;
+    const { report } = this.props;
     let options = report.get('rendered_result') ? report.get('rendered_result') : Immutable.Map();
 
     if (typeof options === 'object') {
@@ -68,32 +68,35 @@ class Run extends React.Component {
       }]);
     }
 
-    const title = <TitleWithVars onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />;
+    return typeof options === 'object'
+      ? <AmCharts.React style={{ width: '100%', height: '500px' }} options={options.toJS()} />
+      : <span dangerouslySetInnerHTML={{ __html: options }} />;
+  }
+
+  renderRun() {
+    const { report, onChangeReportVar, groupParams } = this.props;
+
+    const title = (<TitleWithVars
+      onChangeReportVar={onChangeReportVar}
+      groupParams={groupParams}
+      report={report}
+    />);
+    const content = report.get('rendered_result')
+      ? this.renderReport()
+      : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
 
     return (
       <div className="ui form">
-        <Header content={title} level={2} />
+        <Header content={title} level={3} />
         <div className="inline fields">
           <div className="eight wide field">
             <label htmlFor="runAs">Run this report as</label>
             <Select style={{ minWidth: '150px' }} id="runAs" value={this.state.runAs} onChange={this.onChange} choices={displayTypes} />
           </div>
         </div>
-        { typeof options === 'object'
-          ? <AmCharts.React style={{ width: '100%', height: '500px' }} options={options.toJS()} />
-          : <span dangerouslySetInnerHTML={{ __html: options }} />
-        }
-
+        { content }
       </div>
     );
-  }
-
-  renderRun() {
-    const { report } = this.props;
-
-    return report.get('rendered_result')
-      ? this.renderReport()
-      : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
   }
 
   render() {

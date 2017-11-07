@@ -28,7 +28,7 @@ class List extends React.Component {
   }
 
   showList() {
-    const { labels, currentReport, groupParams, customReports, builtInReports } = this.props;
+    const { labels, currentReport, groupParams, customReports, builtInReports, reportsVars } = this.props;
     const { onLabelClick, onEditReportClick, onRunReportClick, onChangeReportVar } = this.props;
     return (
       <div className="stat-list-wrapper">

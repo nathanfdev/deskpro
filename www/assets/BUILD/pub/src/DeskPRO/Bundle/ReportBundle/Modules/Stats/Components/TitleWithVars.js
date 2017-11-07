@@ -15,20 +15,27 @@ class TitleWithVars extends React.Component {
     onRunClick: () => {},
   };
 
+  static transformVars(report) {
+    const vars = {};
+    report
+      .get('variables')
+      .filter(value => value.has('default') && value.get('default') || value.has('value') && value.get('value'))
+      .forEach((value) => {
+        vars[value.get('name')] = value.has('value') && value.get('value') ? value.get('value') : value.get('default');
+      });
+    return vars;
+  }
+
   constructor(props) {
     super(props);
-    const vars = {};
-    props.report
-      .get('variables')
-      .filter(value => value.has('default') && value.get('default'))
-      .forEach((value) => {
-        vars[value.get('name')] = value.get('default');
-      });
-    this.state = {
-      title: props.report.get('title'),
-      vars
-    };
+    const vars = TitleWithVars.transformVars(props.report);
+    this.state = { vars };
     this.dateChoices = this.props.groupParams.get('dates').map((date, index) => { const choice = { value: index, label: date.get(0) }; return choice; }).toList().toJS();
+  }
+
+  componentWillReceiveProps(props) {
+    const vars = TitleWithVars.transformVars(props.report);
+    this.setState({ vars });
   }
 
   onChange(varName, value) {

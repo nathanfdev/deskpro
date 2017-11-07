@@ -44,7 +44,6 @@ class Wrapper extends React.Component {
       searchText:    '',
       labels:        newLabels,
       activeLabels:  0,
-      reportVars:    {},
     };
 
     this.onEditReportClick  = this.onEditReportClick.bind(this);
@@ -65,19 +64,13 @@ class Wrapper extends React.Component {
   }
 
   onChangeReportVar(report, varName, value) {
-
-    const { vars } = this.state;
-    vars[varName] = value;
-    this.setState({ vars });
-    let newReport = report;
-
-    newReport.get('variables').forEach((val, index) => {
+    let changedReport = report;
+    changedReport.get('variables').forEach((val, index) => {
       if (val.get('name') === varName) {
-        newReport = newReport.setIn(['variables', index, 'value'], value);
+        changedReport = changedReport.setIn(['variables', index, 'value'], value);
       }
     });
-
-    const data = transformReportData(report);
+    const data = transformReportData(changedReport);
     const newReports = this.state.reports.set(report.get('id'), report);
     this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(report, data));
   }
