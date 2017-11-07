@@ -80,6 +80,7 @@ class LanguagesController extends CrudController
             'agent.chrome.user_tooltip',
             'agent.chrome.view_tooltip',
             'agent.general.add_a_label',
+            'agent.general.add_action_term',
             'agent.general.agent',
             'agent.general.agent_email_address',
             'agent.general.agent_team',

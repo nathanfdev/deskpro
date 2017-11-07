@@ -1,0 +1,103 @@
+.follow_up {
+  .time {
+    ul {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-width: 500px;
+      margin: 0;
+      -webkit-padding-start: 0;
+      li {
+        flex-grow: 1;
+        flex-basis: auto;
+        margin: .25em 0;
+        padding: 0 1em;
+        text-align: center;
+        white-space: nowrap;
+        list-style: none;
+      }
+      li + li {
+        border-left: 1px solid $dp-greyscale-650;
+      }
+    }
+  }
+  .actions {
+    .action{
+      position: relative;
+      padding: 5px;
+      border: solid 1px $dp-greyscale-650;
+      border-bottom: 0;
+      .Select-value {
+        padding: 0 8px 0 22px;
+      }
+      .type {
+        display: inline-block;
+        width: 150px;
+        margin-right: 10px;
+      }
+      .details {
+        display: inline-block;
+        min-width: 150px;
+      }
+      .close-cross {
+        color: transparent;
+        position: absolute;
+        right: 3px;
+        top: 3px;
+        width: 12px;
+        height: 12px;
+        opacity: 1;
+        padding: 5px;
+        cursor: pointer;
+      }
+      .close-cross:hover {
+        opacity: 1;
+      }
+      .close-cross:before, .close-cross:after {
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        content: ' ';
+        height: 8px;
+        width: 1px;
+        background-color: $dp-greyscale-800;
+      }
+      .close-cross:before {
+        transform: rotate(45deg);
+      }
+      .close-cross:after {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+  .add_action {
+    height: 40px;
+    line-height: 24px;
+    padding: 5px;
+    border: solid 1px $dp-greyscale-850;
+    cursor: pointer;
+    .plus {
+      display: inline-block;
+      height: 20px;
+      width: 20px;
+      background-color: $dp-greyscale-50;
+      border-radius: 50%;
+      position: relative;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    .plus:before, .plus:after {
+      position: absolute;
+      left: 10px;
+      top: 3px;
+      content: ' ';
+      height: 13px;
+      width: 1px;
+      background-color: $dp-greyscale-1000;
+    }
+    .plus:after {
+      transform: rotate(90deg);
+    }
+  }
+}
