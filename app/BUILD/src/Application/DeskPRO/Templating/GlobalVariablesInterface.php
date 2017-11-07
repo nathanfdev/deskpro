@@ -106,6 +106,8 @@ interface GlobalVariablesInterface
 
     public function getProducts();
 
+    public function getMacros();
+
     public function getCustomFieldManager($type);
 
     public function get($name);

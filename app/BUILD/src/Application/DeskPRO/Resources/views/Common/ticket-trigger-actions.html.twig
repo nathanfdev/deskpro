@@ -403,6 +403,18 @@
 	{% endfor %}
 {% endif %}
 
+{% if app.getMacros() %}
+	<div class="builder-type" title="Run macro" data-rule-type="run_macro">
+		<div class="builder-options">
+			<select name="macroId">
+				{% for macro in app.getMacros() %}
+					<option value="{{ macro.id }}">{{ macro.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+
 <div class="builder-type" title="Close ticket tab" data-rule-type="close_ticket_tab">
 	<div class="builder-options">
 		<input type="hidden" name="do" value="1" />

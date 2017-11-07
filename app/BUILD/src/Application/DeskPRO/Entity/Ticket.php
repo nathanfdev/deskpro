@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -635,6 +636,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $stars;
 
     /**
+     * @var TicketFollowUp[]
+     */
+    protected $followUps;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -655,6 +661,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->problems         = new ArrayCollection();
         $this->children_tickets = new ArrayCollection();
         $this->stars            = new ArrayCollection();
+        $this->followUps        = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -4657,6 +4664,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp[]
+     */
+    public function getFollowUps()
+    {
+        return $this->followUps;
+    }
+
+    /**
      * @return array
      */
     public static function getTicketStatuses()
@@ -5266,6 +5281,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'     => 'stars',
                 'targetEntity'  => TicketFlagged::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'followUps',
+                'targetEntity'  => TicketFollowUp::class,
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

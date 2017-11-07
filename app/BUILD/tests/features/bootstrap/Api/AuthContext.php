@@ -34,6 +34,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\TmpData;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Mink\Driver\BrowserKitDriver;
+use Behat\Mink\Exception\UnsupportedDriverActionException;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
@@ -41,6 +43,7 @@ use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
 use DpBehat\Data\PeopleContext as PeopleDataContext;
 use DpTestSrc\TestBundle\UserDetailsRepo;
+use Symfony\Component\BrowserKit\Cookie;
 
 /**
  * Defines application features from the specific context.
@@ -97,6 +100,45 @@ class AuthContext extends BaseContext
         DataContext::setReference('me', $person);
 
         $this->authenticateAs($person);
+
+        self::initOm();
+    }
+
+    /**
+     * @Given I'm authenticated via session as :role
+     *
+     * @param string $role
+     *
+     * @throws UnsupportedDriverActionException
+     */
+    public function iAmAuthenticatedViaSessionAs($role)
+    {
+        // Log in ------------------------------------------------------------------------------------------------------
+        $person = $this->peopleDataContext->personByRoleExists($role);
+        DataContext::setReference($role, $person);
+        DataContext::setReference('me', $person);
+
+        $driver = $this->getSession()->getDriver();
+        if (!$driver instanceof BrowserKitDriver) {
+            throw new UnsupportedDriverActionException('This step is only supported by the BrowserKitDriver', $driver);
+        }
+
+        session_start();
+        $_SESSION['_sf2_attributes']['auth_person_id'] = $person->getId();
+
+        $data = session_encode();
+        session_destroy();
+
+        $session = new Session();
+        $session->setPerson($person);
+        $session->setData($data);
+
+        $this->em()->persist($session);
+        $this->em()->flush();
+
+        $client = $driver->getClient();
+        $cookie = new Cookie('dpsid-agent', $session->getSessionCode());
+        $client->getCookieJar()->set($cookie);
 
         self::initOm();
     }

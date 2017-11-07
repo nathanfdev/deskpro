@@ -2245,6 +2245,7 @@ return [
     'agent.tickets.set_priority_action'                        => 'Set priority to {{priority}}',
     'agent.tickets.set_product_action'                         => 'Set product to {{product}}',
     'agent.tickets.create_task_action'                         => 'Create a task {{title}}',
+    'agent.tickets.run_macro_action'                           => 'Run another macro {{macro}}',
     'agent.tickets.set_resolved'                               => 'Set resolved',
     'agent.tickets.set_sla_status'                             => 'Set SLA statuses to {{sla_status}}',
     'agent.tickets.set_sla_status_action'                      => 'Set SLA status to {{sla_status}}',
