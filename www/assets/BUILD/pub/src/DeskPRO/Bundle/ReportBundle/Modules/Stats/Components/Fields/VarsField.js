@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Field, Select, Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset } from '@deskpro/react-forms';
 import DateField from './DateField';
