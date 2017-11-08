@@ -91,6 +91,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
           limit:   reportWidget.limit,
           offset:  reportWidget.offset
 
+      if (reportWidget.jsonTable?)
+        dataToSend.report.jsonTable = reportWidget.jsonTable
+
       @Api
         .sendPostJson url, dataToSend
 

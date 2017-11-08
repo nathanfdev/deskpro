@@ -27,6 +27,7 @@ define -> [
         if $scope.widget.variables[widgetVariable.name]
           widgetToTest.variables[index].value = $scope.widget.variables[widgetVariable.name].value
       widgetToTest.display_types = [displayType]
+      widgetToTest.jsonTable = if displayType == 'table' then true else false
       DashboardWidgetService
         .testWidget widgetToTest, $scope.widget
         .then (response) ->

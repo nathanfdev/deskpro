@@ -82,10 +82,9 @@
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table'">
                 <dashboard-table
                         my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.title') }}"
-                        table-data="{{ ng_var('widget.data') }}"
-                        widget-id = "{{ ng_var('widget.id') }}"
-                        wtype="{{ ng_var('widget.type') }}"
+                        title="{{ ng_var('widgetPreview.title') }}"
+                        table-data="{{ ng_var('widgetPreview.rendered_result') }}"
+                        widget-id = "{{ ng_var('reportWidget.id') }}"
                 />
             </div>
         </div>

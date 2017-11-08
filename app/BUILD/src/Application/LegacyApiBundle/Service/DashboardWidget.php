@@ -204,7 +204,7 @@ class DashboardWidget
             }
         }
 
-        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), $widget->getType() === 'table' ? 'html' : 'json');
+        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), 'json');
     }
 
     /**

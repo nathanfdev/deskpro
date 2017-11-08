@@ -169,16 +169,16 @@ class DashboardWidgetController extends AbstractController
         $size = $widget->getSize();
 
         $realData = $this->widgetService->renderWidgetQuery($widget);
-//        if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
-//            $aoColumns = [];
-//            $columns   = [];
-//            foreach ($realData['columns'] as $column) {
-//                $aoColumns[] = null;
-//                $columns[]   = ['title' => $column];
-//            }
-//            $realData['aoColumns'] = $aoColumns;
-//            $realData['columns']   = $columns;
-//        }
+        if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+            $aoColumns = [];
+            $columns   = [];
+            foreach ($realData['columns'] as $column) {
+                $aoColumns[] = null;
+                $columns[]   = ['title' => $column];
+            }
+            $realData['aoColumns'] = $aoColumns;
+            $realData['columns']   = $columns;
+        }
 
         $data = [
             'id'    => $widget->getId(),

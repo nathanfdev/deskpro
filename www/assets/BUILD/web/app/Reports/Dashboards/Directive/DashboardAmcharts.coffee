@@ -21,6 +21,7 @@ define ->
         chartParent = chartDiv.parent().parent()
         chartHeader = chartDiv.parent().siblings('.box-header')
         chartData   = JSON.parse(scope.chartData)
+
         scope.$watch 'chartData', (n) ->
           chartData = JSON.parse(n)
           initChart()
