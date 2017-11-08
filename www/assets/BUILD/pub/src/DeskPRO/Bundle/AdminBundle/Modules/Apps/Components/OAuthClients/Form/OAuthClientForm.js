@@ -68,10 +68,9 @@ class OAuthClientForm extends BaseForm {
         <div className="twilio-queue-form">
           <Form onSubmit={this.onSubmit} formValue={formData}>
             <Fieldset>
-              {isAuthCode &&
               <Field select="public_id" label="Client ID">
                 <ClipboardInput type="text" disabled />
-              </Field>}
+              </Field>
               {isAuthCode &&
               <Field select="secret" label="Client Secret">
                 <ClipboardInput type="text" disabled />
