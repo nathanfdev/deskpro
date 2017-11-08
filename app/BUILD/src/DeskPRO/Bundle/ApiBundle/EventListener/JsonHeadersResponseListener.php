@@ -99,7 +99,12 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
                 $data = new \stdClass();
             }
 
-            $data->headers = $this->extractHeaderArray($response, $location);
+
+            if (is_array($data)) {
+                $data['headers'] = $this->extractHeaderArray($response, $location);
+            } else {
+                $data->headers = $this->extractHeaderArray($response, $location);
+            }
 
             $newBody = json_encode($data);
 
@@ -134,7 +139,6 @@ class JsonHeadersResponseListener implements EventSubscriberInterface
         $jsonHeaders = [
             'status-code' => $response->getStatusCode(),
         ];
-
         foreach ($headerBag as $key => $val) {
             $header_split = explode(':', $val);
 

@@ -53,6 +53,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
       return @$q.all([appsPromise, apps2Promise, apps2PackagesPromise])
 
+    listInstalledAppsV2: () ->
+      if @apps_v2 instanceof Array
+        return @apps_v2.filter((p) -> p.is_installed == true);
+      []
+
     addAppInstance: (instanceInfo, isNew = false) ->
       if isNew
         instanceInfo.app.icon_32 = instanceInfo.app.icon_url;
@@ -98,6 +103,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       exist = @custom_apps.filter((x) -> x.id == customApp.id)
       if !exist.length
         @custom_apps.push(customApp)
+
+    getInstallerRouteParams: (pkg) ->
+      return { appName: encodeURIComponent(pkg.name) }
+
 
     showNewApp: ->
       saveNewApp = (options) =>
