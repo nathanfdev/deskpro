@@ -26,14 +26,17 @@ export class FollowUp extends React.Component {
   static propTypes = {
     agents:     PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
+    macros:     PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      actions:       [],
+      actions:       [{ type: 'reply' }],
+      time:          {},
       cancelIfReply: false,
+      errors:        [],
     };
   }
 
@@ -49,18 +52,54 @@ export class FollowUp extends React.Component {
     });
   };
 
+  updateTime = (time) => {
+    this.setState({
+      time
+    });
+  };
+
+  createFollowUp = () => {
+    const errors = [];
+    if (this.state.actions.length === 0) {
+      errors.push('You must add at least one action');
+    }
+    if (!this.state.time.value) {
+      errors.push('You must select when the follow up will be performed');
+    }
+    this.setState({
+      errors
+    });
+  };
+
+  renderErrors = () => {
+    if (this.state.errors.length === 0) {
+      return null;
+    }
+    return (
+      <div className="errors">
+        <ul>
+          {this.state.errors.map((error, index) => <li key={index}>{error}</li>)}
+        </ul>
+      </div>
+    );
+  };
+
   render() {
     return (
       <Container className="follow_up">
         <h4>Add Follow Up</h4>
         <h5>Follow Up Time</h5>
-        <FollowUpTime />
+        <FollowUpTime
+          value={this.state.time}
+          onChange={this.updateTime}
+        />
         <h5>Follow Up Actions</h5>
         <ActionsBlock
           actions={this.state.actions}
           onChange={this.updateActions}
           agents={this.props.agents}
           agentTeams={this.props.agentTeams}
+          macros={this.props.macros}
         />
         <h5>Criteria</h5>
         <Checkbox
@@ -69,7 +108,13 @@ export class FollowUp extends React.Component {
         >
           Cancel follow up if user replies
         </Checkbox>
-        <Button size="medium">Create</Button>
+        <Button
+          size="medium"
+          onClick={this.createFollowUp}
+        >
+          Create
+        </Button>
+        {this.renderErrors()}
       </Container>
     );
   }

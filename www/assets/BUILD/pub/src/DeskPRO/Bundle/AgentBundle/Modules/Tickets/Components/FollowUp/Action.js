@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Select, Label, Button } from '@deskpro/react-components';
+import { Select, Label, Button, Radio } from '@deskpro/react-components';
 import newid from '@deskpro/react-components/lib/utils/newid';
+import EditModal from './EditModal';
 
 
 export class Action extends React.Component {
@@ -9,12 +10,17 @@ export class Action extends React.Component {
     action:       PropTypes.object,
     agents:       PropTypes.object.isRequired,
     agentTeams:   PropTypes.object.isRequired,
+    macros:       PropTypes.object.isRequired,
     removeAction: PropTypes.func,
     updateAction: PropTypes.func,
   };
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      replyModalOpen: false
+    };
 
     this.types = [
       { value: 'agent', label: 'Assign Agent' },
@@ -27,67 +33,190 @@ export class Action extends React.Component {
     ];
 
     this.typeId = newid('type');
-    this.detailId = newid('detail');
   }
 
-  updateType = (type) => {
-    const action = this.props.action;
-    action.type = type.value;
-    action.data = null;
-    this.props.updateAction(action);
+  onSelectChange = (data, name) => {
+    this.updateData(data.value, name);
   };
 
-  updateData = (data) => {
+  onRadioChange = (checked, value, name) => {
+    this.updateData(value, name);
+  };
+
+  getEditModal = (mode) => {
+    if (!this.state.replyModalOpen) {
+      return null;
+    }
+    return (
+      <EditModal
+        mode={mode}
+        closeModal={this.closeEditReply}
+      />
+    );
+  };
+
+  closeEditReply = () => {
+    this.setState({
+      replyModalOpen: false,
+    });
+  };
+
+  editReply = () => {
+    this.setState({
+      replyModalOpen: true,
+    });
+  };
+
+  updateType = (type) => {
+    this.props.updateAction({ type: type.value });
+  };
+
+  updateData = (data, name) => {
     const action = this.props.action;
-    action.data = data.value;
+    action[name] = data;
+    console.log(action);
     this.props.updateAction(action);
   };
 
   detailsMethod = () => {
     const string = this.props.action.type;
-    console.log(this.props.action);
-    console.log(string);
-    return `render${string[0].toUpperCase()}${string.substring(1)}`;
+    const method = `render${string[0].toUpperCase()}${string.substring(1)}`;
+    if (typeof this[method] === 'function') {
+      return method;
+    }
+    return 'renderMissingMethod';
   };
+
+  renderMissingMethod = () => <div>Missing method</div>;
 
   renderAgent = () => {
     const { action } = this.props;
-    return [
-      <Label key="label" htmlFor={this.detailId}>Agent</Label>,
-      <Select
-        key="select"
-        id={this.typeId}
-        options={this.props.agents.toArray().map(agent => ({ value: agent.get('id'), label: agent.get('name') }))}
-        clearable={false}
-        searchable={false}
-        value={action.data}
-        onChange={this.updateData}
-        ref={(c) => { this.type = c; }}
-      />
-    ];
+    const agents = [
+      { value: -1, label: 'Me' },
+      { value: 0, label: 'Unassigned' },
+    ].concat(this.props.agents.toArray().map(agent => (
+      { value: agent.get('id'), label: agent.get('name') }
+    )));
+    return (
+      <div>
+        <Label>Agent</Label>
+        <Select
+          name="agent"
+          options={agents}
+          clearable={false}
+          searchable={false}
+          value={action.agent}
+          onChange={this.onSelectChange}
+        />
+      </div>
+    );
   };
 
   renderTeam = () => {
     const { action } = this.props;
-    return [
-      <Label key="label" htmlFor={this.detailId}>Team</Label>,
-      <Select
-        key="select"
-        id={this.typeId}
-        options={this.props.agentTeams.toArray().map(team => ({ value: team.get('id'), label: team.get('name') }))}
-        clearable={false}
-        searchable={false}
-        value={action.data}
-        onChange={this.updateData}
-        ref={(c) => { this.type = c; }}
-      />
-    ];
+    const agentTeams = [
+      { value: -1, label: 'My Team' },
+      { value: 0, label: 'None' },
+    ].concat(this.props.agentTeams.toArray().map(team => (
+      { value: team.get('id'), label: team.get('name') }
+    )));
+    return (
+      <div>
+        <Label>Team</Label>
+        <Select
+          name="agent_team"
+          options={agentTeams}
+          clearable={false}
+          searchable={false}
+          value={action.agent_team}
+          onChange={this.onSelectChange}
+        />
+      </div>
+    );
   };
 
-  renderReply = () => [
-    <span key="preview" className="preview" />,
-    Button
-  ];
+  renderReply = () => (
+    <div>
+      <span key="preview" className="preview">Reply: </span><br />
+      <Button size="m" onClick={this.editReply}>Edit Reply</Button>
+      {this.getEditModal('reply')}
+    </div>
+  );
+
+  renderNote = () => (
+    <div>
+      <span key="preview" className="preview">Note: </span><br />
+      <Button size="m" onClick={this.editReply}>Edit Note</Button>
+      {this.getEditModal('note')}
+    </div>
+  );
+
+  renderHold = () => {
+    const { action } = this.props;
+    return (
+      <div>
+        <span>Team</span><br />
+        <Radio
+          name="is_hold"
+          checked={action.is_hold === '0'}
+          onChange={this.onRadioChange}
+          value="0"
+        >
+          Unhold ticket
+        </Radio>
+        <Radio
+          name="is_hold"
+          checked={action.is_hold === '1'}
+          onChange={this.onRadioChange}
+          value="1"
+        >
+          Put ticket on hold
+        </Radio>
+      </div>
+    );
+  };
+
+  renderStatus = () => {
+    const { action } = this.props;
+    const options = [
+      { value: 'awaiting_agent', label: 'agent.tickets.status_awaiting_agent' },
+      { value: 'awaiting_user', label: 'agent.tickets.status_awaiting_user' },
+      { value: 'resolved', label: 'agent.tickets.status_resolved' },
+    ];
+    return (
+      <div>
+        <Label>Status</Label>
+        <Select
+          name="agent_team"
+          options={options}
+          clearable={false}
+          searchable={false}
+          value={action.agent_team}
+          onChange={this.onSelectChange}
+        />
+      </div>
+    );
+  };
+
+  renderMacro = () => {
+    const { action } = this.props;
+    const macros = this.props.macros.toArray().map(macro => (
+      { value: macro.get('id'), label: macro.get('title') }
+    ));
+    return (
+      <div>
+        <Label>Team</Label>
+        <Select
+          name="macro"
+          options={macros}
+          clearable={false}
+          searchable={false}
+          value={action.macro}
+          onChange={this.onSelectChange}
+        />
+      </div>
+    );
+  };
 
   render() {
     const { action } = this.props;
@@ -102,7 +231,6 @@ export class Action extends React.Component {
             searchable={false}
             value={action.type}
             onChange={this.updateType}
-            ref={(c) => { this.type = c; }}
           />
         </div>
         <div className="details">

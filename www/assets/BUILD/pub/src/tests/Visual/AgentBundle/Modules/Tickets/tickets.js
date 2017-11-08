@@ -42,6 +42,28 @@ const agents = Immutable.fromJS([
   }
 ]);
 
+const macros = Immutable.fromJS([
+  {
+    summary: [
+      'Assign agent to Bernice Nikolaus'
+    ],
+    id:         1,
+    person:     1,
+    department: null,
+    title:      'Set Agent',
+    is_enabled: true,
+    is_global:  false,
+    actions:    [
+      {
+        type:    'agent',
+        options: {
+          agent: '8'
+        }
+      }
+    ]
+  }
+]);
+
 storiesOf('Agent: Tickets', module)
   .addDecorator(story => css(story()))
   .add(
@@ -53,6 +75,7 @@ storiesOf('Agent: Tickets', module)
     () => <FollowUp
       agents={agents}
       agentTeams={agentTeams}
+      macros={macros}
     />
   )
 ;

@@ -7,6 +7,7 @@ export class ActionsBlock extends React.Component {
     actions:    PropTypes.array,
     agents:     PropTypes.object.isRequired,
     agentTeams: PropTypes.object.isRequired,
+    macros:     PropTypes.object.isRequired,
     onChange:   PropTypes.func,
   };
 
@@ -41,6 +42,7 @@ export class ActionsBlock extends React.Component {
       action={action}
       agents={this.props.agents}
       agentTeams={this.props.agentTeams}
+      macros={this.props.macros}
       updateAction={a => this.updateAction(a, index)}
       removeAction={() => this.removeAction(index)}
     />
