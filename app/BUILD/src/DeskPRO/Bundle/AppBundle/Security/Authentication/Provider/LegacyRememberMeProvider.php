@@ -37,6 +37,9 @@ use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProvid
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
+/**
+ * Class LegacyRememberMeProvider.
+ */
 class LegacyRememberMeProvider implements AuthenticationProviderInterface
 {
     /**
@@ -56,13 +59,7 @@ class LegacyRememberMeProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * Attempts to authenticate a TokenInterface object.
-     *
-     * @param LegacyRememberMeSecurityToken $token The TokenInterface instance to authenticate
-     *
-     * @throws AuthenticationException if the authentication fails
-     *
-     * @return LegacyRememberMeSecurityToken An authenticated TokenInterface instance, never null
+     * {@inheritdoc}
      */
     public function authenticate(TokenInterface $token)
     {
@@ -84,11 +81,7 @@ class LegacyRememberMeProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * Checks whether this provider supports the given token.
-     *
-     * @param TokenInterface $token A TokenInterface instance
-     *
-     * @return bool true if the implementation supports the Token, false otherwise
+     * {@inheritdoc}
      */
     public function supports(TokenInterface $token)
     {

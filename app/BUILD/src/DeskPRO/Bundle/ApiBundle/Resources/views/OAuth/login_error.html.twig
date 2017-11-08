@@ -1,0 +1,17 @@
+{% extends "FOSOAuthServerBundle::layout.html.twig" %}
+
+{% block fos_oauth_server_content %}
+    <div class="login-page">
+        <br />
+        <div class="inline-form-wrapper">
+            <div class="inline-form-alert">
+                <div class="form-alert-icon">
+                    <i class="fa fa-lock"></i>
+                </div>
+                <div class="content-wrapper">
+                    <h1>{{ phrase(message) }}</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock fos_oauth_server_content %}

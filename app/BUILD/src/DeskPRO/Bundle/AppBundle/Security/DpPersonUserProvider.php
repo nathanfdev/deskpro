@@ -44,7 +44,7 @@ class DpPersonUserProvider implements UserProviderInterface
     /**
      * @var \Application\DeskPRO\EntityRepository\Person
      */
-    private $person_repo;
+    private $personRepo;
 
     /**
      * @var \Application\DeskPRO\EntityRepository\BanEmail
@@ -54,17 +54,17 @@ class DpPersonUserProvider implements UserProviderInterface
     /**
      * @var array
      */
-    private $people_refs;
+    private $peopleRefs = [];
 
     /**
      * Constructor.
      *
-     * @param PersonRepo $person_repo
+     * @param PersonRepo $personRepo
+     * @param BanEmail   $banEmail
      */
-    public function __construct(PersonRepo $person_repo, BanEmail $banEmail)
+    public function __construct(PersonRepo $personRepo, BanEmail $banEmail)
     {
-        $this->people_refs  = [];
-        $this->person_repo  = $person_repo;
+        $this->personRepo   = $personRepo;
         $this->banEmailRepo = $banEmail;
     }
 
@@ -79,7 +79,7 @@ class DpPersonUserProvider implements UserProviderInterface
         }
 
         // the off chance the email slips by (never expected)
-        $person = $this->person_repo->findOneByEmail($username);
+        $person = $this->personRepo->findOneByEmail($username);
 
         if (!$person) {
             throw new UsernameNotFoundException(sprintf('User %s was not found', $username));
@@ -118,12 +118,12 @@ class DpPersonUserProvider implements UserProviderInterface
     protected function fetchPerson($id)
     {
         // subrequests or esi calls may reload the user from this provider multiple times. we'll use the same ref.
-        if (array_key_exists($id, $this->people_refs)) {
-            return $this->people_refs[$id];
+        if (array_key_exists($id, $this->peopleRefs)) {
+            return $this->peopleRefs[$id];
         }
 
         // load the user with usergroups in one query. the usergroups are always going to be needed in permissions layer.
-        $qb = $this->person_repo->createQueryBuilder('p')
+        $qb = $this->personRepo->createQueryBuilder('p')
             ->addSelect('ug')
             ->leftJoin('p.usergroups', 'ug')
             ->where('p.id = :id')
@@ -132,12 +132,17 @@ class DpPersonUserProvider implements UserProviderInterface
         $person = $qb->getQuery()->getOneOrNullResult();
 
         if ($person) {
-            $this->people_refs[$id] = $person;
+            $this->peopleRefs[$id] = $person;
         }
 
         return $person;
     }
 
+    /**
+     * @param Person $person
+     *
+     * @return null|string
+     */
     public function personHasBannedEmail(Person $person)
     {
         foreach ($person->emails as $email) {

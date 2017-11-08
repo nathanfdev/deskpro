@@ -26,18 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
+use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * Class ApiUserProvider.
+ */
 class ApiUserProvider implements UserProviderInterface
 {
     /**
@@ -45,28 +44,22 @@ class ApiUserProvider implements UserProviderInterface
      */
     private $em;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
     }
 
     /**
-     * Loads the user for the given username.
-     *
-     * This method must throw UsernameNotFoundException if the user is not
-     * found.
-     *
-     * @param string $username The username
-     *
-     * @throws UsernameNotFoundException if the user is not found
-     *
-     * @return UserInterface
-     *
-     * @see UsernameNotFoundException
+     * {@inheritdoc}
      */
     public function loadUserByUsername($username)
     {
-        if (!$person = $this->em->getRepository('DeskPRO:Person')->find($username)) {
+        if (!$person = $this->em->getRepository(Person::class)->find($username)) {
             return $person;
         }
 
@@ -74,18 +67,7 @@ class ApiUserProvider implements UserProviderInterface
     }
 
     /**
-     * Refreshes the user for the account interface.
-     *
-     * It is up to the implementation to decide if the user data should be
-     * totally reloaded (e.g. from the database), or if the UserInterface
-     * object can just be merged into some internal array of users / identity
-     * map.
-     *
-     * @param UserInterface $user
-     *
-     * @throws UnsupportedUserException if the account is not supported
-     *
-     * @return UserInterface
+     * {@inheritdoc}
      */
     public function refreshUser(UserInterface $user)
     {
@@ -93,14 +75,10 @@ class ApiUserProvider implements UserProviderInterface
     }
 
     /**
-     * Whether this provider supports the given user class.
-     *
-     * @param string $class
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function supportsClass($class)
     {
-        return $class === 'Application\DeskPRO\Entity\Person';
+        return $class === Person::class;
     }
 }

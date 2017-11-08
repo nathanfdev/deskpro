@@ -107,6 +107,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
+use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -372,6 +373,7 @@ class ObjectsManager
             'Notification'             => [Factory\SimpleFactory::class, 'create', Notification::class],
             'EmailAccount'             => [Factory\SimpleFactory::class, 'create', EmailAccount::class],
             'Session'                  => [Factory\SimpleFactory::class, 'create', Session::class],
+            'OAuthClient'              => [Factory\SimpleFactory::class, 'create', OAuthClient::class],
         ];
     }
 
@@ -482,6 +484,7 @@ class ObjectsManager
             'Phrase'                   => [$this, 'find', Phrase::class],
             'ActionAlert'              => [$this, 'find', ActionAlert::class],
             'Notification'             => [$this, 'find', Notification::class],
+            'OAuthClient'              => [$this, 'find', OAuthClient::class],
         ];
     }
 }

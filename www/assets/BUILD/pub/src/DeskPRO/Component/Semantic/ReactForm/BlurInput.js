@@ -5,8 +5,9 @@ import $ from 'jquery';
 class BlurInput extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.string,
-    onChange: PropTypes.func
+    value:       PropTypes.string,
+    onChange:    PropTypes.func,
+    clearOnBlur: PropTypes.bool
   };
 
   constructor(props) {
@@ -45,14 +46,21 @@ class BlurInput extends React.Component {
   };
 
   onBlur = () => {
-    const { onChange } = this.props;
+    const { onChange, clearOnBlur } = this.props;
     const { originalValue, tempValue } = this.state;
 
     if (tempValue !== originalValue) {
       onChange(tempValue);
-      this.setState({
-        originalValue: tempValue
-      });
+      if (clearOnBlur) {
+        this.setState({
+          tempValue:     '',
+          originalValue: ''
+        });
+      } else {
+        this.setState({
+          originalValue: tempValue
+        });
+      }
     }
   };
 

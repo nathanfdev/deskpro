@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Twig;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 
+/**
+ * Class LanguageExtension.
+ */
 class LanguageExtension extends \Twig_Extension
 {
     /**
-     * @var \DeskPRO\Bundle\AppBundle\Language\LanguageManager
+     * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
-     * @param \DeskPRO\Bundle\AppBundle\Language\LanguageManager $language_manager
+     * @param LanguageManager $languageManager
      */
-    public function __construct(LanguageManager $language_manager)
+    public function __construct(LanguageManager $languageManager)
     {
-        $this->language_manager = $language_manager;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -99,7 +98,7 @@ class LanguageExtension extends \Twig_Extension
 
         $vars['_context'] = $context;
 
-        return $this->language_manager->phrase($phrase_name, $vars);
+        return $this->languageManager->phrase($phrase_name, $vars);
     }
 
     /**
@@ -110,7 +109,7 @@ class LanguageExtension extends \Twig_Extension
      */
     public function getObjectPhrase($object, $property = false)
     {
-        return nl2br(htmlspecialchars($this->language_manager->objectPhrase($object, $property)));
+        return nl2br(htmlspecialchars($this->languageManager->objectPhrase($object, $property)));
     }
 
     /**

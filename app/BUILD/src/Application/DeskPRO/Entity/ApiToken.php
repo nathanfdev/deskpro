@@ -104,6 +104,26 @@ class ApiToken extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getToken()
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     *
+     * @return $this
+     */
+    public function setToken($token)
+    {
+        $this->setModelField('token', $token);
+
+        return $this;
+    }
+
+    /**
      * Get a "key string". This is a combined ID and code like id:code
      * that is used in auth lookups.
      *
@@ -150,6 +170,26 @@ class ApiToken extends DomainObject
     public function setScope($scope)
     {
         $this->setModelField('scope', $scope);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getDateExpires()
+    {
+        return $this->date_expires;
+    }
+
+    /**
+     * @param \DateTime|null $date_expires
+     *
+     * @return $this
+     */
+    public function setDateExpires(\DateTime $date_expires = null)
+    {
+        $this->setModelField('date_expires', $date_expires);
 
         return $this;
     }

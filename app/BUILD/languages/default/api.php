@@ -101,4 +101,11 @@ return [
     'api.error_codes.accept_not_in_allowed_exts'     => 'You can only upload a file with any of the following file extensions: {{ detail }}',
     'api.error_codes.accept_server_error'            => 'There was a problem uploading this file. Please try again.',
     'api.error_codes.accept_size'                    => 'Sorry but this file is too large. Maximum allowed size is {{ detail }}.',
+    'api.oauth.login_title'                          => 'Sign in with your {{ name }} account',
+    'api.oauth.authorize_title'                      => 'Grant access to {{ name }}',
+    'api.oauth.authorize_accept'                     => 'Access',
+    'api.oauth.authorize_reject'                     => 'Deny',
+    'api.oauth.error_not_redirect_uri'               => 'No "redirect_uri" parameter provided.',
+    'api.oauth.error_not_found'                      => 'OAuth client not found.',
+    'api.oauth.error_access_denied'                  => 'Access denied.',
 ];

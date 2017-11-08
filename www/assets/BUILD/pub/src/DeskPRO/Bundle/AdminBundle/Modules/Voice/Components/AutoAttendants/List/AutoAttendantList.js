@@ -51,9 +51,9 @@ class AutoAttendantList extends React.Component {
         </button>
         <AutoAttendantHeader />
 
-        <div className="twilio-list-table">
+        <div className="admin-list-table">
           <div className="row header">
-            <div className="column auto-attendant-name">Name</div>
+            <div className="column name">Name</div>
             <div className="column auto-attendant-dial-numbers">Active dialpad targets</div>
           </div>
           {autoAttendants.map((autoAttendant, index) =>
@@ -95,7 +95,7 @@ class AutoAttendantRow extends React.Component {
     return (
       <div className="row">
         <div className="info">
-          <div className="column auto-attendant-name">{autoAttendant.get('name')}</div>
+          <div className="column name">{autoAttendant.get('name')}</div>
           <div className="column auto-attendant-dial-numbers">
             {autoAttendant.get('targets').map((target, dialNumber) =>
               <VoiceTargetNameContainer key={dialNumber} target={target}>

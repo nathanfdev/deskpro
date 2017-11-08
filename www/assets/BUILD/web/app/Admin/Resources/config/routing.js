@@ -2412,6 +2412,31 @@ define(function() {
 		controller: 'Admin_ApiKeys_Ctrl_LogsView'
 	});
 
+  //###
+  //# OAuth
+  //###
+
+  routes.push({
+    id:           'apps.oauth_clients',
+    url:          '/oauth_clients',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'apps.oauth_client_new',
+    url:          '/oauth_clients/new',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'apps.oauth_client_edit',
+    url:          '/oauth_clients/{id:[0-9]+}',
+    templateName: 'VoiceChannel/react_component.html',
+    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+  });
+
   //##################################################################################################################
   // Tasks
   //##################################################################################################################

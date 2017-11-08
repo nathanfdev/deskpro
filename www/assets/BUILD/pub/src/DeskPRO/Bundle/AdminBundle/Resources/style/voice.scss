@@ -1,4 +1,4 @@
-.twilio-list-table {
+.admin-list-table {
   width: 100%;
 
   .row {
@@ -54,8 +54,12 @@
         width: 400px;
       }
 
-      &.sid, &.auto-attendant-name {
+      &.sid, &.name {
         width: 350px;
+      }
+
+      &.secret {
+        width: 500px;
       }
 
       &.date {
@@ -199,6 +203,27 @@
         &.asset {
           padding-top: 15px;
           padding-bottom: 15px;
+        }
+
+        &.status-tag {
+          width: 60px;
+          padding-right: 80px;
+          float: right;
+
+          .tag {
+            font-style: normal;
+            display: inline-block;
+            background: #D4E4FF;
+            border: 1px solid #bbd4ff;
+            color: #444;
+            padding: 1px 4px;
+            border-radius: 2px;
+          }
+
+          .tag-warn {
+            background: #f6f3da;
+            border: 1px solid #f1ecc5;
+          }
         }
 
         &.options-button {

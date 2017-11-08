@@ -169,8 +169,6 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             }
         }
 
-        $failedResult = new Result(Result::FAILURE_INVALID_CREDS);
-
-        return [$failedResult, $us];
+        return [new Result(Result::FAILURE_INVALID_CREDS), isset($us) ? $us : null];
     }
 }

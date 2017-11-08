@@ -8,6 +8,7 @@ parameters:
   jms_serializer.twig_extension.class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
   validator.email.class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\EmailFormatValidator
   portal.session.name: sess_data
+  security.encoder_factory.generic.class: DeskPRO\Bundle\AppBundle\Security\Encoder\EncoderFactory
 
 services:
   dp.url_request_context_factory:

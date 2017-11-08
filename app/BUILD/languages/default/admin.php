@@ -440,6 +440,7 @@ return [
     'adm.general.action_cannot_be_undone'                                                  => 'This action cannot be undone.',
     'adm.general.agent_perms'                                                              => 'Agent Permissions',
     'adm.general.api_keys'                                                                 => 'API Keys',
+    'adm.general.oauth'                                                                    => 'OAuth',
     'adm.general.apps'                                                                     => 'Apps',
     'adm.general.apps_agents'                                                              => 'Agents',
     'adm.general.apps_brands'                                                              => 'Brands',

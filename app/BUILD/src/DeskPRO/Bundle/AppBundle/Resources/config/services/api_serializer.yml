@@ -291,6 +291,13 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.oauth_client:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\OAuthClientHandler
+    arguments:
+      - "@router"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadAndDeferredListener

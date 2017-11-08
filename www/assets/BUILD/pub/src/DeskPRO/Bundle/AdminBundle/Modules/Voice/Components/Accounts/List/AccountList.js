@@ -40,7 +40,7 @@ class AccountList extends React.Component {
         </button>*/}
         <SectionHeader title="General Settings" />
 
-        <div className="twilio-list-table">
+        <div className="admin-list-table">
           <div className="row header">
             <div className="column account-name">Name/Note</div>
             <div className="column sid">Account SID</div>

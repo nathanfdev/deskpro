@@ -4,10 +4,17 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
     arguments:
       - "@doctrine.orm.default_entity_manager"
+
   api_anon_authenticator:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
     arguments:
       - "@doctrine.orm.default_entity_manager"
+
+  api_oauth_authenticator:
+    class: DeskPRO\Bundle\ApiBundle\Security\Authentication\OAuthAuthenticator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@api_portal_session_reader"
 
   api_user_provider:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiUserProvider

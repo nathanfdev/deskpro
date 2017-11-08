@@ -41,9 +41,10 @@ class ApiUtil
      * @var array
      */
     protected static $modeMap = [
-        'agent_session' => self::API_MODE_SESSION,
-        'api_key'       => self::API_MODE_KEY,
-        'api_token'     => self::API_MODE_TOKEN,
+        'portal_session' => self::API_MODE_SESSION,
+        'agent_session'  => self::API_MODE_SESSION,
+        'api_key'        => self::API_MODE_KEY,
+        'api_token'      => self::API_MODE_TOKEN,
     ];
 
     /**

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div class="dp-page-body oauth">
+            <div class="world">
+                <header class="top-bar">
+                    <div class="brand {% if portal_custom_logo() %}with-logo{% endif %}">
+                        <a href="{{ path('portal_home') }}">
+                            {% if portal_custom_logo() %}
+                                <img alt="{{ brand_setting('core.deskpro_name')|e }}" src="{{ portal_custom_logo() }}" class="logo" />
+                            {% else %}
+                                <h1>{{ brand_setting('core.deskpro_name')|e }}</h1>
+                            {% endif %}
+                        </a>
+                    </div>
+                </header>
+
+                {% block fos_oauth_server_content %}
+                {% endblock fos_oauth_server_content %}
+
+                <section class="page-bottom-section">
+                    <div class="column-full">
+                        <footer class="site-footer">
+                            <hr>
+                            <a href="https://www.deskpro.com/" class="footer-mark">
+                                <span class="logo-wrapper"><span class="deskpro-logo"></span></span>
+                                <span class="tagline">{{ phrase('portal.general.software_provided_by') }} <strong>DeskPRO</strong></span>
+                            </a>
+                        </footer>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </body>
+</html>

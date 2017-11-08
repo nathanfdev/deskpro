@@ -100,6 +100,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer
     arguments: ["@twig", "@brand_aware_settings_resolver"]
 
+  portal_customizations_twig_extension.twig:
+    class: DeskPRO\Bundle\AppBundle\Twig\PortalCustomizationsTwigExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: twig.extension }
+
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
     arguments: ["@brand_stack","@deskpro.app_env"]

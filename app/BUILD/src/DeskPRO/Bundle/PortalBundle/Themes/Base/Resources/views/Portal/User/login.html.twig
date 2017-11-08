@@ -48,9 +48,6 @@
                         <input type="hidden" name="_destination" value="{{ destination }}"/>
                     {% endif %}
 
-
-
-
                     <div class="column-half">
                         <div class="bucket">
                             <label class="title{% if login_error %} error{% endif %}">{{ phrase('portal.account.login-email') }}</label>
@@ -80,18 +77,18 @@
                         {{ form_widget(captcha_form) }}
                     {% endif %}
 
-                    {% if auth_manager.isRememberMeEnabled %}
-                        <div class="column-full">
-                            <div class="bucket">
-                                <button class="button" tabindex="4">{{ phrase('portal.account.login-btn') }}</button>
-                                <div class="remember-me"><label for="remember_me">
-                                        <input tabindex="3" type="checkbox" name="remember_me">
-                                        <span>{{ phrase('portal.account.login-remember') }}</span>
-                                    </label>
-                                </div>
+                    <div class="column-full">
+                        <div class="bucket">
+                            <button class="button" tabindex="4">{{ phrase('portal.account.login-btn') }}</button>
+                            {% if auth_manager.isRememberMeEnabled %}
+                            <div class="remember-me"><label for="remember_me">
+                                    <input tabindex="3" type="checkbox" name="remember_me">
+                                    <span>{{ phrase('portal.account.login-remember') }}</span>
+                                </label>
                             </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
+                    </div>
                 </form>
             {% endif %}
         </section>

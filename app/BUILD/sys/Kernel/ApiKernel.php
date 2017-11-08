@@ -53,6 +53,7 @@ class ApiKernel extends BaseKernel
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new \FOS\RestBundle\FOSRestBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
+            new \FOS\OAuthServerBundle\FOSOAuthServerBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),

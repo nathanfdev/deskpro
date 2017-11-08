@@ -16,6 +16,7 @@
     "bourbon-neat": "1.7.2",
     "card-validator": "^4.1.0",
     "classnames": "2.1.5",
+    "clipboard": "^1.7.1",
     "codemirror": "^5.24.2",
     "cors": "2.7.1",
     "countries-list": "^1.2.0",

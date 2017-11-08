@@ -92,7 +92,7 @@ class ContentTypeListener implements EventSubscriberInterface
         // if we get valid json body content
         // otherwise we will get unsupported format exception
         // because fos rest bundle will try to decode the request body from `text/plain`
-        if ($content && is_string($content)) {
+        if ($contentType === 'text/plain' || ($content && is_string($content) && @json_decode($content))) {
             $request->setFormat('json', 'application/json');
             $request->attributes->set('_format', 'json');
             $request->attributes->set('media_type', 'json');

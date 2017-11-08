@@ -1,0 +1,17 @@
+<div class="login-page">
+    <header class="large-title">
+        <h1>{{ phrase('api.oauth.authorize_title', { name: brand_setting('core.deskpro_name') }) }}</h1>
+    </header>
+
+    {{ form_start(form, {'method': 'POST', 'action': path('fos_oauth_server_authorize'), 'label_attr': {'class': 'fos_oauth_server_authorize'} }) }}
+    <input type="submit" name="accepted" value="{{ phrase('api.oauth.authorize_accept') }}" />
+    <input type="submit" name="rejected" value="{{ phrase('api.oauth.authorize_reject') }}" />
+
+    {{ form_row(form.client_id) }}
+    {{ form_row(form.response_type) }}
+    {{ form_row(form.redirect_uri) }}
+    {{ form_row(form.state) }}
+    {{ form_row(form.scope) }}
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+</div>

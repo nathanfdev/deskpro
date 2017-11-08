@@ -135,7 +135,7 @@ class NumberList extends React.Component {
 
         <NumberHeader />
 
-        <div className="twilio-list-table">
+        <div className="admin-list-table">
           <div className="row header">
             <div className="column location">Loc.</div>
             <div className="column number">Number</div>

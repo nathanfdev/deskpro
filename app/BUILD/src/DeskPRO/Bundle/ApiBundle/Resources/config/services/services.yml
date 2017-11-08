@@ -50,7 +50,7 @@ services:
   api_error_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\ApiExceptionListener
     tags:
-    - { name: kernel.event_subscriber }
+    - { name: 'kernel.event_subscriber' }
 
   job.scheduler:
     class: Application\DeskPRO\JobQueue\JobScheduler
@@ -77,3 +77,8 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestValidator
     arguments:
       - "@validator"
+
+  api_portal_session_reader:
+    class: DeskPRO\Bundle\ApiBundle\Request\PortalSessionReader
+    arguments:
+      - "@doctrine.orm.entity_manager"

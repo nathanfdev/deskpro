@@ -44,7 +44,7 @@ class ExistingExtensionList extends React.Component {
         <h3>Existing agent extensions</h3>
         <br />
 
-        <div className="twilio-list-table">
+        <div className="admin-list-table">
           <div className="row header">
             <div className="column agent">Agent</div>
             <div className="column extension">Extension</div>

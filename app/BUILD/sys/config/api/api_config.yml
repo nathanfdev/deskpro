@@ -80,7 +80,8 @@ fos_rest:
         inflector: api_url_inflector
     format_listener:
         rules:
-            - { path: '^/api/v2', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }
+          - { path: '^/api/v2/oauth/(auth|user/.+|agent/.+)', priorities: ['html'] }
+          - { path: '^/api/v2', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }
     exception:
         enabled: true
         exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
@@ -97,6 +98,17 @@ fos_rest:
         failed_validation: HTTP_BAD_REQUEST
     routing_loader:
         default_format: json
+
+fos_oauth_server:
+    db_driver: orm
+    client_class:        DeskPRO\Bundle\AppBundle\Entity\OAuthClient
+    access_token_class:  DeskPRO\Bundle\AppBundle\Entity\OAuthAccessToken
+    refresh_token_class: DeskPRO\Bundle\AppBundle\Entity\OAuthRefreshToken
+    auth_code_class:     DeskPRO\Bundle\AppBundle\Entity\OAuthCode
+    service:
+      user_provider: dp_person_user_provider
+      options:
+        supported_scopes: session
 
 nelmio_api_doc:
     name: 'DeskPRO API Documentation'
@@ -146,6 +158,16 @@ security:
             stateless: true
             simple_preauth:
                 authenticator: api_authenticator
+        api_oauth_anonymous:
+            pattern: ^/api/v2/oauth/token
+            stateless: true
+            anonymous: ~
+        api_oauth_access:
+            pattern: ^/api/v2/oauth/(agent|user|auth)
+            stateless: true
+            simple_preauth:
+                authenticator: api_oauth_authenticator
+            anonymous: ~
         api_anonymous:
             pattern: ^/api/v2/(doc|man$|api_tokens|get_session|helpdesk/discover|get_session|twilio_callbacks|user_sources|cloud/countries|cloud/states|cloud/eu_countries|cloud/geo_ip|cloud/forgot_password)
             stateless: true

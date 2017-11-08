@@ -100,7 +100,8 @@
     "arcturial/clickatell": "^3.0",
     "league/oauth2-client": "^2.2",
     "league/oauth1-client": "dev-master",
-    "guzzlehttp/oauth-subscriber": "^0.3.0"
+    "guzzlehttp/oauth-subscriber": "^0.3.0",
+    "friendsofsymfony/oauth-server-bundle": "^1.5"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
