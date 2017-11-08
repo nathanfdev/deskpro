@@ -34,5 +34,6 @@ export const repositoriesConfig = {
   VoiceNumber:     { type: 'api', url: '/voice_numbers', allowAll: true },
   VoicePhoneCall:  { type: 'api', url: '/voice_phone_calls' },
   VoicemailRecord: { type: 'api', url: '/voicemail_records', allowAll: true },
-  Brands:          { type: 'api', url: '/brands', allowAll: true }
+  Brands:          { type: 'api', url: '/brands', allowAll: true },
+  TicketMacros:    { type: 'api', url: '/ticket_macros', allowAll: true },
 };

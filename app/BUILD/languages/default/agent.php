@@ -650,6 +650,8 @@ return [
     'agent.general.flagged_with_color_summary'                 => 'Flagged with color {{color}}',
     'agent.general.focus_reply_box'                            => 'Focus reply box',
     'agent.general.follow'                                     => 'Follow',
+    'agent.general.follow_up'                                  => 'Follow Up',
+    'agent.general.follow_ups'                                 => 'Follow Ups',
     'agent.general.followers'                                  => 'Followers',
     'agent.general.force_email_validation'                     => 'Force email validation',
     'agent.general.found_article_helpful_or_not'               => '{{up_votes}} found this the article helpful, {{down_votes}} found the article unhelpful',

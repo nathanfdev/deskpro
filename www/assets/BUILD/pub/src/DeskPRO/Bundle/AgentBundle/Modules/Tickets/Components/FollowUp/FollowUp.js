@@ -9,7 +9,8 @@ import { FollowUpTime } from './FollowUpTime';
 
 @connect(state => ({
   agents:     agentsSelector(state),
-  agentTeams: allSelectorFactory('AgentTeam')(state)
+  agentTeams: allSelectorFactory('AgentTeam')(state),
+  macros:     allSelectorFactory('TicketMacros')(state)
 }))
 export class FollowUpContainer extends React.Component {
   render() {
@@ -24,9 +25,10 @@ export class FollowUpContainer extends React.Component {
 
 export class FollowUp extends React.Component {
   static propTypes = {
-    agents:     PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
-    macros:     PropTypes.object.isRequired,
+    agents:      PropTypes.object.isRequired,
+    agentTeams:  PropTypes.object.isRequired,
+    macros:      PropTypes.object.isRequired,
+    updateCount: PropTypes.func,
   };
 
   constructor(props) {
@@ -69,6 +71,9 @@ export class FollowUp extends React.Component {
     this.setState({
       errors
     });
+    if (errors.length === 0) {
+      this.props.updateCount(1);
+    }
   };
 
   renderErrors = () => {

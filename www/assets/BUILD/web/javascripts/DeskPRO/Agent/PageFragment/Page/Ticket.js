@@ -169,6 +169,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this._initLabels();
 		this._initTicketLocking();
 		this._initTasks();
+		this._initFollowUps();
 		this._initEditName();
 		this._initSlas();
     this._initProblems();
@@ -3540,6 +3541,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.sections.tasks_section.markUnloadPage();
 			}
 		};
+	},
+
+  _initFollowUps: function() {
+    if (!window.DP_HAS_FOLLOW_UP) {
+      return;
+    }
+    var self = this;
+
+    var countEl = self.getEl('follow_up_count');
+    var data = {
+      ticketId:    self.meta.ticket_id,
+    	updateCount: function(count) {
+    		DeskPRO_Window.util.modCountEl(countEl, '', count);
+			}
+  	};
+
+    window.AgentLegacyBundle.renderFollowUpTab(self.getEl('follow_ups_wrap')[0], data);
 	},
 
 	//#################################################################

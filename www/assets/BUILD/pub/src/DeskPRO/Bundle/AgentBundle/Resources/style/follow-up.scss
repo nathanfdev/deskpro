@@ -11,7 +11,7 @@
         flex-grow: 1;
         flex-basis: auto;
         margin: .25em 0;
-        padding: 0 1em;
+        padding: 0;
         text-align: center;
         white-space: nowrap;
         list-style: none;
@@ -123,6 +123,7 @@
     background-color: $dp-knuckles-secondary;
     border: solid 1px $dp-knuckles-midnight;
     border-radius: 5px;
-    margin: 10px
+    margin: 10px;
+    padding: 10px 20px;
   }
 }
