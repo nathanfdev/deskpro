@@ -339,7 +339,7 @@ class Json extends AbstractRenderer
         // getting through rows
         foreach ($rowGroups as $yPath => $rowHead) {
             $rowData  = [reset($rowHead) ?: 'None'];
-            $rowTotal = '';
+            $rowTotal = 0;
             foreach ($headerCols as $xPath => $printable) {
                 if (isset($lookup[$yPath][$xPath])) {
                     $value = $this->_filterGraphValue($lookup[$yPath][$xPath]);
@@ -348,11 +348,11 @@ class Json extends AbstractRenderer
                 }
                 $rowData[] = $value;
                 if ($totalType) {
-                    $rowTotal += str_replace(',', '', $value);
+                    $rowTotal += (int) str_replace(',', '', $value);
                     if (!isset($totalRow[$xPath])) {
-                        $totalRow[$xPath] = '';
+                        $totalRow[$xPath] = 0;
                     }
-                    $totalRow[$xPath] += str_replace(',', '', $value);
+                    $totalRow[$xPath] += (int) str_replace(',', '', $value);
                 }
             }
             if ($totalType) {
@@ -558,11 +558,11 @@ class Json extends AbstractRenderer
                 $cells[] = $value;
 
                 if ($totalType) {
-                    $rowTotal += str_replace(',', '', $value);
+                    $rowTotal += (int) str_replace(',', '', $value);
                     if (!isset($columnTotals[$xPath])) {
                         $columnTotals[$xPath] = 0;
                     }
-                    $columnTotals[$xPath] += str_replace(',', '', $value);
+                    $columnTotals[$xPath] += (int) str_replace(',', '', $value);
                 }
             }
 
