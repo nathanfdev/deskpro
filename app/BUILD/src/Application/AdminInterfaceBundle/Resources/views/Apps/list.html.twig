@@ -16,7 +16,7 @@
 	</article>
 </section>
 
-<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length || ListCtrl.apps_v2.length">
+<section class="dp-paneblock dp-listpane" ng-show="ListCtrl.apps.length || ListCtrl.listInstalledAppsV2().length">
 	<header>
 		<h3 style="margin-bottom: 0;">Installed Apps</h3>
 	</header>
@@ -38,7 +38,7 @@
 					</p>
 				</div>
 			</li>
-			<li ng-repeat="app in ListCtrl.apps_v2" dp-state-mark="apps.apps.instance_v2.{{ ng_var('app.id') }}">
+			<li ng-repeat="app in ListCtrl.listInstalledAppsV2()" dp-state-mark="apps.apps.instance_v2.{{ ng_var('app.id') }}">
 				<aside ng-if="!app.package.is_usersource_app">
 					<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}"><img ng-src="{{ ng_var('app.app.icon_32') }}" alt="Icon" /></a>
 				</aside>
@@ -71,10 +71,10 @@
 {% endmacro %}
 {% macro package_v2_row() %}
 	<aside>
-		<a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><img ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+		<a href="{{ ng_href('apps.apps.installer-v2-reload', 'ListCtrl.getInstallerRouteParams(package)') }}" ><img ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
 	</aside>
 	<div class="content">
-		<h4><a href="{{ ng_href('apps.apps.package', '{name: package.name}') }}"><span class="title-text">{{ ng_var('package.manifest.title') }}</span></a></h4>
+		<h4><a href="{{ ng_href('apps.apps.installer-v2-reload', 'ListCtrl.getInstallerRouteParams(package)') }}" ><span class="title-text">{{ ng_var('package.manifest.title') }}</span></a></h4>
 		<p class="info">
 			by {{ ng_var('package.manifest.author.name') }} &middot; <a ng-href="{{ ng_var('package.manifest.author.url') }}">Website</a>
 		</p>
@@ -126,9 +126,9 @@
 		<section>
 			<p>The authentication apps allow agents or users to log in using credentials from other services, rather than a DeskPRO account.</p>
 			<p>Most apps that operate with third-party services require you to set up an account with the service first. Some apps also require you to provide an <strong>API token</strong> or some other authentication code from the linked service: consult the support pages for the service to find out how to get it.</p>
-			
+
 		</section>
-		
+
 <section>
 		<h2><span>FAQ</span></h2>
 		<dl>
@@ -136,13 +136,13 @@
 			<dd><em>A:</em>
 				See the <a href="https://manuals.deskpro.com/html/developer-apps/" target="_blank">Developer Manual</a> for details.
 			</dd>
-			
+
 						<dt><em>Q:</em>I can't get an app to work - where can I get help?</dt>
 			<dd><em>A:</em>
 				There are  <a href="https://support.deskpro.com/guides/topic/411" target="_blank">full installation guides for most apps in the admin manual</a>; <a href="https://support.deskpro.com/guides/topic/426" target="_blank">see here for authentication app instructions</a>.
 			</dd>
-			
-			
+
+
 		</dl>
 </section>
 
@@ -150,7 +150,7 @@
 			<h2><span>Related Content</span></h2>
 			<ul>
 				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/411" target="_blank">Installing apps</a> </li>
-			
+
 				<li> <i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/426"
 				target="_blank">Authentication and SSO apps</a>
 

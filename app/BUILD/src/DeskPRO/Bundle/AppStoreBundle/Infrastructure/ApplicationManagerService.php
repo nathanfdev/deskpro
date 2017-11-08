@@ -134,6 +134,22 @@ class ApplicationManagerService
         return 'instance';
     }
 
+    public function install( Domain\AppBundle $bundle)
+    {
+        $manifestReader = new Infrastructure\AppManifestReader();
+        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+
+        $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
+
+        if ($app && $manifest->isSingle() && $app->getInstances()->count() > 0) {
+            return $this->createOrUpdateAppEntity($bundle);
+        }
+
+        $appEntity      = $this->createOrUpdateAppEntity($bundle);
+        $this->createInstance($appEntity);
+        return $appEntity;
+    }
+
     /**
      * @param Domain\AppBundle $bundle
      *
