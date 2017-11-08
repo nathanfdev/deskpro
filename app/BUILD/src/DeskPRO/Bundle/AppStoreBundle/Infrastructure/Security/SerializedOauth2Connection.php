@@ -109,7 +109,7 @@ class SerializedOauth2Connection
     private $clientSecret;
 
     /**
-     * @JMS\Type("string")
+     * @JMS\Type("array<string>")
      * @JMS\SerializedName("scopes")
      *
      * @var string
