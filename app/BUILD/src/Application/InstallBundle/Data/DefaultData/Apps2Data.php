@@ -28,6 +28,7 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 
 /**
@@ -55,8 +56,9 @@ class Apps2Data extends AbstractDefaultData
         $this->getLogger()->info(sprintf('Installing v2 app from path: %s', $bundlePath));
 
         $bundle          = AppZipArchiveBundle::fromFile($bundlePath);
-        $instanceCreator = $this->getContainer()->get('apps2.application_manager');
-        $instanceCreator->createOrUpdateAppEntity($bundle);
+        /** @var ApplicationManagerService $appManager */
+        $appManager = $this->getContainer()->get('apps2.application_manager');
+        $appManager->install($bundle);
     }
 
     /**
