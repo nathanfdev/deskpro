@@ -1,12 +1,14 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], () -> [
-  '$scope', '$q', '$modalInstance', 'report', 'widget', 'reportWidget', 'DashboardsInfo', 'DashboardService', 'DashboardWidgetService', '$anchorScroll', '$location',
-  ($scope, $q, $modalInstance, report, widget, reportWidget, DashboardsInfo, DashboardService, DashboardWidgetService, $anchorScroll, $location) ->
+  '$scope', '$q', '$modalInstance', 'report', 'widget', 'reportWidget', 'DashboardsInfo', 'DashboardService', 'DashboardWidgetService',
+  ($scope, $q, $modalInstance, report, widget, reportWidget, DashboardsInfo, DashboardService, DashboardWidgetService) ->
 
     ####################################################################################################################
     # LOADING
     ####################################################################################################################
     DashboardWidgetService.setDashboardService DashboardService
     $scope.widget = widget
+    $scope.widgetPreview  = null
+    $scope.reportWidget   = reportWidget
 
     ####################################################################################################################
     # UI handlers
@@ -20,6 +22,18 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], () -> [
 
     $scope.makeChoice = (displayType) ->
       $scope.widget.type = displayType
+      widgetToTest = angular.copy reportWidget
+      for widgetVariable, index in widgetToTest.variables
+        if $scope.widget.variables[widgetVariable.name]
+          widgetToTest.variables[index].value = $scope.widget.variables[widgetVariable.name].value
+      widgetToTest.display_types = [displayType]
+      DashboardWidgetService
+        .testWidget widgetToTest, $scope.widget
+        .then (response) ->
+          $scope.widgetPreview = response.data
+          $scope.widgetPreview.type = switch displayType
+              when 'pie', 'simple_area', 'simple_bars', 'simple_lines' then 'graph'
+              else 'table'
 
     $scope.displayTypeAvailable = (displayType) ->
       available = false
